@@ -702,8 +702,8 @@ doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas accept
 doc_auth.instructions.text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
 doc_auth.instructions.text3: Nous comparons votre numéro de téléphone à vos informations personnelles et vous envoyons un code à usage unique sur votre téléphone.
 doc_auth.instructions.text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
-doc_auth.rate_limit_warning.plural_html: Pour des raisons de sécurité, il vous reste <strong>%{remaining_attempts} tentatives</strong>.
-doc_auth.rate_limit_warning.singular_html: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+doc_auth.rate_limit_warning.plural_html: Vous pouvez encore essayer <strong>%{remaining_attempts} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
+doc_auth.rate_limit_warning.singular_html: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 doc_auth.tips.document_capture_hint: Doit être au format JPG ou PNG
 doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé
@@ -1089,7 +1089,7 @@ idv.failure.phone.warning.next_steps_html: Essayez <strong>un autre</strong> num
 idv.failure.phone.warning.try_again_button: Essayez un autre numéro
 idv.failure.phone.warning.you_entered: 'Vous avez saisi :'
 idv.failure.sessions.exception: Une erreur interne s’est produite lors du traitement de votre demande.
-idv.failure.sessions.fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier des renseignements personnels en ligne. <strong>Réessayez dans %{timeout}.</strong>
+idv.failure.sessions.fail_html: Pour éviter la fraude, nous limitons le nombre de fois où vous pouvez tenter de confirmer votre identité en ligne. <strong>Réessayez d’ici %{timeout}.</strong>
 idv.failure.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.failure.sessions.warning: Veuillez vérifier les informations que vous avez saisies et réessayer. Les erreurs les plus courantes sont un numéro de sécurité sociale ou un code postal incorrect.
 idv.failure.setup.fail_date_html: Appelez notre centre de contact avant le <strong>%{date_html}</strong> pour continuer à vérifier votre identité.

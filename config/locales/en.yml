@@ -702,8 +702,8 @@ doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check t
 doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
-doc_auth.rate_limit_warning.plural_html: For security reasons, you have <strong>%{remaining_attempts} attempts</strong> remaining.
-doc_auth.rate_limit_warning.singular_html: For security reasons, you have <strong>1 attempt</strong> remaining.
+doc_auth.rate_limit_warning.plural_html: You can try <strong>%{remaining_attempts} more times.</strong> Then, you must wait 6 hours before trying again.
+doc_auth.rate_limit_warning.singular_html: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
 doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
 doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
@@ -1089,7 +1089,7 @@ idv.failure.phone.warning.next_steps_html: Try <strong>another</strong> number t
 idv.failure.phone.warning.try_again_button: Try another number
 idv.failure.phone.warning.you_entered: 'You entered:'
 idv.failure.sessions.exception: There was an internal error processing your request.
-idv.failure.sessions.fail_html: For your security, we limit the number of times you can attempt to verify personal information online. <strong>Try again in %{timeout}.</strong>
+idv.failure.sessions.fail_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
 idv.failure.sessions.heading: We couldn’t find records matching your personal information
 idv.failure.sessions.warning: Please check the information you entered and try again. Common mistakes are an incorrect Social Security number or ZIP Code.
 idv.failure.setup.fail_date_html: Call our contact center by <strong>%{date_html}</strong> to continue verifying your identity.

@@ -713,8 +713,8 @@ doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revi
 doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
-doc_auth.rate_limit_warning.plural_html: Por motivos de seguridad, le quedan <strong>%{remaining_attempts} intentos</strong>.
-doc_auth.rate_limit_warning.singular_html: Por motivos de seguridad, le queda <strong>un intento</strong>.
+doc_auth.rate_limit_warning.plural_html: Puede intentarlo <strong>%{remaining_attempts} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+doc_auth.rate_limit_warning.singular_html: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
 doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
@@ -1100,7 +1100,7 @@ idv.failure.phone.warning.next_steps_html: Intente con <strong>otro</strong> nú
 idv.failure.phone.warning.try_again_button: Intentar con otro número
 idv.failure.phone.warning.you_entered: 'Usted ingresó:'
 idv.failure.sessions.exception: Hubo un error interno al procesar su solicitud.
-idv.failure.sessions.fail_html: Por su seguridad, limitamos el número de veces que puede intentar verificar la información personal en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
+idv.failure.sessions.fail_html: Para evitar fraudes, limitamos el número de veces que puede intentar la verificación de un documento en línea. <strong>Vuelva intentarlo en %{timeout}.</strong>
 idv.failure.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.failure.sessions.warning: Revise la información que ingresó y vuelva a intentarlo. Los errores más comunes suelen ser un número de Seguro Social o un código postal incorrecto.
 idv.failure.setup.fail_date_html: Llame a nuestro centro de atención antes del <strong>%{date_html}</strong> para seguir verificando su identidad.

@@ -713,8 +713,8 @@ doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要
 doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
-doc_auth.rate_limit_warning.plural_html: 出于安全原因，你还有 <strong>%{remaining_attempts} 次尝试机会</strong>。
-doc_auth.rate_limit_warning.singular_html: 出于安全原因，你还有 <strong>1 次尝试机会</strong>。
+doc_auth.rate_limit_warning.plural_html: 您可以再试<strong>%{remaining_attempts}次。</strong>然后您必须等6个小时才能再试。
+doc_auth.rate_limit_warning.singular_html: 您可以再试<strong>1次。</strong>然后您必须等6个小时才能再试。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
 doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
@@ -1102,7 +1102,7 @@ idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
 idv.failure.phone.warning.you_entered: 你输入了：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
-idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
+idv.failure.sessions.fail_html: 为了防止欺诈，我们限制在网上尝试验证文件的次数。<strong>%{timeout}小时以后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.failure.sessions.warning: 请检查一下你输入的信息，然后再试一下。常见错误包括社会保障号码或邮编不对。
 idv.failure.setup.fail_date_html: 请给我们的联系中心在<strong>%{date_html}</strong> 之前打电话以继续验证你的身份。
