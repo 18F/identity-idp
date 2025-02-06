@@ -24,6 +24,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         :before,
         :set_usps_form_presenter,
         :initialize_pii_from_user,
+        :confirm_step_allowed,
       )
     end
 
