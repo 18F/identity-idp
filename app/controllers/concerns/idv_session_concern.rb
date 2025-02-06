@@ -47,7 +47,7 @@ module IdvSessionConcern
 
   def redirect_unless_sp_requested_verification
     return if !IdentityConfig.store.idv_sp_required
-    return if idv_session_user.profiles.any?
+    return if idv_session_user&.profiles&.any?
     return if resolved_authn_context_result.identity_proofing?
 
     redirect_to account_url
