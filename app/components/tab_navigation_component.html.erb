@@ -3,7 +3,7 @@
     <% routes.each do |route| %>
       <li class="usa-button-group__item">
         <% if  current_path?(route[:path]) %>
-          <%=  render ClickObserverComponent.new(event_name: 'tab_navigation_current_page_clicked', 'data-payload': "{\"path\":\"#{route[:path]}\"}") do %>
+          <%=  render ClickObserverComponent.new(event_name: 'tab_navigation_current_page_clicked', payload: { path: route[:path] }) do %>
             <%= render ButtonComponent.new(
                   url: route[:path],
                   big: true,
