@@ -173,7 +173,7 @@ RSpec.describe FormResponse do
     end
 
     context 'when errors is an ActiveModel::Errors' do
-      it 'returns a hash with success, errors, and error_details keys' do
+      it 'returns a hash with success and error_details keys' do
         errors = ActiveModel::Errors.new(build_stubbed(:user))
         errors.add(:email_language, :blank, message: 'Language cannot be blank')
         response = FormResponse.new(success: false, errors: errors)
@@ -220,7 +220,7 @@ RSpec.describe FormResponse do
       end
 
       context 'with error detail symbol defined as type option on error' do
-        it 'returns a hash with success, errors, and error_details keys' do
+        it 'returns a hash with success and error_details keys' do
           errors = ActiveModel::Errors.new(build_stubbed(:user))
           errors.add(:email_language, 'Language cannot be blank', type: :blank)
           response = FormResponse.new(success: false, errors: errors)
