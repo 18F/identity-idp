@@ -241,9 +241,11 @@ RSpec.feature 'Sign in' do
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
         .and_return(Devise.timeout_in)
+      allow(Devise).to receive(:timeout_in)
+        .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
       user = create(:user, :fully_registered)
-      sign_in_before_2fa(user)
+      sign_in_user(user)
       visit user_two_factor_authentication_path
 
       expect(page).to have_css('.usa-js-modal--active', wait: 5)
