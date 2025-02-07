@@ -713,8 +713,8 @@ doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revi
 doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
-doc_auth.rate_limit_warning.plural_html: Puede intentarlo <strong>%{remaining_attempts} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
-doc_auth.rate_limit_warning.singular_html: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
+doc_auth.rate_limit_warning_html.one: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
+doc_auth.rate_limit_warning_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
 doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado

@@ -48,8 +48,8 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       expect(rendered).to have_text(
         strip_tags(
           t(
-            'doc_auth.rate_limit_warning.plural_html',
-            remaining_attempts: remaining_submit_attempts,
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
           ),
         ),
       )
@@ -124,8 +124,8 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       expect(rendered).not_to have_text(
         strip_tags(
           t(
-            'doc_auth.rate_limit_warning.plural_html',
-            remaining_attempts: remaining_submit_attempts,
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
           ),
         ),
       )

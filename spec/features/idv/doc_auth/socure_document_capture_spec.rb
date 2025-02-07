@@ -177,8 +177,8 @@ RSpec.feature 'document capture step', :js do
           expect(page).to have_content(
             strip_tags(
               t(
-                'doc_auth.rate_limit_warning.plural_html',
-                remaining_attempts: max_attempts - 1,
+                'doc_auth.rate_limit_warning_html',
+                count: max_attempts - 1,
               ),
             ),
           )
@@ -188,7 +188,7 @@ RSpec.feature 'document capture step', :js do
             docv_transaction_token: @docv_transaction_token,
           )
           visit idv_socure_document_capture_update_path
-          expect(page).to have_content(strip_tags(t('doc_auth.rate_limit_warning.singular_html')))
+          expect(page).to have_content(strip_tags(t('doc_auth.rate_limit_warning_html.one')))
         end
       end
 

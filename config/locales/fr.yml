@@ -702,8 +702,8 @@ doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas accept
 doc_auth.instructions.text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
 doc_auth.instructions.text3: Nous comparons votre numéro de téléphone à vos informations personnelles et vous envoyons un code à usage unique sur votre téléphone.
 doc_auth.instructions.text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
-doc_auth.rate_limit_warning.plural_html: Vous pouvez encore essayer <strong>%{remaining_attempts} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
-doc_auth.rate_limit_warning.singular_html: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
+doc_auth.rate_limit_warning_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
+doc_auth.rate_limit_warning_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 doc_auth.tips.document_capture_hint: Doit être au format JPG ou PNG
 doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé

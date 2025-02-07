@@ -702,8 +702,8 @@ doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check t
 doc_auth.instructions.text2: You will not need your physical SSN card.
 doc_auth.instructions.text3: We match your phone number with your personal information and send a one-time code to your phone.
 doc_auth.instructions.text4: Your password saves and encrypts your personal information.
-doc_auth.rate_limit_warning.plural_html: You can try <strong>%{remaining_attempts} more times.</strong> Then you must wait 6 hours before trying again.
-doc_auth.rate_limit_warning.singular_html: You can try <strong>1 more time.</strong> Then you must wait 6 hours before trying again.
+doc_auth.rate_limit_warning_html.one: You can try <strong>1 more time.</strong> Then you must wait 6 hours before trying again.
+doc_auth.rate_limit_warning_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 doc_auth.tips.document_capture_hint: Must be a JPG or PNG
 doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
 doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
