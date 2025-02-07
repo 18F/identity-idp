@@ -15,18 +15,18 @@ module Reports
     def perform(report_date)
       @report_date = report_date
 
-      report_configs.each do |config|
-        tables_report(config).deliver_now
+      reported_ab_tests.each do |ab_test|
+        tables_report(ab_test).deliver_now
       end
     end
 
-    def tables_report(config)
-      experiment_name = config.experiment_name
+    def tables_report(ab_test)
+      experiment_name = ab_test.experiment_name
       subject = "A/B Tests Report - #{experiment_name} - #{report_date}"
-      reports = ab_tests_report(config).as_emailable_reports
+      reports = ab_tests_report(ab_test).as_emailable_reports
 
       ReportMailer.tables_report(
-        email: config.email,
+        email: ab_test.report.email,
         subject:,
         message: subject,
         reports:,
@@ -34,21 +34,20 @@ module Reports
       )
     end
 
-    def ab_tests_report(config)
+    def ab_tests_report(ab_test)
       Reporting::AbTestsReport.new(
-        queries: config.queries,
+        ab_test:,
         time_range: report_date.yesterday..report_date,
       )
     end
 
     private
 
-    def report_configs
+    def reported_ab_tests
       AbTests
         .all
         .values
         .select { |ab_test| ab_test.report&.email&.present? && ab_test.active? }
-        .map(&:report)
     end
   end
 end

@@ -18,7 +18,7 @@ class AbTest
 
   ReportQueryConfig = Struct.new(:title, :query, :row_labels, keyword_init: true).freeze
 
-  ReportConfig = Struct.new(:experiment_name, :email, :queries, keyword_init: true) do
+  ReportConfig = Struct.new(:email, :queries, keyword_init: true) do
     def initialize(queries: [], **)
       super
       self.queries.map!(&ReportQueryConfig.method(:new))
@@ -48,7 +48,7 @@ class AbTest
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     @should_log = should_log
-    @report = ReportConfig.new(experiment_name:, **report.to_h) if report
+    @report = ReportConfig.new(**report.to_h) if report
     @persist = persist
     raise 'max_participants requires persist to be true' if max_participants.finite? && !persist?
     @max_participants = max_participants

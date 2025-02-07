@@ -25,6 +25,10 @@ RSpec.describe Reports::AbTestsReport do
         buckets: { sign_in_recaptcha: tested_percent },
         report: { email:, queries: },
       ),
+      UNREPORTED_EXPERIMENT: AbTest.new(
+        experiment_name: 'Unreported Experiment',
+        buckets: { group_a: 1 },
+      ),
     }
   end
 
@@ -52,7 +56,7 @@ RSpec.describe Reports::AbTestsReport do
 
     before do
       allow(Reporting::AbTestsReport).to receive(:new).with(
-        queries:,
+        ab_test: ab_tests[:RECAPTCHA_SIGN_IN],
         time_range: report_date.yesterday..report_date,
       ).and_return(report)
 

@@ -5,15 +5,15 @@ require 'reporting/cloudwatch_query_quoting'
 
 module Reporting
   class AbTestsReport
-    attr_reader :queries, :time_range
+    attr_reader :ab_test, :time_range
 
-    # @param [Array<AbTest::ReportQueryConfig>] queries
+    # @param [AbTest] ab_test
     # @param [Range<Time>] time_range
     def initialize(
-      queries:,
+      ab_test:,
       time_range:
     )
-      @queries = queries
+      @ab_test = ab_test
       @time_range = time_range
     end
 
@@ -31,6 +31,8 @@ module Reporting
     end
 
     private
+
+    def queries = ab_test.report.queries
 
     def table_for_query(query)
       query_data = fetch_results(query: query.query)

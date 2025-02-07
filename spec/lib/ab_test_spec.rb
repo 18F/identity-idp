@@ -312,7 +312,6 @@ RSpec.describe AbTest do
 
     it 'builds struct value from given hash option' do
       expect(report).to be_a(AbTest::ReportConfig)
-      expect(report.experiment_name).to eq('test')
       expect(report.email).to eq('email@example.com')
       expect(report.queries).to all be_a(AbTest::ReportQueryConfig)
       expect(report.queries.first.title).to eq('Example Query')
@@ -330,7 +329,6 @@ RSpec.describe AbTest do
 
       it 'gracefully builds an empty struct value' do
         expect(report).to be_a(AbTest::ReportConfig)
-        expect(report.experiment_name).to eq('test')
         expect(report.email).to be_nil
         expect(report.queries).to eq([])
       end
