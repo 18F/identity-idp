@@ -7053,10 +7053,10 @@ module AnalyticsEvents
   # Tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
-    errors:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    errors: nil,
     error_details: nil,
     **extra
   )
