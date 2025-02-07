@@ -17,9 +17,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_144037) do
   enable_extension "pg_stat_statements"
 
   create_table "ab_test_assignments", force: :cascade do |t|
-    t.string "experiment", null: false
-    t.string "discriminator", null: false
-    t.string "bucket", null: false
+    t.string "experiment", null: false, comment: "sensitive=false"
+    t.string "discriminator", null: false, comment: "sensitive=false"
+    t.string "bucket", null: false, comment: "sensitive=false"
     t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
   end
 

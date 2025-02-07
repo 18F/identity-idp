@@ -157,6 +157,48 @@ RSpec.describe AbTest do
       end
     end
 
+    context 'with max_participants' do
+      let(:options) { super().merge(max_participants: 1, persist: true) }
+
+      it 'creates and returns new assignment' do
+        expect { bucket }.to change { AbTestAssignment.count }.by(1)
+        expect(bucket).to be_kind_of(Symbol)
+      end
+
+      context 'when maxed' do
+        before do
+          create(
+            :ab_test_assignment,
+            experiment: ab_test.experiment,
+            discriminator: 'existing-uuid',
+            bucket: 'foo',
+          )
+        end
+
+        it { is_expected.to be_nil }
+
+        it 'does not create a new assignment' do
+          expect { bucket }.not_to change { AbTestAssignment.count }
+        end
+
+        context 'with already-assigned participant' do
+          let(:discriminator) { ->(**) { 'existing-uuid' } }
+
+          it 'continues to return persisted value' do
+            expect(bucket).to eq(:foo)
+          end
+        end
+      end
+
+      context 'without persistance' do
+        let(:options) { super().merge(persist: false) }
+
+        it 'raises an error' do
+          expect { bucket }.to raise_error('max_participants requires persist to be true')
+        end
+      end
+    end
+
     context 'with persisted ab test' do
       let(:user) { create(:user) }
       let(:discriminator) { nil }

@@ -3,8 +3,16 @@
 class AbTest
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :buckets, :experiment_name, :default_bucket, :should_log, :report, :persist
+  attr_reader :buckets,
+              :experiment_name,
+              :default_bucket,
+              :should_log,
+              :report,
+              :persist,
+              :max_participants
+
   alias_method :experiment, :experiment_name
+  alias_method :persist?, :persist
 
   MAX_SHA = (16 ** 64) - 1
 
@@ -32,6 +40,7 @@ class AbTest
     default_bucket: :default,
     report: nil,
     persist: false,
+    max_participants: Float::INFINITY,
     &discriminator
   )
     @buckets = buckets
@@ -41,6 +50,8 @@ class AbTest
     @should_log = should_log
     @report = ReportConfig.new(experiment_name:, **report.to_h) if report
     @persist = persist
+    raise 'max_participants requires persist to be true' if max_participants.finite? && !persist?
+    @max_participants = max_participants
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
@@ -71,8 +82,10 @@ class AbTest
     )
     return nil if discriminator.blank?
 
-    persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist
-    return persisted_value if persisted_value || (persist && persisted_read_only)
+    persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist?
+    return persisted_value if persisted_value || (persist? && persisted_read_only)
+
+    return nil if maxed?
 
     user_value = percent(discriminator)
 
@@ -88,7 +101,7 @@ class AbTest
       min = max
     end
 
-    AbTestAssignment.create(experiment:, discriminator:, bucket:) if persist
+    AbTestAssignment.create(experiment:, discriminator:, bucket:) if persist?
 
     bucket
   end
@@ -110,6 +123,11 @@ class AbTest
   end
 
   private
+
+  def maxed?
+    return false if !persist? || !max_participants.finite?
+    AbTestAssignment.where(experiment:).count >= max_participants
+  end
 
   def resolve_discriminator(user:, **)
     if @discriminator
