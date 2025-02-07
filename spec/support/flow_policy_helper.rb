@@ -22,6 +22,14 @@ module FlowPolicyHelper
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :document_capture
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+    when :ipp_state_id
+      idv_session.send(:user_session)['idv/in_person'] = {
+        pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT.dup,
+      }
+    when :ipp_address
+      idv_session.send(:user_session)['idv/in_person'] = {
+        pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
+      }
     when :ssn
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
       idv_session.threatmetrix_session_id = 'a-random-session-id'
@@ -64,14 +72,19 @@ module FlowPolicyHelper
       %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
       %i[welcome agreement how_to_verify hybrid_handoff document_capture]
+    when :ipp_state_id
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id]
+    when :ipp_address
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address]
     when :ssn
       %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn]
     when :ipp_ssn
-      %i[welcome agreement how_to_verify hybrid_handoff ipp_ssn]
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn]
     when :verify_info
       %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info]
     when :ipp_verify_info
-      %i[welcome agreement how_to_verify hybrid_handoff ipp_ssn ipp_verify_info]
+      %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn
+         ipp_verify_info]
     when :phone
       %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn
          verify_info phone]
