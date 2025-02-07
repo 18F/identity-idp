@@ -228,7 +228,7 @@ COPY --from=builder $RAILS_ROOT/keys/localhost.crt $RAILS_ROOT/keys/
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
-    find $RAILS_ROOT -type d | xargs chmod 755
+    find $RAILS_ROOT -type d | xargs -d '\n' chmod 755
 
 # get rid of suid/sgid binaries
 RUN find / -perm /4000 -type f | xargs chmod u-s
