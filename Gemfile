@@ -112,7 +112,6 @@ group :development, :test do
   gem 'nokogiri', '~> 1.18.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
-  gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
