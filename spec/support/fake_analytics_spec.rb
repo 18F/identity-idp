@@ -60,7 +60,7 @@ RSpec.describe FakeAnalytics do
               Expected that FakeAnalytics would have received event :my_event
 
               Events received:
-              {:my_other_event=>[{}]}
+              {my_other_event: [{}]}
             MESSAGE
           end
       end
@@ -110,7 +110,7 @@ RSpec.describe FakeAnalytics do
               Expected that FakeAnalytics would have received event :my_event once but it was received twice
 
               Events received:
-              {:my_event=>[{}, {}]}
+              {my_event: [{}, {}]}
             MESSAGE
           end
         end
@@ -133,7 +133,7 @@ RSpec.describe FakeAnalytics do
           .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with {:arg1=>42}
+              with {arg1: 42}
 
               Events received:
               {}
@@ -148,10 +148,10 @@ RSpec.describe FakeAnalytics do
           .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              with {:arg1=>42}
+              with {arg1: 42}
 
               Events received:
-              {:my_other_event=>[{}]}
+              {my_other_event: [{}]}
             MESSAGE
           end
       end
@@ -163,8 +163,8 @@ RSpec.describe FakeAnalytics do
           .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              expected: {:arg1=>42}
-                   got: {:arg1=>43}
+              expected: {arg1: 42}
+                   got: {arg1: 43}
 
               Diff:
               @@ -1 +1 @@
@@ -181,8 +181,8 @@ RSpec.describe FakeAnalytics do
           .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event
-              expected: {:arg1=>42}
-                   got: {:arg1=>42, :arg2=>43}
+              expected: {arg1: 42}
+                   got: {arg1: 42, arg2: 43}
 
               Diff:
               @@ -1,2 +1,3 @@
@@ -232,7 +232,7 @@ RSpec.describe FakeAnalytics do
             .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
               assert_error_messages_equal(err, <<~MESSAGE)
                 Expected that FakeAnalytics would have received event :my_event once but it was received 0 times
-                with {:arg1=>42}
+                with {arg1: 42}
 
                 Events received:
                 {}
@@ -254,10 +254,10 @@ RSpec.describe FakeAnalytics do
             .to raise_error(RSpec::Expectations::ExpectationNotMetError) do |err|
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received event :my_event once but it was received twice
-              with {:arg1=>42}
+              with {arg1: 42}
 
               Events received:
-              {:my_event=>[{:arg1=>42}, {:arg1=>42}]}
+              {my_event: [{arg1: 42}, {arg1: 42}]}
             MESSAGE
           end
         end
@@ -302,7 +302,7 @@ RSpec.describe FakeAnalytics do
               with include(arg1: 42)
 
               Events received:
-              {:my_other_event=>[{}]}
+              {my_other_event: [{}]}
             MESSAGE
           end
       end
@@ -315,7 +315,7 @@ RSpec.describe FakeAnalytics do
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event :my_event
               expected: include(arg1: 42)
-                   got: {:arg1=>43}
+                   got: {arg1: 43}
 
               Diff:
               @@ -1 +1 @@
@@ -390,7 +390,7 @@ RSpec.describe FakeAnalytics do
               with include(arg1: 42)
 
               Events received:
-              {:my_event=>[{:arg1=>42}, {:arg1=>42}]}
+              {my_event: [{arg1: 42}, {arg1: 42}]}
             MESSAGE
           end
         end
@@ -435,7 +435,7 @@ RSpec.describe FakeAnalytics do
               with hash_including(arg1: 42)
 
               Events received:
-              {:my_other_event=>[{}]}
+              {my_other_event: [{}]}
             MESSAGE
           end
       end
@@ -448,7 +448,7 @@ RSpec.describe FakeAnalytics do
             assert_error_messages_equal(err, <<~MESSAGE)
               Expected that FakeAnalytics would have received matching event :my_event
               expected: hash_including(arg1: 42)
-                   got: {:arg1=>43}
+                   got: {arg1: 43}
 
               Diff:
               @@ -1 +1 @@
@@ -545,7 +545,7 @@ RSpec.describe FakeAnalytics do
               with hash_including(arg1: 42)
 
               Events received:
-              {:my_event=>[{:arg1=>42, :arg2=>43}, {:arg1=>42, :arg2=>43}]}
+              {my_event: [{arg1: 42, arg2: 43}, {arg1: 42, arg2: 43}]}
             MESSAGE
           end
         end
