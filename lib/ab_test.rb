@@ -25,9 +25,14 @@ class AbTest
     end
   end.freeze
 
+  # @param [String] experiment_name A human-readable short description of the experiment.
+  # @param [Hash<String, Integer>] buckets The set of test variations for an experiment, with keys
+  #   denoting the test name and the value a percent of visitors who should be included in the test.
   # @param [Regexp,#include?,nil] should_log A list of analytics event names for which the A/B test
   #   bucket assignment should be logged, or a regular expression pattern which is tested against an
   #   analytics event name when an event is being logged.
+  # @param [Symbol] default_bucket The bucket name that should be returned for a test candidate not
+  #   selected for one of the listed test alternatives, to be considered part of the control group.
   # @param [Hash] report Report mailer configuration.
   # @param [Boolean] persist Whether the test assignment should be persisted to the database.
   # @param [Integer] max_participants The maximum number of participants allowed in the test.
