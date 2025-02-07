@@ -4,7 +4,7 @@ class OutdatedAbTestAssignmentCleanupJob < ApplicationJob
   queue_as :low
 
   def perform
-    AbTestAssignment.where.not(experiment: configured_experiments).destroy_all
+    AbTestAssignment.where.not(experiment: configured_experiments).in_batches.delete_all
   end
 
   private
