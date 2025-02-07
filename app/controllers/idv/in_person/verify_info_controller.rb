@@ -39,7 +39,8 @@ module Idv
           controller: self,
           next_steps: [:phone],
           preconditions: ->(idv_session:, user:) do
-            idv_session.ssn && idv_session.ipp_document_capture_complete?
+            idv_session.ssn && idv_session.ipp_document_capture_complete? &&
+              threatmetrix_session_id_present_or_not_required?(idv_session:)
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.residential_resolution_vendor = nil

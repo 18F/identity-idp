@@ -10,13 +10,16 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
+  let(:enrollment) { InPersonEnrollment.new }
 
   before do
+    stub_analytics
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
     subject.user_session['idv/in_person'] = flow_session
+    stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
   end
 
   describe '#step_info' do
@@ -77,10 +80,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         :confirm_step_allowed,
       )
     end
-  end
-
-  before do
-    stub_analytics
   end
 
   describe '#show' do
@@ -242,9 +241,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         subject.user_session['idv/in_person'] = {}
       end
 
-      it 'redirects to idv_path' do
+      it 'redirects to the in person state id page' do
         get :show
-        expect(response).to redirect_to(idv_path) # currently redirects to state id in both spec and manual test
+        expect(response).to redirect_to(idv_in_person_state_id_path)
       end
     end
 
@@ -316,7 +315,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
-    let(:enrollment) { InPersonEnrollment.new }
     before do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
@@ -342,7 +340,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           .with(
             kind_of(DocumentCaptureSession),
             trace_id: subject.send(:amzn_trace_id),
-            threatmetrix_session_id: nil,
+            threatmetrix_session_id: 'a-random-session-id',
             user_id: anything,
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
@@ -354,6 +352,11 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     context 'a user does have an establishing in person enrollment associated with them' do
+      before do
+        subject.idv_session.send(:user_session)['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS,
+        }
+      end
       it 'indicates to the IDV agent that ipp_enrollment_in_progress is enabled' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).with(
           kind_of(DocumentCaptureSession),
@@ -387,7 +390,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         .with(
           kind_of(DocumentCaptureSession),
           trace_id: subject.send(:amzn_trace_id),
-          threatmetrix_session_id: nil,
+          threatmetrix_session_id: 'a-random-session-id',
           user_id: anything,
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
@@ -443,6 +446,24 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(subject).to receive(:clear_future_steps!)
 
       put :update
+    end
+  end
+
+  context 'when proofing_device_profiling is enabled' do
+    before do
+      allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+    end
+
+    context 'when idv_session is missing threatmetrix_session_id' do
+      before do
+        subject.idv_session.threatmetrix_session_id = nil
+      end
+
+      it 'redirects back to the SSN step' do
+        get :show
+        expect(response).to redirect_to(idv_in_person_ssn_url)
+      end
     end
   end
 end
