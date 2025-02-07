@@ -7,7 +7,10 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_not_rate_limited
+    before_action -> do
+      confirm_not_rate_limited(check_last_submission: true)
+    end
+
     before_action :confirm_step_allowed
 
     def show
