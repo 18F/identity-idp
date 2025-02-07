@@ -180,6 +180,21 @@ RSpec.describe AnalyticsEventsDocumenter do
         expect(documenter.missing_documentation.first).to include('some_event missing **extra')
       end
 
+      context 'when extra keyword arguments is incorrectly named' do
+        let(:source_code) { <<~RUBY }
+          class AnalyticsEvents
+            # @param [Boolean] success
+            def some_event(success:, **_extra)
+              track_event('Some Event')
+            end
+          end
+        RUBY
+
+        it 'requires **extra param' do
+          expect(documenter.missing_documentation.first).to include('some_event missing **extra')
+        end
+      end
+
       context 'when require_extra_params is false' do
         let(:require_extra_params) { false }
 
