@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
+  include FlowPolicyHelper
+
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
     { pii_from_user: pii_from_user }
@@ -235,12 +237,14 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
     context 'when idv/in_person data is missing' do
       before do
+        stub_up_to(:ipp_verify_info, idv_session: subject.idv_session)
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
         subject.user_session['idv/in_person'] = {}
       end
 
       it 'redirects to idv_path' do
         get :show
-        expect(response).to redirect_to(idv_path)
+        expect(response).to redirect_to(idv_path) # currently redirects to state id in both spec and manual test
       end
     end
 
