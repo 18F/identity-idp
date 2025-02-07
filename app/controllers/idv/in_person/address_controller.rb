@@ -7,7 +7,6 @@ module Idv
       include IdvStepConcern
 
       before_action :confirm_step_allowed
-      before_action :confirm_in_person_address_step_needed, only: :show
       before_action :set_usps_form_presenter
 
       def show
@@ -50,7 +49,9 @@ module Idv
           key: :ipp_address,
           controller: self,
           next_steps: [:ipp_ssn],
-          preconditions: ->(idv_session:, user:) { idv_session.ipp_state_id_complete? },
+          preconditions: ->(idv_session:, user:) {
+            idv_session.ipp_state_id_complete?
+          },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_address_step!
           end,
@@ -94,13 +95,6 @@ module Idv
         else
           redirect_to idv_in_person_ssn_url
         end
-      end
-
-      def confirm_in_person_address_step_needed
-        return if pii_from_user&.dig(:same_address_as_id) == 'false' &&
-                  !pii_from_user.has_key?(:address1)
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_ssn_url
       end
 
       def set_usps_form_presenter

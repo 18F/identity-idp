@@ -10,8 +10,7 @@ module Idv
       include VerifyInfoConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
-      before_action :confirm_pii_data_present
-      before_action :confirm_ssn_step_complete
+      before_action :confirm_step_allowed
 
       def show
         @step_indicator_steps = step_indicator_steps
@@ -88,17 +87,6 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
           .merge(**extra_analytics_properties)
-      end
-
-      def confirm_ssn_step_complete
-        return if pii.present? && idv_session.ssn.present?
-        redirect_to prev_url
-      end
-
-      def confirm_pii_data_present
-        unless user_session.dig('idv/in_person').present?
-          redirect_to idv_path
-        end
       end
     end
   end

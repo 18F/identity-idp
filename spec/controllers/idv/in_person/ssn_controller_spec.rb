@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::SsnController do
+  include FlowPolicyHelper
+
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
@@ -25,8 +27,12 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    it 'redirects if address page not completed' do
+    before do
+      stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
       subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+      allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+    end
+    it 'redirects if address page not completed' do
       get :show
 
       expect(response).to redirect_to idv_in_person_address_url

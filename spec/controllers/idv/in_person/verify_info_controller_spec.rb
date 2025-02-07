@@ -69,17 +69,10 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       )
     end
 
-    it 'confirms ssn step complete' do
+    it 'confirms the verify info step is allowed' do
       expect(subject).to have_actions(
         :before,
-        :confirm_ssn_step_complete,
-      )
-    end
-
-    it 'confirms idv/in_person data is present' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_pii_data_present,
+        :confirm_step_allowed,
       )
     end
   end
