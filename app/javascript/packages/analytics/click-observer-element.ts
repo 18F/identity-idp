@@ -12,9 +12,14 @@ class ClickObserverElement extends HTMLElement {
     return this.getAttribute('event-name');
   }
 
-  get payload(): object {
+  get payload(): object | undefined {
     const stringPayload = this.getAttribute('data-payload') || '{}';
-    return JSON.parse(stringPayload);
+    try {
+      return JSON.parse(stringPayload);
+    }
+    catch (e) {
+      return;
+    }
   }
 
   /**
