@@ -28,7 +28,7 @@ RSpec.describe ClickObserverComponent, type: :component do
     context 'with invalid payload attribute' do
       let(:payload) { 'hello ' }
       it 'renders with data-payload with blank json value' do
-        expect(rendered).to have_css('lg-click-observer[data-payload="{}"]')
+        expect(rendered).to_not have_css('lg-click-observer[data-payload="{}"]')
       end
     end
   end

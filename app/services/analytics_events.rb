@@ -7257,7 +7257,8 @@ module AnalyticsEvents
   end
 
   # Tracks when user clicks on same tab that user landed on.
-  def tab_navigation_current_page_clicked(path: nil)
+  # @param [String, nil] Path that user was on when navigation tab was clicked
+  def tab_navigation_current_page_clicked(path: nil, **extra)
     track_event(:tab_navigation_current_page_clicked, path: path)
   end
 
