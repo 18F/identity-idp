@@ -109,7 +109,7 @@ group :development, :test do
   gem 'knapsack'
   gem 'listen'
   gem 'net-http-persistent', '~> 4.0.2', require: false
-  gem 'nokogiri', '~> 1.16.0'
+  gem 'nokogiri', '~> 1.18.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'

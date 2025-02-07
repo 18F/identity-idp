@@ -516,7 +516,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_06_232958) do
     t.boolean "piv_cac_scoped_by_email", default: false, comment: "sensitive=false"
     t.boolean "pkce", comment: "sensitive=false"
     t.string "push_notification_url", comment: "sensitive=false"
-    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}, comment: "sensitive=false"
+    t.jsonb "help_text", default: {"sign_in" => {}, "sign_up" => {}, "forgot_password" => {}}, comment: "sensitive=false"
     t.boolean "allow_prompt_login", default: false, comment: "sensitive=false"
     t.boolean "signed_response_message_requested", default: false, comment: "sensitive=false"
     t.string "remote_logo_key", comment: "sensitive=false"
