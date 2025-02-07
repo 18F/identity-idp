@@ -17,7 +17,6 @@ Refer to the [_Local Development_ documentation](./docs/local-development.md) to
 
 ## Documentation
 
-- [A/B Testing](docs/ab-testing.md)
 - [Back-end Architecture](docs/backend.md)
 - [Front-end Architecture](docs/frontend.md)
 - [Local Development](docs/local-development.md)
