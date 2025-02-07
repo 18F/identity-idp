@@ -380,7 +380,7 @@ module Idv
     end
 
     def session
-      user_session.fetch(:idv, {})
+      user_session[:idv] || {}
     end
 
     def build_profile_maker(user_password)
