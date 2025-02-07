@@ -90,26 +90,21 @@ module Idv
 
     attr_reader :current_user, :gpo_otp, :service_provider
 
+    VALID_SESSION_ATTRIBUTES.each do |attr|
+      define_method(attr) do
+        session[attr]
+      end
+
+      define_method(:"#{attr}=") do |val|
+        session[attr] = val
+      end
+    end
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
       @service_provider = service_provider
       set_idv_session
-    end
-
-    def method_missing(method_sym, *arguments, &block)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      if VALID_SESSION_ATTRIBUTES.include?(attr_name_sym)
-        return session[attr_name_sym] if arguments.empty?
-        session[attr_name_sym] = arguments.first
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_sym, include_private)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
     # @return [Profile]
