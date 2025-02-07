@@ -6,7 +6,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as builder
+FROM public.ecr.aws/docker/library/ruby:3.4.1-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -17,7 +17,7 @@ ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
 ENV YARN_VERSION 1.22.5
 ENV NODE_VERSION 22.11.0
-ENV BUNDLER_VERSION 2.5.6
+ENV BUNDLER_VERSION 2.6.3
 
 # Install dependencies
 RUN apt-get update -qq && \
@@ -140,7 +140,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.4.1-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -150,7 +150,7 @@ ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV BUNDLER_VERSION 2.5.6
+ENV BUNDLER_VERSION 2.6.3
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
 ENV POSTGRES_HOST postgres
@@ -228,7 +228,7 @@ COPY --from=builder $RAILS_ROOT/keys/localhost.crt $RAILS_ROOT/keys/
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
-    find $RAILS_ROOT -type d | xargs chmod 755
+    find $RAILS_ROOT -type d | xargs -d '\n' chmod 755
 
 # get rid of suid/sgid binaries
 RUN find / -perm /4000 -type f | xargs chmod u-s
