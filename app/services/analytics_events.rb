@@ -5045,6 +5045,8 @@ module AnalyticsEvents
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [String] socure_status Socure's status value for internal errors on their side.
+  # @param [String] socure_msg Socure's status message for interal errors on their side.
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -5180,7 +5182,6 @@ module AnalyticsEvents
   # @param [Boolean] biometric_comparison_required does doc auth require biometirc
   # @param [String] socure_status Socure's request status (used for errors)
   # @param [String] socure_msg socure's error message (used for errors)
-
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
