@@ -81,7 +81,7 @@ describe('ClickObserverElement', () => {
           const button = getByRole(document.body, 'button', { name: 'Click me!' });
           await userEvent.click(button);
 
-          expect(trackEvent).to.have.been.calledWith('track-data-clicked'});
+          expect(trackEvent).to.have.been.calledWith('track-data-clicked');
         });
       });
     });
