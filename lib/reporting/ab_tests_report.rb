@@ -30,9 +30,17 @@ module Reporting
       end
     end
 
+    def participants_message
+      return unless ab_test.persist?
+      message = "Total participants: #{participants_count.to_fs(:delimited)}"
+      message += " (of #{max_participants.to_fs(:delimited)} maximum)" if max_participants.finite?
+      message
+    end
+
     private
 
-    def queries = ab_test.report.queries
+    delegate :participants_count, :max_participants, :report, to: :ab_test
+    delegate :queries, to: :report
 
     def table_for_query(query)
       query_data = fetch_results(query: query.query)

@@ -25,6 +25,8 @@ class ReportMailerPreview < ActionMailer::Preview
     report = Reports::AbTestsReport.new(Time.zone.now).ab_tests_report(
       AbTest.new(
         experiment_name: 'reCAPTCHA at Sign-In',
+        persist: true,
+        max_participants: 10_000,
         report: {
           email: 'email@example.com',
           queries: [
@@ -54,7 +56,10 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.tables_report(
       email: 'email@example.com',
       subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
-      message: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+      message: [
+        "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+        report.participants_message,
+      ].compact,
       reports: report.as_emailable_reports,
       attachment_format: :csv,
     )

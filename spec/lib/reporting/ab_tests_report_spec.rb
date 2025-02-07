@@ -4,6 +4,7 @@ require 'reporting/ab_tests_report'
 RSpec.describe Reporting::AbTestsReport do
   let(:time_range) { Date.new(2025, 1, 1).all_day }
   let(:options) { {} }
+  let(:ab_test_options) { {} }
 
   subject(:report) do
     Reporting::AbTestsReport.new(
@@ -24,6 +25,7 @@ RSpec.describe Reporting::AbTestsReport do
             },
           ],
         },
+        **ab_test_options,
       ),
       time_range:,
       **options,
@@ -62,6 +64,30 @@ RSpec.describe Reporting::AbTestsReport do
       aggregate_failures do
         emailable_reports.each do |emailable_report|
           expect(emailable_report.title).to be_present
+        end
+      end
+    end
+  end
+
+  describe '#participants_message' do
+    subject(:participants_message) { report.participants_message }
+
+    context 'with unpersisted ab test' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'with persisted ab test' do
+      let(:ab_test_options) { super().merge(persist: true) }
+
+      it 'returns message with number of participants' do
+        expect(participants_message).to eq('Total participants: 0')
+      end
+
+      context 'with maximum participant ab test' do
+        let(:ab_test_options) { super().merge(max_participants: 10_000) }
+
+        it 'returns message with number of participants and maximum' do
+          expect(participants_message).to eq('Total participants: 0 (of 10,000 maximum)')
         end
       end
     end

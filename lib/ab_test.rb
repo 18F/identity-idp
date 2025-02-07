@@ -122,11 +122,16 @@ class AbTest
     @active
   end
 
+  def participants_count
+    return if !persist?
+    AbTestAssignment.where(experiment:).count
+  end
+
   private
 
   def maxed?
     return false if !persist? || !max_participants.finite?
-    AbTestAssignment.where(experiment:).count >= max_participants
+    participants_count >= max_participants
   end
 
   def resolve_discriminator(user:, **)

@@ -23,13 +23,13 @@ module Reports
     def tables_report(ab_test)
       experiment_name = ab_test.experiment_name
       subject = "A/B Tests Report - #{experiment_name} - #{report_date}"
-      reports = ab_tests_report(ab_test).as_emailable_reports
+      report = ab_tests_report(ab_test)
 
       ReportMailer.tables_report(
         email: ab_test.report.email,
         subject:,
-        message: subject,
-        reports:,
+        message: [subject, report.participants_message].compact,
+        reports: report.as_emailable_reports,
         attachment_format: :csv,
       )
     end

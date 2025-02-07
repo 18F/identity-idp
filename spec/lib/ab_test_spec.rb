@@ -356,4 +356,24 @@ RSpec.describe AbTest do
       it { is_expected.to be false }
     end
   end
+
+  describe '#participants_count' do
+    subject(:participants_count) { ab_test.participants_count }
+
+    context 'without persistance' do
+      let(:options) { super().merge(persist: false) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with persistance' do
+      let(:options) { super().merge(persist: true) }
+
+      it 'returns current number of test participants' do
+        create_list(:ab_test_assignment, 2, experiment: options[:experiment_name])
+
+        expect(participants_count).to eq(2)
+      end
+    end
+  end
 end

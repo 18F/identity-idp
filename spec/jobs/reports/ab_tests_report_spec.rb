@@ -22,6 +22,8 @@ RSpec.describe Reports::AbTestsReport do
     {
       RECAPTCHA_SIGN_IN: AbTest.new(
         experiment_name: 'reCAPTCHA at Sign-In',
+        persist: true,
+        max_participants: 10_000,
         buckets: { sign_in_recaptcha: tested_percent },
         report: { email:, queries: },
       ),
@@ -51,7 +53,11 @@ RSpec.describe Reports::AbTestsReport do
     end
 
     let(:report) do
-      double(Reporting::AbTestsReport, as_emailable_reports: emailable_reports)
+      double(
+        Reporting::AbTestsReport,
+        as_emailable_reports: emailable_reports,
+        participants_message: 'Total participants: 0 (of 10,000 maximum)',
+      )
     end
 
     before do
@@ -67,7 +73,10 @@ RSpec.describe Reports::AbTestsReport do
       expect(ReportMailer).to receive(:tables_report).with(
         email:,
         subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
-        message: "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
+        message: [
+          "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
+          'Total participants: 0 (of 10,000 maximum)',
+        ],
         reports: emailable_reports,
         attachment_format: :csv,
       )
