@@ -65,7 +65,7 @@ class AbTest
   # @param [User] user
   # @param [Hash] user_session
   # @param [Boolean] persisted_read_only Avoid new bucket assignment if test is configured to be
-  # persisted but there is no persisted value.
+  #   persisted but there is no persisted value.
   def bucket(
     request:,
     service_provider:,
