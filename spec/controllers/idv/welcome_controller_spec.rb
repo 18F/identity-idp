@@ -140,16 +140,23 @@ RSpec.describe Idv::WelcomeController do
       let!(:pending_enrollment) do
         create(:in_person_enrollment, :pending, user: user, profile: password_reset_profile)
       end
+      let(:fraud_password_reset_profile) { create(:profile, :password_reset, user: user) }
+      let!(:fraud_review_enrollment) do
+        create(
+          :in_person_enrollment, :in_fraud_review, user: user, profile: fraud_password_reset_profile
+        )
+      end
 
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 
-      it 'cancels all previous establishing and pending enrollments' do
+      it 'cancels all previous establishing, pending, and in_fraud_review enrollments' do
         put :update
 
         expect(establishing_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(pending_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+        expect(fraud_review_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(user.establishing_in_person_enrollment).to be_blank
         expect(user.pending_in_person_enrollment).to be_blank
       end
