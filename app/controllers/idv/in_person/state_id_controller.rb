@@ -6,11 +6,11 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
 
-      before_action :redirect_unless_enrollment # confirm previous step is complete
       before_action :set_usps_form_presenter
+      before_action :confirm_step_allowed
 
       def show
-        flow_session[:pii_from_user] ||= {}
+        pii_from_user
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
@@ -20,7 +20,6 @@ module Idv
         # don't clear the ssn when updating address, clear after SsnController
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
-        pii_from_user = flow_session[:pii_from_user]
         initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
 
         form_result = form.submit(flow_params)
@@ -83,24 +82,17 @@ module Idv
           next_steps: [:ipp_address, :ipp_ssn],
           preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
           undo_step: ->(idv_session:, user:) do
-            pii_from_user[:identity_doc_address1] = nil
-            pii_from_user[:identity_doc_address2] = nil
-            pii_from_user[:identity_doc_city] = nil
-            pii_from_user[:identity_doc_zipcode] = nil
-            pii_from_user[:identity_doc_state] = nil
-            idv_session.doc_auth_vendor = nil
+            idv_session.invalidate_in_person_pii_from_user!
           end,
         )
       end
 
       private
 
-      def redirect_unless_enrollment
-        redirect_to idv_document_capture_url unless current_user.establishing_in_person_enrollment
-      end
-
-      def flow_session
-        user_session.fetch('idv/in_person', {})
+      def pii_from_user
+        user_session['idv/in_person'] ||= {}
+        user_session['idv/in_person'][:pii_from_user] ||= {}
+        user_session.dig('idv/in_person', :pii_from_user)
       end
 
       def analytics_arguments
@@ -183,4 +175,4 @@ module Idv
       end
     end
   end
-  end
+end
