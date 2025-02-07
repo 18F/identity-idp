@@ -14,13 +14,14 @@ class ClickObserverElement extends HTMLElement {
 
   get payload(): object | undefined {
     const stringPayload = this.getAttribute('data-payload') || undefined;
-    if(stringPayload) {
+    if (stringPayload) {
       try {
         return JSON.parse(stringPayload);
+      } catch (e) {
+        return undefined;
       }
-      catch (e) {
-        return;
-      }
+    } else {
+      return undefined;
     }
   }
 

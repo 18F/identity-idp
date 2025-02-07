@@ -56,7 +56,9 @@ describe('ClickObserverElement', () => {
       context('with valid payload', () => {
         it('logs a single event with a payload', async () => {
           document.body.innerHTML = `
-          <lg-click-observer event-name="track-data-clicked" data-payload=${JSON.stringify({ path: '/first'})} >
+          <lg-click-observer event-name="track-data-clicked" data-payload=${JSON.stringify({
+            path: '/first',
+          })} >
             <button>Click me!</button>
           </lg-click-observer>`;
           const observer = document.body.querySelector('lg-click-observer')!;
@@ -65,7 +67,7 @@ describe('ClickObserverElement', () => {
           const button = getByRole(document.body, 'button', { name: 'Click me!' });
           await userEvent.click(button);
 
-          expect(trackEvent).to.have.been.calledWith('track-data-clicked', {path: '/first'});
+          expect(trackEvent).to.have.been.calledWith('track-data-clicked', { path: '/first' });
         });
       });
 
