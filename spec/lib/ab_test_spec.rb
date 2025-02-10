@@ -171,23 +171,20 @@ RSpec.describe AbTest do
     subject(:return_value) { ab_test.include_in_analytics_event?(event_name) }
 
     context 'when should_log is nil' do
-      it 'returns true' do
-        expect(return_value).to eql(true)
-      end
+      it { is_expected.to eql(false) }
     end
 
     context 'when Regexp is used' do
       context 'and it matches' do
         let(:should_log) { /cool/ }
-        it 'returns true' do
-          expect(return_value).to eql(true)
-        end
+
+        it { is_expected.to eql(true) }
       end
+
       context 'and it does not match' do
         let(:should_log) { /not cool/ }
-        it 'returns false' do
-          expect(return_value).to eql(false)
-        end
+
+        it { is_expected.to eql(false) }
       end
     end
 

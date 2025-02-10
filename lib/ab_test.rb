@@ -16,9 +16,9 @@ class AbTest
     end
   end.freeze
 
-  # @param [Proc<String>,Regexp,string,Boolean,nil] should_log Controls whether bucket data for this
-  #                                                            A/B test is logged with specific
-  #                                                            events.
+  # @param [Regexp,#include?,nil] should_log A list of analytics event names for which the A/B test
+  #   bucket assignment should be logged, or a regular expression pattern which is tested against an
+  #   analytics event name when an event is being logged.
   # @yieldparam [ActionDispatch::Request] request
   # @yieldparam [String,nil] service_provider Issuer string for the service provider associated with
   #                                           the current session.
@@ -79,7 +79,7 @@ class AbTest
     elsif !should_log.nil?
       raise 'Unexpected value used for should_log'
     else
-      true
+      false
     end
   end
 
