@@ -28,11 +28,7 @@ class SocureErrorPresenter
   def rate_limit_text
     return if error_code == :url_not_found
 
-    if remaining_attempts == 1
-      t('doc_auth.rate_limit_warning.singular_html')
-    else
-      t('doc_auth.rate_limit_warning.plural_html', remaining_attempts: remaining_attempts)
-    end
+    t('doc_auth.rate_limit_warning_html', count: remaining_attempts)
   end
 
   def action

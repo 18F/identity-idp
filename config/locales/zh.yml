@@ -713,8 +713,8 @@ doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要
 doc_auth.instructions.text2: 不需要你社会保障卡实体。
 doc_auth.instructions.text3: 我们把你的电话号码与个人信息匹配，并向你的电话发送一个一次性代码。
 doc_auth.instructions.text4: 你的密码对你个人信息进行存储并加密。
-doc_auth.rate_limit_warning.plural_html: 出于安全原因，你还有 <strong>%{remaining_attempts} 次尝试机会</strong>。
-doc_auth.rate_limit_warning.singular_html: 出于安全原因，你还有 <strong>1 次尝试机会</strong>。
+doc_auth.rate_limit_warning_html.one: 您可以再试<strong>1次。</strong>然后您必须等6个小时才能再试。
+doc_auth.rate_limit_warning_html.other: 您可以再试<strong>%{count}次。</strong>然后您必须等6个小时才能再试。
 doc_auth.tips.document_capture_hint: 必须是 JPG 或 PNG
 doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
@@ -1113,8 +1113,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
-idv.failure.warning.attempts_html.one: 出于安全考虑，你只能再试<strong>一次</strong>了。
-idv.failure.warning.attempts_html.other: 出于安全考虑，你只能再试<strong>%{count}次</strong>了。
+idv.failure.warning.attempts_html.one: 您可以再试<strong>1次。</strong>然后您必须等6个小时才能再试。
+idv.failure.warning.attempts_html.other: 您可以再试<strong>%{count}次。</strong>然后您必须等6个小时才能再试。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
