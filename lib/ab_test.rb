@@ -3,13 +3,22 @@
 class AbTest
   include ::NewRelic::Agent::MethodTracer
 
-  attr_reader :buckets, :experiment_name, :default_bucket, :should_log, :report
+  attr_reader :buckets,
+              :experiment_name,
+              :default_bucket,
+              :should_log,
+              :report,
+              :persist,
+              :max_participants
+
+  alias_method :experiment, :experiment_name
+  alias_method :persist?, :persist
 
   MAX_SHA = (16 ** 64) - 1
 
   ReportQueryConfig = Struct.new(:title, :query, :row_labels, keyword_init: true).freeze
 
-  ReportConfig = Struct.new(:experiment_name, :email, :queries, keyword_init: true) do
+  ReportConfig = Struct.new(:email, :queries, keyword_init: true) do
     def initialize(queries: [], **)
       super
       self.queries.map!(&ReportQueryConfig.method(:new))
@@ -19,6 +28,9 @@ class AbTest
   # @param [Regexp,#include?,nil] should_log A list of analytics event names for which the A/B test
   #   bucket assignment should be logged, or a regular expression pattern which is tested against an
   #   analytics event name when an event is being logged.
+  # @param [Hash] report Report mailer configuration.
+  # @param [Boolean] persist Whether the test assignment should be persisted to the database.
+  # @param [Integer] max_participants The maximum number of participants allowed in the test.
   # @yieldparam [ActionDispatch::Request] request
   # @yieldparam [String,nil] service_provider Issuer string for the service provider associated with
   #                                           the current session.
@@ -30,6 +42,8 @@ class AbTest
     should_log: nil,
     default_bucket: :default,
     report: nil,
+    persist: false,
+    max_participants: Float::INFINITY,
     &discriminator
   )
     @buckets = buckets
@@ -37,7 +51,10 @@ class AbTest
     @experiment_name = experiment_name
     @default_bucket = default_bucket
     @should_log = should_log
-    @report = ReportConfig.new(experiment_name:, **report.to_h) if report
+    @report = ReportConfig.new(**report.to_h) if report
+    @persist = persist
+    raise 'max_participants requires persist to be true' if max_participants.finite? && !persist?
+    @max_participants = max_participants
     raise 'invalid bucket data structure' unless valid_bucket_data_structure?
     ensure_numeric_percentages
     raise 'bucket percentages exceed 100' unless within_100_percent?
@@ -50,7 +67,16 @@ class AbTest
   # @param [Hash] session
   # @param [User] user
   # @param [Hash] user_session
-  def bucket(request:, service_provider:, session:, user:, user_session:)
+  # @param [Boolean] persisted_read_only Avoid new bucket assignment if test is configured to be
+  #   persisted but there is no persisted value.
+  def bucket(
+    request:,
+    service_provider:,
+    session:,
+    user:,
+    user_session:,
+    persisted_read_only: false
+  )
     return nil if !active?
 
     discriminator = resolve_discriminator(
@@ -59,16 +85,28 @@ class AbTest
     )
     return nil if discriminator.blank?
 
+    persisted_value = AbTestAssignment.bucket(experiment:, discriminator:) if persist?
+    return persisted_value if persisted_value || (persist? && persisted_read_only)
+
+    return nil if maxed?
+
     user_value = percent(discriminator)
+
+    bucket = @default_bucket
 
     min = 0
     buckets.keys.each do |key|
       max = min + buckets[key]
-      return key if user_value > min && user_value <= max
+      if user_value > min && user_value <= max
+        bucket = key
+        break
+      end
       min = max
     end
 
-    @default_bucket
+    AbTestAssignment.create(experiment:, discriminator:, bucket:) if persist?
+
+    bucket
   end
 
   def include_in_analytics_event?(event_name)
@@ -87,7 +125,17 @@ class AbTest
     @active
   end
 
+  def participants_count
+    return if !persist?
+    AbTestAssignment.where(experiment:).count
+  end
+
   private
+
+  def maxed?
+    return false if !persist? || !max_participants.finite?
+    participants_count >= max_participants
+  end
 
   def resolve_discriminator(user:, **)
     if @discriminator

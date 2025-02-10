@@ -23,19 +23,25 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def ab_tests_report
     report = Reports::AbTestsReport.new(Time.zone.now).ab_tests_report(
-      AbTest::ReportConfig.new(
-        queries: [
-          {
-            title: 'Sign in success rate by CAPTCHA validation performed',
-            query: <<~QUERY,
-              fields properties.event_properties.captcha_validation_performed as `Captcha Validation Performed`
-              | filter name = 'Email and Password Authentication'
-              | stats avg(properties.event_properties.success)*100 as `Success Percent` by `Captcha Validation Performed`
-              | sort `Captcha Validation Performed` asc
-            QUERY
-            row_labels: ['Validation Not Performed', 'Validation Performed'],
-          },
-        ],
+      AbTest.new(
+        experiment_name: 'reCAPTCHA at Sign-In',
+        persist: true,
+        max_participants: 10_000,
+        report: {
+          email: 'email@example.com',
+          queries: [
+            {
+              title: 'Sign in success rate by CAPTCHA validation performed',
+              query: <<~QUERY,
+                fields properties.event_properties.captcha_validation_performed as `Captcha Validation Performed`
+                | filter name = 'Email and Password Authentication'
+                | stats avg(properties.event_properties.success)*100 as `Success Percent` by `Captcha Validation Performed`
+                | sort `Captcha Validation Performed` asc
+              QUERY
+              row_labels: ['Validation Not Performed', 'Validation Performed'],
+            },
+          ],
+        },
       ),
     )
 
@@ -50,7 +56,10 @@ class ReportMailerPreview < ActionMailer::Preview
     ReportMailer.tables_report(
       email: 'email@example.com',
       subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
-      message: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+      message: [
+        "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+        report.participants_message,
+      ].compact,
       reports: report.as_emailable_reports,
       attachment_format: :csv,
     )
