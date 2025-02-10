@@ -28,6 +28,9 @@ class AbTest
   # @param [Regexp,#include?,nil] should_log A list of analytics event names for which the A/B test
   #   bucket assignment should be logged, or a regular expression pattern which is tested against an
   #   analytics event name when an event is being logged.
+  # @param [Hash] report Report mailer configuration.
+  # @param [Boolean] persist Whether the test assignment should be persisted to the database.
+  # @param [Integer] max_participants The maximum number of participants allowed in the test.
   # @yieldparam [ActionDispatch::Request] request
   # @yieldparam [String,nil] service_provider Issuer string for the service provider associated with
   #                                           the current session.
