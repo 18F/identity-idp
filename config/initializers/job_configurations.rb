@@ -277,11 +277,6 @@ else
         cron: s3_cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Outdated A/B test assignment clean-up
-      outdated_ab_test_assignment_cleanup: {
-        class: 'OutdatedAbTestAssignmentCleanupJob',
-        cron: cron_every_monday,
-      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
