@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TimeService
   # Helper to round a Time instance to a particular interval
   # @param [Time] time

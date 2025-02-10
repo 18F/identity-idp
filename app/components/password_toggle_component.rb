@@ -1,25 +1,28 @@
+# frozen_string_literal: true
+
 class PasswordToggleComponent < BaseComponent
-  attr_reader :form, :label, :toggle_label, :toggle_position, :field_options
+  attr_reader :form, :field_options, :tag_options
 
   def initialize(
     form:,
-    label: t('components.password_toggle.label'),
-    toggle_label: t('components.password_toggle.toggle_label'),
-    toggle_position: :top,
-    **field_options
+    label: nil,
+    toggle_label: nil,
+    field_options: {},
+    **tag_options
   )
     @form = form
     @label = label
     @toggle_label = toggle_label
-    @toggle_position = toggle_position
     @field_options = field_options
+    @tag_options = tag_options
   end
 
-  def css_class
-    classes = []
-    classes << 'password-toggle--toggle-top' if toggle_position == :top
-    classes << 'password-toggle--toggle-bottom' if toggle_position == :bottom
-    classes
+  def label
+    @label || t('components.password_toggle.label')
+  end
+
+  def toggle_label
+    @toggle_label || t('components.password_toggle.toggle_label')
   end
 
   def toggle_id
@@ -27,6 +30,6 @@ class PasswordToggleComponent < BaseComponent
   end
 
   def input_id
-    "password-toggle-input-#{unique_id}"
+    field_options.dig(:input_html, :id) || "password-toggle-input-#{unique_id}"
   end
 end

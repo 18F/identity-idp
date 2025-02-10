@@ -32,19 +32,4 @@ RSpec.describe PhoneNumberOptOutSyncJob do
       end
     end
   end
-
-  describe '#good_job_concurrency_key' do
-    it 'is the job name and the current time, rounded to the nearest hour' do
-      now = Time.zone.at(1629817200)
-
-      job_now = PhoneNumberOptOutSyncJob.new(now)
-      expect(job_now.good_job_concurrency_key).to eq("phone-number-opt-out-sync-#{now.to_i}")
-
-      job_plus_30m = PhoneNumberOptOutSyncJob.new(now + 30.minutes)
-      expect(job_plus_30m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
-
-      job_plus_1h = PhoneNumberOptOutSyncJob.new(now + 1.hour)
-      expect(job_plus_1h.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
-    end
-  end
 end

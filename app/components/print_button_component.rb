@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PrintButtonComponent < ButtonComponent
   attr_reader :tag_options
 

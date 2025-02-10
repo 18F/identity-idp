@@ -7,6 +7,8 @@ base_locale: en
 ## Reporting locale, default: en. Available: en, ru.
 # internal_locale: en
 
+<% require './lib/i18n_tasks_flat_yml' %>
+
 # Read and write translations.
 data:
   ## Translations are read from the file system. Supported format: YAML, JSON.
@@ -83,6 +85,12 @@ search:
 
 ## Do not consider these keys missing:
 ignore_missing:
+  - datetime.dotiw.days
+  - datetime.dotiw.hours
+  - datetime.dotiw.less_than_x
+  - datetime.dotiw.months
+  - datetime.dotiw.weeks
+  - datetime.dotiw.years
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
 
@@ -93,12 +101,26 @@ ignore_missing:
 ## not, and if we didn't ignore them, the spec that makes sure that we don't have
 ## any unused translations would fail erroneously.
 ignore_unused:
+  - 'date.formats.short'
   - 'devise.failure.*'
   - 'devise.sessions.signed_in'
   - 'errors.attributes.*'
   - 'errors.messages.*'
   - 'simple_form.*'
   - 'time.*'
+  - 'datetime.dotiw.words_connector'
+  - 'datetime.dotiw.last_word_connector'
+  - 'datetime.dotiw.days.one'
+  - 'datetime.dotiw.days.other'
+  - 'datetime.dotiw.hours.one'
+  - 'datetime.dotiw.hours.other'
+  - 'datetime.dotiw.less_than_x'
+  - 'datetime.dotiw.months.one'
+  - 'datetime.dotiw.months.other'
+  - 'datetime.dotiw.weeks.one'
+  - 'datetime.dotiw.weeks.other'
+  - 'datetime.dotiw.years.one'
+  - 'datetime.dotiw.years.other'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:
@@ -107,7 +129,8 @@ ignore_unused:
 #     - common.brand
 
 ## Ignore these keys completely:
-# ignore:
+ignore:
+  - 'i18n.transliterate.rule.*'
 #  - kaminari.*
 
 ## Sometimes, it isn't possible for i18n-tasks to match the key correctly,

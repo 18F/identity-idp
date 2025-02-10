@@ -1,10 +1,21 @@
+# frozen_string_literal: true
+
 require 'ipaddr'
 
 module Rack
   class Attack
     ALLOWED_CIDR_BLOCKS = IdentityConfig.store.requests_per_ip_cidr_allowlist.map do |x|
       IPAddr.new(x)
-    end
+    end.freeze
+
+    EMAIL_REGISTRATION_PATHS =
+      IdentityConfig.store.available_locales.reduce(['/sign_up/enter_email']) do |paths, locale|
+        paths << "/#{locale}/sign_up/enter_email"
+      end.freeze
+
+    SIGN_IN_PATHS = IdentityConfig.store.available_locales.reduce(['/']) do |paths, locale|
+      paths << "/#{locale}"
+    end.freeze
 
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since
@@ -30,8 +41,9 @@ module Rack
     # not blocklisting & safelisting
     Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
       namespace: 'rack-attack',
-      url: IdentityConfig.store.redis_throttle_url,
+      redis: REDIS_THROTTLE_POOL,
       expires_in: 2.weeks.to_i,
+      pool: false,
     )
 
     ### Configure Safelisting ###
@@ -109,7 +121,7 @@ module Rack
         limit: IdentityConfig.store.logins_per_ip_limit,
         period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path == '/' && req.post?
+        req.remote_ip if SIGN_IN_PATHS.include?(req.path) && req.post?
       end
     else
       throttle(
@@ -117,7 +129,32 @@ module Rack
         limit: IdentityConfig.store.logins_per_ip_limit,
         period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path == '/' && req.post?
+        req.remote_ip if SIGN_IN_PATHS.include?(req.path) && req.post?
+      end
+    end
+
+    ### Prevent Email Registration Spam ###
+
+    # A user can use the registration path to spam email addresses.
+
+    # Throttle email registration transactions by IP address
+    #
+    # Key: "rack::attack:#{Time.now.to_i/:period}:email_registration/ip:#{req.remote_ip}"
+    if IdentityConfig.store.email_registrations_per_ip_track_only_mode
+      track(
+        'email_registrations/ip',
+        limit: IdentityConfig.store.email_registrations_per_ip_limit,
+        period: IdentityConfig.store.email_registrations_per_ip_period,
+      ) do |req|
+        req.remote_ip if EMAIL_REGISTRATION_PATHS.include?(req.path) && req.post?
+      end
+    else
+      throttle(
+        'email_registrations/ip',
+        limit: IdentityConfig.store.email_registrations_per_ip_limit,
+        period: IdentityConfig.store.email_registrations_per_ip_period,
+      ) do |req|
+        req.remote_ip if EMAIL_REGISTRATION_PATHS.include?(req.path) && req.post?
       end
     end
 
@@ -135,7 +172,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     else
       throttle(
@@ -143,7 +180,7 @@ module Rack
         limit: IdentityConfig.store.otps_per_ip_limit,
         period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
-        req.remote_ip if req.path.match?(%r{/otp/send})
+        req.remote_ip if req.path.include?('/otp/send')
       end
     end
 
@@ -178,7 +215,7 @@ module Rack
     # over and over.
     # After maxretry requests in findtime minutes, block all requests from that IP for bantime.
     blocklist('logins/email+ip') do |req|
-      if req.path == '/' && req.post?
+      if SIGN_IN_PATHS.include?(req.path) && req.post?
         # `filter` returns false if POST request is for the login page (but still
         # increments the count), so requests below the limit are not blocked until
         # they hit the limit. At that point, `filter` will return true and block.
@@ -195,7 +232,7 @@ module Rack
 
         Allow2Ban.filter(email_and_ip, maxretry: maxretry, findtime: findtime, bantime: bantime) do
           # The count for the email and IP combination is incremented if the return value is truthy.
-          req.path == '/' && req.post?
+          SIGN_IN_PATHS.include?(req.path) && req.post?
         end
       end
     end
@@ -208,7 +245,7 @@ module Rack
     # If you want to return 503 so that the attacker might be fooled into
     # believing that they've successfully broken your app (or you just want to
     # customize the response), then uncomment these lines.
-    self.throttled_response = lambda do |_env|
+    self.throttled_responder = lambda do |_env|
       [
         429, # status
         { 'Content-Type' => 'text/html' }, # headers
@@ -216,7 +253,7 @@ module Rack
       ]
     end
 
-    self.blocklisted_response = throttled_response
+    self.blocklisted_responder = throttled_responder
   end
 end
 
@@ -224,7 +261,9 @@ ActiveSupport::Notifications.subscribe(
   'rack.attack',
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
+  next if req.env['rack.attack.match_type'] == :safelist
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, session: {}, sp: nil)
+  sp = req.env.fetch('rack.session', {}).dig('sp', 'issuer')
+  analytics = Analytics.new(user: user, request: req, session: {}, sp: sp)
   analytics.rate_limit_triggered(type: req.env['rack.attack.matched'])
 end

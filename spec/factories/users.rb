@@ -6,12 +6,14 @@ FactoryBot.define do
 
     transient do
       with { {} }
-      email { Faker::Internet.safe_email }
+      sequence(:email) { |n| "user#{n}@example.com" }
       confirmed_at { Time.zone.now }
       confirmation_token { nil }
       confirmation_sent_at { 5.minutes.ago }
+      registered_at { Time.zone.now }
     end
 
+    created_at { Time.zone.now }
     accepted_terms_at { Time.zone.now if email }
 
     after(:build) do |user, evaluator|
@@ -45,7 +47,7 @@ FactoryBot.define do
         until user.email_addresses.many?
           user.email_addresses << build(
             :email_address,
-            email: Faker::Internet.safe_email,
+            email: Faker::Internet.email,
             confirmed_at: user.confirmed_at,
             user_id: -1,
           )
@@ -55,7 +57,7 @@ FactoryBot.define do
         until user.email_addresses.many?
           user.email_addresses << build(
             :email_address,
-            email: Faker::Internet.safe_email,
+            email: Faker::Internet.email,
             confirmed_at: user.confirmed_at,
             user_id: -1,
           )
@@ -90,9 +92,9 @@ FactoryBot.define do
         next unless user.webauthn_configurations.empty?
         user.webauthn_configurations << build(
           :webauthn_configuration,
+          :platform_authenticator,
           {
             user_id: -1,
-            platform_authenticator: true,
           }.merge(
             evaluator.with.slice(:name, :credential_id, :credential_public_key),
           ),
@@ -103,7 +105,7 @@ FactoryBot.define do
         next unless user.webauthn_configurations.empty?
         user.webauthn_configurations << build(
           :webauthn_configuration,
-          { platform_authenticator: true }.
+          :platform_authenticator,
           evaluator.with.slice(:name, :credential_id, :credential_public_key),
         )
       end
@@ -155,7 +157,8 @@ FactoryBot.define do
 
     trait :with_backup_code do
       after :build do |user|
-        BackupCodeGenerator.new(user).create
+        user.save
+        BackupCodeGenerator.new(user).delete_and_regenerate
       end
     end
 
@@ -167,16 +170,19 @@ FactoryBot.define do
       end
     end
 
-    trait :admin do
-      role { :admin }
-    end
-
-    trait :tech_support do
-      role { :tech }
-    end
-
-    trait :signed_up do
+    trait :fully_registered do
       with_phone
+
+      after :create do |user, evaluator|
+        user.create_registration_log(registered_at: evaluator.registered_at)
+      end
+    end
+
+    trait :with_authenticated_device do
+      fully_registered
+      after(:create) do |user|
+        user.devices << create(:device, :authenticated, user:)
+      end
     end
 
     trait :unconfirmed do
@@ -185,26 +191,173 @@ FactoryBot.define do
     end
 
     trait :proofed do
-      signed_up
+      fully_registered
+      confirmed_at { Time.zone.now.round }
 
       after :build do |user|
-        create(:profile, :active, :verified, :with_pii, user: user)
+        create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+        )
+      end
+    end
+
+    trait :proofed_with_selfie do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
+      after :build do |user|
+        create(
+          :profile,
+          :active,
+          :verified,
+          :with_pii,
+          idv_level: :unsupervised_with_selfie,
+          user: user,
+        )
       end
     end
 
     trait :with_pending_in_person_enrollment do
+      profiles do
+        [association(:profile, :with_pii, :in_person_verification_pending, user: instance)]
+      end
+    end
+
+    trait :with_establishing_in_person_enrollment do
       after :build do |user|
-        profile = create(:profile, :with_pii, user: user)
-        create(:in_person_enrollment, :pending, user: user, profile: profile)
+        create(:in_person_enrollment, :establishing, user: user)
+      end
+    end
+
+    trait :with_pending_gpo_profile do
+      transient do
+        code_sent_at { created_at }
+      end
+
+      after :create do |user, context|
+        profile = create(
+          :profile,
+          :with_pii,
+          gpo_verification_pending_at: context.code_sent_at,
+          user: user,
+          created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
+        )
+        create(
+          :gpo_confirmation_code,
+          profile: profile,
+          created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
+          code_sent_at: context.code_sent_at,
+        )
+        create(
+          :event,
+          user: user,
+          device: create(:device, user: user),
+          event_type: :gpo_mail_sent,
+          created_at: context.code_sent_at,
+          updated_at: context.code_sent_at,
+        )
+      end
+    end
+
+    trait :proofed_in_person_enrollment do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
+      after :build do |user|
+        create(
+          :profile,
+          :with_pii,
+          :active,
+          :verified,
+          :in_person_verified,
+          user: user,
+        )
+      end
+    end
+
+    trait :proofed_with_gpo do
+      fully_registered
+      confirmed_at { Time.zone.now.round }
+
+      after :build do |user|
+        profile = create(
+          :profile,
+          :active,
+          :with_pii,
+          user: user,
+        )
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+      end
+    end
+
+    trait :fraud_review_pending do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :fraud_review_pending,
+          :verified,
+          :with_pii,
+          user: user,
+        )
+      end
+    end
+
+    trait :gpo_pending_with_fraud_rejection do
+      with_pending_gpo_profile
+      after :create do |user|
+        user.pending_profile.fraud_rejection_at = 15.days.ago
+        user.pending_profile.fraud_pending_reason = :threatmetrix_reject
+      end
+    end
+
+    trait :gpo_pending_with_fraud_review do
+      with_pending_gpo_profile
+      after :create do |user|
+        user.pending_profile.fraud_review_pending_at = 15.days.ago
+        user.pending_profile.fraud_pending_reason = :threatmetrix_review
+      end
+    end
+
+    trait :fraud_rejection do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :fraud_rejection,
+          :verified,
+          :with_pii,
+          user: user,
+        )
       end
     end
 
     trait :deactivated_password_reset_profile do
-      signed_up
+      fully_registered
 
       after :build do |user|
-        create(:profile, :password_reset, :with_pii, user: user)
+        create(:profile, :verified, :password_reset, :with_pii, user: user)
       end
+    end
+
+    trait :suspended do
+      suspended_at { Time.zone.now }
+      reinstated_at { nil }
+    end
+
+    trait :reinstated do
+      suspended_at { Time.zone.now }
+      reinstated_at { Time.zone.now + 1.hour }
     end
   end
 end

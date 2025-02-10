@@ -1,0 +1,53 @@
+<% self.title = @presenter.title %>
+<%= render JavascriptRequiredComponent.new(
+      header: t('idv.welcome.no_js_header'),
+      intro: t('idv.welcome.no_js_intro', sp_name: @presenter.sp_name),
+      location: :idv_welcome,
+    ) do %>
+<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
+  <p>
+    <%= @presenter.explanation_text(
+          new_tab_link_to(
+            t('doc_auth.info.getting_started_learn_more'),
+            help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'overview',
+              flow: :idv,
+              step: :welcome,
+              location: 'intro_paragraph',
+            ),
+          ),
+        ) %>
+  </p>
+
+  <h2><%= t('doc_auth.instructions.getting_started') %></h2>
+
+  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
+    <% @presenter.bullet_points.each do |point| %>
+      <%= c.with_item(heading: point.bullet) do %>
+        <p><%= point.text %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= simple_form_for(
+        :doc_auth,
+        url: url_for,
+        method: 'put',
+        html: { class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+      ) do |f| %>
+    <div class="margin-top-4">
+      <%= render(
+            SpinnerButtonComponent.new(
+              type: :submit,
+              big: true,
+              wide: true,
+              spin_on_click: false,
+            ).with_content(t('doc_auth.buttons.continue')),
+          ) %>
+    </div>
+  <% end %>
+
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
+<% end %>
+<%= javascript_packs_tag_once('document-capture-welcome') %>

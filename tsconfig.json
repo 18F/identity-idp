@@ -7,7 +7,7 @@
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "ESNext",
@@ -20,22 +20,16 @@
     "app/components",
     "app/javascript/packages",
     "app/javascript/packs",
-    "spec/javascripts/spec_helper.d.ts",
-    "spec/javascripts/**/*.ts",
+    "spec/javascript/spec_helper.d.ts",
+    "spec/javascript/**/*.ts",
+    "spec/javascript/**/*.tsx",
+    "./*.js",
     "scripts"
   ],
   "exclude": [
     "**/fixtures",
-    "**/*.spec.js",
-    "app/javascript/packs/application.js",
-    "app/javascript/packs/personal-key-page-controller.js",
-    "app/javascript/packs/pw-strength.js",
-    "app/javascript/packs/reactivate-account-modal.js",
-    "app/javascript/packs/saml-post.js",
-    "app/javascript/packs/ssn-field.js",
-    "app/javascript/packs/upload-step.js",
-    "app/javascript/packs/webauthn-authenticate.js",
-    "app/javascript/packs/webauthn-setup.js",
-    "app/javascript/packs/webauthn-unhide.js"
+    "spec/**/*.spec.js",
+    "app/javascript/packs/digital-analytics-program.ts",
+    "app/javascript/packages/analytics/digital-analytics-program*.js"
   ]
 }

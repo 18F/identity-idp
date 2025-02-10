@@ -4,7 +4,7 @@ RSpec.describe Utf8Sanitizer do
   include Rack::Test::Methods
 
   let(:inner_app) do
-    proc { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
+    proc { |_env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
   end
 
   subject(:app) { Utf8Sanitizer.new(inner_app) }
@@ -50,6 +50,14 @@ RSpec.describe Utf8Sanitizer do
 
     it 'blocks null bytes inside the body' do
       post '/test', body: "\x00"
+      expect(last_response).to be_bad_request
+    end
+  end
+
+  context 'with request params that overlap types' do
+    it '400s' do
+      get '/test?platform=1&platform[key]=2'
+
       expect(last_response).to be_bad_request
     end
   end

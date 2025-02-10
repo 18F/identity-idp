@@ -1,7 +1,8 @@
 require 'rails_helper'
 
-feature 'Sign Up' do
+RSpec.feature 'Sign Up' do
   include SamlAuthHelper
+  include OidcAuthHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
@@ -36,7 +37,7 @@ feature 'Sign Up' do
   end
 
   context 'picking a preferred email language on signup' do
-    let(:email) { Faker::Internet.safe_email }
+    let(:email) { Faker::Internet.email }
 
     it 'allows a user to pick a language when entering email' do
       visit sign_up_email_path
@@ -57,7 +58,7 @@ feature 'Sign Up' do
     end
 
     it 'redirects user to the home page' do
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
   end
 
@@ -68,7 +69,7 @@ feature 'Sign Up' do
     end
 
     it 'sends them to the cancel page' do
-      expect(current_path).to eq sign_up_cancel_path
+      expect(page).to have_current_path sign_up_cancel_path
     end
   end
 
@@ -80,7 +81,7 @@ feature 'Sign Up' do
     end
 
     it 'sends them to the cancel page' do
-      expect(current_path).to eq sign_up_cancel_path
+      expect(page).to have_current_path sign_up_cancel_path
     end
   end
 
@@ -88,7 +89,42 @@ feature 'Sign Up' do
     it 'redirects user to the translated home page' do
       visit sign_up_email_path(locale: 'es')
       click_on t('links.cancel')
-      expect(current_path).to eq '/es'
+      expect(page).to have_current_path '/es'
+    end
+  end
+
+  context 'User in account creation logs in_account_creation_flow for proper analytic events' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    end
+    it 'logs analytic events for MFA selected with in account creation flow' do
+      sign_up_and_set_password
+      click_2fa_option('phone')
+      click_2fa_option('backup_code')
+
+      click_continue
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_one_time_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(page).to have_current_path backup_code_setup_path
+
+      expect(page).to have_link(t('components.download_button.label'))
+
+      click_continue
+
+      expect(page).to have_content(t('notices.backup_codes_configured'))
+
+      expect(fake_analytics).to have_logged_event(
+        'Multi-Factor Authentication Setup',
+        success: true,
+        multi_factor_auth_method: 'backup_codes',
+        in_account_creation_flow: true,
+        enabled_mfa_methods_count: 2,
+      )
     end
   end
 
@@ -102,36 +138,48 @@ feature 'Sign Up' do
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
 
     fill_in 'new_phone_form_phone', with: '225-555-1000'
-    click_send_security_code
+    click_send_one_time_code
 
-    expect(current_path).to eq(phone_setup_path)
+    expect(page).to have_current_path(phone_setup_path)
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
   scenario 'rate limits sign-up phone confirmation attempts' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+    allow(IdentityConfig.store).to receive(:phone_confirmation_max_attempts).and_return(1)
 
     sign_up_and_set_password
 
-    freeze_time do
-      (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
-        visit phone_setup_path
-        fill_in 'new_phone_form_phone', with: '2025551313'
-        click_send_security_code
-      end
-
-      timeout = distance_of_time_in_words(
-        Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
-      )
-
-      expect(current_path).to eq(authentication_methods_setup_path)
-      expect(page).to have_content(
-        I18n.t(
-          'errors.messages.phone_confirmation_throttled',
-          timeout: timeout,
-        ),
-      )
+    (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
+      visit phone_setup_path
+      fill_in 'new_phone_form_phone', with: '2025551313'
+      click_send_one_time_code
     end
+
+    # whether it says '9 minutes' or '10 minutes' depends on how
+    # slowly the test runs.
+    rate_limited_message = I18n.t(
+      'errors.messages.phone_confirmation_limited',
+      timeout: '(10|9) minutes',
+    )
+
+    expect(page).to have_current_path(authentication_methods_setup_path)
+
+    expect(page).to have_content(/#{rate_limited_message}/)
+  end
+
+  scenario 'signing up using phone with a reCAPTCHA challenge', :js do
+    allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
+    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
+
+    sign_up_and_set_password
+    select_2fa_option('phone')
+
+    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
+    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
+    click_send_one_time_code
+    expect(page).to have_current_path(phone_setup_path, wait: 5)
+    expect(page).to have_content(t('errors.messages.invalid_recaptcha_token'))
   end
 
   context 'with js', js: true do
@@ -145,6 +193,17 @@ feature 'Sign Up' do
 
     after do
       page.driver.browser.execute_cdp('Browser.resetPermissions')
+    end
+
+    def clipboard_text
+      # `evaluate_async_script` is expected to be asynchronous, but internally it sets the browser
+      # script timeout based on Capybara's configured default wait time. Allow for delay in this
+      # asynchronous result while avoiding modifying the default otherwise.
+      #
+      # See: https://github.com/teamcapybara/capybara/blob/3.38.0/lib/capybara/selenium/driver.rb#L146
+      Capybara.using_wait_time(5) do
+        page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
+      end
     end
 
     context 'user enters their email as their password', email: true do
@@ -169,31 +228,32 @@ feature 'Sign Up' do
       did_validate_name = -> { name.evaluate_script('this.didValidate') }
 
       click_on t('components.clipboard_button.label')
-      copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
-      otp_input = page.find('.one-time-code-input')
-      otp_input.set(generate_totp_code(copied_text))
+      otp_input = page.find('.one-time-code-input__input')
+      otp_input.set(generate_totp_code(clipboard_text))
       click_button 'Submit'
       expect(did_validate_name.call).to eq true
 
       fill_in 'name', with: 'Authentication app'
       click_button 'Submit'
+      skip_second_mfa_prompt
+
       expect(page).to have_current_path account_path
     end
   end
 
   context 'user accesses password screen with already confirmed token', email: true do
     it 'returns them to the home page' do
-      create(:user, :signed_up, confirmation_token: 'foo')
+      create(:user, :fully_registered, confirmation_token: 'foo')
 
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
       expect(page).to have_current_path(root_path)
 
       action = t('devise.confirmations.sign_in')
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+      expect(page)
+        .to have_content t('devise.confirmations.already_confirmed', action: action)
     end
   end
 
@@ -201,16 +261,16 @@ feature 'Sign Up' do
     it 'returns them to the resend email confirmation page' do
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
-      expect(page).to have_current_path(sign_up_email_resend_path)
+      expect(page).to have_current_path(sign_up_register_path)
 
-      expect(page).
-        to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page)
+        .to have_content t('errors.messages.confirmation_invalid_token')
     end
   end
 
   context "user A is signed in and accesses password creation page with User B's token" do
     it "redirects to User A's account page" do
-      create(:user, :signed_up, email: 'userb@test.com', confirmation_token: 'foo')
+      create(:user, :fully_registered, email: 'userb@test.com', confirmation_token: 'foo')
       sign_in_and_2fa_user
       visit sign_up_enter_password_path(confirmation_token: 'foo')
 
@@ -231,8 +291,21 @@ feature 'Sign Up' do
   it 'allows a user to choose TOTP as 2FA method during sign up' do
     sign_in_user
     set_up_2fa_with_authenticator_app
+    skip_second_mfa_prompt
 
     expect(page).to have_current_path account_path
+  end
+
+  it 'allows a user to sign up with PIV/CAC and only verifying once when HSPD12 is requested' do
+    visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
+    sign_up_and_set_password
+    set_up_2fa_with_piv_cac
+    skip_second_mfa_prompt
+    click_agree_and_continue
+
+    redirect_uri = URI(oidc_redirect_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
 
   it 'does not allow PIV/CAC during setup on mobile' do
@@ -245,16 +318,16 @@ feature 'Sign Up' do
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user(user)
     visit authenticator_setup_path
 
-    expect(page).
-      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+    expect(page)
+      .to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
-    create(:user, :signed_up)
+    create(:user, :fully_registered)
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path
@@ -308,6 +381,34 @@ feature 'Sign Up' do
     end
   end
 
+  context 'user finishes sign up after rules of use change' do
+    it 'validates terms checkbox and signs in successfully' do
+      user = create(
+        :user,
+        :unconfirmed,
+        accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.year,
+        confirmation_token: 'foo',
+      )
+
+      visit sign_up_enter_password_path(confirmation_token: 'foo')
+      fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+      fill_in(
+        t('components.password_confirmation.confirm_label'),
+        with: Features::SessionHelper::VALID_PASSWORD,
+      )
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_current_path rules_of_use_path
+      check 'rules_of_use_form[terms_accepted]'
+
+      freeze_time do
+        click_button t('forms.buttons.continue')
+        expect(page).to have_current_path authentication_methods_setup_path
+        expect(user.reload.accepted_terms_at).to eq Time.zone.now
+      end
+    end
+  end
+
   it 'does not regenerate a confirmation token if the token is not expired' do
     email = 'test@test.com'
 
@@ -322,21 +423,24 @@ feature 'Sign Up' do
 
   it 'redirects back with an error if the user does not select 2FA option' do
     sign_in_user
-    visit authentication_methods_setup_path
-    click_on 'Continue'
+    click_continue
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+
+    select_2fa_option('phone')
+    expect(page).to have_current_path(phone_setup_path)
+    expect(page).not_to have_content(t('errors.two_factor_auth_setup.must_select_option'))
   end
 
   it 'does not show the remember device option as the default when the SP is AAL2' do
-    ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server').update!(
+    ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: 2,
     )
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551313'
-    click_send_security_code
+    click_send_one_time_code
     expect(page).to_not have_checked_field t('forms.messages.remember_device')
   end
 
@@ -344,13 +448,145 @@ feature 'Sign Up' do
     visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
     sign_up_and_set_password
 
-    expect(page).to_not have_selector('#two_factor_options_form_selection_phone', count: 1)
-    expect(page).to_not have_selector('#two_factor_options_form_selection_webauthn', count: 1)
-    expect(page).to_not have_selector('#two_factor_options_form_selection_auth_app', count: 1)
-    expect(page).to_not have_selector('#two_factor_options_form_selection_backup_code', count: 1)
-    expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 1)
+    expect(page).to have_field('two_factor_options_form[selection][]', count: 1)
+    expect(page).to have_field(t('two_factor_authentication.two_factor_choice_options.piv_cac'))
+  end
 
-    select_2fa_option('piv_cac')
-    expect(page).to_not have_content(t('two_factor_authentication.piv_cac_fallback.question'))
+  it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
+    sign_up_and_set_password
+    select_2fa_option('backup_code')
+
+    click_button t('forms.buttons.continue')
+
+    expect(page).to have_current_path account_path
+    visit phone_setup_path
+    expect(page).to have_current_path phone_setup_path
+  end
+
+  it 'logs expected analytics events for end-to-end sign-up' do
+    freeze_time do
+      analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      travel_to Time.zone.now + 15.seconds
+      register_user
+      click_agree_and_continue
+
+      expect(analytics).to have_logged_event(
+        'SP redirect initiated',
+        ial: 1,
+        sign_in_duration_seconds: 15,
+        billed_ial: 1,
+        sign_in_flow: 'create_account',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      )
+    end
+  end
+
+  describe 'visiting the homepage by clicking the logo image' do
+    context 'on the password confirmation screen' do
+      before do
+        confirm_email('test@test.com')
+      end
+
+      it 'returns them to the homepage' do
+        click_link APP_NAME, href: new_user_session_path
+
+        expect(page).to have_current_path new_user_session_path
+      end
+    end
+
+    context 'on the MFA setup screen' do
+      before do
+        confirm_email('test@test.com')
+        submit_form_with_valid_password
+      end
+
+      it 'returns them to the MFA setup screen' do
+        click_link APP_NAME, href: new_user_session_path
+
+        expect(page).to have_current_path authentication_methods_setup_path
+      end
+    end
+  end
+
+  describe 'User Directed to Piv Cac recommended' do
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+    let(:email) { 'test@gsa.gov' }
+
+    context 'when the user has a fed email' do
+      it 'should land user on piv cac suggestion page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(page).to have_current_path login_piv_cac_recommended_path
+      end
+
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+          expect(page).to have_current_path authentication_methods_setup_path
+        end
+      end
+
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+          expect(page).to have_current_path setup_piv_cac_path
+        end
+      end
+    end
+
+    context 'when the user has a mil email' do
+      let(:email) { 'test@example.mil' }
+      it 'should land user on piv cac suggestion page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(page).to have_current_path login_piv_cac_recommended_path
+      end
+
+      context 'when the user chooses to skip adding piv' do
+        it 'should land on mfa screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.choose_other_method')
+
+          expect(page).to have_current_path authentication_methods_setup_path
+        end
+      end
+
+      context 'when the user chooses to add piv' do
+        it 'should land on piv add screen' do
+          confirm_email(email)
+          submit_form_with_valid_password
+          expect(page).to have_current_path login_piv_cac_recommended_path
+          click_button t('two_factor_authentication.piv_cac_upsell.add_piv')
+
+          expect(page).to have_current_path setup_piv_cac_path
+        end
+      end
+    end
+
+    context 'when the user does not have a fed or mil email' do
+      let(:email) { 'test@example.gov' }
+      it 'should skip piv cac recommendation page' do
+        confirm_email(email)
+        submit_form_with_valid_password
+        expect(page).to have_current_path authentication_methods_setup_path
+      end
+    end
+  end
+
+  def click_2fa_option(option)
+    find("label[for='two_factor_options_form_selection_#{option}']").click
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EditPhoneForm
   include ActiveModel::Model
 
@@ -31,6 +33,10 @@ class EditPhoneForm
 
   def default_phone_configuration?
     phone_configuration == user.default_phone_configuration
+  end
+
+  def one_phone_configured?
+    user.phone_configurations.count == 1
   end
 
   private

@@ -1,0 +1,9 @@
+{
+  "name": "@18f/identity-countdown",
+  "private": true,
+  "version": "1.0.0",
+  "sideEffects": [
+    "./countdown-alert-element.ts",
+    "./countdown-element.ts"
+  ]
+}

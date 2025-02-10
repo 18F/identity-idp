@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
-  connect_src = ["'self'", '*.nr-data.net']
+  connect_src = ["'self'"]
 
   font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
@@ -15,25 +17,14 @@ Rails.application.config.content_security_policy do |policy|
       "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
   ].select(&:present?)
 
-  script_src = [
-    :self,
-    'js-agent.newrelic.com',
-    '*.nr-data.net',
-    IdentityConfig.store.asset_host.presence,
-  ].compact
-
-  script_src = [:self, :unsafe_eval] if !Rails.env.production?
+  script_src = [:self, IdentityConfig.store.asset_host.presence].compact
+  script_src << :unsafe_eval if !Rails.env.production?
 
   style_src = [:self, IdentityConfig.store.asset_host.presence].compact
 
   if ENV['WEBPACK_PORT']
     connect_src << "ws://localhost:#{ENV['WEBPACK_PORT']}"
     script_src << "localhost:#{ENV['WEBPACK_PORT']}"
-  end
-
-  if !IdentityConfig.store.disable_csp_unsafe_inline
-    script_src << :unsafe_inline
-    style_src << :unsafe_inline
   end
 
   if IdentityConfig.store.rails_mailer_previews_enabled
@@ -58,5 +49,5 @@ end
 # rubocop:enable Metrics/BlockLength
 Rails.application.configure do
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = ['script-src']
+  config.content_security_policy_nonce_directives = ['script-src', 'style-src']
 end

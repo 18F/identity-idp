@@ -1,0 +1,53 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: :verify_address,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      )
+  %>
+<% end %>
+
+<% self.title = t('titles.idv.come_back_soon') %>
+
+<%= image_tag(
+      asset_url('come-back.svg'),
+      size: '140', class: 'display-block margin-bottom-2',
+      alt: t('idv.images.come_back_later')
+    )
+%>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.come_back_later')) %>
+
+<p><%= t('idv.gpo.will_send_to', app_name: APP_NAME) %></p>
+
+<div class="padding-y-1">
+  <% @presenter.address_lines.each do |address_line| %>
+    <p class="margin-bottom-0"><%= address_line %></p>
+  <% end %>
+</div>
+
+<% if @presenter.show_sp_contact_instructions? %>
+  <ul class="usa-list">
+    <li>
+      <%= t('idv.messages.come_back_later') %>
+    </li>
+    <li>
+      <%= t(
+            'idv.messages.contact_sp_html',
+            sp_link_html: link_to(@presenter.sp_name, @presenter.button_destination),
+          ) %>
+    </li>
+  </ul>
+<% else %>
+  <p class="margin-top-2">
+    <%= t('idv.messages.come_back_later') %>
+  </p>
+<% end %>
+
+<%= link_to(
+      t('idv.cancel.actions.exit', app_name: APP_NAME),
+      @presenter.button_destination,
+      class: 'usa-button usa-button--big usa-button--wide margin-top-2',
+    )
+%>

@@ -1,3 +1,6 @@
+@use 'uswds-core' as *;
+@use '../utilities/typography' as *;
+
 .troubleshooting-options {
   @include u-margin-y(4);
 
@@ -12,10 +15,6 @@
     display: block;
     height: 4px;
     width: 5rem;
-  }
-
-  & + &::before {
-    content: none;
   }
 }
 

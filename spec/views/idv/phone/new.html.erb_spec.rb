@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe 'idv/phone/new.html.erb' do
+RSpec.describe 'idv/phone/new.html.erb' do
   let(:gpo_letter_available) { false }
-  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
+  let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
 
   before do
     allow(view).to receive(:user_signing_up?).and_return(false)

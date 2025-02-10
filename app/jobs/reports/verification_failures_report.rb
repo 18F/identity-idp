@@ -1,17 +1,12 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 require 'csv'
 require 'fugit'
 
 module Reports
   class VerificationFailuresReport < BaseReport
-    REPORT_NAME = 'verification-failures-report'.freeze
-
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
+    REPORT_NAME = 'verification-failures-report'
 
     def perform(date)
       csv_reports = []
@@ -28,7 +23,7 @@ module Reports
     private
 
     def verification_errors_data_for_issuers(date, report_name, issuers)
-      csv = CSV.new('', row_sep: "\r\n")
+      csv = CSV.new(+'', row_sep: "\r\n")
       csv << %w[uuid welcome_view_at error_code]
       issuers.each do |issuer|
         transaction_with_timeout do

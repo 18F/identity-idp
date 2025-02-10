@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::EnrollmentCodeFormatter do
+RSpec.describe Idv::InPerson::EnrollmentCodeFormatter do
   describe '.format' do
     it 'returns a formatted code' do
       result = described_class.format('2048702198804358')

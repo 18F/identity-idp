@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::UserAccessKey do
+RSpec.describe Encryption::UserAccessKey do
   let(:password) { 'this is a password' }
   let(:salt) { '1' * 64 } # hex encoded 32 random bytes
   let(:cost) { '800$8$1$' }

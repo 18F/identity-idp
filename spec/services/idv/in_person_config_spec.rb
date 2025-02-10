@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe Idv::InPersonConfig do
+RSpec.describe Idv::InPersonConfig do
   let(:in_person_proofing_enabled) { false }
   let(:idv_sp_required) { false }
 
   before do
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+      .and_return(in_person_proofing_enabled)
     allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
   end
 

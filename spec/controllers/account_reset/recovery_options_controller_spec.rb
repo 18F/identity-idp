@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::RecoveryOptionsController do
+RSpec.describe AccountReset::RecoveryOptionsController do
   let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
     it 'renders the page' do
@@ -21,9 +21,9 @@ describe AccountReset::RecoveryOptionsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Account Reset: Recovery Options Visited')
-
       get :show
+
+      expect(@analytics).to have_logged_event('Account Reset: Recovery Options Visited')
     end
   end
 
@@ -40,10 +40,9 @@ describe AccountReset::RecoveryOptionsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: Cancel Account Recovery Options')
-
       post :cancel
+
+      expect(@analytics).to have_logged_event('Account Reset: Cancel Account Recovery Options')
     end
   end
 end

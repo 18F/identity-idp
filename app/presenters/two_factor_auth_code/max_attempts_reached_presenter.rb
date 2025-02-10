@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class MaxAttemptsReachedPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :type, :decorated_user
+    attr_reader :type, :user
 
-    def initialize(type, decorated_user)
+    def initialize(type, user)
       @type = type
-      @decorated_user = decorated_user
+      @user = user
     end
 
     def locked_reason

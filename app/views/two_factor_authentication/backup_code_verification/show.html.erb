@@ -1,4 +1,4 @@
-<% title t('titles.enter_2fa_code') %>
+<% self.title = t('two_factor_authentication.backup_code_header_text') %>
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.backup_code_header_text')) %>
 
@@ -6,14 +6,39 @@
   <%= t('two_factor_authentication.backup_code_prompt') %>
 </p>
 
-<%= simple_form_for(
-      @backup_code_form,
-      url: login_two_factor_backup_code_path,
-      html: { autocomplete: 'off', method: :post },
-    ) do |f| %>
-  <%= render 'partials/backup_code/entry_fields', f: f, attribute_name: :backup_code %>
-  <%= f.submit t('forms.buttons.submit.default') %>
+<%= simple_form_for(@backup_code_form, url: login_two_factor_backup_code_path) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :backup_code,
+        label: t('forms.two_factor.backup_code'),
+        required: true,
+        error_messages: {
+          patternMismatch: t('two_factor_authentication.invalid_backup_code'),
+        },
+        input_html: {
+          autocapitalize: 'none',
+          autocomplete: 'off',
+          spellcheck: 'false',
+          pattern: '^[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}-?[a-zA-Z0-9]{4}$',
+          class: 'text-uppercase backup-code',
+          maxlength: 14,
+        },
+      ) %>
+
+  <%= f.input(
+        :remember_device,
+        as: :boolean,
+        label: t('forms.messages.remember_device'),
+        wrapper_html: { class: 'margin-top-2' },
+        input_html: {
+          class: 'usa-checkbox__input--bordered',
+          checked: @presenter.remember_device_box_checked?,
+        },
+      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<%= render 'shared/fallback_links', presenter: @presenter %>
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <%= render 'shared/cancel', link: sign_out_path %>
+
+<% javascript_packs_tag_once('formatted-fields') %>

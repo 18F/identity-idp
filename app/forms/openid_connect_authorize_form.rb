@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -15,14 +17,40 @@ class OpenidConnectAuthorizeForm
     state
   ].freeze
 
-  ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
+  ATTRS = [
+    :unauthorized_scope,
+    :acr_values,
+    :vtr,
+    :scope,
+    :verified_within,
+    *SIMPLE_ATTRS,
+  ].freeze
+
+  AALS_BY_PRIORITY = [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF].freeze
+  IALS_BY_PRIORITY = [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+                      Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR,
+                      Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_VERIFIED_ACR,
+                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+                      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF].freeze
 
   attr_reader(*ATTRS)
 
   RANDOM_VALUE_MINIMUM_LENGTH = 22
   MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS = 30
 
-  validates :acr_values, presence: true
+  validates :acr_values, presence: true, if: ->(form) { form.vtr.blank? }
   validates :client_id, presence: true
   validates :redirect_uri, presence: true
   validates :scope, presence: true
@@ -34,24 +62,27 @@ class OpenidConnectAuthorizeForm
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
+  validate :validate_vtr
   validate :validate_client_id
   validate :validate_scope
   validate :validate_unauthorized_scope
   validate :validate_privileges
   validate :validate_prompt
-  validate :validate_verified_within_format
-  validate :validate_verified_within_duration
-  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
+  validate :validate_verified_within_format, if: :verified_within_allowed?
+  validate :validate_verified_within_duration, if: :verified_within_allowed?
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+    @vtr = parse_vtr(params[:vtr])
     SIMPLE_ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @prompt ||= 'select_account'
     @scope = parse_to_values(params[:scope], scopes)
     @unauthorized_scope = check_for_unauthorized_scope(params)
 
-    @duration_parser = DurationParser.new(params[:verified_within])
-    @verified_within = @duration_parser.parse
+    if verified_within_allowed?
+      @duration_parser = DurationParser.new(params[:verified_within])
+      @verified_within = @duration_parser.parse
+    end
   end
 
   def submit
@@ -73,14 +104,23 @@ class OpenidConnectAuthorizeForm
     @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
-  def link_identity_to_service_provider(current_user, rails_session_id)
+  def link_identity_to_service_provider(
+    current_user:,
+    ial:,
+    rails_session_id:,
+    email_address_id:
+  )
     identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial_context.ial,
+      ial: ial,
+      acr_values: acr_values&.join(' '),
+      vtr: vtr,
+      requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
+      email_address_id: email_address_id,
     )
   end
 
@@ -92,25 +132,17 @@ class OpenidConnectAuthorizeForm
   end
 
   def ial_values
-    acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
+    IALS_BY_PRIORITY & acr_values
   end
 
   def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
+    AALS_BY_PRIORITY & acr_values
   end
 
-  def ial_context
-    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
+  def requested_aal_value
+    highest_level_aal(aal_values) ||
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
-
-  def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
-  end
-
-  def_delegators :ial_context,
-                 :ial2_or_greater?,
-                 :ial2_requested?,
-                 :ial2_strict_requested?
 
   private
 
@@ -122,9 +154,21 @@ class OpenidConnectAuthorizeForm
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
-    return false if ial2_or_greater? || param_value.blank?
-    return true if verified_at_requested? && !ial_context.ial2_service_provider?
+    return false if identity_proofing_requested_or_default? || param_value.blank?
+    return true if verified_at_requested? && !identity_proofing_service_provider?
     @scope != param_value.split(' ').compact
+  end
+
+  def parsed_vectors_of_trust
+    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
+
+    @parsed_vectors_of_trust = begin
+      if vtr.is_a?(Array) && !vtr.empty?
+        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+      end
+    rescue Vot::Parser::ParseException
+      nil
+    end
   end
 
   def parse_to_values(param_value, possible_values)
@@ -132,7 +176,18 @@ class OpenidConnectAuthorizeForm
     param_value.split(' ').compact & possible_values
   end
 
+  def parse_vtr(param_value)
+    return if !IdentityConfig.store.use_vot_in_sp_requests
+    return if param_value.blank?
+
+    JSON.parse(param_value)
+  rescue JSON::ParserError
+    nil
+  end
+
   def validate_acr_values
+    return if vtr.present?
+
     if acr_values.empty?
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'),
@@ -144,6 +199,15 @@ class OpenidConnectAuthorizeForm
         type: :missing_ial
       )
     end
+  end
+
+  def validate_vtr
+    return if vtr.blank?
+    return if parsed_vectors_of_trust.present?
+    errors.add(
+      :vtr, t('openid_connect.authorization.errors.no_valid_vtr'),
+      type: :no_valid_vtr
+    )
   end
 
   # This checks that the SP matches something in the database
@@ -210,11 +274,17 @@ class OpenidConnectAuthorizeForm
   def extra_analytics_attributes
     {
       client_id: client_id,
+      prompt: prompt,
+      allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
+      vtr: vtr,
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
+      code_challenge_present: code_challenge.present?,
+      service_provider_pkce: service_provider&.pkce,
+      integration_errors:,
     }
   end
 
@@ -234,15 +304,16 @@ class OpenidConnectAuthorizeForm
   end
 
   def scopes
-    if ial_context.ialmax_requested? || ial2_or_greater?
+    if identity_proofing_requested_or_default?
       return OpenidConnectAttributeScoper::VALID_SCOPES
     end
     OpenidConnectAttributeScoper::VALID_IAL1_SCOPES
   end
 
   def validate_privileges
-    if (ial2_requested? && !ial_context.ial2_service_provider?) ||
-       (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
+    if (identity_proofing_requested? && !identity_proofing_service_provider?) ||
+       (ialmax_requested? && !ialmax_allowed_for_sp?) ||
+       (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth
@@ -250,11 +321,57 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
-    errors.add(
-      :acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'),
-      type: :liveness_checking_disabled
-    )
+  def identity_proofing_requested_or_default?
+    identity_proofing_requested? ||
+      ialmax_requested? ||
+      sp_defaults_to_identity_proofing?
+  end
+
+  def sp_defaults_to_identity_proofing?
+    vtr.blank? && ial_values.blank? && identity_proofing_service_provider?
+  end
+
+  def identity_proofing_requested?
+    if parsed_vectors_of_trust.present?
+      parsed_vectors_of_trust.any?(&:identity_proofing?)
+    else
+      Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 2
+    end
+  end
+
+  def identity_proofing_service_provider?
+    service_provider&.ial.to_i >= 2
+  end
+
+  def ialmax_allowed_for_sp?
+    IdentityConfig.store.allowed_ialmax_providers.include?(client_id)
+  end
+
+  def ialmax_requested?
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max] == 0
+  end
+
+  def integration_errors
+    return nil if @success || client_id.blank?
+
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_request_authorization,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id,
+    }
+  end
+
+  def facial_match_ial_requested?
+    ial_values.any? { |ial| Saml::Idp::Constants::FACIAL_MATCH_IAL_CONTEXTS.include? ial }
+  end
+
+  def highest_level_aal(aal_values)
+    AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
+  end
+
+  def verified_within_allowed?
+    IdentityConfig.store.allowed_verified_within_providers.include?(client_id)
   end
 end

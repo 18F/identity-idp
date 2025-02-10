@@ -2,34 +2,41 @@
 
 class Analytics
   include AnalyticsEvents
+  prepend Idv::AnalyticsEventsEnhancer
 
+  attr_reader :user, :request, :sp, :session, :ahoy
+
+  # @param [User] user
+  # @param [ActionDispatch::Request,nil] request
+  # @param [String,nil] sp Service provider issuer string.
+  # @param [Hash] session
+  # @param [Ahoy::Tracker,nil] ahoy
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
-    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
     @session = session
+    @ahoy = ahoy || Ahoy::Tracker.new(request: request)
   end
 
   def track_event(event, attributes = {})
     attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
-      event_properties: attributes.except(:user_id),
+      event_properties: attributes.except(:user_id).compact,
       new_event: first_event_this_session?,
-      new_session_path: first_path_visit_this_session?,
-      new_session_success_state: first_success_state_this_session?,
-      success_state: success_state_token(event),
       path: request&.path,
+      service_provider: sp,
       session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
 
     analytics_hash.merge!(request_attributes) if request
+    analytics_hash.merge!(sp_request_attributes) if sp_request_attributes
+    analytics_hash.merge!(ab_test_attributes(event))
 
     ahoy.track(event, analytics_hash)
-    register_doc_auth_step_from_analytics_event(event, attributes)
 
     # Tag NewRelic APM trace with a handful of useful metadata
     # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
@@ -43,58 +50,20 @@ class Analytics
   end
 
   def update_session_events_and_paths_visited_for_analytics(event)
-    @session[:paths_visited] ||= {}
-    @session[:events] ||= {}
-    @session[:success_states] ||= {}
-    if request
-      token = success_state_token(event)
-      @session[:first_success_state] = !@session[:success_states].key?(token)
-      @session[:success_states][token] = true
-      @session[:first_path_visit] = !@session[:paths_visited].key?(request.path)
-      @session[:paths_visited][request.path] = true
-    end
-    @session[:first_event] = !@session[:events].key?(event)
-    @session[:events][event] = true
-  end
-
-  def first_path_visit_this_session?
-    @session[:first_path_visit]
-  end
-
-  def first_success_state_this_session?
-    @session[:first_success_state]
-  end
-
-  def success_state_token(event)
-    "#{request&.env&.dig('REQUEST_METHOD')}|#{request&.path}|#{event}"
+    session[:events] ||= {}
+    session[:first_event] = !@session[:events].key?(event)
+    session[:events][event] = true
   end
 
   def first_event_this_session?
-    @session[:first_event]
+    session[:first_event]
   end
-
-  def register_doc_auth_step_from_analytics_event(event, attributes)
-    return unless user && user.class != AnonymousUser
-    success = attributes.blank? || attributes[:success] == 'success'
-    Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, sp, event, success)
-  end
-
-  def track_mfa_submit_event(attributes)
-    multi_factor_auth(
-      **attributes,
-      pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-    )
-    attributes[:success] ? 'success' : 'fail'
-  end
-
-  attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
     attributes = {
       user_ip: request.remote_ip,
       hostname: request.host,
       pid: Process.pid,
-      service_provider: sp,
       trace_id: request.headers['X-Amzn-Trace-Id'],
     }
 
@@ -106,6 +75,32 @@ class Analytics
     end
 
     attributes.merge!(browser_attributes)
+  end
+
+  def ab_test_attributes(event)
+    user_session = session.dig('warden.user.user.session')
+    ab_tests = AbTests.all.each_with_object({}) do |(test_id, test), obj|
+      next if !test.include_in_analytics_event?(event)
+
+      bucket = test.bucket(
+        request:,
+        service_provider: sp,
+        session:,
+        user:,
+        user_session:,
+      )
+      if !bucket.blank?
+        obj[test_id.downcase] = {
+          bucket:,
+        }
+      end
+    end
+
+    ab_tests.empty? ?
+      {} :
+      {
+        ab_tests: ab_tests,
+      }
   end
 
   def browser
@@ -126,14 +121,62 @@ class Analytics
   end
 
   def session_duration
-    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+    session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
   end
 
   def session_started_at
-    value = @session[:session_started_at]
+    value = session[:session_started_at]
     return value unless value.is_a?(String)
     Time.zone.parse(value)
   end
 
-  DOC_AUTH = 'Doc Auth' # visited or submitted is appended
+  def sp_request_attributes
+    resolved_result = resolved_authn_context_result
+    return if resolved_result.nil?
+
+    attributes = resolved_result.to_h
+    attributes[:component_values] = resolved_result.component_values.map do |v|
+      [v.name.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", ''), true]
+    end.to_h
+    attributes[:component_names] = resolved_result.component_names
+    attributes.reject! { |_key, value| value == false }
+
+    if differentiator.present?
+      attributes[:app_differentiator] = differentiator
+    end
+
+    attributes.transform_keys! do |key|
+      key.to_s.chomp('?').to_sym
+    end
+
+    { sp_request: attributes }
+  end
+
+  def differentiator
+    return @differentiator if defined?(@differentiator)
+    @differentiator ||= begin
+      sp_request_url = session&.dig(:sp, :request_url)
+      return nil if sp_request_url.blank?
+
+      UriService.params(sp_request_url)['login_gov_app_differentiator']
+    end
+  end
+
+  def resolved_authn_context_result
+    return nil if sp.blank? ||
+                  session[:sp].blank? ||
+                  (session[:sp][:vtr].blank? && session[:sp][:acr_values].blank?)
+    return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
+
+    service_provider = ServiceProvider.find_by(issuer: sp)
+
+    @resolved_authn_context_result = AuthnContextResolver.new(
+      user: user,
+      service_provider:,
+      vtr: session[:sp][:vtr],
+      acr_values: session[:sp][:acr_values],
+    ).result
+  rescue Vot::Parser::ParseException
+    return
+  end
 end

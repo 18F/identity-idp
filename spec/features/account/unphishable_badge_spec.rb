@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Unphishable account badge' do
+RSpec.feature 'Unphishable account badge' do
   before do
     sign_in_and_2fa_user(user)
   end
@@ -14,7 +14,7 @@ feature 'Unphishable account badge' do
   end
 
   context 'with phishable configuration' do
-    let(:user) { create(:user, :signed_up, :with_webauthn) }
+    let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
     it 'does not show an "Unphishable" badge' do
       expect(page).to_not have_css(

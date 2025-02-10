@@ -1,0 +1,14 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('titles.doc_auth.switch_back') %>
+
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.instructions.switch_back')) %>
+
+<%= image_tag(asset_url('idv/switch.png'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>

@@ -1,13 +1,20 @@
+# frozen_string_literal: true
+
 class WebauthnSetupPresenter < SetupPresenter
+  include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TranslationHelper
+  include LinkHelper
+
+  attr_reader :url_options
 
   def initialize(
     current_user:,
     user_fully_authenticated:,
     user_opted_remember_device_cookie:,
     remember_device_default:,
-    platform_authenticator:
+    platform_authenticator:,
+    url_options:
   )
     super(
       current_user: current_user,
@@ -17,13 +24,29 @@ class WebauthnSetupPresenter < SetupPresenter
     )
 
     @platform_authenticator = platform_authenticator
+    @url_options = url_options
   end
 
-  def image_path
+  def learn_more_html
+    if !@platform_authenticator
+      new_tab_link_to(
+        t('forms.webauthn_setup.learn_more'),
+        help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-methods',
+          article_anchor: 'security-key',
+          flow: :two_factor_authentication,
+          step: :security_key_setup,
+        ),
+      )
+    end
+  end
+
+  def page_title
     if @platform_authenticator
-      'platform-authenticator.svg'
+      t('headings.webauthn_platform_setup.new')
     else
-      'security-key.svg'
+      t('titles.webauthn_setup')
     end
   end
 
@@ -35,26 +58,29 @@ class WebauthnSetupPresenter < SetupPresenter
     end
   end
 
+  def device_nickname_hint
+    if @platform_authenticator
+      t('forms.webauthn_platform_setup.nickname_hint')
+    end
+  end
+
   def intro_html
     if @platform_authenticator
       t(
         'forms.webauthn_platform_setup.intro_html',
-        app_name: APP_NAME,
-        link: intro_link,
+        link: link_to(
+          t('forms.webauthn_platform_setup.intro_link_text'),
+          help_center_redirect_path(
+            category: 'trouble-signing-in',
+            article: 'face-or-touch-unlock',
+            flow: :two_factor_authentication,
+            step: :webauthn_setup,
+          ),
+        ),
       )
     else
-      t('forms.webauthn_setup.intro_html')
+      t('forms.webauthn_setup.intro', app_name: APP_NAME)
     end
-  end
-
-  def intro_link
-    link_to(
-      t('forms.webauthn_platform_setup.intro_link_text'),
-      MarketingSite.help_center_article_url(
-        category: 'get-started',
-        article: 'authentication-options',
-      ),
-    )
   end
 
   def nickname_label
@@ -69,23 +95,7 @@ class WebauthnSetupPresenter < SetupPresenter
     if @platform_authenticator
       t('forms.webauthn_platform_setup.continue')
     else
-      t('forms.webauthn_setup.continue')
-    end
-  end
-
-  def setup_heading
-    if @platform_authenticator
-      t('forms.webauthn_platform_setup.instructions_title')
-    else
-      t('forms.webauthn_setup.instructions_title')
-    end
-  end
-
-  def setup_instructions
-    if @platform_authenticator
-      t('forms.webauthn_platform_setup.instructions_text', app_name: APP_NAME)
-    else
-      t('forms.webauthn_setup.instructions_text', app_name: APP_NAME)
+      t('forms.webauthn_setup.set_up')
     end
   end
 end

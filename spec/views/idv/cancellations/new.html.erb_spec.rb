@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/cancellations/new.html.erb' do
+RSpec.describe 'idv/cancellations/new.html.erb' do
   let(:hybrid_session) { false }
   let(:params) { ActionController::Parameters.new }
   let(:sp_name) { nil }
@@ -14,22 +14,32 @@ describe 'idv/cancellations/new.html.erb' do
     render
   end
 
-  it 'renders action to start over' do
-    expect(rendered).to have_button(t('idv.cancel.actions.start_over'))
+  it 'renders an action to keep going, with the correct aria attributes' do
+    expect(rendered).to have_button_to_with_accessibility(
+      t('idv.cancel.actions.keep_going'),
+      idv_cancel_path(step: params[:step]),
+    )
   end
 
-  it 'renders action to keep going' do
-    expect(rendered).to have_text(t('idv.cancel.actions.keep_going'))
+  it 'renders action to start over, with the correct aria attributes' do
+    expect(rendered).to have_button_to_with_accessibility(
+      t('idv.cancel.actions.start_over'),
+      idv_session_path(step: params[:step]),
+    )
   end
 
-  it 'renders action to exit and go to account page' do
+  it 'renders action to exit and go to account page, with the correct aria attributes' do
     expect(rendered).to have_content(t('idv.cancel.headings.exit.without_sp'))
     t(
       'idv.cancel.description.exit.without_sp',
       app_name: APP_NAME,
       account_page_text: t('idv.cancel.description.account_page'),
     ).each { |expected_p| expect(rendered).to have_content(expected_p) }
-    expect(rendered).to have_button(t('idv.cancel.actions.account_page'))
+
+    expect(rendered).to have_button_to_with_accessibility(
+      t('idv.cancel.actions.account_page'),
+      idv_cancel_path(step: params[:step], location: 'cancel'),
+    )
   end
 
   context 'with hybrid flow' do
@@ -65,7 +75,7 @@ describe 'idv/cancellations/new.html.erb' do
         'idv.cancel.description.exit.with_sp_html',
         app_name: APP_NAME,
         sp_name: sp_name,
-        account_page_link: t('idv.cancel.description.account_page'),
+        account_page_link_html: t('idv.cancel.description.account_page'),
       ).each { |expected_p| expect(rendered).to have_content(expected_p) }
       expect(rendered).to have_button(t('idv.cancel.actions.exit', app_name: APP_NAME))
     end

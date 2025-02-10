@@ -14,30 +14,22 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       before do
         stub_sign_in_before_2fa(user)
         stub_analytics
-        allow(controller).to receive(:decorated_session).
-          and_return(instance_double('SessionDecorator', sp_name: sp_name))
+        allow(controller).to receive(:decorated_sp_session)
+          .and_return(instance_double('NullServiceProviderSession', sp_name: sp_name))
       end
 
       it 'tracks a visit event' do
         action
 
         expect(assigns[:phone_configuration]).to eq(user.phone_configurations.first)
+        expect(assigns[:presenter]).to be_kind_of(TwoFactorAuthCode::GenericDeliveryPresenter)
 
         expect(@analytics).to have_logged_event(
           'SMS Opt-In: Visited',
           has_other_auth_methods: false,
+          new_user: false,
           phone_configuration_id: user.phone_configurations.first.id,
         )
-      end
-
-      context 'when the user has other auth methods' do
-        let(:user) { create(:user, :with_phone, :with_authentication_app) }
-
-        it 'has an other mfa options url' do
-          action
-
-          expect(assigns[:other_mfa_options_url]).to eq(login_two_factor_options_path)
-        end
       end
 
       context 'when the user is signing in through an SP' do
@@ -46,7 +38,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         it 'points the cancel link back to the SP' do
           action
 
-          expect(assigns[:cancel_url]).to eq(return_to_sp_cancel_path)
+          expect(assigns[:cancel_url]).to eq(return_to_sp_cancel_path(step: :sms_opt_in))
         end
       end
     end
@@ -63,8 +55,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
-        expect(PhoneFormatter.format(assigns[:phone_configuration].phone)).
-          to eq(PhoneFormatter.format(phone))
+        expect(PhoneFormatter.format(assigns[:phone_configuration].phone))
+          .to eq(PhoneFormatter.format(phone))
       end
     end
 
@@ -115,7 +107,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: true,
+            hash_including(success: true),
           )
         end
 
@@ -145,7 +137,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: false,
+            hash_including(success: false),
           )
         end
 
@@ -170,10 +162,11 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
           expect(response).to render_template(:new)
           expect(flash[:error]).to be_present
+          expect(assigns[:presenter]).to be_kind_of(TwoFactorAuthCode::GenericDeliveryPresenter)
 
           expect(@analytics).to have_logged_event(
             'SMS Opt-In: Submitted',
-            success: false,
+            hash_including(success: false),
           )
         end
 

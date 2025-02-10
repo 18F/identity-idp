@@ -1,6 +1,9 @@
 module AwsKmsClientHelper
-  def stub_aws_kms_client(random_key = random_str, ciphered_key = random_str)
+  def stub_aws_kms_client(
+    random_key = random_str,
+    ciphered_key = random_str,
     aws_key_id = IdentityConfig.store.aws_kms_key_id
+  )
     Aws.config[:kms] = {
       stub_responses: {
         encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },
@@ -18,6 +21,9 @@ module AwsKmsClientHelper
         c.slice(:key_id, :plaintext) == context.params.slice(:key_id, :plaintext) &&
           c[:region] == context.client.config.region
       end
+
+      raise "KMS stub is not configured to encrypt #{context.params[:plaintext]}." if config.nil?
+
       { ciphertext_blob: config[:ciphertext], key_id: config[:key_id] }
     end
 
@@ -25,6 +31,11 @@ module AwsKmsClientHelper
       config = configs.find do |c|
         c[:ciphertext] == context.params[:ciphertext_blob]
       end
+
+      if config.nil?
+        raise "KMS stub is not configured to decrypt #{context.params[:ciphertext_blob]}."
+      end
+
       { plaintext: config[:plaintext], key_id: config[:key_id] }
     end
 

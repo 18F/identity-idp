@@ -1,17 +1,24 @@
 require 'rails_helper'
 
-describe Users::DeleteController do
-  include Features::MailerHelper
+RSpec.describe Users::DeleteController do
+  describe 'before_actions' do
+    it 'includes authentication before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_two_factor_authenticated,
+        :confirm_recently_authenticated_2fa,
+      )
+    end
+  end
 
   describe '#show' do
     it 'shows and logs a visit' do
       stub_analytics
       stub_signed_in_user
 
-      expect(@analytics).to receive(:track_event).with('Account Delete visited')
-
       get :show
 
+      expect(@analytics).to have_logged_event('Account Delete visited')
       expect(response).to render_template(:show)
     end
   end
@@ -36,16 +43,12 @@ describe Users::DeleteController do
       end
 
       it 'logs a failed submit' do
-        stub_analytics
-        stub_attempts_tracker
-        stub_signed_in_user
-
-        expect(@analytics).to receive(:track_event).
-          with('Account Delete submitted', success: false)
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:logged_in_account_purged, success: false)
+        user = stub_signed_in_user
+        stub_analytics(user:)
 
         delete
+
+        expect(@analytics).to have_logged_event('Account Delete submitted', success: false)
       end
     end
 
@@ -62,17 +65,27 @@ describe Users::DeleteController do
       expect(User.where(id: user.id).length).to eq(0)
     end
 
-    it 'logs a succesful submit' do
-      stub_analytics
-      stub_attempts_tracker
+    it 'emails user of account deletion' do
+      allow(UserMailer).to receive(:account_delete_submitted).and_call_original
       stub_signed_in_user
+      delete
+      expect(ActionMailer::Base.deliveries.count).to eq 1
+    end
 
-      expect(@analytics).to receive(:track_event).
-        with('Account Delete submitted', success: true)
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:logged_in_account_purged, success: true)
+    it 'text user of account deletion' do
+      allow(Telephony).to receive(:send_account_deleted_notice).and_call_original
+      stub_signed_in_user
+      delete
+      expect(Telephony).to have_received(:send_account_deleted_notice)
+    end
+
+    it 'logs a succesful submit' do
+      user = stub_signed_in_user
+      stub_analytics(user:)
 
       delete
+
+      expect(@analytics).to have_logged_event('Account Delete submitted', success: true)
     end
 
     it 'does not delete identities to prevent uuid reuse' do
@@ -98,7 +111,8 @@ describe Users::DeleteController do
   def stub_signed_in_user
     user = create(
       :user,
-      :signed_up,
+      :fully_registered,
+      :with_phone,
       email: 'old_email@example.com',
       password: ControllerHelper::VALID_PASSWORD,
     )

@@ -1,6 +1,20 @@
 require 'rails_helper'
 
-describe Analytics do
+RSpec.describe Analytics do
+  let(:analytics_attributes) do
+    {
+      user_id: current_user.uuid,
+      new_event: true,
+      path: path,
+      service_provider: 'http://localhost:3000',
+      session_duration: nil,
+      locale: I18n.locale,
+      git_sha: IdentityConfig::GIT_SHA,
+      git_branch: IdentityConfig::GIT_BRANCH,
+      event_properties: {},
+    }.merge(request_attributes)
+  end
+
   let(:request_attributes) do
     {
       user_ip: FakeRequest.new.remote_ip,
@@ -14,7 +28,6 @@ describe Analytics do
       browser_bot: false,
       hostname: FakeRequest.new.host,
       pid: Process.pid,
-      service_provider: 'http://localhost:3000',
       trace_id: nil,
     }
   end
@@ -24,13 +37,14 @@ describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
+  let(:session) { {} }
 
   subject(:analytics) do
     Analytics.new(
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      session: {},
+      session: session,
       ahoy: ahoy,
     )
   end
@@ -42,43 +56,25 @@ describe Analytics do
         'my branch',
       )
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: true,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_event: true,
-        path: path,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
       analytics.track_event('Trackable Event')
     end
 
-    it 'does not track unique events and paths when an event fails' do
-      analytics_hash = {
-        event_properties: { success: false },
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: nil,
-        new_session_success_state: nil,
-        success_state: success_state,
-        new_event: nil,
-        path: path,
-        session_duration: nil,
-      }
+    it 'does not track nil values' do
+      expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      analytics.track_event('Trackable Event', { example: nil })
+    end
+
+    it 'does not track unique events and paths when an event fails' do
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(
+          new_event: nil,
+          event_properties: { success: false },
+        ),
+      )
 
       analytics.track_event('Trackable Event', { success: false })
     end
@@ -86,22 +82,10 @@ describe Analytics do
     it 'tracks the user passed in to the track_event method' do
       tracked_user = build_stubbed(:user, uuid: '456')
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: tracked_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(user_id: tracked_user.uuid),
+      )
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
@@ -113,8 +97,8 @@ describe Analytics do
       end
 
       it 'includes the tracing header as trace_id' do
-        expect(ahoy).to receive(:track).
-          with('Trackable Event', hash_including(trace_id: amazon_trace_id))
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(trace_id: amazon_trace_id))
 
         analytics.track_event('Trackable Event')
       end
@@ -124,48 +108,12 @@ describe Analytics do
       locale = :fr
       allow(I18n).to receive(:locale).and_return(locale)
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        new_session_success_state: true,
-        success_state: success_state,
-        session_duration: nil,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(locale: locale),
+      )
 
       analytics.track_event('Trackable Event')
-    end
-
-    # relies on prepending the FakeAnalytics::PiiAlerter mixin
-    it 'throws an error when pii is passed in' do
-      allow(ahoy).to receive(:track)
-
-      expect { analytics.track_event('Trackable Event') }.to_not raise_error
-
-      expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
-        to raise_error(FakeAnalytics::PiiDetected)
-
-      expect do
-        analytics.track_event('Trackable Event', nested: [{ value: { first_name: 'Bobby' } }])
-      end.to raise_error(FakeAnalytics::PiiDetected)
-
-      expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
-        to raise_error(FakeAnalytics::PiiDetected)
-    end
-
-    it 'throws an error when it detects sample PII in the payload' do
-      allow(ahoy).to receive(:track)
-
-      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
-        to raise_error(FakeAnalytics::PiiDetected)
     end
 
     it 'does not alert when pii_like_keypaths is passed' do
@@ -195,6 +143,70 @@ describe Analytics do
         )
       end.to_not raise_error
     end
+
+    context 'with A/B tests' do
+      let(:ab_tests) do
+        {
+          FOO_TEST: AbTest.new(
+            experiment_name: 'Test 1',
+            buckets: {
+              bucket_a: 50,
+              bucket_b: 50,
+            },
+            should_log:,
+          ) do |user:, **|
+            user.id
+          end,
+        }
+      end
+
+      let(:should_log) {}
+
+      before do
+        allow(AbTests).to receive(:all).and_return(ab_tests)
+      end
+
+      it 'includes ab_tests in logged event' do
+        expect(ahoy).to receive(:track).with(
+          'Trackable Event',
+          analytics_attributes.merge(
+            ab_tests: {
+              foo_test: {
+                bucket: anything,
+              },
+            },
+          ),
+        )
+
+        analytics.track_event('Trackable Event')
+      end
+
+      context 'when should_log says not to' do
+        let(:should_log) { /some other event/ }
+
+        it 'does not include ab_test in logged event' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            analytics_attributes,
+          )
+
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
+
+    context 'when no request specified' do
+      let(:request) { nil }
+      context 'but an SP was specified via initializer' do
+        it 'logs the SP' do
+          expect(ahoy).to receive(:track).with(
+            'Trackable Event',
+            hash_including(service_provider: 'http://localhost:3000'),
+          )
+          analytics.track_event('Trackable Event')
+        end
+      end
+    end
   end
 
   it 'tracks session duration' do
@@ -207,24 +219,273 @@ describe Analytics do
         ahoy: ahoy,
       )
 
-      analytics_hash = {
-        event_properties: {},
-        user_id: current_user.uuid,
-        locale: I18n.locale,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
-        new_session_success_state: true,
-        success_state: success_state,
-        new_session_path: true,
-        new_event: true,
-        path: path,
-        session_duration: 7.0,
-      }
-
-      expect(ahoy).to receive(:track).
-        with('Trackable Event', analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).with(
+        'Trackable Event',
+        analytics_attributes.merge(session_duration: 7.0),
+      )
 
       analytics.track_event('Trackable Event')
+    end
+  end
+
+  context 'with an SP request vtr saved in the session' do
+    context 'identity verified' do
+      let(:session) { { sp: { vtr: ['C1.P1'] } } }
+      let(:component_names) { ['C1', 'C2', 'P1'] }
+      let(:component_values) { component_names.index_with(true) }
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            component_names:,
+            component_values:,
+            identity_proofing: true,
+            component_separator: '.',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'phishing resistant and requiring facial match comparison' do
+      let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
+      let(:component_names) { ['C1', 'C2', 'Ca', 'P1', 'Pb'] }
+      let(:component_values) { component_names.index_with(true) }
+
+      let(:expected_attributes) do
+        {
+          sp_request: {
+            aal2: true,
+            facial_match: true,
+            two_pieces_of_fair_evidence: true,
+            component_values:,
+            component_names:,
+            identity_proofing: true,
+            phishing_resistant: true,
+            component_separator: '.',
+          },
+        }
+      end
+
+      it 'includes the sp_request' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+  end
+
+  shared_context '#sp_request_attributes[acr_values]' do
+    let(:acr_values) { [] }
+    let(:sp_request) { {} }
+    let(:session) do
+      {
+        sp: {
+          acr_values: acr_values.join(' '),
+        },
+      }
+    end
+    let(:expected_attributes) do
+      {
+        sp_request: {
+          component_separator: ' ',
+          component_names: acr_values,
+          component_values: acr_values.map do |v|
+            v.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", '')
+          end.index_with(true),
+          **sp_request,
+        },
+      }
+    end
+
+    shared_examples 'track event with :sp_request' do
+      it 'then #sp_request_attributes() matches :sp_request' do
+        expect(analytics.sp_request_attributes).to match(expected_attributes)
+      end
+
+      it 'then includes :sp_request in the event' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(expected_attributes))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+  end
+
+  context 'when acr_values are saved in the session' do
+    include_context '#sp_request_attributes[acr_values]'
+
+    shared_examples 'using acrs for all user scenarios' do |acr_values_list|
+      let(:acr_values) { acr_values_list }
+
+      context "using #{acr_values_list}" do
+        context 'when the user has not been identity verified' do
+          let(:current_user) { build(:user, :fully_registered) }
+
+          include_examples 'track event with :sp_request'
+        end
+
+        context 'when the identity verified user has not proofed with facial match' do
+          let(:current_user) { build(:user, :proofed) }
+
+          include_examples 'track event with :sp_request'
+        end
+
+        context 'when the identity verified user has proofed with facial match' do
+          let(:current_user) { build(:user, :proofed_with_selfie) }
+
+          include_examples 'track event with :sp_request'
+        end
+      end
+    end
+
+    context 'and does not require any identity proofing' do
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL_AUTH_ONLY_ACR]
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF]
+    end
+
+    context 'and selects any variant of identity proofing' do
+      let(:sp_request) do
+        {
+          aal2: true,
+          identity_proofing: true,
+        }
+      end
+
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_ACR]
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF]
+    end
+
+    context 'and selects required facial match identity proofing' do
+      let(:sp_request) do
+        {
+          aal2: true,
+          facial_match: true,
+          two_pieces_of_fair_evidence: true,
+          identity_proofing: true,
+        }
+      end
+
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR]
+
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF]
+    end
+
+    context 'and selects optional facial match identity proofing' do
+      shared_examples 'with user scenarios' do |acr_values_list|
+        context "using #{acr_values_list}" do
+          let(:acr_values) { acr_values_list }
+
+          context 'when the user has not been identity verified' do
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+              }
+            end
+            let(:current_user) { build(:user, :fully_registered) }
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when the identity verified user has not proofed with facial match' do
+            let(:current_user) { build(:user, :proofed) }
+            let(:sp_request) do
+              {
+                aal2: true,
+                identity_proofing: true,
+              }
+            end
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when the identity verified user has proofed with facial match' do
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+              }
+            end
+            let(:current_user) { build(:user, :proofed_with_selfie) }
+
+            include_examples 'track event with :sp_request'
+          end
+        end
+      end
+
+      include_examples 'with user scenarios',
+                       [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR]
+      include_examples 'with user scenarios',
+                       [Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF]
+    end
+
+    context 'and selects the IALMax step-up flow' do
+      let(:sp_request) do
+        {
+          aal2: true,
+          ialmax: true,
+        }
+      end
+
+      include_examples 'using acrs for all user scenarios',
+                       [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF]
+    end
+  end
+
+  context 'with an SP request_url saved in the session' do
+    include_context '#sp_request_attributes[acr_values]'
+    let(:acr_values) { [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF] }
+    let(:request_url) { nil }
+    let(:session) do
+      {
+        sp: {
+          acr_values: acr_values.join(' '),
+          request_url:,
+        }.compact,
+      }
+    end
+
+    context 'no request_url' do
+      include_examples 'track event with :sp_request'
+    end
+
+    context 'a request_url without login_gov_app_differentiator ' do
+      let(:request_url) { 'http://localhost:3000/openid_connect/authorize?whatever=something_else' }
+
+      include_examples 'track event with :sp_request'
+    end
+
+    context 'a request_url with login_gov_app_differentiator ' do
+      let(:request_url) { 'http://localhost:3000/openid_connect/authorize?login_gov_app_differentiator=NY' }
+      let(:sp_request) do
+        {
+          app_differentiator: 'NY',
+        }
+      end
+
+      include_examples 'track event with :sp_request'
     end
   end
 end

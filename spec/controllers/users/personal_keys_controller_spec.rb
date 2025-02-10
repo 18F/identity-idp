@@ -26,33 +26,29 @@ RSpec.describe Users::PersonalKeysController do
       stub_sign_in
       controller.user_session[:personal_key] = 'foo'
       stub_analytics
-      analytics_hash = { personal_key_present: true }
-
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
 
       get :show
+
+      expect(@analytics).to have_logged_event('Personal key viewed', personal_key_present: true)
     end
 
     it 'tracks the page visit when there is no personal key in the user session' do
       stub_sign_in
       stub_analytics
-      analytics_hash = { personal_key_present: false }
-
-      expect(@analytics).to receive(:track_event).
-        with('Personal key viewed', analytics_hash)
 
       get :show
+
+      expect(@analytics).to have_logged_event('Personal key viewed', personal_key_present: false)
     end
 
     it 'does not generate a new personal key to avoid CSRF attacks' do
       stub_sign_in
 
       generator = instance_double(PersonalKeyGenerator)
-      allow(PersonalKeyGenerator).to receive(:new).
-        with(subject.current_user).and_return(generator)
+      allow(PersonalKeyGenerator).to receive(:new)
+        .with(subject.current_user).and_return(generator)
 
-      expect(generator).to_not receive(:create)
+      expect(generator).to_not receive(:generate!)
 
       get :show
     end
@@ -72,9 +68,12 @@ RSpec.describe Users::PersonalKeysController do
 
     context 'user needs to reactive account' do
       it 'redirects to the sign up completed url for ial 1' do
-        controller.session[:sp] = { ial2: false }
+        controller.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        }
 
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
         user.active_profile.deactivate(:password_reset)
         sign_in user
@@ -86,9 +85,12 @@ RSpec.describe Users::PersonalKeysController do
       end
 
       it 'redirects to the reactivate account url for ial 2' do
-        controller.session[:sp] = { ial2: true }
+        controller.session[:sp] = {
+          issuer: create(:service_provider).issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        }
 
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
         user.active_profile.deactivate(:password_reset)
         sign_in user
@@ -112,17 +114,15 @@ RSpec.describe Users::PersonalKeysController do
     it 'tracks CSRF errors' do
       stub_sign_in
       stub_analytics
-      analytics_hash = {
-        controller: 'users/personal_keys#update',
-        user_signed_in: true,
-      }
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
-
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', analytics_hash)
 
       post :update
 
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'users/personal_keys#update',
+        user_signed_in: true,
+      )
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
     end

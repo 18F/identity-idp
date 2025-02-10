@@ -1,67 +1,9 @@
 // To be removed once design system incorporates styles included below.
 
-// basscss-base-forms
-//------------------------------------------------
-@mixin input-styles() {
-  height: 3rem;
-  padding: 0.5rem 1rem;
-  vertical-align: middle;
-}
+@use 'uswds-core' as *;
 
-input[type='text'],
-input[type='date'],
-input[type='datetime'],
-input[type='datetime-local'],
-input[type='email'],
-input[type='month'],
-input[type='number'],
-input[type='password'],
-input[type='search'],
-input[type='tel'],
-input[type='time'],
-input[type='url'],
-input[type='week'] {
-  @include input-styles;
-  -webkit-appearance: none;
-}
-
-select {
-  @include input-styles;
-
-  // all below displays custom arrow and is pulled from:
-  // https://github.com/uswds/uswds/blob/develop/packages/usa-select/src/styles/_usa-select.scss
-  @include add-background-svg('usa-icons/unfold_more');
-  appearance: none;
-  background-color: color('white');
-  background-position: right units(1) center;
-  background-size: units(2.5);
-  padding-right: units(4);
-
-  &::-ms-expand {
-    display: none;
-  }
-
-  // Show default webkit style on select element when autofilled to show icon
-  &:-webkit-autofill {
-    appearance: menulist;
-  }
-
-  // Remove dotted outline from select element on focus in Firefox
-  &:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 color('black');
-  }
-
-  // Necessary to show chevron in forced colors mode in modern browsers
-  @media (forced-colors: active) {
-    appearance: listbox;
-    background-image: none;
-    padding-right: 0;
-  }
-}
-
-//basscss-base-typography
-//------------------------------------------------
+// basscss-base-typography
+// ------------------------------------------------
 h1,
 h2,
 h3,
@@ -72,20 +14,13 @@ h6 {
   margin-bottom: 0.5em;
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-dl,
-ol,
+p,
 ul {
   margin-top: 0;
-  margin-bottom: 1rem;
 }
 
 // basscss-utility-typography
-//------------------------------------------------
+// ------------------------------------------------
 .break-word {
   word-wrap: break-word;
 }
@@ -95,4 +30,10 @@ ul {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.usa-input--wide {
+  @include at-media('tablet') {
+    max-width: 14rem;
+  }
 }

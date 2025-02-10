@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Mock
     class DeviceProfilingBackend
@@ -14,13 +16,13 @@ module Proofing
         raise ArgumentError, "unknown result=#{result}" if !RESULTS.include?(result)
 
         REDIS_POOL.with do |redis|
-          redis.setex("device_profiling:#{session_id}", RESULT_TIMEOUT, result)
+          redis.setex("redis-pool:device_profiling:#{session_id}", RESULT_TIMEOUT, result)
         end
       end
 
       def profiling_result(session_id)
         REDIS_POOL.with do |redis|
-          redis.get("device_profiling:#{session_id}")
+          redis.get("redis-pool:device_profiling:#{session_id}")
         end
       end
     end

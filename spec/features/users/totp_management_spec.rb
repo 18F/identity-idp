@@ -1,47 +1,138 @@
 require 'rails_helper'
 
-describe 'totp management' do
+RSpec.describe 'totp management' do
   context 'when the user has totp enabled' do
-    let(:user) { create(:user, :signed_up, :with_authentication_app) }
+    let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
-    it 'allows the user to disable their totp app' do
+    it 'allows user to delete a platform authenticator when another 2FA option is set up' do
+      auth_app_config = create(:auth_app_configuration, user:)
+      name = auth_app_config.name
+
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(t('two_factor_authentication.login_options.auth_app'))
-      expect(page.find('.remove-auth-app')).to_not be_nil
-      page.find('.remove-auth-app').click
+      expect(user.reload.auth_app_configurations.count).to eq(2)
+      expect(page).to have_content(name)
 
-      expect(current_path).to eq auth_app_delete_path
-      click_on t('account.index.totp_confirm_delete')
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
 
-      expect(current_path).to eq account_two_factor_authentication_path
+      expect(page).to have_current_path(edit_auth_app_path(id: auth_app_config.id))
+
+      click_button t('two_factor_authentication.auth_app.delete')
+
+      expect(page).to have_content(t('two_factor_authentication.auth_app.deleted'))
+      expect(user.reload.auth_app_configurations.count).to eq(1)
+    end
+
+    it 'allows user to rename an authentication app app' do
+      auth_app_configuration = create(:auth_app_configuration, user:)
+      name = auth_app_configuration.name
+
+      sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
+
+      expect(page).to have_content(name)
+
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
+
+      expect(page).to have_current_path(edit_auth_app_path(id: auth_app_configuration.id))
+      expect(page).to have_field(
+        t('two_factor_authentication.auth_app.nickname'),
+        with: name,
+      )
+
+      fill_in t('two_factor_authentication.auth_app.nickname'), with: 'new name'
+
+      click_button t('two_factor_authentication.auth_app.change_nickname')
+
+      expect(page).to have_content('new name')
+      expect(page).to have_content(t('two_factor_authentication.auth_app.renamed'))
+    end
+
+    it 'requires a user to use a unique name when renaming' do
+      existing_auth_app_configuration = create(:auth_app_configuration, user:, name: 'existing')
+      new_app_auth_configuration = create(:auth_app_configuration, user:, name: 'new existing')
+      name = existing_auth_app_configuration.name
+
+      sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
+
+      expect(page).to have_content(name)
+
+      click_link(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          name,
+        ),
+      )
+
+      expect(page).to have_current_path(edit_auth_app_path(id: existing_auth_app_configuration.id))
+      expect(page).to have_field(
+        t('two_factor_authentication.auth_app.nickname'),
+        with: name,
+      )
+
+      fill_in t('two_factor_authentication.auth_app.nickname'),
+              with: new_app_auth_configuration.name
+
+      click_button t('two_factor_authentication.auth_app.change_nickname')
+
+      expect(page).to have_current_path(edit_auth_app_path(id: existing_auth_app_configuration.id))
+
+      expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'))
     end
   end
 
   context 'when totp is the only mfa method' do
-    let(:user) { create(:user, :with_authentication_app, :with_phone) }
+    let(:user) { create(:user, :with_authentication_app) }
 
-    it 'does not show the user the option to disable their totp app' do
+    it 'prevents a user from deleting their last authenticator', :js, allow_browser_log: true do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(
-        t('two_factor_authentication.login_options.auth_app'),
+      click_button(
+        format(
+          '%s: %s',
+          t('two_factor_authentication.auth_app.manage_accessible_label'),
+          user.auth_app_configurations.first.name,
+        ),
       )
-      form = find_form(page, action: disable_totp_url)
-      expect(form).to be_nil
+      accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
+      expect(page).to have_content(
+        t('errors.manage_authenticator.remove_only_method_error'),
+        wait: 5,
+      )
     end
   end
 
   context 'when the user has totp disabled' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'allows the user to setup a totp app' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
+
+      expect(
+        [
+          page.find('[aria-labelledby="totp-step-1-label"]'),
+          page.find('[aria-labelledby="totp-step-4-label"]'),
+        ],
+      ).to be_logically_grouped(t('forms.totp_setup.totp_intro'))
 
       secret = find('#qr-code').text
       fill_in 'name', with: 'foo'
@@ -96,15 +187,9 @@ describe 'totp management' do
 
         expect(page).to have_current_path(account_two_factor_authentication_path)
         expect(user.auth_app_configurations.count).to eq(2)
-        expect(page).
-          to_not have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
+        expect(page)
+          .to_not have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
       end
-    end
-  end
-
-  def find_form(page, attributes)
-    page.all('form').detect do |form|
-      attributes.all? { |key, value| form[key] == value }
     end
   end
 end

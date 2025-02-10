@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     class LexisNexisClient
@@ -8,34 +10,15 @@ module DocAuth
         @config.validate!
       end
 
-      def create_document
-        raise NotImplementedError
-      end
-
-      def post_front_image(image:, instance_id: nil)
-        raise NotImplementedError
-      end
-
-      def post_back_image(image:, instance_id: nil)
-        raise NotImplementedError
-      end
-
-      def post_selfie(image:, instance_id: nil)
-        raise NotImplementedError
-      end
-
-      def get_results(instance_id:)
-        raise NotImplementedError
-      end
-
       def post_images(
         front_image:,
         back_image:,
-        selfie_image:,
-        liveness_checking_enabled: nil,
+        selfie_image: nil,
         image_source: nil,
+        images_cropped: false,
         user_uuid: nil,
-        uuid_prefix: nil
+        uuid_prefix: nil,
+        liveness_checking_required: false
       )
         Requests::TrueIdRequest.new(
           config: config,
@@ -44,8 +27,9 @@ module DocAuth
           front_image: front_image,
           back_image: back_image,
           selfie_image: selfie_image,
-          liveness_checking_enabled: liveness_checking_enabled,
           image_source: image_source,
+          images_cropped: images_cropped,
+          liveness_checking_required: liveness_checking_required,
         ).fetch
       end
     end

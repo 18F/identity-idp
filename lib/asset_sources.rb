@@ -1,52 +1,69 @@
+# frozen_string_literal: true
+
 class AssetSources
-  class << self
-    attr_accessor :manifest_path
-    attr_accessor :manifest
-    attr_accessor :cache_manifest
+  attr_reader :manifest_path
+  attr_reader :manifest
+  attr_reader :cache_manifest
 
-    def get_sources(*names)
-      # RailsI18nWebpackPlugin will generate additional assets suffixed per locale, e.g. `.fr.js`.
-      # See: app/javascript/packages/rails-i18n-webpack-plugin/extract-keys-webpack-plugin.js
-      regexp_locale_suffix = %r{\.(#{I18n.available_locales.join('|')})\.js$}
+  def initialize(manifest_path:, cache_manifest:, i18n_locales:)
+    @manifest_path = manifest_path
+    @cache_manifest = cache_manifest
+    @regexp_locale_suffix = %r{\.(#{i18n_locales.join('|')})\.js$}
 
-      load_manifest_if_needed
-
-      locale_sources, sources = names.flat_map do |name|
-        manifest&.dig('entrypoints', name, 'assets', 'js')
-      end.uniq.compact.partition { |source| regexp_locale_suffix.match?(source) }
-
-      [
-        *locale_sources.filter { |source| source.end_with? ".#{I18n.locale}.js" },
-        *sources,
-      ]
+    if cache_manifest
+      @manifest = read_manifest.freeze
     end
+  end
 
-    def get_assets(*names)
-      load_manifest_if_needed
+  def get_sources(*names)
+    # RailsI18nWebpackPlugin will generate additional assets suffixed per locale, e.g. `.fr.js`.
+    # See: app/javascript/packages/rails-i18n-webpack-plugin/extract-keys-webpack-plugin.js
 
-      names.flat_map do |name|
-        manifest&.dig('entrypoints', name, 'assets')&.except('js')&.values&.flatten
-      end.uniq.compact
-    end
+    load_manifest_if_needed
 
-    def get_integrity(path)
-      load_manifest_if_needed
-
-      manifest&.dig('integrity', path)
-    end
-
-    def load_manifest
-      self.manifest = begin
-        JSON.parse(File.read(manifest_path))
-      rescue JSON::ParserError, Errno::ENOENT
-        nil
+    locale_sources, sources = names.flat_map do |name|
+      manifest&.dig('entrypoints', name, 'assets', 'js').presence || begin
+        [name] if name.match?(URI::DEFAULT_PARSER.regexp[:ABS_URI])
       end
-    end
+    end.uniq.compact.partition { |source| @regexp_locale_suffix.match?(source) }
 
-    private
+    [
+      *locale_sources.filter { |source| source.end_with? ".#{I18n.locale}.js" },
+      *sources,
+    ]
+  end
 
-    def load_manifest_if_needed
-      load_manifest if !manifest || !cache_manifest
+  def get_assets(*names)
+    load_manifest_if_needed
+
+    names.flat_map do |name|
+      manifest&.dig('entrypoints', name, 'assets')&.except('js')&.values&.flatten
+    end.uniq.compact
+  end
+
+  def get_integrity(path)
+    load_manifest_if_needed
+
+    manifest&.dig('integrity', path)
+  end
+
+  def read_manifest
+    return nil if manifest_path.nil?
+
+    begin
+      JSON.parse(File.read(manifest_path))
+    rescue JSON::ParserError, Errno::ENOENT
+      nil
     end
+  end
+
+  def load_manifest
+    @manifest = read_manifest
+  end
+
+  private
+
+  def load_manifest_if_needed
+    load_manifest if !manifest || !cache_manifest
   end
 end

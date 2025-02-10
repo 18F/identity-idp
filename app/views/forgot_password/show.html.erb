@@ -1,5 +1,4 @@
-<% title t('titles.verify_email') %>
-<% request_id = params[:request_id] || sp_session[:request_id] %>
+<% self.title = t('titles.verify_email') %>
 
 <% if @resend.present? %>
   <%= render 'forgot_password/resend_alert' %>
@@ -16,20 +15,14 @@
   <hr class="margin-y-4 border-width-05 border-info">
 </div>
 
-<%= simple_form_for @password_reset_email_form,
-                    html: { autocomplete: 'off', method: :post, class: 'margin-bottom-2' },
-                    url: user_password_path do |f| %>
-
+<%= simple_form_for(
+      @password_reset_email_form,
+      url: user_password_path,
+      html: { class: 'margin-bottom-2' },
+    ) do |f| %>
   <%= f.input :email, as: :hidden %>
   <%= f.input :resend, as: :hidden %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
-
-  <% link = link_to(
-       t('notices.forgot_password.use_diff_email.link'),
-       sign_up_email_path(request_id: request_id),
-     ) %>
-  <p><%= t('notices.forgot_password.use_diff_email.text_html', link: link) %></p>
   <p><%= t('instructions.forgot_password.close_window') %></p>
 <% end %>

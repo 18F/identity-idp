@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-feature 'User profile' do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
+  include BrowserEmulationHelper
 
   context 'account status badges' do
     before do
@@ -15,7 +16,7 @@ feature 'User profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
 
       it 'shows a "Verified Account" badge with no tooltip' do
-        expect(page).to have_content(t('headings.account.verified_account'))
+        expect(page).to have_content(t('account.index.verification.verified_badge'))
       end
     end
   end
@@ -35,7 +36,7 @@ feature 'User profile' do
       fill_in(t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
       expect(User.count).to eq 0
       expect(AgencyIdentity.count).to eq 0
     end
@@ -83,7 +84,7 @@ feature 'User profile' do
       fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
       expect(User.count).to eq 0
       expect(Profile.count).to eq 0
     end
@@ -115,11 +116,14 @@ feature 'User profile' do
         click_link 'Edit', href: manage_password_path
       end
 
-      expect(page).to_not have_css('#pw-strength-cntnr.display-none')
-      expect(page).to have_content '...'
+      expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
       fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great'
+      fill_in t('components.password_confirmation.confirm_label'),
+              with: 'this is a great sentence'
+
+      expect(page).to have_content(t('instructions.password.strength.intro'))
+      expect(page).to have_content t('instructions.password.strength.4')
 
       check t('components.password_toggle.toggle_label')
 
@@ -128,7 +132,7 @@ feature 'User profile' do
 
       click_button 'Update'
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     context 'IAL2 user' do
@@ -138,13 +142,23 @@ feature 'User profile' do
 
         visit manage_password_path
         fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
+        fill_in t('components.password_confirmation.confirm_label'),
+                with: 'this is a great sentence'
         click_button 'Update'
 
-        expect(current_path).to eq account_path
-        expect(page).to have_content(t('idv.messages.personal_key'))
+        expect(page).to have_content(t('forms.personal_key_partial.header'))
+        expect(page).to have_current_path(manage_personal_key_path)
+
+        personal_key = PersonalKeyGenerator.new(profile.user).normalize(scrape_personal_key)
+
+        expect(profile.user.reload.valid_personal_key?(personal_key)).to eq(true)
+
+        click_continue
+
+        expect(page).to have_current_path(account_path)
       end
 
-      it 'allows the user reactivate their profile by reverifying', js: true do
+      it 'allows the user reactivate their profile by reverifying', :js do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 
@@ -159,11 +173,81 @@ feature 'User profile' do
         click_idv_continue
         acknowledge_and_confirm_personal_key
 
-        expect(current_path).to eq(sign_up_completed_path)
+        expect(page).to have_current_path(sign_up_completed_path)
 
         click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
+      end
+    end
+  end
+
+  context 'with a mobile device', js: true, driver: :headless_chrome_mobile do
+    before { sign_in_and_2fa_user }
+
+    it 'allows a user to navigate between pages' do
+      # Emulate reduced motion to avoid timing issues with mobile menu flyout animation
+      emulate_reduced_motion
+      click_on t('account.navigation.menu')
+      click_link t('account.navigation.history')
+
+      expect(page).to have_current_path(account_history_path)
+    end
+  end
+
+  context 'allows verified user to see their information' do
+    context 'time between sign in and remember device' do
+      it 'shows PII when timeout hasnt expired' do
+        profile = create(
+          :profile, :active, :verified,
+          pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+        )
+        sign_in_user(profile.user)
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        visit account_path
+        expect(page).to_not have_button(t('account.re_verify.footer'))
+
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
+        expect(page).to have_content(parsed_date)
+      end
+    end
+
+    context 'when time expired' do
+      it 'has a prompt to authenticate device and pii isnt visible until reauthenticate' do
+        profile = create(
+          :profile, :active, :verified,
+          pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+        )
+        user = profile.user
+        sign_in_user(user)
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
+
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        timeout_in_minutes = IdentityConfig.store.pii_lock_timeout_in_minutes.to_i
+        travel_to((timeout_in_minutes + 1).minutes.from_now) do
+          sign_in_user(user)
+          visit account_path
+          expect(page).to have_button(t('account.re_verify.footer'))
+          expect(page).to_not have_content(parsed_date)
+          click_button t('account.re_verify.footer')
+          expect(page)
+            .to have_content t('two_factor_authentication.login_options.sms')
+          click_button t('forms.buttons.continue')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          expect(page).to have_content(parsed_date)
+        end
       end
     end
   end

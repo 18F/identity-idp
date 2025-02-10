@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PushNotification
   # Delivers SETs (Security Event Tokens) via the HTTP Push protocol
   # https://tools.ietf.org/html/draft-ietf-secevent-http-push-00
@@ -19,10 +21,10 @@ module PushNotification
     def deliver
       return unless IdentityConfig.store.push_notifications_enabled
 
-      event.user.
-        service_providers.
-        merge(ServiceProviderIdentity.not_deleted).
-        with_push_notification_urls.each do |service_provider|
+      event.user
+        .service_providers
+        .merge(ServiceProviderIdentity.not_deleted)
+        .with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end
     end
@@ -38,18 +40,12 @@ module PushNotification
     def deliver_one(service_provider)
       deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
 
-      job_arguments = {
+      RiscDeliveryJob.perform_later(
         push_notification_url: service_provider.push_notification_url,
         jwt: jwt(service_provider),
         event_type: event.event_type,
         issuer: service_provider.issuer,
-      }
-
-      if IdentityConfig.store.risc_notifications_active_job_enabled
-        RiscDeliveryJob.perform_later(**job_arguments)
-      else
-        RiscDeliveryJob.perform_now(**job_arguments)
-      end
+      )
     end
 
     def deliver_local(service_provider)
@@ -64,7 +60,13 @@ module PushNotification
     def jwt(service_provider)
       payload = jwt_payload(service_provider)
 
-      JWT.encode(payload, AppArtifacts.store.oidc_private_key, 'RS256', typ: 'secevent+jwt')
+      JWT.encode(
+        payload,
+        AppArtifacts.store.oidc_primary_private_key,
+        'RS256',
+        typ: 'secevent+jwt',
+        kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+      )
     end
 
     def jwt_payload(service_provider)

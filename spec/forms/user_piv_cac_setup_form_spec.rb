@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPivCacSetupForm do
+RSpec.describe UserPivCacSetupForm do
   let(:form) { described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1') }
 
   let(:nonce) { 'nonce' }
@@ -20,15 +20,16 @@ describe UserPivCacSetupForm do
           'uuid' => x509_dn_uuid,
           'subject' => 'x509-subject',
           'nonce' => nonce,
+          'key_id' => 'foo',
         }
       end
 
       it 'returns FormResponse with success: true' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(FormResponse).to receive(:new)
+          .with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
         user.reload
         expect(TwoFactorAuthentication::PivCacPolicy.new(user).enabled?).to eq true
@@ -36,8 +37,8 @@ describe UserPivCacSetupForm do
       end
 
       it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
         form.submit
       end
@@ -47,10 +48,10 @@ describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: true' do
           result = instance_double(FormResponse)
-          extra = { multi_factor_auth_method: 'piv_cac' }
+          extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-          expect(FormResponse).to receive(:new).
-            with(success: true, errors: {}, extra: extra).and_return(result)
+          expect(FormResponse).to receive(:new)
+            .with(success: true, errors: {}, extra: extra).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq true
         end
@@ -62,11 +63,11 @@ describe UserPivCacSetupForm do
 
         it 'returns FormResponse with success: false' do
           result = instance_double(FormResponse)
-          extra = { multi_factor_auth_method: 'piv_cac', key_id: nil }
+          extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-          expect(FormResponse).to receive(:new).
-            with(success: false, errors: { type: 'piv_cac.already_associated' },
-                 extra: extra).and_return(result)
+          expect(FormResponse).to receive(:new)
+            .with(success: false, errors: { type: 'piv_cac.already_associated' },
+                  extra: extra).and_return(result)
           expect(form.submit).to eq result
           expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
           expect(form.error_type).to eq 'piv_cac.already_associated'
@@ -84,8 +85,8 @@ describe UserPivCacSetupForm do
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'token.bad' }, extra: extra).and_return(result)
+        expect(FormResponse).to receive(:new)
+          .with(success: false, errors: { type: 'token.bad' }, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
         expect(form.error_type).to eq 'token.bad'
@@ -103,8 +104,8 @@ describe UserPivCacSetupForm do
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'piv_cac', key_id: 'foo' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'token.invalid' }, extra: extra).and_return(result)
+        expect(FormResponse).to receive(:new)
+          .with(success: false, errors: { type: 'token.invalid' }, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.invalid'
       end
@@ -115,10 +116,10 @@ describe UserPivCacSetupForm do
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
-        extra = { multi_factor_auth_method: 'piv_cac' }
+        extra = { multi_factor_auth_method: 'piv_cac', key_id: nil }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
+        expect(FormResponse).to receive(:new)
+          .with(success: false, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(TwoFactorAuthentication::PivCacPolicy.new(user.reload).enabled?).to eq false
       end

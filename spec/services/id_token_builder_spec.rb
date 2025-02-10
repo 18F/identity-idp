@@ -4,22 +4,24 @@ RSpec.describe IdTokenBuilder do
   include Rails.application.routes.url_helpers
 
   let(:code) { SecureRandom.hex }
-
+  let(:user) { create(:user) }
   let(:identity) do
     build(
       :service_provider_identity,
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,
       ial: 2,
+      rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-      user: create(:user),
+      user: user,
     )
   end
 
   let(:now) { Time.zone.now }
   let(:custom_expiration) { (now + 5.minutes).to_i }
+  let(:vtm_url) { 'https://example.com/vot-trust-framework' }
   subject(:builder) do
     IdTokenBuilder.new(
       identity: identity,
@@ -35,7 +37,7 @@ RSpec.describe IdTokenBuilder do
     let(:decoded_id_token) do
       JWT.decode(
         id_token,
-        AppArtifacts.store.oidc_public_key,
+        Rails.application.config.oidc_public_key,
         true,
         algorithm: 'RS256',
       ).map(&:with_indifferent_access)
@@ -60,8 +62,102 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
-    it 'sets the acr to the request acr' do
-      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+    context 'sp request includes VTR' do
+      before do
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:vtm_url)
+          .and_return(vtm_url)
+      end
+
+      it 'sets the vot if the sp requests it' do
+        identity.vtr = ['Pb'].to_json
+        expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
+      end
+
+      it 'sets the vtm' do
+        identity.vtr = ['Pb'].to_json
+        expect(decoded_payload[:vtm]).to eq(vtm_url)
+      end
+    end
+
+    context 'context sp requests ACR values' do
+      context 'aal and ial request' do
+        let(:user) { create(:user, :proofed) }
+
+        before do
+          identity.aal = 2
+          acr_values = [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+          identity.acr_values = acr_values
+        end
+
+        it 'ignores the aal value' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
+      context 'ial2 request' do
+        let(:user) { create(:user, :proofed) }
+
+        before do
+          identity.ial = 2
+          identity.acr_values = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+        end
+
+        it 'sets the acr to the ial2 constant' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
+      context 'ial2 with facial match comparison required' do
+        let(:user) { create(:user, :proofed_with_selfie) }
+
+        before do
+          identity.ial = 2
+          identity.acr_values = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
+        end
+
+        it 'sets the acr to the ial2 constant' do
+          expect(decoded_payload[:acr]).to eq(
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+      end
+
+      context 'ial1 request' do
+        before do
+          identity.ial = 1
+          identity.acr_values = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+        end
+
+        it 'sets the acr to the ial1 constant' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
+      context 'ialmax request' do
+        before do
+          identity.ial = 0
+          identity.acr_values = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+        end
+
+        context 'non-verified user' do
+          it 'sets the acr to the ial1 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+
+        context 'verified user' do
+          let(:user) { create(:user, profiles: [create(:profile, :verified, :active)]) }
+
+          it 'sets the acr to the ial2 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+      end
     end
 
     it 'sets the jti to something meaningful' do
@@ -72,10 +168,12 @@ RSpec.describe IdTokenBuilder do
       let(:custom_expiration) { nil }
       let(:expiration) { 100 }
 
-      before { Pii::SessionStore.new(identity.rails_session_id).put(nil, expiration) }
+      before do
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_empty_user_session(expiration)
+      end
 
       it 'sets the expiration to the ttl of the session key in redis' do
-        expect(decoded_payload[:exp]).to eq(now.to_i + expiration)
+        expect(decoded_payload[:exp]).to be_within(3.seconds).of(now.to_i + expiration)
       end
     end
 
@@ -94,8 +192,8 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the code hash correctly' do
-      leftmost_128_bits = Digest::SHA256.digest(code).
-        byteslice(0, IdTokenBuilder::NUM_BYTES_FIRST_128_BITS)
+      leftmost_128_bits = Digest::SHA256.digest(code)
+        .byteslice(0, IdTokenBuilder::NUM_BYTES_FIRST_128_BITS)
       expected_hash = Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
 
       expect(decoded_payload[:c_hash]).to eq(expected_hash)
@@ -126,7 +224,9 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the kid for the signing key in the JWT headers' do
-      expect(decoded_headers[:kid]).to eq(JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid)
+      expect(decoded_headers[:kid]).to eq(
+        JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+      )
     end
   end
 end

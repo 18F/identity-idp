@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForbiddenPasswords
   def initialize(email)
     @email = email

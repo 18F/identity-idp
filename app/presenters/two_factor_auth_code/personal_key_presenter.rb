@@ -1,13 +1,11 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   class PersonalKeyPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     def initialize; end
 
-    def help_text
-      ''
-    end
-
-    def fallback_question
-      t('two_factor_authentication.personal_key_fallback.question')
+    def redirect_location_step
+      :personal_key_verification
     end
   end
 end

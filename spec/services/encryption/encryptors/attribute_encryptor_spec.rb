@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::AttributeEncryptor do
+RSpec.describe Encryption::Encryptors::AttributeEncryptor do
   let(:plaintext) { 'some secret text' }
   let(:current_key) { '1' * 32 }
   let(:retired_key) { '2' * 32 }

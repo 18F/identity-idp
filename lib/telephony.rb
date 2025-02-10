@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-pinpoint'
 require 'aws-sdk-pinpointsmsvoice'
 require 'forwardable'
@@ -34,6 +36,7 @@ module Telephony
                    GSM_DOUBLE_CHARACTERS).freeze
 
   UCS_2_BASIC_CHAR_MAX = 0xFFFF
+  LOG_FILENAME = 'telephony.log'
 
   extend SingleForwardable
 
@@ -43,25 +46,32 @@ module Telephony
     @config
   end
 
-  def self.send_authentication_otp(to:, otp:, expiration:, channel:, domain:, country_code:)
+  def self.send_authentication_otp(to:, otp:, expiration:, otp_format:,
+                                   channel:, domain:, country_code:, extra_metadata:)
     OtpSender.new(
       to: to,
       otp: otp,
       expiration: expiration,
+      otp_format: otp_format,
       channel: channel,
       domain: domain,
       country_code: country_code,
+      extra_metadata: extra_metadata,
     ).send_authentication_otp
   end
 
-  def self.send_confirmation_otp(to:, otp:, expiration:, channel:, domain:, country_code:)
+  def self.send_confirmation_otp(to:, otp:, expiration:, otp_format:, otp_length:,
+                                 channel:, domain:, country_code:, extra_metadata:)
     OtpSender.new(
       to: to,
       otp: otp,
       expiration: expiration,
+      otp_format: otp_format,
+      otp_length: otp_length,
       channel: channel,
       domain: domain,
       country_code: country_code,
+      extra_metadata: extra_metadata,
     ).send_confirmation_otp
   end
 
@@ -73,8 +83,10 @@ module Telephony
                  :send_doc_auth_link,
                  :send_personal_key_regeneration_notice,
                  :send_personal_key_sign_in_notice,
+                 :send_account_deleted_notice,
                  :send_account_reset_notice,
-                 :send_account_reset_cancellation_notice
+                 :send_account_reset_cancellation_notice,
+                 :send_notification
 
   # @param [String] phone_number phone number in E.164 format
   # @return [PhoneNumberInfo] info about the phone number
@@ -87,6 +99,16 @@ module Telephony
     end
 
     sender.phone_info(phone_number)
+  end
+
+  def self.log_info(event:)
+    event[:log_filename] = LOG_FILENAME
+    self.config.logger.info(event.to_json)
+  end
+
+  def self.log_warn(event:)
+    event[:log_filename] = LOG_FILENAME
+    self.config.logger.warn(event.to_json)
   end
 
   # A character in a GSM 03.38 message counts as one character, unless it is explicitly one of

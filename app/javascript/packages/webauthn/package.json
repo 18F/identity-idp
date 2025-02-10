@@ -1,0 +1,9 @@
+{
+  "name": "@18f/identity-webauthn",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": [
+    "./webauthn-input-element.ts",
+    "./webauthn-verify-button-element.ts"
+  ]
+}

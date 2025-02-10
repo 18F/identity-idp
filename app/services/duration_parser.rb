@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Parses duration strings ("1d", 2w", "3m", "4y" into ActiveSupport::Durations)
 class DurationParser
   attr_reader :value

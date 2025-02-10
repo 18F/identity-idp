@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_address.html.erb' do
+RSpec.describe 'shared/_address.html.erb' do
   let(:address) do
     {
       address1: '123 Fake St',

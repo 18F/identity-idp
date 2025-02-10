@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :newrelic do
   ##
   # This task is essentially the same as running the following:

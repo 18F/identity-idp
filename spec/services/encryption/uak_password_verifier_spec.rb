@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::UakPasswordVerifier do
+RSpec.describe Encryption::UakPasswordVerifier do
   describe Encryption::UakPasswordVerifier::PasswordDigest do
     describe '.parse_from_string' do
       it 'does not blow up with unknown/new keys' do
@@ -47,20 +47,35 @@ describe Encryption::UakPasswordVerifier do
       password = 'saltypickles'
 
       digest = described_class.digest(password)
-      result = described_class.verify(password: password, digest: digest)
+      result = described_class.verify(
+        password: password,
+        digest: digest,
+        user_uuid: nil,
+        log_context: nil,
+      )
 
       expect(result).to eq(true)
     end
 
     it 'returns false if the password does not match' do
       digest = described_class.digest('saltypickles')
-      result = described_class.verify(password: 'pepperpickles', digest: digest)
+      result = described_class.verify(
+        password: 'pepperpickles',
+        digest: digest,
+        user_uuid: nil,
+        log_context: nil,
+      )
 
       expect(result).to eq(false)
     end
 
     it 'returns false for nonsese' do
-      result = described_class.verify(password: 'saltypickles', digest: 'this is fake')
+      result = described_class.verify(
+        password: 'saltypickles',
+        digest: 'this is fake',
+        user_uuid: nil,
+        log_context: nil,
+      )
 
       expect(result).to eq(false)
     end
@@ -85,7 +100,12 @@ describe Encryption::UakPasswordVerifier do
         password_cost: '4000$8$4$',
       }.to_json
 
-      result = described_class.verify(password: password, digest: legacy_password_digest)
+      result = described_class.verify(
+        password: password,
+        digest: legacy_password_digest,
+        user_uuid: nil,
+        log_context: nil,
+      )
 
       expect(result).to eq(true)
     end

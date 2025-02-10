@@ -1,57 +1,60 @@
 require 'rails_helper'
 
-describe ServiceProviderMfaPolicy do
+RSpec.describe ServiceProviderMfaPolicy do
   let(:user) { create(:user) }
-  let(:service_provider) { create(:service_provider) }
-  let(:auth_method) { 'phone' }
-  let(:aal_level_requested) { 1 }
-  let(:piv_cac_requested) { false }
+  let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
+  let(:aal2) { false }
+  let(:hspd12) { false }
+  let(:phishing_resistant) { false }
+  let(:resolved_authn_context_result) do
+    Vot::Parser::Result.new(
+      component_values: [],
+      component_separator: ' ',
+      aal2?: aal2,
+      hspd12?: hspd12,
+      phishing_resistant?: phishing_resistant,
+      identity_proofing?: false,
+      facial_match?: false,
+      two_pieces_of_fair_evidence?: false,
+      ialmax?: false,
+      enhanced_ipp?: false,
+    )
+  end
+  let(:auth_methods_session) { AuthMethodsSession.new(user_session: {}) }
 
   subject(:policy) do
     described_class.new(
       user: user,
-      service_provider: service_provider,
-      auth_method: auth_method,
-      aal_level_requested: aal_level_requested,
-      piv_cac_requested: piv_cac_requested,
+      auth_methods_session: auth_methods_session,
+      resolved_authn_context_result: resolved_authn_context_result,
     )
   end
 
-  describe '#aal3_required?' do
-    context 'aal3 requested' do
-      let(:aal_level_requested) { 3 }
-      before { service_provider.default_aal = nil }
+  before do
+    auth_methods_session.authenticate!(auth_method) if auth_method
+  end
 
-      it { expect(policy.aal3_required?).to eq(true) }
+  describe '#phishing_resistant_required?' do
+    context 'phishing-resistant requested' do
+      let(:aal2) { true }
+      let(:phishing_resistant) { true }
+
+      it { expect(policy.phishing_resistant_required?).to eq(true) }
     end
 
-    context 'no aal level requested, SP default is aal3' do
-      let(:aal_level_requested) { nil }
-      before { service_provider.default_aal = 3 }
+    context 'phishing-resistant not requested' do
+      let(:phishing_resistant) { false }
 
-      it { expect(policy.aal3_required?).to eq(true) }
-    end
-
-    context 'aal2 requested, no default set' do
-      let(:aal_level_requested) { 2 }
-      before { service_provider.default_aal = nil }
-
-      it { expect(policy.aal3_required?).to eq(false) }
-    end
-
-    context 'aal2 level requested, SP default is aal3' do
-      let(:aal_level_requested) { 2 }
-      before { service_provider.default_aal = 3 }
-
-      it { expect(policy.aal3_required?).to eq(false) }
+      it { expect(policy.phishing_resistant_required?).to eq(false) }
     end
   end
 
   describe '#user_needs_sp_auth_method_verification?' do
-    context 'aal3 required' do
-      let(:aal_level_requested) { 3 }
+    context 'phishing-resistant required' do
+      let(:aal2) { true }
+      let(:phishing_resistant) { true }
 
-      context 'the user needs to setup an AAL3 method' do
+      context 'the user needs to setup a phishing-resistant method' do
         before { setup_user_phone }
 
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
@@ -73,8 +76,19 @@ describe ServiceProviderMfaPolicy do
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
       end
 
-      context 'the user did not use an AAL3 method' do
-        let(:auth_method) { 'phone' }
+      context 'the user uses an eligible method and authenticates with another method afterward' do
+        let(:auth_method) { 'webauthn' }
+
+        before do
+          setup_user_webauthn_token
+          auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::SMS)
+        end
+
+        it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+      end
+
+      context 'the user did not use a phishing-resistant method' do
+        let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
 
         before do
           setup_user_phone
@@ -86,8 +100,7 @@ describe ServiceProviderMfaPolicy do
     end
 
     context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
+      let(:hspd12) { true }
 
       context 'the user needs to setup a PIV' do
         before { setup_user_phone }
@@ -101,6 +114,14 @@ describe ServiceProviderMfaPolicy do
         before { setup_user_piv }
 
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+
+        context 'the user authenticates with another method after using PIV/CAC' do
+          before do
+            auth_methods_session.authenticate!(TwoFactorAuthenticatable::AuthMethod::SMS)
+          end
+
+          it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+        end
       end
 
       context 'the user used webauthn' do
@@ -114,8 +135,8 @@ describe ServiceProviderMfaPolicy do
         it { expect(policy.user_needs_sp_auth_method_verification?).to eq(true) }
       end
 
-      context 'the user did not use an AAL3 method' do
-        let(:auth_method) { 'phone' }
+      context 'the user did not use a PIV' do
+        let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }
 
         before do
           setup_user_phone
@@ -132,12 +153,18 @@ describe ServiceProviderMfaPolicy do
       end
 
       it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+
+      context 'user has not authenticated' do
+        let(:auth_method) { nil }
+
+        it { expect(policy.user_needs_sp_auth_method_verification?).to eq(false) }
+      end
     end
   end
 
   describe '#user_needs_sp_auth_method_setup?' do
-    context 'aal3 required' do
-      let(:aal_level_requested) { 3 }
+    context 'phishing-resistant required' do
+      let(:phishing_resistant) { true }
 
       context 'the user has PIV/CAC configured' do
         before { setup_user_piv }
@@ -159,8 +186,7 @@ describe ServiceProviderMfaPolicy do
     end
 
     context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
+      let(:hspd12) { true }
 
       context 'the user has PIV/CAC configured' do
         before { setup_user_piv }
@@ -185,105 +211,12 @@ describe ServiceProviderMfaPolicy do
       before { setup_user_phone }
 
       it { expect(policy.user_needs_sp_auth_method_setup?).to eq(false) }
-    end
-  end
 
-  describe '#auth_method_confirms_to_sp_request?' do
-    context 'the user used the required MFA' do
-      before do
-        setup_user_phone
-        setup_user_webauthn_token
+      context 'user has not authenticated' do
+        let(:auth_method) { nil }
+
+        it { expect(policy.user_needs_sp_auth_method_setup?).to eq(false) }
       end
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'webauthn' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(true) }
-    end
-
-    context 'the user did not use the required MFA' do
-      before do
-        setup_user_phone
-        setup_user_webauthn_token
-      end
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(false) }
-    end
-
-    context 'the user has not setup the required MFA' do
-      before { setup_user_phone }
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(false) }
-    end
-
-    context 'there are no MFA requirements' do
-      before { setup_user_phone }
-
-      let(:aal_level_requested) { 1 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(true) }
-    end
-  end
-
-  describe '#allow_user_to_switch_method?' do
-    context 'aal3 required' do
-      let(:aal_level_requested) { 3 }
-
-      context 'the user has more than one aal3 method' do
-        before do
-          setup_user_webauthn_token
-          setup_user_piv
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(true) }
-      end
-
-      context 'the user does not have more than one aal3 method' do
-        before do
-          setup_user_webauthn_token
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-    end
-
-    context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
-
-      context 'the user has a PIV' do
-        before { setup_user_piv }
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-
-      context 'the user does not have a PIV' do
-        before { setup_user_webauthn_token }
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-
-      context 'the user has a PIV and webauthn token' do
-        before do
-          setup_user_webauthn_token
-          setup_user_piv
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-    end
-
-    context 'there are no MFA reqirements' do
-      before { setup_user_phone }
-
-      it { expect(policy.allow_user_to_switch_method?).to eq(true) }
     end
   end
 

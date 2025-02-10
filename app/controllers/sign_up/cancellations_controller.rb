@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SignUp
   class CancellationsController < ApplicationController
     before_action :find_user
@@ -12,7 +14,7 @@ module SignUp
 
     def destroy
       track_account_deletion_event
-      url_after_cancellation = decorated_session.cancel_link_url
+      url_after_cancellation = decorated_sp_session.cancel_link_url
       destroy_user
       flash[:success] = t('sign_up.cancel.success')
       redirect_to url_after_cancellation
@@ -36,7 +38,7 @@ module SignUp
 
       confirmation_token = session[:user_confirmation_token]
       email_address = EmailAddress.find_with_confirmation_token(confirmation_token)
-      @token_validator = EmailConfirmationTokenValidator.new(email_address, current_user)
+      @token_validator = EmailConfirmationTokenValidator.new(email_address:, current_user:)
       result = @token_validator.submit
 
       if result.success?
@@ -53,7 +55,7 @@ module SignUp
     def ensure_valid_confirmation_token
       return if @user
       flash[:error] = error_message(@token_validator)
-      redirect_to sign_up_email_resend_url(request_id: params[:_request_id])
+      redirect_to sign_up_register_url(request_id: params[:_request_id])
     end
 
     def error_message(token_validator)

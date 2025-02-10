@@ -1,25 +1,16 @@
+@use 'uswds-core' as *;
+@use '../variables/app' as *;
+
 .card {
+  @include u-padding(4);
   background-color: color('white');
   max-width: $container-skinny-width;
 
-  &-wide {
-    max-width: 100%;
-    padding-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
+  & + & {
+    @include u-margin-top(4);
   }
 
   @include at-media('tablet') {
-    @include u-padding-x(10);
-    @include u-margin-bottom(8);
     border-radius: 5px;
-
-    &-wide {
-      margin-top: units(6);
-      max-width: 100%;
-      padding-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
-    }
   }
 }

@@ -1,4 +1,4 @@
-describe Telephony::Test::Call do
+RSpec.describe Telephony::Test::Call do
   let(:body) { 'The code is 1, 2, 3, 4, 5, 6' }
   let(:otp) { '123456' }
 

@@ -4,9 +4,9 @@ RSpec.describe Test::DeviceProfilingController do
   let(:session_id) { SecureRandom.uuid }
 
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   describe '#index' do
@@ -14,8 +14,8 @@ RSpec.describe Test::DeviceProfilingController do
       expect do
         get :index, params: { session_id: session_id }
       end.to(
-        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
-        from(nil).to('no_result'),
+        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }
+        .from(nil).to('no_result'),
       )
     end
   end
@@ -27,8 +27,8 @@ RSpec.describe Test::DeviceProfilingController do
       expect do
         post :create, params: { session_id: session_id, result: result }
       end.to(
-        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }.
-        from(nil).to(result),
+        change { Proofing::Mock::DeviceProfilingBackend.new.profiling_result(session_id) }
+        .from(nil).to(result),
       )
     end
   end

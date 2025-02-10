@@ -1,14 +1,16 @@
 require 'rails_helper'
 
-describe 'redirect_uri validation' do
+RSpec.describe 'redirect_uri validation' do
+  include OidcAuthHelper
+
   context 'when the redirect_uri in the request does not match one that is registered' do
     it 'displays error instead of branded landing page' do
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
@@ -18,8 +20,8 @@ describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
     end
   end
 
@@ -31,8 +33,8 @@ describe 'redirect_uri validation' do
 
       expect(current_host).to eq 'www.example.com'
       expect(current_path).to eq '/errors/service_provider_inactive'
-      expect(page).
-        to have_content t(
+      expect(page)
+        .to have_content t(
           'service_providers.errors.inactive.heading',
           sp_name: 'Example iOS App (inactive)',
           app_name: APP_NAME,
@@ -46,8 +48,8 @@ describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
     end
   end
 
@@ -88,28 +90,28 @@ describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
 
       visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
   context 'when the user is already signed in via an SP' do
     it 'displays error instead of redirecting' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -120,36 +122,37 @@ describe 'redirect_uri validation' do
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.bad_client_id')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.bad_client_id')
 
       visit_idp_from_sp_with_ial1_with_invalid_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_invalid')
 
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
     end
   end
 
   context 'when the SP has multiple registered redirect_uris and the second one is requested' do
     it 'considers the request valid and redirects to the one requested' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_second_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue
 
-      redirect_host = URI.parse(current_url).host
-      redirect_scheme = URI.parse(current_url).scheme
+      redirect_uri = URI.parse(oidc_redirect_url)
+      redirect_host = redirect_uri.host
+      redirect_scheme = redirect_uri.scheme
 
       expect(redirect_host).to eq('example.com')
       expect(redirect_scheme).to eq('https')
@@ -158,13 +161,13 @@ describe 'redirect_uri validation' do
 
   context 'when the SP does not have any registered redirect_uris' do
     it 'considers the request invalid and does not redirect if the user signs in' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_that_does_not_have_redirect_uris
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
-      expect(page).
-        to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
+      expect(page)
+        .to have_content t('openid_connect.authorization.errors.redirect_uri_no_match')
 
       visit new_user_session_path
       fill_in_credentials_and_submit(user.email, user.password)

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe Users::AuthorizationConfirmationController do
-  let(:user) { create(:user, :signed_up) }
+RSpec.describe Users::AuthorizationConfirmationController do
+  let(:user) { create(:user, :fully_registered) }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }
   let(:sp_request_url) { 'http://example.com/request/url' }
@@ -10,7 +10,6 @@ describe Users::AuthorizationConfirmationController do
 
   before do
     stub_analytics
-    allow(@analytics).to receive(:track_event)
     stub_sign_in(user)
     controller.session[:sp] = sp_session
   end
@@ -28,7 +27,7 @@ describe Users::AuthorizationConfirmationController do
       get :new
 
       expect(response).to render_template(:new)
-      expect(@analytics).to have_received(:track_event).with('Authentication Confirmation')
+      expect(@analytics).to have_logged_event('Authentication Confirmation')
     end
   end
 
@@ -37,7 +36,7 @@ describe Users::AuthorizationConfirmationController do
       post :create
 
       expect(response).to redirect_to(sp_request_url)
-      expect(@analytics).to have_received(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'Authentication Confirmation: Continue selected',
       )
     end
@@ -50,7 +49,7 @@ describe Users::AuthorizationConfirmationController do
       delete :destroy
 
       expect(response).to redirect_to(new_user_session_url(request_id: sp_request_id))
-      expect(@analytics).to have_received(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'Authentication Confirmation: Reset selected',
       )
     end

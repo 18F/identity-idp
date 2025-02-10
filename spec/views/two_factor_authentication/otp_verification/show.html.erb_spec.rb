@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/otp_verification/show.html.erb' do
+RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
   let(:presenter_data) do
     {
       otp_delivery_preference: 'sms',
@@ -26,9 +26,23 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       allow(@presenter).to receive(:reauthn).and_return(false)
     end
 
+    it 'allow user to return to two factor options screen' do
+      render
+      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
+    end
+
+    it 'does not show a landline setup warning' do
+      render
+
+      expect(rendered).not_to have_link(
+        'phone call',
+        href: phone_setup_path(otp_delivery_preference: 'voice'),
+      )
+    end
+
     context 'common OTP delivery screen behavior' do
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
+        expect(view).to receive(:title=).with(t('titles.enter_2fa_code.one_time_code'))
 
         render
       end
@@ -40,40 +54,21 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       end
     end
 
-    it 'allow user to return to two factor options screen' do
+    it 'informs the user that an OTP has been sent to their number' do
       render
-      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
-    end
 
-    context 'OTP copy' do
-      let(:help_text) do
+      expect(rendered).to include(
         t(
           'instructions.mfa.sms.number_message_html',
-          number: content_tag(:strong, presenter_data[:phone_number]),
+          number_html: content_tag(:strong, presenter_data[:phone_number]),
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        )
-      end
-
-      it 'informs the user that an OTP has been sent to their number via #help_text' do
-        render
-
-        expect(rendered).to include help_text
-      end
-
-      context 'in other locales' do
-        before { I18n.locale = :es }
-
-        it 'translates correctly' do
-          render
-
-          expect(rendered).to include help_text
-        end
-      end
+        ),
+      )
     end
 
     context 'user signed up' do
       before do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         render
       end
@@ -88,7 +83,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'user is reauthenticating' do
       before do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         allow(@presenter).to receive(:reauthn).and_return(true)
         render
@@ -110,7 +105,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'user is changing phone number' do
       it 'provides a cancel link to return to profile' do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         data = presenter_data.merge(confirmation_for_add_phone: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
@@ -168,7 +163,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end
@@ -207,7 +202,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end
@@ -249,8 +244,88 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         render
-
         expect(rendered).to have_link(t('forms.two_factor.try_again'), href: phone_setup_path)
+      end
+    end
+
+    context 'with landline setup warning' do
+      before do
+        assign(:landline_alert, true)
+      end
+
+      it 'shows landline warning' do
+        render
+
+        expect(rendered).to have_link(
+          'phone call',
+          href: phone_setup_path(otp_delivery_preference: 'voice'),
+        )
+      end
+    end
+
+    describe 'countdown alert' do
+      around do |example|
+        freeze_time { example.run }
+      end
+
+      before do
+        user = create(
+          :user,
+          :fully_registered,
+          otp_delivery_preference: 'voice',
+          direct_otp_sent_at: Time.zone.now,
+        )
+        allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+      end
+
+      it 'should render countdown component' do
+        render
+
+        expect(rendered).to have_content(
+          t(
+            'components.countdown_alert.time_remaining_html',
+            countdown_html: distance_of_time_in_words(
+              Time.zone.now,
+              TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS.seconds.from_now,
+              true,
+            ),
+          ),
+        )
+      end
+    end
+
+    context 'troubleshooting options content' do
+      context 'when phone is unconfirmed' do
+        it 'has option to change phone number' do
+          data = presenter_data.merge(unconfirmed_phone: true)
+
+          @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: data,
+            view: view,
+            service_provider: nil,
+          )
+
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+            href: phone_setup_path,
+          )
+        end
+      end
+
+      context 'when phone is confirmed' do
+        it 'has option to select different authentication method' do
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.login_options_link_text'),
+            href: login_two_factor_options_path,
+          )
+        end
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ResetPasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
@@ -6,13 +8,17 @@ class ResetPasswordForm
 
   validate :valid_token
 
-  def initialize(user)
+  def initialize(user:)
     @user = user
-    self.reset_password_token = @user.reset_password_token
+    @reset_password_token = @user.reset_password_token
+    @validate_confirmation = true
+    @active_profile = user.active_profile
+    @pending_profile = user.pending_profile
   end
 
   def submit(params)
-    self.password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
 
     @success = valid?
 
@@ -23,7 +29,7 @@ class ResetPasswordForm
 
   private
 
-  attr_reader :success
+  attr_reader :success, :active_profile, :pending_profile
 
   def valid_token
     if !user.persisted?
@@ -51,17 +57,14 @@ class ResetPasswordForm
       end
     end
 
-    UpdateUser.new(user: user, attributes: attributes).call
+    user.update!(attributes)
   end
 
   def mark_profile_inactive
-    profile = user.active_profile
-    return if profile.blank?
+    return if active_profile.blank?
 
-    @profile_deactivated = true
-    profile&.deactivate(:password_reset)
+    active_profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
-    user.proofing_component&.destroy
   end
 
   # It is possible for an account that is resetting their password to be "invalid".
@@ -82,7 +85,9 @@ class ResetPasswordForm
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      profile_deactivated: (@profile_deactivated == true),
+      profile_deactivated: active_profile.present?,
+      pending_profile_invalidated: pending_profile.present?,
+      pending_profile_pending_reasons: (pending_profile&.pending_reasons || [])&.join(','),
     }
   end
 end

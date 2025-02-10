@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-feature 'User edit' do
-  let(:user) { create(:user, :signed_up) }
+RSpec.feature 'User edit' do
+  let(:user) { create(:user, :fully_registered) }
 
   context 'editing password' do
     before do
@@ -10,12 +10,14 @@ feature 'User edit' do
     end
 
     scenario 'user sees error message if form is submitted with invalid password' do
-      fill_in 'New password', with: 'foo'
+      password = 'foo'
+      fill_in t('forms.passwords.edit.labels.password'), with: password
+      fill_in t('components.password_confirmation.confirm_label'), with: password
       click_button 'Update'
 
       expect(page).to have_css '.usa-alert', text: 'Please review the problems below:'
-      expect(page).
-        to have_content t(
+      expect(page)
+        .to have_content t(
           'errors.attributes.password.too_short.other',
           count: Devise.password_length.first,
         )

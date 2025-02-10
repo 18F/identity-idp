@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
+    include NewDeviceConcern
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
@@ -8,17 +11,15 @@ module SignUp
 
     def new
       password_form # Memoize the password form to use in the view
-      process_successful_confirmation
+      process_valid_confirmation_token
+      flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
+      @forbidden_passwords = forbidden_passwords
     end
 
     def create
       result = password_form.submit(permitted_params)
-      analytics.password_creation(**result.to_h)
-      irs_attempts_api_tracker.user_registration_password_submitted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
-      store_sp_metadata_in_session unless sp_request_id.empty?
+
+      track_analytics(result)
 
       if result.success?
         process_successful_password_creation
@@ -29,47 +30,36 @@ module SignUp
 
     private
 
-    def process_successful_confirmation
-      process_valid_confirmation_token
-      render_page
+    def forbidden_passwords
+      @user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     end
 
-    def render_page
-      request_id = params.fetch(:_request_id, '')
-      render(
-        :new,
-        locals: { request_id: request_id, confirmation_token: @confirmation_token },
-        formats: :html,
-      )
+    def track_analytics(result)
+      analytics.password_creation(**result)
     end
 
     def permitted_params
-      params.require(:password_form).permit(:confirmation_token, :password, :request_id)
+      params.require(:password_form).permit(
+        :confirmation_token, :password, :password_confirmation
+      )
     end
 
     def process_successful_password_creation
       password = permitted_params[:password]
       now = Time.zone.now
-      UpdateUser.new(
-        user: @user,
-        attributes: { password: password, confirmed_at: now },
-      ).call
+      @user.update!(
+        password: password,
+        confirmed_at: now,
+      )
       @user.email_addresses.take.update(confirmed_at: now)
 
-      Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
     end
 
-    def store_sp_metadata_in_session
-      StoreSpMetadataInSession.new(session: session, request_id: sp_request_id).call
-    end
-
     def password_form
-      @password_form ||= PasswordForm.new(@user)
-    end
-
-    def sp_request_id
-      permitted_params.fetch(:request_id, '')
+      @password_form ||= PasswordForm.new(user: @user)
     end
 
     def process_unsuccessful_password_creation
@@ -77,12 +67,18 @@ module SignUp
       @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
         ForbiddenPasswords.new(email_address.email).call
       end
-      render :new, locals: { request_id: sp_request_id }
+      render :new
     end
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to authentication_methods_setup_url
+      set_new_device_session(false)
+      user_session[:in_account_creation_flow] = true
+      if current_user.accepted_rules_of_use_still_valid?
+        redirect_to authentication_methods_setup_url
+      else
+        redirect_to rules_of_use_url
+      end
     end
   end
 end

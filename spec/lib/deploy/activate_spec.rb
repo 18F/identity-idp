@@ -1,15 +1,25 @@
 require 'rails_helper'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
-describe Deploy::Activate do
+RSpec.describe Deploy::Activate do
   let(:root) { @root }
 
   around(:each) do |ex|
+    snapshot = Identity::Hostdata.instance_variables.index_with do |name|
+      Identity::Hostdata.instance_variable_get(name)
+    end
+
     Identity::Hostdata.reset!
 
     Dir.mktmpdir do |dir|
       @root = dir
       ex.run
+    end
+  ensure
+    Identity::Hostdata.reset! # clear any new variables set by the specs
+
+    snapshot.each do |name, value|
+      Identity::Hostdata.instance_variable_set(name, value)
     end
   end
 
@@ -36,12 +46,12 @@ describe Deploy::Activate do
 
       ec2_api_token = SecureRandom.hex
 
-      stub_request(:put, 'http://169.254.169.254/latest/api/token').
-        to_return(body: ec2_api_token)
+      stub_request(:put, 'http://169.254.169.254/latest/api/token')
+        .to_return(body: ec2_api_token)
 
-      stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
-        with(headers: { 'X-aws-ec2-metadata-token' => ec2_api_token }).
-        to_return(body: {
+      stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document')
+        .with(headers: { 'X-aws-ec2-metadata-token' => ec2_api_token })
+        .to_return(body: {
           'region' => 'us-west-1',
           'accountId' => '12345',
         }.to_json)
@@ -78,12 +88,12 @@ describe Deploy::Activate do
       subject.run
 
       expect(s3_client).to have_received(:get_object).with(
-        bucket: 'login-gov.secrets.12345-us-west-1',
+        bucket: kind_of(String),
         key: 'common/GeoIP2-City.mmdb',
         response_target: kind_of(String),
       )
       expect(s3_client).to have_received(:get_object).with(
-        bucket: 'login-gov.secrets.12345-us-west-1',
+        bucket: kind_of(String),
         key: 'common/pwned-passwords.txt',
         response_target: kind_of(String),
       )
@@ -115,8 +125,8 @@ describe Deploy::Activate do
 
   context 'outside a deployed production environment' do
     before do
-      stub_request(:put, 'http://169.254.169.254/latest/api/token').
-        to_timeout
+      stub_request(:put, 'http://169.254.169.254/latest/api/token')
+        .to_timeout
 
       # for now, stub cloning identity-idp-config
       allow(subject).to receive(:clone_idp_config)
@@ -125,6 +135,35 @@ describe Deploy::Activate do
 
     it 'errors' do
       expect { subject.run }.to raise_error(Net::OpenTimeout)
+    end
+  end
+
+  describe '#setup_idp_config_symlinks' do
+    context 'with stale identity-idp-config symlinks' do
+      it 'deletes stale symlinks' do
+        setup_identity_idp_config(subject)
+        FileUtils.ln_s(
+          'fake',
+          subject.idp_logos_dir,
+          force: true,
+        )
+
+        subject.setup_idp_config_symlinks
+
+        expect(File.exist?('fake')).to eq false
+      end
+    end
+  end
+
+  def setup_identity_idp_config(subject)
+    FileUtils.mkdir_p(subject.checkout_dir)
+    FileUtils.mkdir_p(subject.idp_logos_dir)
+    FileUtils.mkdir_p(subject.config_logos_dir)
+    # Cloned config is symlinked into the root config/ folder
+    FileUtils.mkdir_p(File.join(subject.root, 'config'))
+
+    Deploy::Activate::FILES_TO_LINK.each do |file|
+      FileUtils.touch(File.join(subject.checkout_dir, "#{file}.yml"))
     end
   end
 end

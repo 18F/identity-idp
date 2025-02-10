@@ -1,10 +1,5 @@
-@import 'variables/app';
-@import 'required';
-@import 'identity-style-guide/dist/assets/scss/packages/required';
-@import 'design-system-waiting-room';
-@import 'identity-style-guide/dist/assets/scss/packages/global';
-@import 'identity-style-guide/dist/assets/scss/packages/components';
-@import 'components/all';
-@import 'identity-style-guide/dist/assets/scss/packages/utilities';
-@import 'utilities/all';
-@import 'print';
+@forward 'uswds-core';
+@forward 'uswds-fonts/src/styles';
+@forward 'uswds';
+@forward 'design-system-waiting-room';
+@forward 'components';

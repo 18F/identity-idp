@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Monthly gpo letter requests report' do
+RSpec.feature 'Monthly gpo letter requests report' do
   it 'runs when there are not entries' do
     results_hash = JSON.parse(Reports::MonthlyGpoLetterRequestsReport.new.perform(Time.zone.today))
     expect(results_hash['total_letter_requests']).to eq(0)

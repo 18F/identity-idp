@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
-
+  let(:selfie_required) { false }
   subject(:response) do
     config = DocAuth::Mock::Config.new(
       dpi_threshold: 290,
@@ -10,19 +10,20 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config, false)
+    described_class.new(input, config, selfie_required)
   end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-
+    let(:selfie_required) { true }
     it 'returns a successful response with the default PII' do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
+      expect(response.selfie_status).to eq(:success)
     end
   end
 
@@ -33,15 +34,21 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: Susan
           last_name: Smith
           middle_name: Q
+          name_suffix:
           address1: 1 Microsoft Way
           address2: Apt 3
           city: Bayside
           state: NY
           zipcode: '11364'
           dob: 1938-10-06
+          sex: female
+          height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
@@ -50,18 +57,28 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_number: '111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          name_suffix: nil,
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
+          state_id_number: '111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
       )
       expect(response.attention_with_barcode?).to eq(false)
     end
@@ -90,7 +107,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to include(dob: '1938-10-06')
+      expect(response.pii_from_doc.dob).to eq('1938-10-06')
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -114,7 +131,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -124,6 +141,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       <<~YAML
         document:
           first_name: Susan
+          last_name: null
         failed_alerts:
           - name: 2D Barcode Read
             result: Attention
@@ -132,9 +150,13 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
     it 'returns a successful result' do
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq({})
+      expect(response.errors).to eq(
+        back: ['fallback_field_level'],
+        general: ['barcode_read_check'], hints: true
+      )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({ first_name: 'Susan' })
+      expect(response.pii_from_doc.first_name).to eq('Susan')
+      expect(response.pii_from_doc.last_name).to eq(nil)
       expect(response.attention_with_barcode?).to eq(true)
     end
   end
@@ -172,7 +194,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -188,8 +210,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).
-        to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -205,7 +227,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['parsed URI, but scheme was https (expected data)'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -221,7 +243,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['YAML data should have been a hash, got String'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -240,7 +262,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['invalid YAML file'])
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
@@ -254,29 +276,170 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           glare_threshold: 40,
         },
       )
-      described_class.new(input, config, true)
+      described_class.new(input, config)
     end
 
     let(:input) do
       <<~YAML
-        doc_auth_result: Passed
-        liveness_result: Fail
+        document:
+          first_name: Susan
+          last_name: Smith
+          middle_name: Q
+          name_suffix:
+          address1: 1 Microsoft Way
+          address2: Apt 3
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          sex: female
+          height: 66
+          state_id_number: '123456789'
+          state_id_type: drivers_license
+          state_id_jurisdiction: 'NY'
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
     it 'returns a passed result' do
+      expect(response.success?).to eq(true)
+      expect(response.errors).to eq({})
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc).to eq(
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          name_suffix: nil,
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          state_id_jurisdiction: 'NY',
+          state_id_number: '123456789',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
+      )
+      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.extra).to eq(
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
+        billed: true,
+        classification_info: {},
+        workflow: 'test_non_liveness_workflow',
+        liveness_checking_required: false,
+        portrait_match_results: nil,
+      )
+      expect(response.doc_auth_success?).to eq(true)
+      expect(response.selfie_status).to eq(:not_processed)
+    end
+  end
+
+  context 'with a yaml file that does not contain all PII fields' do
+    subject(:response) do
+      config = DocAuth::Mock::Config.new(
+        {
+          dpi_threshold: 290,
+          sharpness_threshold: 40,
+          glare_threshold: 40,
+        },
+      )
+      described_class.new(input, config)
+    end
+
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Susan
+      YAML
+    end
+
+    it 'returns default values for the missing fields' do
+      expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to eq(
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: nil,
+          last_name: 'MCFAKERSON',
+          name_suffix: 'JR',
+          address1: '1 FAKE RD',
+          address2: nil,
+          city: 'GREAT FALLS',
+          state: 'MT',
+          zipcode: '59010-1234',
+          dob: '1938-10-06',
+          sex: 'male',
+          height: 72,
+          weight: nil,
+          eye_color: nil,
+          state_id_number: '1111111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2099-12-31',
+          state_id_issued: '2019-12-31',
+          issuing_country_code: 'US',
+        ),
+      )
+    end
+  end
+
+  context 'with a yaml file containing a read error' do
+    let(:input) do
+      <<~YAML
+        image_metrics:
+          back:
+            HorizontalResolution: 100
+      YAML
+    end
+
+    it 'returns caution result' do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
-        general: [DocAuth::Errors::SELFIE_FAILURE],
-        selfie: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+        back: [DocAuth::Errors::DPI_LOW_FIELD],
         hints: false,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
+        classification_info: nil,
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
+        alert_failure_count: 1,
+        liveness_enabled: false,
+        vendor: 'Mock',
+        processed_alerts: {
+          failed: [{ name: '2D Barcode Read', result: 'Failed' }],
+          passed: [],
+        },
+        image_metrics: {
+          back: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 100,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+          front: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+        },
       )
     end
   end
@@ -296,11 +459,36 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         hints: true,
       )
       expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc).to eq({})
+      expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::FAILED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
+        classification_info: nil,
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
+        alert_failure_count: 1,
+        liveness_enabled: false,
+        vendor: 'Mock',
+        processed_alerts: {
+          failed: [{ name: '2D Barcode Read', result: 'Failed' }],
+          passed: [],
+        },
+        image_metrics: {
+          back: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+          front: {
+            'GlareMetric' => 100,
+            'HorizontalResolution' => 600,
+            'SharpnessMetric' => 100,
+            'VerticalResolution' => 600,
+          },
+        },
       )
     end
   end
@@ -312,15 +500,21 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           first_name: Susan
           last_name: Smith
           middle_name: Q
+          name_suffix:
           address1: 1 Microsoft Way
           address2: Apt 3
           city: Bayside
           state: NY
           zipcode: 11364
           dob: 1938-10-06
+          sex: female
+          height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
           state_id_type: drivers_license
+          state_id_expiration: '2089-12-31'
+          state_id_issued: '2009-12-31'
+          issuing_country_code: 'CA'
       YAML
     end
 
@@ -329,24 +523,349 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(
-        first_name: 'Susan',
-        middle_name: 'Q',
-        last_name: 'Smith',
-        address1: '1 Microsoft Way',
-        address2: 'Apt 3',
-        city: 'Bayside',
-        state: 'NY',
-        zipcode: '11364',
-        dob: '1938-10-06',
-        state_id_number: '111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        Pii::StateId.new(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          name_suffix: nil,
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          sex: 'female',
+          height: 66,
+          weight: nil,
+          eye_color: nil,
+          state_id_number: '111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+          state_id_expiration: '2089-12-31',
+          state_id_issued: '2009-12-31',
+          issuing_country_code: 'CA',
+        ),
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
-        doc_auth_result: DocAuth::Acuant::ResultCodes::PASSED.name,
+        doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
+        classification_info: {},
+        liveness_checking_required: false,
+        workflow: 'test_non_liveness_workflow',
+        portrait_match_results: nil,
       )
+    end
+  end
+  context 'with a yaml file missing classification info' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file containing classification info and known unsupported doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Tribal Identification
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+    end
+  end
+  context 'with a yaml file containing classification info and known supported doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Identification Card
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file containing classification info and unknown doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Unknown
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with supported side and unknown side' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+          Back:
+            ClassName: Unknown
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with both supported and and unknown doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+          Back:
+            ClassName: Military Identification
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+    end
+  end
+  context 'with a yaml file with a supported classname and country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: US
+          Back:
+            ClassName: Drivers License
+            CountryCode: US
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with a supported classname and not supported country' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: UK
+          Back:
+            ClassName: Drivers License
+            CountryCode: UK
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        back: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
+    end
+  end
+
+  context 'with a passed yaml file containing unsupported doc type and bad image metrics' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        classification_info:
+          Front:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: Country
+          Back:
+            ClassName: Identification Card
+            CountryCode: USA
+            IssuerType: StateProvince
+        image_metrics:
+          front:
+            HorizontalResolution: 50
+            VerticalResolution: 300
+            SharpnessMetric: 50
+            GlareMetric: 50
+          back:
+            HorizontalResolution: 300
+            VerticalResolution: 300,
+            SharpnessMetric: 50,
+            GlareMetric: 50
+      YAML
+    end
+    it 'returns doc type as not supported and generate errors for doc type' do
+      expect(response.doc_type_supported?).to eq(false)
+      expect(response.errors).to eq(
+        general: [DocAuth::Errors::DOC_TYPE_CHECK],
+        front: [DocAuth::Errors::CARD_TYPE],
+        hints: true,
+      )
+      expect(response.exception).to be_nil
+      expect(response.success?).to eq(false)
+    end
+  end
+
+  context 'with a yaml file that does not include classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+      YAML
+    end
+    it 'successfully extracts PII' do
+      expect(response.pii_from_doc).to_not be_blank
+    end
+  end
+  context 'with a yaml file that includes classification info' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Jane
+          last_name: Doe
+          middle_name: Q
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
+    end
+  end
+  context 'with a yaml file that includes classification info but missing pii' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Passed
+        document:
+          city: Bayside
+          state: NY
+          zipcode: '11364'
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+          state_id_jurisdiction: 'ND'
+        failed_alerts: []
+        classification_info:
+          Front:
+            ClassName: Drivers License
+            CountryCode: USA
+          Back:
+            ClassName: Drivers License
+            CountryCode: USA
+      YAML
+    end
+    it 'successfully extracts classification info' do
+      classification_info = response.extra[:classification_info].deep_symbolize_keys
+      expect(classification_info).to eq(
+        {
+          Front: { ClassName: 'Drivers License',
+                   CountryCode: 'USA' },
+          Back: { ClassName: 'Drivers License', CountryCode: 'USA' },
+        },
+      )
+    end
+  end
+
+  context 'when a selfie check is performed' do
+    describe 'and it is successful' do
+      let(:input) do
+        <<~YAML
+          portrait_match_results:
+            FaceMatchResult: Pass
+            FaceErrorMessage: 'Successful. Liveness: Live'
+          doc_auth_result: Passed
+          failed_alerts: []
+        YAML
+      end
+      let(:selfie_required) { true }
+
+      it 'returns the expected values' do
+        selfie_results = {
+          FaceMatchResult: 'Pass',
+          FaceErrorMessage: 'Successful. Liveness: Live',
+        }
+
+        expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(true)
+        expect(response.extra[:portrait_match_results]).to eq(selfie_results)
+        expect(response.doc_auth_success?).to eq(true)
+        expect(response.selfie_status).to eq(:success)
+      end
+    end
+
+    # TODO update this test, looks like the same problem as in error_generator_spec.rb
+    describe 'and it is not successful' do
+      let(:input) do
+        <<~YAML
+          portrait_match_results:
+            FaceMatchResult: Fail
+            FaceErrorMessage: 'Successful. Liveness: Live'
+          doc_auth_result: Passed
+          failed_alerts: []
+        YAML
+      end
+      let(:selfie_required) { true }
+
+      it 'returns the expected values' do
+        selfie_results = {
+          FaceMatchResult: 'Fail',
+          FaceErrorMessage: 'Successful. Liveness: Live',
+        }
+
+        expect(response.selfie_check_performed?).to eq(true)
+        expect(response.success?).to eq(false)
+        expect(response.extra[:portrait_match_results]).to eq(selfie_results)
+        expect(response.doc_auth_success?).to eq(true)
+        expect(response.selfie_status).to eq(:fail)
+        expect(response.extra[:liveness_checking_required]).to eq(true)
+      end
+    end
+  end
+
+  context 'when a selfie check is not performed' do
+    let(:input) { DocAuthImageFixtures.document_front_image }
+    let(:selfie_required) { false }
+
+    it 'returns the expected values' do
+      expect(response.selfie_check_performed?).to eq(false)
+      expect(response.extra[:portrait_match_results]).to be_nil
+      expect(response.doc_auth_success?).to eq(true)
+      expect(response.selfie_status).to eq(:not_processed)
+      expect(response.extra[:liveness_checking_required]).to eq(false)
     end
   end
 end

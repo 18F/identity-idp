@@ -88,12 +88,12 @@ RSpec.describe DocAuth::LexisNexis::Request do
         end
 
         it 'includes information on the error' do
-          response = subject.fetch
           expected_message = [
             subject.class.name,
             'Unexpected HTTP response',
             status,
           ].join(' ')
+          response = subject.fetch
 
           expect(response.exception.message).to eq(expected_message)
         end

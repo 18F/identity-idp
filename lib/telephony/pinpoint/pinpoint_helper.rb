@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   module Pinpoint
     module PinpointHelper
@@ -11,7 +13,7 @@ module Telephony
             channel: channel,
           ),
         )
-        Telephony.config.logger.warn(response.to_h.to_json)
+        Telephony.log_warn(event: response.to_h)
       end
 
       # @return [Response]
@@ -24,7 +26,7 @@ module Telephony
           },
         )
 
-        Telephony.config.logger.warn(response.to_h.to_json)
+        Telephony.log_warn(event: response.to_h)
 
         response
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalKeyConfiguration
   # This is a wrapping class that lets us interface with the personal key configuration in a
   # manner consistent with phone and webauthn configurations.
@@ -13,7 +15,7 @@ class PersonalKeyConfiguration
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::PersonalKeySelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::SignInPersonalKeySelectionPresenter.new(user:, configuration: self)]
     else
       []
     end

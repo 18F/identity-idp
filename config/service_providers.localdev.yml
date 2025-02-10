@@ -213,8 +213,24 @@ test:
     certs:
       - 'saml_test_sp'
     friendly_name: 'Test SP'
+    return_to_sp_url: 'https://example.com/'
     assertion_consumer_logout_service_url: ''
     ial: 2
+    allow_prompt_login: true
+    post_idv_follow_up_url: http://localhost/post_idv_follow_up_url
+
+  'urn:gov:gsa:openidconnect:sp:server_ial1':
+    agency_id: 2
+    redirect_uris:
+      - 'http://localhost:7654/auth/result'
+      - 'https://example.com'
+      - 'http://www.example.com/test/oidc'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Test SP'
+    return_to_sp_url: 'https://example.com/'
+    assertion_consumer_logout_service_url: ''
+    ial: 1
     allow_prompt_login: true
 
   'urn:gov:gsa:openidconnect:sp:server_two':
@@ -251,14 +267,14 @@ test:
     ial: 2
     help_text:
       sign_in:
-        en: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
+        en: <strong>First time here from %{sp_name}?</strong><p>Your old %{sp_name} username
           and password won’t work. Please <a href=%{sp_create_link}>create a Login.gov account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
           more</a>
-        es: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
+        es: <strong>¿Ha venido de %{sp_name}?</strong><p>Si tiene un perfil de %{sp_name}
           existente, favor de usar la dirección de correo electrónico primaria o secundaria
           que usó para %{sp_name} para <a href=%{sp_create_link}>crear un nueva cuenta
           de Login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
-        fr: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
+        fr: <strong>Êtes-vous venu(e) de %{sp_name}?</strong><p> Si vous avez déjà un profil
           %{sp_name}, veuillez utiliser l'adresse e-mail principale ou secondaire
           que vous avez utilisée pour %{sp_name} pour <a href=%{sp_create_link}> créer
           votre nouveau compte Login.gov</a> <p><a href="https://login.gov/help/">En
@@ -359,7 +375,7 @@ development:
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
     agency_id: 1
-    friendly_name: 'Test SAML SP'
+    friendly_name: 'Example SAML App'
     acs_url: 'http://localhost:4567/consume'
     sp_initiated_login_url: 'http://localhost:4567/test/saml'
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
@@ -425,13 +441,30 @@ development:
     agency_id: 1
     ial: 2
     push_notification_url: http://localhost:9292/api/push_notifications
+    return_to_sp_url: 'http://localhost:9292'
     redirect_uris:
       - 'http://localhost:9292/'
       - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/logout'
     certs:
       - 'sp_sinatra_demo'
-    friendly_name: 'Example Sinatra App'
+    friendly_name: 'Example OIDC App'
+    in_person_proofing_enabled: true
+
+  'urn:gov:gsa:openidconnect:sp:sinatra_pkce':
+    agency_id: 1
+    ial: 2
+    push_notification_url: http://localhost:9292/api/push_notifications
+    return_to_sp_url: 'http://localhost:9292'
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'http://localhost:9292/auth/result'
+      - 'http://localhost:9292/logout'
+    certs:
+      - 'sp_sinatra_demo'
+    friendly_name: 'Example OIDC App with PKCE'
+    in_person_proofing_enabled: true
+    pkce: true
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
     agency: 'GSA'
@@ -463,6 +496,18 @@ development:
       - 'http://localhost:4000/'
       - 'http://localhost:4000/auth/result'
 
+  'urn:gov:gsa:openidconnect:sp:test':
+    agency_id: 1
+    ial: 2
+    return_to_sp_url: 'http://localhost:3000'
+    redirect_uris:
+      - 'http://localhost:3000/'
+      - 'http://localhost:3000/test/oidc/auth_result'
+    certs:
+      - 'sp_sinatra_demo'
+    friendly_name: 'Example Test OIDC SP'
+    in_person_proofing_enabled: true
+
 # These are fake production service providers needed for the
 # ServiceProviderSeeder tests. They are not actually used in production.
 #
@@ -481,3 +526,9 @@ production:
 
   'urn:gov:login:test-providers:fake-unrestricted-sp':
     friendly_name: 'Fake/Test stub SP, env unrestricted'
+
+  'urn:gov:login:test-providers:fake-sandbox-sp':
+    friendly_name: 'Fake/Test stub SP, sandbox SP with env-specific hostname'
+    redirect_uris:
+      - 'https://%{env}.example.com'
+    restrict_to_deploy_env: 'sandbox'

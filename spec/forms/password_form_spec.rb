@@ -1,80 +1,148 @@
 require 'rails_helper'
 
-describe PasswordForm, type: :model do
-  subject { PasswordForm.new(build_stubbed(:user)) }
+RSpec.describe PasswordForm, type: :model do
+  subject(:form) { described_class.new(user: user) }
+  let(:user) { build_stubbed(:user, uuid: '123') }
+  let(:password) { 'Valid Password!' }
+  let(:password_confirmation) { password }
+  let(:extra) do
+    {
+      user_id: user.uuid,
+      request_id_present: request_id_present,
+    }
+  end
 
   it_behaves_like 'password validation'
   it_behaves_like 'strong password', 'PasswordForm'
 
   describe '#submit' do
+    subject(:result) { form.submit(params) }
+    let(:params) do
+      {
+        password: password,
+        password_confirmation: password_confirmation,
+      }
+    end
+
     context 'when the form is valid' do
+      let(:request_id_present) { false }
+
       it 'returns true' do
-        user = build_stubbed(:user)
-
-        form = PasswordForm.new(user)
-        password = 'valid password'
-        extra = {
-          user_id: user.uuid,
-          request_id_present: false,
-        }
-
-        result = form.submit(password: password)
-
         expect(result.success?).to eq true
         expect(result.extra).to eq extra
+      end
+
+      context 'with password confirmation' do
+        subject(:form) { described_class.new(user: user) }
+
+        let(:password_confirmation) { password }
+
+        it 'returns false' do
+          expect(result.success?).to eq true
+        end
       end
     end
 
     context 'when the form is invalid' do
-      it 'returns false' do
-        user = build_stubbed(:user, uuid: '123')
+      let(:password) { 'invalid' }
 
-        form = PasswordForm.new(user)
-        password = 'invalid'
-        errors = {
-          password:
-            ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
-        }
-        extra = {
-          user_id: '123',
-          request_id_present: false,
-        }
+      context 'when password is invalid' do
+        let(:validation_error) do
+          t(
+            'errors.attributes.password.too_short.other',
+            count: Devise.password_length.first,
+          )
+        end
+        let(:request_id_present) { false }
 
-        result = form.submit(password: password)
-        expect(result.success?).to eq false
-        expect(result.errors).to eq errors
-        expect(result.extra).to eq extra
+        it 'returns false' do
+          expect(result.success?).to eq false
+          expect(result.errors[:password]).to include validation_error
+          expect(result.extra).to eq extra
+        end
+      end
+
+      context 'with password confirmation' do
+        subject(:form) { described_class.new(user: user) }
+
+        context 'when the passwords are invalid' do
+          let(:password_confirmation) { password }
+
+          let(:validation_error) do
+            [t(
+              'errors.attributes.password.too_short.other',
+              count: Devise.password_length.first,
+            )]
+          end
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password]).to eq(validation_error)
+          end
+        end
+
+        context 'when passwords do not match' do
+          let(:password_confirmation) { 'invalid_password_confirmation!' }
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password_confirmation])
+              .to include(t('errors.messages.password_mismatch'))
+          end
+        end
+
+        context 'when password confirmation is nil' do
+          let(:password_confirmation) { nil }
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password_confirmation]).to include(t('errors.messages.blank'))
+          end
+        end
       end
     end
 
-    context 'when the request_id is passed in the params' do
+    context 'with request_id in the params' do
+      let(:params) do
+        {
+          password: password,
+          password_confirmation: password,
+          request_id: 'foo',
+        }
+      end
+      let(:expected_response) do
+        {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          request_id_present: true,
+        }
+      end
+
       it 'tracks that it is present' do
-        user = build_stubbed(:user)
-        form = PasswordForm.new(user)
-        password = 'valid password'
-        extra = {
-          user_id: user.uuid,
-          request_id_present: true,
-        }
-
-        result = form.submit(password: password, request_id: 'foo')
-        expect(result.success?).to eq true
-        expect(result.extra).to eq extra
+        expect(result.to_h).to eq(expected_response)
       end
-    end
 
-    context 'when the request_id is not properly encoded' do
-      it 'does not throw an exception' do
-        user = build_stubbed(:user)
-        form = PasswordForm.new(user)
-        password = 'valid password'
-        extra = {
-          user_id: user.uuid,
-          request_id_present: true,
-        }
-        result = form.submit(password: password, request_id: "\xFFbar\xF8")
-        expect(result.success?).to eq true
-        expect(result.extra).to eq extra
+      context 'when the request_id is not properly encoded' do
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password,
+            request_id: "\xFFbar\xF8",
+          }
+        end
+        let(:expected_response) do
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            request_id_present: true,
+          }
+        end
+
+        it 'does not throw an exception' do
+          expect(result.to_h).to eq(expected_response)
+        end
       end
     end
   end

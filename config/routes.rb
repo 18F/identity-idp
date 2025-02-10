@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
-  get '/api/analytics-events' => 'analytics_events#index'
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
@@ -11,27 +12,50 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
+
+  post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
+  match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+
+  post '/api/webhooks/socure/event' => 'socure_webhook#create'
+
+  namespace :api do
+    namespace :internal do
+      get '/sessions' => 'sessions#show'
+      put '/sessions' => 'sessions#update'
+
+      namespace :two_factor_authentication do
+        put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
+        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil
+        put '/webauthn/:id' => 'webauthn#update', as: :webauthn
+        delete '/webauthn/:id' => 'webauthn#destroy', as: nil
+        put '/auth_app/:id' => 'auth_app#update', as: :auth_app
+        delete '/auth_app/:id' => 'auth_app#destroy', as: nil
+      end
+    end
+  end
 
   # SAML secret rotation paths
-  SamlEndpoint.suffixes.each do |suffix|
-    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
-    match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
-    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post]
+  constraints(path_year: SamlEndpoint.suffixes) do
+    get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
+    match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete],
+          as: :api_saml_logout
+    match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post],
+          as: :api_saml_remotelogout
     # JS-driven POST redirect route to preserve existing session
-    post "/api/saml/auth#{suffix}" => 'saml_post#auth'
+    post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
     # actual SAML handling POST route
-    post "/api/saml/authpost#{suffix}" => 'saml_idp#auth'
-    get "/api/saml/auth#{suffix}" => 'saml_idp#auth'
+    post '/api/saml/authpost(:path_year)' => 'saml_idp#auth', as: :api_saml_authpost
+    # The internal auth post which will not be logged as an external request
+    post '/api/saml/finalauthpost(:path_year)' => 'saml_idp#auth', as: :api_saml_finalauthpost
+    get '/api/saml/auth(:path_year)' => 'saml_idp#auth'
   end
+  get '/api/saml/complete' => 'saml_completion#index', as: :complete_saml
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
 
-  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  get '/openid_connect/logout' => 'openid_connect/logout#index'
-
+  get '/robots.txt' => 'robots#index'
   get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
   # i18n routes. Alphabetically sorted.
@@ -57,7 +81,8 @@ Rails.application.routes.draw do
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
-      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show', as: :forget_all_browsers
+      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show',
+          as: :forget_all_browsers
       delete '/account/forget_all_browsers' => 'users/forget_all_browsers#destroy'
 
       get '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#show',
@@ -69,8 +94,6 @@ Rails.application.routes.draw do
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       delete '/logout' => 'users/sessions#destroy'
-      get '/active' => 'users/sessions#active'
-      post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
       get '/login/piv_cac_error' => 'users/piv_cac_login#error'
@@ -96,6 +119,9 @@ Rails.application.routes.draw do
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
       post '/login/two_factor/options' => 'two_factor_authentication/options#create'
 
+      get '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#show'
+      post '/login/two_factor/piv_cac_mismatch' => 'two_factor_authentication/piv_cac_mismatch#create'
+
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
@@ -103,7 +129,6 @@ Rails.application.routes.draw do
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
-      get '/login/two_factor/webauthn_error' => 'two_factor_authentication/webauthn_verification#error'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
       post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -117,24 +142,29 @@ Rails.application.routes.draw do
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
-      get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
-      post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-      get 'login/additional_mfa_required' => 'users/additional_mfa_required#show'
-      post 'login/additional_mfa_required/skip' => 'users/additional_mfa_required#skip'
-
-      get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
-      post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
-      get '/timeout' => 'users/sessions#timeout'
+      get 'login/piv_cac_recommended' => 'users/piv_cac_recommended#show'
+      post 'login/piv_cac_recommended/add' => 'users/piv_cac_recommended#confirm'
+      post 'login/piv_cac_recommended/skip' => 'users/piv_cac_recommended#skip'
     end
 
     if IdentityConfig.store.enable_test_routes
       namespace :test do
+        get '/ipp' => 'ipp#index'
+        put '/ipp' => 'ipp#update'
+
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
         get '/saml' => 'saml_test#start'
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+
+        get '/oidc/login' => 'oidc_test#index'
+        get '/oidc' => redirect('/test/oidc/auth_request', status: 302)
+        get '/oidc/auth_request' => 'oidc_test#auth_request'
+        get '/oidc/auth_result' => 'oidc_test#auth_result'
+        get '/oidc/logout' => 'oidc_test#logout'
+
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
 
@@ -150,11 +180,18 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+      mount Lookbook::Engine, at: '/components'
+    end
+
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe
       post '/test/device_profiling' => 'test/device_profiling#create'
     end
+
+    get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
@@ -167,6 +204,11 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    get '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#edit',
+        as: :edit_connected_account_selected_email
+    patch '/account/connected_accounts/:identity_id/selected_email' => 'accounts/connected_accounts/selected_email#update',
+          as: :connected_account_selected_email
+    post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
@@ -176,7 +218,8 @@ Rails.application.routes.draw do
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
     get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password
-    put '/account/reactivate/verify_password' => 'users/verify_password#update', as: :update_verify_password
+    put '/account/reactivate/verify_password' => 'users/verify_password#update',
+        as: :update_verify_password
     get '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#new',
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
@@ -193,17 +236,20 @@ Rails.application.routes.draw do
     get '/rules_of_use' => 'users/rules_of_use#new'
     post '/rules_of_use' => 'users/rules_of_use#create'
 
+    get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
+    post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
+
+    get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
+    post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
-    delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-    post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
+    post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
+         as: :submit_new_piv_cac
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
-    delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-    get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
 
-    delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
@@ -222,157 +268,199 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    get '/add/phone' => 'users/phones#add'
-    post '/add/phone' => 'users/phones#create'
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
-
+    get '/manage/piv_cac/:id' => 'users/piv_cac#edit', as: :edit_piv_cac
+    put '/manage/piv_cac/:id' => 'users/piv_cac#update', as: :piv_cac
+    delete '/manage/piv_cac/:id' => 'users/piv_cac#destroy', as: nil
+    get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
+    put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
+    delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
+    get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
+    put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
+    delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
     post '/account/personal_key' => 'accounts/personal_keys#create'
+
+    get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+    get '/openid_connect/logout' => 'openid_connect/logout#show'
+    post '/openid_connect/logout' => 'openid_connect/logout#create'
+    delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options', to: redirect('/authentication_methods_setup')
-    patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
-    get '/second_mfa_setup' => 'users/mfa_selection#index'
-    patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
-    patch '/phone_setup' => 'users/phone_setup#create'
-    get '/aal3_required' => 'users/aal3#show'
+    post '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
-    get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
+    get '/backup_code_reminder' => 'users/backup_code_reminder#show'
+    post '/backup_code_reminder' => 'users/backup_code_reminder#update'
+    get '/backup_code_confirm_setup' => 'users/backup_code_setup#new'
+    post '/backup_code_setup' => 'users/backup_code_setup#create'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
-    patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
-    get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
+    get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
-    get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
-    get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
-
-    get '/profile', to: redirect('/account')
-    get '/profile/reactivate', to: redirect('/account/reactivate')
-    get '/profile/verify', to: redirect('/account/verify')
+    get '/user_please_call' => 'users/please_call#show'
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
         as: :sign_up_create_email_confirmation
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
+    get '/sign_up/select_email' => 'sign_up/select_email#show'
+    post '/sign_up/select_email' => 'sign_up/select_email#create'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'
     get '/user_authorization_confirmation' => 'users/authorization_confirmation#new'
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
-    match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy', as: :reset_user_authorization, via: %i[put delete]
+    match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy',
+          as: :reset_user_authorization, via: %i[put delete]
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
+    get '/redirect/return_to_sp/account_verified_cta' => 'idv/account_verified_cta_visited#show', as: :account_verified_sign_in_redirect
+
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
-    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
+    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
+        as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
+    get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
+    get '/redirect/marketing' => 'redirect/marketing_site#show', as: :marketing_site_redirect
+    get '/sign_up/completed/cancel/' => 'completions_cancellation#show'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     get '/restricted' => 'banned_user#show', as: :banned_user
+
+    get '/errors/idv_unavailable' => 'idv/unavailable#show', as: :idv_unavailable
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
-      get '/come_back_later' => 'come_back_later#show'
+      get '/mail_only_warning' => 'mail_only_warning#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
-      get '/otp_delivery_method' => 'otp_delivery_method#new'
-      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/agreement' => 'agreement#show'
+      put '/agreement' => 'agreement#update'
+      get '/how_to_verify' => 'how_to_verify#show'
+      put '/how_to_verify' => 'how_to_verify#update'
+      get '/document_capture' => 'document_capture#show'
+      put '/document_capture' => 'document_capture#update'
+      get '/in_person/direct' => 'document_capture#direct_in_person'
+      get '/socure/document_capture' => 'socure/document_capture#show'
+      get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
+      get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
+      get '/socure/errors/timeout' => 'socure/errors#timeout'
+      # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
+      # should be kept short, and should not include underscores ("_").
+      get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
+      get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
+      put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
+      get '/hybrid_mobile/in_person/direct' => 'hybrid_mobile/document_capture#direct_in_person'
+      get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
+      get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
+      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/socure/errors/timeout' => 'hybrid_mobile/socure/errors#timeout'
+      get '/hybrid_handoff' => 'hybrid_handoff#show'
+      put '/hybrid_handoff' => 'hybrid_handoff#update'
+      get '/link_sent' => 'link_sent#show'
+      put '/link_sent' => 'link_sent#update'
+      get '/link_sent/poll' => 'link_sent_poll#show'
+      get '/ssn' => 'ssn#show'
+      put '/ssn' => 'ssn#update'
+      get '/verify_info' => 'verify_info#show'
+      put '/verify_info' => 'verify_info#update'
+      get '/welcome' => 'welcome#show'
+      put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
-      get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
+      get '/phone/errors/jobfail' => 'phone_errors#jobfail'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/phone/errors/warning' => 'phone_errors#warning'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
-      get '/review' => 'review#new'
-      put '/review' => 'review#create'
+      get '/enter_password' => 'enter_password#new'
+      put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
+      get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
-      get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/setup_errors' => 'setup_errors#show'
+      get '/session/errors/rate_limited' => 'session_errors#rate_limited'
+      get '/not_verified' => 'not_verified#show'
+      get '/please_call' => 'please_call#show'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      get '/doc_auth' => 'doc_auth#index'
-      get '/doc_auth/return_to_sp' => 'doc_auth#return_to_sp'
-      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-      put '/doc_auth/:step' => 'doc_auth#update'
-      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
-      get '/doc_auth/errors/no_camera' => 'doc_auth#no_camera'
-      get '/capture_doc' => 'capture_doc#index'
-      get '/capture-doc' => 'capture_doc#index',
+      get '/capture_doc' => 'hybrid_mobile/entry#show'
+      get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
-      get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
-      get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
-      put '/capture_doc/:step' => 'capture_doc#update'
-
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
-      get '/in_person/usps_locations' => 'in_person/usps_locations#index'
+      post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/state_id' => 'in_person/state_id#show'
+      put '/in_person/state_id' => 'in_person/state_id#update'
+      get '/in_person/address' => 'in_person/address#show'
+      put '/in_person/address' => 'in_person/address#update'
+      get '/in_person/ssn' => 'in_person/ssn#show'
+      put '/in_person/ssn' => 'in_person/ssn#update'
+      get '/in_person/verify_info' => 'in_person/verify_info#show'
+      put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
-      get '/inherited_proofing' => 'inherited_proofing#index'
-      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
-      put '/inherited_proofing/:step' => 'inherited_proofing#update'
-      get '/inherited_proofing/return_to_sp' => 'inherited_proofing#return_to_sp'
+      get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
+      post '/by_mail/enter_code' => 'by_mail/enter_code#create'
+      get '/by_mail/enter_code/rate_limited' => 'by_mail/enter_code_rate_limited#index',
+          as: :enter_code_rate_limited
+      get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
+          as: :confirm_start_over
+      get '/by_mail/confirm_start_over/before_letter' => 'confirm_start_over#before_letter',
+          as: :confirm_start_over_before_letter
 
-      # deprecated routes
-      get '/confirmations' => 'personal_key#show'
-      post '/confirmations' => 'personal_key#update'
-    end
-
-    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
-    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
-
-    namespace :api do
-      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
-      post '/verify/v2/password_reset' => 'verify/password_reset#create'
-      post '/verify/v2/document_capture' => 'verify/document_capture#create'
-      delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
-    end
-
-    get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
-    post '/account/verify' => 'idv/gpo_verify#create'
-    if FeatureManagement.enable_gpo_verification?
-      scope '/verify', module: 'idv', as: 'idv' do
-        get '/usps' => 'gpo#index', as: :gpo
-        put '/usps' => 'gpo#create'
-        post '/usps' => 'gpo#update'
+      if FeatureManagement.gpo_verification_enabled?
+        get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :request_letter
+        put '/by_mail/request_letter' => 'by_mail/request_letter#create'
+        get '/by_mail/resend_letter' => 'by_mail/resend_letter#new', as: :resend_letter
+        put '/by_mail/resend_letter' => 'by_mail/resend_letter#create'
       end
+
+      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :letter_enqueued
+      get '/by_mail/sp_follow_up' => 'by_mail/sp_follow_up#new', as: :sp_follow_up
+      get '/by_mail/sp_follow_up/connect' => 'by_mail/sp_follow_up#show', as: :sp_follow_up_connect
+      get '/by_mail/sp_follow_up/cancel' => 'by_mail/sp_follow_up#cancel', as: :sp_follow_up_cancel
+
+      # We re-mapped `/verify/by_mail` to `/verify/by_mail/enter_code`. However, we sent emails to
+      # users with a link to `/verify/by_mail?did_not_receive_letter=1`. We need to continue
+      # supporting that feature so we are maintaining this URL mapped to that action. Rendering a
+      # redirect here will strip the query parameter.
+      get '/by_mail' => 'by_mail/enter_code#index'
     end
 
     root to: 'users/sessions#new'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailConfirmationTokenValidator
   include ActiveModel::Model
 
@@ -7,7 +9,7 @@ class EmailConfirmationTokenValidator
   validate :email_not_already_confirmed, if: :email_address_found_with_token?
   validate :token_not_expired, if: :email_address_found_with_token?
 
-  def initialize(email_address, current_user = nil)
+  def initialize(email_address:, current_user: nil)
     @current_user = current_user
     @email_address = email_address
     @user = email_address&.user

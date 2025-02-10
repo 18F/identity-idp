@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IpGeocoder
   def initialize(ip)
     @ip = ip

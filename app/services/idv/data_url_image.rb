@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class DataUrlImage
     class InvalidUrlFormatError < StandardError; end
@@ -8,6 +10,11 @@ module Idv
       header, data = header_and_data.split(',', 2)
       @header = header
       @data = data
+    end
+
+    # @return [String]
+    def content_type
+      @header.split(';', 2).first
     end
 
     # @return [String]

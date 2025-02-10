@@ -1,7 +1,7 @@
 require 'rails_helper'
 # rubocop:disable Layout/LineLength
 
-describe 'Unchecking remember device' do
+RSpec.describe 'Unchecking remember device' do
   describe '2fa setup' do
     context 'when the 2fa is totp' do
       before do
@@ -10,13 +10,15 @@ describe 'Unchecking remember device' do
         select_2fa_option('auth_app')
 
         secret = find('#qr-code').text
-        fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+        fill_in_totp_name
         fill_in 'code', with: generate_totp_code(secret)
         uncheck 'remember_device'
 
         click_button 'Submit'
+        skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -41,8 +43,9 @@ describe 'Unchecking remember device' do
 
         mock_press_button_on_hardware_key_on_setup
         click_continue
+        skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -62,14 +65,15 @@ describe 'Unchecking remember device' do
 
         select_2fa_option('phone')
         fill_in 'new_phone_form[phone]', with: '202-555-1212'
-        click_send_security_code
+        click_send_one_time_code
         fill_in_code_with_last_phone_otp
 
         uncheck 'remember_device'
 
         click_submit_default
+        skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -82,14 +86,14 @@ describe 'Unchecking remember device' do
 
   describe '2fa verification' do
     context 'when the 2fa is totp' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
       before do
         sign_in_user(user)
         fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
         uncheck t('forms.messages.remember_device')
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -102,7 +106,7 @@ describe 'Unchecking remember device' do
     context 'when the 2fa is webauthn' do
       include WebAuthnHelper
 
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         create(
@@ -114,10 +118,9 @@ describe 'Unchecking remember device' do
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         mock_webauthn_verification_challenge
         sign_in_user(user)
-        mock_press_button_on_hardware_key_on_verification
         uncheck(:remember_device)
-        click_button t('forms.buttons.continue')
-        first(:link, t('links.sign_out')).click
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end
@@ -136,7 +139,7 @@ describe 'Unchecking remember device' do
         uncheck t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end

@@ -21,12 +21,11 @@ Dir.chdir APP_ROOT do
     _  /___/ /_/ /  /_/ /_  / _  / / /___  /_/ // /_/ /_ |/ /
     /_____/\____/_\__, / /_/  /_/ /_/_(_)\__, / \____/_____/
                  /____/                 /____/
-          |___/
   ]
 
   puts '== Setting up config overrides =='
   default_application_yml = { 'development' => { 'config_key' => nil } }
-  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exists?('config/application.yml')
+  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exist?('config/application.yml')
 
   puts "== Linking service_providers.yml =="
   run "test -r config/service_providers.yml || ln -sv service_providers.localdev.yml config/service_providers.yml"
@@ -51,30 +50,30 @@ Dir.chdir APP_ROOT do
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
   puts "\n== Installing dependencies =="
+  brew_installed = system "brew -v 2>&1"
+  run "brew bundle" if brew_installed
   run "gem install bundler --conservative"
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
-  run "gem install thin -v 1.5.1 -- --with-cflags=\"-Wno-error=implicit-function-declaration\""
-  run "gem install mailcatcher -- --with-cppflags=-I$(brew --prefix openssl@1.1)/include"
+
+  puts "\n== Stopping running services to ensure clean start =="
+  run "brew services stop --all" if brew_installed
+
+  puts "\n== Starting services =="
+  run "brew services start redis" if brew_installed
+  run "brew services start postgresql@14" if brew_installed
 
   puts "\n== Preparing database =="
-  run 'bin/rake db:create'
-  run 'bin/rake db:environment:set'
-  run 'bin/rake db:reset'
-  run 'bin/rake db:environment:set'
-  run 'bin/rake dev:prime'
-  run 'bin/rake parallel:setup'
+  run 'make clobber_db'
 
   puts "\n== Cleaning up old assets =="
-  run "bin/rake assets:clobber"
-  run "RAILS_ENV=test bin/rake assets:clobber"
+  run "make clobber_assets"
 
   puts "\n== Removing old logs and tempfiles =="
-  run "rm -f log/*"
-  run "rm -rf tmp/cache"
+  run "make clobber_logs"
 
   puts "\n== Restarting application server =="
-  run "mkdir -p tmp"
+  run "mkdir -p tmp/pids"
   run "touch tmp/restart.txt"
 end

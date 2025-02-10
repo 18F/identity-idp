@@ -1,17 +1,19 @@
+<% self.title = 'Outbound calls and messages' %>
+
 <%= content_for(:meta_refresh) { '15' } %>
 
 <h1>Outbound calls and messages</h1>
 
+<%= button_to 'Clear messages and calls', test_telephony_path, method: :delete, class: 'usa-button' %>
 
-<div class="card card-wide">
-  <div class="padding-4">
-    <%= button_to 'Clear messages and calls', test_telephony_path, method: :delete, class: 'usa-button' %>
-    <div class="grid-row grid-gap margin-top-2">
-      <div class="tablet:grid-col-6">
-        <h2>Messages</h2>
+<div class="grid-row grid-gap margin-top-2 flex-align-stretch">
+  <% [['Messages', @messages], ['Calls', @calls]].each do |title, messages| %>
+    <div class="tablet:grid-col-6">
+      <div class="card height-full">
+        <h2 class="margin-0"><%= title %></h2>
 
-        <% @messages.each do |message| %>
-          <div class="lg-card margin-bottom-4">
+        <% messages.each do |message| %>
+          <div class="margin-top-4">
             <p class="margin-y-05">
             <strong>To:</strong> <%= message.to %>
             </p>
@@ -24,24 +26,6 @@
           </div>
         <% end %>
       </div>
-
-      <div class="tablet:grid-col-6">
-        <h2>Calls</h2>
-
-        <% @calls.each do |call| %>
-          <div class="lg-card margin-bottom-4">
-            <p class="margin-y-05">
-            <strong>To:</strong> <%= call.to %>
-            </p>
-            <p class="margin-y-05">
-            <strong>Body:</strong> <%= call.body %>
-            </p>
-            <p class="margin-y-05">
-            <strong>Sent at:</strong> <%= call.sent_at.strftime(t('time.formats.event_timestamp')) %>
-            </p>
-          </div>
-        <% end %>
-      </div>
     </div>
-  </div>
+  <% end %>
 </div>

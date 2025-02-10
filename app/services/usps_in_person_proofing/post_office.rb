@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   PostOffice = Struct.new(
     :address,
     :city,
     :distance,
     :name,
-    :phone,
     :saturday_hours,
     :state,
     :sunday_hours,

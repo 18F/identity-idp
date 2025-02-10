@@ -1,22 +1,36 @@
+# frozen_string_literal: true
+
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+  include AccountResetConcern
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user
+  attr_reader :user,
+              :reauthentication_context,
+              :phishing_resistant_required,
+              :piv_cac_required,
+              :add_piv_cac_after_2fa
+
+  alias_method :reauthentication_context?, :reauthentication_context
+  alias_method :phishing_resistant_required?, :phishing_resistant_required
+  alias_method :piv_cac_required?, :piv_cac_required
+  alias_method :add_piv_cac_after_2fa?, :add_piv_cac_after_2fa
 
   def initialize(
     user:,
     view:,
-    user_session_context:,
+    reauthentication_context:,
     service_provider:,
-    aal3_required:,
-    piv_cac_required:
+    phishing_resistant_required:,
+    piv_cac_required:,
+    add_piv_cac_after_2fa:
   )
     @user = user
     @view = view
-    @user_session_context = user_session_context
+    @reauthentication_context = reauthentication_context
     @service_provider = service_provider
-    @aal3_required = aal3_required
+    @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
+    @add_piv_cac_after_2fa = add_piv_cac_after_2fa
   end
 
   def title
@@ -24,20 +38,39 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def heading
-    t('two_factor_authentication.login_options_title')
+    if reauthentication_context?
+      t('two_factor_authentication.login_options_reauthentication_title')
+    else
+      t('two_factor_authentication.login_options_title')
+    end
   end
 
   def info
-    t('two_factor_authentication.login_intro')
+    if reauthentication_context?
+      t('two_factor_authentication.login_intro_reauthentication')
+    else
+      t('two_factor_authentication.login_intro')
+    end
+  end
+
+  def restricted_options_warning_text
+    return if show_all_options?
+
+    if piv_cac_required?
+      t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name:)
+    elsif phishing_resistant_required?
+      t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name:)
+    end
   end
 
   def options
+    return @options if defined?(@options)
     mfa = MfaContext.new(user)
 
-    if @piv_cac_required
+    if piv_cac_required? && !show_all_options?
       configurations = mfa.piv_cac_configurations
-    elsif @aal3_required
-      configurations = mfa.aal3_configurations
+    elsif phishing_resistant_required? && !show_all_options?
+      configurations = mfa.phishing_resistant_configurations
     else
       configurations = mfa.two_factor_configurations
       # for now, we include the personal key since that's our current behavior,
@@ -52,7 +85,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     # webauthn keys and phones. However, we only want to show one of each option
     # during login, except for phones, where we want to allow the user to choose
     # which MFA-enabled phone they want to use.
-    configurations.group_by(&:class).flat_map { |klass, set| klass.selection_presenters(set) }
+    @options = configurations.group_by(&:class).flat_map do |klass, set|
+      klass.selection_presenters(set)
+    end
   end
 
   def account_reset_or_cancel_link
@@ -60,7 +95,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def cancel_link
-    if UserSessionContext.reauthentication_context?(@user_session_context)
+    if reauthentication_context?
       account_path
     else
       sign_out_path
@@ -73,10 +108,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   private
 
+  def show_all_options?
+    reauthentication_context? || add_piv_cac_after_2fa?
+  end
+
   def account_reset_link
     t(
       'two_factor_authentication.account_reset.text_html',
-      link: @view.link_to(
+      link_html: @view.link_to(
         t('two_factor_authentication.account_reset.link'),
         account_reset_url(locale: LinkLocaleResolver.locale),
       ),
@@ -84,18 +123,22 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_url(locale:)
-    IdentityConfig.store.show_account_recovery_recovery_options ?
-      account_reset_recovery_options_path(locale: locale) :
-        account_reset_request_path(locale: locale)
+    account_reset_recovery_options_path(locale: locale)
   end
 
   def account_reset_cancel_link
-    t(
-      'two_factor_authentication.account_reset.pending_html',
-      cancel_link: @view.link_to(
-        t('two_factor_authentication.account_reset.cancel_link'),
-        account_reset_cancel_url(token: account_reset_token),
-      ),
+    safe_join(
+      [
+        t(
+          'two_factor_authentication.account_reset.pending',
+          interval: account_reset_deletion_period_interval(user),
+        ),
+        @view.link_to(
+          t('two_factor_authentication.account_reset.cancel_link'),
+          account_reset_cancel_url(token: account_reset_token),
+        ),
+      ],
+      ' ',
     )
   end
 
@@ -105,5 +148,13 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_token_valid?
     user&.account_reset_request&.granted_token_valid?
+  end
+
+  def sp_name
+    if service_provider
+      service_provider.friendly_name
+    else
+      APP_NAME
+    end
   end
 end

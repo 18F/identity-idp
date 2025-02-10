@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module FullyAuthenticatable
-  def delete_branded_experience
+  def delete_branded_experience(logout: false)
     ServiceProviderRequestProxy.delete(request_id)
+    session[:sp] = {} if logout
+    nil
   end
 
   def request_id

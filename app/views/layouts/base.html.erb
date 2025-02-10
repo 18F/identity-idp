@@ -3,85 +3,64 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta content="<%= APP_NAME %>" name="description" />
-  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
-  <meta content="none" name="msapplication-config" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="telephone=no" name="format-detection" />
+  <meta name="description" content="<%= APP_NAME %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="og:site_name" content="<%= APP_NAME %>" />
 
   <% if content_for?(:meta_refresh) %>
   <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
   <% end %>
 
-  <% if session_with_trust? || FeatureManagement.disallow_all_web_crawlers? %>
-  <meta content="noindex,nofollow" name="robots" />
-  <% end %>
-
-  <%= content_tag(
-        'title',
-        content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
-      ) %>
+  <title><%= title %> | <%= APP_NAME %></title>
 
   <%= javascript_tag(nonce: true) do %>
-    document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
+    document.documentElement.classList.replace('no-js', 'js');
   <% end %>
-  <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
-  <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>
-  <%= stylesheet_link_tag 'application', media: 'all' %>
-  <!--[if IE 8]>
-  <%= javascript_include_tag_without_preload 'es5-shim.min' %>
-  <![endif]-->
+  <%= preload_link_tag font_path('public-sans/PublicSans-Bold.woff2') %>
+  <%= preload_link_tag font_path('public-sans/PublicSans-Regular.woff2') %>
+  <%= stylesheet_link_tag 'application', nopush: false %>
+  <%= render_stylesheet_once_tags %>
+  <%= stylesheet_link_tag 'utilities', nopush: false %>
+  <%= stylesheet_link_tag 'print', media: :print, preload_links_header: false %>
   <%= csrf_meta_tags %>
 
-  <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
-  <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
-  <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
-  <link href="/manifest.json" rel="manifest" />
-  <link color="#e21c3d" href="/safari-pinned-tab.svg" rel="mask-icon" />
-  <meta content="#ffffff" name="theme-color" />
+  <%= favicon_link_tag(
+        asset_path('favicons/apple-touch-icon.png'),
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        asset_path('favicons/favicon-40.png'),
+        rel: 'icon',
+        sizes: '40x40',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        asset_path('favicons/favicon-16.png'),
+        rel: 'icon',
+        sizes: '16x16',
+        type: 'image/png',
+      ) %>
+  <%= favicon_link_tag(
+        asset_path('favicons/safari-pinned-tab.svg'),
+        rel: 'mask-icon',
+        color: '#e21c3d',
+        type: nil,
+      ) %>
 
-  <!--[if lt IE 9]>
-  <%= javascript_include_tag_without_preload 'html5shiv' %>
-  <%= javascript_include_tag_without_preload 'respond.min' %>
-  <![endif]-->
-
-  <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
-  <%= render 'shared/newrelic/browser_instrumentation' %>
+  <%# Prelude script for error tracking (see `track-errors`) %>
+  <%= javascript_tag(nonce: true) do %>
+    _e=[],addEventListener("error",(e)=>_e.push(e));
   <% end %>
 
   <%= yield(:head) if content_for?(:head) %>
 </head>
 
-<body class="site <%= yield(:background_cls) %>">
-  <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
-  <div class="usa-overlay"></div>
-  <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
-  <%= render 'shared/banner' %>
-  <main class="site-wrap bg-primary-lighter" id="main-content">
-    <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
-      <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
-      <%= render FlashComponent.new(flash: flash) %>
-      <%= content_for?(:content) ? yield(:content) : yield %>
-    </div>
-  </main>
-
-  <%= render 'shared/footer_lite' %>
-
-  <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
-    <%= render partial: 'session_timeout/ping',
-               locals: {
-                 timeout_url: timeout_url,
-                 warning: session_timeout_warning,
-                 start: session_timeout_start,
-                 frequency: session_timeout_frequency,
-                 modal: session_modal,
-               } %>
-  <% elsif !@skip_session_expiration %>
-    <%= render partial: 'session_timeout/expire_session',
-               locals: {
-                 session_timeout_in: Devise.timeout_in,
-               } %>
-  <% end %>
+<%= content_tag(:body, class: local_assigns[:body_class]) do %>
+  <%= yield %>
 
   <%= content_tag(
         :script,
@@ -92,10 +71,8 @@
         { type: 'application/json', data: { config: '' } },
         false,
       ) %>
-  <%= javascript_packs_tag_once('application', prepend: true) %>
+  <%= javascript_packs_tag_once('track-errors', defer: true, preload_links_header: false) if BrowserSupport.supported?(request.user_agent) %>
   <%= render_javascript_pack_once_tags %>
-
-  <%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap && !session_with_trust? %>
-</body>
+<% end %>
 
 </html>

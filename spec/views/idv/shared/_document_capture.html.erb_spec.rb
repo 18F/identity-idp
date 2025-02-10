@@ -1,33 +1,37 @@
 require 'rails_helper'
 
-describe 'idv/shared/_document_capture.html.erb' do
+RSpec.describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
-  let(:async_uploads_enabled) { false }
-  let(:flow_session) { {} }
+  let(:document_capture_session_uuid) { nil }
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuer) { nil }
-  let(:front_image_upload_url) { nil }
-  let(:back_image_upload_url) { nil }
-  let(:selfie_image_upload_url) { nil }
-  let(:native_camera_a_b_testing_enabled) { false }
-  let(:native_camera_only) { false }
+  let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
+  let(:use_alternate_sdk) { false }
+  let(:selfie_capture_enabled) { true }
+
+  let(:acuant_version) { '1.3.3.7' }
+  let(:skip_doc_auth_from_how_to_verify) { false }
+  let(:skip_doc_auth_from_handoff) { false }
+  let(:skip_doc_auth_from_socure) { false }
+  let(:socure_errors_timeout_url) { idv_socure_errors_timeout_url }
+  let(:opted_in_to_in_person_proofing) { false }
+  let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
+  let(:mock_client) { false }
 
   before do
-    decorated_session = instance_double(
-      ServiceProviderSessionDecorator,
+    decorated_sp_session = instance_double(
+      ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
-    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
-      and_return(async_uploads_enabled)
     allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?) do |issuer|
       if issuer.nil?
         in_person_proofing_enabled
@@ -36,52 +40,26 @@ describe 'idv/shared/_document_capture.html.erb' do
       end
     end
 
-    assign(:step_url, :idv_doc_auth_step_url)
+    assign(:presenter, presenter)
   end
 
   subject(:render_partial) do
     render partial: 'idv/shared/document_capture', locals: {
-      flow_session: flow_session,
+      document_capture_session_uuid: document_capture_session_uuid,
       sp_name: sp_name,
       flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,
-      front_image_upload_url: front_image_upload_url,
-      back_image_upload_url: back_image_upload_url,
-      selfie_image_upload_url: selfie_image_upload_url,
-      native_camera_a_b_testing_enabled: native_camera_a_b_testing_enabled,
-      native_camera_only: native_camera_only,
+      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
+      use_alternate_sdk: use_alternate_sdk,
+      acuant_version: acuant_version,
+      doc_auth_selfie_capture: selfie_capture_enabled,
+      skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
+      skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
+      skip_doc_auth_from_socure: skip_doc_auth_from_socure,
+      socure_errors_timeout_url: socure_errors_timeout_url,
+      opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
+      mock_client: mock_client,
     }
-  end
-
-  describe 'async upload urls' do
-    context 'when async upload is disabled' do
-      let(:async_uploads_enabled) { false }
-
-      it 'does not modify CSP connect_src headers' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to eq(
-          ["'self'", '*.nr-data.net'],
-        )
-      end
-    end
-
-    context 'when async upload are enabled' do
-      let(:async_uploads_enabled) { true }
-      let(:front_image_upload_url) { 'https://s3.example.com/bucket/a?X-Amz-Security-Token=UAOL2' }
-      let(:back_image_upload_url) { 'https://s3.example.com/bucket/b?X-Amz-Security-Token=UAOL2' }
-      let(:selfie_image_upload_url) { 'https://s3.example.com/bucket/c?X-Amz-Security-Token=UAOL2' }
-
-      it 'does modifies CSP connect_src headers to include upload urls' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to include('https://s3.example.com/bucket/a')
-        expect(connect_src).to include('https://s3.example.com/bucket/b')
-        expect(connect_src).to include('https://s3.example.com/bucket/c')
-      end
-    end
   end
 
   describe 'in person url' do
@@ -127,6 +105,64 @@ describe 'idv/shared/_document_capture.html.erb' do
             )
           end
         end
+      end
+    end
+  end
+  describe 'view variables sent correctly' do
+    it 'sends selfie_capture_enabled to the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-doc-auth-selfie-capture='true']",
+      )
+    end
+
+    it 'sends skip_doc_auth_from_how_to_verify to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-how-to-verify='false']",
+      )
+    end
+
+    it 'sends skip_doc_auth_from_handoff to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-handoff='false']",
+      )
+    end
+
+    it 'sends skip_doc_auth_from_socure to in the frontend' do
+      render_partial
+      expect(rendered).to have_css(
+        "#document-capture-form[data-skip-doc-auth-from-socure='false']",
+      )
+    end
+
+    context 'when doc_auth_selfie_capture is false' do
+      let(:selfie_capture_enabled) { false }
+      it 'does not send doc_auth_selfie_capture to the FE' do
+        render_partial
+        expect(rendered).to have_css(
+          "#document-capture-form[data-doc-auth-selfie-capture='false']",
+        )
+      end
+    end
+
+    context 'when not using doc auth mock client' do
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).not_to have_css(
+          '#document-capture-form[data-mock-client]',
+        )
+      end
+    end
+
+    context 'when using doc auth mock client' do
+      let(:mock_client) { true }
+      it 'contains mock-client-data in metadata' do
+        render_partial
+        expect(rendered).to have_css(
+          '#document-capture-form[data-mock-client]',
+        )
       end
     end
   end

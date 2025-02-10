@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module X509
   Attributes = Struct.new(
     :subject, :issuer, :presented
@@ -29,10 +31,12 @@ module X509
 
     private
 
+    # rubocop:disable Lint/SelfAssignment
     def assign_all_members
       self.class.members.each do |member|
         self[member] = self[member]
       end
     end
+    # rubocop:enable Lint/SelfAssignment
   end
 end

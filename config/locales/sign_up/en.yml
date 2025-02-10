@@ -1,8 +1,0 @@
----
-en:
-  sign_up:
-    agree_and_continue: Agree and continue
-    cancel:
-      success: Your account has been deleted. We did not save your information.
-      warning_header: 'If you cancel now:'
-    terms: I read and accept the %{app_name}

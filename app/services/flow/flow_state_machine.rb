@@ -1,16 +1,19 @@
+# frozen_string_literal: true
+
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
+    include OptInHelper
 
     included do
-      before_action :fsm_initialize
+      before_action :initialize_flow_state_machine
       before_action :ensure_correct_step, only: :show
     end
 
     attr_accessor :flow
 
     def index
-      redirect_to_step(next_step)
+      redirect_to idv_in_person_state_id_url
     end
 
     def show
@@ -20,11 +23,15 @@ module Flow
 
     def update
       step = current_step
+
+      return render_not_found unless flow.step_handler_instance(step).present?
+
       result = flow.handle(step)
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
-      end
+
+      analytics.public_send(
+        flow.step_handler_instance(step).analytics_submitted_event,
+        **result.to_h.merge(analytics_properties),
+      )
 
       register_update_step(step, result)
       if flow.json
@@ -46,10 +53,11 @@ module Flow
     end
 
     def track_step_visited
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_visited, analytics_properties)
-      end
+      analytics.public_send(
+        flow.step_handler(current_step).analytics_visited_event,
+        **analytics_properties,
+      )
+
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
     end
 
@@ -69,7 +77,7 @@ module Flow
       sp_session[:issuer]
     end
 
-    def fsm_initialize
+    def initialize_flow_state_machine
       klass = self.class
       flow = klass::FLOW_STATE_MACHINE_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
@@ -116,17 +124,21 @@ module Flow
     end
 
     def call_optional_show_step(optional_step)
-      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+      return unless @flow.class.const_defined?(:OPTIONAL_SHOW_STEPS)
       optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[optional_step]
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
 
-      if @analytics_id
-        optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name)
+      optional_show_step_name = optional_show_step.to_s.demodulize.underscore
+      optional_properties = result.to_h.merge(
+        step: optional_show_step_name,
+        analytics_id: @analytics_id,
+      )
 
-        analytics.track_event(analytics_optional_step, optional_properties)
-      end
+      analytics.public_send(
+        optional_show_step.analytics_optional_step_event,
+        **optional_properties,
+      )
 
       if next_step.to_s != optional_step
         if next_step_is_url
@@ -140,9 +152,9 @@ module Flow
     end
 
     def step_indicator_params
-      return if !flow.class.const_defined?('STEP_INDICATOR_STEPS')
+      return if !flow.class.const_defined?(:STEP_INDICATOR_STEPS)
       handler = flow.step_handler(current_step)
-      return if !handler || !handler.const_defined?('STEP_INDICATOR_STEP')
+      return if !handler || !handler.const_defined?(:STEP_INDICATOR_STEP)
       {
         steps: flow.class::STEP_INDICATOR_STEPS,
         current_step: handler::STEP_INDICATOR_STEP,
@@ -157,43 +169,26 @@ module Flow
       redirect_to send(@final_url)
     end
 
-    def redirect_to_step(step)
+    def redirect_to_step(_step)
       flow_finish and return unless next_step
-      redirect_to send(@step_url, step: step)
+      redirect_url
     end
 
-    def analytics_submitted
-      'IdV: ' + "#{@analytics_id} #{current_step} submitted".downcase
-    end
-
-    def analytics_visited
-      'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
-    end
-
-    def analytics_optional_step
-      'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
+    def redirect_url
+      redirect_to idv_in_person_state_id_url
     end
 
     def analytics_properties
       {
-        flow_path: @flow.flow_path,
+        flow_path: flow.flow_path,
         step: current_step,
-        step_count: current_flow_step_counts[current_step_name],
-      }
+        analytics_id: @analytics_id,
+      }.merge(flow.extra_analytics_properties)
+        .merge(**opt_in_analytics_properties)
     end
 
     def current_step_name
       "#{current_step}_#{action_name}"
-    end
-
-    def current_flow_step_counts
-      current_session["#{@name}_flow_step_counts"] ||= {}
-      current_session["#{@name}_flow_step_counts"].default = 0
-      current_session["#{@name}_flow_step_counts"]
-    end
-
-    def increment_step_name_counts
-      current_flow_step_counts[current_step_name] += 1
     end
 
     def next_step

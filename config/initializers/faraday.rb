@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Instruments Faraday requests using ActiveSupport::Notifications and Faraday's
 # instrumentation middleware. This file subscribes to both 'request_metric.faraday' and
 # 'request_log.faraday' events. 'request_metric.faraday' is for requests which we
@@ -21,7 +23,7 @@
 #   req.options.context = { service_name: 'piv_cac_token' }
 # end
 
-ActiveSupport::Notifications.subscribe('request_metric.faraday') do |name, starts, ends, _, env|
+ActiveSupport::Notifications.subscribe('request_metric.faraday') do |_name, starts, ends, _, env|
   url = env[:url]
   http_method = env[:method].to_s.upcase
   duration_seconds = ends - starts
@@ -40,7 +42,7 @@ ActiveSupport::Notifications.subscribe('request_metric.faraday') do |name, start
   )
 end
 
-ActiveSupport::Notifications.subscribe('request_log.faraday') do |name, starts, ends, _, env|
+ActiveSupport::Notifications.subscribe('request_log.faraday') do |_name, starts, ends, _, env|
   url = env[:url]
   http_method = env[:method].to_s.upcase
   duration_seconds = ends - starts

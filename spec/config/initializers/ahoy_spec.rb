@@ -2,7 +2,7 @@ require 'rails_helper'
 
 MockAhoy = Struct.new(:visit_token, :visitor_token)
 
-describe Ahoy::Store do
+RSpec.describe Ahoy::Store do
   context 'visit_token is an invalid UUID' do
     it 'excludes the event' do
       mock_ahoy = MockAhoy.new('foo', '1056d484-194c-4b8c-978d-0c0f57958f04')
@@ -52,8 +52,8 @@ describe Ahoy::Store do
 
   context 'FeatureManagement.use_dashboard_service_providers? is true' do
     it 'does not exclude the event' do
-      allow(FeatureManagement).to receive(:use_dashboard_service_providers?).
-        and_return(true)
+      allow(FeatureManagement).to receive(:use_dashboard_service_providers?)
+        .and_return(true)
       store = Ahoy::Store.new({})
 
       expect(store.exclude?).to be_nil

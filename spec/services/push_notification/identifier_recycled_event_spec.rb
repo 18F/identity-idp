@@ -9,7 +9,7 @@ RSpec.describe PushNotification::IdentifierRecycledEvent do
   end
 
   let(:user) { build(:user) }
-  let(:email) { Faker::Internet.safe_email }
+  let(:email) { Faker::Internet.email }
 
   describe '#event_type' do
     it 'is the RISC event type' do

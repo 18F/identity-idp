@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Drop in replacement for ServiceProviderRequest. Moves us from Postgres to Redis
 # To manage the migration and still respect in flight transactions code will default
 # to checking the db if no redis object is available. Following release can remove db dependence.
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
-  REDIS_KEY_PREFIX = 'spr:'.freeze
+  REDIS_KEY_PREFIX = 'redis-pool:spr:'
 
   # This is used to support the .last method. That method is only used in the
   # test environment
@@ -32,23 +34,34 @@ class ServiceProviderRequestProxy
     obj = find_by(uuid: uuid)
     return obj if obj
     spr = ServiceProviderRequest.new(
-      uuid: uuid, issuer: nil, url: nil, ial: nil,
-      aal: nil, requested_attributes: nil
+      uuid: uuid,
+      issuer: nil,
+      url: nil,
+      requested_attributes: nil,
+      acr_values: nil,
+      vtr: nil,
     )
+
     yield(spr)
     create(
       uuid: uuid,
       issuer: spr.issuer,
       url: spr.url,
-      ial: spr.ial,
-      aal: spr.aal,
       requested_attributes: spr.requested_attributes,
+      acr_values: spr.acr_values,
+      vtr: spr.vtr,
     )
   end
 
   def self.create(hash)
     uuid = hash[:uuid]
-    obj = hash.slice(:issuer, :url, :ial, :aal, :requested_attributes)
+    obj = hash.slice(
+      :issuer,
+      :url,
+      :requested_attributes,
+      :vtr,
+      :acr_values,
+    )
     write(obj, uuid)
     hash_to_spr(obj, uuid)
   end
@@ -57,7 +70,7 @@ class ServiceProviderRequestProxy
     REDIS_POOL.with do |client|
       client.setex(
         key(uuid),
-        IdentityConfig.store.service_provider_request_ttl_hours.hours.to_i,
+        IdentityConfig.store.service_provider_request_ttl_hours.hours.in_seconds,
         obj.to_json,
       )
     end
@@ -78,7 +91,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.flush
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb } if Rails.env.test?
+    REDIS_POOL.with { |client| client.flushdb } if Rails.env.test?
   end
 
   def self.hash_to_spr(hash, uuid)

@@ -1,0 +1,18 @@
+<% self.title = t('headings.redirecting') %>
+
+<%= extends_layout :base do %>
+  <div class="grid-container tablet:padding-y-6 no-js">
+    <div class="grid-row">
+      <div class="tablet:grid-col-6 tablet:grid-offset-3">
+        <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
+
+        <p>
+          <%= t('saml_idp.shared.saml_post_binding.no_js') %>
+        </p>
+
+        <%= link_to(t('forms.buttons.submit.default'), @oidc_redirect_uri, class: 'usa-button usa-button--wide usa-button--big', data: { click_immediate: '' }) %>
+      </div>
+    </div>
+  </div>
+  <%= render_javascript_pack_once_tags 'click-immediate' %>
+<% end %>

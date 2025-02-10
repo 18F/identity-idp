@@ -1,0 +1,9 @@
+@use 'uswds-core' as *;
+@use 'variables/app' as *;
+
+@forward 'usa-icon';
+
+.icon {
+  mask-size: 100%;
+  background-color: currentcolor;
+}

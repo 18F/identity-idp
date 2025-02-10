@@ -1,26 +1,44 @@
+# frozen_string_literal: true
+
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
   extend Forwardable
+  include ForcedReauthenticationConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :validate_saml_request, only: :auth
+    before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
+    before_action :check_sp_active, only: :auth
+    before_action :log_external_saml_auth_request, only: [:auth]
     # this must take place _before_ the store_saml_request action or the SAML
     # request is cleared (along with the rest of the session) when the user is
     # signed out
     before_action :sign_out_if_forceauthn_is_true_and_user_is_signed_in, only: :auth
     before_action :store_saml_request, only: :auth
-    before_action :check_sp_active, only: :auth
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
   private
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
+    if !saml_request.force_authn?
+      set_issuer_forced_reauthentication(
+        issuer: saml_request_service_provider.issuer,
+        is_forced_reauthentication: false,
+      )
+    end
+
     return unless user_signed_in? && saml_request.force_authn?
 
-    sign_out unless sp_session[:request_url] == request.original_url
+    if !sp_session[:final_auth_request]
+      sign_out
+      set_issuer_forced_reauthentication(
+        issuer: saml_request_service_provider.issuer,
+        is_forced_reauthentication: true,
+      )
+    end
+    sp_session[:final_auth_request] = false
   end
 
   def check_sp_active
@@ -29,19 +47,32 @@ module SamlIdpAuthConcern
   end
 
   def validate_service_provider_and_authn_context
-    @saml_request_validator = SamlRequestValidator.new
+    return if result.success?
 
-    @result = @saml_request_validator.call(
+    capture_analytics
+    track_integration_errors(
+      event: :saml_auth_request,
+      errors: result.errors.values.flatten,
+    )
+
+    render 'saml_idp/auth/error', status: :bad_request
+  end
+
+  def result
+    @result ||= @saml_request_validator.call(
       service_provider: saml_request_service_provider,
       authn_context: requested_authn_contexts,
       authn_context_comparison: saml_request.requested_authn_context_comparison,
       nameid_format: name_id_format,
     )
+  end
 
-    return if @result.success?
-
-    analytics.saml_auth(**@result.to_h)
-    render 'saml_idp/auth/error', status: :bad_request
+  def validate_and_create_saml_request_object
+    # this saml_idp method creates the saml_request object used for validations
+    validate_saml_request
+    @saml_request_validator = SamlRequestValidator.new
+  rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
+    @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end
 
   def name_id_format
@@ -95,36 +126,37 @@ module SamlIdpAuthConcern
     end
   end
 
-  def requested_aal_authn_context
-    saml_request.requested_aal_authn_context || default_aal_context
-  end
-
-  def requested_ial_authn_context
-    saml_request.requested_ial_authn_context || default_ial_context
+  def response_authn_context
+    if saml_request.requested_vtr_authn_contexts.present?
+      resolved_authn_context_result.expanded_component_values
+    else
+      FederatedProtocols::Saml.new(saml_request).aal ||
+        default_aal_context
+    end
   end
 
   def link_identity_from_session_data
-    IdentityLinker.
-      new(current_user, saml_request_service_provider).
-      link_identity(
-        ial: ial_context.ial,
+    IdentityLinker
+      .new(current_user, saml_request_service_provider)
+      .link_identity(
+        ial: resolved_authn_context_int_ial,
         rails_session_id: session.id,
+        email_address_id: email_address_id,
       )
   end
 
-  def identity_needs_verification?
-    ial2_requested? && current_user.decorate.identity_not_verified?
+  def email_address_id
+    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+    if user_session[:selected_email_id_for_linked_identity].present?
+      return user_session[:selected_email_id_for_linked_identity]
+    end
+    identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
+    email_id = identity&.email_address_id
+    return email_id if email_id.is_a? Integer
   end
 
-  def_delegators :ial_context, :ial2_requested?
-
-  def ial_context
-    @ial_context ||= IalContext.new(
-      ial: requested_ial_authn_context,
-      service_provider: saml_request_service_provider,
-      authn_context_comparison: saml_request.requested_authn_context_comparison,
-      user: current_user,
-    )
+  def identity_needs_verification?
+    resolved_authn_context_result.identity_proofing? && current_user.identity_not_verified?
   end
 
   def active_identity
@@ -149,7 +181,7 @@ module SamlIdpAuthConcern
 
   def decrypted_pii
     cacher = Pii::Cacher.new(current_user, user_session)
-    cacher.fetch
+    cacher.fetch(current_user&.active_profile&.id)
   end
 
   def build_asserted_attributes(principal)
@@ -161,7 +193,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_aal_authn_context,
+      authn_context_classref: response_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,
@@ -175,18 +207,21 @@ module SamlIdpAuthConcern
        saml_request_service_provider&.skip_encryption_allowed
       nil
     elsif saml_request_service_provider&.encrypt_responses?
-      cert = saml_request.service_provider.matching_cert ||
-             saml_request_service_provider&.ssl_certs&.first
       {
-        cert: cert,
+        cert: encryption_cert,
         block_encryption: saml_request_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
     end
   end
 
+  def encryption_cert
+    saml_request.matching_cert ||
+      saml_request_service_provider&.ssl_certs&.first
+  end
+
   def saml_response_signature_options
-    endpoint = SamlEndpoint.new(request)
+    endpoint = SamlEndpoint.new(params[:path_year])
     {
       x509_certificate: endpoint.x509_certificate,
       secret_key: endpoint.secret_key,
@@ -203,9 +238,9 @@ module SamlIdpAuthConcern
   end
 
   def request_url
-    url = URI.parse request.original_url
-    url.path = remap_auth_post_path(url.path)
-    query_params = Rack::Utils.parse_nested_query url.query
+    url = URI(api_saml_auth_url(path_year: params[:path_year]))
+
+    query_params = request.query_parameters
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
       query_params['SAMLRequest'] = orig_saml_request
@@ -219,10 +254,13 @@ module SamlIdpAuthConcern
     url.to_s
   end
 
-  def remap_auth_post_path(path)
-    path_match = path.match(%r{/api/saml/authpost(?<year>\d{4})})
-    return path unless path_match.present?
-
-    "/api/saml/auth#{path_match[:year]}"
+  def track_integration_errors(event:, errors: nil)
+    analytics.sp_integration_errors_present(
+      error_details: errors || saml_request.errors.uniq,
+      error_types: [:saml_request_errors],
+      event:,
+      integration_exists: saml_request_service_provider.present?,
+      request_issuer: saml_request&.issuer,
+    )
   end
 end

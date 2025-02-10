@@ -1,18 +1,22 @@
+# frozen_string_literal: true
+
 module Idv
   class ConsentForm
     include ActiveModel::Model
 
-    validates :ial2_consent_given?,
-              acceptance: { message: proc { I18n.t('errors.doc_auth.consent_form') } }
+    attr_reader :idv_consent_given
 
-    def submit(params)
-      @ial2_consent_given = params[:ial2_consent_given] == '1'
+    validates :idv_consent_given,
+              acceptance: { message: proc { I18n.t('doc_auth.errors.consent_form') } }
 
-      FormResponse.new(success: valid?, errors: errors)
+    def initialize(idv_consent_given: false)
+      @idv_consent_given = idv_consent_given
     end
 
-    def ial2_consent_given?
-      @ial2_consent_given
+    def submit(params)
+      @idv_consent_given = params[:idv_consent_given] == '1'
+
+      FormResponse.new(success: valid?, errors: errors)
     end
   end
 end

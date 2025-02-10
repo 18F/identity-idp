@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IAL2 Single Sign On' do
+RSpec.feature 'IAL2 Single Sign On' do
   include SamlAuthHelper
   include IdvStepHelper
   include DocAuthHelper
@@ -29,8 +29,7 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.send')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    acknowledge_and_confirm_personal_key
-    click_link t('idv.buttons.continue_plain')
+    click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 
   def expected_gpo_return_to_sp_url
@@ -41,15 +40,14 @@ feature 'IAL2 Single Sign On' do
   end
 
   def update_mailing_address
-    click_on t('idv.buttons.mail.resend')
+    click_on t('idv.gpo.request_another_letter.button')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    acknowledge_and_confirm_personal_key
-    click_link t('idv.buttons.continue_plain')
+    click_link t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 
   def sign_out_user
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
   end
 
   context 'First time registration' do
@@ -63,7 +61,7 @@ feature 'IAL2 Single Sign On' do
 
       visit saml_ial2_request_url
 
-      expect(current_path).to match new_user_session_path
+      expect(page).to have_current_path(new_user_session_path)
       expect(page).to have_content(sp_content)
     end
 
@@ -71,7 +69,10 @@ feature 'IAL2 Single Sign On' do
       visit saml_authn_request_url
 
       expect(page).to have_link(
-        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
+        t(
+          'links.back_to_sp',
+          sp: 'Your friendly Government Agency',
+        ), href: return_to_sp_cancel_path(step: :authentication)
       )
     end
   end
@@ -81,17 +82,17 @@ feature 'IAL2 Single Sign On' do
     let(:profile) do
       create(
         :profile,
-        deactivation_reason: :gpo_verification_pending,
+        gpo_verification_pending_at: 1.day.ago,
         pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end
 
-    context 'having previously selected USPS verification', js: true do
+    context 'immediately after selecting USPS verification', js: true do
       let(:phone_confirmed) { false }
 
-      context 'provides an option to send another letter' do
+      context 'does not provide an option to send another letter' do
         it 'without signing out' do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
 
           perform_id_verification_with_gpo_without_confirming_code(user)
 
@@ -100,21 +101,12 @@ feature 'IAL2 Single Sign On' do
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
-          expect(current_path).to eq idv_gpo_verify_path
-
-          click_link(t('idv.messages.gpo.resend'))
-
-          expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
-
-          click_button(t('idv.buttons.mail.resend'))
-
-          expect(user.events.gpo_mail_sent.size).to eq 2
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(page).to have_current_path idv_verify_by_mail_enter_code_path
+          expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
 
         it 'after signing out' do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
 
           perform_id_verification_with_gpo_without_confirming_code(user)
           visit account_path
@@ -122,17 +114,34 @@ feature 'IAL2 Single Sign On' do
 
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq idv_gpo_verify_path
-
-          click_link(t('idv.messages.gpo.resend'))
-
-          expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_gpo_path)
-
-          click_button(t('idv.buttons.mail.resend'))
-
-          expect(current_path).to eq(idv_come_back_later_path)
+          expect(page).to have_current_path idv_verify_by_mail_enter_code_path
+          expect(page).not_to have_link(t('idv.messages.gpo.resend'))
         end
+      end
+    end
+
+    context 'having previously selected USPS verification', js: true do
+      let(:phone_confirmed) { false }
+
+      it 'provides an option to send another letter' do
+        user = create(:user, :fully_registered)
+
+        travel_to(2.days.ago) do
+          perform_id_verification_with_gpo_without_confirming_code(user)
+        end
+
+        sign_in_live_with_2fa(user)
+
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
+
+        click_link(t('idv.messages.gpo.resend'))
+
+        expect(user.events.account_verified.size).to be(0)
+        expect(page).to have_current_path(idv_resend_letter_path)
+
+        click_button(t('idv.gpo.request_another_letter.button'))
+
+        expect(page).to have_current_path(idv_letter_enqueued_path)
       end
     end
   end
@@ -149,7 +158,7 @@ feature 'IAL2 Single Sign On' do
       )
       visit sign_up_completed_path
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(page).to have_current_path idv_welcome_path
     end
   end
 end

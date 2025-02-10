@@ -1,4 +1,4 @@
-<% title t('account.navigation.connected_accounts') %>
+<% self.title = t('account.navigation.connected_accounts') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.account.connected_accounts')) %>
 
@@ -6,11 +6,11 @@
   <%= t('account.connected_apps.description', app_name: APP_NAME) %>
 </p>
 
-<div class="margin-bottom-4 card profile-info-box border-bottom border-primary-light">
-  <div class="border-bottom border-primary-light">
+<div class="card border-bottom border-primary-light">
+  <ul class="add-list-reset border-bottom border-primary-light">
     <% @presenter.connected_apps.each do |identity| %>
-      <%= render 'accounts/connected_app', identity: identity %>
+      <li><%= render 'accounts/connected_app', identity: identity %></li>
     <% end %>
-  </div>
+  </ul>
 </div>
 

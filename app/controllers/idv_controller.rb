@@ -1,55 +1,58 @@
+# frozen_string_literal: true
+
 class IdvController < ApplicationController
-  include IdvSession
+  include IdvSessionConcern
   include AccountReactivationConcern
-  include InheritedProofingConcern
+  include VerifyProfileConcern
+  include RateLimitConcern
+  include Idv::VerifyByMailConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
+  before_action :handle_pending_profile, only: [:index]
+  before_action :confirm_not_rate_limited
 
   def index
-    if decorated_session.requested_more_recent_verification?
-      verify_identity
-    elsif active_profile? && !strict_ial2_upgrade_required?
+    if already_verified?
       redirect_to idv_activated_url
-    elsif idv_attempter_throttled?
-      irs_attempts_api_tracker.idv_verification_rate_limited
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :idv_resolution,
-      )
-      redirect_to idv_session_errors_failure_url
-    elsif sp_over_quota_limit?
-      flash[:error] = t('errors.doc_auth.quota_reached')
-      redirect_to account_url
     else
       verify_identity
     end
   end
 
   def activated
+    if idv_session.personal_key.present?
+      redirect_to idv_personal_key_url
+      return
+    end
+
     redirect_to idv_url unless active_profile?
     idv_session.clear
   end
 
   private
 
-  def sp_over_quota_limit?
-    Db::ServiceProviderQuotaLimit::IsSpOverQuota.call(sp_session[:issuer].to_s)
+  def already_verified?
+    if resolved_authn_context_result.facial_match?
+      current_user.identity_verified_with_facial_match?
+    else
+      current_user.active_profile.present?
+    end
   end
 
   def verify_identity
     analytics.idv_intro_visit
-    return redirect_to idv_inherited_proofing_url if va_inherited_proofing?
-    redirect_to idv_doc_auth_url
+    redirect_to idv_welcome_url
+  end
+
+  def handle_pending_profile
+    redirect_to url_for_pending_profile_reason if user_has_pending_profile?
   end
 
   def profile_needs_reactivation?
     return unless reactivate_account_session.started?
     confirm_password_reset_profile
     redirect_to reactivate_account_url
-  end
-
-  def strict_ial2_upgrade_required?
-    sp_session[:ial2_strict] && !current_user.active_profile&.strict_ial2_proofed?
   end
 
   def active_profile?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rexml/document'
 require 'rexml/xpath'
 
@@ -6,11 +8,19 @@ module Proofing
     module Response
       class VerificationResponse
         VERIFICATION_ATTRIBUTES_MAP = {
+          'DriverLicenseExpirationDateMatchIndicator' => :state_id_expiration,
+          'DriverLicenseIssueDateMatchIndicator' => :state_id_issued,
           'DriverLicenseNumberMatchIndicator' => :state_id_number,
           'DocumentCategoryMatchIndicator' => :state_id_type,
           'PersonBirthDateMatchIndicator' => :dob,
+          'PersonHeightMatchIndicator' => :height,
+          'PersonSexCodeMatchIndicator' => :sex,
+          'PersonWeightMatchIndicator' => :weight,
+          'PersonEyeColorMatchIndicator' => :eye_color,
           'PersonLastNameExactMatchIndicator' => :last_name,
           'PersonFirstNameExactMatchIndicator' => :first_name,
+          'PersonMiddleNameExactMatchIndicator' => :middle_name,
+          'PersonNameSuffixMatchIndicator' => :name_suffix,
           'AddressLine1MatchIndicator' => :address1,
           'AddressLine2MatchIndicator' => :address2,
           'AddressCityMatchIndicator' => :city,
@@ -18,43 +28,23 @@ module Proofing
           'AddressZIP5MatchIndicator' => :zipcode,
         }.freeze
 
-        REQUIRED_VERIFICATION_ATTRIBUTES = %i[
-          state_id_number
-          dob
-          last_name
-          first_name
-        ].freeze
-
-        MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
-
         attr_reader :verification_results, :transaction_locator_id
 
         def initialize(http_response)
           @missing_attributes = []
           @verification_results = {}
           @http_response = http_response
-          handle_soap_error
+          @errors = []
+
           handle_http_error
+          handle_soap_error
+
           parse_response
-        end
 
-        def reasons
-          REQUIRED_VERIFICATION_ATTRIBUTES.map do |verification_attribute|
-            verification_result = verification_results[verification_attribute]
-            case verification_result
-            when false
-              "Failed to verify #{verification_attribute}"
-            when nil
-              "Response was missing #{verification_attribute}"
-            end
-          end.compact
-        end
+          return if @errors.empty?
 
-        def success?
-          REQUIRED_VERIFICATION_ATTRIBUTES.each do |verification_attribute|
-            return false unless verification_results[verification_attribute]
-          end
-          true
+          error_message = @errors.join('; ')
+          raise VerificationError.new(error_message)
         end
 
         private
@@ -63,8 +53,7 @@ module Proofing
 
         def handle_http_error
           status = http_response.status
-          return if status == 200
-          raise VerificationError, "Unexpected status code in response: #{status}"
+          @errors.push("Unexpected status code in response: #{status}") if status != 200
         end
 
         def handle_missing_attribute(attribute_name)
@@ -76,13 +65,13 @@ module Proofing
           error_handler = SoapErrorHandler.new(http_response)
           return unless error_handler.error_present?
 
-          msg = error_handler.error_message
-          raise ::Proofing::TimeoutError, msg if mva_timeout?(msg)
-          raise VerificationError, msg
+          @errors.push(error_handler.error_message)
         end
 
         def node_for_match_indicator(match_indicator_name)
           REXML::XPath.first(rexml_document, "//#{match_indicator_name}")
+        rescue REXML::ParseException
+          nil
         end
 
         def parse_response
@@ -104,11 +93,7 @@ module Proofing
         end
 
         def rexml_document
-          @rexml_document ||= REXML::Document.new(http_response.body)
-        end
-
-        def mva_timeout?(error_message)
-          error_message.include? MVA_TIMEOUT_EXCEPTION
+          return @rexml_document ||= REXML::Document.new(http_response.body)
         end
       end
     end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class ResendEmailConfirmationForm
   include ActiveModel::Model
 
-  attr_reader :email, :request_id
+  attr_reader :email, :terms_accepted
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
@@ -9,7 +11,7 @@ class ResendEmailConfirmationForm
 
   def initialize(params = {})
     @email = params[:email]
-    @request_id = params[:request_id]
+    @terms_accepted = params[:terms_accepted]
   end
 
   def resend

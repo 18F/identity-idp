@@ -3,15 +3,14 @@ require 'rails_helper'
 RSpec.describe PasswordToggleComponent, type: :component do
   include SimpleForm::ActionViewExtensions::FormHelper
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
   let(:form) { SimpleForm::FormBuilder.new('', {}, view_context, {}) }
   let(:options) { {} }
 
-  subject(:rendered) { render_inline PasswordToggleComponent.new(form: form, **options) }
+  subject(:rendered) { render_inline PasswordToggleComponent.new(form:, **options) }
 
   it 'renders default markup' do
-    expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-top')
+    expect(rendered).to have_css('lg-password-toggle')
     expect(rendered).to have_field(t('components.password_toggle.label'), type: :password)
     expect(rendered).to have_field(t('components.password_toggle.toggle_label'), type: :checkbox)
   end
@@ -26,7 +25,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   describe '#label' do
     context 'with custom label' do
       let(:label) { 'Custom Label' }
-      let(:options) { { label: label } }
+      let(:options) { { label: } }
 
       it 'renders custom field label' do
         expect(rendered).to have_field(label, type: :password)
@@ -37,7 +36,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   describe '#toggle_label' do
     context 'with custom label' do
       let(:toggle_label) { 'Custom Toggle Label' }
-      let(:options) { { toggle_label: toggle_label } }
+      let(:options) { { toggle_label: } }
 
       it 'renders custom field label' do
         expect(rendered).to have_field(toggle_label, type: :checkbox)
@@ -45,28 +44,10 @@ RSpec.describe PasswordToggleComponent, type: :component do
     end
   end
 
-  describe '#toggle_position' do
-    context 'with top toggle position' do
-      let(:options) { { toggle_position: :top } }
-
-      it 'renders modifier class' do
-        expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-top')
-      end
-    end
-
-    context 'with bottom toggle position' do
-      let(:options) { { toggle_position: :bottom } }
-
-      it 'renders modifier class' do
-        expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-bottom')
-      end
-    end
-  end
-
   describe '#toggle_id' do
     it 'is unique across instances' do
-      toggle_one = PasswordToggleComponent.new(form: form)
-      toggle_two = PasswordToggleComponent.new(form: form)
+      toggle_one = PasswordToggleComponent.new(form:)
+      toggle_two = PasswordToggleComponent.new(form:)
 
       expect(toggle_one.toggle_id).to be_present
       expect(toggle_two.toggle_id).to be_present
@@ -76,26 +57,43 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
   describe '#input_id' do
     it 'is unique across instances' do
-      toggle_one = PasswordToggleComponent.new(form: form)
-      toggle_two = PasswordToggleComponent.new(form: form)
+      toggle_one = PasswordToggleComponent.new(form:)
+      toggle_two = PasswordToggleComponent.new(form:)
 
       expect(toggle_one.input_id).to be_present
       expect(toggle_two.input_id).to be_present
       expect(toggle_one.input_id).not_to eq(toggle_two.input_id)
     end
+
+    context 'with field_options customizing id' do
+      let(:options) { { field_options: { input_html: { id: 'custom' } } } }
+
+      it 'respects customized id' do
+        expect(rendered).to have_css('#custom[type=password]')
+        expect(rendered).to have_css('[aria-controls=custom]')
+      end
+    end
   end
 
-  describe '#field' do
-    context 'with field options' do
-      let(:options) do
-        { input_html: { class: 'my-custom-field', data: { foo: 'bar' } }, required: true }
-      end
+  context 'with tag options' do
+    let(:options) do
+      { class: 'my-custom-field', data: { foo: 'bar' } }
+    end
 
-      it 'forwards field options' do
-        expect(rendered).to have_css(
-          '.password-toggle__input.my-custom-field[data-foo="bar"][required]',
-        )
-      end
+    it 'forwards options to rendered tag' do
+      expect(rendered).to have_css('lg-password-toggle.my-custom-field[data-foo="bar"]')
+    end
+  end
+
+  context 'with field options' do
+    let(:label) { 'Custom Label' }
+    let(:options) do
+      { field_options: { label:, required: true } }
+    end
+
+    it 'forwards options to rendered field' do
+      expect(rendered).to have_css('.password-toggle__input[required]')
+      expect(rendered).to have_field(label, type: :password)
     end
   end
 end

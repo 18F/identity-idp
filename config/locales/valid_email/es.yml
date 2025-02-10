@@ -1,6 +1,0 @@
----
-es:
-  valid_email:
-    validations:
-      email:
-        invalid: La dirección de correo electrónico no es válida

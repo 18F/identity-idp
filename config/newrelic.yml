@@ -1,4 +1,6 @@
 common: &default_settings
+  code_level_metrics:
+    enabled: false
   application_logging:
     forwarding:
       enabled: false
@@ -19,7 +21,15 @@ production:
   error_collector:
     enabled: true
     capture_source: true
-    ignore_errors: "ActionController::RoutingError,ActionController::BadRequest,ActionDispatch::Http::MimeNegotiation::InvalidType,GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError"
+    ignore_classes: "<%= %w[
+      ActionController::BadRequest
+      ActionController::ParameterMissing
+      ActionController::RoutingError
+      ActionController::UnknownHttpMethod
+      ActionDispatch::Http::MimeNegotiation::InvalidType
+      ActionDispatch::Http::Parameters::ParseError
+      GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+    ].join(',') %>"
   license_key: <%= IdentityConfig.store.newrelic_license_key %>
   log_level: info
   monitor_mode: true

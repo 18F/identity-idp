@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::VerificationFailuresReport do
+RSpec.describe Reports::VerificationFailuresReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
   let(:name) { 'An SP' }
@@ -193,16 +193,6 @@ describe Reports::VerificationFailuresReport do
     expect(csv.length).to eq(2)
     expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
     expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'ABANDON'])
-  end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
-    end
   end
 
   def run_reports

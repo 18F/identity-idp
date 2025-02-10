@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   # Handles updating a user's personal key if it used for 2FA (legacy behavior)
   class PersonalKeysController < ApplicationController
@@ -17,6 +19,7 @@ module Users
       return redirect_to account_url if personal_key.blank?
 
       @code = personal_key
+      @personal_key_generated_at = current_user.personal_key_generated_at
     end
 
     def update

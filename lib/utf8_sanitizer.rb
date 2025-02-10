@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack_request_parser'
 require 'utf8_cleaner'
 
@@ -15,7 +17,7 @@ class Utf8Sanitizer
     end
 
     @app.call(env)
-  rescue Rack::QueryParser::InvalidParameterError => err
+  rescue Rack::QueryParser::InvalidParameterError, Rack::QueryParser::ParameterTypeError => err
     bad_request_and_log(invalid_parameter_event(err))
   rescue EOFError => err
     bad_request_and_log(eof_error_event(err))

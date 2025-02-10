@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Device do
+RSpec.describe Device do
   it { is_expected.to belong_to(:user) }
 
   describe 'validations' do

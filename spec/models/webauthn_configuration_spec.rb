@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthnConfiguration do
+RSpec.describe WebauthnConfiguration do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_presence_of(:name) }
@@ -16,7 +16,7 @@ describe WebauthnConfiguration do
         presenters = subject.selection_presenters
         expect(presenters.count).to eq 1
         expect(presenters.first).to be_instance_of(
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
         )
       end
     end
@@ -27,7 +27,7 @@ describe WebauthnConfiguration do
         presenters = subject.selection_presenters
         expect(presenters.count).to eq 1
         expect(presenters.first).to be_instance_of(
-          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter,
         )
       end
     end
@@ -43,5 +43,49 @@ describe WebauthnConfiguration do
     let(:mfa_enabled) { subject.mfa_enabled? }
 
     it { expect(mfa_enabled).to be_truthy }
+  end
+
+  describe '#transports' do
+    context 'with nil transports' do
+      before { subject.transports = nil }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with empty array transports' do
+      before { subject.transports = [] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with single valid transport' do
+      before { subject.transports = ['ble'] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with single invalid transport' do
+      before { subject.transports = ['wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
+
+    context 'with multiple valid transports' do
+      before { subject.transports = ['ble', 'hybrid'] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with multiple invalid transports' do
+      before { subject.transports = ['wrong', 'also wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
+
+    context 'with multiple mixed validity transports' do
+      before { subject.transports = ['ble', 'wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
   end
 end

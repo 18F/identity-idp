@@ -1,10 +1,6 @@
-class FeatureManagement
-  ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED = %w[
-    idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
-    idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
-    idp.pt.identitysandbox.gov
-  ].freeze
+# frozen_string_literal: true
 
+class FeatureManagement
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
   end
@@ -13,6 +9,11 @@ class FeatureManagement
     IdentityConfig.store.identity_pki_disabled ||
       !IdentityConfig.store.piv_cac_service_url ||
       !IdentityConfig.store.piv_cac_verify_token_url
+  end
+
+  def self.idv_available?
+    return false if !IdentityConfig.store.idv_available
+    !OutageStatus.new.any_idv_vendor_outage?
   end
 
   def self.development_and_identity_pki_disabled?
@@ -40,19 +41,19 @@ class FeatureManagement
     IdentityConfig.store.enable_load_testing_mode
   end
 
-  def self.use_kms?
-    IdentityConfig.store.use_kms
+  def self.enable_additional_mfa_redirect_for_personal_key_mfa?
+    IdentityConfig.store.enable_add_mfa_redirect_for_personal_key
   end
 
-  def self.kms_multi_region_enabled?
-    IdentityConfig.store.aws_kms_multi_region_enabled
+  def self.use_kms?
+    IdentityConfig.store.use_kms
   end
 
   def self.use_dashboard_service_providers?
     IdentityConfig.store.use_dashboard_service_providers
   end
 
-  def self.enable_gpo_verification?
+  def self.gpo_verification_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.enable_usps_verification
   end
@@ -62,7 +63,7 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_gpo_code?
-    ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED.include?(IdentityConfig.store.domain_name)
+    Identity::Hostdata.domain == 'identitysandbox.gov'
   end
 
   def self.show_demo_banner?
@@ -77,10 +78,6 @@ class FeatureManagement
     IdentityConfig.store.saml_secret_rotation_enabled
   end
 
-  def self.disallow_all_web_crawlers?
-    IdentityConfig.store.disallow_all_web_crawlers
-  end
-
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.usps_upload_enabled
@@ -92,16 +89,12 @@ class FeatureManagement
     Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
   end
 
+  def self.check_password_enabled?
+    IdentityConfig.store.check_user_password_compromised_enabled
+  end
+
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
-  end
-
-  def self.document_capture_async_uploads_enabled?
-    IdentityConfig.store.doc_auth_enable_presigned_s3_urls
-  end
-
-  def self.liveness_checking_enabled?
-    IdentityConfig.store.liveness_checking_enabled
   end
 
   def self.logo_upload_enabled?
@@ -112,20 +105,68 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.idv_api_enabled?
-    IdentityConfig.store.idv_api_enabled_steps.present?
+  def self.phone_recaptcha_enabled?
+    IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
 
-  def self.idv_personal_key_confirmation_enabled?
-    IdentityConfig.store.idv_personal_key_confirmation_enabled
+  def self.sign_in_recaptcha_enabled?
+    IdentityConfig.store.sign_in_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
 
-  # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
-  # @return [Set<String>] set of phone numbers normalized to e164
-  def self.voip_allowed_phones
-    @voip_allowed_phones ||= begin
-      allowed_phones = IdentityConfig.store.voip_allowed_phones
-      allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
+  def self.recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key.present? && (
+      recaptcha_enterprise? ||
+      IdentityConfig.store.recaptcha_secret_key.present?
+    )
+  end
+
+  def self.recaptcha_enterprise?
+    IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
+      IdentityConfig.store.recaptcha_enterprise_project_id.present?
+  end
+
+  # Whether we collect device profiling as part of the account creation process
+  def self.account_creation_device_profiling_collecting_enabled?
+    case IdentityConfig.store.account_creation_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for account_creation_device_profiling'
     end
+  end
+
+  # Whether we collect device profiling information as part of the proofing process.
+  def self.proofing_device_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether we prevent users from proceeding with identity verification based on the outcomes of
+  # device profiling.
+  def self.proofing_device_profiling_decisioning_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled then true
+    when :collect_only, :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether or not idv hybrid mode is available
+  def self.idv_allow_hybrid_flow?
+    return false unless IdentityConfig.store.feature_idv_hybrid_flow_enabled
+    return false if OutageStatus.new.any_phone_vendor_outage?
+    true
+  end
+
+  def self.idv_by_mail_only?
+    outage_status = OutageStatus.new
+    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
+      outage_status.any_phone_vendor_outage? ||
+      outage_status.phone_finder_outage?
   end
 end

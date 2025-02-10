@@ -1,9 +1,11 @@
 const { parse, resolve } = require('path');
 const url = require('url');
-const { sync: glob } = require('fast-glob');
+const { globSync: glob } = require('fs');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
+const UnpolyfillWebpackPlugin = require('@18f/identity-unpolyfill-webpack-plugin');
+const LiteWebpackDevServerPlugin = require('@18f/identity-lite-webpack-dev-server');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
@@ -11,38 +13,31 @@ const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
-const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
+const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
 const devServerPort = process.env.WEBPACK_PORT;
+const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
-const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
+const entries = glob('app/{components,javascript/packs}/*.{ts,tsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool: isProductionEnv ? false : 'eval-source-map',
-  target: ['web', 'es5'],
-  devServer: {
-    static: {
-      directory: './public',
-      watch: false,
-    },
-    port: devServerPort,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    hot: false,
-  },
+  devtool,
+  target: ['web'],
   entry: entries.reduce((result, path) => {
     result[parse(path).name] = resolve(path);
     return result;
   }, {}),
   output: {
-    filename: `js/[name]${hashSuffix}.js`,
-    chunkFilename: `js/[name].chunk${hashSuffix}.js`,
-    sourceMapFilename: `js/[name]${hashSuffix}.js.map`,
+    filename: `[name]${hashSuffix}.js`,
+    chunkFilename: `[name].chunk${hashSuffix}.js`,
+    sourceMapFilename: `[name]${hashSuffix}.js.map`,
     path: resolve(__dirname, 'public/packs'),
     publicPath:
       devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
+    conditionNames: ['source', '...'],
   },
   module: {
     rules: [
@@ -53,9 +48,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.[jt]sx?$/,
-        exclude:
-          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+        test: /\.[cm]?[jt]sx?$/,
+        exclude: /node_modules\/(?!@18f\/identity-)/,
         use: {
           loader: 'babel-loader',
         },
@@ -64,7 +58,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({
@@ -78,6 +71,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       writeToDisk: true,
       integrity: isProductionEnv,
+      integrityHashes: ['sha256'],
       output: 'manifest.json',
       transform(manifest) {
         const srcIntegrity = {};
@@ -100,5 +94,16 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
     }),
     new RailsAssetsWebpackPlugin(),
+    new UnpolyfillWebpackPlugin(),
+    devServerPort &&
+      new LiteWebpackDevServerPlugin({
+        publicPath: './public',
+        port: Number(devServerPort),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store',
+          Vary: '*',
+        },
+      }),
   ],
 });

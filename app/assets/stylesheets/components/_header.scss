@@ -1,0 +1,19 @@
+@use 'uswds-core' as *;
+
+.page-header--basic {
+  @include u-flex('align-center', 'justify-center');
+  @include u-display('flex');
+  @include u-height(7);
+  @include u-bg('primary-lighter');
+
+  @include at-media('tablet') {
+    @include u-height(9);
+  }
+}
+
+/*
+  Workaround for https://github.com/uswds/uswds/issues/6260
+ */
+.usa-skipnav {
+  top: -5rem;
+}

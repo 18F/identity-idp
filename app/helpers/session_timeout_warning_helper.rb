@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SessionTimeoutWarningHelper
   def session_timeout_frequency
     IdentityConfig.store.session_check_frequency
@@ -11,22 +13,14 @@ module SessionTimeoutWarningHelper
     IdentityConfig.store.session_timeout_warning_seconds
   end
 
-  def expires_at
-    session[:session_expires_at]&.to_datetime || Time.zone.now - 1
-  end
-
   def timeout_refresh_path
     UriService.add_params(
       request.original_fullpath,
-      timeout: true,
+      timeout: :form,
     )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def session_modal
-    if user_fully_authenticated?
-      FullySignedInModalPresenter.new(view_context: self, expiration: expires_at)
-    else
-      PartiallySignedInModalPresenter.new(view_context: self, expiration: expires_at)
-    end
+    SessionTimeoutModalPresenter.new(user_fully_authenticated: user_fully_authenticated?)
   end
 end

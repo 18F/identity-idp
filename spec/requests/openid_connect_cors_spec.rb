@@ -164,7 +164,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
   describe 'domain name as the origin' do
     it 'leaves the Access-Control-Allow-Origin header blank' do
       get openid_connect_configuration_path,
-          headers: { 'HTTP_ORIGIN' => IdentityConfig.store.domain_name.dup }
+          headers: { 'HTTP_ORIGIN' => "https://#{IdentityConfig.store.domain_name}" }
 
       aggregate_failures do
         expect(response).to be_ok

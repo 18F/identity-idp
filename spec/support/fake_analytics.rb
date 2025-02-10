@@ -1,11 +1,14 @@
-class FakeAnalytics
-  PiiDetected = Class.new(StandardError)
+require 'analytics_events_documenter'
+
+class FakeAnalytics < Analytics
+  PiiDetected = Class.new(StandardError).freeze
 
   include AnalyticsEvents
+  prepend Idv::AnalyticsEventsEnhancer
 
   module PiiAlerter
     def track_event(event, original_attributes = {})
-      attributes = original_attributes.dup
+      attributes = original_attributes.compact
       pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
 
       constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
@@ -24,7 +27,6 @@ class FakeAnalytics
         :first_name,
         :last_name,
         :address1,
-        :zipcode,
         :dob,
         :state_id_number,
       ).each do |key, default_pii_value|
@@ -55,7 +57,7 @@ class FakeAnalytics
               ERROR
             end
 
-            check_recursive.call(val, [key])
+            check_recursive.call(val, current_keypath)
           end
         when Array
           value.each { |val| check_recursive.call(val, keypath) }
@@ -68,55 +70,106 @@ class FakeAnalytics
     end
   end
 
+  UndocumentedParams = Class.new(StandardError).freeze
+
+  module UndocumentedParamsChecker
+    mattr_accessor :asts
+    mattr_accessor :docstrings
+    DOCUMENTATION_OPTIONAL_PARAMS = [
+      :user_id,
+      *AnalyticsEventsDocumenter::DOCUMENTATION_OPTIONAL_PARAMS.map(&:to_sym),
+    ].uniq.freeze
+
+    def track_event(event, original_attributes = {})
+      method_name = caller
+        .grep(/analytics_events\.rb/)
+        &.first
+        &.match(/:in `(?<method_name>[^']+)'/)
+        &.[](:method_name)
+        &.to_sym
+
+      if method_name
+        analytics_method = AnalyticsEvents.instance_method(method_name)
+
+        param_names = analytics_method
+          .parameters
+          .select { |type, _name| [:keyreq, :key].include?(type) }
+          .map(&:last)
+
+        extra_keywords = original_attributes.keys \
+                          - DOCUMENTATION_OPTIONAL_PARAMS \
+                          - param_names \
+                          - option_param_names(analytics_method)
+
+        if extra_keywords.present?
+          raise UndocumentedParams, <<~ERROR
+            event :#{method_name} called with undocumented params #{extra_keywords.inspect}
+          ERROR
+        end
+      end
+
+      super(event, original_attributes)
+    end
+
+    # @api private
+    # Returns the names of @option tags from the source of a method
+    def option_param_names(instance_method)
+      self.asts ||= {}
+      self.docstrings ||= {}
+
+      if !YARD::Tags::Library.instance.has_tag?(:'identity.idp.previous_event_name')
+        YARD::Tags::Library.define_tag('Previous Event Name', :'identity.idp.previous_event_name')
+      end
+
+      file = instance_method.source_location.first
+
+      ast = self.asts[file] ||= begin
+        YARD::Parser::Ruby::RubyParser.new(File.read(file), file)
+          .parse
+          .ast
+      end
+
+      docstring = self.docstrings[instance_method.name] ||= begin
+        node = ast.traverse do |node|
+          break node if node.type == :def && node.jump(:ident)&.first == instance_method.name.to_s
+        end
+
+        YARD::DocstringParser.new.parse(node.docstring).to_docstring
+      end
+
+      docstring.tags.select { |tag| tag.tag_name == 'option' }
+        .map { |tag| tag.pair.name.tr(%('"), '') }
+    end
+  end
+
   prepend PiiAlerter
+  prepend UndocumentedParamsChecker
 
   attr_reader :events
+  attr_accessor :user
+  attr_accessor :session
 
-  def initialize
+  def initialize(user: AnonymousUser.new, sp: nil, session: nil)
     @events = Hash.new
+    @user = user
+    @sp = sp
+    @session = session
   end
 
   def track_event(event, attributes = {})
+    if attributes[:proofing_components].instance_of?(Idv::ProofingComponents)
+      attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
+    end
     events[event] ||= []
     events[event] << attributes
     nil
   end
 
-  def track_mfa_submit_event(_attributes)
-    # no-op
-  end
-
-  # no-op this event in fake analytics, because it adds a lot of noise to tests
-  # expecting other events
-  def irs_attempts_api_event_metadata(**_attrs)
-    # no-op
-  end
-
   def browser_attributes
     {}
   end
-end
 
-RSpec::Matchers.define :have_logged_event do |event_name, attributes|
-  attributes ||= {}
-
-  match do |actual|
-    expect(actual).to be_kind_of(FakeAnalytics)
-
-    if RSpec::Support.is_a_matcher?(attributes)
-      expect(actual.events[event_name]).to include(attributes)
-    else
-      expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
-    end
-  end
-
-  failure_message do |actual|
-    <<~MESSAGE
-      Expected that FakeAnalytics would have received event #{event_name.inspect}
-      with #{attributes.inspect}.
-
-      Events received:
-      #{actual.events.pretty_inspect}
-    MESSAGE
+  def reset!
+    @events = Hash.new
   end
 end

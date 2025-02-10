@@ -1,14 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe BaseComponent, type: :component do
+  # rubocop:disable RSpec/LeakyConstantDeclaration
   class ExampleComponent < BaseComponent
     def call
       ''
     end
   end
+  # rubocop:enable RSpec/LeakyConstantDeclaration
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:view_context).and_return(view_context)
@@ -21,30 +22,162 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   context 'with sidecar script' do
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class ExampleComponentWithScript < BaseComponent
       def call
-        render(NestedExampleComponentWithScript.new)
+        ''
       end
 
-      def self._sidecar_files(extensions)
+      def self.sidecar_files(extensions)
         files = []
-        files << '/components/example_component_with_script_js.js' if extensions.include?('js')
         files << '/components/example_component_with_script_ts.ts' if extensions.include?('ts')
         files.presence || super(extensions)
       end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
+    # rubocop:disable RSpec/LeakyConstantDeclaration
+    class ExampleComponentWithScriptRenderingOtherComponentWithScript < BaseComponent
+      def call
+        render(ExampleComponentWithScript.new)
+      end
+
+      def self.sidecar_files(extensions)
+        if extensions.include?('ts')
+          ['/components/example_component_with_script_rendering_other_component_with_script.ts']
+        else
+          super(extensions)
+        end
+      end
+    end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
+
+    # rubocop:disable RSpec/LeakyConstantDeclaration
     class NestedExampleComponentWithScript < ExampleComponentWithScript
+      def self.sidecar_files(extensions)
+        if extensions.include?('ts')
+          ['/components/nested_example_component_with_script.ts']
+        else
+          super(extensions)
+        end
+      end
+    end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
+
+    it 'adds script to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_scripts).with(
+        'example_component_with_script_ts',
+      )
+
+      render_inline(ExampleComponentWithScript.new)
+    end
+
+    it 'adds own and parent scripts to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_scripts).with(
+        'nested_example_component_with_script',
+        'example_component_with_script_ts',
+      )
+
+      render_inline(NestedExampleComponentWithScript.new)
+    end
+
+    it 'adds own and scripts of any other component it renders' do
+      call = 0
+      expect(view_context).to receive(:enqueue_component_scripts).twice do |*args|
+        call += 1
+        case call
+        when 1
+          expect(args).to eq [
+            'example_component_with_script_rendering_other_component_with_script',
+          ]
+        when 2
+          expect(args).to eq [
+            'example_component_with_script_ts',
+          ]
+        end
+      end
+
+      render_inline(ExampleComponentWithScriptRenderingOtherComponentWithScript.new)
+    end
+  end
+
+  context 'with sidecar stylesheet' do
+    # rubocop:disable RSpec/LeakyConstantDeclaration
+    class ExampleComponentWithStylesheet < BaseComponent
       def call
         ''
       end
+
+      def self.sidecar_files(extensions)
+        files = []
+        files << '/example_component_with_stylesheet.scss' if extensions.include?('scss')
+        files.presence || super(extensions)
+      end
     end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
+
+    # rubocop:disable RSpec/LeakyConstantDeclaration
+    class ExampleComponentWithStylesheetRenderingOtherComponentWithStylesheet < BaseComponent
+      def call
+        render(ExampleComponentWithStylesheet.new)
+      end
+
+      def self.sidecar_files(extensions)
+        if extensions.include?('scss')
+          ['/example_component_with_stylesheet_rendering_other_component_with_stylesheet.scss']
+        else
+          super(extensions)
+        end
+      end
+    end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
+
+    # rubocop:disable RSpec/LeakyConstantDeclaration
+    class NestedExampleComponentWithStylesheet < ExampleComponentWithStylesheet
+      def self.sidecar_files(extensions)
+        if extensions.include?('scss')
+          ['/nested_example_component_with_stylesheet.scss']
+        else
+          super(extensions)
+        end
+      end
+    end
+    # rubocop:enable RSpec/LeakyConstantDeclaration
 
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:enqueue_component_scripts).twice.
-        with('example_component_with_script_js', 'example_component_with_script_ts')
+      expect(view_context).to receive(:enqueue_component_stylesheets).with(
+        'example_component_with_stylesheet',
+      )
 
-      render_inline(ExampleComponentWithScript.new)
+      render_inline(ExampleComponentWithStylesheet.new)
+    end
+
+    it 'adds own and parent scripts to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_stylesheets).with(
+        'nested_example_component_with_stylesheet',
+        'example_component_with_stylesheet',
+      )
+
+      render_inline(NestedExampleComponentWithStylesheet.new)
+    end
+
+    it 'adds own and scripts of any other component it renders' do
+      call = 0
+      expect(view_context).to receive(:enqueue_component_stylesheets).twice do |*args|
+        call += 1
+        case call
+        when 1
+          expect(args).to eq [
+            'example_component_with_stylesheet_rendering_other_component_with_stylesheet',
+          ]
+        when 2
+          expect(args).to eq [
+            'example_component_with_stylesheet',
+          ]
+        end
+      end
+
+      render_inline(ExampleComponentWithStylesheetRenderingOtherComponentWithStylesheet.new)
     end
   end
 

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Users
   class PivCacLoginController < ApplicationController
     include PivCacConcern
     include VerifySpAttributesConcern
     include TwoFactorAuthenticatableMethods
+    include NewDeviceConcern
 
     def new
       if params.key?(:token)
@@ -36,41 +39,35 @@ module Users
 
     private
 
-    def two_factor_authentication_method
-      'piv_cac'
-    end
-
     def render_prompt
-      analytics.user_registration_piv_cac_setup_visit
+      analytics.piv_cac_login_visited
       @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)
       render :new
     end
 
     def process_piv_cac_login
       result = piv_cac_login_form.submit
-      analytics.piv_cac_login(**result.to_h)
       clear_piv_cac_information
       clear_piv_cac_nonce
       if result.success?
-        process_valid_submission
+        process_valid_submission(result)
       else
         process_invalid_submission
       end
+      analytics.piv_cac_login(**result, new_device: @new_device)
     end
 
     def piv_cac_login_form
       @piv_cac_login_form ||= UserPivCacLoginForm.new(
         token: params[:token],
         nonce: piv_cac_nonce,
-        piv_cac_required: sp_session[:piv_cac_requested],
+        piv_cac_required: resolved_authn_context_result.hspd12?,
       )
     end
 
-    def process_valid_submission
+    def process_valid_submission(result)
       user = piv_cac_login_form.user
       sign_in(:user, user)
-
-      mark_user_session_authenticated(:piv_cac)
 
       save_piv_cac_information(
         subject: piv_cac_login_form.x509_dn,
@@ -78,19 +75,22 @@ module Users
         presented: true,
       )
 
-      handle_valid_otp(next_step)
+      @new_device = set_new_device_session(nil)
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
+      redirect_to next_step
     end
 
     def next_step
-      if ial_context.ial2_requested?
+      if pii_requested_but_locked?
         capture_password_url
+      elsif !current_user.accepted_rules_of_use_still_valid?
+        rules_of_use_path
       else
-        after_otp_verification_confirmation_url
+        after_sign_in_path_for(current_user)
       end
-    end
-
-    def ial_context
-      @ial_context ||= IalContext.new(ial: sp_session_ial, service_provider: current_sp)
     end
 
     def process_invalid_submission
@@ -101,14 +101,6 @@ module Users
 
     def process_token_with_error
       redirect_to login_piv_cac_error_url(error: piv_cac_login_form.error_type)
-    end
-
-    def mark_user_session_authenticated(authentication_type)
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
-      analytics.user_marked_authed(
-        authentication_type: authentication_type,
-      )
     end
   end
 end

@@ -5,9 +5,9 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 .generators
+*.db
 *.pyc
 *.rbc
-*.sassc
 **.orig
 .bundle
 .byebug_history
@@ -15,6 +15,7 @@
 .databag_secret
 .env
 .idea
+.irb_history
 .powrc
 .sass-cache
 .zeus.sock
@@ -24,6 +25,10 @@
 .ruby-version
 .vagrant
 .capistrano
+.tool-versions
+
+# avoid checking in stray files
+*.bak
 
 # root files
 capybara-*.html
@@ -74,6 +79,8 @@ Vagrantfile
 /doc/
 
 package-lock.json
+browsers.json
+Brewfile.lock.json
 
 saml_*.txt
 saml_*.shr

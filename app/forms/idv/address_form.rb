@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class AddressForm
     include ActiveModel::Model
@@ -8,41 +10,46 @@ module Idv
     attr_accessor(*ATTRIBUTES)
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, 'Address')
+      ActiveModel::Name.new(self, nil, 'IdvForm')
     end
 
-    def initialize(pii)
-      @pii = pii
-      @address_edited = false
+    def initialize(initial_address)
+      consume_attributes_from_address(initial_address.to_h)
     end
 
     def submit(params)
-      consume_params(params)
+      consume_attributes_from_address(params.to_h)
 
       FormResponse.new(
         success: valid?,
         errors: errors,
         extra: {
-          address_edited: @address_edited,
           pii_like_keypaths: [[:errors, :zipcode], [:error_details, :zipcode]],
         },
       )
     end
 
-    private
+    def updated_user_address
+      return nil unless valid?
 
-    def consume_params(params)
-      params.each do |key, value|
-        raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-        send("#{key}=", value)
-        if send(key) != @pii[key] && (send(key).present? || @pii[key].present?)
-          @address_edited = true
-        end
-      end
+      Pii::Address.new(
+        address1: address1,
+        address2: address2,
+        city: city,
+        state: state,
+        zipcode: zipcode,
+      )
     end
 
-    def raise_invalid_address_parameter_error(key)
-      raise ArgumentError, "#{key} is an invalid address attribute"
+    private
+
+    def consume_attributes_from_address(address_hash)
+      address_hash = address_hash.symbolize_keys
+      @address1 = address_hash[:address1].to_s.strip
+      @address2 = address_hash[:address2].to_s.strip
+      @city = address_hash[:city].to_s.strip
+      @state = address_hash[:state].to_s.strip
+      @zipcode = address_hash[:zipcode].to_s.strip
     end
   end
 end

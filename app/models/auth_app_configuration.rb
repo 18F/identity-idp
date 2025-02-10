@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthAppConfiguration < ApplicationRecord
   include EncryptableAttribute
 
@@ -13,7 +15,7 @@ class AuthAppConfiguration < ApplicationRecord
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::AuthAppSelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::SignInAuthAppSelectionPresenter.new(user:, configuration: self)]
     else
       []
     end

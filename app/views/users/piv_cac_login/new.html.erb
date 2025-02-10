@@ -1,15 +1,13 @@
-<% title @presenter.title %>
+<% self.title = @presenter.title %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class='margin-top-2 margin-bottom-2'>
-  <%= raw @presenter.info %>
+<p class="margin-bottom-5">
+  <%= @presenter.info %>
 </p>
 
 <%= render SpinnerButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(@presenter.piv_cac_service_link, **tag_options, &block)
-      end,
+      url: @presenter.piv_cac_service_link,
       big: true,
       wide: true,
     ).with_content(@presenter.piv_cac_capture_text) %>

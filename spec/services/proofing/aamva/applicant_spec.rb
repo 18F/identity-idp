@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Applicant do
+RSpec.describe Proofing::Aamva::Applicant do
   let(:proofer_applicant) do
     {
       uuid: '1234-4567-abcd-efgh',
@@ -14,7 +14,7 @@ describe Proofing::Aamva::Applicant do
   end
 
   describe '.from_proofer_applicant(applicant)' do
-    it 'should create an AAMVA applicant with necessary proofer applcant data' do
+    it 'should create an AAMVA applicant with necessary proofer applicant data' do
       aamva_applicant = described_class.from_proofer_applicant(proofer_applicant)
 
       expect(aamva_applicant.uuid).to eq(proofer_applicant[:uuid])
@@ -63,5 +63,24 @@ describe Proofing::Aamva::Applicant do
     aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
 
     expect(aamva_applicant[:dob]).to eq('')
+  end
+
+  context 'when height includes inches >= 10' do
+    it 'formats as expected' do
+      proofer_applicant[:height] = 95
+      aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
+      expect(aamva_applicant[:height]).to eq('711')
+    end
+  end
+
+  context 'when height includes inches < 10' do
+    it 'formats as expected' do
+      proofer_applicant[:height] = 67
+      aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
+
+      # From the DLDV user guide:
+      # > Height data should be 3 characters (i.e. 5 foot 7 inches is submitted as 507)
+      expect(aamva_applicant[:height]).to eq('507')
+    end
   end
 end

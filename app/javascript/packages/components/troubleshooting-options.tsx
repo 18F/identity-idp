@@ -14,18 +14,15 @@ export type TroubleshootingOption = Omit<BlockLinkProps, 'href'> & {
 interface TroubleshootingOptionsProps {
   headingTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-  heading?: string;
+  heading?: ReactNode;
 
   options: TroubleshootingOption[];
-
-  isNewFeatures?: boolean;
 }
 
 function TroubleshootingOptions({
   headingTag = 'h2',
   heading,
   options,
-  isNewFeatures,
 }: TroubleshootingOptionsProps) {
   const { t } = useI18n();
 
@@ -37,11 +34,6 @@ function TroubleshootingOptions({
 
   return (
     <section className="troubleshooting-options">
-      {isNewFeatures && (
-        <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
-          {t('components.troubleshooting_options.new_feature')}
-        </span>
-      )}
       <HeadingTag className="troubleshooting-options__heading">
         {heading ?? t('components.troubleshooting_options.default_heading')}
       </HeadingTag>

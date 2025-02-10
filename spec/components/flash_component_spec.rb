@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe FlashComponent, type: :component do
   let(:flash) { {} }
 
-  subject(:rendered) { render_inline FlashComponent.new(flash: flash) }
+  subject(:rendered) { render_inline FlashComponent.new(flash:) }
 
   context 'flash key, but not message, is present' do
     let(:flash) { { 'error' => '' } }

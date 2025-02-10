@@ -3,6 +3,10 @@ class FakeSamlRequest
     self
   end
 
+  def matching_cert
+    nil
+  end
+
   def identifier
     'http://localhost:3000'
   end
@@ -34,8 +38,16 @@ class FakeSamlRequest
     Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
+  def requested_vtr_authn_contexts
+    nil
+  end
+
   def valid?
     true
+  end
+
+  def signed?
+    false
   end
 
   def name_id_format

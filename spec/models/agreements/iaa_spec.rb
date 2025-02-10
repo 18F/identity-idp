@@ -54,8 +54,8 @@ RSpec.describe Agreements::Iaa do
 
   describe 'delegated methods' do
     it 'does not permit arbitrary sends to the gtc or order objects' do
-      expect { iaa.send('gtc_not_permitted') }.to raise_error(NoMethodError)
-      expect { iaa.send('order_not_permitted') }.to raise_error(NoMethodError)
+      expect { iaa.send(:gtc_not_permitted) }.to raise_error(NoMethodError)
+      expect { iaa.send(:order_not_permitted) }.to raise_error(NoMethodError)
     end
   end
 
@@ -66,7 +66,7 @@ RSpec.describe Agreements::Iaa do
     end
 
     it 'returns false when the order does not match' do
-      other_order = create(:iaa_order, iaa_gtc: gtc)
+      other_order = create(:iaa_order, order_number: 2, iaa_gtc: gtc)
       other = described_class.new(gtc: gtc, order: other_order)
       expect(iaa).not_to eq(other)
     end

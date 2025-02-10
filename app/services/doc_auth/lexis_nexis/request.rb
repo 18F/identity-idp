@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     class Request
@@ -10,12 +12,13 @@ module DocAuth
       end
 
       def fetch
+        # return DocAuth::Respose with DocAuth:Error if workflow invalid
         http_response = send_http_request
         return handle_invalid_response(http_response) unless http_response.success?
 
         handle_http_response(http_response)
-      rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
-        handle_connection_error(e)
+      rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
+        handle_connection_error(exception: e)
       end
 
       def metric_name
@@ -45,16 +48,32 @@ module DocAuth
         ].join(' ')
         exception = DocAuth::RequestError.new(message, http_response.status)
 
-        handle_connection_error(exception)
+        response_body = begin
+          http_response.body.present? ? JSON.parse(http_response.body) : {}
+        rescue JSON::JSONError
+          {}
+        end
+
+        handle_connection_error(
+          exception: exception,
+          status_code: response_body.dig('status', 'code'),
+          status_message: response_body.dig('status', 'message'),
+        )
       end
 
-      def handle_connection_error(exception)
-        NewRelic::Agent.notice_error(exception)
+      def handle_connection_error(exception:, status_code: nil, status_message: nil)
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
           exception: exception,
-          extra: { vendor: 'TrueID' },
+          extra: {
+            vendor: 'TrueID',
+            selfie_live: false,
+            selfie_quality_good: false,
+            vendor_status_code: status_code,
+            vendor_status_message: status_message,
+            reference: @reference,
+          }.compact,
         )
       end
 
@@ -78,20 +97,17 @@ module DocAuth
           interval_randomness: 0.5,
           backoff_factor: 2,
           retry_statuses: [404, 500],
-          retry_block: lambda do |_env, _options, retries, exc|
-            NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
+          retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+            NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
           end,
         }
 
-        Faraday.new(url: url.to_s, headers: headers) do |conn|
+        Faraday.new(url: url.to_s, headers: request_headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
-          conn.request :basic_auth, username, password
+          conn.request :authorization, :basic, username, password unless hmac_auth_enabled?
           conn.adapter :net_http
           conn.options.timeout = timeout
-          conn.options.read_timeout = timeout
-          conn.options.open_timeout = timeout
-          conn.options.write_timeout = timeout
         end
       end
 
@@ -107,21 +123,37 @@ module DocAuth
         URI.join(config.base_url, path)
       end
 
-      def headers
-        {
+      def request_headers
+        headers = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }
+        headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+        headers
+      end
+
+      def hmac_auth_enabled?
+        IdentityConfig.store.lexisnexis_hmac_auth_enabled
+      end
+
+      # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
+      def hmac_authorization
+        Proofing::LexisNexis::RequestSigner.new(
+          config: config,
+          message_body: body,
+          path: path,
+        ).hmac_authorization
       end
 
       def settings
+        @reference = uuid
         {
           Type: 'Initiate',
           Settings: {
             Mode: request_mode,
             Locale: config.locale,
             Venue: 'online',
-            Reference: uuid,
+            Reference: @reference,
           },
         }
       end

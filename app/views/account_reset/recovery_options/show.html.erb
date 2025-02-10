@@ -1,4 +1,4 @@
-<% title t('account_reset.recovery_options.header') %>
+<% self.title = t('account_reset.recovery_options.header') %>
 <%= render PageHeadingComponent.new.with_content(t('account_reset.recovery_options.header')) %>
 
 <p>
@@ -6,12 +6,13 @@
 </p>
 
   <%= render ProcessListComponent.new(class: 'margin-y-3') do |c| %>
-    <%= c.item(heading: t('account_reset.recovery_options.try_method_again')) %>
-    <%= c.item(heading: t('account_reset.recovery_options.use_device')) do %>
+    <%= c.with_item(heading: t('account_reset.recovery_options.try_method_again')) %>
+    <%= c.with_item(heading: t('account_reset.recovery_options.use_device')) do %>
       <p><%= t('account_reset.recovery_options.try_another_device') %></p>
     <% end %>
-    <%= c.item(heading: t('account_reset.recovery_options.check_webauthn_platform')) do %>
-      <p><%= t('account_reset.recovery_options.check_webauthn_platform_info', app_name: APP_NAME) %></p>
+    <%= c.with_item(heading: t('account_reset.recovery_options.check_saved_credential')) do %>
+      <p><%= t('account_reset.recovery_options.check_webauthn_platform_info') %></p>
+      <p><%= t('account_reset.recovery_options.use_same_device') %></p>
     <% end %>
   <% end %>
 

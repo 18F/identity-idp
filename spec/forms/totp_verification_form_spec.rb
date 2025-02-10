@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TotpVerificationForm do
+RSpec.describe TotpVerificationForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
@@ -14,8 +14,8 @@ describe TotpVerificationForm do
         expect(form.submit.to_h).to eq(
           success: true,
           errors: {},
-          multi_factor_auth_method: 'totp',
           auth_app_configuration_id: cfg.id,
+          multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
         )
       end
     end
@@ -31,8 +31,8 @@ describe TotpVerificationForm do
         expect(form.submit.to_h).to eq(
           success: false,
           errors: {},
-          multi_factor_auth_method: 'totp',
           auth_app_configuration_id: nil,
+          multi_factor_auth_method_created_at: nil,
         )
       end
     end
@@ -49,8 +49,8 @@ describe TotpVerificationForm do
           expect(form.submit.to_h).to eq(
             success: false,
             errors: {},
-            multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            multi_factor_auth_method_created_at: nil,
           )
         end
       end

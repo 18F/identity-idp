@@ -1,6 +1,12 @@
 {
-  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
-  "plugins": ["@18f/eslint-plugin-identity"],
+  "extends": [
+    "plugin:@18f/eslint-plugin-identity/recommended",
+    // These two react lint plugins are mostly off, see overrides below
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  "plugins": ["@18f/eslint-plugin-identity", "testing-library"],
   "env": {
     "browser": true,
     "commonjs": true
@@ -9,21 +15,17 @@
     "globalThis": true
   },
   "rules": {
+    // `no-unresolved` doesn't support package.json exports
+    // See: https://github.com/import-js/eslint-plugin-import/issues/1810
+    "import/no-unresolved": ["error", { "ignore": ["intl-tel-input"] }],
     "no-restricted-syntax": [
       "error",
       {
-        "selector": "NewExpression[callee.name='Event']",
-        "message": "Use CustomEvent constructor with polyfill for Internet Explorer"
-      },
-      {
-        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
-        "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
-      },
-      {
-        "selector": "ExpressionStatement[expression.callee.object.name='userEvent']",
-        "message": "Await the promised result of a userEvent interaction"
+        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/],NewExpression[callee.name=URL][arguments.0.type=/(Template)?Literal/]",
+        "message": "Avoid hard-coded string URLs, since they will not include the current locale"
       }
-    ]
+    ],
+    "react-hooks/exhaustive-deps": "error"
   },
   "settings": {
     "import/internal-regex": "^@18f/identity-"
@@ -42,7 +44,92 @@
             "devDependencies": true,
             "packageDir": "."
           }
-        ]
+        ],
+        "no-restricted-syntax": "off",
+        "testing-library/await-async-events": "error",
+        "testing-library/await-async-queries": "error",
+        "testing-library/await-async-utils": "error",
+        "testing-library/no-await-sync-events": "error",
+        "testing-library/no-await-sync-queries": "error",
+        "testing-library/no-debugging-utils": "error"
+      }
+    },
+    {
+      "files": [
+        "app/javascript/packages/address-search/components/address-input.tsx",
+        "app/javascript/packages/address-search/components/full-address-search-input.tsx",
+        "app/javascript/packages/components/hooks/use-focus-trap.ts",
+        "app/javascript/packages/components/hooks/use-toggle-body-class-by-presence.ts",
+        "app/javascript/packages/document-capture/components/acuant-camera.tsx",
+        "app/javascript/packages/document-capture/components/acuant-capture-canvas.jsx",
+        "app/javascript/packages/document-capture/components/acuant-capture.tsx",
+        "app/javascript/packages/document-capture/components/acuant-selfie-camera.tsx",
+        "app/javascript/packages/document-capture/components/callback-on-mount.jsx",
+        "app/javascript/packages/document-capture/components/document-capture-warning.tsx",
+        "app/javascript/packages/document-capture/components/document-capture.tsx",
+        "app/javascript/packages/document-capture/components/file-image.jsx",
+        "app/javascript/packages/document-capture/components/file-input.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-full-address-entry-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-switch-back-step.tsx",
+        "app/javascript/packages/document-capture/components/review-issues-step.tsx",
+        "app/javascript/packages/document-capture/components/submission-interstitial.jsx",
+        "app/javascript/packages/document-capture/context/acuant.tsx",
+        "app/javascript/packages/document-capture/hooks/use-cookie.js",
+        "app/javascript/packages/form-steps/form-steps.spec.tsx",
+        "app/javascript/packages/form-steps/form-steps.tsx",
+        "app/javascript/packages/form-steps/use-history-param.ts",
+        "app/javascript/packages/react-hooks/use-did-update-effect.ts",
+        "app/javascript/packages/react-hooks/use-immutable-callback.ts",
+        "app/javascript/packages/react-hooks/use-object-memo.ts"
+      ],
+      "rules": {
+        "react-hooks/exhaustive-deps": "off"
+      }
+    },
+    {
+      "files": [
+        "app/javascript/packages/address-search/components/in-person-locations.spec.tsx",
+        "app/javascript/packages/components/spinner-dots.jsx",
+        "app/javascript/packages/document-capture/components/acuant-capture.tsx",
+        "app/javascript/packages/document-capture/components/acuant-selfie-capture-canvas.jsx",
+        "app/javascript/packages/document-capture/components/document-side-acuant-capture.jsx",
+        "app/javascript/packages/document-capture/components/file-image.jsx",
+        "app/javascript/packages/document-capture/components/file-input.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-full-address-entry-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-location-post-office-search-step.tsx",
+        "app/javascript/packages/document-capture/components/in-person-prepare-step.tsx",
+        "app/javascript/packages/document-capture/components/submission-interstitial.jsx",
+        "app/javascript/packages/document-capture/components/submission.jsx",
+        "spec/javascript/packages/document-capture/context/failed-capture-attempts-spec.jsx",
+        "spec/javascript/packages/document-capture/hooks/use-async-spec.jsx"
+      ],
+      "rules": {
+        "react/prop-types": "off"
+      }
+    },
+    {
+      "files": [
+        "app/javascript/packages/components/status-page.spec.tsx",
+        "app/javascript/packages/document-capture/components/warning.tsx"
+      ],
+      "rules": {
+        "react/jsx-key": "off"
+      }
+    },
+    {
+      "files": ["app/javascript/packages/document-capture/higher-order/with-props.jsx"],
+      "rules": {
+        "react/display-name": "off"
+      }
+    },
+    {
+      "files": [
+        "app/javascript/packages/form-steps/form-steps.spec.tsx",
+        "spec/javascript/spec_helper.js"
+      ],
+      "rules": {
+        "react-hooks/rules-of-hooks": "off"
       }
     }
   ]

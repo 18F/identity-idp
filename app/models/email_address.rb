@@ -1,11 +1,20 @@
+# frozen_string_literal: true
+
 class EmailAddress < ApplicationRecord
   include EncryptableAttribute
+
+  before_destroy :reset_linked_identities
 
   encrypted_attribute_without_setter(name: :email)
 
   belongs_to :user, inverse_of: :email_addresses
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_one :suspended_email
+
+  has_many :identities, class_name: 'ServiceProviderIdentity'
+  # rubocop:enable Rails/HasManyOrHasOneDependent
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
 
@@ -18,14 +27,30 @@ class EmailAddress < ApplicationRecord
     confirmed_at.present?
   end
 
-  def stale_email_fingerprint?
-    Pii::Fingerprinter.stale?(email, email_fingerprint)
-  end
-
   def confirmation_period_expired?
     expiration_time = confirmation_sent_at +
                       IdentityConfig.store.add_email_link_valid_for_hours.hours
     Time.zone.now > expiration_time
+  end
+
+  def domain
+    Mail::Address.new(email).domain
+  end
+
+  def fed_or_mil_email?
+    fed_email? || mil_email?
+  end
+
+  def fed_email?
+    FederalEmailDomain.fed_domain?(domain)
+  end
+
+  def mil_email?
+    email.end_with?('.mil')
+  end
+
+  def self.last_sign_in
+    order('last_sign_in_at DESC NULLS LAST').first
   end
 
   class << self
@@ -67,5 +92,18 @@ class EmailAddress < ApplicationRecord
     def create_fingerprints(email)
       [Pii::Fingerprinter.fingerprint(email), *Pii::Fingerprinter.previous_fingerprints(email)]
     end
+  end
+
+  private
+
+  # Remove email id from all user identities
+  # when the email is destroyed.
+  def reset_linked_identities
+    # rubocop:disable Rails/SkipsModelValidations
+    ServiceProviderIdentity.where(
+      user_id: user_id,
+      email_address_id: id,
+    ).update_all(email_address_id: nil)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end

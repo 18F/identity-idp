@@ -1,12 +1,23 @@
-shared_examples 'a system email' do
+RSpec.shared_examples 'a system email' do |synchronous_only: false|
   it 'is from the default email' do
     expect(mail.from).to eq [IdentityConfig.store.email_from]
     expect(mail[:from].display_names).to eq [IdentityConfig.store.email_from_display_name]
   end
+
+  it 'does not include markup or layout with lack of broad email support' do
+    body = mail.parts.first.body
+
+    # https://www.caniemail.com/features/image-svg/
+    expect(body).not_to have_css('img[src$=".svg"]')
+  end
+
+  it 'does not error when delivered asynchronously', unless: synchronous_only do
+    mail.deliver_later
+  end
 end
 
 # expects there to be a let(:user) in scope
-shared_examples 'an email that respects user email locale preference' do
+RSpec.shared_examples 'an email that respects user email locale preference' do
   before do
     user.email_language = 'fr'
     user.save!

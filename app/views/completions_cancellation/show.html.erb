@@ -1,0 +1,41 @@
+<% self.title = t('titles.cancel_exit_login', app_name: APP_NAME) %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME) } %>
+
+  <p>
+    <%= t('login_cancel.header', app_name: APP_NAME) %>
+  </p>
+
+  <ul class="usa-list">
+    <li><%= t('login_cancel.bullet1_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
+    <li>
+      <%= t(
+            'login_cancel.bullet2_html', app_name: APP_NAME,
+                                         link_html: link_to(
+                                           t('login_cancel.account_page'),
+                                           account_path,
+                                         )
+          ) %>
+    </li>
+  </ul>
+
+  <div class="grid-row">
+    <div class="grid-col-6">
+      <%= render ButtonComponent.new(
+            url: sign_up_completed_path,
+            big: true,
+            wide: true,
+            class: 'margin-bottom-2 margin-top-3',
+          ).with_content(t('login_cancel.keep_going')) %>
+
+      <%= render ButtonComponent.new(
+            url: return_to_sp_cancel_path(step: :sign_up),
+            big: true,
+            wide: true,
+            outline: true,
+          ).with_content(t('login_cancel.exit', app_name: APP_NAME)) %>
+    </div>
+  </div>
+ 
+<% end %>

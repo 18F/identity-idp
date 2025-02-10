@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AppArtifacts::Store do
+RSpec.describe AppArtifacts::Store do
   subject(:instance) { AppArtifacts::Store.new }
 
   describe '#add_artifact' do
@@ -38,15 +38,29 @@ describe AppArtifacts::Store do
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/test_artifact'
         )
       end
+
+      context 'with allow_missing: true' do
+        it 'does not raise an error if an artifact is missing' do
+          expect(secrets_s3).to receive(:read_file).with(
+            '/%<env>s/test_artifact',
+          ).and_return(nil)
+
+          store = instance.build do |store|
+            store.add_artifact(:test_artifact, '/%<env>s/test_artifact', allow_missing: true)
+          end
+
+          expect(store.test_artifact).to eq nil
+        end
+      end
     end
 
     context 'when running locally' do
       it 'reads the artifact from the example folder' do
         store = instance.build do |store|
-          store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
+          store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt')
         end
 
-        file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
+        file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2024.crt')
         contents = File.read(file_path)
         expect(store.test_artifact).to eq(contents)
         expect(store['test_artifact']).to eq(contents)
@@ -65,12 +79,12 @@ describe AppArtifacts::Store do
 
     it 'allows a block to be used to transform values' do
       store = instance.build do |store|
-        store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt') do |cert|
+        store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt') do |cert|
           OpenSSL::X509::Certificate.new(cert)
         end
       end
 
-      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
+      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2024.crt')
       contents = File.read(file_path)
       expect(store.test_artifact).to be_a(OpenSSL::X509::Certificate)
       expect(store.test_artifact.to_pem).to eq(contents)
@@ -80,7 +94,7 @@ describe AppArtifacts::Store do
   describe '#method_missing' do
     it 'runs methods based on the configd artifact keys' do
       store = instance.build do |store|
-        store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
+        store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt')
       end
 
       expect { store.test_artifact }.to_not raise_error

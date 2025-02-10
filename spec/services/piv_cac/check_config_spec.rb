@@ -2,7 +2,7 @@ require 'rails_helper'
 
 # Covers app/services/piv_cac/check_config.rb, which raises an error if the
 # piv_cac_verify_token_url is not configured with https in production environments.
-describe PivCac::CheckConfig do
+RSpec.describe PivCac::CheckConfig do
   let(:is_production) { false }
   let(:url) { 'http://non-secure.example.com/' }
 
@@ -22,8 +22,8 @@ describe PivCac::CheckConfig do
 
     context 'non-https config' do
       it 'does raise an error' do
-        expect { PivCac::CheckConfig.call }.
-          to raise_error(RuntimeError, "piv_cac_verify_token_url configured without SSL: #{url}")
+        expect { PivCac::CheckConfig.call }
+          .to raise_error(RuntimeError, "piv_cac_verify_token_url configured without SSL: #{url}")
       end
     end
 

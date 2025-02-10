@@ -4,7 +4,7 @@ RSpec.describe VerifyPersonalKeyForm do
   let(:user) { create(:user) }
 
   let!(:profile) do
-    create(:profile, :active, :password_reset, user: user, pii: { ssn: '123456789' })
+    create(:profile, :verified, :password_reset, user: user, pii: { ssn: '123456789' })
   end
 
   subject(:form) do

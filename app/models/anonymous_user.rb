@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 class AnonymousUser
   def uuid
     'anonymous-uuid'
   end
+
+  def establishing_in_person_enrollment; end
+
+  def pending_in_person_enrollment; end
 
   def second_factor_locked_at
     nil
@@ -41,5 +47,21 @@ class AnonymousUser
 
   def confirmed_at
     Time.zone.now
+  end
+
+  def locked_out?
+    second_factor_locked_at.present? && !lockout_period_expired?
+  end
+
+  def identity_verified_with_facial_match?
+    false
+  end
+
+  def identity_verified?
+    false
+  end
+
+  def active_profile
+    nil
   end
 end

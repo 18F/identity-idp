@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 class PasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
 
-  def initialize(user)
+  def initialize(user:)
     @user = user
+    @validate_confirmation = true
   end
 
   def submit(params)
-    submitted_password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
     @request_id = params.fetch(:request_id, '')
-
-    self.password = submitted_password
 
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end

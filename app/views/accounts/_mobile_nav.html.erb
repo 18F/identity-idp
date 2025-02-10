@@ -1,8 +1,11 @@
 <nav class="usa-nav tablet:display-none sidenav-mobile" aria-label="<%= t('account.navigation.landmark_label') %>">
-  <button class="usa-nav__close">
-    <span class="usa-sr-only">Close</span>
-  </button>
   <div class="usa-nav__inner">
+    <button class="usa-nav__close">
+      <%= render IconComponent.new(icon: :close, size: 3) %>
+      <span class="usa-sr-only">
+        <%= t('account.navigation.close') %>
+      </span>
+    </button>
     <ul class="usa-nav__primary usa-accordion">
       <% NavigationPresenter.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
         <li class="usa-nav__primary-item">

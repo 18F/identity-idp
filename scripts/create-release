@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DEPLOY_BRANCH=stages/prod
+DRY_RUN=${DRY_RUN:-0}
+PR_JSON_FILE=${PR_JSON_FILE:-tmp/.pr.json}
+CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.changelog.md}
+GH_REPO=${GH_REPO:-18F/identity-idp}
+
+USAGE="
+${0} [PULL_REQUEST_URL]
+
+Creates a new release based on the given PR having been merged.
+"
+
+if [ $# -eq 0 ]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+PR="$1"; shift
+
+# Allow just pasting the PR URL
+PR=$(echo "$PR" | sed -E "s#https://github.com/${GH_REPO}/pull/([0-9]+).*#\1#i")
+
+if ! which gh > /dev/null 2>&1; then
+    echo "Github CLI (gh) is not installed. You can install it with: brew install gh"
+    exit 1
+fi
+
+if [ "${CI:-}" == "1" ]; then
+    # gh will not work in CI unless GH_TOKEN is explicitly set.
+    if [ -z "${GH_TOKEN:-}" ]; then
+        echo "You must set the GH_TOKEN environment variable."
+        exit 1
+    fi
+
+    # GITHUB_SHA is provided by Github Actions, but if for some reason
+    # you are running locally with CI=1 trying to simulate a CI run,
+    # make it clear that we want it set.
+    if [ -z "${GITHUB_SHA:-}" ]; then
+        echo "\$GITHUB_SHA must be set."
+        exit 1
+    fi
+fi
+
+mkdir -p "$(dirname "$PR_JSON_FILE")" || true
+mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
+
+echo "Getting PR ${PR} data..."
+gh pr list \
+    --json number,mergeCommit,title,body \
+    --base "$DEPLOY_BRANCH" \
+    --state merged \
+    | jq ".[] | select(.number == ${PR})" > "$PR_JSON_FILE"
+
+if [ ! -s "$PR_JSON_FILE" ]; then
+    echo "Merged PR $PR not found."
+    exit 9
+fi
+
+if [ -z "${GITHUB_SHA:-}" ]; then
+    # $GITHUB_SHA is set by Github Actions. But when running locally we can
+    # pull it out of the PR's JSON blob.
+    GITHUB_SHA=$(jq --raw-output '.mergeCommit.oid' < "$PR_JSON_FILE")
+fi
+
+RC=$(jq --raw-output '.title' < "$PR_JSON_FILE" | sed -E 's/Deploy RC (.+) to .*/\1/')
+jq --raw-output '.body' < "$PR_JSON_FILE" > "$CHANGELOG_FILE"
+TITLE="RC $RC"
+
+echo "Checking for existing release '$TITLE'..."
+EXISTING_RELEASE=$(gh release list --exclude-drafts | (grep "$TITLE" || true))
+
+if [ -n "$EXISTING_RELEASE" ]; then
+    echo "❌ Release already exists: $TITLE" >&2
+    exit 10
+else
+    echo "No existing release found."
+fi
+
+TAG=$(date -u +'%Y-%m-%dT%H%M%S')
+
+if [ "${DRY_RUN:-}" == "1" ]; then
+    echo "Dry run. Not creating release $TITLE with tag $TAG ($GITHUB_SHA)..."
+else
+    echo "Creating release $TITLE with tag $TAG..."
+    gh release create \
+        "$TAG" \
+        --latest \
+        --target "$GITHUB_SHA" \
+        --title "$TITLE" \
+        --notes-file "$CHANGELOG_FILE"
+fi

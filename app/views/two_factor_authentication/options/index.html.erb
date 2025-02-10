@@ -1,6 +1,13 @@
-<% title @presenter.title %>
+<% self.title = @presenter.title %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+
+<% if @presenter.add_piv_cac_after_2fa? %>
+  <%= render AlertComponent.new(
+        type: :info,
+        class: 'margin-bottom-4',
+      ).with_content(t('two_factor_authentication.piv_cac_mismatch.2fa_before_add')) %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
@@ -8,15 +15,16 @@
   <%= @presenter.info %>
 </p>
 
-<%= simple_form_for(
-      @two_factor_options_form,
-      html: { autocomplete: 'off' },
-      method: :post,
-      url: login_two_factor_options_path,
-    ) do |f| %>
+<% if @presenter.restricted_options_warning_text.present? %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-top-4') do %>
+    <%= @presenter.restricted_options_warning_text %>
+  <% end %>
+<% end %>
+
+<%= simple_form_for(@two_factor_options_form, url: login_two_factor_options_path) do |f| %>
   <div role="group" aria-label="<%= @presenter.heading %>">
     <% @presenter.options.each_with_index do |option, index| %>
-      <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
+      <%= render(option) do %>
         <%= radio_button_tag(
               'two_factor_options_form[selection]',
               option.type,
@@ -33,7 +41,7 @@
                 <%= option.info %>
               </span>
             <% end %>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
@@ -45,5 +53,3 @@
 </p>
 
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
-
-<%= javascript_packs_tag_once 'webauthn-unhide' %>

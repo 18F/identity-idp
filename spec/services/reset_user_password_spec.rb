@@ -15,21 +15,22 @@ RSpec.describe ResetUserPassword do
     end
 
     it 'creates a password_invalidated user event' do
-      expect { call }.
-        to(change { user.events.password_invalidated.size }.from(0).to(1))
+      expect { call }
+        .to(change { user.events.password_invalidated.size }.from(0).to(1))
     end
 
-    it 'notifies the user via email to each of their email addresses' do
-      expect { call }.
-        to(change { ActionMailer::Base.deliveries.count }.by(2))
+    it 'notifies the user via email to each of their confirmed email addresses' do
+      create(:email_address, user:, email: Faker::Internet.email, confirmed_at: nil)
+      expect { call }
+        .to(change { ActionMailer::Base.deliveries.count }.by(2))
 
       mails = ActionMailer::Base.deliveries.last(2)
-      expect(mails.map(&:to).flatten).to match_array(user.email_addresses.map(&:email))
+      expect(mails.map(&:to).flatten).to match_array(user.confirmed_email_addresses.map(&:email))
     end
 
     it 'clears all remembered browsers by updating the remember_device_revoked_at timestamp' do
-      expect { call }.
-        to(change { user.reload.remember_device_revoked_at.to_i }.to(now.to_i))
+      expect { call }
+        .to(change { user.reload.remember_device_revoked_at.to_i }.to(now.to_i))
     end
   end
 end

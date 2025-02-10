@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   module MonthlySpAuthCount
     # Similar to TotalMonthlyAuthCounts, but scopes authorizations to within
@@ -9,6 +11,7 @@ module Db
 
       module_function
 
+      # rubocop:disable Metrics/BlockLength
       # @param [String] issuer
       # @param [String] iaa
       # @param [Date] iaa_start_date
@@ -28,21 +31,36 @@ module Db
           ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
         end
 
+        all_year_month_to_users = Hash.new { |h, ym_k| h[ym_k] = Set.new }
+
         queries.each do |query|
-          temp_copy = ial_to_year_month_to_users.deep_dup
+          by_ial_temp_copy = ial_to_year_month_to_users.deep_dup
+          all_temp_copy = all_year_month_to_users.deep_dup
 
           with_retries(
             max_tries: 3,
-            rescue: PG::TRSerializationFailure,
-            handler: proc { ial_to_year_month_to_users = temp_copy },
+            rescue: [
+              ActiveRecord::SerializationFailure,
+              PG::ConnectionBad,
+              PG::TRSerializationFailure,
+              PG::UnableToSend,
+            ],
+            handler: proc do
+              ial_to_year_month_to_users = by_ial_temp_copy
+              all_year_month_to_users = all_temp_copy
+              ActiveRecord::Base.connection.reconnect!
+            end,
           ) do
-            stream_query(query) do |row|
-              user_id = row['user_id']
-              year_month = row['year_month']
-              auth_count = row['auth_count']
-              ial = row['ial']
+            Reports::BaseReport.transaction_with_timeout do
+              ActiveRecord::Base.connection.execute(query).each do |row|
+                user_id = row['user_id']
+                year_month = row['year_month']
+                auth_count = row['auth_count']
+                ial = row['ial']
 
-              ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+                ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+                all_year_month_to_users[year_month] << user_id
+              end
             end
           end
         end
@@ -77,8 +95,21 @@ module Db
           end
         end
 
+        all_year_month_to_users.each do |year_month, users|
+          rows << {
+            issuer: issuer,
+            iaa: iaa,
+            iaa_end_date: iaa_range.end.to_s,
+            iaa_start_date: iaa_range.begin.to_s,
+            ial: :all,
+            unique_users: users.count,
+            year_month: year_month,
+          }
+        end
+
         rows
       end
+      # rubocop:enable Metrics/BlockLength
 
       # @param [String] issuer
       # @param [Array<Range<Date>>] months ranges of dates by month that are included in this iaa,
@@ -101,8 +132,7 @@ module Db
             , COUNT(sp_return_logs.id) AS auth_count
             FROM sp_return_logs
             WHERE
-                  sp_return_logs.requested_at::date BETWEEN %{range_start} AND %{range_end}
-              AND sp_return_logs.returned_at IS NOT NULL
+                  sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.issuer = %{issuer}
               AND sp_return_logs.billable = true
             GROUP BY

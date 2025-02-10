@@ -1,45 +1,57 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
 <% end %>
 
-<% title t('titles.doc_auth.address') %>
+<% self.title = t('titles.doc_auth.address') %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
+<%= render AlertComponent.new(
+      type: :info,
+      id: 'puerto-rico-extra-text',
+      class: @presenter.hint_class + ['margin-bottom-4'],
+    ) do
+      t('doc_auth.info.address_guidance_puerto_rico_html')
+    end
+%>
+
 <%= simple_form_for(
-      :idv_form,
+      @address_form,
       url: idv_address_path,
-      method: 'POST',
-      html: { autocomplete: 'off', class: 'margin-top-5' },
+      html: { class: 'margin-top-5' },
     ) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
+        id: 'address1',
         name: :address1,
         label: t('idv.form.address1'),
+        hint: @presenter.address_line1_hint,
+        hint_html: { class: @presenter.hint_class },
         required: true,
         maxlength: 255,
-        input_html: { value: @pii['address1'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :address2,
         label: t('idv.form.address2'),
+        hint: @presenter.address_line2_hint,
+        hint_html: { class: @presenter.hint_class },
         required: false,
         maxlength: 255,
-        input_html: { value: @pii['address2'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :city,
         label: t('idv.form.city'),
+        hint: @presenter.city_hint,
+        hint_html: { class: @presenter.hint_class },
         required: true,
         maxlength: 255,
-        input_html: { value: @pii['city'] },
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
@@ -47,7 +59,6 @@
         collection: us_states_territories,
         label: t('idv.form.state'),
         required: true,
-        selected: @pii['state'],
       ) %>
   <div class="tablet:grid-col-6">
     <%# using :tel for mobile numeric keypad %>
@@ -56,9 +67,11 @@
           name: :zipcode,
           as: :tel,
           label: t('idv.form.zipcode'),
+          hint: @presenter.zipcode_hint,
+          hint_html: { class: @presenter.hint_class },
           required: true,
           pattern: '(\d{5}([\-]\d{4})?)',
-          input_html: { value: @pii['zipcode'], class: 'zipcode' },
+          input_html: { class: 'zipcode' },
           error_messages: {
             patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
           },
@@ -69,3 +82,4 @@
 
 <%= render 'idv/shared/back', step: 'verify' %>
 <%= javascript_packs_tag_once('formatted-fields') %>
+<%= javascript_packs_tag_once('state-guidance') %>

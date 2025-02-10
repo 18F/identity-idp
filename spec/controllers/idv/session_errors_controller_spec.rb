@@ -1,62 +1,145 @@
 require 'rails_helper'
 
-shared_examples_for 'an idv session errors controller action' do
-  context 'the user is authenticated and has not confirmed their profile' do
-    let(:user) { build(:user) }
+RSpec.describe Idv::SessionErrorsController do
+  shared_examples_for 'an idv session errors controller action' do
+    context 'the user is authenticated and has not confirmed their profile' do
+      let(:user) { build(:user) }
 
-    it 'renders the error' do
-      get action
+      it 'renders the error' do
+        get action
+        expect(response).to render_template(template)
+      end
 
-      expect(response).to render_template(template)
+      it 'logs an event' do
+        get action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
+      end
+
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+        it 'does not log an event' do
+          expect(@analytics).not_to have_logged_event('IdV: session error visited', anything)
+          get action
+        end
+      end
+    end
+
+    context 'the user is authenticated and has confirmed their profile' do
+      let(:verify_info_step_complete) { true }
+      let(:user) { build(:user) }
+
+      it 'redirects to the phone url' do
+        get action
+
+        expect(response).to redirect_to(idv_phone_url)
+      end
+      it 'does not log an event' do
+        get action
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
+      end
     end
   end
 
-  context 'the user is authenticated and has confirmed their profile' do
-    let(:idv_session_profile_confirmation) { true }
-    let(:user) { build(:user) }
+  shared_examples_for 'non-authenticated idv session errors controller action' do
+    context 'the user is not authenticated and in doc capture flow' do
+      before do
+        user = create(:user, :fully_registered)
+        controller.session[:doc_capture_user_id] = user.id
+      end
+      it 'renders the error' do
+        get action
+        expect(response).to render_template(template)
+      end
+      it 'logs an event' do
+        get action
 
-    it 'redirects to the phone url' do
-      get action
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
+      end
 
-      expect(response).to redirect_to(idv_phone_url)
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+        it 'does not log an event' do
+          get action
+
+          expect(@analytics).not_to have_logged_event('IdV: session error visited', anything)
+        end
+      end
+    end
+
+    context 'the user is not authenticated and not recovering their account' do
+      it 'redirects to sign in' do
+        get action
+
+        expect(response).to redirect_to(new_user_session_url)
+      end
+      it 'does not log an event' do
+        get action
+
+        expect(@analytics).not_to have_logged_event(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
+      end
+    end
+
+    context 'the user is in the hybrid flow' do
+      render_views
+      let(:hybrid_user) { create(:user) }
+
+      before do
+        session[:doc_capture_user_id] = hybrid_user.id
+        allow(subject).to receive(:hybrid_user).and_return(hybrid_user)
+      end
+
+      it 'renders the error template' do
+        get action
+        expect(response).to render_template(template)
+      end
     end
   end
 
-  context 'the user is not authenticated and in doc capture flow' do
-    it 'renders the error' do
-      user = create(:user, :signed_up)
-      controller.session[:doc_capture_user_id] = user.id
-
-      get action
-
-      expect(response).to render_template(template)
-    end
-  end
-
-  context 'the user is not authenticated and not recovering their account' do
-    it 'redirects to sign in' do
-      get action
-
-      expect(response).to redirect_to(new_user_session_url)
-    end
-  end
-end
-
-describe Idv::SessionErrorsController do
-  let(:idv_session) { double }
-  let(:idv_session_profile_confirmation) { false }
+  let(:verify_info_step_complete) { false }
   let(:user) { nil }
 
   before do
-    allow(idv_session).to receive(:profile_confirmation).
-      and_return(idv_session_profile_confirmation)
-    allow(controller).to receive(:idv_session).and_return(idv_session)
-    stub_sign_in(user) if user
+    if user
+      stub_sign_in(user)
+      controller.idv_session.resolution_successful = verify_info_step_complete
+      controller.idv_session.address_verification_mechanism = nil
+      controller.idv_session.ssn = nil
+    end
+
+    stub_analytics
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    it 'includes before_actions from IdvSessionConcern' do
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -68,6 +151,7 @@ describe Idv::SessionErrorsController do
     subject(:response) { get action, params: params }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
   end
 
   describe '#warning' do
@@ -78,24 +162,37 @@ describe Idv::SessionErrorsController do
     subject(:response) { get :warning, params: params }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment!
       end
 
       it 'assigns remaining count' do
         response
 
-        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
       end
 
       it 'assigns URL to try again' do
         response
 
-        expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
+        expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
+      end
+
+      it 'logs an event with attempts remaining' do
+        response
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            remaining_submit_attempts: IdentityConfig.store.idv_max_attempts - 1,
+          ),
+        )
       end
 
       context 'in in-person proofing flow' do
@@ -104,7 +201,36 @@ describe Idv::SessionErrorsController do
         it 'assigns URL to try again' do
           response
 
-          expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+          expect(assigns(:try_again_path)).to eq(idv_in_person_verify_info_url)
+        end
+      end
+    end
+  end
+
+  describe '#state_id_warning' do
+    let(:action) { :state_id_warning }
+    let(:template) { 'idv/session_errors/state_id_warning' }
+    let(:params) { {} }
+
+    subject(:response) { get action, params: params }
+
+    it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
+
+    describe 'try again URL' do
+      let(:user) { create(:user) }
+
+      it 'assigns URL to try again' do
+        response
+        expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
+      end
+
+      context 'in in-person proofing flow' do
+        let(:params) { { flow: 'in_person' } }
+
+        it 'assigns URL to try again' do
+          response
+          expect(assigns(:try_again_path)).to eq(idv_in_person_verify_info_url)
         end
       end
     end
@@ -115,18 +241,39 @@ describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/failure' }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'assigns sp_name' do
+        decorated_sp_session = double
+        allow(decorated_sp_session).to receive(:sp_name).and_return('Example SP')
+        allow(controller).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+        get action
+        expect(assigns(:sp_name)).to eql('Example SP')
+      end
+
+      it 'logs an event with attempts remaining' do
+        get action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            remaining_submit_attempts: 0,
+          ),
+        )
       end
     end
   end
@@ -137,7 +284,7 @@ describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { build(:user) }
       let(:ssn) { '666666666' }
 
@@ -146,11 +293,11 @@ describe Idv::SessionErrorsController do
       end
 
       before do
-        Throttle.new(
-          throttle_type: :proof_ssn,
+        RateLimiter.new(
+          rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
-        ).increment_to_throttled!
-        controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
+        ).increment_to_limited!
+        controller.idv_session.ssn = ssn
       end
 
       it 'assigns expiration time' do
@@ -158,26 +305,51 @@ describe Idv::SessionErrorsController do
 
         expect(assigns(:expires_at)).not_to eq(Time.zone.now)
       end
+
+      it 'logs an event with attempts remaining' do
+        get action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(
+            type: 'ssn_failure',
+            remaining_submit_attempts: 0,
+          ),
+        )
+      end
     end
   end
 
-  describe '#throttled' do
-    let(:action) { :throttled }
-    let(:template) { 'idv/session_errors/throttled' }
+  describe '#rate_limited' do
+    let(:action) { :rate_limited }
+    let(:template) { 'idv/session_errors/rate_limited' }
 
     it_behaves_like 'an idv session errors controller action'
+    it_behaves_like 'non-authenticated idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'logs an event with attempts remaining' do
+        get action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          hash_including(
+            type: action.to_s,
+            remaining_submit_attempts: 0,
+          ),
+        )
       end
     end
   end

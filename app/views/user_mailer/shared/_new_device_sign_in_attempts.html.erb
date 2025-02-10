@@ -1,0 +1,26 @@
+<% @events.group_by { |event| IpGeocoder.new(event.device.last_ip).location }.each do |location, events| %>
+  <div class="margin-top-5">
+    <table class="usa-table">
+      <thead>
+        <tr>
+          <th scope="col" class="font-family-mono">
+            <%= t('user_mailer.new_device_sign_in_attempts.new_sign_in_from', location:) %>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% events.each do |event| %>
+          <tr>
+            <td class="font-family-mono">
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa') %>
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa') %>
+              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa') %>
+              <%= t(event.event_type, scope: [:user_mailer, :new_device_sign_in_attempts, :events]) %><br />
+              <%= EasternTimePresenter.new(event.created_at) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

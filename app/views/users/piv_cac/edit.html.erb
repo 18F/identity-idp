@@ -1,0 +1,32 @@
+<% self.title = @presenter.heading %>
+
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+
+<%= simple_form_for(
+      @form,
+      as: :form,
+      method: :put,
+      url: piv_cac_path(id: @form.configuration.id),
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :name,
+        label: @presenter.nickname_field_label,
+      ) %>
+  <%= f.submit(
+        @presenter.rename_button_label,
+        class: 'display-block margin-top-5',
+      ) %>
+<% end %>
+
+<%= render ButtonComponent.new(
+      url: piv_cac_path(id: @form.configuration.id),
+      method: :delete,
+      form: { aria: { label: @presenter.delete_button_label } },
+      big: true,
+      wide: true,
+      danger: true,
+      class: 'display-block margin-top-2',
+    ).with_content(@presenter.delete_button_label) %>
+
+<%= render 'shared/cancel', link: account_path %>

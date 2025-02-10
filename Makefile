@@ -12,29 +12,40 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
 .PHONY: \
 	analytics_events \
+	audit \
 	brakeman \
 	build_artifact \
 	check \
-	docker_setup \
-	fast_setup \
-	fast_test \
+	clobber_db \
+	clobber_assets \
+	clobber_logs \
+	watch_events \
+	download_acuant_sdk \
 	help \
 	lint \
 	lint_analytics_events \
-	lint_tracker_events \
+	lint_analytics_events_sorted \
 	lint_country_dialing_codes \
+	lint_database_schema_files \
 	lint_erb \
+	lint_font_glyphs \
+	lint_lockfiles \
+	lint_new_typescript_files \
 	lint_optimized_assets \
 	lint_yaml \
 	lint_yarn_workspaces \
-	lint_lockfiles \
+	lint_asset_bundle_size \
+	lint_readme \
+	lint_spec_file_name \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
 	optimize_svg \
 	run \
+	tidy \
 	update \
 	urn \
+	README.md \
 	setup \
 	test \
 	update_pinpoint_supported_countries
@@ -48,88 +59,153 @@ all: check
 setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
 
-fast_setup: ## Abbreviated setup script that skips linking some files
-	bin/fast_setup
-
-docker_setup: ## Setup script for Docker development
-	bin/docker_setup
-
 check: lint test ## Runs lint tests and spec tests
 
 lint: ## Runs all lint tests
 	# Ruby
-	@echo "--- erb-lint ---"
+	@echo "--- erb_lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
-	bundle exec rubocop --parallel
+	mkdir -p tmp
+ifdef JUNIT_OUTPUT
+	bundle exec rubocop --parallel --format progress --format junit --out rubocop.xml --display-only-failed --color 2> tmp/rubocop.txt || (cat tmp/rubocop.txt; exit 1)
+else
+	bundle exec rubocop --parallel --color 2> tmp/rubocop.txt || (cat tmp/rubocop.txt; exit 1)
+endif
+	awk 'NF {exit 1}' tmp/rubocop.txt || (printf "Error: Unexpected stderr output from Rubocop\n"; cat tmp/rubocop.txt; exit 1)
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
-	make lint_tracker_events
+	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
-	bundle exec brakeman
-	@echo "--- bundler-audit ---"
-	bundle exec bundler-audit check --update
+	make brakeman
 	# JavaScript
-	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 7
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
 	yarn run typecheck
-	@echo "--- es5-safe ---"
-	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
+	@echo "--- lint font glyphs ---"
+	make lint_font_glyphs
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
+	@echo "--- lint new TypeScript files ---"
+	make lint_new_typescript_files
 	@echo "--- lint lockfiles ---"
 	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
 	yarn lint:css
+	@echo "--- README.md ---"
+	make lint_readme
+	@echo "--- lint spec file names ---"
+	make lint_spec_file_name
+	@echo "--- lint migrations ---"
+	make lint_migrations
+
+audit: ## Checks packages for vulnerabilities
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
+	@echo "--- yarn audit ---"
+	yarn audit --groups dependencies; test $$? -le 7
 
 lint_erb: ## Lints ERB files
-	bundle exec erblint app/views app/components
+	bundle exec erb_lint app/views app/components
 
 lint_yaml: normalize_yaml ## Lints YAML files
-	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+	(! git diff --name-only | grep "^config/.*\.yml") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
+lint_font_glyphs: ## Lints to validate content glyphs match expectations from fonts
+	scripts/yaml_characters \
+		--exclude-locale=zh \
+		--exclude-path=config/locales/telephony \
+		--exclude-gem-path=faker \
+		--exclude-gem-path=good_job \
+		--exclude-gem-path=i18n-tasks \
+		--exclude-key-scope=user_mailer \
+		> app/assets/fonts/glyphs.txt
+	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
-	scripts/validate-workspaces.js
+	scripts/validate-workspaces.mjs
 
-lint_gemfile_lock: Gemfile Gemfile.lock
+lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
+	@# This enforces an asset size budget to ensure that download sizes are reasonable and to protect
+	@# against accidentally importing large pieces of third-party libraries. If you're here debugging
+	@# a failing build, check to ensure that you've not added more JavaScript or CSS than necessary,
+	@# and you have no options to split that from the common bundles. If you need to increase this
+	@# budget and accept the fact that this will force end-users to endure longer load times, you
+	@# should set the new budget to within a few thousand bytes of the production-compiled size.
+	find app/assets/builds/application.css -size -105000c | grep .
+	find public/packs/application-*.digested.js -size -5000c | grep .
+
+lint_migrations:
+	scripts/migration_check
+
+lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
 	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
 
-lint_yarn_lock: package.json yarn.lock
+lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
 	@yarn install --ignore-scripts
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
+	@yarn yarn-deduplicate
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'yarn yarn-deduplicate'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
-lintfix: ## Runs rubocop fix
+lint_new_typescript_files:
+	scripts/enforce-typescript-files.mjs
+
+lint_readme: README.md ## Lints README.md
+	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
+
+lint_spec_file_name:
+	@find spec/*/** -type f \
+		-name '*.rb' \
+		-and -not -name '*_spec.rb' \
+		-and -not -path 'spec/factories/*' \
+		-and -not -path 'spec/support/*' \
+		-and -not -path '*/previews/*' \
+		-exec false {} + \
+		-exec echo "Error: Spec files named incorrectly, should end in '_spec.rb':" {} +
+	@find app/javascript/packages -type f \
+		"(" -name '*spec.js' -or -name '*spec.ts' -or -name '*spec.jsx' -or -name '*spec.tsx' ")" \
+		-and -not \
+		"(" -name '*.spec.js' -or -name '*.spec.ts' -or -name '*.spec.jsx' -or -name '*.spec.tsx' ")" \
+		-exec false {} + \
+		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
+
+lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
+	@echo "--- erb_lint fix ---"
+	bundle exec erb_lint app/views app/components -a
+	@echo "--- eslint fix ---"
+	yarn lint --fix
+	@echo "--- stylelint fix ---"
+	yarn lint:css --fix
+	@echo "--- normalize yaml ---"
+	make normalize_yaml
 
-brakeman: ## Runs brakeman
-	bundle exec brakeman
+brakeman: ## Runs brakeman code security check
+	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
-	yarn build
+	yarn build:js
+
+browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
+	yarn generate-browsers-json
 
 test: export RAILS_ENV := test
-test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
-	bundle exec rake parallel:spec && yarn build && yarn test
+test: $(CONFIG) ## Runs RSpec and yarn tests
+	bundle exec rspec && yarn test
 
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
-	bundle exec rake spec && yarn build && yarn test
-
-fast_test: export RAILS_ENV := test
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
-	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
+	bundle exec rake spec && yarn test
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
@@ -143,7 +219,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
-run: ## Runs the development server
+run: browsers.json ## Runs the development server
 	foreman start -p $(PORT)
 
 urn:
@@ -155,16 +231,19 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the developme
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
-	find ./config/locales/telephony "./config/locales/telephony*" -type f | xargs yarn normalize-yaml --disable-smart-punctuation
-	find ./config/locales -not -path "./config/locales/telephony*" -type f | xargs yarn normalize-yaml \
+	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
+	yarn normalize-yaml --disable-smart-punctuation --ignore-key-sort development,production,test config/application.yml.default
+	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
+	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
+	xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
 
 optimize_svg: ## Optimizes SVG images
-	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
-	# See: https://github.com/svg/svgo/issues/888
-	find app/assets/images public -name '*.svg' -not -name 'sprite.svg' | xargs ./node_modules/.bin/svgo
+	# Exclusions:
+	# - `login-icon-bimi.svg` is hand-optimized and includes required metadata that would be stripped by SVGO
+	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' -not -name 'selfie-capture-accept-help.svg' | xargs ./node_modules/.bin/svgo
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
@@ -184,6 +263,10 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
+
+lint_database_schema_files: ## Checks that database schema files have not changed
+	(! git diff --name-only | grep db/schema.rb) || (echo "Error: db/schema.rb does not match after running migrations"; exit 1)
+	(! git diff --name-only | grep db/worker_jobs_schema.rb) || (echo "Error: db/worker_jobs_schema.rb does not match after running migrations"; exit 1)
 
 build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
@@ -216,15 +299,17 @@ analytics_events: public/api/_analytics-events.json ## Generates a JSON file tha
 lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
-lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
+lint_analytics_events_sorted:
+	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
+		|| (echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
 
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
+		--no-progress \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
 		--no-output \
@@ -236,3 +321,32 @@ update: ## Update dependencies, useful after a git pull
 	yarn install
 	bundle exec rails db:migrate
 
+README.md: docs/ ## Generates README.md based on the contents of the docs directory
+	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
+
+download_acuant_sdk: ## Downloads the most recent Acuant SDK release from Github
+	@scripts/download_acuant_sdk.sh
+
+clobber_db: ## Resets the database for make setup
+	bin/rake db:create
+	bin/rake db:environment:set
+	bin/rake db:reset
+	bin/rake db:environment:set
+	bin/rake dev:prime
+
+clobber_assets: ## Removes (clobbers) assets
+	bin/rake assets:clobber
+	RAILS_ENV=test bin/rake assets:clobber
+
+clobber_logs: ## Purges logs and tmp/
+	rm -f log/*
+	rm -rf tmp/cache/*
+	rm -rf tmp/encrypted_doc_storage
+	rm -rf tmp/letter_opener
+	rm -rf tmp/mails
+
+watch_events: ## Prints events logging as they happen
+	@tail -F -n0 log/events.log | jq "select(.name | test(\".*$$EVENT_NAME.*\"; \"i\")) | ."
+
+tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
+	bundle clean

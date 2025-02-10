@@ -16,7 +16,7 @@ describe('StatusPage', () => {
     const content = getByText('Content');
 
     expect(icon.getAttribute('src')).to.equal('status/error.svg');
-    expect(icon.getAttribute('alt')).to.equal('components.status_page.icons.error');
+    expect(icon.getAttribute('alt')).to.equal('image_description.error');
     expect(content).to.exist();
     expect(heading.textContent).to.equal('Header');
     expect(icon.compareDocumentPosition(heading)).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
@@ -30,7 +30,7 @@ describe('StatusPage', () => {
       const icon = getByRole('img');
 
       expect(icon.getAttribute('src')).to.equal('status/info-question.svg');
-      expect(icon.getAttribute('alt')).to.equal('components.status_page.icons.question');
+      expect(icon.getAttribute('alt')).to.equal('image_description.info_question');
     });
   });
 

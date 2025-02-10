@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/hash/except'
 require 'faraday'
 require 'nokogiri'
@@ -6,16 +8,24 @@ require 'phonelib'
 # Scrapes HTML tables from Pinpoint help sites to parse out supported countries, and
 # puts them in a format compatible with country_dialing_codes.yml
 class PinpointSupportedCountries
-  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
-  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
+  PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html'
+  PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-voice-support-by-country.html'
 
   # The list of countries where we have our sender ID registered
   SENDER_ID_COUNTRIES = %w[
     BY
     EG
+    FR
+    GB
     JO
     PH
     TH
+  ].to_set.freeze
+
+  # Countries where AWS claims sender ID is required, and we don't have one, and
+  # it seems to work anyway.
+  SENDER_ID_EXCEPTION_COUNTRIES = %w[
+    AU
   ].to_set.freeze
 
   CountrySupport = Struct.new(
@@ -44,10 +54,10 @@ class PinpointSupportedCountries
   def run
     country_dialing_codes = load_country_dialing_codes
 
-    duplicate_iso = country_dialing_codes.
-      group_by(&:iso_code).
-      select { |iso, arr| arr.size > 1 }.
-      keys
+    duplicate_iso = country_dialing_codes
+      .group_by(&:iso_code)
+      .select { |_iso, arr| arr.size > 1 }
+      .keys
 
     raise "error countries with duplicate iso codes: #{duplicate_iso}" if duplicate_iso.size > 0
 
@@ -61,14 +71,14 @@ class PinpointSupportedCountries
 
   # @return [Array<CountrySupport>]
   def sms_support
-    TableConverter.new(download(PINPOINT_SMS_URL)).
-      convert.
-      select { |sms_config| sms_config['ISO code'] }. # skip section rows
-      map do |sms_config|
+    TableConverter.new(download(PINPOINT_SMS_URL))
+      .convert
+      .select { |sms_config| sms_config['ISO code'] } # skip section rows
+      .map do |sms_config|
         iso_code = sms_config['ISO code']
         supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'
-          SENDER_ID_COUNTRIES.include?(iso_code)
+          SENDER_ID_COUNTRIES.include?(iso_code) || SENDER_ID_EXCEPTION_COUNTRIES.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
           true
         else
@@ -77,7 +87,7 @@ class PinpointSupportedCountries
 
         CountrySupport.new(
           iso_code: iso_code,
-          name: trim_spaces(sms_config['Country or region']),
+          name: trim_spaces_digits(sms_config['Country or region']),
           supports_sms: supports_sms,
         )
       end
@@ -129,6 +139,7 @@ class PinpointSupportedCountries
       'BDE' => 'BD',
       'DN' => 'DM',
       'H' => 'HT',
+      'XV' => 'XK',
       'TX' => 'TZ',
     }.fetch(iso_code, iso_code)
   end
@@ -149,6 +160,10 @@ class PinpointSupportedCountries
 
   def trim_spaces(str)
     str.gsub(/\s{2,}/, ' ').gsub(/\s+$/, '')
+  end
+
+  def trim_spaces_digits(str)
+    trim_spaces(str).gsub(/\d+$/, '')
   end
 
   def digits_only?(str)
@@ -181,7 +196,7 @@ class PinpointSupportedCountries
       table = doc.xpath('//table').first
 
       headings = []
-      table.xpath('//thead/tr').each do |row|
+      table.xpath('thead/tr').each do |row|
         row.xpath('th').each do |cell|
           headings << cell.text
         end

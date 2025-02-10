@@ -14,10 +14,9 @@ describe('Cancel', () => {
       const { getByText } = render(
         <FlowContext.Provider
           value={{
+            accountURL: 'http://example.test/account',
             cancelURL: 'http://example.test/cancel',
             currentStep: 'one',
-            basePath: '',
-            onComplete() {},
           }}
         >
           <Cancel />

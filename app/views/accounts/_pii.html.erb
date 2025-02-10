@@ -4,71 +4,65 @@
       <div class="usa-alert__body">
         <div class="usa-alert__text">
           <%= t('account.re_verify.banner') %>
-
-          <%= link_to(t('account.re_verify.footer'), user_password_confirm_path) %>
+          <%= render ButtonComponent.new(
+                url: account_reauthentication_path,
+                method: :post,
+                class: 'usa-button usa-button--unstyled',
+              ).with_content(t('account.re_verify.footer')) %>
         </div>
       </div>
     </div>
   </div>
 <% end %>
-<div class="margin-bottom-4 card profile-info-box">
-  <div class="grid-row margin-bottom-1 margin-top-0">
-    <div class="grid-col-12">
-      <h2 class="margin-0">
-        <%= t('headings.account.profile_info') %>
-        <%= image_tag asset_url('lock.svg'), width: 8 %>
-      </h2>
+
+<div class="border-bottom border-primary-light">
+  <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
+    <div class="tablet:grid-col-4 text-bold">
+      <%= t('account.verified_information.full_name') %>
+    </div>
+    <div class="tablet:grid-col-8 padding-x-1 truncate">
+      <%= pii.full_name %>
     </div>
   </div>
-  <div class="border-bottom border-primary-light">
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.full_name') %>
-      </div>
-      <div class="tablet:grid-col-8 padding-x-1 truncate">
-        <%= pii.full_name %>
-      </div>
+  <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
+    <div class="tablet:grid-col-4 text-bold">
+      <%= t('account.verified_information.address') %>
     </div>
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.address') %>
-      </div>
-      <div class="tablet:grid-col-8 padding-x-1">
-        <%= render 'shared/address', address: pii %>
-      </div>
-    </div>
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.dob') %>
-      </div>
-      <div class="tablet:grid-col-8 padding-x-1">
-        <%= pii.dob %>
-      </div>
-    </div>
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.ssn') %>
-      </div>
-      <div class="tablet:grid-col-8 padding-x-1">
-        ***-**-****
-      </div>
-    </div>
-    <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="tablet:grid-col-4 text-bold">
-        <%= t('account.index.phone') %>
-      </div>
-      <div class="tablet:grid-col-8 padding-x-1">
-        <%= PhoneFormatter.format(pii.phone) %>
-      </div>
+    <div class="tablet:grid-col-8 padding-x-1">
+      <%= render 'shared/address', address: pii %>
     </div>
   </div>
-  <% unless locked_for_session %>
-    <div class="grid-row bg-base-lightest padding-x-2 padding-y-1 clearfix fs-12p">
-      <div class="grid-col-12">
-        <%= image_tag asset_url('lock.svg'), width: 8, class: 'margin-right-1' %>
-        <%= t('account.security.text') %>
-      </div>
-      <%= link_to t('account.security.link'), MarketingSite.help_url %>
+  <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
+    <div class="tablet:grid-col-4 text-bold">
+      <%= t('account.verified_information.dob') %>
     </div>
-  <% end %>
+    <div class="tablet:grid-col-8 padding-x-1">
+      <%= pii.dob %>
+    </div>
+  </div>
+  <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
+    <div class="tablet:grid-col-4 text-bold">
+      <%= t('account.verified_information.ssn') %>
+    </div>
+    <div class="tablet:grid-col-8 padding-x-1">
+      ***-**-****
+    </div>
+  </div>
+  <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
+    <div class="tablet:grid-col-4 text-bold">
+      <%= t('account.verified_information.phone_number') %>
+    </div>
+    <div class="tablet:grid-col-8 padding-x-1">
+      <%= PhoneFormatter.format(pii.phone) %>
+    </div>
+  </div>
 </div>
+<% unless locked_for_session %>
+  <div class="grid-row bg-base-lightest padding-x-2 padding-y-1 fs-12p">
+    <div class="grid-col-12">
+      <%= image_tag asset_url('lock.svg'), width: 8, height: 10, class: 'margin-right-1', alt: '', aria: { hidden: true } %>
+      <%= t('account.security.text') %>
+    </div>
+    <%= link_to t('account.security.link'), help_center_redirect_url %>
+  </div>
+<% end %>

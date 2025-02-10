@@ -25,28 +25,33 @@ RSpec.describe BlockLinkComponent, type: :component do
       rendered = render_inline BlockLinkComponent.new(url: '/', new_tab: true)
 
       expect(rendered).to have_css('.block-link.usa-link.usa-link--external[target=_blank]')
-      expect(rendered).to have_content(t('links.new_window'))
+      expect(rendered).to have_content(t('links.new_tab'))
     end
   end
 
-  context 'with custom renderer' do
-    class ExampleBlockLinkCustomRendererComponent < BaseComponent
-      def initialize(href:, **)
-        @href = href
-      end
+  context 'with a component' do
+    before do
+      stub_const(
+        'TestComponent',
+        Class.new(BaseComponent) do
+          attr_reader :tag_options
 
-      def call
-        content_tag(:button, "Example #{content.strip}", data: { href: @href })
-      end
+          def initialize(**tag_options)
+            @tag_options = tag_options
+          end
+
+          def call
+            content_tag(:div, 'from test component', class: 'style')
+          end
+        end,
+      )
     end
 
-    it 'renders using the custom renderer' do
-      rendered = render_inline BlockLinkComponent.new(
-        url: '/',
-        action: ExampleBlockLinkCustomRendererComponent.method(:new),
-      ).with_content('Link Text')
+    it 'renders using the specified component' do
+      rendered = render_inline(BlockLinkComponent.new(component: TestComponent))
 
-      expect(rendered).to have_css('button[data-href="/"]', text: 'Example Link Text')
+      expect(rendered).to have_css('.style')
+      expect(rendered).to have_text('from test component')
     end
   end
 end

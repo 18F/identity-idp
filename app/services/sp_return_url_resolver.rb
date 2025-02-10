@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SpReturnUrlResolver
   attr_reader :service_provider, :oidc_state, :oidc_redirect_uri
 
@@ -7,6 +9,7 @@ class SpReturnUrlResolver
     @oidc_redirect_uri = oidc_redirect_uri
   end
 
+  # @return [String, nil]
   def return_to_sp_url
     oidc_access_denied_redirect_url.presence ||
       service_provider.return_to_sp_url.presence ||
@@ -21,11 +24,17 @@ class SpReturnUrlResolver
     service_provider.return_to_sp_url
   end
 
+  def post_idv_follow_up_url
+    url = service_provider.post_idv_follow_up_url || homepage_url
+    return if url.blank?
+    format(url.to_s, locale: I18n.locale.to_s)
+  end
+
   private
 
   def inferred_redirect_url
     configured_url = service_provider.redirect_uris&.first || service_provider.acs_url
-    URI.join(configured_url, '/').to_s
+    URI.join(configured_url, '/').to_s if configured_url.present?
   end
 
   def oidc_access_denied_redirect_url

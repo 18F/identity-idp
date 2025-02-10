@@ -1,12 +1,16 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: step_indicator_steps,
-        current_step: :secure_account,
+        current_step: step_indicator_step,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
 <% end %>
 
-<% title t('titles.idv.personal_key') %>
+<% self.title = t('titles.idv.personal_key') %>
 
-<%= render 'shared/personal_key', code: @code, update_path: idv_personal_key_path %>
+<%= render 'shared/personal_key',
+           code: @code,
+           personal_key_generated_at: @personal_key_generated_at,
+           update_path: idv_personal_key_path
+%>

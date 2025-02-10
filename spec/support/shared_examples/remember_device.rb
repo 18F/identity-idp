@@ -1,4 +1,6 @@
-shared_examples 'remember device' do
+RSpec.shared_examples 'remember device' do
+  include OidcAuthHelper
+
   it 'does not require 2FA on sign in' do
     user = remember_device_and_sign_out_user
     sign_in_user(user)
@@ -8,8 +10,8 @@ shared_examples 'remember device' do
   it 'requires 2FA on sign in after expiration' do
     user = remember_device_and_sign_out_user
 
-    days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1).
-      hours.from_now
+    days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1)
+      .hours.from_now
     travel_to(days_to_travel)
     sign_in_user(user)
 
@@ -31,7 +33,7 @@ shared_examples 'remember device' do
     click_submit_default
 
     # Sign out second user
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
@@ -40,7 +42,7 @@ shared_examples 'remember device' do
 
   it 'redirects to an SP from the sign in page' do
     oidc_url = openid_connect_authorize_url(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      client_id: OidcAuthHelper::OIDC_IAL1_ISSUER,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
@@ -51,17 +53,14 @@ shared_examples 'remember device' do
     user = remember_device_and_sign_out_user
 
     IdentityLinker.new(
-      user, build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:server')
+      user, build(:service_provider, issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
     ).link_identity(verified_attributes: %w[email])
 
     visit oidc_url
 
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-
     sign_in_user(user)
     click_continue
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(oidc_redirect_url).to start_with('http://localhost:7654/auth/result')
   end
 
   def expect_mfa_to_be_required_for_user(user)
@@ -71,11 +70,11 @@ shared_examples 'remember device' do
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
                       login_two_factor_webauthn_path(platform: true)
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-                      login_two_factor_webauthn_path(platform: false)
+                      login_two_factor_webauthn_path
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                      login_two_factor_path(otp_delivery_preference: :sms)
                     elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
                       login_two_factor_backup_code_path
                     end

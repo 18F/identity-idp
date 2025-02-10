@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AppArtifacts
   class MissingArtifactError < StandardError; end
 
@@ -25,10 +27,11 @@ class AppArtifacts
 
     # @param [Symbol] name
     # @param [String] path
-    def add_artifact(name, path)
+    # @param [Boolean] allow_missing
+    def add_artifact(name, path, allow_missing: false)
       value = read_artifact(path)
-      raise MissingArtifactError.new("missing artifact: #{path}") if value.nil?
-      value = yield(value) if block_given?
+      raise MissingArtifactError.new("missing artifact: #{path}") if value.nil? && !allow_missing
+      value = yield(value) if block_given? && value
       @artifacts[name] = value
       nil
     end
@@ -36,7 +39,7 @@ class AppArtifacts
     private
 
     def read_artifact(path)
-      if Identity::Hostdata.in_datacenter?
+      if Identity::Hostdata.in_datacenter? && !ENV['LOGIN_SKIP_REMOTE_CONFIG']
         secrets_s3.read_file(path)
       else
         read_local_artifact(path)

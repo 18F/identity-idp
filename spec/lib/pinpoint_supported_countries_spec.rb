@@ -3,10 +3,10 @@ require 'pinpoint_supported_countries'
 
 RSpec.describe PinpointSupportedCountries do
   before do
-    stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL).
-      to_return(body: sms_table)
-    stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL).
-      to_return(body: voice_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL)
+      .to_return(body: sms_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL)
+      .to_return(body: voice_table)
 
     stub_const('STDERR', StringIO.new)
   end
@@ -30,7 +30,7 @@ RSpec.describe PinpointSupportedCountries do
           </td>
         </tr>
         <tr>
-          <td>Argentina</td>
+          <td>Argentina<sup><a href="#sms-support-note-1">2</a></sup></td>
           <td>AR</td>
           <td></td>
           <td>Yes</td>
@@ -150,9 +150,20 @@ RSpec.describe PinpointSupportedCountries do
         stub_const('PinpointSupportedCountries::SENDER_ID_COUNTRIES', [])
       end
 
-      it 'is supported' do
+      it 'is not supported' do
         belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
         expect(belarus.supports_sms).to eq(false)
+      end
+    end
+
+    context 'when we do not have a sender ID and the country is on our exceptions list' do
+      before do
+        stub_const('PinpointSupportedCountries::SENDER_ID_EXCEPTION_COUNTRIES', %w[BY])
+      end
+
+      it 'is supported' do
+        belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
+        expect(belarus.supports_sms).to eq(true)
       end
     end
   end

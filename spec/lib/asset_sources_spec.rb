@@ -50,21 +50,25 @@ RSpec.describe AssetSources do
   end
 
   before do
-    AssetSources.manifest = nil
     File.open(manifest_file.path, 'w') { |f| f.puts manifest_content }
-    allow(AssetSources).to receive(:manifest_path).and_return(manifest_file.path)
-    allow(I18n).to receive(:available_locales).and_return([:en, :es, :fr])
     allow(I18n).to receive(:locale).and_return(:en)
   end
 
   after do
     manifest_file.unlink
-    AssetSources.manifest = nil
   end
 
-  describe '.get_sources' do
+  subject(:asset_sources) do
+    AssetSources.new(
+      manifest_path: manifest_file.path, cache_manifest: cache_manifest,
+      i18n_locales: [:en, :es, :fr]
+    )
+  end
+  let(:cache_manifest) { true }
+
+  describe '#get_sources' do
     it 'returns unique localized assets for existing sources, in order, localized scripts first' do
-      expect(AssetSources.get_sources('application', 'application', 'missing', 'input')).to eq [
+      expect(asset_sources.get_sources('application', 'application', 'missing', 'input')).to eq [
         'application.en.js',
         'input.en.js',
         'vendor.js',
@@ -73,38 +77,45 @@ RSpec.describe AssetSources do
       ]
     end
 
+    it 'returns identity for any missing, url-like names' do
+      expect(asset_sources.get_sources('application', 'https://example.com/main.js')).to eq [
+        'application.en.js',
+        'vendor.js',
+        'application.js',
+        'https://example.com/main.js',
+      ]
+    end
+
     context 'unset manifest' do
       let(:manifest_content) { nil }
 
       it 'returns an empty array' do
-        expect(AssetSources.get_sources('missing')).to eq([])
+        expect(asset_sources.get_sources('missing')).to eq([])
       end
     end
 
     it 'loads the manifest once' do
-      expect(AssetSources).to receive(:load_manifest).once.and_call_original
+      expect(asset_sources).to_not receive(:load_manifest)
 
-      AssetSources.get_sources('application')
-      AssetSources.get_sources('input')
+      asset_sources.get_sources('application')
+      asset_sources.get_sources('input')
     end
 
     context 'uncached manifest' do
-      before do
-        allow(AssetSources).to receive(:cache_manifest).and_return(false)
-      end
+      let(:cache_manifest) { false }
 
       it 'loads the manifest' do
-        expect(AssetSources).to receive(:load_manifest).twice.and_call_original
+        expect(asset_sources).to receive(:load_manifest).twice.and_call_original
 
-        AssetSources.get_sources('application')
-        AssetSources.get_sources('input')
+        asset_sources.get_sources('application')
+        asset_sources.get_sources('input')
       end
     end
   end
 
-  describe '.get_assets' do
+  describe '#get_assets' do
     it 'returns unique, flattened assets' do
-      expect(AssetSources.get_assets('application', 'application', 'input')).to eq [
+      expect(asset_sources.get_assets('application', 'application', 'input')).to eq [
         'clock.svg',
         'spinner.gif',
       ]
@@ -114,34 +125,32 @@ RSpec.describe AssetSources do
       let(:manifest_content) { nil }
 
       it 'returns an empty array' do
-        expect(AssetSources.get_assets('missing')).to eq([])
+        expect(asset_sources.get_assets('missing')).to eq([])
       end
     end
 
     it 'loads the manifest once' do
-      expect(AssetSources).to receive(:load_manifest).once.and_call_original
+      expect(asset_sources).to_not receive(:load_manifest)
 
-      AssetSources.get_assets('application')
-      AssetSources.get_assets('input')
+      asset_sources.get_assets('application')
+      asset_sources.get_assets('input')
     end
 
     context 'uncached manifest' do
-      before do
-        allow(AssetSources).to receive(:cache_manifest).and_return(false)
-      end
+      let(:cache_manifest) { false }
 
       it 'loads the manifest' do
-        expect(AssetSources).to receive(:load_manifest).twice.and_call_original
+        expect(asset_sources).to receive(:load_manifest).twice.and_call_original
 
-        AssetSources.get_assets('application')
-        AssetSources.get_assets('input')
+        asset_sources.get_assets('application')
+        asset_sources.get_assets('input')
       end
     end
   end
 
-  describe '.get_integrity' do
+  describe '#get_integrity' do
     let(:path) { 'vendor.js' }
-    subject(:integrity) { AssetSources.get_integrity(path) }
+    subject(:integrity) { asset_sources.get_integrity(path) }
 
     it 'returns the integrity hash' do
       expect(integrity).to start_with('sha256-')
@@ -156,11 +165,11 @@ RSpec.describe AssetSources do
     end
   end
 
-  describe '.load_manifest' do
+  describe '#load_manifest' do
     it 'sets the manifest' do
-      AssetSources.load_manifest
+      asset_sources.load_manifest
 
-      expect(AssetSources.manifest).to be_kind_of(Hash).and eq(JSON.parse(manifest_content))
+      expect(asset_sources.manifest).to be_kind_of(Hash).and eq(JSON.parse(manifest_content))
     end
 
     context 'missing file' do
@@ -171,9 +180,9 @@ RSpec.describe AssetSources do
       end
 
       it 'gracefully sets nil manifest' do
-        AssetSources.load_manifest
+        asset_sources.load_manifest
 
-        expect(AssetSources.manifest).to be_nil
+        expect(asset_sources.manifest).to be_nil
       end
     end
 
@@ -181,9 +190,9 @@ RSpec.describe AssetSources do
       let(:manifest_content) { '{' }
 
       it 'gracefully sets nil manifest' do
-        AssetSources.load_manifest
+        asset_sources.load_manifest
 
-        expect(AssetSources.manifest).to be_nil
+        expect(asset_sources.manifest).to be_nil
       end
     end
   end

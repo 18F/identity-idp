@@ -1,29 +1,37 @@
-<% title t('titles.registrations.new') %>
-
-<%= render 'shared/sp_alert' %>
+<% self.title = t('titles.registrations.new') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
 
 <div class="margin-bottom-6">
-  <%= simple_form_for(
-        @add_user_email_form,
-        html: { autocomplete: 'off' },
-        url: add_email_path,
-      ) do |f| %>
-    <%= f.input :email, label: t('forms.registration.labels.email'), required: true,
-                        input_html: { aria: { invalid: false } } %>
+  <%= simple_form_for(@add_user_email_form, url: add_email_path) do |f| %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :email,
+          label: t('forms.registration.labels.email'),
+          required: true,
+        ) %>
     <%= f.submit t('forms.buttons.submit.default') %>
   <% end %>
 </div>
 
-<%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
+<% if @pending_completions_consent %>
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('forms.buttons.back'), sign_up_completed_url %>
+  <% end %>
+<% else %>
+  <%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+<% end %>
 
 <p class="margin-top-2">
-  <%= new_window_link_to t('notices.privacy.security_and_privacy_practices'),
-                         MarketingSite.security_and_privacy_practices_url %>
+  <%= new_tab_link_to(
+        t('notices.privacy.security_and_privacy_practices'),
+        MarketingSite.security_and_privacy_practices_url,
+      ) %>
 </p>
 
 <p>
-  <%= new_window_link_to t('notices.privacy.privacy_act_statement'),
-                         MarketingSite.privacy_act_statement_url %>
+  <%= new_tab_link_to(
+        t('notices.privacy.privacy_act_statement'),
+        MarketingSite.privacy_act_statement_url,
+      ) %>
 </p>

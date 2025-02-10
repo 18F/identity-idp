@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AgencyIdentityLinker
   def initialize(sp_identity)
     @sp_identity = sp_identity
@@ -14,25 +16,25 @@ class AgencyIdentityLinker
   def self.for(user:, service_provider:)
     agency = service_provider.agency
 
-    ai = AgencyIdentity.where(user: user, agency: agency).take
+    ai = AgencyIdentity.find_by(user: user, agency: agency)
     return ai if ai.present?
 
-    spi = ServiceProviderIdentity.where(
+    spi = ServiceProviderIdentity.find_by(
       user: user, service_provider: service_provider.issuer,
-    ).take
+    )
 
     return nil unless spi.present?
     new(spi).link_identity
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
-    ai = AgencyIdentity.where(uuid: uuid).take
+    ai = AgencyIdentity.find_by(uuid: uuid)
     criteria = if ai
                  { user_id: ai.user_id, service_provider: service_provider }
                else
                  { uuid: uuid, service_provider: service_provider }
                end
-    ServiceProviderIdentity.where(criteria).take
+    ServiceProviderIdentity.find_by(criteria)
   end
 
   private
@@ -51,11 +53,11 @@ class AgencyIdentityLinker
   end
 
   def agency_identity
-    ai = AgencyIdentity.where(uuid: @sp_identity.uuid).take
+    ai = AgencyIdentity.find_by(uuid: @sp_identity.uuid)
     return ai if ai
-    sp = ServiceProvider.where(issuer: @sp_identity.service_provider).take
+    sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
     return unless agency_id(sp)
-    AgencyIdentity.where(agency_id: agency_id, user_id: @sp_identity.user_id).take
+    AgencyIdentity.find_by(agency_id: agency_id, user_id: @sp_identity.user_id)
   end
 
   def agency_id(service_provider = nil)

@@ -1,22 +1,21 @@
 require 'rails_helper'
 
-describe 'layouts/application.html.erb' do
+RSpec.describe 'layouts/application.html.erb' do
   include Devise::Test::ControllerHelpers
 
+  let(:title_content) { 'Example' }
+
   before do
-    allow(view).to receive(:user_fully_authenticated?).and_return(true)
-    allow(view).to receive(:decorated_session).and_return(
-      DecoratedSession.new(
+    allow(view).to receive(:decorated_sp_session).and_return(
+      ServiceProviderSessionCreator.new(
         sp: nil,
         view_context: nil,
         sp_session: {},
         service_provider_request: ServiceProviderRequestProxy.new,
-      ).call,
+      ).create_session,
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
-    allow(view).to receive(:current_user).and_return(User.new)
-    controller.request.path_parameters[:controller] = 'users/sessions'
-    controller.request.path_parameters[:action] = 'new'
+    view.title = title_content if title_content
   end
 
   context 'no content for nav present' do
@@ -25,7 +24,7 @@ describe 'layouts/application.html.erb' do
 
       expect(rendered).to have_css('.page-header--basic')
       expect(rendered).to_not have_content(t('account.welcome'))
-      expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+      expect(rendered).to_not have_button(t('links.sign_out'))
     end
   end
 
@@ -66,32 +65,58 @@ describe 'layouts/application.html.erb' do
   end
 
   context '<title>' do
-    context 'with a page title added' do
-      it 'does not double-escape HTML in the title tag' do
-        view.title("Something with 'single quotes'")
+    context 'without title' do
+      let(:title_content) { nil }
 
-        render
+      context 'when raise_on_missing_title is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(false)
+        end
 
-        doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include("Something with 'single quotes' - Login.gov")
+        it 'notifies NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error) do |error|
+            expect(error).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+
+          expect { render }.to_not raise_error
+        end
       end
 
-      it 'properly works with > in the title tag' do
-        view.title('Symbols <>')
+      context 'when raise_on_missing_title is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:raise_on_missing_title).and_return(true)
+        end
 
-        render
-
-        doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include('Symbols <> - Login.gov')
+        it 'raises' do
+          expect { render }.to raise_error do |error|
+            expect(error).to be_kind_of(ActionView::TemplateError)
+            expect(error.cause).to be_kind_of(ApplicationHelper::MissingTitleError)
+            expect(error.message).to include('Missing title')
+          end
+        end
       end
     end
 
-    context 'without a page title added' do
-      it 'should only have Login.gov as title' do
+    context 'with escapable html' do
+      let(:title_content) { "Something with 'single quotes'" }
+
+      it 'does not double-escape HTML' do
         render
 
         doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include('Login.gov')
+        expect(doc.at_css('title').text).to eq("Something with 'single quotes' | #{APP_NAME}")
+      end
+    end
+
+    context 'with html opening or closing syntax' do
+      let(:title_content) { 'Symbols <>' }
+
+      it 'properly encodes text' do
+        render
+
+        doc = Nokogiri::HTML(rendered)
+        expect(doc.at_css('title').text).to eq("Symbols <> | #{APP_NAME}")
       end
     end
   end
@@ -100,7 +125,7 @@ describe 'layouts/application.html.erb' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:decorated_sp_session).and_return(NullServiceProviderSession.new)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -117,71 +142,29 @@ describe 'layouts/application.html.erb' do
     end
   end
 
-  context 'user is not authenticated and is not on page with trust' do
-    it 'displays the DAP analytics' do
-      allow(view).to receive(:current_user).and_return(nil)
-      allow(view).to receive(:page_with_trust?).and_return(false)
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(
-        DecoratedSession.new(
-          sp: nil,
-          view_context: nil,
-          sp_session: {},
-          service_provider_request: nil,
-        ).call,
-      )
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
+  describe 'javascript error tracking' do
+    context 'when browser is unsupported' do
+      before do
+        allow(BrowserSupport).to receive(:supported?).and_return(false)
+      end
 
-      render
+      it 'does not render error tracking script' do
+        render
 
-      expect(view).to render_template(partial: 'shared/_dap_analytics')
-    end
-  end
-
-  context 'user is fully authenticated' do
-    it 'does not render the DAP analytics' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-
-      render
-
-      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
-    end
-  end
-
-  context 'current_user is present but is not fully authenticated' do
-    before do
-      allow(view).to receive(:user_fully_authenticated?).and_return(false)
-      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+        expect(rendered).not_to have_css('script[src$="track-errors.js"]', visible: :all)
+      end
     end
 
-    it 'does not render the DAP analytics' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
+    context 'when browser is supported' do
+      before do
+        allow(BrowserSupport).to receive(:supported?).and_return(true)
+      end
 
-      render
+      it 'renders error tracking script' do
+        render
 
-      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
-    end
-  end
-
-  context 'when new relic browser key and app id are present' do
-    it 'it render the new relic javascript' do
-      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('foo')
-      allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('foo')
-
-      render
-
-      expect(view).to render_template(partial: 'shared/newrelic/_browser_instrumentation')
-    end
-  end
-
-  context 'when new relic browser key and app id are not present' do
-    it 'it does not render the new relic javascript' do
-      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('')
-      allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('')
-
-      render
-
-      expect(view).to_not render_template(partial: 'shared/newrelic/_browser_instrumentation')
+        expect(rendered).to have_css('script[src$="track-errors.js"]', visible: :all)
+      end
     end
   end
 end

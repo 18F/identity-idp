@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UspsInPersonProofing
   module Response
     class RequestEnrollResponse
@@ -15,7 +17,7 @@ module UspsInPersonProofing
 
       def parse_response
         unless body.is_a?(Hash)
-          raise StandardError.new("Expected a hash but got a #{body.class.class_name}")
+          raise StandardError.new("Expected a hash but got a #{body.class.name}")
         end
 
         unless body['enrollmentCode']

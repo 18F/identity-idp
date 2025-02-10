@@ -1,0 +1,27 @@
+<% self.title = t('titles.piv_cac_setup.upsell') %>
+
+<%= render AlertIconComponent.new(icon_name: :info_question, class: 'margin-bottom-4') %>
+
+<%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_setup.upsell')) %>
+
+<p>
+  <%= I18n.t('two_factor_authentication.piv_cac_upsell.recommendation') %>
+</p>
+
+<p class='margin-bottom-0'>
+  <%= I18n.t('two_factor_authentication.piv_cac_upsell.explain') %>
+</p>
+
+<%= render ButtonComponent.new(
+      url: login_piv_cac_recommended_add_path,
+      method: :post,
+      big: true,
+      class: 'margin-top-5 margin-bottom-2',
+    ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
+
+<%= render ButtonComponent.new(
+      url: login_piv_cac_recommended_skip_path,
+      method: :post,
+      unstyled: true,
+    ).with_content(@recommended_presenter.skip_text) %>
+

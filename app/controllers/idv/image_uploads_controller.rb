@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Idv
   class ImageUploadsController < ApplicationController
-    include ApplicationHelper # for liveness_checking_enabled?
+    include DocAuthVendorConcern
 
     respond_to :json
 
@@ -20,11 +22,12 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
-        liveness_checking_enabled: liveness_checking_enabled?,
+        doc_auth_vendor:,
+        acuant_sdk_upgrade_ab_test_bucket: ab_test_bucket(:ACUANT_SDK),
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
+        liveness_checking_required: resolved_authn_context_result.facial_match?,
       )
     end
   end

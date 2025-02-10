@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.account_reset_granted.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
+  <%= t('user_mailer.account_reset_granted.intro_html', waiting_period: @account_reset_deletion_period_interval, app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <table class="button expanded large">
@@ -16,8 +16,6 @@
               </tr>
             </tbody>
           </table>
-        </td>
-        <td class="half">
         </td>
       </tr>
   </tbody>
@@ -47,12 +45,12 @@
 </table>
 
 <p>
-  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: '24 hours') %>
+  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @account_reset_token_valid_period) %>
 </p>
 <p>
   <%= t(
         'user_mailer.account_reset_granted.help_html',
-        cancel_account_reset: link_to(
+        cancel_account_reset_html: link_to(
           t('user_mailer.account_reset_granted.cancel_link_text'),
           account_reset_cancel_url(token: @token),
         ),

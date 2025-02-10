@@ -1,0 +1,40 @@
+<%= content_tag(
+      :'lg-captcha-submit-button',
+      **tag_options,
+      'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
+      'recaptcha-action': action,
+      'recaptcha-enterprise': recaptcha_enterprise?,
+    ) do %>
+  <% if show_mock_score_field? %>
+    <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: 'mock_token' }) %>
+    <%= render AlertComponent.new(text_tag: :div, class: 'margin-top-0 margin-bottom-2') do %>
+      <div class="display-flex flex-align-center">
+        <%= f.label(
+              :recaptcha_mock_score,
+              t('components.captcha_submit_button.mock_score_label'),
+              class: 'usa-label float-left margin-y-0 margin-right-1',
+            ) %>
+        <%= f.text_field(
+              :recaptcha_mock_score,
+              value: '1.0',
+              class: 'usa-input display-inline width-6 margin-0 padding-y-0 padding-x-05 height-auto',
+            ) %>
+        <div class="usa-tag usa-tag--informative margin-left-1">
+          <%= t('components.captcha_submit_button.mock_score_disclaimer') %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: '' }) %>
+  <% end %>
+  <%= render SpinnerButtonComponent.new(
+        action_message: t('components.captcha_submit_button.action_message'),
+        type: :submit,
+        big: true,
+        wide: true,
+        **button_options,
+      ).with_content(content) %>
+  <% if recaptcha_script_src.present? %>
+    <%= content_tag(:script, '', src: recaptcha_script_src, async: true) %>
+  <% end %>
+<% end %>

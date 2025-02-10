@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe PivCacAuthenticationSetupPresenter do
+RSpec.describe PivCacAuthenticationSetupPresenter do
   let(:user) { create(:user) }
   let(:presenter) { described_class.new(user, false, form) }
   let(:form) do
-    OpenStruct.new
+    UserPivCacSetupForm.new
   end
 
   describe '#title' do

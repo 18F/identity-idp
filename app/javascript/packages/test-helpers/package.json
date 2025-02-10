@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "peerDependencies": {
-    "sinon": "^9.2.2"
-  }
+    "sinon": "*"
+  },
+  "sideEffects": false
 }

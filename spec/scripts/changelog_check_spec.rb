@@ -8,7 +8,7 @@ RSpec.describe 'scripts/changelog_check' do
     it 'builds a git log into structured changelog objects' do
       git_log = git_fixtures.values.pluck('commit_log').join("\n")
       changelog_entries = generate_changelog(git_log)
-      expect(changelog_entries.length).to eq 6
+      expect(changelog_entries.length).to eq 10
       fixture_and_changelog = git_fixtures.values.filter do |x|
         x['category'].present?
       end.zip(changelog_entries)
@@ -104,7 +104,7 @@ RSpec.describe 'scripts/changelog_check' do
       formatted_changelog = format_changelog(changelogs)
 
       expect(formatted_changelog).to eq <<~CHANGELOG.chomp
-        ## Improvements
+        ## User-Facing Improvements
         - Webauthn: Provide better error flow for users who may not be able to leverage webauthn (LG-5515) ([#5976](https://github.com/18F/identity-idp/pull/5976))
 
         ## Internal

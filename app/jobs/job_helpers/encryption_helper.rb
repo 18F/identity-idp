@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JobHelpers
   class EncryptionHelper
     def decrypt(data:, iv:, key:)

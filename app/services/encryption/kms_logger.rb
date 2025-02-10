@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 module Encryption
   class KmsLogger
-    def self.log(action, context = nil)
+    def self.log(action, key_id:, context: nil, log_context: nil)
       output = {
         kms: {
           action: action,
           encryption_context: context,
+          log_context: log_context,
+          key_id: key_id,
         },
+        log_filename: Idp::Constants::KMS_LOG_FILENAME,
       }
+
       logger.info(output.to_json)
     end
 
     def self.logger
-      @logger ||= if FeatureManagement.log_to_stdout?
-                    Logger.new(STDOUT)
-                  else
-                    Logger.new('log/kms.log')
-                  end
+      Rails.application.config.kms_logger
     end
   end
 end

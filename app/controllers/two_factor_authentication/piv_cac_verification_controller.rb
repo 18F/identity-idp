@@ -1,16 +1,19 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class PivCacVerificationController < ApplicationController
     include TwoFactorAuthenticatable
     include PivCacConcern
+    include NewDeviceConcern
 
     before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
 
     def show
-      analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
       if params[:token]
         process_token
       else
+        analytics.multi_factor_auth_enter_piv_cac(**analytics_properties)
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
@@ -27,14 +30,14 @@ module TwoFactorAuthentication
 
     def process_token
       result = piv_cac_verification_form.submit
-      analytics.track_mfa_submit_event(
-        result.to_h.merge(analytics_properties),
+      session[:sign_in_flow] = :sign_in
+
+      handle_verification_for_authentication_context(
+        result:,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+        extra_analytics: analytics_properties,
       )
-      irs_attempts_api_tracker.mfa_login_piv_cac(
-        success: result.success?,
-        subject_dn: piv_cac_verification_form.x509_dn,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
+
       if result.success?
         handle_valid_piv_cac
       else
@@ -50,31 +53,31 @@ module TwoFactorAuthentication
         presented: true,
       )
 
-      handle_valid_otp_for_authentication_context
-      redirect_to after_otp_verification_confirmation_url
-      reset_otp_session_data
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(context: context, type: 'piv_cac')
+      update_invalid_user
+
+      if current_user.locked_out?
+        handle_second_factor_locked_user(type: 'piv_cac')
+      elsif redirect_for_piv_cac_mismatch_replacement?
+        redirect_to login_two_factor_piv_cac_mismatch_url
+      else
+        flash[:error] = t('two_factor_authentication.invalid_piv_cac')
+        redirect_to login_two_factor_piv_cac_url
+      end
     end
 
-    # This overrides the method in TwoFactorAuthenticatable so that we
-    # redirect back to ourselves rather than rendering the :show template.
-    # This removes the token from the address bar and preserves the error
-    # in the flash.
-    def render_show_after_invalid
-      flash[:error] = flash.now[:error]
-      redirect_to login_two_factor_piv_cac_url
+    def redirect_for_piv_cac_mismatch_replacement?
+      piv_cac_verification_form.error_type == 'user.piv_cac_mismatch' &&
+        UserSessionContext.authentication_context?(context) &&
+        current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account
     end
 
     def piv_cac_view_data
-      {
-        two_factor_authentication_method: two_factor_authentication_method,
-        hide_fallback_question: service_provider_mfa_policy.piv_cac_required?,
-        user_email: current_user.email_addresses.take.email,
-      }.merge(generic_data)
+      { two_factor_authentication_method: 'piv_cac' }.merge(generic_data)
     end
 
     def piv_cac_verification_form
@@ -106,6 +109,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: 'piv_cac',
         piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
+        new_device: new_device?,
       }
     end
   end

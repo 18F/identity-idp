@@ -39,7 +39,23 @@ RSpec.describe CloudFrontHeaderParser do
 
     describe '#client_port' do
       it 'returns nil' do
-        expect(subject.client_port).to eq nil
+        expect(subject.client_port).to be nil
+      end
+    end
+  end
+
+  context 'with no request included' do
+    let(:req) { nil }
+
+    describe '#viewer_address' do
+      it 'returns nil' do
+        expect(subject.viewer_address).to be nil
+      end
+    end
+
+    describe '#client_port' do
+      it 'returns nil' do
+        expect(subject.client_port).to be nil
       end
     end
   end

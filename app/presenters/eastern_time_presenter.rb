@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EasternTimePresenter
   def initialize(timestamp)
     @timestamp = timestamp

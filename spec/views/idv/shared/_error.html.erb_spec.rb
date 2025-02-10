@@ -1,25 +1,32 @@
 require 'rails_helper'
 
-describe 'idv/shared/_error.html.erb' do
+RSpec.describe 'idv/shared/_error.html.erb' do
   let(:sp_name) { nil }
   let(:options) { [{ text: 'Example', url: '#example' }] }
   let(:heading) { 'Error' }
   let(:action) { nil }
-  let(:action_secondary) { nil }
+  let(:secondary_action) { nil }
   let(:type) { nil }
+  let(:current_step) { nil }
+  let(:step_indicator_steps) { nil }
   let(:params) do
     {
       type: type,
       heading: heading,
       action: action,
-      action_secondary: action_secondary,
+      secondary_action: secondary_action,
+      current_step: current_step,
       options: options,
     }
   end
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+
+    if step_indicator_steps
+      allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
+    end
 
     render 'idv/shared/error', **params
   end
@@ -66,7 +73,7 @@ describe 'idv/shared/_error.html.erb' do
     end
 
     context 'with secondary action' do
-      let(:action_secondary) { { text: 'Secondary Action', url: '#secondary' } }
+      let(:secondary_action) { { text: 'Secondary Action', url: '#secondary' } }
 
       it 'renders secondary action button' do
         expect(rendered).to have_link('Secondary Action', href: '#secondary')
@@ -74,7 +81,7 @@ describe 'idv/shared/_error.html.erb' do
     end
 
     context 'with form action' do
-      let(:action_secondary) { { text: 'Delete', url: '#delete', method: :delete } }
+      let(:secondary_action) { { text: 'Delete', url: '#delete', method: :delete } }
 
       it 'renders action button' do
         expect(rendered).to have_button('Delete')
@@ -91,7 +98,7 @@ describe 'idv/shared/_error.html.erb' do
       let(:params) { { heading: heading } }
 
       it 'sets title as defaulting to heading' do
-        expect(view).to receive(:title).with(heading)
+        expect(view).to receive(:title=).with(heading)
 
         render 'idv/shared/error', **params
       end
@@ -102,7 +109,7 @@ describe 'idv/shared/_error.html.erb' do
       let(:params) { { heading: heading, title: title } }
 
       it 'sets title' do
-        expect(view).to receive(:title).with(title)
+        expect(view).to receive(:title=).with(title)
 
         render 'idv/shared/error', **params
       end
@@ -140,7 +147,7 @@ describe 'idv/shared/_error.html.erb' do
       let(:type) { :warning }
 
       it 'includes informative image' do
-        expect(rendered).to have_css("[src*='warning'][alt=#{t('errors.alt.warning')}]")
+        expect(rendered).to have_css("[src*='warning'][alt='#{t('image_description.warning')}']")
       end
 
       it 'shows an appropriate troubleshooting heading' do
@@ -155,11 +162,39 @@ describe 'idv/shared/_error.html.erb' do
       let(:type) { :error }
 
       it 'includes informative image' do
-        expect(rendered).to have_css("[src*='error'][alt=#{t('errors.alt.error')}]")
+        expect(rendered).to have_css("[src*='error'][alt='#{t('image_description.error')}']")
       end
 
       it 'shows an appropriate troubleshooting heading' do
         expect(rendered).to have_css('h2', text: t('idv.troubleshooting.headings.need_assistance'))
+      end
+    end
+  end
+
+  describe 'current_step' do
+    it 'does not render a step indicator by default' do
+      expect(view.content_for(:pre_flash_content)).not_to have_css('lg-step-indicator')
+    end
+
+    context 'current_step provided' do
+      let(:current_step) { :verify_phone }
+
+      it 'does not render a step indicator' do
+        expect(view.content_for(:pre_flash_content)).not_to have_css('lg-step-indicator')
+      end
+
+      context 'step_indicator_steps helper available' do
+        let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
+        it 'renders a step indicator' do
+          expect(view.content_for(:pre_flash_content)).to have_css('lg-step-indicator')
+        end
+
+        it 'selects the correct step' do
+          expect(view.content_for(:pre_flash_content)).to have_css(
+            '.step-indicator__step--current .step-indicator__step-title',
+            text: t('step_indicator.flows.idv.verify_phone'),
+          )
+        end
       end
     end
   end

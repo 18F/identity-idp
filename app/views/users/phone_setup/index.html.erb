@@ -1,42 +1,56 @@
-<% title t('titles.phone_setup') %>
+<% self.title = t('titles.add_info.phone') %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
-<%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, class: 'margin-bottom-2' %>
-
-<%= render PageHeadingComponent.new.with_content(t('titles.phone_setup')) %>
+<%= render PageHeadingComponent.new.with_content(t('headings.add_info.phone')) %>
 
 <p>
-  <%= t('two_factor_authentication.phone_info_html') %>
+  <%= t('two_factor_authentication.phone_info') %>
 </p>
+
 <p>
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <% if IdentityConfig.store.voip_block %>
-    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-  <% end %>
+  <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
 </p>
 
-<%= simple_form_for(
-      @new_phone_form,
-      html: { autocomplete: 'off', method: :patch },
-      data: { international_phone_form: true },
-      url: phone_setup_path,
-    ) do |f| %>
-
-  <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, required: true, class: 'margin-bottom-4') %>
+<%= simple_form_for(@new_phone_form, url: phone_setup_path) do |f| %>
+  <%= render PhoneInputComponent.new(
+        form: f,
+        confirmed_phone: false,
+        required: true,
+        class: 'margin-bottom-4',
+      ) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
-
-  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-              MarketingSite.messaging_practices_url,
-              class: 'display-block margin-bottom-4' %>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.submit t('forms.buttons.send_security_code') %>
+
+  <%= render CaptchaSubmitButtonComponent.new(
+        form: f,
+        action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
+      ).with_content(t('forms.buttons.send_one_time_code')) %>
+<% end %>
+
+<% if FeatureManagement.phone_recaptcha_enabled? %>
+  <p class="margin-top-4">
+    <%= t(
+          'two_factor_authentication.recaptcha.disclosure_statement_html',
+          app_name: APP_NAME,
+          google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
+          google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
+          login_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.login_tos_link'), MarketingSite.rules_of_use_url),
+        ) %>
+  </p>
+<% end %>
+
+<% unless FeatureManagement.phone_recaptcha_enabled? %>
+  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+              MarketingSite.messaging_practices_url,
+              class: 'display-block margin-top-4' %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

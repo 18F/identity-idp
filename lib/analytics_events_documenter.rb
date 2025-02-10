@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'yard'
 require 'json'
 require 'optparse'
 require 'stringio'
 require 'active_support/core_ext/object/blank'
+require_relative './identity_config'
 
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
@@ -12,7 +15,11 @@ class AnalyticsEventsDocumenter
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
-  ]
+    active_profile_idv_level
+    pending_profile_idv_level
+    proofing_components
+    profile_history
+  ].freeze
 
   attr_reader :database_path, :class_name
 
@@ -83,23 +90,30 @@ class AnalyticsEventsDocumenter
     !!@require_extra_params
   end
 
+  # rubocop:disable Metrics/BlockLength
   # Checks for params that are missing documentation, and returns a list of
   # @return [Array<String>]
   def missing_documentation
     analytics_methods.flat_map do |method_object|
-      param_names = method_object.parameters.map { |p| p.first.chomp(':') }
-      documented_params = method_object.tags('param').map(&:name)
-      missing_attributes = param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
-
       error_prefix = "#{method_object.file}:#{method_object.line} #{method_object.name}"
       errors = []
+
+      param_names = method_object.parameters.map { |p| p.first }
+      _splat_params, other_params = param_names.partition { |p| p.start_with?('**') }
+      keyword_params, other_params = other_params.partition { |p| p.end_with?(':') }
+      if other_params.present?
+        errors << "#{error_prefix} unexpected positional parameters #{other_params.inspect}"
+      end
+
+      keyword_param_names = keyword_params.map { |p| p.chomp(':') }
+      documented_params = method_object.tags('param').map(&:name)
+      missing_attributes = keyword_param_names - documented_params - DOCUMENTATION_OPTIONAL_PARAMS
 
       if !extract_event_name(method_object)
         errors << "#{error_prefix} event name not detected in track_event"
       end
 
       missing_attributes.each do |attribute|
-        next if attribute.start_with?('**')
         errors << "#{error_prefix} #{attribute} (undocumented)"
       end
 
@@ -111,37 +125,73 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} don't use * as an argument, remove all args or name args"
       end
 
+      method_object.tags('param').each do |tag|
+        errors << "#{error_prefix} #{tag.name} missing types" if !tag.types
+      end
+
+      description = method_description(method_object)
+      if description.present? && !method_object.docstring.match?(/\A[A-Z]/)
+        indented_description = description.lines.map { |line| "  #{line.chomp}" }.join("\n")
+
+        errors << <<~MSG
+          #{error_prefix} method description starts with lowercase, check indentation:
+          #{indented_description}
+        MSG
+      end
+
       errors
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   # @return [{ events: Array<Hash>}]
   def as_json
     events_json_summary = analytics_methods.map do |method_object|
       attributes = method_object.tags('param').map do |tag|
+        next if tag.name == 'extra'
+
         {
           name: tag.name,
           types: tag.types,
           description: tag.text.presence,
         }
-      end.compact
+      end.compact + method_object.tags('option').map do |tag|
+        {
+          name: tag.pair.name.tr(%('"), ''),
+          types: tag.pair.types,
+          description: tag.pair.text.presence,
+        }
+      end
 
       {
         event_name: extract_event_name(method_object),
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
-        description: method_object.docstring.presence,
+        description: method_description(method_object),
         attributes: attributes,
+        method_name: method_object.name,
+        source_line: method_object.line,
+        source_file: method_object.file,
+        source_sha: IdentityConfig::GIT_SHA,
       }
     end
 
     { events: events_json_summary }
   end
 
+  # Strips Rubocop directives from description text
+  # @return [String, nil]
+  def method_description(method_object)
+    method_object.docstring.to_s.gsub(/^rubocop.+$/, '').presence&.chomp
+  end
+
   private
 
-  # Naive attempt to pull tracked event string from source code
+  # Naive attempt to pull tracked event string or symbol from source code
   def extract_event_name(method_object)
-    m = /track_event\(\s*[:"'](?<event_name>[^"']+)["',)]/.match(method_object.source)
+    # track_event("some event name")
+    m = /track_event\(\s*["'](?<event_name>[^"']+)["',)]/.match(method_object.source)
+    # track_event(:some_event_name)
+    m ||= /track_event\(\s*:(?<event_name>[\w_]+)[,)]/.match(method_object.source)
     m && m[:event_name]
   end
 
@@ -155,8 +205,8 @@ class AnalyticsEventsDocumenter
 
     database.select do |_k, object|
       # this check will fail if the namespace is nested more than once
-      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name].
-        select { |part| part.present? && part != :root }
+      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name]
+        .select { |part| part.present? && part != :root }
 
       object.type == :method && method_object_name_parts == class_name_parts
     end.values

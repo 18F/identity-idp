@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NavigationPresenter
   include Rails.application.routes.url_helpers
 
@@ -25,15 +27,15 @@ class NavigationPresenter
       NavItem.new(
         I18n.t('account.navigation.two_factor_authentication'),
         account_two_factor_authentication_path, [
-          NavItem.new(I18n.t('account.navigation.add_phone_number'), add_phone_path),
+          NavItem.new(I18n.t('account.navigation.add_phone_number'), phone_setup_path),
           NavItem.new(
             I18n.t('account.navigation.add_authentication_apps'),
             authenticator_setup_url,
           ),
-          IdentityConfig.store.platform_authentication_enabled ? NavItem.new(
+          NavItem.new(
             I18n.t('account.navigation.add_platform_authenticator'),
             webauthn_setup_path(platform: true),
-          ) : nil,
+          ),
           NavItem.new(I18n.t('account.navigation.add_security_key'), webauthn_setup_path),
           NavItem.new(I18n.t('account.navigation.add_federal_id'), setup_piv_cac_path),
           NavItem.new(
@@ -54,7 +56,7 @@ class NavigationPresenter
           ),
         ]
       ),
-      NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
+      NavItem.new(I18n.t('account.navigation.customer_support'), help_center_redirect_url, []),
     ]
   end
 
@@ -62,7 +64,7 @@ class NavigationPresenter
     if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       backup_code_regenerate_path
     else
-      backup_code_create_path
+      backup_code_setup_path
     end
   end
 end

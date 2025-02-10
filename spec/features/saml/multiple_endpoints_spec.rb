@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe 'multiple saml endpoints' do
+RSpec.describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:endpoint_suffix) { '2022' }
-  let(:user) { create(:user, :signed_up) }
+  let(:endpoint_suffix) { '2024' }
+  let(:user) { create(:user, :fully_registered) }
 
   let(:endpoint_saml_settings) do
     settings = saml_settings
@@ -30,6 +30,7 @@ describe 'multiple saml endpoints' do
       sign_in_and_2fa_user(user)
       visit endpoint_authn_request
       click_agree_and_continue
+      click_submit_default
 
       response_node = page.find('#SAMLResponse', visible: false)
       decoded_response = Base64.decode64(response_node.value)
@@ -50,7 +51,7 @@ describe 'multiple saml endpoints' do
       click_agree_and_continue
 
       service_provider = ServiceProvider.find_by(issuer: endpoint_saml_settings.issuer)
-      uuid = user.decorate.active_identity_for(service_provider).uuid
+      uuid = user.active_identity_for(service_provider).uuid
       endpoint_saml_settings = saml_settings
       endpoint_saml_settings.name_identifier_value = uuid
 
@@ -89,37 +90,6 @@ describe 'multiple saml endpoints' do
       expect(auth_node.attributes['Location']).to include(
         ['/api/saml/auth', endpoint_suffix].join(''),
       )
-    end
-
-    it 'does not include logout urls if configured' do
-      allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
-        and_return(false)
-      document = REXML::Document.new(page.html)
-      logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-      expect(logout_nodes.count).to be_zero
-    end
-
-    context 'when configured to include logout endpoints' do
-      before do
-        allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
-          and_return(true)
-      end
-
-      it 'includes the front-channel logout url' do
-        visit endpoint_metadata_path
-        document = REXML::Document.new(page.html)
-        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/logout\d{4}}) }).
-          to eq(2)
-      end
-
-      it 'includes the remote logout url' do
-        visit endpoint_metadata_path
-        document = REXML::Document.new(page.html)
-        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
-        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/remotelogout\d{4}}) }).
-          to eq(1)
-      end
     end
   end
 end

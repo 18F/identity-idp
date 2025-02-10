@@ -35,8 +35,30 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
 
+    context 'origin is legacy federalist preview domain' do
+      let(:http_origin) { 'https://federalist-abcdef.pages.cloud.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
     context 'origin is federalist preview' do
-      let(:http_origin) { 'https://federalist-abcdef.app.cloud.gov' }
+      let(:http_origin) { 'https://federalist-abcdef.sites.pages.cloud.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
+    context 'origin is gitlab pages' do
+      let(:http_origin) { 'https://lg-public.pages.production.gitlab.login.gov' }
 
       it 'allows origin' do
         aggregate_failures do
@@ -83,22 +105,6 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
   describe '/api/country-support' do
     before do
       get api_country_support_path, headers: { 'HTTP_ORIGIN' => http_origin }
-    end
-
-    it_behaves_like 'static API with correct CORS headers'
-  end
-
-  describe '/api/analytics-events' do
-    before do
-      Tempfile.create do |json_file|
-        json_file.rewind
-        json_file << '{}'
-        json_file.close
-
-        stub_const('AnalyticsEventsController::JSON_FILE', json_file.path)
-
-        get api_analytics_events_path, headers: { 'HTTP_ORIGIN' => http_origin }
-      end
     end
 
     it_behaves_like 'static API with correct CORS headers'

@@ -1,4 +1,4 @@
-<% title t('titles.piv_cac_login.add') %>
+<% self.title = t('titles.piv_cac_login.add') %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_login.add')) %>
 
@@ -25,11 +25,15 @@
   <div class="margin-top-5">
     <%= f.submit t('forms.piv_cac_setup.submit') %>
   </div>
-  <div class="margin-top-2">
-    <%= link_to t('forms.piv_cac_setup.no_thanks'),
-                new_user_session_url,
-                class: 'usa-button usa-button--wide usa-button--big usa-button--outline' %>
-  </div>
 <% end %>
+
+<%= render ButtonComponent.new(
+      url: login_add_piv_cac_prompt_path,
+      method: :post,
+      big: true,
+      wide: true,
+      outline: true,
+      class: 'margin-top-2',
+    ).with_content(t('forms.piv_cac_setup.no_thanks')) %>
 
 <%= render 'shared/cancel', link: new_user_session_url %>

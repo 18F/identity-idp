@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountReset
   module GrantedTokenValidator
     extend ActiveSupport::Concern
@@ -44,6 +46,11 @@ module AccountReset
 
     def user
       account_reset_request&.user || AnonymousUser.new
+    end
+
+    def sp
+      return @sp if defined?(@sp)
+      @sp = account_reset_request&.requesting_service_provider
     end
   end
 end

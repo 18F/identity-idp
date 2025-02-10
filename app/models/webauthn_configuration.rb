@@ -1,8 +1,21 @@
+# frozen_string_literal: true
+
 class WebauthnConfiguration < ApplicationRecord
   belongs_to :user
   validates :name, presence: true
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
+  validate :valid_transports
+
+  # https://w3c.github.io/webauthn/#enum-transport
+  VALID_TRANSPORTS = %w[
+    usb
+    nfc
+    ble
+    smart-card
+    hybrid
+    internal
+  ].to_set.freeze
 
   def self.roaming_authenticators
     self.where(platform_authenticator: [nil, false])
@@ -18,9 +31,10 @@ class WebauthnConfiguration < ApplicationRecord
 
   def selection_presenters
     if platform_authenticator?
-      [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
+        .new(user:, configuration: self)]
     else
-      [TwoFactorAuthentication::WebauthnSelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::SignInWebauthnSelectionPresenter.new(user:, configuration: self)]
     end
   end
 
@@ -38,5 +52,12 @@ class WebauthnConfiguration < ApplicationRecord
     else
       []
     end
+  end
+
+  private
+
+  def valid_transports
+    return if transports.blank? || (transports - VALID_TRANSPORTS.to_a).blank?
+    errors.add(:transports, I18n.t('errors.general'), type: :invalid_transports)
   end
 end

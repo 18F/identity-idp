@@ -30,9 +30,10 @@ RSpec.describe Users::ForgetAllBrowsersController do
 
     it 'logs an analytics event for visiting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('Forget All Browsers Visited')
 
       subject
+
+      expect(@analytics).to have_logged_event('Forget All Browsers Visited')
     end
 
     it 'does not change remember_device_revoked_at' do
@@ -51,16 +52,17 @@ RSpec.describe Users::ForgetAllBrowsersController do
           travel_to(now)
           subject
         end
-      end.to change { user.remember_device_revoked_at.to_i }.
-        from(original_device_revoked_at.to_i).
-        to(now.to_i)
+      end.to change { user.remember_device_revoked_at.to_i }
+        .from(original_device_revoked_at.to_i)
+        .to(now.to_i)
     end
 
     it 'logs an analytics event for forgetting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('Forget All Browsers Submitted')
 
       subject
+
+      expect(@analytics).to have_logged_event('Forget All Browsers Submitted')
     end
 
     it 'redirects to the account page' do

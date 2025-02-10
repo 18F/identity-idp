@@ -1,11 +1,15 @@
+# frozen_string_literal: true
+
 module AccountReset
   class RequestController < ApplicationController
     include TwoFactorAuthenticatable
+    include AccountResetConcern
 
     before_action :confirm_two_factor_enabled
 
     def show
       analytics.account_reset_visit
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(current_user)
     end
 
     def create
@@ -18,11 +22,8 @@ module AccountReset
     private
 
     def create_account_reset_request
-      response = AccountReset::CreateRequest.new(current_user).call
-      irs_attempts_api_tracker.account_reset_request_submitted(
-        success: response.success?,
-      )
-      analytics.account_reset_request(**response.to_h, **analytics_attributes)
+      response = AccountReset::CreateRequest.new(current_user, sp_session[:issuer]).call
+      analytics.account_reset_request(**response, **analytics_attributes)
     end
 
     def confirm_two_factor_enabled

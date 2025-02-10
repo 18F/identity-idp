@@ -1,5 +1,8 @@
 {
   "name": "@18f/identity-one-time-code-input",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "sideEffects": [
+    "./one-time-code-input-element.ts"
+  ]
 }

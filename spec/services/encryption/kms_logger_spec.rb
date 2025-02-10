@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::KmsLogger do
+RSpec.describe Encryption::KmsLogger do
   describe '.log' do
     context 'with a context' do
       it 'logs the context' do
@@ -8,12 +8,20 @@ describe Encryption::KmsLogger do
           kms: {
             action: 'encrypt',
             encryption_context: { context: 'pii-encryption', user_uuid: '1234-abc' },
+            log_context: 'log_context',
+            key_id: 'super-duper-aws-kms-key-id',
           },
+          log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)
 
-        described_class.log(:encrypt, context: 'pii-encryption', user_uuid: '1234-abc')
+        described_class.log(
+          :encrypt,
+          context: { context: 'pii-encryption', user_uuid: '1234-abc' },
+          log_context: 'log_context',
+          key_id: 'super-duper-aws-kms-key-id',
+        )
       end
     end
 
@@ -23,12 +31,15 @@ describe Encryption::KmsLogger do
           kms: {
             action: 'decrypt',
             encryption_context: nil,
+            log_context: nil,
+            key_id: 'super-duper-aws-kms-key-id',
           },
+          log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)
 
-        described_class.log(:decrypt)
+        described_class.log(:decrypt, key_id: 'super-duper-aws-kms-key-id')
       end
     end
   end

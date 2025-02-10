@@ -1,36 +1,39 @@
 require 'rails_helper'
 
-feature 'mfa cta banner' do
+RSpec.feature 'mfa cta banner' do
   include DocAuthHelper
   include SamlAuthHelper
 
-  context 'When multiple factor authentication feature is disabled' do
-    it 'does not display a banner as the feature is disabled' do
-      visit_idp_from_sp_with_ial1(:oidc)
-      user = sign_up_and_set_password
-      select_2fa_option('backup_code')
-      click_continue
-
-      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
-      expect(page).to have_current_path(sign_up_completed_path)
-      expect(page).not_to have_content(t('mfa.second_method_warning.text'))
-    end
-  end
-
-  context 'When the multiple factor authentication feature is enabled' do
-    before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-    end
-
+  describe 'multiple MFA handling' do
     it 'displays a banner after configuring a single MFA method' do
       visit_idp_from_sp_with_ial1(:oidc)
       user = sign_up_and_set_password
-      select_2fa_option('backup_code')
+      select_2fa_option('phone')
       click_continue
+
+      fill_in :new_phone_form_phone, with: '3015551212'
+      click_send_one_time_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(page).to have_content(t('notices.phone_confirmed'))
 
       click_button t('mfa.skip')
       expect(page).to have_current_path(sign_up_completed_path)
       expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+      expect(page).to have_content(t('mfa.second_method_warning.text'))
+    end
+
+    it 'displays a banner after confirming that backup codes are saved' do
+      visit_idp_from_sp_with_ial1(:oidc)
+      user = sign_up_and_set_password
+      select_2fa_option('backup_code')
+      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+      expect(page).to have_current_path(confirm_backup_codes_path)
+
+      click_on t('forms.buttons.continue')
+
       expect(page).to have_content(t('mfa.second_method_warning.text'))
     end
 
@@ -45,7 +48,7 @@ feature 'mfa cta banner' do
       set_up_mfa_with_valid_phone
 
       expect(page).to have_current_path(backup_code_setup_path)
-      set_up_mfa_with_backup_codes
+      click_continue
       expect(page).to have_current_path(sign_up_completed_path)
       expect(page).not_to have_content(t('mfa.second_method_warning.text'))
     end
@@ -54,12 +57,12 @@ feature 'mfa cta banner' do
       visit_idp_from_sp_with_ial1(:oidc)
       sign_up_and_set_password
       check t('two_factor_authentication.two_factor_choice_options.backup_code')
-      click_continue
 
       set_up_mfa_with_backup_codes
-      click_button t('mfa.skip')
-      click_link(t('mfa.second_method_warning.link'))
-      expect(page).to have_current_path(second_mfa_setup_path)
+
+      expect(page).to have_current_path(confirm_backup_codes_path)
+      click_link(t('mfa.add'))
+      expect(page).to have_current_path(authentication_methods_setup_path)
     end
   end
 end

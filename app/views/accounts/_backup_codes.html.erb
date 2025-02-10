@@ -8,7 +8,7 @@
       <%= render TimeComponent.new(time: @presenter.backup_codes_generated_at) %>
     </div>
     <div class="grid-col-3 text-right">
-      <% if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled? %>
+      <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
         <%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
       <% end %>
     </div>
@@ -18,7 +18,7 @@
     </div>
   <% end %>
 </div>
-<% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.decorated_user.user).configured? %>
+<% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.user).configured? %>
   <%= render 'accounts/actions/regenerate_backup_codes' %>
 <% else %>
   <%= render 'accounts/actions/generate_backup_codes' %>

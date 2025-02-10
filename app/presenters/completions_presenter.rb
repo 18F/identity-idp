@@ -1,12 +1,18 @@
+# frozen_string_literal: true
+
 class CompletionsPresenter
-  attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes, :completion_context
+  include ActionView::Helpers::TranslationHelper
+  include ActionView::Helpers::TagHelper
+
+  attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes,
+              :completion_context, :selected_email_id
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
+    [[:email], :email],
+    [[:all_emails], :all_emails],
     [%i[given_name family_name], :full_name],
     [[:address], :address],
     [[:phone], :phone],
-    [[:email], :email],
-    [[:all_emails], :all_emails],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
@@ -28,7 +34,8 @@ class CompletionsPresenter
     decrypted_pii:,
     requested_attributes:,
     ial2_requested:,
-    completion_context:
+    completion_context:,
+    selected_email_id:
   )
     @current_user = current_user
     @current_sp = current_sp
@@ -36,6 +43,7 @@ class CompletionsPresenter
     @requested_attributes = requested_attributes
     @ial2_requested = ial2_requested
     @completion_context = completion_context
+    @selected_email_id = selected_email_id
   end
 
   def ial2_requested?
@@ -50,6 +58,11 @@ class CompletionsPresenter
     if ial2_requested?
       if consent_has_expired?
         I18n.t('titles.sign_up.completion_consent_expired_ial2')
+      elsif reverified_after_consent?
+        I18n.t(
+          'titles.sign_up.completion_reverified_consent',
+          sp: sp_name,
+        )
       else
         I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
       end
@@ -65,36 +78,24 @@ class CompletionsPresenter
   end
 
   def intro
-    if ial2_requested?
-      if consent_has_expired?
-        I18n.t(
-          'help_text.requested_attributes.ial2_consent_reminder_html',
-          sp: sp_name,
-        )
-      else
-        I18n.t(
-          'help_text.requested_attributes.ial2_intro_html',
-          sp: sp_name,
-        )
-      end
-    elsif consent_has_expired?
-      I18n.t(
-        'help_text.requested_attributes.ial1_consent_reminder_html',
-        sp: sp_name,
+    if consent_has_expired?
+      safe_join(
+        [
+          t(
+            'help_text.requested_attributes.consent_reminder_html',
+            sp_html: content_tag(:strong, sp_name),
+          ),
+          t('help_text.requested_attributes.intro_html', sp_html: content_tag(:strong, sp_name)),
+        ],
+        ' ',
+      )
+    elsif ial2_requested? && reverified_after_consent?
+      t(
+        'help_text.requested_attributes.ial2_reverified_consent_info_html',
+        sp_html: content_tag(:strong, sp_name),
       )
     else
-      I18n.t(
-        'help_text.requested_attributes.ial1_intro_html',
-        sp: sp_name,
-      )
-    end
-  end
-
-  def image_name
-    if ial2_requested?
-      'user-signup-ial2.svg'
-    else
-      'user-signup-ial1.svg'
+      t('help_text.requested_attributes.intro_html', sp_html: content_tag(:strong, sp_name))
     end
   end
 
@@ -114,11 +115,16 @@ class CompletionsPresenter
     @displayable_pii ||= DisplayablePiiFormatter.new(
       current_user: current_user,
       pii: decrypted_pii,
+      selected_email_id: @selected_email_id,
     ).format
   end
 
   def consent_has_expired?
     completion_context == :consent_expired
+  end
+
+  def reverified_after_consent?
+    completion_context == :reverified_after_consent
   end
 
   def displayable_attribute_keys

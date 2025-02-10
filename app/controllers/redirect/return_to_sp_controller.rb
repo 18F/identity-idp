@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Redirect
   class ReturnToSpController < Redirect::RedirectController
     before_action :validate_sp_exists

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'FeatureManagement' do
+RSpec.describe 'FeatureManagement' do
   describe '#prefill_otp_codes?' do
     context 'when SMS sending is disabled' do
       before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true) }
@@ -104,30 +104,41 @@ describe 'FeatureManagement' do
   end
 
   describe '#reveal_gpo_code?' do
-    context 'server domain name is dev, qa, or int' do
-      it 'returns true' do
-        %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
-          allow(IdentityConfig.store).to receive(:domain_name).and_return(domain)
+    context 'domain is set to identitysandbox.gov' do
+      before do
+        allow(Identity::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+      end
 
+      context 'Rails env is development' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+          allow(Rails.env).to receive(:production?).and_return(false)
+        end
+        it 'returns true' do
+          expect(FeatureManagement.reveal_gpo_code?).to eq(true)
+        end
+      end
+
+      context 'Rails env is production' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+          allow(Rails.env).to receive(:production?).and_return(true)
+        end
+        it 'returns true' do
           expect(FeatureManagement.reveal_gpo_code?).to eq(true)
         end
       end
     end
 
-    context 'Rails env is development' do
-      it 'returns true' do
-        allow(Rails.env).to receive(:development?).and_return(true)
-
-        expect(FeatureManagement.reveal_gpo_code?).to eq(true)
-      end
-    end
-
-    context 'Rails env is not development and server is not dev, qa, or int' do
-      it 'returns false' do
-        allow(Rails.env).to receive(:development?).and_return(false)
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('foo.login.gov')
-
-        expect(FeatureManagement.reveal_gpo_code?).to eq(false)
+    context 'domain is set to login.gov' do
+      context 'Rails env is production' do
+        before do
+          allow(Rails.env).to receive(:development?).and_return(false)
+          allow(Rails.env).to receive(:production?).and_return(true)
+        end
+        it 'returns false' do
+          expect(FeatureManagement.reveal_gpo_code?).to eq(false)
+        end
       end
     end
   end
@@ -259,20 +270,6 @@ describe 'FeatureManagement' do
     end
   end
 
-  describe '#disallow_all_web_crawlers?' do
-    it 'returns true when IdentityConfig setting is true' do
-      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { true }
-
-      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
-    end
-
-    it 'returns false when IdentityConfig setting is false' do
-      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { false }
-
-      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
-    end
-  end
-
   describe '#identity_pki_local_dev?' do
     context 'when in development mode' do
       before(:each) do
@@ -311,20 +308,6 @@ describe 'FeatureManagement' do
     end
   end
 
-  describe '#document_capture_async_uploads_enabled?' do
-    it 'returns true when IdentityConfig presigned S3 URL setting is true' do
-      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { true }
-
-      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
-    end
-
-    it 'returns false when IdentityConfig presigned S3 URL setting is false' do
-      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { false }
-
-      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
-    end
-  end
-
   describe 'log_to_stdout?' do
     context 'outside the test environment' do
       before { allow(Rails.env).to receive(:test?).and_return(false) }
@@ -353,35 +336,205 @@ describe 'FeatureManagement' do
     end
   end
 
-  describe 'idv_api_enabled?' do
-    context 'with no steps enabled' do
-      it 'returns false' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
+  describe '#proofing_device_profiling_collecting_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+    it 'returns true for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:emnabled)
+      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }
+        .to raise_error
+    end
+  end
 
-        expect(FeatureManagement.idv_api_enabled?).to eq(false)
-      end
+  describe '#proofing_device_profiling_decisioning_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns false for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:dissabled)
+      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }
+        .to raise_error
+    end
+  end
+
+  describe '.recaptcha_enabled?' do
+    let(:recaptcha_site_key) { '' }
+    let(:recaptcha_secret_key) { '' }
+    let(:recaptcha_enterprise_api_key) { '' }
+    let(:recaptcha_enterprise_project_id) { '' }
+
+    subject(:recaptcha_enabled) { FeatureManagement.recaptcha_enabled? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key)
+        .and_return(recaptcha_site_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key)
+        .and_return(recaptcha_secret_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
     end
 
-    context 'with steps enabled' do
-      it 'returns true' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['example'])
+    it { is_expected.to eq(false) }
 
-        expect(FeatureManagement.idv_api_enabled?).to eq(true)
+    context 'with configured recaptcha site key' do
+      let(:recaptcha_site_key) { 'key' }
+
+      it { is_expected.to eq(false) }
+
+      context 'with configured recaptcha secret key' do
+        let(:recaptcha_secret_key) { 'key' }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with configured recaptcha enterprise api key' do
+        let(:recaptcha_enterprise_api_key) { 'key' }
+
+        it { is_expected.to eq(false) }
+
+        context 'with configured recaptcha enterprise project id' do
+          let(:recaptcha_enterprise_project_id) { 'project-id' }
+
+          it { is_expected.to eq(true) }
+        end
       end
     end
   end
 
-  describe '.voip_allowed_phones' do
+  describe '.phone_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:phone_recaptcha_score_threshold) { 0.0 }
+
+    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+
     before do
-      # clear memoization
-      FeatureManagement.instance_variable_set(:@voip_allowed_phones, nil)
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold)
+        .and_return(phone_recaptcha_score_threshold)
     end
 
-    it 'normalizes phone numbers and put them in a set' do
-      voip_allowed_phones = ['18885551234', '+18888675309']
+    it { is_expected.to eq(false) }
 
-      expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
-      expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
+    context 'with configured default success rate threshold greater than 0' do
+      let(:phone_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '.sign_in_recaptcha_enabled?' do
+    let(:recaptcha_enabled) { false }
+    let(:sign_in_recaptcha_score_threshold) { 0.0 }
+
+    subject(:sign_in_recaptcha_enabled) { FeatureManagement.sign_in_recaptcha_enabled? }
+
+    before do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(recaptcha_enabled)
+      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold)
+        .and_return(sign_in_recaptcha_score_threshold)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'with configured default success rate threshold greater than 0' do
+      let(:sign_in_recaptcha_score_threshold) { 1.0 }
+
+      it { is_expected.to eq(false) }
+
+      context 'with recaptcha enabled' do
+        let(:recaptcha_enabled) { true }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
+  describe '.recaptcha_enterprise?' do
+    let(:recaptcha_enterprise_api_key) { '' }
+    let(:recaptcha_enterprise_project_id) { '' }
+
+    subject(:recaptcha_enterprise) { FeatureManagement.recaptcha_enterprise? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
+    end
+
+    it { expect(recaptcha_enterprise).to eq(false) }
+
+    context 'with configured recaptcha enterprise api key' do
+      let(:recaptcha_enterprise_api_key) { 'key' }
+
+      it { expect(recaptcha_enterprise).to eq(false) }
+
+      context 'with configured recaptcha enterprise project id' do
+        let(:recaptcha_enterprise_project_id) { 'project_id' }
+
+        it { expect(recaptcha_enterprise).to eq(true) }
+      end
+    end
+  end
+
+  describe '#idv_available?' do
+    let(:idv_available) { true }
+    let(:vendor_status_lexisnexis_instant_verify) { :operational }
+    let(:vendor_status_lexisnexis_trueid) { :operational }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify)
+        .and_return(vendor_status_lexisnexis_instant_verify)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid)
+        .and_return(vendor_status_lexisnexis_trueid)
+    end
+
+    it 'returns true by default' do
+      expect(FeatureManagement.idv_available?).to eql(true)
+    end
+
+    context 'idv has been disabled using config flag' do
+      let(:idv_available) { false }
+      it 'returns false' do
+        expect(FeatureManagement.idv_available?).to eql(false)
+      end
+    end
+
+    %w[lexisnexis_instant_verify lexisnexis_trueid].each do |service|
+      context "#{service} is in :full_outage" do
+        let(:"vendor_status_#{service}") { :full_outage }
+        it 'returns false' do
+          expect(FeatureManagement.idv_available?).to eql(false)
+        end
+      end
     end
   end
 end

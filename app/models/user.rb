@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
+  include ActionView::Helpers::DateHelper
 
   devise(
     :database_authenticatable,
@@ -19,7 +22,10 @@ class User < ApplicationRecord
   include DeprecatedUserAttributes
   include UserOtpMethods
 
-  enum otp_delivery_preference: { sms: 0, voice: 1 }
+  MAX_RECENT_EVENTS = 5
+  MAX_RECENT_DEVICES = 5
+
+  enum :otp_delivery_preference, { sms: 0, voice: 1 }
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # identities need to be orphaned to prevent UUID reuse
@@ -38,12 +44,13 @@ class User < ApplicationRecord
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
   has_one :registration_log, dependent: :destroy
-  has_one :proofing_component, dependent: :destroy
   has_many :service_providers,
            through: :identities,
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
   has_many :in_person_enrollments, dependent: :destroy
+  has_many :fraud_review_requests, dependent: :destroy
+  has_many :gpo_confirmation_codes, through: :profiles
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -58,15 +65,19 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
+    email_addresses.confirmed
   end
 
-  def need_two_factor_authentication?(_request)
-    MfaPolicy.new(self).two_factor_enabled?
+  def fully_registered?
+    !!registration_log&.registered_at
   end
 
   def confirmed?
-    email_addresses.where.not(confirmed_at: nil).any?
+    confirmed_email_addresses.any?
+  end
+
+  def has_fed_or_mil_email?
+    confirmed_email_addresses.any?(&:fed_or_mil_email?)
   end
 
   def accepted_rules_of_use_still_valid?
@@ -86,23 +97,213 @@ class User < ApplicationRecord
   end
 
   def active_identities
-    identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
+    identities.where.not(session_uuid: nil).order(last_authenticated_at: :asc) || []
+  end
+
+  def active_profile?
+    active_profile.present?
   end
 
   def active_profile
-    @active_profile ||= profiles.verified.find(&:active?)
+    return @active_profile if defined?(@active_profile) && @active_profile&.active
+    @active_profile = profiles.verified.find(&:active?)
   end
 
   def pending_profile?
     pending_profile.present?
   end
 
+  def gpo_verification_pending_profile?
+    gpo_verification_pending_profile.present?
+  end
+
+  def suspended?
+    suspended_at.to_s > reinstated_at.to_s
+  end
+
+  def reinstated?
+    reinstated_at.to_s > suspended_at.to_s
+  end
+
+  def suspend!
+    if suspended?
+      analytics.user_suspended(success: false, error_message: :user_already_suspended)
+      raise 'user_already_suspended'
+    end
+    OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
+    update!(suspended_at: Time.zone.now, unique_session_id: nil)
+    analytics.user_suspended(success: true)
+
+    event = PushNotification::AccountDisabledEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
+    email_addresses.map do |email_address|
+      SuspendedEmail.create_from_email_address!(email_address)
+    end
+  end
+
+  def reinstate!
+    if !suspended?
+      analytics.user_reinstated(success: false, error_message: :user_is_not_suspended)
+      raise 'user_is_not_suspended'
+    end
+    update!(reinstated_at: Time.zone.now)
+    analytics.user_reinstated(success: true)
+
+    event = PushNotification::AccountEnabledEvent.new(user: self)
+    PushNotification::HttpPush.deliver(event)
+
+    email_addresses.map do |email_address|
+      SuspendedEmail.find_with_email(email_address.email)&.destroy
+    end
+    send_email_to_all_addresses(:account_reinstated)
+  end
+
   def pending_profile
-    profiles.gpo_verification_pending.order(created_at: :desc).first
+    return @pending_profile if defined?(@pending_profile) && !@pending_profile&.active
+
+    @pending_profile = begin
+      pending = profiles.in_person_verification_pending.or(
+        profiles.gpo_verification_pending,
+      ).or(
+        profiles.fraud_review_pending,
+      ).or(
+        profiles.fraud_rejection,
+      ).order(created_at: :desc).first
+
+      if pending.blank?
+        nil
+      elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
+        # Profiles that are cancelled for reasons that do not require further verification steps
+        # are not pending profiles
+        nil
+      elsif active_profile.present? && active_profile.activated_at > pending.created_at
+        # If there is an active profile that is older than this pending profile that means the user
+        # has proofed since this profile was created. That profile takes precedence and there is no
+        # pending profile
+        nil
+      else
+        pending
+      end
+    end
+  end
+
+  def gpo_verification_pending_profile
+    pending_profile if pending_profile&.gpo_verification_pending?
+  end
+
+  def fraud_review_pending?
+    fraud_review_pending_profile.present?
+  end
+
+  def fraud_rejection?
+    fraud_rejection_profile.present?
+  end
+
+  def fraud_review_pending_profile
+    pending_profile if pending_profile&.fraud_review_pending?
+  end
+
+  def fraud_rejection_profile
+    pending_profile if pending_profile&.fraud_rejection?
+  end
+
+  def in_person_pending_profile?
+    in_person_pending_profile.present?
+  end
+
+  def in_person_pending_profile
+    pending_profile if pending_profile&.in_person_verification_pending?
+  end
+
+  ##
+  # Return the status of the current In Person Proofing Enrollment
+  # @return [String] enrollment status
+  def in_person_enrollment_status
+    pending_profile&.in_person_enrollment&.status
+  end
+
+  def ipp_enrollment_status_not_passed?
+    !in_person_enrollment_status.blank? &&
+      in_person_enrollment_status != 'passed'
+  end
+
+  def has_in_person_enrollment?
+    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+  end
+
+  # @return [Boolean] Whether the user has an establishing in person enrollment.
+  def has_establishing_in_person_enrollment?
+    establishing_in_person_enrollment.present?
+  end
+
+  # Trust `pending_profile` rather than enrollment associations
+  def has_establishing_in_person_enrollment_safe?
+    !!pending_profile&.in_person_enrollment&.establishing?
+  end
+
+  def personal_key_generated_at
+    encrypted_recovery_code_digest_generated_at ||
+      active_profile&.verified_at ||
+      profiles.verified.order(activated_at: :desc).first&.verified_at
   end
 
   def default_phone_configuration
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
+  end
+
+  ##
+  # @param [String] issuer
+  # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
+  def should_receive_in_person_completion_survey?(issuer)
+    Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
+      in_person_enrollments
+        .where(issuer: issuer, status: :passed).order(created_at: :desc)
+        .pick(:follow_up_survey_sent) == false
+  end
+
+  ##
+  # Record that the in-person proofing survey was sent
+  # @param [String] issuer
+  def mark_in_person_completion_survey_sent(issuer)
+    enrollment_id, follow_up_survey_sent = in_person_enrollments
+      .where(issuer: issuer, status: :passed)
+      .order(created_at: :desc)
+      .pick(:id, :follow_up_survey_sent)
+
+    if follow_up_survey_sent == false
+      # Enrollment record is present and survey was not previously sent
+      InPersonEnrollment.update(enrollment_id, follow_up_survey_sent: true)
+    end
+    nil
+  end
+
+  def increment_second_factor_attempts_count!
+    User.transaction do
+      sql = <<~SQL
+        UPDATE users
+        SET
+          second_factor_attempts_count = COALESCE(second_factor_attempts_count, 0) + 1,
+          updated_at = NOW(),
+          second_factor_locked_at = CASE
+            WHEN COALESCE(second_factor_attempts_count, 0) + 1 >= ?
+            THEN NOW()
+            ELSE NULL
+            END
+        WHERE id = ?
+        RETURNING second_factor_attempts_count, second_factor_locked_at;
+      SQL
+      query = User.sanitize_sql_array(
+        [sql,
+         IdentityConfig.store.login_otp_confirmation_max_attempts, self.id],
+      )
+      result = User.connection.execute(query).first
+      self.second_factor_attempts_count = result.fetch('second_factor_attempts_count')
+      self.second_factor_locked_at = result.fetch('second_factor_locked_at')
+      self.clear_attribute_changes([:second_factor_attempts_count, :second_factor_locked_at])
+    end
+
+    nil
   end
 
   MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000
@@ -132,9 +333,144 @@ class User < ApplicationRecord
     devise_mailer.send(notification, self, *args).deliver_now_or_later
   end
 
-  def decorate
-    UserDecorator.new(self)
+  #
+  # Decoration methods
+  #
+  def email_language_preference_description
+    if I18n.locale_available?(email_language)
+      # i18n-tasks-use t('account.email_language.name.en')
+      # i18n-tasks-use t('account.email_language.name.es')
+      # i18n-tasks-use t('account.email_language.name.fr')
+      I18n.t("account.email_language.name.#{email_language}")
+    else
+      I18n.t('account.email_language.name.en')
+    end
   end
+
+  def visible_email_addresses
+    email_addresses.filter do |email_address|
+      email_address.confirmed? || !email_address.confirmation_period_expired?
+    end
+  end
+
+  def lockout_time_expiration
+    second_factor_locked_at + lockout_period
+  end
+
+  def active_identity_for(service_provider)
+    active_identities.find_by(service_provider: service_provider.issuer)
+  end
+
+  def active_or_pending_profile
+    active_profile || pending_profile
+  end
+
+  def identity_not_verified?
+    !identity_verified?
+  end
+
+  def identity_verified?
+    active_profile.present?
+  end
+
+  def identity_verified_with_facial_match?
+    active_profile.present? && active_profile.facial_match?
+  end
+
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile
+    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    profile if profile&.password_reset?
+  end
+
+  def qrcode(otp_secret_key)
+    options = {
+      issuer: APP_NAME,
+      otp_secret_key: otp_secret_key,
+      digits: TwoFactorAuthenticatable::OTP_LENGTH,
+      interval: IdentityConfig.store.totp_code_interval,
+    }
+    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
+      last_sign_in_email_address.email,
+    )
+    qrcode = RQRCode::QRCode.new(url)
+    qrcode.as_png(size: 240).to_data_url
+  end
+
+  def locked_out?
+    second_factor_locked_at.present? && !lockout_period_expired?
+  end
+
+  def no_longer_locked_out?
+    second_factor_locked_at.present? && lockout_period_expired?
+  end
+
+  def recent_events
+    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS)
+      .map(&:decorate)
+    (events + identity_events).sort_by(&:happened_at).reverse
+  end
+
+  def identity_events
+    identities.includes(:service_provider_record).order('last_authenticated_at DESC')
+  end
+
+  def recent_devices
+    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES)
+      .map(&:decorate)
+  end
+
+  def has_devices?
+    !recent_devices.empty?
+  end
+
+  def authenticated_device?(cookie_uuid:)
+    return false if cookie_uuid.blank?
+    devices.joins(:events).exists?(
+      cookie_uuid:,
+      events: { event_type: [:account_created, :sign_in_after_2fa] },
+    )
+  end
+
+  # Returns the number of times the user has signed in, corresponding to the `sign_in_before_2fa`
+  # event.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  #
+  # @param [ActiveSupport::TimeWithZone] since Time window to query user's events
+  def sign_in_count(since:)
+    events
+      .where(event_type: :sign_in_before_2fa).where(created_at: since..)
+      .count
+  end
+
+  # Returns the date of the last fully-authenticated sign-in before the most recent.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  def second_last_signed_in_at(since:)
+    events
+      .where(event_type: :sign_in_after_2fa, created_at: since..)
+      .order(created_at: :desc)
+      .limit(2)
+      .pluck(:created_at)
+      .second
+  end
+
+  def connected_apps
+    identities.not_deleted.order('created_at DESC')
+  end
+
+  def delete_account_bullet_key
+    if identity_verified?
+      I18n.t('users.delete.bullet_2_verified', app_name: APP_NAME)
+    else
+      I18n.t('users.delete.bullet_2_basic', app_name: APP_NAME)
+    end
+  end
+  # End moved from UserDecorator
 
   # Devise automatically downcases and strips any attribute defined in
   # config.case_insensitive_keys and config.strip_whitespace_keys via
@@ -172,4 +508,37 @@ class User < ApplicationRecord
   end
 
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+
+  def analytics
+    @analytics ||= Analytics.new(user: self, request: nil, session: {}, sp: nil)
+  end
+
+  def send_email_to_all_addresses(user_mailer_template)
+    confirmed_email_addresses.each do |email_address|
+      UserMailer.with(
+        user: self,
+        email_address: email_address,
+      ).send(user_mailer_template)
+        .deliver_now_or_later
+    end
+  end
+
+  def reload(...)
+    remove_instance_variable(:@pending_profile) if defined?(@pending_profile)
+    super(...)
+  end
+
+  def last_sign_in_email_address
+    email_addresses.confirmed.last_sign_in
+  end
+
+  private
+
+  def lockout_period
+    IdentityConfig.store.lockout_period_in_minutes.minutes
+  end
+
+  def lockout_period_expired?
+    lockout_time_expiration < Time.zone.now
+  end
 end

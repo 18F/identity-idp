@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-feature 'managing email address' do
+RSpec.feature 'managing email address' do
   context 'show one email address if only one is configured' do
     scenario 'shows one email address for a user with only one' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       sign_in_and_2fa_user(user)
 
       expect(page).to have_content(user.email_addresses.first.email)
     end
 
     scenario 'shows all email address for a user with multiple emails' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       email1, email2 = user.reload.email_addresses.map(&:email)
       sign_in_and_2fa_user(user)
 
@@ -19,7 +19,7 @@ feature 'managing email address' do
     end
 
     scenario 'does not show a unconfirmed email with a expired confirmation period' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       confirmed_email = user.reload.email_addresses.first.email
 
       expired_unconfirmed_email_address = create(
@@ -39,8 +39,8 @@ feature 'managing email address' do
 
   context 'allows deletion of email address' do
     it 'does not allow last confirmed email to be deleted' do
-      user = create(:user, :signed_up, email: 'test@example.com ')
-      confirmed_email = user.confirmed_email_addresses.first
+      user = create(:user, :fully_registered, email: 'test@example.com ')
+      confirmed_email = user.last_sign_in_email_address
       unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
       user.email_addresses.reload
 
@@ -55,8 +55,8 @@ feature 'managing email address' do
     end
 
     it 'Allows delete when more than one confirmed email exists' do
-      user = create(:user, :signed_up, email: 'test@example.com ')
-      confirmed_email1 = user.confirmed_email_addresses.first
+      user = create(:user, :fully_registered, email: 'test@example.com ')
+      confirmed_email1 = user.last_sign_in_email_address
       confirmed_email2 = create(
         :email_address, user: user,
                         confirmed_at: Time.zone.now
@@ -73,21 +73,27 @@ feature 'managing email address' do
     end
 
     it 'sends notification to all confirmed emails when email address is deleted' do
-      allow(UserMailer).to receive(:email_deleted).and_call_original
-      user = create(:user, :signed_up, email: 'test@example.com ')
-      confirmed_email1 = user.confirmed_email_addresses.first
-      create(:email_address, user: user, confirmed_at: Time.zone.now)
-      user.email_addresses.reload
+      user = create(:user, :fully_registered, email: 'test@example.com ')
+      confirmed_email1 = user.last_sign_in_email_address
+      confirmed_email2 = create(:email_address, user: user, confirmed_at: Time.zone.now)
 
       sign_in_and_2fa_user(user)
       expect(page).to have_current_path(account_path)
-
       delete_email_should_not_fail(confirmed_email1)
-      expect(UserMailer).to have_received(:email_deleted).twice
+
+      expect_delivered_email_count(2)
+      expect_delivered_email(
+        to: [confirmed_email1.email],
+        subject: t('user_mailer.email_deleted.subject'),
+      )
+      expect_delivered_email(
+        to: [confirmed_email2.email],
+        subject: t('user_mailer.email_deleted.subject'),
+      )
     end
 
     it 'allows a user to create an account with the old email address' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       original_email = user.email
       original_email_address = user.email_addresses.first
       create(:email_address, user: user)

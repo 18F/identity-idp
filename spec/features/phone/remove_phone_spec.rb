@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'removing a phone number from an account' do
+RSpec.feature 'removing a phone number from an account' do
   scenario 'deleting a phone number' do
-    user = create(:user, :signed_up, :with_piv_or_cac)
+    user = create(:user, :fully_registered, :with_piv_or_cac)
     phone_configuration = user.phone_configurations.first
     sign_in_and_2fa_user(user)
     visit manage_phone_path(id: phone_configuration.id)
@@ -21,7 +21,7 @@ feature 'removing a phone number from an account' do
 
   context 'when deleting will mean the user will not have enough MFA methods' do
     scenario 'the option to delete the phone number is not available' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       phone_configuration = user.phone_configurations.first
       sign_in_and_2fa_user(user)
 

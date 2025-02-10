@@ -4,7 +4,6 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
 
-declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
   interface Window {
     AcuantCameraUI: AcuantCameraUIInterface;
@@ -94,13 +93,13 @@ interface AcuantCameraUIOptions {
 }
 
 /**
- * Document type.
- *
- * 0 = None
- * 1 = ID
- * 2 = Passport
+ * We call String.toLowerCase() on these when sending analytics events to the server
  */
-export type AcuantDocumentType = 0 | 1 | 2;
+export enum AcuantDocumentType {
+  NONE = 0,
+  ID = 1,
+  PASSPORT = 2,
+}
 
 export type AcuantCaptureFailureError =
   | undefined // Cropping failure (SDK v11.5.0, L1171)
@@ -126,11 +125,15 @@ interface AcuantCameraUICallbacks {
    * Optional frame available callback
    */
   onFrameAvailable?: (response: AcuantDetectedResult) => void;
+  /**
+   * Callback that occurs when there is a failure.
+   */
+  onError: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
-  onFailure: AcuantFailureCallback,
+  onFailureCallbackWithOptions: AcuantFailureCallback,
   options?: AcuantCameraUIOptions,
 ) => void;
 
@@ -202,7 +205,7 @@ interface AcuantDetectedResult {
 }
 
 /**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/?tab=readme-ov-file#image-from-acuantcameraui-and-acuantcamera
  */
 export interface AcuantSuccessResponse {
   /**
@@ -210,7 +213,7 @@ export interface AcuantSuccessResponse {
    */
   image: AcuantImage;
   /**
-   * Document type
+   * Document type for Acuant SDK
    */
   cardType: AcuantDocumentType;
   /**
@@ -258,26 +261,6 @@ interface AcuantCameraContextProps {
   children: ReactNode;
 }
 
-/**
- * Returns a found AcuantCameraUI
- * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
- */
-const getActualAcuantCameraUI = (): AcuantCameraUIInterface => {
-  if (window.AcuantCameraUI) {
-    return window.AcuantCameraUI;
-  }
-  if (typeof AcuantCameraUI === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('AcuantCameraUI is not defined in the global scope');
-  }
-  return AcuantCameraUI;
-};
-
 function AcuantCamera({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
@@ -298,24 +281,30 @@ function AcuantCamera({
   );
 
   useEffect(() => {
+    const textOptions = {
+      text: {
+        NONE: t('doc_auth.info.capture_status_none'),
+        SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+        BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
+        GOOD_DOCUMENT: null,
+        CAPTURING: t('doc_auth.info.capture_status_capturing'),
+        TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+      },
+    };
     if (isReady) {
-      window.AcuantCameraUI = getActualAcuantCameraUI();
+      const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
+      Object.keys(textOptions).forEach((key) => {
+        onFailureCallbackWithOptions[key] = textOptions[key];
+      });
+
       window.AcuantCameraUI.start(
         {
           onCaptured: onCropStart,
           onCropped,
+          onError: onImageCaptureFailure,
         },
-        onImageCaptureFailure,
-        {
-          text: {
-            NONE: t('doc_auth.info.capture_status_none'),
-            SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
-            BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-            GOOD_DOCUMENT: null,
-            CAPTURING: t('doc_auth.info.capture_status_capturing'),
-            TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
-          },
-        },
+        onFailureCallbackWithOptions,
+        textOptions,
       );
       setIsActive(true);
     }

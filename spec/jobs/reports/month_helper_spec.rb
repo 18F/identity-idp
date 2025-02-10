@@ -13,5 +13,21 @@ RSpec.describe Reports::MonthHelper do
         ],
       )
     end
+
+    it 'does not double-count when first and last are the same month' do
+      expect(months(Date.new(2022, 1, 1)..Date.new(2022, 1, 31))).to eq(
+        [
+          Date.new(2022, 1, 1)..Date.new(2022, 1, 31),
+        ],
+      )
+    end
+
+    it 'correctly returns a partial month when the first month is a partial month' do
+      expect(months(Date.new(2022, 1, 1)..Date.new(2022, 1, 28))).to eq(
+        [
+          Date.new(2022, 1, 1)..Date.new(2022, 1, 28),
+        ],
+      )
+    end
   end
 end

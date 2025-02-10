@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe PasswordCaptureController do
+RSpec.describe PasswordCaptureController do
   describe '#update' do
-    let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
+    let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
 
     context 'form returns success' do
       let(:pii) { { first_name: 'Jane', ssn: '111-11-1111' } }
@@ -11,14 +11,14 @@ describe PasswordCaptureController do
         create(:profile, :active, :verified, user: user, pii: pii)
         stub_sign_in(user)
 
-        expect(controller.user_session[:decrypted_pii]).to be nil
+        expect(controller.user_session[:encrypted_profiles]).to be nil
 
         params = { password: 'a really long sekrit' }
         get :new
         patch :create, params: { user: params }
 
         expect(response).to redirect_to account_path
-        expect(controller.user_session[:decrypted_pii]).to_not be nil
+        expect(controller.user_session[:encrypted_profiles]).to_not be nil
       end
     end
 

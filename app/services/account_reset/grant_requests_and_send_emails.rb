@@ -1,18 +1,8 @@
+# frozen_string_literal: true
+
 module AccountReset
   class GrantRequestsAndSendEmails < ApplicationJob
-    queue_as :low
-
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> do
-        rounded = TimeService.round_time(time: arguments.first, interval: 5.minutes)
-        "grant-requests-and-send-emails-#{rounded.to_i}"
-      end,
-    )
-
-    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+    queue_as :long_running
 
     def perform(now)
       notifications_sent = 0
@@ -55,7 +45,8 @@ module AccountReset
 
       arr = arr.reload
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_granted(user, email_address, arr).deliver_now_or_later
+        UserMailer.with(user: user, email_address: email_address)
+          .account_reset_granted(arr).deliver_now_or_later
       end
       true
     end

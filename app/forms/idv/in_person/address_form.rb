@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module InPerson
     class AddressForm
@@ -15,9 +17,16 @@ module Idv
       def submit(params)
         consume_params(params)
 
+        validation_success = valid?
+        cleaned_errors = errors.dup
+        cleaned_errors.delete(:city, :nontransliterable_field)
+        cleaned_errors.delete(:address1, :nontransliterable_field)
+        cleaned_errors.delete(:address2, :nontransliterable_field)
+
         FormResponse.new(
-          success: valid?,
-          errors: errors,
+          success: validation_success,
+          errors: cleaned_errors,
+          extra: extra_analytics_attributes(params),
         )
       end
 
@@ -26,12 +35,16 @@ module Idv
       def consume_params(params)
         params.each do |key, value|
           raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-          send("#{key}=", value)
+          send(:"#{key}=", value)
         end
       end
 
       def raise_invalid_address_parameter_error(key)
         raise ArgumentError, "#{key} is an invalid address attribute"
+      end
+
+      def extra_analytics_attributes(params)
+        { current_address_zip_code: params.dig(:zipcode)&.slice(0, 5) }
       end
     end
   end

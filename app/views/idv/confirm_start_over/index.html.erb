@@ -1,0 +1,27 @@
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      heading: t('idv.cancel.headings.prompt.standard'),
+      current_step: @step_indicator_step,
+    ) do %>
+  <p>
+    <%= t('idv.cancel.description.gpo.start_over') %>
+  </p>
+  <ul class="usa-list">
+    <% t('idv.cancel.description.gpo.warnings').each do | warning_text | %>
+      <li>
+        <%= warning_text %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="margin-y-5">
+    <%= render ButtonComponent.new(
+          url: idv_session_path(step: :gpo_verify),
+          method: :delete,
+          big: true,
+          wide: true,
+        ).with_content(t('idv.buttons.continue_plain')) %>
+  </div>
+<% end %>
+<%= render('idv/shared/back', step: 'gpo_verify', fallback_path: idv_verify_by_mail_enter_code_path) %>

@@ -1,55 +1,44 @@
 ---
 es:
   telephony:
+    account_deleted_notice: Este SMS confirma que ha eliminado su cuenta de %{app_name}.
     account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-    account_reset_notice: Según lo solicitado, su cuenta %{app_name} se eliminará en
-      24 horas. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta
-      %{app_name} para cancelar.
+    account_reset_notice: Según lo solicitado, su cuenta %{app_name} se eliminará en %{interval}. ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar.
     authentication_otp:
       sms: |-
-        %{app_name}: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
+        %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
-        código de acceso es %{code}, Este código caducará en %{expiration}
-        minutos.'
+      voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name} es %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
+    confirmation_ipp_enrollment_result:
+      sms: '%{app_name}: Usted acudió a la oficina de correos el %{proof_date}. Revise el resultado en su correo electrónico. ¿No fue usted? Informe inmediatamente de esto: %{contact_number}. Ref: %{reference_string}'
     confirmation_otp:
       sms: |-
-        %{app_name}: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
+        %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
 
         @%{domain} #%{code}
-      voice: '¡Hola! Su código de acceso de %{app_name} es, %{code}, nuevamente, su
-        código de acceso es %{code}, Este código caducará en %{expiration}
-        minutos.'
-    doc_auth_link: '%{link} Has solicitado verificar tu identidad en un teléfono
-      móvil. Por favor, tome una foto de la identificación emitida por su
-      estado'
+      voice: 'Hola: Los %{format_length} %{format_type} de su código de un solo uso de %{app_name} son %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
+    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
     error:
       friendly_message:
-        daily_voice_limit_reached: No se pudo enviar tu código de seguridad porque
-          excediste el número máximo de llamadas telefónicas en 24 horas a este
-          número de teléfono. Puedes solicitar un código por mensaje de texto o
-          utilizar un número diferente para recibir una llamada telefónica.
+        daily_voice_limit_reached: No se pudo enviar su código de un solo uso porque superó el número máximo de llamadas en 24 horas a este número de teléfono. Puede solicitar un código por mensaje de texto o usar un número diferente para recibir una llamada telefónica.
         duplicate_endpoint: El número de teléfono ingresado no es válido.
-        generic: Se produjo un error al enviar el código de seguridad.
-        invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
-          enviar un SMS si tienes un teléfono que permita enviar SMS.
-        invalid_phone_number: El número de teléfono ingresado no está en el formato correcto.
-        opt_out: El número de teléfono ingresado ha sido excluido de los mensajes de
-          texto.
+        generic: No se pudo enviar su código de un solo uso.
+        invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intente enviar un SMS si tiene un teléfono compatible con SMS.
+        invalid_phone_number: El número de teléfono ingresado no es válido.
+        opt_out: Se optó por no recibir mensajes de texto en el número de teléfono ingresado.
         permanent_failure: El número de teléfono ingresado no es válido.
-        sms_unsupported: El número de teléfono ingresado no admite mensajes de texto.
-          Pruebe la opción de llamada telefónica.
-        temporary_failure: Estamos experimentando dificultades técnicas. Por favor,
-          inténtelo de nuevo más tarde.
-        throttled: Ese número está experimentando un alto volumen de mensajes. Por
-          favor, inténtelo de nuevo más tarde.
-        timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
-        unknown_failure: Estamos experimentando dificultades técnicas. Por favor,
-          inténtelo de nuevo más tarde.
-        voice_unsupported: Numero de telefono invalido. Verifique que haya ingresado el
-          código de país o de área correcto.
-    personal_key_regeneration_notice: Se ha emitido una nueva clave personal para tu
-      cuenta %{app_name}. Si no eres tú, restablece tu contraseña.
-    personal_key_sign_in_notice: Su clave personal solo se utilizó para iniciar
-      sesión en su cuenta %{app_name}. Si no fue así, reinicie su contraseña.
+        rate_limited: Ese número está experimentando un alto volumen de mensajes. Por favor, inténtelo de nuevo más tarde.
+        sms_unsupported: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
+        temporary_failure: Estamos experimentando dificultades técnicas. Por favor, inténtelo de nuevo más tarde.
+        timeout: El servidor tardó demasiado en responder. Vuelva a intentarlo.
+        unknown_failure: Estamos experimentando dificultades técnicas. Por favor, inténtelo de nuevo más tarde.
+        voice_unsupported: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
+    format_length:
+      six: seis
+      ten: diez
+    format_type:
+      character: caracteres
+      digit: dígitos
+    personal_key_regeneration_notice: Se emitió una nueva clave personal para su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
+    personal_key_sign_in_notice: Su clave personal acaba de se usada para iniciar sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.

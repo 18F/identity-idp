@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     class RequestError < StandardError; end
@@ -13,14 +15,10 @@ module Proofing
         @url = build_request_url
       end
 
-      def send
+      def send_request
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
-          f.request :basic_auth, config.username, config.password
           f.options.timeout = timeout
-          f.options.read_timeout = timeout
-          f.options.open_timeout = timeout
-          f.options.write_timeout = timeout
         end
 
         Response.new(

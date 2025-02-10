@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberCapabilities
   def self.load_config
     YAML.load_file(
@@ -7,23 +9,32 @@ class PhoneNumberCapabilities
 
   INTERNATIONAL_CODES = load_config.freeze
   ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES =
-    IdentityConfig.store.address_identity_proofing_supported_country_codes
+    IdentityConfig.store.address_identity_proofing_supported_country_codes.freeze
 
   attr_reader :phone, :phone_confirmed
 
-  def self.translated_international_codes
-    @translated_intl_codes_data = nil if Rails.env.development?
-    return @translated_intl_codes_data[I18n.locale] if @translated_intl_codes_data
-
-    @translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
+  def self.generate_translated_international_codes_data
+    translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
     I18n.available_locales.each do |locale|
       INTERNATIONAL_CODES.each do |k, value|
-        @translated_intl_codes_data[locale][k] =
+        translated_intl_codes_data[locale][k] =
           value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
       end
     end
-    @translated_intl_codes_data[I18n.locale]
+    translated_intl_codes_data
   end
+
+  def self.translated_international_codes
+    translated_intl_codes_data = if Rails.env.development?
+                                   generate_translated_international_codes_data
+                                 else
+                                   TRANSLATED_INTL_CODES_DATA
+                                 end
+
+    translated_intl_codes_data[I18n.locale] if translated_intl_codes_data
+  end
+
+  TRANSLATED_INTL_CODES_DATA = generate_translated_international_codes_data.freeze
 
   def initialize(phone, phone_confirmed:)
     @phone = phone
@@ -53,6 +64,7 @@ class PhoneNumberCapabilities
 
   def supports_sms?
     return false if country_code_data.nil?
+
     supports_sms = country_code_data['supports_sms']
 
     supports_sms_unconfirmed = country_code_data.fetch(

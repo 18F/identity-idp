@@ -1,11 +1,11 @@
-<% title t('titles.registrations.new') %>
+<% self.title = t('titles.registrations.new') %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.rules_of_use')) %>
 
 <p>
 <%= t(
       'users.rules_of_use.overview_html',
-      link: new_window_link_to(
+      link_html: new_tab_link_to(
         t('titles.rules_of_use'),
         MarketingSite.rules_of_use_url,
       ),
@@ -13,18 +13,14 @@
 </p>
 
 <%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
-<%= simple_form_for(
-      @rules_of_use_form,
-      html: { autocomplete: 'off' },
-      url: rules_of_use_path,
-    ) do |f| %>
+<%= simple_form_for(@rules_of_use_form, url: rules_of_use_path) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :terms_accepted,
         as: :boolean,
         label: capture do %>
           <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
-          <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+          <%= new_tab_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
         <% end,
         required: true,
       ) %>
@@ -32,4 +28,4 @@
     <%= f.submit t('forms.buttons.continue'), class: 'margin-y-5' %>
 <% end %>
 
-<%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
+<%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>

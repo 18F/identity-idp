@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::VerifyPersonalKeyController do
+RSpec.describe Users::VerifyPersonalKeyController do
   let(:user) { create(:user, personal_key: personal_key) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }
@@ -22,7 +22,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with password reset profile' do
-      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       it 'renders the `new` template' do
         get :new
@@ -36,35 +36,35 @@ describe Users::VerifyPersonalKeyController do
         expect(subject.flash[:info]).to eq(t('notices.account_reactivation'))
       end
 
-      it 'shows throttled page after being throttled' do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+      it 'shows rate limited page after being rate limited' do
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
 
         get :new
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
     end
 
-    context 'with throttle reached' do
-      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
+    context 'with rate limit reached' do
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
       end
 
-      it 'renders throttled page' do
+      it 'renders rate limited page' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
-          'Personal key reactivation: Personal key form visited',
-        ).once
-        expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_personal_key,
-        ).once
 
         get :new
 
-        expect(response).to render_template(:throttled)
+        expect(@analytics).to have_logged_event(
+          'Personal key reactivation: Personal key form visited',
+        )
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :verify_personal_key,
+        )
+        expect(response).to render_template(:rate_limited)
       end
     end
   end
@@ -74,6 +74,7 @@ describe Users::VerifyPersonalKeyController do
       [
         create(
           :profile,
+          :verified,
           :password_reset,
           user: user,
           pii: { ssn: '123456789' },
@@ -81,8 +82,9 @@ describe Users::VerifyPersonalKeyController do
       ]
     end
     let(:error_text) { 'Incorrect personal key' }
+    let(:personal_key_bad_params) { { personal_key: 'baaad' } }
     let(:personal_key_error) { { personal_key: [error_text] } }
-    let(:failure_properties) { { success: false, failure_reason: personal_key_error } }
+    let(:failure_properties) { { success: false } }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
@@ -95,96 +97,52 @@ describe Users::VerifyPersonalKeyController do
 
       it 'stores that the personal key was entered in the user session' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+
+        post :create, params: { personal_key: profiles.first.personal_key }
+
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
           errors: {},
           success: true,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-        ).once
-
-        expect(@analytics).to receive(:track_event).with(
+        )
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Account reactivated with personal key',
-        ).once
-
-        post :create, params: { personal_key: profiles.first.personal_key }
-
-        expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
-      end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_reason: nil,
-          success: true,
-        ).once
-
-        post :create, params: { personal_key: profiles.first.personal_key }
-
+        )
         expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
       end
     end
 
     context 'with an invalid form' do
-      let(:bad_key) { 'baaad' }
-
       it 'sets an error in the flash' do
-        post :create, params: { personal_key: bad_key }
+        post :create, params: personal_key_bad_params
 
         expect(flash[:error]).to eq(error_text)
       end
 
       it 'redirects to form' do
-        post :create, params: { personal_key: bad_key }
+        post :create, params: personal_key_bad_params
         expect(response).to redirect_to(verify_personal_key_url)
-      end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties,
-        ).once
-
-        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
-
-        post :create, params: { personal_key: bad_key }
       end
     end
 
-    context 'with throttle reached' do
-      let(:bad_key) { 'baaad' }
-
-      it 'renders throttled page' do
+    context 'with rate limit reached' do
+      it 'renders rate limited page' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(
+
+        max_attempts = RateLimiter.max_attempts(:verify_personal_key)
+        max_attempts.times { post :create, params: personal_key_bad_params }
+
+        expect(@analytics).to have_logged_event(
           'Personal key reactivation: Personal key form submitted',
-          errors: { personal_key: ['Please fill in this field.', 'Incorrect personal key'] },
-          error_details: { personal_key: [:blank, :personal_key_incorrect] },
+          errors: { personal_key: ['Please fill in this field.', error_text] },
+          error_details: { personal_key: { blank: true, personal_key: true } },
           success: false,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-        ).once
-        expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_personal_key,
-        ).once
-
-        max_attempts = Throttle.max_attempts(:verify_personal_key)
-        (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
-
-        expect(response).to render_template(:throttled)
-      end
-
-      it 'tracks irs attempts api for relevant users' do
-        stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_submitted).with(
-          failure_properties,
-        ).once
-
-        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
-
-        post :create, params: { personal_key: bad_key }
+        )
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :verify_personal_key,
+        )
+        expect(response).to render_template(:rate_limited)
       end
     end
   end

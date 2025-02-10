@@ -1,57 +1,44 @@
 ---
 fr:
   telephony:
+    account_deleted_notice: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
     account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
-    account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans
-      les 24 heures. Vous ne voulez pas supprimer votre compte? Connectez-vous à
-      votre compte %{app_name} pour le annuler.
+    account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
+      voice: Bonjour ! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
+    confirmation_ipp_enrollment_result:
+      sms: "%{app_name} : Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce n'est pas vous ? Signalez-le immédiatement : %{contact_number}. Réf. : %{reference_string}"
     confirmation_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+      voice: Bonjour ! Votre code à usage unique %{app_name} à %{format_length} %{format_type} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
+    doc_auth_link: "%{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer."
     error:
       friendly_message:
-        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car vous
-          avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
-          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou
-          utiliser un autre numéro pour recevoir un appel téléphonique.
-        duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
-        generic: Échec de l’envoi de votre code de sécurité.
-        invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
-          charge. Veuillez essayer par SMS si vous possédez un téléphone
-          disposant de cette fonction.
+        daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car vous avez dépassé le nombre maximal d’appels vers ce numéro de téléphone en 24 heures. Vous pouvez demander un code par SMS ou utiliser un autre numéro pour recevoir un appel téléphonique.
+        duplicate_endpoint: Le numéro de téléphone saisi n’est pas valide.
+        generic: L’envoi de votre code à usage unique a échoué.
+        invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en charge. Veuillez essayer par SMS si vous possédez un téléphone disposant de cette fonction.
         invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
-        opt_out: Le numéro de téléphone entré a désactivé les messages texte.
-        permanent_failure: Le numéro de téléphone entré n’est pas valide.
-        sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les
-          messages textuels. Veuillez essayer l’option d’appel téléphonique.
-        temporary_failure: Nous rencontrons des difficultés techniques. Veuillez
-          réessayer plus tard.
-        throttled: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
-          plus tard.
-        timeout: Le serveur a pris trop de temps pour répondre. Veuillez réessayer.
-        unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer
-          plus tard.
-        voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
-          bon indicatif international ou régional.
-    personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
-      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
-      votre mot de passe.
-    personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
-      connecter à votre compte %{app_name}. Si ce n'était pas vous, changez
-      votre mot de passe.
+        opt_out: Le numéro de téléphone saisi a choisi de ne pas recevoir de SMS.
+        permanent_failure: Le numéro de téléphone saisi n’est pas valide.
+        rate_limited: Ce nombre connaît un volume de messages élevé. Veuillez réessayer plus tard.
+        sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les messages texte. Veuillez essayer l’option d’appel téléphonique.
+        temporary_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard.
+        timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
+        unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer plus tard.
+        voice_unsupported: Numéro de téléphone non valide. Vérifiez que vous avez saisi le bon indicatif pays ou régional.
+    format_length:
+      six: six
+      ten: dix
+    format_type:
+      character: caractères
+      digit: chiffres
+    personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
+    personal_key_sign_in_notice: Votre clé personnelle vient d’être utilisée pour vous connecter à votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.

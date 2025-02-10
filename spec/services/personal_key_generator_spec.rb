@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PersonalKeyGenerator do
+RSpec.describe PersonalKeyGenerator do
   let(:personal_key) { Base32::Crockford.encode(100 ** 10, length: 16, split: 4).tr('-', ' ') }
   let(:bad_code) { Base32::Crockford.encode(100 ** 9, length: 16, split: 4).tr('-', ' ') }
   let(:invalid_base32_code) { 'four score has letter U in it' }
@@ -12,11 +12,11 @@ describe PersonalKeyGenerator do
     allow(RandomPhrase).to receive(:new).and_return(random_phrase)
   end
 
-  describe '#create' do
+  describe '#generate!' do
     it 'returns the raw personal key' do
       stub_random_phrase
 
-      expect(generator.create).to eq personal_key.tr(' ', '-')
+      expect(generator.generate!).to eq personal_key.tr(' ', '-')
     end
 
     it 'hashes the raw personal key' do
@@ -25,26 +25,26 @@ describe PersonalKeyGenerator do
 
       stub_random_phrase
 
-      generator.create
+      generator.generate!
 
       expect(user.encrypted_recovery_code_digest).to_not eq personal_key
     end
 
     it 'generates a phrase of 4 words by default' do
-      expect(generator.create).to match(/\A\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w\z/)
+      expect(generator.generate!).to match(/\A\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w\z/)
     end
 
     it 'allows length to be configured via ENV var' do
       allow(IdentityConfig.store).to receive(:recovery_code_length).and_return(14)
 
       fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+-){13}\w+\z/
-      expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
+      expect(generator.generate!).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
 
     it 'sets the encrypted recovery code digest' do
       user = create(:user)
       generator = PersonalKeyGenerator.new(user)
-      key = generator.create
+      key = generator.generate!
 
       expect(user.encrypted_recovery_code_digest).to_not be_empty
       expect(generator.verify(key)).to eq(true)
@@ -54,7 +54,7 @@ describe PersonalKeyGenerator do
   describe '#verify' do
     before do
       stub_random_phrase
-      generator.create
+      generator.generate!
     end
 
     it 'returns false for the wrong code' do

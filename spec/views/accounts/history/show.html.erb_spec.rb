@@ -1,18 +1,19 @@
 require 'rails_helper'
 
-describe 'accounts/history/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
-  let(:decorated_user) { user.decorate }
+RSpec.describe 'accounts/history/show.html.erb' do
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
-    allow(user).to receive(:decorate).and_return(decorated_user)
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
-        sp_session_request_url: nil, sp_name: nil,
-        locked_for_session: false
+        decrypted_pii: nil,
+        user: user,
+        sp_session_request_url: nil,
+        authn_context: nil,
+        sp_name: nil,
+        locked_for_session: false,
       ),
     )
   end

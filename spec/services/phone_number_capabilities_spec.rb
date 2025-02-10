@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneNumberCapabilities do
+RSpec.describe PhoneNumberCapabilities do
   let(:phone) { '+1 (703) 555-5000' }
   let(:phone_confirmed) { false }
   subject(:capabilities) { PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed) }
@@ -83,8 +83,8 @@ describe PhoneNumberCapabilities do
       it { expect(subject.sms_only?).to eq(true) }
     end
 
-    context 'Morocco number' do
-      let(:phone) { '+212 661-289325' }
+    context 'United Kingdom number' do
+      let(:phone) { '+44 661-289325' }
       it { expect(subject.sms_only?).to eq(true) }
     end
 
@@ -174,7 +174,7 @@ describe PhoneNumberCapabilities do
   it 'has valid configuration' do
     # we should never have supports_voice as false and supports_voice_unconfirmed as true
 
-    PhoneNumberCapabilities::INTERNATIONAL_CODES.each do |country, support|
+    PhoneNumberCapabilities::INTERNATIONAL_CODES.each do |_country, support|
       expect(support['supports_voice']).to eq true if support['supports_voice_unconfirmed']
     end
   end

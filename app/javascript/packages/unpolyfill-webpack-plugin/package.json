@@ -1,0 +1,16 @@
+{
+  "name": "@18f/identity-unpolyfill-webpack-plugin",
+  "private": true,
+  "version": "1.0.0",
+  "main": "unpolyfill-webpack-plugin.js",
+  "exports": {
+    ".": "./unpolyfill-webpack-plugin.js",
+    "./object-assign": "./object-assign.js",
+    "./element-closest": "./element-closest.js",
+    "./keyboardevent-key-polyfill": "./keyboardevent-key-polyfill.js"
+  },
+  "peerDependencies": {
+    "webpack": ">=5"
+  },
+  "sideEffects": false
+}

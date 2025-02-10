@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 # ActiveJob events documentation:
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb
+require 'active_job/log_subscriber'
+
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def enqueue(event)
     job = event.payload[:job]
@@ -117,12 +121,8 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     end
   end
 
-  def self.reports_logger
-    @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
-  end
-
   def self.worker_logger
-    @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    Rails.application.config.active_job.logger
   end
 
   private
@@ -163,12 +163,15 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def default_attributes(event, job)
     {
       duration_ms: event.duration,
+      cpu_time_ms: event.cpu_time,
+      idle_time_ms: event.idle_time,
       timestamp: Time.zone.now,
       name: event.name,
       job_class: job.class.name,
       trace_id: trace_id(job),
       queue_name: queue_name(event),
       job_id: job.job_id,
+      log_filename: Idp::Constants::WORKER_LOG_FILENAME,
     }
   end
 
@@ -179,11 +182,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def queued_duration(job)
     return if job.enqueued_at.blank?
-    (Time.zone.now - Time.zone.parse(job.enqueued_at)).in_milliseconds
+    (Time.zone.now - job.enqueued_at).in_milliseconds
   end
 
   def scheduled_at(event)
-    Time.zone.at(event.payload[:job].scheduled_at).utc
+    event.payload[:job].scheduled_at.utc
   end
 
   def trace_id(job)
@@ -196,8 +199,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def should_error?(job, ex)
-    job.class.warning_error_classes.none? { |warning_class| ex.is_a?(warning_class) }
+    if job.is_a?(ApplicationJob)
+      job.class.warning_error_classes.none? { |warning_class| ex.is_a?(warning_class) }
+    else
+      true
+    end
   end
 end
 
+ActiveJob::LogSubscriber.detach_from :active_job
 IdentityJobLogSubscriber.attach_to :active_job

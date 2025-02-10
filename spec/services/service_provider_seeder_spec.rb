@@ -67,10 +67,10 @@ RSpec.describe ServiceProviderSeeder do
 
       it 'updates the attributes based on the current value of the yml file' do
         expect { run }.to(
-          change { ServiceProvider.find_by(issuer: 'http://test.host').acs_url }.
-            to('http://test.host/test/saml/decode_assertion').and(
-              change { ServiceProvider.find_by(issuer: 'http://test.host').certs }.
-                to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read]),
+          change { ServiceProvider.find_by(issuer: 'http://test.host').acs_url }
+            .to('http://test.host/test/saml/decode_assertion').and(
+              change { ServiceProvider.find_by(issuer: 'http://test.host').certs }
+                .to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read]),
             ),
         )
       end
@@ -78,6 +78,25 @@ RSpec.describe ServiceProviderSeeder do
 
     context 'when running in a production environment' do
       let(:rails_env) { 'production' }
+      let(:sandbox_issuer) { 'urn:gov:login:test-providers:fake-sandbox-sp' }
+      let(:staging_issuer) { 'urn:gov:login:test-providers:fake-staging-sp' }
+      let(:prod_issuer) { 'urn:gov:login:test-providers:fake-prod-sp' }
+      let(:unrestricted_issuer) { 'urn:gov:login:test-providers:fake-unrestricted-sp' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:team_ursula_email).and_return('team@example.com')
+      end
+
+      context 'when %{env} is present in the config file' do
+        let(:deploy_env) { 'dev' }
+
+        it 'is replaced with the deploy_env' do
+          run
+
+          sp = ServiceProvider.find_by(issuer: sandbox_issuer)
+          expect(sp.redirect_uris).to eq(%w[https://dev.example.com])
+        end
+      end
 
       context 'in prod' do
         let(:deploy_env) { 'prod' }
@@ -85,26 +104,16 @@ RSpec.describe ServiceProviderSeeder do
         it 'only writes configs with restrict_to_deploy_env for prod' do
           run
 
-          # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
-            to be_present
-
-          # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
-            to eq(nil)
-
-          # restrict_to_deploy_env: nil
-          expect(
-            ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp'),
-          ).to eq(nil)
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).not_to be_present
         end
 
-        it 'sends New Relic an error if the DB has an SP not in the config' do
-          allow(NewRelic::Agent).to receive(:notice_error)
+        it 'sends an email an error if the DB has an SP not in the config' do
           create(:service_provider, issuer: 'missing_issuer')
-          run
 
-          expect(NewRelic::Agent).to have_received(:notice_error)
+          expect { run }.to change { ActionMailer::Base.deliveries.count }.by(1)
         end
       end
 
@@ -114,33 +123,30 @@ RSpec.describe ServiceProviderSeeder do
         it 'only writes configs with restrict_to_deploy_env for that env, or no restrictions' do
           run
 
-          # restrict_to_deploy_env: prod
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-prod-sp')).
-            to eq(nil)
-
-          # restrict_to_deploy_env: staging
-          expect(ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-staging-sp')).
-            to be_present
-
-          # restrict_to_deploy_env: nil
-          expect(
-            ServiceProvider.find_by(
-              issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp',
-            ),
-          ).to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).not_to be_present
         end
 
         it 'sends New Relic an error if the DB has an SP not in the config' do
-          allow(NewRelic::Agent).to receive(:notice_error)
           create(:service_provider, issuer: 'missing_issuer')
-          run
 
-          expect(NewRelic::Agent).to have_received(:notice_error)
+          expect { run }.to change { ActionMailer::Base.deliveries.count }.by(1)
         end
       end
 
       context 'in another environment' do
         let(:deploy_env) { 'int' }
+
+        it 'only writes configs with restrict_to_deploy_env for sandbox' do
+          run
+
+          expect(ServiceProvider.find_by(issuer: sandbox_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).to be_present
+          expect(ServiceProvider.find_by(issuer: staging_issuer)).not_to be_present
+          expect(ServiceProvider.find_by(issuer: prod_issuer)).not_to be_present
+        end
 
         it 'does not send New Relic an error if the DB has an SP not in the config' do
           allow(NewRelic::Agent).to receive(:notice_error)

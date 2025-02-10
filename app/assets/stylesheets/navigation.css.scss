@@ -1,0 +1,23 @@
+@use 'uswds-core' as *;
+
+@forward 'usa-header/src/styles/usa-header';
+@forward 'usa-nav/src/styles';
+@forward 'usa-sidenav/src/styles';
+
+.sidenav-mobile .usa-nav__close {
+  @include u-display('flex');
+  @include u-flex('align-center', 'justify-center');
+  @include u-square(6);
+  @include u-text('primary');
+}
+
+@media (prefers-reduced-motion) {
+  // The design system should be responsible for disabling inessential animations when user prefers
+  // reduced motion. This is not currently implemented, but the style is implemented ad hoc here
+  // for use in feature specs (see BrowserEmulationHelper#emulate_reduced_motion).
+  //
+  // Upstream issue: https://github.com/uswds/uswds/issues/5256
+  .usa-nav.is-visible {
+    animation: none;
+  }
+}

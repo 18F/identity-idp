@@ -1,0 +1,138 @@
+<% self.title = t('titles.doc_auth.hybrid_handoff') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+<%#   ============== Non Selfie Section ==========    %>
+<% if !@selfie_required %>
+
+  <%= render PageHeadingComponent.new do %>
+    <%= t('doc_auth.headings.hybrid_handoff') %>
+  <% end %>
+
+  <p>
+    <%= t('doc_auth.info.hybrid_handoff') %>
+  </p>
+
+  <div class="grid-row grid-gap grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-auto">
+      <%= image_tag(
+            asset_url('idv/phone-icon.svg'),
+            alt: t('image_description.camera_mobile_phone'),
+            width: 88,
+            height: 88,
+          ) %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+      <div class="usa-tag usa-tag--informative">
+        <%= t('doc_auth.info.tag') %>
+      </div>
+      <h2 class="margin-y-105">
+        <%= t('doc_auth.headings.upload_from_phone') %>
+      </h2>
+      <%= t('doc_auth.info.upload_from_phone') %>
+      <%= simple_form_for(
+            idv_phone_form,
+            as: :doc_auth,
+            url: url_for(type: :mobile, combined: true),
+            method: 'PUT',
+            html: {
+              id: 'form-to-submit-photos-through-mobile',
+              aria: { label: t('forms.buttons.send_link') },
+            },
+          ) do |f| %>
+        <%= render PhoneInputComponent.new(
+              form: f,
+              required: true,
+              delivery_methods: [:sms],
+              class: 'margin-bottom-4',
+            ) %>
+        <%= f.submit t('forms.buttons.send_link') %>
+      <% end %>
+    </div>
+  </div>
+<%#   ============== Selfie Section ==========    %>
+<% else %>
+  <div class="grid-row grid-gap grid-gap-2">
+  <div class="grid-col-12 tablet:grid-col-auto">
+    <%= image_tag(
+          asset_url('idv/phone-icon.svg'),
+          alt: t('image_description.camera_mobile_phone'),
+          width: 88,
+          height: 88,
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <%= render PageHeadingComponent.new do %>
+      <%= t('doc_auth.headings.hybrid_handoff_selfie') %>
+    <% end %>
+    <%= t('doc_auth.info.upload_from_phone') %>
+    <%= simple_form_for(
+          idv_phone_form,
+          as: :doc_auth,
+          url: url_for(type: :mobile, combined: true),
+          method: 'PUT',
+          html: {
+            id: 'form-to-submit-photos-through-mobile',
+            aria: { label: t('forms.buttons.send_link') },
+          },
+        ) do |f| %>
+      <%= render PhoneInputComponent.new(
+            form: f,
+            required: true,
+            delivery_methods: [:sms],
+            class: 'margin-bottom-4',
+          ) %>
+      <%= f.submit t('forms.buttons.send_link') %>
+    <% end %>
+    <% if @direct_ipp_with_selfie_enabled %>
+      <div class="margin-top-4 padding-top-2 border-top border-primary-light">
+        <p class="margin-top-1">
+          <%= t('doc_auth.info.hybrid_handoff_ipp_html') %>
+        </p>
+        <p class="margin-top-1 margin-bottom-0">
+          <%= link_to t('in_person_proofing.headings.prepare'), idv_document_capture_path(step: :hybrid_handoff) %>
+        </p>
+      </div>
+    <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% unless @upload_disabled %>
+  <hr class="margin-y-4" />
+  <div class="grid-row grid-gap grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-auto">
+      <%= image_tag(
+            asset_url('idv/laptop-icon.svg'),
+            alt: t('image_description.laptop'),
+            width: 88,
+            height: 88,
+          ) %>
+    </div>
+    <div class="grid-col-12 tablet:grid-col-fill">
+      <h2 class="margin-y-105">
+        <%= t('doc_auth.headings.upload_from_computer') %>
+      </h2>
+      <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+      <%= simple_form_for(
+            :doc_auth,
+            url: url_for(type: :desktop),
+            method: 'PUT',
+            class: 'margin-bottom-4',
+            html: {
+              id: 'form-to-submit-photos-through-desktop',
+              aria: { label: t('forms.buttons.upload_photos') },
+            },
+          ) do |f| %>
+        <%= f.submit t('forms.buttons.upload_photos'), outline: true %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>

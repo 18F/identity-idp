@@ -27,99 +27,150 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
+  def click_idv_continue_for_step(step)
+    if step == :phone
+      click_idv_send_security_code
+    else
+      click_idv_continue
+    end
+  end
+
   def click_idv_continue
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
-  def click_idv_select
-    click_select_button_and_wait t('in_person_proofing.body.location.location_button')
+  def click_idv_submit_default
+    click_spinner_button_and_wait t('forms.buttons.submit.default')
   end
 
-  def choose_idv_otp_delivery_method_sms
+  def click_idv_update
+    click_on t('forms.buttons.submit.update')
+  end
+
+  def click_idv_exit
+    click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
+  end
+
+  def click_idv_send_security_code
+    click_spinner_button_and_wait t('forms.buttons.send_one_time_code')
+  end
+
+  def click_try_again
+    page.find(
+      'a',
+      text: t('idv.failure.button.warning'),
+    ).click
+  end
+
+  def click_idv_otp_delivery_method_sms
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.sms'),
       wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
   end
 
-  def choose_idv_otp_delivery_method_voice
+  def choose_idv_otp_delivery_method_sms
+    click_idv_otp_delivery_method_sms
+    click_idv_send_security_code
+  end
+
+  def click_idv_otp_delivery_method_voice
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.voice'),
+      wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
+  end
+
+  def choose_idv_otp_delivery_method_voice
+    click_idv_otp_delivery_method_voice
+    click_idv_send_security_code
   end
 
   def visit_idp_from_sp_with_ial2(sp, **extra)
     if sp == :saml
-      saml_overrides = {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-        ],
-        security: {
-          embed_sign: false,
-        },
-      }
-      if javascript_enabled?
-        service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
-        acs_url = URI.parse(service_provider.acs_url)
-        acs_url.host = page.server.host
-        acs_url.port = page.server.port
-        service_provider.update(acs_url: acs_url.to_s)
-      end
-      visit_saml_authn_request_url(overrides: saml_overrides)
+      visit_idp_from_saml_sp_with_ial2
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
       @nonce = SecureRandom.hex
+      @client_id = sp_oidc_issuer
       visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end
   end
 
+  def sp_oidc_redirect_uri
+    'http://localhost:7654/auth/result'
+  end
+
+  def sp_oidc_issuer
+    'urn:gov:gsa:openidconnect:sp:server'
+  end
+
+  def service_provider_issuer(sp)
+    if sp == :saml
+      sp1_issuer
+    elsif sp == :oidc
+      sp_oidc_issuer
+    end
+  end
+
+  def visit_idp_from_saml_sp_with_ial2(issuer: sp1_issuer)
+    saml_overrides = {
+      issuer: issuer,
+      authn_context: [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ],
+      security: {
+        embed_sign: false,
+      },
+    }
+    if javascript_enabled?
+      service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
+      acs_url = URI.parse(service_provider.acs_url)
+      acs_url.host = page.server.host
+      acs_url.port = page.server.port
+      service_provider.update(acs_url: acs_url.to_s)
+    end
+    visit_saml_authn_request_url(overrides: saml_overrides)
+  end
+
   def visit_idp_from_oidc_sp_with_ial2(
-    client_id: 'urn:gov:gsa:openidconnect:sp:server',
+    client_id: sp_oidc_issuer,
     state: SecureRandom.hex,
     nonce: SecureRandom.hex,
-    verified_within: nil
+    verified_within: nil,
+    facial_match_required: nil
   )
-    visit openid_connect_authorize_path(
-      client_id: client_id,
+    params = {
+      client_id:,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
+      redirect_uri: sp_oidc_redirect_uri,
+      state:,
       prompt: 'select_account',
-      nonce: nonce,
-      verified_within: verified_within,
-    )
+      nonce:,
+      verified_within:,
+    }
+
+    if facial_match_required
+      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+    else
+      params[:acr_values] = Saml::Idp::Constants::IAL_VERIFIED_ACR
+    end
+
+    visit openid_connect_authorize_path(params)
   end
 
   def visit_idp_from_oidc_sp_with_loa3
     visit openid_connect_authorize_path(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      client_id: sp_oidc_issuer,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: SecureRandom.hex,
-      prompt: 'select_account',
-      nonce: SecureRandom.hex,
-    )
-  end
-
-  def visit_idp_from_oidc_sp_with_ial2_strict
-    visit openid_connect_authorize_path(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
+      redirect_uri: sp_oidc_redirect_uri,
       state: SecureRandom.hex,
       prompt: 'select_account',
       nonce: SecureRandom.hex,
@@ -144,5 +195,22 @@ module IdvHelper
       saml_overrides[:idp_slo_target_url] = "http://#{idp_domain_name}/api/saml/logout"
     end
     visit_saml_authn_request_url(overrides: saml_overrides)
+  end
+
+  def validate_idv_completed_page(user)
+    expect(user.identity_verified?).to be(true)
+    expect(page).to have_current_path sign_up_completed_path
+    expect(page).to have_content t(
+      'titles.sign_up.completion_ial2',
+      sp: 'Test SP',
+    )
+  end
+
+  def validate_return_to_sp
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
   end
 end

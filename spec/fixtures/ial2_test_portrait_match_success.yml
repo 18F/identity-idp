@@ -1,0 +1,17 @@
+document:
+  address1: '1 FAKE RD'
+  city: 'GREAT FALLS'
+  dob: '1938-10-06'
+  first_name: 'FAKEY'
+  last_name: 'MCFAKERSON'
+  state: 'MT'
+  state_id_expiration: '2099-12-31'
+  state_id_issued: '2019-12-31'
+  state_id_jurisdiction: ND
+  state_id_number: '1111111111111'
+  state_id_type: 'drivers_license'
+  zipcode: '59010-1234'
+doc_auth_result: Passed
+failed_alerts: []
+portrait_match_results:
+  FaceMatchResult: Pass

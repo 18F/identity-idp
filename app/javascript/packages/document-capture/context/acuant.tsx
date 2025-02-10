@@ -1,22 +1,21 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
-import DeviceContext from './device';
 import AnalyticsContext from './analytics';
+import DeviceContext from './device';
+import SelfieCaptureContext from './selfie-capture';
 
 /**
  * Global declarations
  */
-declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
-declare let AcuantCamera: AcuantCameraInterface;
-
 declare global {
   interface AcuantJavascriptWebSdkInterface {
+    setUnexpectedErrorCallback(arg0: (error: string) => void): unknown;
     initialize: AcuantInitialize;
-    startWorkers: AcuantWorkersInitialize;
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
+    start: AcuantWorkersInitialize;
   }
 }
 
@@ -30,10 +29,6 @@ declare global {
      * Acuant configuration
      */
     acuantConfig: AcuantConfig;
-    /**
-     * Acuant Passive Liveness API
-     */
-    AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
     /**
      * Possible AcuantJavascriptWebSdk on the window object (11.5.0)
      */
@@ -82,14 +77,6 @@ type AcuantInitialize = (
 
 type AcuantWorkersInitialize = (callback: () => void) => void;
 
-/**
- * Start liveness capture
- */
-type AcuantStartSelfieCapture = (callback: (nextImageData: string) => void) => void;
-interface AcuantPassiveLivenessInterface {
-  startSelfieCapture: AcuantStartSelfieCapture;
-}
-
 interface AcuantContextProviderProps {
   /**
    * SDK source URL.
@@ -99,6 +86,16 @@ interface AcuantContextProviderProps {
    * Camera JavaScript source URL.
    */
   cameraSrc: string;
+  /**
+   * OpenCV JavaScript source URL. Required for passive liveness.
+   */
+  passiveLivenessOpenCVSrc: string;
+  /**
+   * Passive Liveness (Selfie) JavaScript source URL.
+   * If this is undefined, it means the selfie feature is
+   * disabled.
+   */
+  passiveLivenessSrc: string | undefined;
   /**
    * SDK credentials.
    */
@@ -110,26 +107,18 @@ interface AcuantContextProviderProps {
   /**
    * Minimum acceptable glare score for images.
    */
-  glareThreshold: number;
+  glareThreshold: number | null;
   /**
    * Minimum acceptable sharpness score for images.
    */
-  sharpnessThreshold: number;
+  sharpnessThreshold: number | null;
   /**
    * Child element
    */
   children: ReactNode;
 }
 
-/**
- * The minimum glare score value to be considered acceptable.
- */
-export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
-
-/**
- * The minimum sharpness score value to be considered acceptable.
- */
-export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
+export type AcuantCaptureMode = 'AUTO' | 'TAP';
 
 /**
  * Returns the containing directory of the given file, including a trailing slash.
@@ -143,9 +132,11 @@ interface AcuantContextInterface {
   isCameraSupported: boolean | null;
   isActive: boolean;
   setIsActive: (nextIsActive: boolean) => void;
+  acuantCaptureMode: AcuantCaptureMode;
+  setAcuantCaptureMode: (type: AcuantCaptureMode) => void;
   credentials: string | null;
-  glareThreshold: number;
-  sharpnessThreshold: number;
+  glareThreshold: number | null;
+  sharpnessThreshold: number | null;
   endpoint: string | null;
 }
 
@@ -156,65 +147,30 @@ const AcuantContext = createContext<AcuantContextInterface>({
   isCameraSupported: null as boolean | null,
   isActive: false,
   setIsActive: () => {},
+  acuantCaptureMode: 'AUTO',
+  setAcuantCaptureMode: () => {},
   credentials: null,
-  glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  glareThreshold: null,
+  sharpnessThreshold: null,
   endpoint: null as string | null,
 });
 
 AcuantContext.displayName = 'AcuantContext';
 
-/**
- * Returns a found AcuantJavascriptWebSdk
- * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
- */
-const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (window.AcuantJavascriptWebSdk) {
-    return window.AcuantJavascriptWebSdk;
-  }
-  if (typeof AcuantJavascriptWebSdk === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('AcuantJavascriptWebSdk is not defined in the global scope');
-  }
-  return AcuantJavascriptWebSdk;
-};
-
-/**
- * Returns a found AcuantCamera
- * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
- */
-const getActualAcuantCamera = (): AcuantCameraInterface => {
-  if (window.AcuantCamera) {
-    return window.AcuantCamera;
-  }
-  if (typeof AcuantCamera === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('AcuantCamera is not defined in the global scope');
-  }
-  return AcuantCamera;
-};
-
 function AcuantContextProvider({
-  sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
-  cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
+  sdkSrc,
+  cameraSrc,
+  passiveLivenessOpenCVSrc,
+  passiveLivenessSrc,
   credentials = null,
   endpoint = null,
-  glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  glareThreshold,
+  sharpnessThreshold,
   children,
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -224,6 +180,8 @@ function AcuantContextProvider({
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
+  const [acuantCaptureMode, setAcuantCaptureMode] = useState<AcuantCaptureMode>('AUTO');
+
   const value = useObjectMemo({
     isReady,
     isAcuantLoaded,
@@ -231,6 +189,8 @@ function AcuantContextProvider({
     isCameraSupported,
     isActive,
     setIsActive,
+    acuantCaptureMode,
+    setAcuantCaptureMode,
     endpoint,
     credentials,
     glareThreshold,
@@ -256,15 +216,24 @@ function AcuantContextProvider({
 
         loadAcuantSdk();
       }
-      window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
+
+      // Unclear if/how this is called. Implemented just in case, but this is untested.
+      window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((errorMessage) => {
+        trackEvent('idv_sdk_error_before_init', {
+          success: false,
+          error_message: errorMessage,
+          liveness_checking_required: isSelfieCaptureEnabled,
+        });
+      });
+
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
-          window.AcuantJavascriptWebSdk.startWorkers(() => {
-            window.AcuantCamera = getActualAcuantCamera();
+          window.AcuantJavascriptWebSdk.start?.(() => {
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,
+              liveness_checking_required: isSelfieCaptureEnabled,
             });
 
             setIsCameraSupported(nextIsCameraSupported);
@@ -277,6 +246,7 @@ function AcuantContextProvider({
             success: false,
             code,
             description,
+            liveness_checking_required: isSelfieCaptureEnabled,
           });
 
           setIsError(true);
@@ -287,23 +257,43 @@ function AcuantContextProvider({
     const originalAcuantConfig = window.acuantConfig;
     window.acuantConfig = { path: dirname(sdkSrc) };
 
+    // SDK Main script load
     const sdkScript = document.createElement('script');
     sdkScript.src = sdkSrc;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
+    // Camera script load
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
     cameraScript.src = cameraSrc;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
+    // Passive liveness (Selfie) script load
+    // Create the empty script regardless of whether we load
+    // to make the cleanup function simpler
+    const passiveLivenessScript = document.createElement('script');
+    // Open CV script load. Open CV is required only for passive liveness
+    const passiveLivenessOpenCVScript = document.createElement('script');
+    if (passiveLivenessSrc) {
+      passiveLivenessScript.async = true;
+      passiveLivenessScript.src = passiveLivenessSrc;
+      passiveLivenessScript.onerror = () => setIsError(true);
+      passiveLivenessOpenCVScript.async = true;
+      passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrc;
+      passiveLivenessOpenCVScript.onerror = () => setIsError(true);
+    }
+    document.body.appendChild(passiveLivenessScript);
+    document.body.appendChild(passiveLivenessOpenCVScript);
 
     return () => {
       window.acuantConfig = originalAcuantConfig;
       sdkScript.onload = null;
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
+      document.body.removeChild(passiveLivenessScript);
+      document.body.removeChild(passiveLivenessOpenCVScript);
     };
   }, []);
 

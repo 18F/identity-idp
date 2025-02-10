@@ -1,0 +1,5 @@
+<% self.title = t('headings.redirecting') %>
+
+<%= content_for(:meta_refresh, "0;url=#{@oidc_redirect_uri}") %>
+
+<%= extends_layout :base %>

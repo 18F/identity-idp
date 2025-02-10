@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module AccountReset
   class PendingController < ApplicationController
     include UserAuthenticator
+    include AccountResetConcern
 
     before_action :authenticate_user
     before_action :confirm_account_reset_request_exists
@@ -10,14 +13,16 @@ module AccountReset
       @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
-    def confirm; end
+    def confirm
+      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(current_user)
+    end
 
     def cancel
       analytics.pending_account_reset_cancelled
-      irs_attempts_api_tracker.account_reset_cancel_request(
-        success: true,
+      AccountReset::PendingRequestForUser.new(current_user).cancel_account_reset_request!(
+        account_reset_request_id: pending_account_reset_request.id,
+        cancelled_at: Time.zone.now,
       )
-      AccountReset::CancelRequestForUser.new(current_user).call
     end
 
     private
@@ -27,9 +32,9 @@ module AccountReset
     end
 
     def pending_account_reset_request
-      @pending_account_reset_request ||= AccountReset::FindPendingRequestForUser.new(
+      @pending_account_reset_request ||= AccountReset::PendingRequestForUser.new(
         current_user,
-      ).call
+      ).get_account_reset_request
     end
   end
 end

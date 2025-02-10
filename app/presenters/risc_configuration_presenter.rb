@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 # https://openid.net/specs/openid-risc-profile-1_0-ID1.html#discovery
 class RiscConfigurationPresenter
   include Rails.application.routes.url_helpers
 
-  DELIVERY_METHOD_PUSH = 'https://schemas.openid.net/secevent/risc/delivery-method/push'.freeze
+  DELIVERY_METHOD_PUSH = 'https://schemas.openid.net/secevent/risc/delivery-method/push'
 
   def configuration
     {

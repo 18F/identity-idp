@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   module FormAddressValidator
     extend ActiveSupport::Concern
@@ -7,7 +9,7 @@ module Idv
 
       validates_format_of :zipcode,
                           with: /\A\d{5}(-?\d{4})?\z/,
-                          message: I18n.t('idv.errors.pattern_mismatch.zipcode'),
+                          message: ->(_, _) { I18n.t('idv.errors.pattern_mismatch.zipcode') },
                           allow_blank: true
 
       validates :city, presence: true, length: { maximum: 255 }

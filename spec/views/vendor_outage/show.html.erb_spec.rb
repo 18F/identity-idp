@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'vendor_outage/show.html.erb' do
+RSpec.describe 'vendor_outage/show.html.erb' do
   let(:show_gpo_option) { false }
 
   subject(:rendered) { render }

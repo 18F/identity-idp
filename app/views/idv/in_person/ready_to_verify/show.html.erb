@@ -1,4 +1,4 @@
-<% title t('in_person_proofing.headings.barcode') %>
+<% self.title = t('in_person_proofing.headings.barcode') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -9,70 +9,209 @@
       ) %>
 <% end %>
 
-<%= image_tag(
-      asset_url('idv/user-in-person.svg'),
-      width: 136,
-      height: 136,
-      class: 'display-block margin-x-auto margin-bottom-4',
-      alt: '',
-    ) %>
+<% if @presenter.outage_message_enabled? %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
+    <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
+  <% end %>
+<% end %>
+
+<%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+  <%= t('in_person_proofing.body.barcode.email_sent') %>
+<% end %>
 
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
-  <%= t('in_person_proofing.headings.barcode') %>
+  <%= @presenter.barcode_heading_text %>
 <% end %>
 
-<%= render AlertComponent.new(class: 'margin-y-4', text_tag: :div) do %>
-  <p class="margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
-  <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
+<%# Tag for GSA Enhanced Pilot Barcode %>
+<% if @is_enhanced_ipp %>
+  <div class="text-center margin-y-4">
+    <span class="usa-tag usa-tag--informative">
+      <%= t('in_person_proofing.body.barcode.eipp_tag') %>
+    </span>
+  </div>
 <% end %>
 
-<section class="border-1px border-primary-light radius-lg padding-4">
-  <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.body.barcode.items_to_bring') %></h2>
-  <p><%= t('in_person_proofing.body.barcode.emailed_info') %></p>
-  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% c.item(heading: t('in_person_proofing.process.barcode.heading')) do %>
-      <p><%= t('in_person_proofing.process.barcode.info') %></p>
-      <%= render BarcodeComponent.new(
-            barcode_data: @presenter.enrollment_code,
-            label: t('in_person_proofing.process.barcode.caption_label'),
-            label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+<%# Barcode %>
+<div class="text-center">
+  <%= render 'idv/shared/mini_logo' %>
+  <%= render BarcodeComponent.new(
+        barcode_data: @presenter.enrollment_code,
+        label: t('in_person_proofing.process.barcode.caption_label'),
+        label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+      ) %>
+</div>
+
+<%# Alert %>
+<%= render AlertComponent.new(type: :info, class: 'margin-y-4', text_tag: :div) do %>
+  <p class="margin-bottom-1 margin-top-0 h3"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
+  <p><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
+<% end %>
+
+<%# Enhanced IPP Only - What to bring section %>
+<% if @is_enhanced_ipp %>
+  <section class="border-1px rounded-xl border-primary-light padding-4 padding-2 margin-bottom-4">
+    <%# What to bring to the Post Office %>
+    <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
+    <p><%= t('in_person_proofing.body.barcode.eipp_what_to_bring') %></p>
+
+    <%# Option 1: Bring a REAL ID %>
+    <%# A. REAL ID with current address %>
+    <h3 class="margin-y-2"><%= t('in_person_proofing.process.eipp_bring_id.heading') %></h3>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/real-id.svg'),
+            width: 110,
+            height: 80,
+            alt: t('in_person_proofing.process.eipp_bring_id.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-2',
+            role: 'img',
           ) %>
-    <% end %>
-    <% c.item(heading: t('in_person_proofing.process.state_id.heading')) do %>
-      <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
-      <ul class="usa-list margin-y-105">
-        <% t('in_person_proofing.process.state_id.acceptable_documents').each do |document| %>
-          <li><%= document %></li>
-        <% end %>
-      </ul>
-      <p><%= t('in_person_proofing.process.state_id.no_other_documents') %></p>
-    <% end %>
-    <% if @presenter.needs_proof_of_address? %>
-      <% c.item(heading: t('in_person_proofing.process.proof_of_address.heading')) do %>
-        <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
-        <ul class="usa-list margin-y-105">
-          <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
-            <li><%= proof %></li>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_bring_id_with_current_address.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_bring_id.info') %></p>
+      </div>
+    </div>
+    <hr />
+
+    <%# B. REAL ID + two support documents %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/real-id-and-fair-evidence-documents.svg'),
+            width: 110,
+            height: 107,
+            alt: t('in_person_proofing.process.real_id_and_supporting_docs.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.real_id_and_supporting_docs.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.real_id_and_supporting_docs.info') %></p>
+        <ul class="usa-list margin-top-0">
+          <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
+            <li><%= doc %></li> 
           <% end %>
         </ul>
-        <p><%= t('in_person_proofing.process.proof_of_address.physical_or_digital_copy') %></p>
+      </div>
+    </div>
+    <hr />
+
+    <%# Option 2: Bring a standard state-issued ID plus supporting documents %>
+    <h3 class="margin-top-3 margin-bottom-2"><%= t('in_person_proofing.process.eipp_bring_id_plus_documents.heading') %></h3>
+    <p><%= t('in_person_proofing.process.eipp_bring_id_plus_documents.info') %></p>
+
+    <%# A. State-issued ID + Passport %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-passport.svg'),
+            width: 110,
+            height: 129,
+            alt: t('in_person_proofing.process.eipp_state_id_passport.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_passport.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_passport.info') %></p>
+      </div>
+    </div>
+    <hr />
+
+    <%# B. State-issued ID + military ID %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-military-id.svg'),
+            width: 110,
+            height: 93,
+            alt: t('in_person_proofing.process.eipp_state_id_military_id.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_military_id.info') %></p>
+      </div>   
+    </div>
+    <hr />
+
+    <%# C. State-issued ID + two supporting documents %>
+    <div class="grid-row margin-top-3 margin-bottom-3">
+      <%= image_tag(
+            asset_url('idv/state-id-and-fair-evidence-documents.svg'),
+            width: 110,
+            height: 107,
+            alt: t('in_person_proofing.process.eipp_state_id_supporting_docs.image_alt_text'),
+            class: 'grid-col-auto margin-left-0 margin-bottom-3 tablet:margin-bottom-0',
+            role: 'img',
+          ) %>
+      <div class="grid-col-auto margin-left-0 tablet:grid-col-fill tablet:margin-left-3">
+        <p class="text-bold margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.heading') %></p>
+        <p class="margin-y-0"><%= t('in_person_proofing.process.eipp_state_id_supporting_docs.info') %></p>
+        <ul class="usa-list margin-top-0">
+          <% t('in_person_proofing.process.eipp_state_id_supporting_docs.info_list').each do |doc| %>
+            <li><%= doc %></li> 
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <%# Questions? %>
+    <p class="margin-top-3 margin-bottom-0">
+      <%= t('in_person_proofing.body.barcode.questions') %>
+      <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
+      <%= new_tab_link_to(
+            t('in_person_proofing.body.barcode.learn_more'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person',
+            ),
+          ) %>
       <% end %>
+    </p>
+  </section>
+<% end %>
+
+<%# What to do at the Post Office %>
+<section class="border-1px rounded-xl border-primary-light padding-4 padding-2">
+  <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.body.barcode.what_to_expect') %></h2>
+  <%= render ProcessListComponent.new(heading_level: :h3) do |c| %>
+    <% c.with_item(heading: t('in_person_proofing.process.what_to_do.heading')) do %>
+      <p><%= t('in_person_proofing.process.what_to_do.info', app_name: APP_NAME) %></p>
+    <% end %>
+    <% c.with_item(heading: t('in_person_proofing.process.barcode.heading', app_name: APP_NAME)) do %>
+      <p><%= t('in_person_proofing.process.barcode.info') %></p>
+    <% end %>
+    <% c.with_item(heading: @presenter.state_id_heading_text) do %>
+      <p><%= @presenter.state_id_info %></p>
     <% end %>
   <% end %>
-  <p class="margin-bottom-0">
-    <%= t('in_person_proofing.body.barcode.items_to_bring_questions') %>
-    <%= new_window_link_to(
-          t('in_person_proofing.body.barcode.learn_more'),
-          MarketingSite.help_center_article_url(
-            category: 'verify-your-identity',
-            article: 'verify-your-identity-in-person',
-          ),
-        ) %>
-  </p>
+
+  <% if !@is_enhanced_ipp %>
+    <p class="margin-top-3 margin-bottom-0">
+      <%= t('in_person_proofing.body.barcode.questions') %>
+      <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
+        <%= new_tab_link_to(
+              t('in_person_proofing.body.barcode.learn_more'),
+              help_center_redirect_url(
+                category: 'verify-your-identity',
+                article: 'verify-your-identity-in-person',
+              ),
+            ) %>
+        <% end %>
+    </p>
+  <% end %>
 </section>
 
+<h2 class="margin-bottom-2"><%= t('in_person_proofing.body.location.heading') %></h2>
+<p>
+  <%= t('in_person_proofing.body.location.info') %>
+  <% if @presenter.selected_location_details.present? %>
+    <%= t('in_person_proofing.body.location.selection') %>
+  <% end %>
+</p>
+
 <% if @presenter.selected_location_details.present? %>
-  <section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>" class="margin-y-4">
+  <section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>" class="margin-bottom-4">
     <address>
       <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
       <div class="margin-bottom-1">
@@ -81,21 +220,52 @@
       </div>
       <h3 class="margin-y-0 h4"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
       <div class="margin-bottom-2">
-        <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
-        <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
-        <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
-      </div>
-      <div>
-        <span class="usa-sr-only"><%= t('in_person_proofing.body.barcode.retail_phone_label') %>: </span>
-        <%= @presenter.selected_location_details['phone'] %>
+        <%= t('date.range', from: t('date.day_names')[1], to: t('date.day_names')[5]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+        <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+        <%= t('date.day_names')[7] %>: <%= @presenter.selected_location_hours(:sunday) %>
       </div>
     </address>
   </section>
-
-  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
 <% end %>
 
-<p>
-  <strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong>
-  <%= t('in_person_proofing.body.barcode.no_appointment_required') %>
+<% if !@is_enhanced_ipp %>
+  <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
+  <p class="margin-bottom-4">
+    <%= t(
+          'in_person_proofing.body.location.change_location_info_html',
+          find_other_locations_link_html: link_to(
+            t('in_person_proofing.body.location.change_location_find_other_locations'),
+            help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-identity-in-person/find-a-participating-post-office',
+            ),
+          ),
+        ) %>
+  </p>
+<% end %>
+
+<h2 class="margin-bottom-2"><%= t('in_person_proofing.body.expect.heading') %></h2>
+<p><%= t('in_person_proofing.body.expect.info') %></p>
+
+<p class="margin-top-3 margin-bottom-4">
+  <% if @presenter.service_provider_homepage_url.blank? %>  
+    <%= t('in_person_proofing.body.barcode.close_window') %>
+  <% end %>
 </p>
+
+<%= render PageFooterComponent.new do %>
+  <% if @presenter.service_provider_homepage_url.present? %>
+    <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
+      <%= link_to(
+            t(
+              'in_person_proofing.body.barcode.return_to_partner_link',
+              sp_name: @presenter.sp_name,
+            ),
+            @presenter.service_provider_homepage_url,
+            class: 'display-inline-block padding-bottom-1',
+          ) %>
+    <% end %>
+    <br />
+  <% end %>
+  <%= link_to t('in_person_proofing.body.barcode.cancel_link_text'), idv_cancel_path(step: 'barcode'), class: 'display-inline-block padding-top-1' %>
+<% end %>

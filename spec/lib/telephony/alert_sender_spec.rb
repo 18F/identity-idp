@@ -3,20 +3,33 @@ require 'rails_helper'
 RSpec.describe Telephony::AlertSender do
   let(:configured_adapter) { :test }
   let(:recipient) { '+1 (202) 555-5000' }
+  let(:interval) { '24 hours' }
 
   before do
     allow(Telephony.config).to receive(:adapter).and_return(configured_adapter)
     Telephony::Test::Message.clear_messages
   end
 
-  describe 'send_account_reset_notice' do
+  describe 'send_account_deleted_notice' do
     it 'sends the correct message' do
-      subject.send_account_reset_notice(to: recipient, country_code: 'US')
+      subject.send_account_deleted_notice(to: recipient, country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_reset_notice', app_name: APP_NAME),
+        I18n.t('telephony.account_deleted_notice', app_name: APP_NAME),
+      )
+    end
+  end
+
+  describe 'send_account_reset_notice' do
+    it 'sends the correct message' do
+      subject.send_account_reset_notice(to: recipient, country_code: 'US', interval: interval)
+
+      last_message = Telephony::Test::Message.messages.last
+      expect(last_message.to).to eq(recipient)
+      expect(last_message.body).to eq(
+        I18n.t('telephony.account_reset_notice', app_name: APP_NAME, interval: interval),
       )
     end
   end
@@ -37,13 +50,27 @@ RSpec.describe Telephony::AlertSender do
     let(:link) do
       'https://idp.int.identitysandbox.com/verify/capture-doc/mobile-front-image?token=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
     end
+    let(:app_name) { APP_NAME }
+    let(:sp_or_app_name) { 'Batman.gov' }
 
     it 'sends the correct message' do
-      subject.send_doc_auth_link(to: recipient, link: link, country_code: 'US')
+      subject.send_doc_auth_link(
+        to: recipient,
+        link: link,
+        country_code: 'US',
+        sp_or_app_name: sp_or_app_name,
+      )
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.doc_auth_link', link: link))
+      expect(last_message.body).to eq(
+        I18n.t(
+          'telephony.doc_auth_link',
+          app_name: app_name,
+          link: link,
+          sp_or_app_name: sp_or_app_name,
+        ),
+      )
     end
 
     I18n.available_locales.each do |locale|
@@ -57,7 +84,12 @@ RSpec.describe Telephony::AlertSender do
         end
 
         it 'puts the URL in the first 160 characters, so it stays within a single SMS message' do
-          subject.send_doc_auth_link(to: recipient, link: link, country_code: 'US')
+          subject.send_doc_auth_link(
+            to: recipient,
+            link: link,
+            country_code: 'US',
+            sp_or_app_name: sp_or_app_name,
+          )
 
           last_message = Telephony::Test::Message.messages.last
           first160 = last_message.body[0...160]
@@ -69,9 +101,14 @@ RSpec.describe Telephony::AlertSender do
     it 'warns if the link is longer than 160 characters' do
       long_link = 'a' * 161
 
-      expect(Telephony.config.logger).to receive(:warn)
+      expect(Telephony).to receive(:log_warn).and_call_original
 
-      subject.send_doc_auth_link(to: recipient, link: long_link, country_code: 'US')
+      subject.send_doc_auth_link(
+        to: recipient,
+        link: long_link,
+        country_code: 'US',
+        sp_or_app_name: sp_or_app_name,
+      )
     end
   end
 
@@ -93,7 +130,9 @@ RSpec.describe Telephony::AlertSender do
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.personal_key_sign_in_notice'))
+      expect(last_message.body).to eq(
+        t('telephony.personal_key_sign_in_notice', app_name: APP_NAME),
+      )
     end
   end
 end

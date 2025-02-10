@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   describe '#disable_caching' do
     controller do
       def index
@@ -13,20 +13,6 @@ describe ApplicationController do
 
       expect(response.headers['Cache-Control']).to eq 'no-store'
       expect(response.headers['Pragma']).to eq 'no-cache'
-    end
-  end
-
-  describe '#set_x_request_url' do
-    controller do
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    it 'sets the X-Request-URL header' do
-      get :index
-
-      expect(response.headers['X-Request-URL']).to eq('http://www.example.com/anonymous')
     end
   end
 
@@ -50,7 +36,9 @@ describe ApplicationController do
         cookie_expiration = controller_set_cookies['sp_issuer'][:expires]
 
         expect(cookies[:sp_issuer]).to eq(sp.issuer)
-        expect(cookie_expiration).to be_within(3.seconds).of(15.minutes.from_now)
+        expect(cookie_expiration).to be_within(3.seconds).of(
+          IdentityConfig.store.session_timeout_in_minutes.minutes.from_now,
+        )
       end
     end
 
@@ -102,14 +90,15 @@ describe ApplicationController do
     it 'tracks the InvalidAuthenticityToken event and does not sign the user out' do
       sign_in_as_user
       expect(subject.current_user).to be_present
-
       stub_analytics
-      event_properties = { controller: 'anonymous#index', user_signed_in: true }
-      expect(@analytics).to receive(:track_event).
-        with('Invalid Authenticity Token', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event(
+        'Invalid Authenticity Token',
+        controller: 'anonymous#index',
+        user_signed_in: true,
+      )
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
@@ -158,14 +147,16 @@ describe ApplicationController do
       request.env['HTTP_REFERER'] = referer
       sign_in_as_user
       expect(subject.current_user).to be_present
-
       stub_analytics
-      event_properties = { controller: 'anonymous#index', user_signed_in: true, referer: referer }
-      expect(@analytics).to receive(:track_event).
-        with('Unsafe Redirect', event_properties)
 
       get :index
 
+      expect(@analytics).to have_logged_event(
+        'Unsafe Redirect',
+        controller: 'anonymous#index',
+        user_signed_in: true,
+        referer:,
+      )
       expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
@@ -179,26 +170,69 @@ describe ApplicationController do
   end
 
   describe '#append_info_to_payload' do
-    let(:payload) { {} }
+    let(:payload_controller) { 'Users::SessionsController' }
+    let(:action) { 'new' }
+    let(:payload) { { controller: payload_controller, action: } }
     let(:user) { create(:user) }
+    let(:git_sha) { 'example_sha' }
+    let(:git_branch) { 'example_branch' }
 
     before do
       allow(controller).to receive(:analytics_user).and_return(user)
+      stub_const('IdentityConfig::GIT_SHA', git_sha)
+      stub_const('IdentityConfig::GIT_BRANCH', git_branch)
     end
 
     it 'adds user_uuid and git metadata to the lograge output' do
-      stub_const(
-        'IdentityConfig::GIT_BRANCH',
-        'my branch',
-      )
-
       controller.append_info_to_payload(payload)
 
       expect(payload).to eq(
-        user_id: user.uuid,
-        git_sha: IdentityConfig::GIT_SHA,
-        git_branch: IdentityConfig::GIT_BRANCH,
+        controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
       )
+    end
+
+    describe 'lograge ignored actions' do
+      let(:ignore_actions) {}
+
+      before do
+        allow(Lograge.lograge_config).to receive(:ignore_actions).and_return(ignore_actions)
+      end
+
+      context 'without configured ignored actions' do
+        let(:ignore_actions) { nil }
+
+        it 'adds metadata to the lograge output' do
+          controller.append_info_to_payload(payload)
+
+          expect(payload).to eq(
+            controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
+          )
+        end
+      end
+
+      context 'with configured ignored actions' do
+        let(:ignore_actions) { ['Users::SessionsController#update'] }
+
+        context 'for a payload that should not be ignored' do
+          it 'adds metadata to the lograge output' do
+            controller.append_info_to_payload(payload)
+
+            expect(payload).to eq(
+              controller: payload_controller, action:, user_id: user.uuid, git_sha:, git_branch:,
+            )
+          end
+        end
+
+        context 'with a payload that should be ignored' do
+          let(:action) { 'update' }
+
+          it 'does not add metadata to the lograge output' do
+            controller.append_info_to_payload(payload)
+
+            expect(payload).to eq(controller: payload_controller, action:)
+          end
+        end
+      end
     end
   end
 
@@ -249,9 +283,9 @@ describe ApplicationController do
         allow(controller).to receive(:analytics_user).and_return(user)
         allow(controller).to receive(:current_sp).and_return(sp)
 
-        expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: sp.issuer, session: match_array({}),
-               ahoy: controller.ahoy)
+        expect(Analytics).to receive(:new)
+          .with(user: user, request: request, sp: sp.issuer, session: match_array({}),
+                ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -264,9 +298,9 @@ describe ApplicationController do
         user = instance_double(AnonymousUser)
         allow(AnonymousUser).to receive(:new).and_return(user)
 
-        expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: nil, session: match_array({}),
-               ahoy: controller.ahoy)
+        expect(Analytics).to receive(:new)
+          .with(user: user, request: request, sp: nil, session: match_array({}),
+                ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -340,7 +374,21 @@ describe ApplicationController do
     end
   end
 
-  describe '#redirect_on_timeout' do
+  describe '#skip_session_commit' do
+    controller do
+      before_action :skip_session_commit
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    it 'tells rack not to commit session' do
+      get :index
+      expect(request.session_options[:skip]).to eql(true)
+    end
+  end
+
+  describe '#redirect_with_flash_if_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
 
@@ -351,11 +399,31 @@ describe ApplicationController do
     end
     let(:user) { build_stubbed(:user) }
 
+    context 'with session timeout parameter' do
+      it 'logs an event' do
+        stub_analytics
+
+        get :index, params: { timeout: 'session', request_id: '123' }
+
+        expect(@analytics).to have_logged_event('Session Timed Out')
+      end
+
+      it 'displays flash message for session timeout' do
+        get :index, params: { timeout: 'session', request_id: '123' }
+
+        expect(flash[:info]).to eq t(
+          'notices.session_timedout',
+          app_name: APP_NAME,
+          minutes: IdentityConfig.store.session_timeout_in_minutes,
+        )
+      end
+    end
+
     context 'when the current user is present' do
       it 'does not display flash message' do
         allow(subject).to receive(:current_user).and_return(user)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to be_nil
       end
@@ -366,7 +434,7 @@ describe ApplicationController do
         receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
       allow(subject).to receive(:current_user).and_return(user)
 
-      get :index, params: { timeout: true, request_id: '123' }
+      get :index, params: { timeout: 'form', request_id: '123' }
 
       expect(response).to be_bad_request
     end
@@ -375,7 +443,7 @@ describe ApplicationController do
       it 'displays a flash message' do
         allow(subject).to receive(:current_user).and_return(nil)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',
@@ -393,6 +461,86 @@ describe ApplicationController do
     end
   end
 
+  describe '#resolved_authn_context_result' do
+    let(:sp) { build(:service_provider, ial: 2) }
+
+    let(:sp_session) { { vtr: vtr, acr_values: acr_values } }
+
+    let(:result) { subject.resolved_authn_context_result }
+
+    before do
+      allow(controller).to receive(:sp_from_sp_session).and_return(sp)
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+    end
+
+    context 'when using acr values' do
+      let(:vtr) { nil }
+      let(:acr_values) do
+        [
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+        ].join(' ')
+      end
+
+      it 'returns a resolved authn context result' do
+        expect(result.aal2?).to eq(true)
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      context 'when an unknown acr value is passed in' do
+        let(:acr_values) { 'unknown-acr-value' }
+
+        it 'raises an exception' do
+          expect { result }.to raise_exception(
+            Vot::Parser::ParseException,
+            'VoT parser called without VoT or ACR values',
+          )
+        end
+
+        context 'with a known acr value' do
+          let(:acr_values) do
+            [
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              'unknown-acr-value',
+            ].join(' ')
+          end
+
+          it 'returns a resolved authn context result' do
+            expect(result.aal2?).to eq(true)
+            expect(result.identity_proofing?).to eq(true)
+          end
+        end
+      end
+
+      context 'without an SP' do
+        let(:sp) { nil }
+        let(:sp_session) { nil }
+
+        it 'returns a no-SP result' do
+          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        end
+      end
+    end
+
+    context 'when using vot values' do
+      let(:acr_values) { nil }
+      let(:vtr) { ['P1'] }
+
+      it 'returns a resolved authn context result' do
+        expect(result.aal2?).to eq(true)
+        expect(result.identity_proofing?).to eq(true)
+      end
+
+      context 'without an SP' do
+        let(:sp) { nil }
+        let(:sp_session) { nil }
+
+        it 'returns a no-SP result' do
+          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+        end
+      end
+    end
+  end
+
   describe '#sp_session_request_url_with_updated_params' do
     controller do
       def index
@@ -401,8 +549,8 @@ describe ApplicationController do
     end
 
     before do
-      allow(controller).to receive(:session).
-        and_return(sp: { request_url: sp_session_request_url })
+      allow(controller).to receive(:session)
+        .and_return(sp: { request_url: sp_session_request_url })
     end
 
     subject(:url_with_updated_params) do
@@ -415,10 +563,24 @@ describe ApplicationController do
       expect(url_with_updated_params).to eq(nil)
     end
 
-    context 'with a url that has prompt=login' do
-      let(:sp_session_request_url) { '/authorize?prompt=login' }
-      it 'changes it to prompt=select_account' do
-        expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
+    context 'with a SAML request' do
+      let(:sp_session_request_url) { '/api/saml/auth2024' }
+      it 'returns the saml completion url' do
+        expect(url_with_updated_params).to eq complete_saml_url
+      end
+
+      context 'updates the sp_session to mark the final auth request' do
+        it 'updates the sp_session to mark the final auth request' do
+          url_with_updated_params
+          expect(controller.session[:sp][:final_auth_request]).to be true
+        end
+      end
+    end
+
+    context 'with an OIDC request' do
+      let(:sp_session_request_url) { '/openid_connect/authorize' }
+      it 'returns the original request' do
+        expect(url_with_updated_params).to eq '/openid_connect/authorize'
       end
     end
 

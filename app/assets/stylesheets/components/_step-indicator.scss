@@ -1,10 +1,12 @@
+@use 'uswds-core' as *;
+
 $step-indicator-current-step-border-width: 3px;
 $step-indicator-line-height: 4px;
 
 lg-step-indicator {
   display: block;
   border-bottom: 1px solid color('primary-light');
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 2px rgb(0 0 0 / 10%);
   margin-bottom: units(4);
   position: relative;
 
@@ -27,9 +29,9 @@ lg-step-indicator {
     &::before {
       background: linear-gradient(
         to right,
-        rgba(255, 255, 255, 1),
-        rgba(255, 255, 255, 1) 17%,
-        rgba(255, 255, 255, 0)
+        rgb(255 255 255 / 100%),
+        rgb(255 255 255 / 100%) 17%,
+        rgb(255 255 255 / 0%)
       );
       left: 0;
       z-index: 1;
@@ -38,9 +40,9 @@ lg-step-indicator {
     &::after {
       background: linear-gradient(
         to left,
-        rgba(255, 255, 255, 1),
-        rgba(255, 255, 255, 1) 17%,
-        rgba(255, 255, 255, 0)
+        rgb(255 255 255 / 100%),
+        rgb(255 255 255 / 100%) 17%,
+        rgb(255 255 255 / 0%)
       );
       right: 0;
     }
@@ -107,7 +109,7 @@ lg-step-indicator {
 
 .step-indicator__step--complete::before {
   background-color: color('white');
-  background-image: url('alert/success.svg');
+  background-image: url('/alerts/success.svg');
 }
 
 .step-indicator__step:not(:last-child)::after {
@@ -127,15 +129,4 @@ lg-step-indicator {
 
 .step-indicator__step--current .step-indicator__step-title {
   font-weight: bold;
-}
-
-.step-indicator__step-subtitle {
-  @include at-media-max('tablet') {
-    @include sr-only;
-  }
-
-  @include at-media('tablet') {
-    display: block;
-    font-style: italic;
-  }
 }

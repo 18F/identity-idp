@@ -1,22 +1,15 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
+RSpec.describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:presenter) do
-    TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
-      new(data: {}, view: view, service_provider: nil)
+    TwoFactorAuthCode::AuthenticatorDeliveryPresenter
+      .new(data: {}, view: view, service_provider: nil)
   end
 
   describe '#header' do
     it 'supplies a header' do
       expect(presenter.header).to eq(t('two_factor_authentication.totp_header_text'))
-    end
-  end
-
-  describe '#fallback_question' do
-    it 'supplies a fallback_question' do
-      expect(presenter.fallback_question).to \
-        eq(t('two_factor_authentication.totp_fallback.question'))
     end
   end
 

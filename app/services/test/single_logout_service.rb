@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Test
   class SingleLogoutService
     def initialize(params, settings)

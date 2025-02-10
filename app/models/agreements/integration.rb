@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class Agreements::Integration < ApplicationRecord
   self.table_name = 'integrations'
 
   belongs_to :partner_account
   belongs_to :integration_status
-  belongs_to :service_provider
+  belongs_to :service_provider, foreign_key: :issuer, primary_key: :issuer, inverse_of: :integration
 
   has_many :integration_usages, dependent: :restrict_with_exception
   has_many :iaa_orders, through: :integration_usages

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PushNotification
   module IssSubEvent
     def payload(iss_sub:)

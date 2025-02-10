@@ -2,29 +2,28 @@
   <%= t('headings.account.federal_employee_id') %>
 </h2>
 
-<div class="border-bottom border-primary-light">
-  <% MfaContext.new(current_user).piv_cac_configurations.each do |piv_cac_configuration| %>
-    <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
-      <div class="grid-col-8">
-        <div class="grid-col-12 tablet:grid-col-6">
-          <%= piv_cac_configuration.name %>
-        </div>
-      </div>
-      <% if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled? %>
-        <div class="grid-col-4 text-right">
-          <%= render 'accounts/actions/disable_piv_cac', id: piv_cac_configuration.id %>
-        </div>
-      <% end %>
-    </div>
+<div role="list">
+  <% MfaContext.new(current_user).piv_cac_configurations.each do |configuration| %>
+    <%= render ManageableAuthenticatorComponent.new(
+          configuration:,
+          user_session:,
+          manage_url: edit_piv_cac_path(id: configuration.id),
+          manage_api_url: api_internal_two_factor_authentication_piv_cac_path(id: configuration.id),
+          custom_strings: {
+            deleted: t('two_factor_authentication.piv_cac.deleted'),
+            renamed: t('two_factor_authentication.piv_cac.renamed'),
+            manage_accessible_label: t('two_factor_authentication.piv_cac.manage_accessible_label'),
+          },
+          role: 'listitem',
+        ) %>
   <% end %>
 </div>
 
 <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(setup_piv_cac_url, **tag_options, &block)
-        end,
+        url: setup_piv_cac_url,
         icon: :add,
-        class: 'usa-button usa-button--outline margin-top-2',
+        outline: true,
+        class: 'margin-top-2',
       ).with_content(t('account.index.piv_cac_add')) %>
 <% end %>

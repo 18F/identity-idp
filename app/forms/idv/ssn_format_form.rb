@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class SsnFormatForm
     include ActiveModel::Model
@@ -8,11 +10,12 @@ module Idv
     attr_accessor :ssn
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, 'Ssn')
+      ActiveModel::Name.new(self, nil, 'doc_auth')
     end
 
-    def initialize(user)
-      @user = user
+    def initialize(incoming_ssn)
+      @ssn = incoming_ssn
+      @updating_ssn = ssn.present?
     end
 
     def submit(params)
@@ -21,8 +24,18 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors,
-        extra: { pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]] },
+        extra: {
+          pii_like_keypaths: [
+            [:same_address_as_id],
+            [:errors, :ssn],
+            [:error_details, :ssn],
+          ],
+        },
       )
+    end
+
+    def updating_ssn?
+      @updating_ssn
     end
 
     private
@@ -30,7 +43,7 @@ module Idv
     def consume_params(params)
       params.each do |key, value|
         raise_invalid_ssn_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-        send("#{key}=", value)
+        send(:"#{key}=", value)
       end
     end
 

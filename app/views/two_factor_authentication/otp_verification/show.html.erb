@@ -1,4 +1,18 @@
-<% title t('titles.enter_2fa_code') %>
+<% self.title = t('titles.enter_2fa_code.one_time_code') %>
+
+<% if @landline_alert %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2') do %>
+    <%= @presenter.landline_warning %>
+  <% end %>
+<% end %>
+
+<% if @presenter.otp_expiration.present? %>
+  <%= render CountdownAlertComponent.new(
+        show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
+        alert_options: { class: 'margin-bottom-4' },
+        countdown_options: { expiration: @presenter.otp_expiration },
+      ) %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
@@ -6,23 +20,21 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= simple_form_for('', method: :post) do |f| %>
+<%= simple_form_for('') do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
-  <div class="grid-col-12 tablet:grid-col-6 margin-bottom-2">
-    <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
-    <%= render(
-          'shared/one_time_code_input',
-          form: f,
-          name: :code,
-          value: @presenter.code_value,
-          required: true,
-          autofocus: true,
-          numeric: true,
-          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-        ) %>
-  </div>
+  <%= render OneTimeCodeInputComponent.new(
+        form: f,
+        autofocus: true,
+        value: @presenter.code_value,
+        optional_prefix: '#',
+        field_options: {
+          error_messages: {
+            patternMismatch: t('errors.messages.phone_otp_format'),
+          },
+        },
+      ) %>
   <%= f.input(
         :remember_device,
         as: :boolean,
@@ -32,37 +44,23 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-top-5 margin-bottom-2' %>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(
-            otp_send_path(
-              otp_delivery_selection_form: {
-                otp_delivery_preference: @presenter.otp_delivery_preference,
-                resend: true,
-              },
-            ),
-            **tag_options,
-            &block
-          )
-        end,
+        url: otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: @presenter.otp_delivery_preference,
+            resend: true,
+          },
+        ),
         outline: true,
         icon: :loop,
         class: 'margin-bottom-neg-1',
-      ).with_content(t('links.two_factor_authentication.get_another_code')) %>
+      ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 <% end %>
 
-<% if @presenter.unconfirmed_phone? %>
-  <div class="margin-top-5">
-    <%= t('instructions.mfa.wrong_number') %><br>
-    <%= link_to(t('forms.two_factor.try_again'), phone_setup_path) %>
-  </div>
-<% else %>
-  <%= render 'shared/fallback_links', presenter: @presenter %>
-<% end %>
-
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <% if MfaPolicy.new(current_user).two_factor_enabled? %>
   <%= render 'shared/cancel', link: @presenter.cancel_link %>
 <% else %>

@@ -1,13 +1,8 @@
-import sinon from 'sinon';
-import { fireEvent, render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 import type { ComponentType } from 'react';
-import { FlowContext } from '@18f/identity-verify-flow';
-import type { FlowContextValue } from '@18f/identity-verify-flow';
-import { useSandbox } from '@18f/identity-test-helpers';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
-import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonPrepareStep from './in-person-prepare-step';
+import { InPersonContext } from '../context';
 
 describe('InPersonPrepareStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, value: {} };
@@ -18,62 +13,62 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.privacy_disclaimer')).to.exist();
     expect(
       queryByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }),
     ).not.to.exist();
   });
 
-  context('with in person URL', () => {
-    const inPersonURL = '#in_person';
-    const wrapper: ComponentType = ({ children }) => (
-      <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
-        {children}
-      </FlowContext.Provider>
-    );
+  it('renders all steps to verify your identity at a Post Office', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
 
-    it('logs prepare step submission when clicking continue', async () => {
-      const trackEvent = sinon.stub();
-      const { getByRole } = render(
-        <AnalyticsContextProvider trackEvent={trackEvent}>
+    expect(getByText('in_person_proofing.body.prepare.verify_step_post_office')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_pii')).to.exist();
+    expect(getByText('in_person_proofing.body.prepare.verify_step_enter_phone')).to.exist();
+  });
+
+  it('renders about information', () => {
+    const { getByText } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />);
+
+    expect(getByText('in_person_proofing.body.prepare.verify_step_about')).to.exist();
+  });
+
+  context('Outage message', () => {
+    it('renders a warning when the flag is enabled', () => {
+      const { queryByText } = render(
+        <InPersonContext.Provider
+          value={{
+            locationsURL: 'https://localhost:3000/unused',
+            addressSearchURL: 'https://localhost:3000/unused',
+            inPersonOutageMessageEnabled: true,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [],
+          }}
+        >
           <InPersonPrepareStep {...DEFAULT_PROPS} />
-        </AnalyticsContextProvider>,
-        { wrapper },
+        </InPersonContext.Provider>,
       );
-
-      await userEvent.click(getByRole('link', { name: 'forms.buttons.continue' }));
-      await waitFor(() => window.location.hash === inPersonURL);
-
-      expect(trackEvent).to.have.been.calledWith('IdV: prepare submitted');
+      expect(
+        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
+      ).to.exist();
     });
-
-    context('when clicking in quick succession', () => {
-      const { clock } = useSandbox({ useFakeTimers: true });
-
-      it('logs submission only once', async () => {
-        const delay = 1000;
-        const trackEvent = sinon
-          .stub()
-          .callsFake(() => new Promise((resolve) => setTimeout(resolve, delay)));
-        const { getByRole } = render(
-          <AnalyticsContextProvider trackEvent={trackEvent}>
-            <InPersonPrepareStep {...DEFAULT_PROPS} />
-          </AnalyticsContextProvider>,
-          { wrapper },
-        );
-
-        const link = getByRole('link', { name: 'forms.buttons.continue' });
-
-        const didFollowLinkOnFirstClick = fireEvent.click(link);
-        const didFollowLinkOnSecondClick = fireEvent.click(link);
-
-        clock.tick(delay);
-
-        await waitFor(() => window.location.hash === inPersonURL);
-
-        expect(didFollowLinkOnFirstClick).to.be.false();
-        expect(didFollowLinkOnSecondClick).to.be.false();
-        expect(trackEvent).to.have.been.calledOnceWith('IdV: prepare submitted');
-      });
+    it('does not render a warning when the flag is disabled', () => {
+      const { queryByText } = render(
+        <InPersonContext.Provider
+          value={{
+            locationsURL: 'https://localhost:3000/unused',
+            addressSearchURL: 'https://localhost:3000/unused',
+            inPersonOutageMessageEnabled: false,
+            optedInToInPersonProofing: false,
+            usStatesTerritories: [],
+          }}
+        >
+          <InPersonPrepareStep {...DEFAULT_PROPS} />
+        </InPersonContext.Provider>,
+      );
+      expect(
+        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
+      ).not.to.exist();
     });
   });
 
@@ -92,7 +87,7 @@ describe('InPersonPrepareStep', () => {
       const { getByRole } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />, { wrapper });
 
       const link = getByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }) as HTMLAnchorElement;
 
       expect(link.href).to.equal(securityAndPrivacyHowItWorksURL);

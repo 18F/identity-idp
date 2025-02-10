@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PasswordCaptureController < ApplicationController
   include Ial2ProfileConcern
   include TwoFactorAuthenticatableMethods
@@ -36,10 +38,9 @@ class PasswordCaptureController < ApplicationController
   end
 
   def handle_valid_password
-    cache_active_profile(password)
+    cache_profiles(password)
     session[:password_attempts] = 0
-    user_session[:current_password_required] = false
-    redirect_to after_otp_verification_confirmation_url
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def handle_invalid_password

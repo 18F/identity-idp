@@ -1,9 +1,9 @@
-<% title t('titles.edit_info.phone') %>
+<% self.title = t('titles.edit_info.phone') %>
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.phone')) %>
 
 <%= simple_form_for(
       @edit_phone_form,
-      html: { autocomplete: 'off', method: :put },
+      method: :put,
       url: manage_phone_path(id: @phone_configuration.id),
     ) do |f| %>
 

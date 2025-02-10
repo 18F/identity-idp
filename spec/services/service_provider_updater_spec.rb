@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderUpdater do
+RSpec.describe ServiceProviderUpdater do
   include SamlAuthHelper
 
   let(:fake_dashboard_url) { 'http://dashboard.example.org' }
@@ -27,12 +27,11 @@ describe ServiceProviderUpdater do
       block_encryption: 'aes256-cbc',
       certs: [saml_test_sp_cert],
       active: true,
-      native: true,
       approved: true,
       help_text: {
-        sign_in: { en: '<b>A new different sign-in help text</b>' },
-        sign_up: { en: '<b>A new different help text</b>' },
-        forgot_password: { en: '<b>A new different forgot password help text</b>' },
+        sign_in: { en: '<strong>A new different sign-in help text</strong>' },
+        sign_up: { en: '<strong>A new different help text</strong>' },
+        forgot_password: { en: '<strong>A new different forgot password help text</strong>' },
       },
     }
   end
@@ -105,14 +104,13 @@ describe ServiceProviderUpdater do
         expect(sp.id).to_not eq 0
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
-        expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
-          stringify_keys
-        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
-          stringify_keys
-        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
-          stringify_keys
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in]
+          .stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up]
+          .stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password]
+          .stringify_keys
       end
 
       it 'updates existing dashboard-provided Service Providers' do
@@ -129,14 +127,13 @@ describe ServiceProviderUpdater do
         expect(sp.id).to eq old_id
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
-        expect(sp.native).to eq false
         expect(sp.approved).to eq true
-        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
-          stringify_keys
-        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up].
-          stringify_keys
-        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password].
-          stringify_keys
+        expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in]
+          .stringify_keys
+        expect(sp.help_text['sign_up']).to eq friendly_sp[:help_text][:sign_up]
+          .stringify_keys
+        expect(sp.help_text['forgot_password']).to eq friendly_sp[:help_text][:forgot_password]
+          .stringify_keys
       end
 
       it 'removes inactive Service Providers' do
@@ -164,8 +161,8 @@ describe ServiceProviderUpdater do
       end
 
       it 'updates certs (plural)' do
-        expect { subject.run }.
-          to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
+        expect { subject.run }
+          .to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
       end
     end
 
@@ -178,13 +175,13 @@ describe ServiceProviderUpdater do
 
         subject.run
 
-        expect(Rails.logger).to have_received(:error).
-          with("Failed to parse response from #{fake_dashboard_url}: ")
+        expect(Rails.logger).to have_received(:error)
+          .with("Failed to parse response from #{fake_dashboard_url}: ")
         expect(ServiceProvider.count).to eq before_count
       end
     end
 
-    context 'a non-native service provider is invalid' do
+    context 'a service provider is invalid' do
       let(:dashboard_service_providers) do
         [
           {
@@ -200,7 +197,6 @@ describe ServiceProviderUpdater do
             block_encryption: 'aes256-cbc',
             certs: [saml_test_sp_cert],
             active: true,
-            native: false,
             approved: true,
             redirect_uris: [''],
           },
@@ -247,9 +243,60 @@ describe ServiceProviderUpdater do
 
         subject.run
 
-        expect(Rails.logger).to have_received(:error).
-          with("Failed to contact #{fake_dashboard_url}")
+        expect(Rails.logger).to have_received(:error)
+          .with("Failed to contact #{fake_dashboard_url}")
         expect(ServiceProvider.count).to eq before_count
+      end
+    end
+
+    context 'run is called with service_provider attributes' do
+      let(:attributes) { friendly_sp.except(:id) }
+      let(:friendly_name) { 'A different name' }
+
+      before { attributes[:friendly_name] = friendly_name }
+
+      it 'does not try to send a GET to the dashboard' do
+        expect(Faraday).not_to receive(:get)
+
+        subject.run(attributes)
+      end
+
+      context 'service provider attributes has active: true' do
+        context 'service provider exists' do
+          let(:sp) { create(:service_provider, issuer: attributes[:issuer]) }
+          it 'updates the single service provider' do
+            subject.run(attributes)
+
+            sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(sp.friendly_name).to eq friendly_name
+          end
+        end
+
+        context 'service provider does not yet exist' do
+          it 'creates the service provider' do
+            expect(ServiceProvider.find_by(issuer: attributes[:issuer])).to be nil
+
+            subject.run(attributes)
+
+            sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(sp.friendly_name).to eq friendly_name
+          end
+        end
+      end
+
+      context 'service provider attributes has active: false' do
+        let(:sp) { create(:service_provider, issuer: attributes[:issuer]) }
+        before { attributes[:active] = false }
+
+        it 'destroys the service_provider' do
+          subject.run(attributes)
+
+          destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+          expect(destroyed_sp).to be nil
+        end
       end
     end
   end

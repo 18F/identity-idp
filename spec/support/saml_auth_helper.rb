@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
+  PATH_YEAR = '2024'
+  SP_ISSUER = 'http://localhost:3000'
+
   def saml_settings(overrides: {})
     settings = OneLogin::RubySaml::Settings.new
 
@@ -14,7 +19,7 @@ module SamlAuthHelper
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
 
     # SP + IdP Settings
-    settings.issuer = 'http://localhost:3000'
+    settings.issuer = SP_ISSUER
     settings.security[:authn_requests_signed] = true
     settings.security[:logout_requests_signed] = true
     settings.security[:embed_sign] = true
@@ -22,14 +27,16 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
 
+    url_helpers = Rails.application.routes.url_helpers
+
     # IdP setting
-    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2022"
+    settings.idp_sso_target_url = url_helpers.api_saml_auth_url(path_year: PATH_YEAR)
+    settings.idp_slo_target_url = url_helpers.api_saml_logout_url(path_year: PATH_YEAR)
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
     overrides.except(:security).each do |setting, value|
-      settings.send("#{setting}=", value)
+      settings.send(:"#{setting}=", value)
     end
     settings.security.merge!(overrides[:security]) if overrides[:security]
     settings
@@ -37,13 +44,17 @@ module SamlAuthHelper
 
   def request_authn_contexts
     [
-      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     ]
   end
 
   def saml_test_sp_cert
     @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
+  end
+
+  def saml_test_sp_cert_serial
+    OpenSSL::X509::Certificate.new(saml_test_sp_cert).serial.to_s
   end
 
   def idp_fingerprint
@@ -75,7 +86,10 @@ module SamlAuthHelper
   end
 
   def saml_remote_logout_request_url(overrides: {}, params: {})
-    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2022"
+    overrides[:idp_slo_target_url] = Rails.application.routes.url_helpers.api_saml_remotelogout_url(
+      path_year: PATH_YEAR,
+    )
+
     logout_request.create(
       saml_settings(overrides: overrides),
       params,
@@ -99,12 +113,16 @@ module SamlAuthHelper
 
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
-    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
+    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)), path_year: PATH_YEAR }
   end
 
   def saml_post_auth(saml_request)
     # POST redirect binding Authn Request
-    post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: PATH_YEAR }
+  end
+
+  def saml_final_post_auth(saml_request)
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: PATH_YEAR }
   end
 
   private
@@ -120,7 +138,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2022_cert
+    AppArtifacts.store.saml_2024_cert
   end
 
   public
@@ -208,10 +226,10 @@ module SamlAuthHelper
     click_button(t('forms.buttons.submit.default'))
   end
 
-  def login_and_confirm_sp(user)
+  def login_and_confirm_sp(user, protocol)
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    protocol == :saml ? click_submit_default_twice : click_submit_default
 
     expect(current_url).to match new_user_session_path
     expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', sp: 'Test SP'))
@@ -226,9 +244,13 @@ module SamlAuthHelper
       )
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @client_id = OidcAuthHelper::OIDC_IAL1_ISSUER
       @nonce = SecureRandom.hex
-      visit_idp_from_oidc_sp_with_ial1(state: @state, client_id: @client_id, nonce: @nonce)
+      visit_idp_from_oidc_sp_with_ial1(
+        state: @state,
+        client_id: @client_id,
+        nonce: @nonce,
+      )
     end
   end
 
@@ -301,7 +323,7 @@ module SamlAuthHelper
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF + ' ' +
-        Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email x509 x509:presented',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

@@ -1,17 +1,16 @@
-<% title @presenter.title %>
+<% self.title = @presenter.title %>
 
 <%= render PageHeadingComponent.new do %>
   <%= @presenter.heading %>
 <% end %>
 
-<p class="margin-top-2 margin-bottom-2">
+<p class="margin-top-2 margin-bottom-5">
   <%= @presenter.description %>
 </p>
 
-<%= render PageFooterComponent.new do %>
-  <% if MfaPolicy.new(current_user).two_factor_enabled? %>
-    <%= link_to t('links.cancel'), account_path %>
-  <% else %>
-    <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>
-  <% end %>
-<% end %>
+<%= render ButtonComponent.new(
+      url: setup_piv_cac_url,
+      wide: true,
+      big: true,
+    ).with_content(t('forms.piv_cac_setup.try_again')) %>
+

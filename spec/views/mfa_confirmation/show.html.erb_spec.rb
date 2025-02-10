@@ -1,18 +1,16 @@
 require 'rails_helper'
 
-describe 'mfa_confirmation/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
-  let(:decorated_user) { user.decorate }
+RSpec.describe 'mfa_confirmation/show.html.erb' do
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:enforce_second_mfa?).and_return(true)
-    @content = MfaConfirmationPresenter.new(user)
+    @content = MfaConfirmationPresenter.new
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.mfa_setup.suggest_second_mfa'))
+    expect(view).to receive(:title=).with(t('titles.mfa_setup.suggest_second_mfa'))
 
     render
   end
@@ -39,5 +37,40 @@ describe 'mfa_confirmation/show.html.erb' do
       'a',
       text: @content.button,
     )
+  end
+
+  it 'has link to skip add mfa' do
+    render
+
+    expect(rendered).to have_button(
+      t('mfa.skip'),
+    )
+  end
+
+  context 'when the user only has enabled mfa webauthn platform' do
+    let(:user) { create(:user, :with_webauthn_platform) }
+
+    before do
+      @content = MfaConfirmationPresenter.new(
+        show_skip_additional_mfa_link: false,
+        webauthn_platform_set_up_successful: true,
+      )
+    end
+
+    it 'does not show link to skip add mfa' do
+      render
+
+      expect(rendered).not_to have_button(
+        t('mfa.skip'),
+      )
+    end
+
+    it 'shows the correct localized title after setup' do
+      render
+
+      expect(rendered).to have_content(
+        t('titles.mfa_setup.face_touch_unlock_confirmation'),
+      )
+    end
   end
 end

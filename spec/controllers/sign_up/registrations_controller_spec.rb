@@ -1,8 +1,6 @@
 require 'rails_helper'
 
-describe SignUp::RegistrationsController, devise: true do
-  include Features::MailerHelper
-
+RSpec.describe SignUp::RegistrationsController, devise: true do
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new
@@ -24,60 +22,86 @@ describe SignUp::RegistrationsController, devise: true do
     it 'gracefully handles invalid formats' do
       @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
 
-      expect { get :new }.
-        to raise_error(Mime::Type::InvalidMimeType)
+      expect { get :new }
+        .to raise_error(Mime::Type::InvalidMimeType)
+    end
+
+    it 'tracks visit event' do
+      stub_analytics
+
+      get :new
+
+      expect(@analytics).to have_logged_event('User Registration: enter email visited')
+    end
+
+    context 'with source parameter' do
+      it 'tracks visit event' do
+        stub_analytics
+
+        get :new
+
+        expect(@analytics).to have_logged_event('User Registration: enter email visited')
+      end
+    end
+
+    context 'IdV unavailable' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_available).and_return(false)
+      end
+      it 'redirects to idv vendor outage page when ial2 requested' do
+        allow(controller).to receive(:ial2_requested?).and_return(true)
+        get :new
+        expect(response).to redirect_to(
+          idv_unavailable_path(from: SignUp::RegistrationsController::CREATE_ACCOUNT),
+        )
+      end
     end
   end
 
   describe '#create' do
-    let(:success_properties) { { success: true, failure_reason: nil } }
+    let(:email) { 'new@example.com' }
+    let(:email_language) { 'es' }
+    let(:params) { { user: { email:, terms_accepted: '1', email_language: } } }
+
     context 'when registering with a new email' do
       it 'tracks successful user registration' do
         stub_analytics
-        stub_attempts_tracker
 
-        allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
 
-        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: 'new@example.com',
-          **success_properties,
-        )
-
-        post :create, params: { user: { email: 'new@example.com', terms_accepted: '1' } }
+        post :create, params: params
 
         user = User.find_with_email('new@example.com')
 
-        analytics_hash = {
+        expect(@analytics).to have_logged_event(
+          'User Registration: Email Submitted',
           success: true,
-          throttled: false,
+          rate_limited: false,
           errors: {},
           email_already_exists: false,
           user_id: user.uuid,
           domain_name: 'example.com',
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with('User Registration: Email Submitted', analytics_hash)
+          email_language:,
+        )
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
-        post :create, params: { user: { email: 'test@test.com', email_language: 'es',
-                                        terms_accepted: '1' } }
+        post :create, params: params
 
-        expect(User.find_with_email('test@test.com').email_language).to eq('es')
+        expect(User.find_with_email(email).email_language).to eq(email_language)
 
         mail = ActionMailer::Base.deliveries.last
-        expect(mail.subject).
-          to eq(I18n.t('user_mailer.email_confirmation_instructions.subject', locale: 'es'))
+        expect(mail.subject).to eq(
+          I18n.t('user_mailer.email_confirmation_instructions.subject', locale: email_language),
+        )
       end
 
       it 'sets the email in the session and redirects to sign_up_verify_email_path' do
-        post :create, params: { user: { email: 'test@test.com', terms_accepted: '1' } }
+        post :create, params: params
 
-        expect(session[:email]).to eq('test@test.com')
+        expect(session[:email]).to eq(email)
         expect(response).to redirect_to(sign_up_verify_email_path)
       end
 
@@ -85,7 +109,7 @@ describe SignUp::RegistrationsController, devise: true do
         user = create(:user)
         stub_sign_in(user)
 
-        post :create, params: { user: { email: user.email, terms_accepted: '1' } }
+        post :create, params: params
 
         expect(response).to redirect_to account_path
       end
@@ -95,71 +119,56 @@ describe SignUp::RegistrationsController, devise: true do
       existing_user = create(:user, email: 'test@example.com')
 
       stub_analytics
-      stub_attempts_tracker
 
-      analytics_hash = {
+      expect(subject).to_not receive(:create_user_event)
+
+      post :create, params: params.deep_merge(user: { email: 'test@example.com' })
+
+      expect(subject.session[:sign_in_flow]).to eq(:create_account)
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Submitted',
         success: true,
-        throttled: false,
+        rate_limited: false,
         errors: {},
         email_already_exists: true,
         user_id: existing_user.uuid,
         domain_name: 'example.com',
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Submitted', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-        email: 'TEST@example.com ',
-        **success_properties,
+        email_language:,
       )
-
-      expect(subject).to_not receive(:create_user_event)
-
-      post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: '1' } }
     end
 
     it 'tracks unsuccessful user registration' do
       stub_analytics
-      stub_attempts_tracker
 
-      analytics_hash = {
+      post :create, params: params.deep_merge(user: { email: 'invalid@' })
+
+      expect(@analytics).to have_logged_event(
+        'User Registration: Email Submitted',
         success: false,
-        throttled: false,
+        rate_limited: false,
         errors: { email: [t('valid_email.validations.email.invalid')] },
-        error_details: { email: [:invalid] },
+        error_details: { email: { invalid: true } },
         email_already_exists: false,
         user_id: 'anonymous-uuid',
         domain_name: 'invalid',
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: Email Submitted', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-        :user_registration_email_submitted,
-        email: 'invalid@',
-        success: false,
-        failure_reason: { email: [:invalid] },
+        email_language:,
       )
-
-      post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: '1' } }
     end
 
     it 'renders new if email is nil' do
-      post :create, params: { user: { request_id: '123789', terms_accepted: '1' } }
+      post :create, params: params.deep_merge(user: { email: nil })
 
       expect(response).to render_template(:new)
     end
 
     it 'renders new if email is a Hash' do
-      put :create, params: { user: { email: { foo: 'bar' } } }
+      put :create, params: params.deep_merge(user: { email: { foo: 'bar' } })
 
       expect(response).to render_template(:new)
     end
 
     it 'renders new if request_id is blank' do
-      post :create, params: { user: { email: 'invalid@' } }
+      post :create, params: params.deep_merge(user: { email: 'invalid@' })
 
       expect(response).to render_template(:new)
     end

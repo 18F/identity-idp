@@ -4,5 +4,6 @@
   "private": true,
   "peerDependencies": {
     "react": "*"
-  }
+  },
+  "sideEffects": false
 }

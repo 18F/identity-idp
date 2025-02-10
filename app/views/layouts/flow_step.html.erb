@@ -8,5 +8,4 @@
         ) %>
   <% end %>
 <% end %>
-<% content_for(:content) { render(template: step_template, locals: local_assigns) } %>
-<%= render template: 'layouts/base' %>
+<%= render(template: step_template, locals: local_assigns) %>

@@ -46,13 +46,13 @@ RSpec.describe OpenidConnectTokenForm do
   let(:client_private_key) do
     OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
   end
-  let(:server_public_key) { AppArtifacts.store.oidc_public_key }
+  let(:server_public_key) { Rails.application.config.oidc_public_key }
 
   let(:user) { create(:user) }
 
   let!(:identity) do
-    IdentityLinker.new(user, service_provider).
-      link_identity(
+    IdentityLinker.new(user, service_provider)
+      .link_identity(
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,
@@ -138,8 +138,8 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is false, and has errors if the sp is set for pkce only mode' do
           allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(true)
           expect(valid?).to eq(false)
-          expect(form.errors[:code]).
-            to include(t('openid_connect.token.errors.invalid_authentication'))
+          expect(form.errors[:code])
+            .to include(t('openid_connect.token.errors.invalid_authentication'))
         end
 
         context 'with a trailing slash in the audience url' do
@@ -215,8 +215,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is invalid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include("Invalid issuer. Expected [\"#{client_id}\"], received wrong")
+            expect(form.errors[:client_assertion])
+              .to include("Invalid issuer. Expected [\"#{client_id}\"], received wrong")
           end
         end
 
@@ -225,17 +225,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is invalid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include("Invalid subject. Expected #{client_id}, received wrong")
-          end
-        end
-
-        context 'with a bad audience' do
-          before { jwt_payload[:exp] = 5.minutes.ago.to_i }
-
-          it 'is invalid' do
-            expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).to include('Signature has expired')
+            expect(form.errors[:client_assertion])
+              .to include("Invalid subject. Expected #{client_id}, received wrong")
           end
         end
 
@@ -285,8 +276,8 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is has an error' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).
-              to include(t('openid_connect.token.errors.invalid_signature'))
+            expect(form.errors[:client_assertion])
+              .to include(t('openid_connect.token.errors.invalid_signature'))
           end
         end
 
@@ -323,8 +314,8 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is false, and has errors if the sp is set for jwt only mode' do
           allow_any_instance_of(ServiceProvider).to receive(:pkce).and_return(false)
           expect(valid?).to eq(false)
-          expect(form.errors[:code]).
-            to include(t('openid_connect.token.errors.invalid_authentication'))
+          expect(form.errors[:code])
+            .to include(t('openid_connect.token.errors.invalid_authentication'))
         end
       end
 
@@ -334,8 +325,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:code_verifier]).
-            to include(t('openid_connect.token.errors.invalid_code_verifier'))
+          expect(form.errors[:code_verifier])
+            .to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
@@ -345,8 +336,8 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:code_verifier]).
-            to include(t('openid_connect.token.errors.invalid_code_verifier'))
+          expect(form.errors[:code_verifier])
+            .to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
@@ -371,8 +362,8 @@ RSpec.describe OpenidConnectTokenForm do
 
       it 'is invalid' do
         expect(valid?).to eq(false)
-        expect(form.errors[:code]).
-          to include(t('openid_connect.token.errors.invalid_authentication'))
+        expect(form.errors[:code])
+          .to include(t('openid_connect.token.errors.invalid_authentication'))
       end
     end
   end
@@ -388,11 +379,15 @@ RSpec.describe OpenidConnectTokenForm do
           client_id: client_id,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
+          code_verifier_present: false,
+          service_provider_pkce: nil,
+          ial: 1,
+          integration_errors: nil,
         )
       end
     end
 
-    context 'with invalid params' do
+    context 'with invalid code' do
       let(:code) { nil }
 
       it 'returns FormResponse with success: false' do
@@ -408,6 +403,33 @@ RSpec.describe OpenidConnectTokenForm do
         )
       end
     end
+
+    context 'with the wrong grant_type ' do
+      let(:grant_type) { 'wrong' }
+
+      it 'returns FormResponse with success: false and int error' do
+        submission = form.submit
+
+        expect(submission.to_h).to include(
+          success: false,
+          errors: form.errors.messages,
+          error_details: hash_including(:grant_type),
+          client_id: client_id,
+          user_id: user.uuid,
+          code_digest: Digest::SHA256.hexdigest(code),
+          code_verifier_present: false,
+          service_provider_pkce: nil,
+          ial: 1,
+          integration_errors: {
+            error_details: ['Grant type is not included in the list'],
+            error_types: [:grant_type],
+            event: :oidc_token_request,
+            integration_exists: true,
+            request_issuer: client_id,
+          },
+        )
+      end
+    end
   end
 
   describe '#response' do
@@ -415,7 +437,11 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with valid params' do
       before do
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(
+          identity.rails_session_id,
+        ).put_empty_user_session(
+          5.minutes.in_seconds,
+        )
       end
 
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do

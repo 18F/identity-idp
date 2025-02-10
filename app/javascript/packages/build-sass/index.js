@@ -1,9 +1,12 @@
-import { basename, join } from 'path';
-import { writeFile } from 'fs/promises';
-import sass from 'sass-embedded';
-import { transform as parcelTransform, browserslistToTargets } from '@parcel/css';
+import { basename, join, dirname } from 'node:path';
+import { createWriteStream } from 'node:fs';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+import { compileAsync as baseSassCompileAsync } from 'sass-embedded';
+import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
+/** @typedef {import('sass-embedded').AsyncCompiler} AsyncCompiler */
 /** @typedef {import('sass-embedded').CompileResult} CompileResult */
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 
@@ -12,6 +15,7 @@ import browserslist from 'browserslist';
  *
  * @prop {string=} outDir Output directory.
  * @prop {boolean} optimize Whether to optimize output for production.
+ * @prop {AsyncCompiler=} sassCompiler Sass compiler to use, particularly useful with initCompiler
  */
 
 const TARGETS = browserslistToTargets(
@@ -22,33 +26,41 @@ const TARGETS = browserslistToTargets(
  * Compiles a given Sass file.
  *
  * @param {string} file File to build.
- * @param {BuildOptions & SyncSassOptions} options Build options.
+ * @param {Partial<BuildOptions> & SyncSassOptions} options Build options.
  *
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir, optimize, ...sassOptions } = options;
-  const sassResult = sass.compile(file, {
+  const {
+    outDir = dirname(file),
+    optimize,
+    loadPaths = [],
+    sassCompiler,
+    ...sassOptions
+  } = options;
+  const sassCompile = sassCompiler
+    ? sassCompiler.compileAsync.bind(sassCompiler)
+    : baseSassCompileAsync;
+
+  const sassResult = await sassCompile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
-    loadPaths: ['node_modules'],
+    loadPaths: [...loadPaths, 'node_modules'],
     quietDeps: true,
   });
 
-  let outFile = basename(file, '.scss');
+  let outFile = `${basename(basename(file, '.css.scss'), '.scss')}.css`;
 
-  const parcelResult = parcelTransform({
+  const lightningResult = lightningTransform({
     filename: outFile,
     code: Buffer.from(sassResult.css),
     minify: optimize,
     targets: TARGETS,
   });
 
-  if (outDir) {
-    outFile = join(outDir, outFile);
-  }
+  outFile = join(outDir, outFile);
 
-  await writeFile(outFile, parcelResult.code);
+  await pipeline(Readable.from(lightningResult.code), createWriteStream(outFile));
 
   return sassResult;
 }

@@ -1,26 +1,42 @@
 <div class="padding-1 border-top border-left border-right border-primary-light">
-  <div class="grid-row grid-gap-2">
-    <div class="grid-col-fill">
-      <div class="text-bold truncate">
-        <% if identity.return_to_sp_url.present? %>
-          <%= link_to(identity.display_name, identity.return_to_sp_url) %>
-        <% else %>
-          <%= identity.display_name %>
-        <% end %>
-      </div>
+  <% if flash[:email_updated_identity_id] == identity.id %>
+    <%= render AlertComponent.new(type: :success, class: 'margin-bottom-2', message: t('account.connected_apps.email_update_success_html', sp_name: identity.display_name)) %>
+  <% end %>
 
-      <%= t(
-            'account.connected_apps.associated',
-            timestamp: render(TimeComponent.new(time: identity.created_at)),
-          ).html_safe %>
-    </div>
-    <% if identity.service_provider_id %>
-      <div class="grid-col-12 tablet:grid-col-auto">
-        <%= link_to(
-              t('account.revoke_consent.link_title'),
-              service_provider_revoke_url(identity.service_provider_id),
-            ) %>
-      </div>
+  <h2 class="h3 margin-top-0 margin-bottom-1">
+    <% if identity.return_to_sp_url.present? %>
+      <%= link_to(identity.display_name, identity.return_to_sp_url) %>
+    <% else %>
+      <%= identity.display_name %>
     <% end %>
-  </div>
+  </h2>
+
+  <% if IdentityConfig.store.feature_select_email_to_share_enabled %>
+    <%= t(
+          'account.connected_apps.associated_attributes_html',
+          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+        ) %>
+    <br />
+    <strong>
+      <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
+    </strong>
+    <%= link_to(
+          t('help_text.requested_attributes.change_email_link'),
+          edit_connected_account_selected_email_path(identity_id: identity.id),
+        ) %>
+  <% else %>
+    <%= t(
+          'account.connected_apps.associated_html',
+          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+        ) %>
+  <% end %>
+
+  <% if identity.service_provider_id %>
+    <div class="margin-y-1">
+      <%= render ButtonComponent.new(
+            url: service_provider_revoke_url(identity.service_provider_id),
+            outline: true,
+          ).with_content(t('account.revoke_consent.link_title')) %>
+    </div>
+  <% end %>
 </div>

@@ -2,12 +2,10 @@
   "name": "@18f/identity-clipboard-button",
   "version": "1.0.0",
   "private": true,
-  "peerDependencies": {
-    "react": "*"
+  "dependencies": {
+    "@18f/identity-design-system": "^9.4.0"
   },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
-  }
+  "sideEffects": [
+    "./clipboard-button-element.ts"
+  ]
 }

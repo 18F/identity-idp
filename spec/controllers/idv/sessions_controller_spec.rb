@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SessionsController do
+RSpec.describe Idv::SessionsController do
   let(:user) { build(:user) }
 
   before do
@@ -9,39 +9,67 @@ describe Idv::SessionsController do
   end
 
   describe '#destroy' do
-    let(:idv_session) { double }
-    let(:flow_session) { {} }
-    let(:pii) { { first_name: 'Jane' } }
-
     before do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
-      controller.user_session['idv/doc_auth'] = flow_session
       controller.user_session['idv/in_person'] = flow_session
-      controller.user_session[:decrypted_pii] = pii
+      Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+        pii,
+        '123',
+      )
     end
 
-    it 'deletes idv session' do
-      expect(idv_session).to receive(:clear)
+    let(:idv_session) { double }
+    let(:flow_session) { { x: {} } }
 
-      delete :destroy
+    let(:pii) { { first_name: 'Jane' } }
 
-      expect(controller.user_session['idv/doc_auth']).to be_blank
-      expect(controller.user_session['idv/in_person']).to be_blank
-      expect(controller.user_session[:decrypted_pii]).to be_blank
+    context 'when destroying the session' do
+      before do
+        expect(idv_session).to receive(:clear)
+        delete :destroy
+      end
+
+      it 'clears the idv/in_person session' do
+        expect(controller.user_session['idv/in_person']).to be_blank
+      end
+
+      it 'clears the encrypted_profiles session' do
+        expect(controller.user_session[:encrypted_profiles]).to be_blank
+      end
     end
 
-    it 'logs start over with step and location params' do
+    it 'tracks the idv_start_over event in analytics' do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
         'IdV: start over',
-        step: 'first',
-        location: 'get_help',
+        hash_including(
+          location: 'get_help',
+          step: 'first',
+        ),
       )
     end
 
-    it 'redirects to start of identity verificaton' do
+    context 'with in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      it 'logs idv_start_over event with extra analytics attributes for barcode step' do
+        delete :destroy, params: { step: 'barcode', location: '' }
+        expect(@analytics).to have_logged_event(
+          'IdV: start over',
+          hash_including(
+            location: '',
+            step: 'barcode',
+            cancelled_enrollment: true,
+            enrollment_code: user.pending_in_person_enrollment.enrollment_code,
+            enrollment_id: user.pending_in_person_enrollment.id,
+          ),
+        )
+      end
+    end
+
+    it 'redirect occurs to the start of identity verification' do
       delete :destroy
 
       expect(response).to redirect_to(idv_url)
@@ -51,7 +79,7 @@ describe Idv::SessionsController do
       let(:user) do
         create(
           :user,
-          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
+          profiles: [create(:profile, gpo_verification_pending_at: 1.day.ago)],
         )
       end
 
@@ -61,10 +89,13 @@ describe Idv::SessionsController do
         expect(cancel).to receive(:call)
 
         delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
+
         expect(@analytics).to have_logged_event(
           'IdV: start over',
-          step: 'gpo_verify',
-          location: 'clear_and_start_over',
+          hash_including(
+            location: 'clear_and_start_over',
+            step: 'gpo_verify',
+          ),
         )
       end
     end
@@ -82,7 +113,7 @@ describe Idv::SessionsController do
         delete :destroy
 
         pending_enrollment.reload
-        expect(pending_enrollment.status).to eq('cancelled')
+        expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(user.reload.pending_in_person_enrollment).to be_blank
       end
 
@@ -92,7 +123,7 @@ describe Idv::SessionsController do
         delete :destroy
 
         establishing_enrollment.reload
-        expect(establishing_enrollment.status).to eq('cancelled')
+        expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
       end
     end

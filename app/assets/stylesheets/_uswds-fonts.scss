@@ -1,0 +1,3 @@
+// This stylesheet stubs the default uswds-fonts package to prevent USWDS from rendering all fonts
+// declarations in all stylesheets. They are rendered once by removing the contents of the common
+// root import, and referencing the source files in the main application stylesheet.

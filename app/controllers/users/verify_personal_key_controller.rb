@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class VerifyPersonalKeyController < ApplicationController
     include AccountReactivationConcern
@@ -13,27 +15,27 @@ module Users
         personal_key: '',
       )
 
-      if throttle.throttled?
-        render_throttled
+      if rate_limiter.limited?
+        render_rate_limited
       else
         render :new
       end
     end
 
     def create
-      if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.personal_key_reactivation_throttled(success: false)
-        render_throttled
+      rate_limiter.increment!
+      if rate_limiter.limited?
+        render_rate_limited
       else
         result = personal_key_form.submit
 
         analytics.personal_key_reactivation_submitted(
-          **result.to_h,
-          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-        )
-        irs_attempts_api_tracker.personal_key_reactivation_submitted(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+          **result,
+          pii_like_keypaths: [
+            [:errors, :personal_key],
+            [:error_details, :personal_key],
+            [:error_details, :personal_key, :personal_key],
+          ],
         )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)
@@ -45,20 +47,20 @@ module Users
 
     private
 
-    def throttle
-      @throttle ||= Throttle.new(
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
         user: current_user,
-        throttle_type: :verify_personal_key,
+        rate_limit_type: :verify_personal_key,
       )
     end
 
-    def render_throttled
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :verify_personal_key,
+    def render_rate_limited
+      analytics.rate_limit_reached(
+        limiter_type: :verify_personal_key,
       )
 
-      @expires_at = throttle.expires_at
-      render :throttled
+      @expires_at = rate_limiter.expires_at
+      render :rate_limited
     end
 
     def init_account_reactivation

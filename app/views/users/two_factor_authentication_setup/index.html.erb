@@ -1,4 +1,4 @@
-<% title t('titles.two_factor_setup') %>
+<% self.title = t('titles.two_factor_setup') %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
 
@@ -12,52 +12,65 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
+<p><%= @presenter.intro %></p>
+
+<p><%= t('mfa.recommendation') %></p>
+
+<% if @presenter.two_factor_enabled? %>
+  <h2 class="margin-top-2 margin-bottom-1">
+    <%= t('headings.account.two_factor') %>
+  </h2>
+
+  <%= render IconListComponent.new(icon: :check_circle, color: :success) do |c| %>
+    <% @presenter.all_options_sorted.each do |option| %>
+      <% if option.mfa_configuration_count > 0 %>
+        <% c.with_item do %>
+          <%= option.label %> <%= option.mfa_added_label %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <%= simple_form_for @two_factor_options_form,
-                    html: { autocomplete: 'off' },
                     method: :patch,
                     url: authentication_methods_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
-      <% if IdentityConfig.store.select_multiple_mfa_options %>
-        <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
-      <% end %>
+      <legend class="margin-bottom-2 usa-sr-only">
+        <%= t('two_factor_authentication.form_legend') %>
+      </legend>
       <% @presenter.options.each do |option| %>
-        <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-          <% if IdentityConfig.store.select_multiple_mfa_options %>
-            <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                       locals: { form: f, option: option } %>
-          <% else %>
-            <%= radio_button_tag(
-                  'two_factor_options_form[selection]',
-                  option.type,
-                  false,
-                  disabled: option.disabled?,
-                  class: 'usa-radio__input usa-radio__input--tile',
-                ) %>
-            <%= label_tag(
-                  "two_factor_options_form_selection_#{option.type}",
-                  class: 'usa-radio__label usa-radio__label--illustrated',
-                ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
-                    <div class="usa-radio__label--text"><%= option.label %>
-                      <span class="usa-radio__label-description">
-                        <%= option.info %>
-                      </span>
-                    </div>
-                  <% end %>
-          <% end %>
-        </div>
+        <%= render(option) do %>
+          <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                     locals: { option: option } %>
+        <% end %>
       <% end %>
     </fieldset>
   </div>
 
+  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+  <% javascript_packs_tag_once('platform-authenticator-available') %>
+  <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+    <div class="margin-bottom-2">
+      <%= render partial: 'shared/threat_metrix_profiling',
+                 locals: {
+                   threatmetrix_session_id:,
+                   threatmetrix_javascript_urls:,
+                   threatmetrix_iframe_url:,
+                 } %>
+    </div>
+  <% end %>
+
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
-
-<%= javascript_packs_tag_once('webauthn-unhide') %>
-
+<% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
+  <%= render PageFooterComponent.new do %>
+    <% if @presenter.skip_path %>
+      <%= link_to @presenter.skip_label, @presenter.skip_path %>
+    <% elsif !@presenter.two_factor_enabled? %>
+      <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
+    <% end %>
+  <% end %>
+<% end %>

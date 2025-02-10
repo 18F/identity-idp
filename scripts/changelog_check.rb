@@ -1,22 +1,30 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?[cC]hangelog: ?(?<category>[\w -/]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}
+  %r{^(?:\* )?changelog: ?(?<category>[\w -]{2,}), ?(?<subcategory>[^,]{2,}), ?(?<change>.+)$}i
 CATEGORIES = [
-  'Improvements',
+  'User-Facing Improvements',
   'Bug Fixes',
   'Internal',
   'Upcoming Features',
-]
+].freeze
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
 DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
+REVERT_COMMIT_MESSAGE = /This reverts commit ([a-z\d]+)./
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
-  change: 'Update dependencies to resolve security advisories',
+  change: 'Update dependencies to latest versions',
+}.freeze
+REVERT_CHANGELOG = {
+  category: 'Bug Fixes',
+  subcategory: 'Code Revert',
+  change: 'Revert changes introduced in %s',
 }.freeze
 
 SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
@@ -25,19 +33,25 @@ CategoryDistance = Struct.new(:category, :distance)
 
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
-def build_changelog(line)
+def build_changelog(line, find_revert: false)
   if line == DEPENDABOT_COMMIT_MESSAGE
     SECURITY_CHANGELOG
+  elsif find_revert && (commit = REVERT_COMMIT_MESSAGE.match(line)&.[](1))
+    REVERT_CHANGELOG.dup.merge(change: REVERT_CHANGELOG[:change] % [commit])
   else
     CHANGELOG_REGEX.match(line)
   end
 end
 
+def revert_commit?(commit)
+  commit.title.start_with?('Revert ')
+end
+
 def build_changelog_from_commit(commit)
-  [*commit.commit_messages, commit.title].
-    lazy.
-    map { |message| build_changelog(message) }.
-    find(&:itself)
+  [*commit.commit_messages, commit.title]
+    .lazy
+    .map { |message| build_changelog(message, find_revert: revert_commit?(commit)) }
+    .find(&:itself)
 end
 
 def get_git_log(base_branch, source_branch)
@@ -93,16 +107,16 @@ def generate_invalid_changes(git_log)
 end
 
 def closest_change_category(change)
-  CATEGORIES.
-    map do |category|
+  CATEGORIES
+    .map do |category|
       CategoryDistance.new(
         category,
         DidYouMean::Levenshtein.distance(change[:category], category),
       )
-    end.
-    filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
-    max { |category_distance| category_distance.distance }&.
-    category
+    end
+    .filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }
+    .max { |category_distance| category_distance.distance }
+    &.category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
@@ -153,18 +167,18 @@ end
 # Entries with the same category and change are grouped into one changelog line so that we can
 # support multi-PR changes.
 def format_changelog(changelog_entries)
-  changelog_entries = changelog_entries.
-    sort_by(&:subcategory).
-    group_by { |entry| [entry.category, entry.change] }
+  changelog_entries = changelog_entries
+    .sort_by(&:subcategory)
+    .group_by { |entry| [entry.category, entry.change] }
 
-  changelog = ''
+  changelog = +''
   CATEGORIES.each do |category|
-    category_changes = changelog_entries.
-      filter { |(changelog_category, _change), _changes| changelog_category == category }
+    category_changes = changelog_entries
+      .filter { |(changelog_category, _change), _changes| changelog_category == category }
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")
-    category_changes.each do |group, entries|
+    category_changes.each do |_group, entries|
       change = entries.first.change
       subcategory = entries.first.subcategory
       pr_numbers = entries.map(&:pr_number).compact.sort
@@ -249,7 +263,7 @@ def main(args)
         changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 
         example:
-        changelog: Improvements, Authentication, Updating Authentication (LG-9998)
+        changelog: User-Facing Improvements, WebAuthn, Improve error flow for WebAuthn (LG-5515)
 
         categories:
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}

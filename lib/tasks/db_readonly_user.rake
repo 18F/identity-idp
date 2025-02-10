@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :db do
   desc 'Create readonly database user and grant read access to all tables'
   task grant_readonly_access: :environment do

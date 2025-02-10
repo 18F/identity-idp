@@ -1,14 +1,18 @@
+# frozen_string_literal: true
+
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
-  queue_as :default
+  queue_as :high_resolution_proofing
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
   CallbackLogData = Struct.new(
     :result,
     :resolution_success,
+    :residential_resolution_success,
     :state_id_success,
+    :device_profiling_success,
     keyword_init: true,
   )
 
@@ -16,12 +20,14 @@ class ResolutionProofingJob < ApplicationJob
     result_id:,
     encrypted_arguments:,
     trace_id:,
-    should_proof_state_id:,
+    ipp_enrollment_in_progress:,
     user_id: nil,
+    service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    issuer: nil,
-    dob_year_only: nil # rubocop:disable Lint:UnusedMethodArgument
+    proofing_components: nil,
+    # DEPRECATED ARGUMENTS
+    should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
 
@@ -32,31 +38,29 @@ class ResolutionProofingJob < ApplicationJob
       symbolize_names: true,
     )
 
-    applicant_pii = decrypted_args[:applicant_pii]
-
     user = User.find_by(id: user_id)
+    current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
 
-    optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-      applicant_pii: applicant_pii,
+    applicant_pii = decrypted_args[:applicant_pii]
+    applicant_pii[:uuid_prefix] = current_sp&.app_id
+    applicant_pii[:uuid] = user.uuid
+
+    callback_log_data = make_vendor_proofing_requests(
+      timer: timer,
       user: user,
+      applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      issuer: issuer,
-      timer: timer,
+      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+      current_sp: current_sp,
     )
 
-    callback_log_data = proof_lexisnexis_then_aamva(
-      timer: timer,
-      applicant_pii: applicant_pii,
-      should_proof_state_id: should_proof_state_id,
-    )
+    ssn_is_unique = Idv::DuplicateSsnFinder.new(
+      ssn: applicant_pii[:ssn],
+      user: user,
+    ).ssn_is_unique?
 
-    if optional_threatmetrix_result.present?
-      add_threatmetrix_result_to_callback_result(
-        callback_log_data: callback_log_data,
-        threatmetrix_result: optional_threatmetrix_result,
-      )
-    end
+    callback_log_data.result[:ssn_is_unique] = ssn_is_unique
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -65,17 +69,82 @@ class ResolutionProofingJob < ApplicationJob
       name: 'ProofResolution',
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
+      residential_resolution_success: callback_log_data&.residential_resolution_success,
       state_id_success: callback_log_data&.state_id_success,
+      device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
     )
+
+    if use_shadow_mode?(user:, proofing_components:)
+      SocureShadowModeProofingJob.perform_later(
+        document_capture_session_result_id: document_capture_session&.result_id,
+        encrypted_arguments:,
+        service_provider_issuer:,
+        user_email: user_email_for_proofing(user),
+        user_uuid: user.uuid,
+      )
+    end
+  end
+
+  # @param user [User]
+  # @param proofing_components [Hash,nil]
+  def use_shadow_mode?(user:, proofing_components:)
+    # Let idv_socure_shadow_mode_enabled setting control shadow mode globally
+    disabled_globally = !IdentityConfig.store.idv_socure_shadow_mode_enabled
+    return false if disabled_globally
+
+    # If the user went through Socure docv, they are already a Socure user and
+    # are thus eligible for shadow mode.
+    enabled_for_docv_users =
+      IdentityConfig.store.idv_socure_shadow_mode_enabled_for_docv_users
+    is_docv_user = proofing_components&.dig(:document_check) == Idp::Constants::Vendors::SOCURE
+    return true if enabled_for_docv_users && is_docv_user
+
+    # Otherwise fall back to A/B test
+    shadow_mode_ab_test_bucket(user:) == :socure_shadow_mode_for_non_docv_users
   end
 
   private
 
+  # @return [CallbackLogData]
+  def make_vendor_proofing_requests(
+    timer:,
+    user:,
+    applicant_pii:,
+    threatmetrix_session_id:,
+    request_ip:,
+    ipp_enrollment_in_progress:,
+    current_sp:
+  )
+    result = progressive_proofer.proof(
+      applicant_pii: applicant_pii,
+      user_email: user_email_for_proofing(user),
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+      timer: timer,
+      current_sp: current_sp,
+    )
+
+    log_threatmetrix_info(result.device_profiling_result, user)
+
+    CallbackLogData.new(
+      device_profiling_success: result.device_profiling_result.success?,
+      resolution_success: result.resolution_result.success?,
+      residential_resolution_success: result.residential_resolution_result.success?,
+      result: result.adjudicated_result.to_h,
+      state_id_success: result.state_id_result.success?,
+    )
+  end
+
+  def user_email_for_proofing(user)
+    user.last_sign_in_email_address.email
+  end
+
   def log_threatmetrix_info(threatmetrix_result, user)
     logger_info_hash(
       name: 'ThreatMetrix',
-      user_id: user&.uuid,
+      user_id: user.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )
@@ -85,150 +154,17 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
-    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
-
-    response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
-      redact(threatmetrix_result.response_body)
-    callback_log_data.result[:context][:stages][:threatmetrix] = {
-      client: lexisnexis_ddp_proofer.class.vendor_name,
-      errors: threatmetrix_result.errors,
-      exception: exception,
-      success: threatmetrix_result.success?,
-      timed_out: threatmetrix_result.timed_out?,
-      transaction_id: threatmetrix_result.transaction_id,
-      response_body: response_h,
-    }
+  def progressive_proofer
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-    applicant_pii:,
-    user:,
-    threatmetrix_session_id:,
-    request_ip:,
-    issuer:,
-    timer:
-  )
-    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
-    return unless issuer_allows_threatmetrix?(issuer)
-
-    # The API call will fail without a session ID, so do not attempt to make
-    # it to avoid leaking data when not required.
-    return if threatmetrix_session_id.blank?
-
-    return unless applicant_pii
-
-    ddp_pii = applicant_pii.dup
-    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:request_ip] = request_ip
-
-    result = timer.time('threatmetrix') do
-      lexisnexis_ddp_proofer.proof(ddp_pii)
-    end
-
-    log_threatmetrix_info(result, user)
-    add_threatmetrix_proofing_component(user.id, result)
-
-    result
-  end
-
-  # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
-    resolution_result = timer.time('resolution') do
-      resolution_proofer.proof(applicant_pii)
-    end
-
-    state_id_result = Proofing::Aamva::UnsupportedJurisdictionResult.new
-    if should_proof_state_id && resolution_result.success?
-      timer.time('state_id') do
-        state_id_result = state_id_proofer.proof(applicant_pii)
-      end
-    end
-
-    result = {
-      success: resolution_result.success? && state_id_result.success?,
-      errors: resolution_result.errors.merge(state_id_result.errors),
-      exception: resolution_result.exception || state_id_result.exception,
-      timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
-      context: {
-        should_proof_state_id: should_proof_state_id,
-        stages: {
-          resolution: resolution_result.to_h,
-          state_id: {
-            errors: state_id_result.errors,
-            exception: state_id_result.exception,
-            success: state_id_result.success?,
-            timed_out: state_id_result.timed_out?,
-            vendor_name: state_id_result.to_h[:vendor_name] || state_id_proofer.class.vendor_name,
-            transaction_id: state_id_result.transaction_id,
-          },
-        },
-      },
-    }
-
-    CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_result.success?,
-      state_id_success: state_id_result.success?,
+  def shadow_mode_ab_test_bucket(user:)
+    AbTests::SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS.bucket(
+      request: nil,
+      service_provider: nil,
+      session: nil,
+      user:,
+      user_session: nil,
     )
-  end
-
-  def resolution_proofer
-    @resolution_proofer ||=
-      if IdentityConfig.store.proofer_mock_fallback
-        Proofing::Mock::ResolutionMockClient.new
-      else
-        Proofing::LexisNexis::InstantVerify::Proofer.new(
-          instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-          account_id: IdentityConfig.store.lexisnexis_account_id,
-          base_url: IdentityConfig.store.lexisnexis_base_url,
-          username: IdentityConfig.store.lexisnexis_username,
-          password: IdentityConfig.store.lexisnexis_password,
-          request_mode: IdentityConfig.store.lexisnexis_request_mode,
-        )
-      end
-  end
-
-  def lexisnexis_ddp_proofer
-    @lexisnexis_ddp_proofer ||=
-      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-        Proofing::Mock::DdpMockClient.new
-      else
-        Proofing::LexisNexis::Ddp::Proofer.new(
-          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-        )
-      end
-  end
-
-  def state_id_proofer
-    @state_id_proofer ||=
-      if IdentityConfig.store.proofer_mock_fallback
-        Proofing::Mock::StateIdMockClient.new
-      else
-        Proofing::Aamva::Proofer.new(
-          auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
-          auth_url: IdentityConfig.store.aamva_auth_url,
-          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-          private_key: IdentityConfig.store.aamva_private_key,
-          public_key: IdentityConfig.store.aamva_public_key,
-          verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
-          verification_url: IdentityConfig.store.aamva_verification_url,
-        )
-      end
-  end
-
-  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
-    ProofingComponent.
-      create_or_find_by(user_id: user_id).
-      update(threatmetrix: true,
-             threatmetrix_review_status: threatmetrix_result.review_status)
-  end
-
-  def issuer_allows_threatmetrix?(issuer)
-    return IdentityConfig.store.no_sp_device_profiling_enabled if issuer.blank?
-    ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end

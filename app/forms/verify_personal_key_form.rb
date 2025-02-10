@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VerifyPersonalKeyForm
   include ActiveModel::Model
   include PersonalKeyValidator
@@ -30,7 +32,7 @@ class VerifyPersonalKeyForm
   private
 
   def password_reset_profile
-    user.decorate.password_reset_profile
+    user.password_reset_profile
   end
 
   def validate_personal_key

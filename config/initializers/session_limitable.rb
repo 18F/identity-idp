@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # After each sign in, update unique_session_id.
 # This is only triggered when the user is explicitly set (with set_user)
 # and on authentication. Retrieving the user from session (:fetch) does
@@ -6,7 +8,7 @@ Warden::Manager.after_set_user(except: :fetch) do |record, warden, options|
   if warden.authenticated?(options[:scope])
     unique_session_id = Devise.friendly_token
     warden.session(options[:scope])['unique_session_id'] = unique_session_id
-    UpdateUser.new(user: record, attributes: { unique_session_id: unique_session_id }).call
+    record.update!(unique_session_id: unique_session_id)
   end
 end
 
@@ -19,8 +21,17 @@ Warden::Manager.after_set_user(only: :fetch) do |record, warden, options|
 
   if warden.authenticated?(scope) && options[:store] != false
     if record.unique_session_id != current_session_id
+      service_provider = warden.raw_session.dig('sp')
+      analytics = Analytics.new(
+        user: record,
+        request: warden.request,
+        session: warden.raw_session,
+        sp: warden.raw_session.dig('sp', 'issuer'),
+      )
+      analytics.concurrent_session_logout
       warden.raw_session.clear
       warden.logout(scope)
+      warden.raw_session['sp'] = service_provider
       throw :warden, scope: scope, message: :session_limited
     end
   end

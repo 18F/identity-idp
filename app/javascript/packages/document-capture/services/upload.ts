@@ -1,10 +1,12 @@
 import { FormError } from '@18f/identity-form-steps';
 import { forceRedirect } from '@18f/identity-url';
+import { request } from '@18f/identity-request';
 import type {
   UploadSuccessResponse,
   UploadErrorResponse,
   UploadFieldError,
   UploadImplementation,
+  ImageFingerprints,
 } from '../context/upload';
 
 /**
@@ -34,13 +36,27 @@ export class UploadFormEntryError extends FormError {
 export class UploadFormEntriesError extends FormError {
   formEntryErrors: UploadFormEntryError[] = [];
 
-  remainingAttempts = Infinity;
+  remainingSubmitAttempts = Infinity;
+
+  submitAttempts = 0;
+
+  isResultCodeInvalid = false;
 
   isFailedResult = false;
+
+  isFailedDocType = false;
+
+  isFailedSelfie = false;
+
+  selfieNotLive = false;
+
+  selfieNotGoodQuality = false;
 
   pii?: PII;
 
   hints = false;
+
+  failed_image_fingerprints: ImageFingerprints = { front: [], back: [] };
 }
 
 /**
@@ -67,12 +83,13 @@ export function toFormEntryError(uploadFieldError: UploadFieldError): UploadForm
   return formEntryError;
 }
 
-const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint, csrf }) {
-  const headers: HeadersInit = {};
-  if (csrf) {
-    headers['X-CSRF-Token'] = csrf;
-  }
-  const response = await window.fetch(endpoint, { method, headers, body: toFormData(payload) });
+const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint }) {
+  const response = await request(endpoint, {
+    method,
+    body: toFormData(payload),
+    json: false,
+    read: false,
+  });
 
   if (!response.ok && !response.status.toString().startsWith('4')) {
     // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK
@@ -101,8 +118,12 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
       error.formEntryErrors = result.errors.map(toFormEntryError);
     }
 
-    if (result.remaining_attempts) {
-      error.remainingAttempts = result.remaining_attempts;
+    if (result.remaining_submit_attempts) {
+      error.remainingSubmitAttempts = result.remaining_submit_attempts;
+    }
+
+    if (result.submit_attempts) {
+      error.submitAttempts = result.submit_attempts;
     }
 
     if (result.ocr_pii) {
@@ -113,7 +134,20 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
       error.hints = result.hints;
     }
 
+    error.isResultCodeInvalid = result.result_code_invalid;
+
     error.isFailedResult = !!result.result_failed;
+
+    error.isFailedSelfie = result.selfie_status === 'fail';
+
+    error.isFailedDocType = !result.doc_type_supported;
+
+    error.selfieNotLive = result.selfie_live === undefined ? false : !result.selfie_live;
+
+    error.selfieNotGoodQuality =
+      result.selfie_quality_good === undefined ? false : !result.selfie_quality_good;
+
+    error.failed_image_fingerprints = result.failed_image_fingerprints ?? { front: [], back: [] };
 
     throw error;
   }

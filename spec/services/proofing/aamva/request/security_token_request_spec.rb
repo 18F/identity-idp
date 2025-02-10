@@ -2,17 +2,17 @@ require 'rails_helper'
 require 'rexml/document'
 require 'rexml/xpath'
 
-describe Proofing::Aamva::Request::SecurityTokenRequest do
+RSpec.describe Proofing::Aamva::Request::SecurityTokenRequest do
   let(:config) { AamvaFixtures.example_config }
 
   before do
     allow(Time).to receive(:now).and_return(Time.utc(2017))
-    allow(SecureRandom).to receive(:base64).
-      with(32).
-      and_return('MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=')
-    allow(SecureRandom).to receive(:uuid).
-      at_least(:once).
-      and_return('12345678-abcd-efgh-ijkl-1234567890ab')
+    allow(SecureRandom).to receive(:base64)
+      .with(32)
+      .and_return('MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=')
+    allow(SecureRandom).to receive(:uuid)
+      .at_least(:once)
+      .and_return('12345678-abcd-efgh-ijkl-1234567890ab')
   end
 
   subject(:security_token_request) { described_class.new(config) }
@@ -30,10 +30,10 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
       expect(signature.text).to_not be_nil
       expect(signature.text).to_not be_empty
 
-      body_without_sig = security_token_request.body.
-        gsub(public_key.text, '').
-        gsub(signature.text, '').
-        gsub(key_identifier.text, '')
+      body_without_sig = security_token_request.body
+        .gsub(public_key.text, '')
+        .gsub(signature.text, '')
+        .gsub(key_identifier.text, '')
 
       expect(body_without_sig).to eq(AamvaFixtures.security_token_request)
     end
@@ -61,8 +61,8 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
   describe '#send' do
     context 'when the request is successful' do
       it 'returns a response object' do
-        stub_request(:post, config.auth_url).
-          to_return(body: AamvaFixtures.security_token_response, status: 200)
+        stub_request(:post, config.auth_url)
+          .to_return(body: AamvaFixtures.security_token_response, status: 200)
 
         result = security_token_request.send
 
@@ -72,9 +72,9 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
 
     context 'when the request times out once' do
       it 'retries and tries again' do
-        stub_request(:post, config.auth_url).
-          to_timeout.
-          to_return(body: AamvaFixtures.security_token_response, status: 200)
+        stub_request(:post, config.auth_url)
+          .to_timeout
+          .to_return(body: AamvaFixtures.security_token_response, status: 200)
 
         result = security_token_request.send
 
@@ -85,8 +85,8 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
     # rubocop:disable Layout/LineLength
     context 'when the request times out a second time' do
       it 'raises an error' do
-        stub_request(:post, config.auth_url).
-          to_timeout
+        stub_request(:post, config.auth_url)
+          .to_timeout
 
         expect { security_token_request.send }.to raise_error(
           ::Proofing::TimeoutError,
@@ -98,8 +98,8 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
 
     context 'when the connection fails' do
       it 'raises an error' do
-        stub_request(:post, config.auth_url).
-          to_raise(Faraday::ConnectionFailed.new('error'))
+        stub_request(:post, config.auth_url)
+          .to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { security_token_request.send }.to raise_error(
           ::Proofing::TimeoutError,

@@ -1,11 +1,13 @@
-require 'core_extensions/string/permit'
+# frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  String.include CoreExtensions::String::Permit
   include VerifyProfileConcern
+  include BackupCodeReminderConcern
   include LocaleHelper
   include VerifySpAttributesConcern
-  include EffectiveUser
+  include SecondMfaReminderConcern
+  include TwoFactorAuthenticatableMethods
+  include AbTestingConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -24,32 +26,27 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :set_x_request_url
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  # Workaround that helps our JS fetch polyfill. See:
-  # https://www.npmjs.com/package/whatwg-fetch#user-content-obtaining-the-response-url
-  def set_x_request_url
-    response.headers['X-Request-URL'] = request.url
-  end
+  after_action :store_web_locale_in_session
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
-    now = Time.zone.now
-    session[:session_started_at] = now if session[:session_started_at].nil?
-    session[:session_expires_at] = now + Devise.timeout_in
-    session[:pinged_at] ||= now
-    redirect_on_timeout
+    session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
+    redirect_with_flash_if_timeout
   end
 
   # for lograge
   def append_info_to_payload(payload)
+    return if Lograge.lograge_config.ignore_actions&.include?(
+      "#{Lograge.controller_field(payload)}##{payload[:action]}",
+    )
+
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA
@@ -77,43 +74,22 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics_user
-    effective_user || AnonymousUser.new
-  end
-
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: irs_attempts_api_session_id,
-      request: request,
-      user: effective_user,
-      sp: current_sp,
-      cookie_device_uuid: cookies[:device],
-      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
-      enabled_for_session: irs_attempt_api_enabled_for_session?,
-      analytics: analytics,
-    )
-  end
-
-  def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
-  end
-
-  def irs_attempts_api_session_id
-    decorated_session.irs_attempts_api_session_id
+    current_user || AnonymousUser.new
   end
 
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
-  delegate :remember_device_default, to: :decorated_session
+  delegate :remember_device_default, to: :decorated_sp_session
 
-  def decorated_session
-    @decorated_session ||= DecoratedSession.new(
+  def decorated_sp_session
+    @decorated_sp_session ||= ServiceProviderSessionCreator.new(
       sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,
       service_provider_request: service_provider_request,
-    ).call
+    ).create_session
   end
 
   def default_url_options
@@ -125,8 +101,24 @@ class ApplicationController < ActionController::Base
     super
   end
 
+  def resolved_authn_context_result
+    return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
+
+    service_provider = sp_from_sp_session
+    if service_provider.nil?
+      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
+    else
+      @resolved_authn_context_result = AuthnContextResolver.new(
+        user: current_user,
+        service_provider: service_provider,
+        vtr: sp_session[:vtr],
+        acr_values: sp_session[:acr_values],
+      ).result
+    end
+  end
+
   def context
-    user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
+    user_session[:context] || UserSessionContext::AUTHENTICATION_CONTEXT
   end
 
   def current_sp
@@ -146,8 +138,8 @@ class ApplicationController < ActionController::Base
   end
 
   def disable_caching
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
+    response.headers[Rack::CACHE_CONTROL] = 'no-store'
+    response.headers['pragma'] = 'no-cache'
   end
 
   def cache_issuer_in_cookie
@@ -162,18 +154,26 @@ class ApplicationController < ActionController::Base
                           end
   end
 
-  def redirect_on_timeout
+  def redirect_with_flash_if_timeout
     return unless params[:timeout]
 
-    unless current_user
+    if params[:timeout] == 'session'
+      analytics.session_timed_out
+      flash[:info] = t(
+        'notices.session_timedout',
+        app_name: APP_NAME,
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
+      )
+    elsif current_user.blank?
       flash[:info] = t(
         'notices.session_cleared',
         minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
     end
+
     begin
       redirect_to url_for(permitted_timeout_params)
-    rescue ActionController::UrlGenerationError # binary data in params cause redirect to throw this
+    rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
       head :bad_request
     end
   end
@@ -203,18 +203,7 @@ class ApplicationController < ActionController::Base
     @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
-  def add_piv_cac_setup_url
-    session[:needs_to_setup_piv_cac_after_sign_in] ? login_add_piv_cac_prompt_url : nil
-  end
-
-  def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
-      authentication_methods_setup_url : nil
-  end
-
   def fix_broken_personal_key_url
-    return if !current_user.broken_personal_key?
-
     flash[:info] = t('account.personal_key.needs_new')
 
     pii_unlocked = Pii::Cacher.new(current_user, user_session).exists_in_session?
@@ -222,7 +211,7 @@ class ApplicationController < ActionController::Base
     if pii_unlocked
       cacher = Pii::Cacher.new(current_user, user_session)
       profile = current_user.active_profile
-      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch)
+      user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
       profile.save!
 
       analytics.broken_personal_key_regenerated
@@ -236,16 +225,28 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    service_provider_mfa_setup_url ||
-      add_piv_cac_setup_url ||
-      fix_broken_personal_key_url ||
-      user_session.delete(:stored_location) ||
-      sp_session_request_url_with_updated_params ||
-      signed_in_url
+    return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
+    return user_please_call_url if current_user.suspended?
+    return manage_password_url if session[:redirect_to_change_password].present?
+    return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
+    return fix_broken_personal_key_url if current_user.broken_personal_key?
+    return user_session.delete(:stored_location) if user_session.key?(:stored_location)
+    return setup_piv_cac_url if user_session[:add_piv_cac_after_2fa]
+    return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
+    return webauthn_platform_recommended_path if recommend_webauthn_platform_for_sms_user?(
+      :recommend_for_authentication,
+    )
+    return second_mfa_reminder_url if user_needs_second_mfa_reminder?
+    return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
+    signed_in_url
   end
 
   def signed_in_url
-    user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
+    return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
+    account_path
   end
 
   def after_mfa_setup_path
@@ -259,12 +260,25 @@ class ApplicationController < ActionController::Base
   end
 
   def user_needs_to_reactivate_account?
-    return false if current_user.decorate.password_reset_profile.blank?
-    sp_session[:ial2] == true
+    return false if current_user.password_reset_profile.blank?
+    return false if pending_profile_newer_than_password_reset_profile?
+    resolved_authn_context_result.identity_proofing?
   end
 
-  def reauthn_param
-    params[:reauthn]
+  def user_recommended_for_piv_cac?
+    current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_fed_or_mil_email? &&
+      !user_already_has_piv?
+  end
+
+  def user_already_has_piv?
+    MfaContext.new(current_user).piv_cac_configurations.present?
+  end
+
+  def pending_profile_newer_than_password_reset_profile?
+    return false if current_user.pending_profile.blank?
+    return false if current_user.password_reset_profile.blank?
+    current_user.pending_profile.created_at >
+      current_user.password_reset_profile.updated_at
   end
 
   def invalid_auth_token(_exception)
@@ -290,30 +304,13 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? &&
-      two_factor_enabled? &&
+    user_signed_in? &&
       session['warden.user.user.session'] &&
-      !session['warden.user.user.session'].try(
-        :[],
-        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
-      )
+      !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
+      two_factor_enabled?
   end
 
-  def two_factor_kantara_enabled?
-    return false if controller_path == 'additional_mfa_required'
-    return false if user_session[:skip_kantara_req]
-    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
-      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
-  end
-
-  def confirm_two_factor_authenticated(id = nil)
-    return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
-
+  def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
     if !two_factor_enabled?
@@ -322,8 +319,6 @@ class ApplicationController < ActionController::Base
       return prompt_to_verify_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       return prompt_to_setup_mfa
-    elsif two_factor_kantara_enabled?
-      return prompt_to_setup_non_restricted_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
       return prompt_to_verify_sp_required_mfa
     end
@@ -358,10 +353,6 @@ class ApplicationController < ActionController::Base
     (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
-  def prompt_to_sign_in_with_request_id(request_id)
-    redirect_to new_user_session_url(request_id: request_id)
-  end
-
   def prompt_to_setup_mfa
     redirect_to authentication_methods_setup_url
   end
@@ -374,15 +365,13 @@ class ApplicationController < ActionController::Base
     redirect_to sp_required_mfa_verification_url
   end
 
-  def prompt_to_setup_non_restricted_mfa
-    redirect_to login_additional_mfa_required_url
-  end
-
   def sp_required_mfa_verification_url
     return login_two_factor_piv_cac_url if service_provider_mfa_policy.piv_cac_required?
 
-    if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+    if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
       login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+      login_two_factor_webauthn_url(platform: true)
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
       login_two_factor_webauthn_url
     else
@@ -390,12 +379,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def user_needs_new_session_with_request_id?(id)
-    !user_signed_in? && id.present?
-  end
-
   def two_factor_enabled?
     MfaPolicy.new(current_user).two_factor_enabled?
+  end
+
+  # Prevent the session from being written back to the session store at the end of the request.
+  def skip_session_commit
+    request.session_options[:skip] = true
   end
 
   def skip_session_expiration
@@ -403,6 +393,7 @@ class ApplicationController < ActionController::Base
   end
 
   def skip_session_load
+    skip_session_commit
     @skip_session_load = true
   end
 
@@ -410,8 +401,17 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
-  def sp_session_ial
-    sp_session[:ial].presence || 1
+  def store_web_locale_in_session
+    return unless user_signed_in?
+
+    user_session[:web_locale] = I18n.locale.to_s
+  end
+
+  def pii_requested_but_locked?
+    if resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+      current_user.identity_verified? &&
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?
+    end
   end
 
   def mfa_policy
@@ -421,22 +421,28 @@ class ApplicationController < ActionController::Base
   def service_provider_mfa_policy
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
-      service_provider: sp_from_sp_session,
-      auth_method: user_session[:auth_method],
-      aal_level_requested: sp_session[:aal_level_requested],
-      piv_cac_requested: sp_session[:piv_cac_requested],
+      auth_methods_session:,
+      resolved_authn_context_result:,
     )
   end
+  delegate :user_needs_sp_auth_method_setup?, to: :service_provider_mfa_policy
 
   def sp_session
     session.fetch(:sp, {})
   end
 
+  # Retrieves the current service provider session hash's logged request URL, if present
+  # Conditionally sets the final_auth_request service provider session attribute
+  # when applicable (the original SP request is SAML)
   def sp_session_request_url_with_updated_params
-    # Login.gov redirects to the orginal request_url after a user authenticates
-    # replace prompt=login with prompt=select_account to prevent sign_out
-    # which should only every occur once when the user lands on Login.gov with prompt=login
-    url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+    return unless sp_session[:request_url].present?
+    request_url = URI(sp_session[:request_url])
+    url = if request_url.path.match?('saml')
+            sp_session[:final_auth_request] = true
+            complete_saml_url
+          else
+            sp_session[:request_url]
+          end
 
     # If the user has changed the locale, we should preserve that as well
     if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param
@@ -461,6 +467,10 @@ class ApplicationController < ActionController::Base
     render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
   end
 
+  def render_bad_request
+    render template: 'pages/bad_request', layout: false, status: :bad_request, formats: :html
+  end
+
   def render_timeout(exception)
     analytics.response_timed_out(**analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
@@ -471,7 +481,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_full_width(template, **opts)
-    render template, **opts, layout: 'base'
+    render template, **opts, layout: 'application'
   end
 
   def analytics_exception_info(exception)

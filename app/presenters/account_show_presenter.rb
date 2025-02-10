@@ -1,56 +1,114 @@
-class AccountShowPresenter
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
-              :sp_session_request_url, :sp_name
+# frozen_string_literal: true
 
-  def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, decorated_user:,
-                 locked_for_session:)
+class AccountShowPresenter
+  attr_reader :user,
+              :decrypted_pii,
+              :locked_for_session,
+              :pii,
+              :sp_session_request_url,
+              :authn_context,
+              :sp_name
+
+  delegate :identity_verified_with_facial_match?, to: :user
+
+  def initialize(
+    decrypted_pii:,
+    sp_session_request_url:,
+    authn_context:,
+    sp_name:,
+    user:,
+    locked_for_session:
+  )
     @decrypted_pii = decrypted_pii
-    @personal_key = personal_key
-    @decorated_user = decorated_user
+    @user = user
     @sp_name = sp_name
     @sp_session_request_url = sp_session_request_url
+    @authn_context = authn_context
     @locked_for_session = locked_for_session
     @pii = determine_pii
   end
 
-  def show_personal_key_partial?
-    personal_key.present?
-  end
-
   def show_password_reset_partial?
-    decorated_user.password_reset_profile.present?
-  end
-
-  def show_pii_partial?
-    decrypted_pii.present? || decorated_user.identity_verified?
+    user.password_reset_profile.present?
   end
 
   def show_manage_personal_key_partial?
-    decorated_user.user.encrypted_recovery_code_digest.present? &&
-      decorated_user.password_reset_profile.blank?
+    user.encrypted_recovery_code_digest.present? &&
+      user.password_reset_profile.blank?
   end
 
   def show_service_provider_continue_partial?
     sp_name.present? && sp_session_request_url.present?
   end
 
-  def show_gpo_partial?
-    decorated_user.pending_profile_requires_verification?
+  def showing_alerts?
+    show_service_provider_continue_partial? ||
+      show_password_reset_partial?
   end
 
-  def showing_any_partials?
-    show_service_provider_continue_partial? ||
-      show_password_reset_partial? ||
-      show_personal_key_partial? ||
-      show_gpo_partial?
+  def active_profile?
+    user.active_profile.present?
+  end
+
+  def active_profile_for_authn_context?
+    return @active_profile_for_authn_context if defined?(@active_profile_for_authn_context)
+
+    @active_profile_for_authn_context = active_profile? && (
+      !authn_context.facial_match? || identity_verified_with_facial_match?
+    )
+  end
+
+  def pending_idv?
+    authn_context.identity_proofing? && !active_profile_for_authn_context?
+  end
+
+  def pending_ipp?
+    !!user.pending_profile&.in_person_verification_pending?
+  end
+
+  def pending_gpo?
+    !!user.pending_profile&.gpo_verification_pending?
+  end
+
+  def show_idv_partial?
+    active_profile? || pending_idv? || pending_ipp? || pending_gpo?
+  end
+
+  def formatted_ipp_due_date
+    I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
+  end
+
+  def formatted_legacy_idv_date
+    I18n.l(user.active_profile.created_at, format: :event_date)
+  end
+
+  def initiating_idv_sp
+    @initiating_idv_sp ||= user.active_profile&.initiating_service_provider
+  end
+
+  def initiating_idv_sp_name
+    initiating_idv_sp&.friendly_name
+  end
+
+  def connect_to_initiating_idv_sp_url
+    return nil if !initiating_idv_sp.present?
+
+    SpReturnUrlResolver.new(service_provider: initiating_idv_sp).post_idv_follow_up_url
+  end
+
+  def connected_to_initiating_idv_sp?
+    return false if !initiating_idv_sp.present?
+
+    identity = user.identities.find_by(service_provider: initiating_idv_sp.issuer)
+    !!identity&.last_ial2_authenticated_at.present?
   end
 
   def show_unphishable_badge?
-    MfaPolicy.new(decorated_user.user).unphishable?
+    MfaPolicy.new(user).unphishable?
   end
 
   def show_verified_badge?
-    decorated_user.identity_verified?
+    user.identity_verified?
   end
 
   def showing_any_badges?
@@ -58,29 +116,32 @@ class AccountShowPresenter
   end
 
   def backup_codes_generated_at
-    decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
+    user.backup_code_configurations.order(created_at: :asc).first&.created_at
   end
 
   def personal_key_generated_at
-    decorated_user.user.encrypted_recovery_code_digest_generated_at ||
-      decorated_user.user.active_profile&.verified_at
+    user.personal_key_generated_at
   end
 
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    EmailContext.new(decorated_user.user).last_sign_in_email_address.email
+    user.last_sign_in_email_address.email
   end
 
   def totp_content
-    if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
+    if TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
       I18n.t('account.index.auth_app_enabled')
     else
       I18n.t('account.index.auth_app_disabled')
     end
   end
 
-  delegate :recent_events, :recent_devices, :connected_apps, to: :decorated_user
+  def connected_apps
+    user.connected_apps.includes([:service_provider_record, :email_address])
+  end
+
+  delegate :recent_events, :recent_devices, to: :user
 
   private
 
@@ -95,7 +156,7 @@ class AccountShowPresenter
     :dob,
     :phone,
     keyword_init: true,
-  )
+  ).freeze
 
   def obfuscated_pii_accessor
     PiiAccessor.new(
@@ -125,7 +186,7 @@ class AccountShowPresenter
   end
 
   def determine_pii
-    return PiiAccessor.new unless show_pii_partial?
+    return PiiAccessor.new unless active_profile?
     if decrypted_pii.present? && !@locked_for_session
       decrypted_pii_accessor
     else

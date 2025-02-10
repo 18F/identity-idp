@@ -1,54 +1,103 @@
 require 'rails_helper'
 
-describe Users::PasswordsController do
-  include Features::MailerHelper
+RSpec.describe Users::PasswordsController do
+  context 'user visits edit password page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :edit
+      expect(@analytics).to have_logged_event('Edit Password Page Visited')
+    end
+
+    context 'redirect_to_change_password is set to true' do
+      before do
+        stub_sign_in(user)
+        stub_analytics
+        session[:redirect_to_change_password] = true
+      end
+
+      it 'renders password compromised with required_password_change set to true' do
+        get :edit
+        expect(response).to render_template(:edit)
+      end
+
+      it 'logs analytics for password compromised visited' do
+        get :edit
+        expect(@analytics).to have_logged_event(
+          'Edit Password Page Visited',
+          required_password_change: true,
+        )
+      end
+    end
+  end
 
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
 
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
-          with(failure_reason: nil, success: true)
-
-        params = { password: 'salty new password' }
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
         patch :update, params: { update_user_password_form: params }
 
-        expect(@analytics).to have_received(:track_event).
-          with('Password Changed', success: true, errors: {})
+        expect(@analytics).to have_logged_event(
+          'Password Changed',
+          success: true,
+          errors: {},
+          pending_profile_present: false,
+          active_profile_present: false,
+          user_id: subject.current_user.uuid,
+          required_password_change: false,
+        )
         expect(response).to redirect_to account_url
         expect(flash[:info]).to eq t('notices.password_changed')
-        expect(flash[:personal_key]).to be_nil
+        expect(controller.user_session[:personal_key]).to be_nil
       end
 
-      it 'calls UpdateUserPassword' do
-        stub_sign_in(create(:user))
-        updater = instance_double(UpdateUserPasswordForm)
-        password = 'strong password'
-        allow(UpdateUserPasswordForm).to receive(:new).
-          with(subject.current_user, subject.user_session).
-          and_return(updater)
-        response = FormResponse.new(success: true, errors: {})
-        allow(updater).to receive(:submit).and_return(response)
-        personal_key = 'five random words for test'
-        allow(updater).to receive(:personal_key).and_return(personal_key)
+      it 'updates the user password and regenerates personal key' do
+        user = create(:user, :proofed)
+        stub_sign_in(user)
+        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(
+          Pii::Attributes.new(ssn: '111-222-3333'),
+          user.active_profile.id,
+        )
 
-        params = { password: password }
-        patch :update, params: { update_user_password_form: params }
+        params = {
+          password: 'strong password',
+          password_confirmation: 'strong password',
+        }
 
-        expect(flash[:personal_key]).to eq personal_key
-        expect(updater).to have_received(:submit)
-        expect(updater).to have_received(:personal_key)
+        expect do
+          patch :update, params: { update_user_password_form: params }
+        end.to(
+          change { user.reload.encrypted_password_digest }.and(
+            change { user.reload.encrypted_recovery_code_digest },
+          ),
+        )
+
+        expect(controller.user_session[:personal_key]).to eq(
+          assigns(:update_user_password_form).personal_key,
+        )
+        expect(response).to redirect_to manage_personal_key_url
       end
 
       it 'creates a user Event for the password change' do
-        stub_sign_in(create(:user))
+        user = stub_sign_in
 
-        params = { password: 'salty new password' }
-        patch :update, params: { update_user_password_form: params }
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
+
+        expect do
+          patch :update, params: { update_user_password_form: params }
+        end.to change { user.events.password_changed.size }.by 1
       end
 
       it 'sends a security event' do
@@ -57,53 +106,85 @@ describe Users::PasswordsController do
         security_event = PushNotification::PasswordResetEvent.new(user: user)
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
-        params = { password: 'salty new password' }
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
         patch :update, params: { update_user_password_form: params }
       end
 
       it 'sends the user an email' do
         user = create(:user)
-        mail = double
-        expect(mail).to receive(:deliver_now_or_later)
-        expect(UserMailer).to receive(:password_changed).
-          with(user, user.email_addresses.first, hash_including(:disavowal_token)).
-          and_return(mail)
 
         stub_sign_in(user)
 
-        params = { password: 'salty new password' }
+        params = {
+          password: 'salty new password',
+          password_confirmation: 'salty new password',
+        }
         patch :update, params: { update_user_password_form: params }
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [user.email_addresses.first.email],
+          subject: t('devise.mailer.password_updated.subject'),
+        )
+      end
+      context 'redirect_to_change_password is set to true' do
+        let(:user) { create(:user) }
+        let(:password) { 'salty new password' }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password,
+          }
+        end
+        before do
+          stub_sign_in(user)
+          stub_analytics
+          session[:redirect_to_change_password] = true
+        end
+
+        it 'updates the user password and logs analytic event' do
+          stub_analytics
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_logged_event(
+            'Password Changed',
+            success: true,
+            errors: {},
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: true,
+          )
+          expect(response).to redirect_to account_url
+          expect(flash[:info]).to eq t('notices.password_changed')
+        end
+
+        it 'sends email notifying user of password change' do
+          stub_analytics
+
+          patch :update, params: { update_user_password_form: params }
+          expect_delivered_email_count(1)
+        end
+
+        it 'sends a security event' do
+          security_event = PushNotification::PasswordResetEvent.new(user: user)
+          expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
+          patch :update, params: { update_user_password_form: params }
+        end
       end
     end
 
     context 'form returns failure' do
-      it 'renders edit' do
-        password_short_error = { password: [:too_short] }
-        stub_sign_in
-
-        stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
-          success: false,
-          failure_reason: password_short_error,
-        )
-
-        params = { password: 'new' }
-        patch :update, params: { update_user_password_form: params }
-
-        expect(@analytics).to have_received(:track_event).with(
-          'Password Changed',
-          success: false,
-          errors: {
-            password: [
-              t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
-            ],
-          },
-          error_details: password_short_error,
-        )
-        expect(response).to render_template(:edit)
+      let(:password) { 'new' }
+      let(:params) do
+        {
+          password: password,
+          password_confirmation: password,
+        }
       end
 
       it 'does not create a password_changed user Event' do
@@ -111,8 +192,131 @@ describe Users::PasswordsController do
 
         expect(controller).to_not receive(:create_user_event)
 
-        params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }
+      end
+
+      context 'redirect_to_change_password is set to true' do
+        let(:user) { create(:user) }
+        let(:password) { 'false' }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: 'false',
+          }
+        end
+
+        before do
+          stub_sign_in(user)
+          stub_analytics
+          session[:redirect_to_change_password] = true
+        end
+
+        it 'renders edit' do
+          stub_analytics
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_logged_event(
+            'Password Changed',
+            success: false,
+            errors: {
+              password: [
+                t(
+                  'errors.attributes.password.too_short.other',
+                  count: Devise.password_length.first,
+                ),
+              ],
+              password_confirmation: [t(
+                'errors.messages.too_short.other',
+                count: Devise.password_length.first,
+              )],
+            },
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: true,
+          )
+          expect(response).to render_template(:edit)
+        end
+      end
+
+      context 'when password is too short' do
+        before do
+          stub_sign_in
+          stub_analytics
+          stub_analytics
+        end
+
+        it 'renders edit' do
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_logged_event(
+            'Password Changed',
+            success: false,
+            errors: {
+              password: [
+                t(
+                  'errors.attributes.password.too_short.other',
+                  count: Devise.password_length.first,
+                ),
+              ],
+              password_confirmation: [t(
+                'errors.messages.too_short.other',
+                count: Devise.password_length.first,
+              )],
+            },
+            error_details: {
+              password: { too_short: true },
+              password_confirmation: { too_short: true },
+            },
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: false,
+          )
+          expect(response).to render_template(:edit)
+        end
+      end
+
+      context 'when passwords do not match' do
+        let(:password) { 'salty pickles' }
+        let(:password_confirmation) { 'salty pickles2' }
+
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password_confirmation,
+          }
+        end
+
+        before do
+          stub_sign_in
+          stub_analytics
+          stub_analytics
+        end
+
+        it 'renders edit' do
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_logged_event(
+            'Password Changed',
+            success: false,
+            errors: {
+              password_confirmation: [t('errors.messages.password_mismatch')],
+            },
+            error_details: {
+              password_confirmation: { mismatch: true },
+            },
+            pending_profile_present: false,
+            active_profile_present: false,
+            user_id: subject.current_user.uuid,
+            required_password_change: false,
+          )
+          expect(response).to render_template(:edit)
+        end
       end
     end
   end
@@ -133,7 +337,10 @@ describe Users::PasswordsController do
       end
 
       it 'renders form if PII is decrypted' do
-        controller.user_session[:decrypted_pii] = pii.to_json
+        Pii::Cacher.new(
+          controller.current_user,
+          controller.user_session,
+        ).save_decrypted_pii(pii, 123)
 
         get :edit
 

@@ -1,25 +1,29 @@
-<% title t('titles.visitors.index') %>
+<% self.title = t('titles.visitors.index') %>
 
-<%= render 'shared/maintenance_window_alert' %>
-
-<% if decorated_session.sp_name %>
-  <div class='text-center'>
-    <%= image_tag(asset_url('user-access.svg'), width: '280', alt: '') %>
-
-    <%= render decorated_session.registration_heading %>
-  </div>
-<% else %>
-  <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
+<% if decorated_sp_session.sp_name %>
+  <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% end %>
-<%= render 'shared/sp_alert' %>
 
-<%= simple_form_for(
-      resource,
-      as: resource_name,
-      url: session_path(resource_name),
-      html: { autocomplete: 'off' },
-    ) do |f|
-%>
+<%= render TabNavigationComponent.new(
+      label: t('account.login.tab_navigation'),
+      routes: [
+        { text: t('links.sign_in'), path: new_user_session_url },
+        { text: t('links.create_account'), path: sign_up_email_url },
+      ],
+      class: 'margin-bottom-4',
+    ) %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.sign_in_existing_users')) %>
+
+<%= render 'shared/sp_alert', section: 'sign_in' %>
+
+<% if @issuer_forced_reauthentication %>
+  <p>
+    <%= t('account.login.forced_reauthentication_notice_html', sp_name: decorated_sp_session.sp_name) %>
+  </p>
+<% end %>
+
+<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :email,
@@ -29,24 +33,28 @@
       ) %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        required: true,
-        wrapper_html: { class: 'margin-top-6' },
+        class: 'margin-bottom-4',
+        field_options: {
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
+        },
       ) %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
-  <div class='margin-bottom-4'>
-    <%= f.submit t('links.next'), full_width: true, wide: false %>
-    <h2 class='separator-text'>
-      <%= t('headings.create_account_with_sp.cta', app_name: APP_NAME) %>
-    </h2>
-    <%= link_to(
-          t('links.create_account'),
-          sign_up_email_url(request_id: @request_id),
-          class: 'usa-button usa-button--big usa-button--outline usa-button--full-width margin-top-1',
-        ) %>
-  </div>
+  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
+
+  <% if FeatureManagement.sign_in_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
+    <%= render CaptchaSubmitButtonComponent.new(
+          form: f,
+          action: SignInRecaptchaForm::RECAPTCHA_ACTION,
+          button_options: { full_width: true },
+        ).with_content(t('links.sign_in')) %>
+  <% else %>
+    <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
+  <% end %>
 <% end %>
-<% if @ial && desktop_device? %>
-  <div class='margin-x-neg-1 margin-y-4'>
+<% if desktop_device? %>
+  <div class='margin-x-neg-1 margin-top-205'>
     <%= link_to(
           t('account.login.piv_cac'),
           login_piv_cac_url,
@@ -55,35 +63,57 @@
   </div>
 <% end %>
 
-<% if ial2_requested? %>
-  <%= render 'sign_up/registrations/required_pii_accordion' %>
-<% end %>
-
 <%= render PageFooterComponent.new do %>
-  <% if decorated_session.sp_name %>
+  <% if decorated_sp_session.sp_name %>
     <div class="margin-bottom-1">
       <%= render 'devise/sessions/return_to_service_provider' %>
     </div>
   <% end %>
 
   <div class="margin-bottom-1">
-    <%= link_to(
-          t('links.passwords.forgot'),
-          new_user_password_url(request_id: @request_id),
-        ) %>
+    <%= link_to(t('links.passwords.forgot'), new_user_password_url) %>
   </div>
 
   <p class="margin-y-1">
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('notices.privacy.security_and_privacy_practices'),
-          MarketingSite.security_and_privacy_practices_url,
+          policy_redirect_url(
+            policy: :security_and_privacy_practices,
+            flow: :sign_in,
+            step: :sign_in,
+          ),
         ) %>
   </p>
 
   <p class="margin-y-1">
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('notices.privacy.privacy_act_statement'),
-          MarketingSite.privacy_act_statement_url,
+          policy_redirect_url(
+            policy: :privacy_act_statement,
+            flow: :sign_in,
+            step: :sign_in,
+          ),
         ) %>
   </p>
+  <% if FeatureManagement.sign_in_recaptcha_enabled? %>
+    <p class="margin-top-4">
+      <%= t(
+            'notices.sign_in.recaptcha.disclosure_statement_html',
+            google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
+            google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
+          ) %>
+    </p>
+  <% end %>
+<% end %>
+
+<%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>
+<% if IdentityConfig.store.participate_in_dap %>
+  <!-- <%= t('notices.dap_participation') %> -->
+  <%= javascript_packs_tag_once(
+        'digital-analytics-program',
+        url_params: { agency: 'GSA', subagency: 'TTS' },
+        defer: true,
+        id: '_fed_an_ua_tag',
+        preload_links_header: false,
+      ) %>
 <% end %>

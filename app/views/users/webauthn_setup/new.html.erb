@@ -1,14 +1,25 @@
-<% title t('titles.totp_setup.new') %>
+<% self.title = @presenter.page_title %>
 
-<%= image_tag asset_url(@presenter.image_path), alt: '', width: '90', class: 'margin-left-1 margin-bottom-2' %>
+<% if @platform_authenticator %>
+  <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<%= @presenter.intro_html %>
+<% if @need_to_set_up_additional_mfa %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('forms.webauthn_platform_setup.info_text') %>
+  <% end %>
+<% end %>
+
+<span id="webauthn-intro">
+  <%= @presenter.intro_html %>
+</span>
+<%= @presenter.learn_more_html unless @platform_authenticator %>
 
 <%= simple_form_for(
       '',
-      url: webauthn_setup_path,
+      url: webauthn_setup_path(platform: @platform_authenticator.presence),
       method: :patch,
       html: {
         class: 'margin-top-4 margin-bottom-1',
@@ -16,56 +27,68 @@
       },
     ) do |f| %>
   <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>
-  <%= hidden_field_tag :user_email, current_user.confirmed_email_addresses.first.email, id: 'user_email' %>
+  <%= hidden_field_tag :user_email, current_user.last_sign_in_email_address.email, id: 'user_email' %>
   <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
   <%= hidden_field_tag :exclude_credentials, @exclude_credentials&.join(','), id: 'exclude_credentials' %>
   <%= hidden_field_tag :webauthn_id, '', id: 'webauthn_id' %>
-  <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+  <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
+  <%= hidden_field_tag :transports, '', id: 'transports' %>
+
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block text-bold', for: 'nickname' %>
-  <%= text_field_tag(
-        :name,
-        '',
-        required: true,
-        aria: { invalid: false },
-        id: 'nickname',
-        class: 'display-block width-full field font-family-mono',
-        size: 16,
-        maxlength: 20,
-      ) %>
+  <% if !@platform_authenticator %>
+    <fieldset aria-labelledby="webauthn-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
+      <%= render ProcessListComponent.new(connected: true) do |c| %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_1'), heading_id: 'step-1-label') do %>
+          <p><%= t('forms.webauthn_setup.step_1a') %></p>
+          <%= render ValidatedFieldComponent.new(
+                form: f,
+                name: :name,
+                required: true,
+                label: false,
+                hint: @presenter.device_nickname_hint,
+                wrapper_html: { class: 'margin-bottom-0' },
+                input_html: {
+                  aria: { labelledby: 'step-1-label' },
+                  id: 'nickname',
+                  class: 'font-family-mono',
+                  size: 16,
+                  maxlength: 20,
+                },
+              ) %>
+        <% end %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_2')) do %>
+            <%= render SecurityKeyImageComponent.new(mobile: mobile?) %>
+          <% end %>
+        <%= c.with_item(heading: t('forms.webauthn_setup.step_3')) do %>
+          <p><%= t('forms.webauthn_setup.step_3a') %></p>
+        <% end %>
+      <% end %>
+    </fieldset>
+  <% end %>
+  <div class="margin-y-4 text-center" id="spinner" hidden>
+    <%= image_tag(
+          asset_url('loading-badge.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
+    <strong class="display-block margin-top-2">
+      <%= t('forms.webauthn_setup.saving') %>
+    </strong>
+  </div>
   <%= f.input(
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
-        wrapper_html: { class: 'margin-top-4' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'display-none' %>
+  <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
-<%= button_tag(
-      @presenter.button_text,
-      class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      id: 'continue-button',
-    ) %>
-
-<div class="spinner display-none margin-y-4" id='spinner'>
-  <div class='text-center'>
-    <%= image_tag(
-          asset_url('spinner.gif'),
-          srcset: asset_url('spinner@2x.gif'),
-          height: 144,
-          width: 144,
-          alt: '',
-        ) %>
-  </div>
-  <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
-  <p class='half-center'><%= @presenter.setup_instructions %></p>
-</div>
 
 <%= render 'shared/cancel_or_back_to_options' %>
 

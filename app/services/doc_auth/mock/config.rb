@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Mock
     Config = RedactedStruct.new(
@@ -11,6 +13,6 @@ module DocAuth
         :sharpness_threshold,
         :glare_threshold,
       ],
-    )
+    ).freeze
   end
 end

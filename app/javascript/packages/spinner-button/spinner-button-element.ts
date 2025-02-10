@@ -4,15 +4,50 @@ interface SpinnerButtonElements {
   actionMessage: HTMLElement;
 }
 
-/**
- * Default time after which to show action message, in milliseconds.
- */
-const DEFAULT_LONG_WAIT_DURATION_MS = 15000;
-
 export class SpinnerButtonElement extends HTMLElement {
   elements: SpinnerButtonElements;
 
+  form: HTMLFormElement | null;
+
   #longWaitTimeout?: number;
+
+  connectedCallback() {
+    this.form = this.querySelector('form') || this.closest('form');
+    this.button.addEventListener('click', this.#preventDefaultIfSpinning);
+
+    this.addEventListener('spinner.start', () => this.toggleSpinner(true));
+    this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
+
+    if (this.spinOnClick) {
+      if (this.form) {
+        this.form.addEventListener('submit', this.showSpinner);
+      } else {
+        this.button.addEventListener('click', this.showSpinner);
+      }
+    }
+  }
+
+  disconnectedCallback() {
+    window.clearTimeout(this.#longWaitTimeout);
+
+    if (this.form) {
+      this.form.removeEventListener('submit', this.showSpinner);
+    } else {
+      this.button.removeEventListener('click', this.showSpinner);
+    }
+  }
+
+  get button(): HTMLElement {
+    return this.querySelector('.usa-button')!;
+  }
+
+  get isSpinning(): boolean {
+    return this.classList.contains('spinner-button--spinner-active');
+  }
+
+  get actionMessage(): HTMLElement {
+    return this.querySelector('.spinner-button__action-message')!;
+  }
 
   get spinOnClick(): boolean {
     return this.getAttribute('spin-on-click') !== 'false';
@@ -22,51 +57,40 @@ export class SpinnerButtonElement extends HTMLElement {
    * Time after which to show action message, in milliseconds.
    */
   get longWaitDurationMs(): number {
-    return Number(this.getAttribute('long-wait-duration-ms')) || DEFAULT_LONG_WAIT_DURATION_MS;
+    return Number(this.getAttribute('long-wait-duration-ms'));
   }
 
-  connectedCallback() {
-    this.elements = {
-      button: this.querySelector('a,button:not([type]),[type="submit"],[type="button"]')!,
-      actionMessage: this.querySelector('.spinner-button__action-message')!,
-    };
-
-    if (this.spinOnClick) {
-      this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
-    }
-    this.addEventListener('spinner.start', () => this.toggleSpinner(true));
-    this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
-  }
+  showSpinner = () => this.toggleSpinner(true);
 
   toggleSpinner(isVisible: boolean) {
-    const { button, actionMessage } = this.elements;
     this.classList.toggle('spinner-button--spinner-active', isVisible);
+    this.button.classList.toggle('usa-button--active', isVisible);
 
-    // Avoid setting disabled immediately to allow click event to propagate for form submission.
-    setTimeout(() => {
-      if (isVisible) {
-        button.setAttribute('disabled', '');
-      } else {
-        button.removeAttribute('disabled');
-      }
-    }, 0);
+    if (isVisible) {
+      this.button.setAttribute('aria-disabled', 'true');
+    } else {
+      this.button.removeAttribute('aria-disabled');
+    }
 
-    if (actionMessage) {
-      actionMessage.textContent = isVisible ? (actionMessage.dataset.message as string) : '';
+    if (this.actionMessage) {
+      this.actionMessage.textContent = isVisible ? this.actionMessage.dataset.message! : '';
     }
 
     window.clearTimeout(this.#longWaitTimeout);
-    if (isVisible) {
-      this.#longWaitTimeout = window.setTimeout(
-        () => this.handleLongWait(),
-        this.longWaitDurationMs,
-      );
+    if (isVisible && Number.isFinite(this.longWaitDurationMs)) {
+      this.#longWaitTimeout = window.setTimeout(this.#handleLongWait, this.longWaitDurationMs);
     }
   }
 
-  handleLongWait() {
-    this.elements.actionMessage?.classList.remove('usa-sr-only');
-  }
+  #handleLongWait = () => {
+    this.actionMessage?.classList.remove('usa-sr-only');
+  };
+
+  #preventDefaultIfSpinning = (event: MouseEvent) => {
+    if (this.isSpinning) {
+      event.preventDefault();
+    }
+  };
 }
 
 declare global {

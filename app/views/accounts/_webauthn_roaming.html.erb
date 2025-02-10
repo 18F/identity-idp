@@ -1,30 +1,32 @@
-<h2 class="margin-top-0 margin-bottom-1">
+<h2 class="margin-top-0 margin-bottom-2">
   <%= t('account.index.webauthn') %>
 </h2>
 
-<div class="border-bottom border-primary-light">
-  <% MfaContext.new(current_user).webauthn_roaming_configurations.each do |cfg| %>
-    <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
-      <div class="grid-col-8 tablet:grid-col-6 truncate">
-        <%= cfg.name %>
-      </div>
-      <% if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled? %>
-        <div class="grid-col-4 tablet:grid-col-6 text-right">
-          <%= link_to(
-                t('account.index.webauthn_delete'),
-                webauthn_setup_delete_path(id: cfg.id),
-              ) %>
-        </div>
-      <% end %>
-    </div>
-    <div class="clearfix"></div>
+
+<p>
+  <%= t('two_factor_authentication.two_factor_choice_options.webauthn_info') %>
+</p>
+
+<div role="list">
+  <% MfaContext.new(current_user).webauthn_roaming_configurations.each do |configuration| %>
+    <%= render ManageableAuthenticatorComponent.new(
+          configuration:,
+          user_session:,
+          manage_url: edit_webauthn_path(id: configuration.id),
+          manage_api_url: api_internal_two_factor_authentication_webauthn_path(id: configuration.id),
+          custom_strings: {
+            deleted: t('two_factor_authentication.webauthn_roaming.deleted'),
+            renamed: t('two_factor_authentication.webauthn_roaming.renamed'),
+            manage_accessible_label: t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
+          },
+          role: 'listitem',
+        ) %>
   <% end %>
 </div>
 
 <%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(webauthn_setup_path, **tag_options, &block)
-      end,
+      url: webauthn_setup_path,
       icon: :add,
-      class: 'usa-button usa-button--outline margin-top-2',
+      outline: true,
+      class: 'margin-top-2',
     ).with_content(t('account.index.webauthn_add')) %>

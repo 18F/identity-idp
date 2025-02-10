@@ -1,10 +1,33 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
-  def title(title)
+  # Sets the page title
+  def title=(title)
     content_for(:title) { title }
   end
 
-  def background_cls(cls)
-    content_for(:background_cls) { cls }
+  class MissingTitleError < StandardError; end
+
+  # Shows the page title, or raises
+  # @return [String]
+  # @raise [MissingTitleError]
+  def title
+    content_for(:title).presence || (raise MissingTitleError, 'Missing title')
+  rescue MissingTitleError => error
+    if IdentityConfig.store.raise_on_missing_title
+      raise error
+    else
+      NewRelic::Agent.notice_error(error)
+      ''
+    end
+  end
+
+  def extends_layout(layout, **locals, &block)
+    if block.present?
+      @view_flow.get(:layout).replace capture(&block) # rubocop:disable Rails/HelperInstanceVariable
+    end
+
+    render template: "layouts/#{layout}", locals:
   end
 
   def sp_session
@@ -17,23 +40,8 @@ module ApplicationHelper
     )
   end
 
-  def session_with_trust?
-    current_user || page_with_trust?
-  end
-
-  def page_with_trust?
-    return false if current_page?(controller: 'users/sessions', action: 'new')
-    return true
-  end
-
   def ial2_requested?
-    sp_session && sp_session[:ial2]
-  end
-
-  def liveness_checking_enabled?
-    return false if !FeatureManagement.liveness_checking_enabled?
-    return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
-    !!current_user&.decorate&.password_reset_profile&.strict_ial2_proofed?
+    resolved_authn_context_result.identity_proofing?
   end
 
   def cancel_link_text

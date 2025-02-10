@@ -30,9 +30,9 @@ RSpec.describe StepIndicatorComponent, type: :component do
 
   subject(:rendered) do
     render_inline StepIndicatorComponent.new(
-      steps: steps,
-      current_step: current_step,
-      locale_scope: locale_scope,
+      steps:,
+      current_step:,
+      locale_scope:,
       class: classes,
     )
   end

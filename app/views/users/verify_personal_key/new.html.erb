@@ -1,8 +1,14 @@
-<%= simple_form_for('', url: create_verify_personal_key_path, method: 'post') do |f| %>
-  <div class="padding-top-6 padding-x-1 tablet:padding-x-8 key-badge border border-dashed border-secondary rounded-xl">
-    <h3 class="margin-top-0 margin-bottom-2">
-      <%= t('forms.personal_key.title') %>
-    </h3>
+<% self.title = t('forms.personal_key.title') %>
+
+<%= simple_form_for('', url: create_verify_personal_key_path, method: 'post', html: { class: 'margin-top-8' }) do |f| %>
+  <div class="padding-top-6 padding-bottom-1 padding-x-1 tablet:padding-x-4 position-relative border border-secondary rounded-xl">
+    <%= render AlertIconComponent.new(
+          icon_name: :personal_key,
+          class: 'alert-icon--centered-top',
+        ) %>
+
+    <%= render PageHeadingComponent.new.with_content(t('forms.personal_key.title')) %>
+
     <p class="margin-bottom-4">
       <%= t('forms.personal_key.instructions') %>
     </p>
@@ -10,17 +16,14 @@
     <%= render 'shared/personal_key_input', code: '', form: f %>
   </div>
 
-  <div class="margin-top-4">
-    <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--wide' %>
-  </div>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<div class="margin-top-2">
-  <%= t('forms.personal_key.alternative') %>
-  <%= button_to(
-        reactivate_account_path, method: :put,
-                                 class: 'usa-button usa-button--unstyled', form_class: 'display-inline-block padding-left-1'
-      ) { t('links.reverify') } %>
-</div>
+<%= t('forms.personal_key.alternative') %>
+<%= render ButtonComponent.new(
+      url: reactivate_account_path,
+      method: :put,
+      unstyled: true,
+    ).with_content(t('links.reverify')) %>
 
 <%= render 'shared/cancel', link: account_path %>

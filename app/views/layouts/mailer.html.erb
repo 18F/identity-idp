@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="width=device-width" name="viewport" /><%= stylesheet_link_tag 'email' %>
+    <title><%= @header || message.subject %>
+    </title>
+  </head>
+  <body>
+    <table class="body" data-made-with-foundation="">
+      <tbody>
+        <tr>
+          <td align="center" class="float-center" valign="top">
+            <center>
+              <table class="spacer">
+                <tbody>
+                  <tr>
+                    <td class="s10" height="10px">
+                      &nbsp;
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table class="container float-center">
+                <tbody>
+                  <tr>
+                    <td>
+                      <table class="spacer">
+                        <tbody>
+                          <tr>
+                            <td class="s60" height="60px">
+                              &nbsp;
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table class="row">
+                        <tbody>
+                          <tr>
+                            <th class="small-12 large-12 columns first last">
+                              <table>
+                                <tr>
+                                  <th>
+                                    <%= image_tag(
+                                          attachments['logo.png'].url,
+                                          size: '142x19',
+                                          style: 'width: 142px; height: 19px;',
+                                          alt: t('mailer.logo', app_name: APP_NAME),
+                                        ) %>
+                                  </th>
+                                  <th class="expander"></th>
+                                </tr>
+                              </table>
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table class="row">
+                        <tbody>
+                          <tr>
+                            <th class="small-12 large-12 columns first last">
+                              <table>
+                                <tr>
+                                  <th>
+                                    <table class="spacer">
+                                      <tbody>
+                                        <tr>
+                                          <td class="s30" height="30px">
+                                            &nbsp;
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                    <% unless @hide_title %>
+                                      <h1><%= @header || message.subject %></h1>
+                                    <% end %>
+                                    <%= yield %>
+                                    <table class="spacer">
+                                      <tbody>
+                                        <tr>
+                                          <td class="s30" height="30px">
+                                            &nbsp;
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </th>
+                                </tr>
+                              </table>
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table align="center" class="wrapper">
+                        <tr>
+                          <td class="wrapper-inner">
+                            <table class="row">
+                              <tbody>
+                                <tr>
+                                  <th class="small-12 large-12 columns first last">
+                                    <table>
+                                      <tr>
+                                        <th>
+                                          <p>
+                                            <%= t('mailer.no_reply') %>
+                                            <%= @help_text || t(
+                                                  'mailer.help_html',
+                                                  link_html: link_to(
+                                                    MarketingSite.nice_help_url,
+                                                    MarketingSite.help_url,
+                                                  ),
+                                                ) %>
+                                          </p>
+                                        </th>
+                                      </tr>
+                                    </table>
+                                  </th>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                      <table class="xwrapper">
+                        <tr>
+                          <td class="xwrapper-inner">
+                            <table class="row">
+                              <tbody>
+                                <tr>
+                                  <th class="small-12 large-12 columns first last">
+                                    <table class="hr">
+                                      <tr>
+                                        <th>
+                                          &nbsp;
+                                        </th>
+                                      </tr>
+                                    </table>
+                                    <table>
+                                      <tr>
+                                        <th>
+                                          <p>
+                                            <%= link_to(
+                                                  t('mailer.about', app_name: APP_NAME),
+                                                  MarketingSite.base_url,
+                                                  style: 'text-decoration: underline;',
+                                                ).html_safe %>
+                                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            <%= link_to(
+                                                  t('mailer.privacy_policy'),
+                                                  MarketingSite.security_and_privacy_practices_url,
+                                                  style: 'text-decoration: underline;',
+                                                ).html_safe %>
+                                          </p>
+                                          <p>
+                                            <%= t('mailer.sent_at', formatted_timestamp: Time.zone.now.iso8601(6)) %>
+                                          </p>
+                                        </th>
+                                        <th class="expander"></th>
+                                      </tr>
+                                    </table>
+                                  </th>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </center>
+          </td>
+        </tr>
+      </tbody>
+      <!--prevent Gmail on iOS font size manipulation-->
+      <div style="display:none; white-space:nowrap; font:15px courier; line-height:0;">
+        &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+        &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+        &#xA0; &#xA0; &#xA0; &#xA0;
+      </div>
+    </table>
+  </body>
+</html>

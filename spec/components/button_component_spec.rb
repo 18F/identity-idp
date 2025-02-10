@@ -83,24 +83,65 @@ RSpec.describe ButtonComponent, type: :component do
     it 'renders an icon' do
       rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
 
-      expect(rendered).to have_css('use[href$="#print"]')
+      expect(rendered).to have_xpath('//style[contains(text(), "/print-")]')
       expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
+    end
+
+    context 'with content including whitespace and safe html' do
+      let(:content) { safe_join([" \n ", content_tag('span', 'Button', class: 'example')]) }
+
+      it 'trims text of the content, maintaining html safety' do
+        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+        expect(rendered.to_html).to include('</span><span class="example">Button</span>')
+      end
+    end
+
+    context 'with content including whitespace and unsafe html' do
+      let(:content) { safe_join([" \n ", '<span class="example">Button</span>']) }
+
+      it 'trims text of the content, maintaining html safety' do
+        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+        expect(rendered.to_html).to include(
+          '</span>&lt;span class="example"&gt;Button&lt;/span&gt;',
+        )
+      end
+    end
+
+    context 'with no content' do
+      it 'renders without error' do
+        render_inline ButtonComponent.new(icon: :print)
+      end
     end
   end
 
-  context 'with custom button action' do
-    it 'calls the action with content and tag_options' do
-      rendered = render_inline ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }, &block)
-        end,
-        class: 'custom-class',
-      ).with_content(content)
+  context 'with url' do
+    let(:url) { '/' }
+    let(:options) { { url: } }
 
-      expect(rendered).to have_css(
-        'lg-custom-button[data-extra].custom-class',
-        text: content,
-      )
+    it 'renders link to url' do
+      expect(rendered).to have_link(content, href: url)
+    end
+
+    context 'with method' do
+      let(:method) { :put }
+      let(:options) { super().merge(method:) }
+
+      it 'renders button to url' do
+        expect(rendered).to have_selector("form[action='#{url}']")
+        expect(rendered).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
+        expect(rendered).to have_selector("button[type='submit']")
+        expect(rendered).to have_text(content)
+      end
+
+      context 'with get method' do
+        let(:method) { :get }
+
+        it 'renders link to url' do
+          expect(rendered).to have_link(content, href: url)
+        end
+      end
     end
   end
 end

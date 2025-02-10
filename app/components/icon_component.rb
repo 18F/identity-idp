@@ -1,10 +1,10 @@
-require 'set'
+# frozen_string_literal: true
 
 class IconComponent < BaseComponent
-  include AssetHelper
+  attr_reader :icon, :size, :tag_options
 
   # See: https://github.com/uswds/uswds/tree/develop/src/img/usa-icons
-  ICONS = %i[
+  validates_inclusion_of :icon, in: %i[
     accessibility_new
     accessible_forward
     account_balance
@@ -248,17 +248,20 @@ class IconComponent < BaseComponent
     zoom_out_map
   ].to_set.freeze
 
-  attr_reader :icon, :tag_options
-
-  def initialize(icon:, **tag_options)
-    raise ArgumentError, "`icon` #{icon} is not a valid icon" if !ICONS.include?(icon)
-
+  def initialize(icon:, size: nil, **tag_options)
     @icon = icon
+    @size = size
     @tag_options = tag_options
   end
 
+  def css_class
+    classes = ['icon', 'usa-icon', *tag_options[:class]]
+    classes << "usa-icon--size-#{size}" if size
+    classes
+  end
+
   def icon_path
-    asset_path([design_system_asset_path('img/sprite.svg'), '#', icon].join, host: asset_host)
+    @icon_path ||= asset_path("usa-icons/#{icon}.svg", host: asset_host)
   end
 
   private

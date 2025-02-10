@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 module Users
   class RulesOfUseController < ApplicationController
+    include SecureHeadersConcern
+
     before_action :confirm_signed_in
     before_action :confirm_need_to_accept_rules_of_use
+    before_action :apply_secure_headers_override
 
     def new
       analytics.rules_of_use_visit
@@ -14,7 +19,7 @@ module Users
 
       result = @rules_of_use_form.submit(permitted_params)
 
-      analytics.rules_of_use_submitted(**result.to_h)
+      analytics.rules_of_use_submitted(**result)
 
       if result.success?
         process_successful_agreement_to_rules_of_use

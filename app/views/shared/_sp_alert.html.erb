@@ -1,6 +1,6 @@
-<% alert = decorated_session.sp_alert(request.path) %>
+<% alert = decorated_sp_session.sp_alert(section) %>
 <% if alert %>
-  <%= render AlertComponent.new(text_tag: 'div') do %>
+  <%= render AlertComponent.new(type: :info, text_tag: 'div', class: 'margin-bottom-4') do %>
     <%= raw sanitize(alert, tags: %w[a b strong em br p ol ul li], attributes: %w[href target]) %>
   <% end %>
 <% end %>

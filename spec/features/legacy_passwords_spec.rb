@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-feature 'legacy passwords' do
+RSpec.feature 'legacy passwords' do
   scenario 'signing in with a password digested by the uak verifier updates the digest' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
+      encrypted_password_digest_multi_region: nil,
     )
 
     expect(
@@ -14,7 +15,7 @@ feature 'legacy passwords' do
     signin(user.email, 'legacy password')
 
     expect(page).to have_current_path(
-      login_otp_path(otp_delivery_preference: :sms, reauthn: false),
+      login_otp_path(otp_delivery_preference: :sms),
     )
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     expect(
@@ -23,23 +24,25 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with an incorrect uak password digest does not grant access' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
+      encrypted_password_digest_multi_region: nil,
     )
 
     signin(user.email, 'a different password')
 
     expect(page).to have_current_path(new_user_session_path)
     expect(page).to have_content(
-      t('devise.failure.invalid_html', link: t('devise.failure.invalid_link_text')),
+      t('devise.failure.invalid_html', link_html: t('devise.failure.invalid_link_text')),
     )
   end
 
   scenario 'signing in with a personal key digested by the uak verifier make a new digest' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
+      encrypted_recovery_code_digest_multi_region: nil,
     )
 
     expect(
@@ -56,9 +59,10 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
+      encrypted_recovery_code_digest_multi_region: nil,
     )
 
     sign_in_user(user)

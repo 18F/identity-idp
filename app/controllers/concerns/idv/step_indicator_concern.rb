@@ -1,8 +1,32 @@
+# frozen_string_literal: true
+
 module Idv
   module StepIndicatorConcern
     extend ActiveSupport::Concern
 
-    include IdvSession
+    STEP_INDICATOR_STEPS = [
+      { name: :getting_started },
+      { name: :verify_id },
+      { name: :verify_info },
+      { name: :verify_phone },
+      { name: :re_enter_password },
+    ].freeze
+
+    STEP_INDICATOR_STEPS_GPO = [
+      { name: :getting_started },
+      { name: :verify_id },
+      { name: :verify_info },
+      { name: :verify_address },
+      { name: :secure_account },
+    ].freeze
+
+    STEP_INDICATOR_STEPS_IPP = [
+      { name: :find_a_post_office },
+      { name: :verify_info },
+      { name: :verify_phone },
+      { name: :re_enter_password },
+      { name: :go_to_the_post_office },
+    ].freeze
 
     included do
       helper_method :step_indicator_steps
@@ -10,41 +34,27 @@ module Idv
 
     def step_indicator_steps
       if in_person_proofing?
-        if gpo_address_verification?
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
-        else
-          Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
-        end
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP
       elsif gpo_address_verification?
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       else
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
       end
     end
 
     private
 
     def in_person_proofing?
-      proofing_components_as_hash['document_check'] == Idp::Constants::Vendors::USPS
+      current_user&.has_in_person_enrollment?
     end
 
     def gpo_address_verification?
-      # Proofing component values are (currently) never reset between proofing attempts, hence why
-      # this refers to the session address verification mechanism and not the proofing component.
-      !!current_user.pending_profile || idv_session.address_verification_mechanism == 'gpo'
-    end
+      # This can be used in a context where user_session and idv_session are not available
+      # (hybrid flow), so check for current_user before accessing them.
+      return false unless current_user
+      return true if current_user.gpo_verification_pending_profile?
 
-    def proofing_components_as_hash
-      # A proofing component record exists as a zero-or-one-to-one relation with a user, and values
-      # are set during identity verification. These values are recorded to the profile at creation,
-      # including for a pending profile.
-      @proofing_components_as_hash ||= begin
-        if current_user.pending_profile
-          current_user.pending_profile.proofing_components
-        else
-          ProofingComponent.find_by(user: current_user).as_json
-        end
-      end.to_h
+      return idv_session.verify_by_mail?
     end
   end
 end

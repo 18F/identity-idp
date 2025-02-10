@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 EventDecorator = Struct.new(:event) do
   def event_type
     I18n.t("event_types.#{event.event_type}", app_name: APP_NAME)

@@ -13,8 +13,8 @@ RSpec.describe GpoDailyJob do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii).
-      and_return(designated_receiver_pii)
+    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii)
+      .and_return(designated_receiver_pii)
   end
 
   describe '#perform' do
@@ -46,15 +46,6 @@ RSpec.describe GpoDailyJob do
       it 'uploads to GPO' do
         expect { perform }.to change { LetterRequestsToGpoFtpLog.count }.by(1)
       end
-    end
-  end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).to eq("gpo-daily-job-#{date}")
     end
   end
 end

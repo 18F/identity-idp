@@ -1,37 +1,49 @@
 import baseUserEvent from '@testing-library/user-event';
 import { getByRole, fireEvent, screen } from '@testing-library/dom';
+import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import './spinner-button-element';
-import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
-  const { clock } = useSandbox({ useFakeTimers: true });
+  const sandbox = useSandbox({ useFakeTimers: true });
+  const { clock } = sandbox;
   const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
-
-  const longWaitDurationMs = 1000;
 
   interface WrapperOptions {
     actionMessage?: string;
-
-    tagName?: string;
-
     spinOnClick?: boolean;
+    inForm?: boolean;
+    isButtonTo?: boolean;
+    longWaitDurationMs?: number;
   }
 
-  function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
-    document.body.innerHTML = `
+  function createWrapper({
+    actionMessage,
+    spinOnClick,
+    inForm,
+    isButtonTo,
+    longWaitDurationMs = 1000,
+  }: WrapperOptions = {}) {
+    let button = `
+      <button class="usa-button">
+        <span class="spinner-button__content">Click Me</span>
+        <span class="spinner-dots" aria-hidden="true">
+          <span class="spinner-dots__dot"></span>
+          <span class="spinner-dots__dot"></span>
+          <span class="spinner-dots__dot"></span>
+        </span>
+      </button>`;
+
+    if (isButtonTo) {
+      button = `<form action="#">${button}</form>`;
+    }
+
+    let html = `
       <lg-spinner-button
         long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
       >
-        <div class="spinner-button__content">
-          ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
-          <span class="spinner-dots" aria-hidden="true">
-            <span class="spinner-dots__dot"></span>
-            <span class="spinner-dots__dot"></span>
-            <span class="spinner-dots__dot"></span>
-          </span>
-        </div>
+        ${button}
         ${
           actionMessage
             ? `<div
@@ -42,42 +54,116 @@ describe('SpinnerButtonElement', () => {
         }
       </lg-spinner-button>`;
 
-    return document.body.firstElementChild as SpinnerButtonElement;
+    if (inForm) {
+      html = `<form action="#">${html}</form>`;
+    }
+
+    document.body.innerHTML = html;
+
+    return document.querySelector('lg-spinner-button')!;
   }
 
   it('shows spinner on click', async () => {
     const wrapper = createWrapper();
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.click(button);
 
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
   });
 
-  it('disables button without preventing form handlers', async () => {
-    const wrapper = createWrapper({ tagName: 'button' });
-    let submitted = false;
-    const form = document.createElement('form');
-    form.action = '#';
-    form.addEventListener('submit', (event) => {
-      submitted = true;
-      event.preventDefault();
+  context('inside form', () => {
+    it('disables button without preventing form handlers', async () => {
+      const wrapper = createWrapper({ inForm: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
+      expect(button.ariaDisabled).to.equal('true');
     });
-    document.body.appendChild(form);
-    form.appendChild(wrapper);
+
+    it('prevents duplicate submission', async () => {
+      const wrapper = createWrapper({ inForm: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
+    });
+
+    it('unbinds events when disconnected', () => {
+      const wrapper = createWrapper({ inForm: true });
+      const form = wrapper.form!;
+      form.removeChild(wrapper);
+
+      sandbox.spy(wrapper, 'toggleSpinner');
+      fireEvent.submit(form);
+
+      expect(wrapper.toggleSpinner).not.to.have.been.called();
+    });
+  });
+
+  context('with form inside (button_to)', () => {
+    it('disables button without preventing form handlers', async () => {
+      const wrapper = createWrapper({ isButtonTo: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit).to.have.been.calledOnce();
+      expect(button.ariaDisabled).to.equal('true');
+    });
+
+    it('prevents duplicate submission', async () => {
+      const wrapper = createWrapper({ isButtonTo: true });
+      const onSubmit = sandbox.stub().callsFake((event: SubmitEvent) => event.preventDefault());
+      wrapper.form!.addEventListener('submit', onSubmit);
+      const button = screen.getByRole('button', { name: 'Click Me' });
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit.callCount).equal(1);
+
+      await userEvent.type(button, '{Enter}');
+      clock.tick(0);
+
+      expect(onSubmit.callCount).equal(1);
+    });
+  });
+
+  it('does not show spinner if form is invalid', async () => {
+    const wrapper = createWrapper({ inForm: true });
+    const form = wrapper.closest('form')!;
+    const input = document.createElement('input');
+    input.required = true;
+    form.appendChild(input);
     const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.type(button, '{Enter}');
-    clock.tick(0);
 
-    expect(submitted).to.be.true();
-    expect(button.hasAttribute('disabled')).to.be.true();
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
   });
 
   it('announces action message', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -88,9 +174,10 @@ describe('SpinnerButtonElement', () => {
   });
 
   it('shows action message visually after long delay', async () => {
-    const wrapper = createWrapper({ actionMessage: 'Verifying...' });
+    const longWaitDurationMs = 1000;
+    const wrapper = createWrapper({ actionMessage: 'Verifying...', longWaitDurationMs });
     const status = getByRole(wrapper, 'status');
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -99,6 +186,16 @@ describe('SpinnerButtonElement', () => {
     expect(status.classList.contains('usa-sr-only')).to.be.true();
     clock.tick(1);
     expect(status.classList.contains('usa-sr-only')).to.be.false();
+  });
+
+  it('does not show visual action message when given infinite delay', async () => {
+    const longWaitDurationMs = Infinity;
+    createWrapper({ actionMessage: 'Verifying...', longWaitDurationMs });
+    const button = screen.getByRole('button', { name: 'Click Me' });
+
+    sandbox.spy(window, 'setTimeout');
+    await userEvent.click(button);
+    expect(window.setTimeout).not.to.have.been.called();
   });
 
   it('supports external dispatched events to control spinner', () => {
@@ -112,10 +209,24 @@ describe('SpinnerButtonElement', () => {
 
   it('supports disabling default spin on click behavior', async () => {
     const wrapper = createWrapper({ spinOnClick: false });
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.click(button);
 
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
+  });
+
+  it('removes action message timeout when disconnected from the page', async () => {
+    const wrapper = createWrapper({ actionMessage: 'Verifying...' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
+
+    sandbox.spy(window, 'setTimeout');
+    sandbox.spy(window, 'clearTimeout');
+
+    await userEvent.click(button);
+    wrapper.parentNode!.removeChild(wrapper);
+
+    const timeoutId = (window.setTimeout as unknown as SinonStub).getCall(0).returnValue;
+    expect(window.clearTimeout).to.have.been.calledWith(timeoutId);
   });
 });

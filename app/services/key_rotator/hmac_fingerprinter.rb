@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module KeyRotator
   class HmacFingerprinter
     def rotate(user:, pii_attributes: nil, profile: nil)

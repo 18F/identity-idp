@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class UserPivCacVerificationForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
   attr_accessor :x509_dn_uuid, :x509_dn, :x509_issuer, :token, :error_type, :nonce, :user, :key_id,
-                :piv_cac_required, :piv_cac_configuration
+                :piv_cac_required
 
   validates :token, presence: true
   validates :nonce, presence: true
@@ -16,8 +18,13 @@ class UserPivCacVerificationForm
     FormResponse.new(
       success: success,
       errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      extra: extra_analytics_attributes,
     )
+  end
+
+  def piv_cac_configuration
+    return nil if x509_dn_uuid.blank?
+    @piv_cac_configuration ||= ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
   end
 
   private
@@ -29,7 +36,6 @@ class UserPivCacVerificationForm
   end
 
   def x509_cert_matches
-    piv_cac_configuration = ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
     if user == piv_cac_configuration&.user
       true
     else
@@ -49,8 +55,10 @@ class UserPivCacVerificationForm
 
   def extra_analytics_attributes
     {
-      multi_factor_auth_method: 'piv_cac',
       piv_cac_configuration_id: piv_cac_configuration&.id,
+      piv_cac_configuration_dn_uuid: x509_dn_uuid,
+      key_id: key_id,
+      multi_factor_auth_method_created_at: piv_cac_configuration&.created_at&.strftime('%s%L'),
     }
   end
 end

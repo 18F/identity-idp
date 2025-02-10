@@ -1,18 +1,26 @@
+# frozen_string_literal: true
+
 module Telephony
   class OtpSender
-    attr_reader :recipient_phone, :otp, :expiration, :channel, :domain, :country_code
+    attr_reader :recipient_phone, :otp, :expiration, :otp_format, :otp_length, :channel,
+                :domain, :country_code, :extra_metadata
 
-    def initialize(to:, otp:, expiration:, channel:, domain:, country_code:)
+    def initialize(to:, otp:, expiration:, otp_format:,
+                   channel:, domain:, country_code:, extra_metadata:,
+                   otp_length: I18n.t('telephony.format_length.six'))
       @recipient_phone = to
       @otp = otp
+      @otp_format = otp_format
+      @otp_length = otp_length
       @expiration = expiration
       @channel = channel.to_sym
       @domain = domain
       @country_code = country_code
+      @extra_metadata = extra_metadata
     end
 
     def send_authentication_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: authentication_message,
         to: recipient_phone,
         otp: otp,
@@ -23,7 +31,7 @@ module Telephony
     end
 
     def send_confirmation_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: confirmation_message,
         to: recipient_phone,
         otp: otp,
@@ -39,6 +47,7 @@ module Telephony
           "telephony.authentication_otp.#{channel}",
           app_name: APP_NAME,
           code: otp_transformed_for_channel,
+          format_type: otp_format,
           expiration: expiration,
           domain: domain,
         ),
@@ -51,6 +60,8 @@ module Telephony
           "telephony.confirmation_otp.#{channel}",
           app_name: APP_NAME,
           code: otp_transformed_for_channel,
+          format_length: otp_length,
+          format_type: otp_format,
           expiration: expiration,
           domain: domain,
         ),
@@ -75,19 +86,22 @@ module Telephony
     end
 
     def log_response(response, context:)
-      extra = {
-        adapter: Telephony.config.adapter,
-        channel: channel,
-        context: context,
-      }
-      output = response.to_h.merge(extra).to_json
-      Telephony.config.logger.info(output)
+      extra = extra_metadata.merge(
+        {
+          adapter: Telephony.config.adapter,
+          channel: channel,
+          context: context,
+          country_code: country_code,
+        },
+      )
+      output = response.to_h.merge(extra)
+      Telephony.log_info(event: output)
     end
 
     def otp_transformed_for_channel
       return otp if channel != :voice
 
-      otp.chars.join(" <break time='#{Telephony.config.voice_pause_time}' /> ")
+      [*otp.chars, ''].join(" <break time='#{Telephony.config.voice_pause_time}' /> ")
     end
 
     def wrap_in_ssml_if_needed(message)

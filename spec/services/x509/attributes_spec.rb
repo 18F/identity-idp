@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe X509::Attributes do
+RSpec.describe X509::Attributes do
   let(:user_access_key) { UserAccessKey.new(password: 'sekrit', salt: SecureRandom.uuid) }
 
   describe '#new_from_hash' do

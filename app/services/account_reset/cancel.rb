@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AccountReset
   class Cancel
     include ActiveModel::Model
@@ -25,7 +27,8 @@ module AccountReset
 
     def notify_user_via_email_of_account_reset_cancellation
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_cancel(user, email_address).deliver_now_or_later
+        UserMailer.with(user: user, email_address: email_address).account_reset_cancel
+          .deliver_now_or_later
       end
     end
 

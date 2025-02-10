@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe 'account_reset/recovery_options/show.html.erb' do
+RSpec.describe 'account_reset/recovery_options/show.html.erb' do
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('account_reset.recovery_options.header'))
+    expect(view).to receive(:title=).with(t('account_reset.recovery_options.header'))
 
     render
   end

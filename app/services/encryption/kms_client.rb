@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 
 module Encryption
@@ -9,16 +11,37 @@ module Encryption
       KMS: 'KMSc',
       LOCAL_KEY: 'LOCc',
     }.freeze
+    KMS_KEY_REGEX = /\A#{KEY_TYPE[:KMS]}/
+    LOCAL_KEY_REGEX = /\A#{KEY_TYPE[:LOCAL_KEY]}/
+
+    # rubocop:disable Layout/LineLength
+    # Lazily-loaded per-region client factory
+    KMS_CLIENT_POOL = ConnectionPool.new(size: IdentityConfig.store.aws_kms_client_multi_pool_size) do
+      Aws::KMS::Client.new(
+        instance_profile_credentials_timeout: 1, # defaults to 1 second
+        instance_profile_credentials_retries: 5, # defaults to 0 retries
+        region: IdentityConfig.store.aws_region, # The region in which the client is being instantiated
+      )
+    end.freeze
+    # rubocop:enable Layout/LineLength
+
+    attr_reader :kms_key_id
+
+    def initialize(kms_key_id: IdentityConfig.store.aws_kms_key_id)
+      @kms_key_id = kms_key_id
+    end
 
     def encrypt(plaintext, encryption_context)
-      KmsLogger.log(:encrypt, encryption_context)
+      KmsLogger.log(:encrypt, context: encryption_context, key_id: kms_key_id)
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
       encrypt_local(plaintext, encryption_context)
     end
 
     def decrypt(ciphertext, encryption_context)
-      return decrypt_contextless_kms(ciphertext) if self.class.looks_like_contextless?(ciphertext)
-      KmsLogger.log(:decrypt, encryption_context)
+      if self.class.looks_like_contextless?(ciphertext)
+        return decrypt_contextless_kms(ciphertext, encryption_context)
+      end
+      KmsLogger.log(:decrypt, context: encryption_context, key_id: kms_key_id)
       return decrypt_kms(ciphertext, encryption_context) if use_kms?(ciphertext)
       decrypt_local(ciphertext, encryption_context)
     end
@@ -51,11 +74,18 @@ module Encryption
 
     def encrypt_raw_kms(plaintext, encryption_context)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      multi_aws_client.encrypt(IdentityConfig.store.aws_kms_key_id, plaintext, encryption_context)
+
+      KMS_CLIENT_POOL.with do |client|
+        client.encrypt(
+          key_id: kms_key_id,
+          plaintext: plaintext,
+          encryption_context: encryption_context,
+        ).ciphertext_blob
+      end
     end
 
     def decrypt_kms(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
+      clipped_ciphertext = ciphertext.gsub(KMS_KEY_REGEX, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         decrypt_raw_kms(
@@ -68,7 +98,12 @@ module Encryption
     end
 
     def decrypt_raw_kms(ciphertext, encryption_context)
-      multi_aws_client.decrypt(ciphertext, encryption_context)
+      KMS_CLIENT_POOL.with do |client|
+        client.decrypt(
+          ciphertext_blob: ciphertext,
+          encryption_context: encryption_context,
+        ).plaintext
+      end
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
@@ -82,7 +117,7 @@ module Encryption
     end
 
     def decrypt_local(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:LOCAL_KEY]}/, '')
+      clipped_ciphertext = ciphertext.gsub(LOCAL_KEY_REGEX, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         encryptor.decrypt(
@@ -102,8 +137,8 @@ module Encryption
       )
     end
 
-    def decrypt_contextless_kms(ciphertext)
-      ContextlessKmsClient.new.decrypt(ciphertext)
+    def decrypt_contextless_kms(ciphertext, encryption_context)
+      ContextlessKmsClient.new.decrypt(ciphertext, log_context: encryption_context)
     end
 
     # chunk plaintext into ~4096 byte chunks, but not less than 1024 bytes in a chunk if chunking.
@@ -117,10 +152,6 @@ module Encryption
 
     def encryptor
       @encryptor ||= Encryptors::AesEncryptor.new
-    end
-
-    def multi_aws_client
-      @multi_aws_client ||= MultiRegionKmsClient.new
     end
 
     add_method_tracer :decrypt, "Custom/#{name}/decrypt"

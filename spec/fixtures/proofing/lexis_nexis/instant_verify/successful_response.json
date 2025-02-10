@@ -41,6 +41,14 @@
           "ItemStatus": "pass"
         },
         {
+          "ItemName": "DriversLicense",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "DriversLicenseVerification",
+          "ItemStatus": "pass"
+        },
+        {
           "ItemName": "DOBFullVerified",
           "ItemStatus": "pass"
         },

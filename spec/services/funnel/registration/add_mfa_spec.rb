@@ -1,39 +1,41 @@
 require 'rails_helper'
 
-describe Funnel::Registration::AddMfa do
+RSpec.describe Funnel::Registration::AddMfa do
   let(:analytics) { FakeAnalytics.new }
   subject { described_class }
+  let(:user) { create(:user) }
 
-  let(:user_id) do
-    user = create(:user)
-    user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-    user_id
-  end
-  let(:funnel) { RegistrationLog.all.first }
+  let(:user_id) { user.id }
+  let(:funnel) { RegistrationLog.first }
 
-  it 'adds an 1st mfa' do
-    subject.call(user_id, 'phone', analytics)
-
-    expect(funnel.first_mfa).to eq('phone')
-    expect(funnel.first_mfa_at).to be_present
+  let(:threatmetrix_attrs) do
+    {
+      user_id: user_id,
+      request_ip: Faker::Internet.ip_v4_address,
+      threatmetrix_session_id: SecureRandom.uuid,
+      email: user.email,
+    }
   end
 
-  it 'adds a 2nd mfa' do
-    subject.call(user_id, 'phone', analytics)
-    subject.call(user_id, 'backup_codes', analytics)
-
-    expect(funnel.first_mfa).to eq('phone')
-    expect(funnel.first_mfa_at).to be_present
-    expect(funnel.second_mfa).to eq('backup_codes')
+  it 'shows user is not fully registered with no mfa' do
+    expect(funnel&.registered_at).to_not be_present
   end
 
-  it 'does not add a 3rd mfa' do
-    subject.call(user_id, 'phone', analytics)
-    subject.call(user_id, 'backup_codes', analytics)
-    subject.call(user_id, 'auth_app', analytics)
+  it 'shows user is fully registered after adding an mfa' do
+    subject.call(user_id, 'phone', analytics, threatmetrix_attrs)
 
-    expect(funnel.first_mfa).to eq('phone')
-    expect(funnel.second_mfa).to eq('backup_codes')
+    expect(funnel.registered_at).to be_present
+  end
+
+  context 'with threat metrix for account creation enabled' do
+    before do
+      allow(FeatureManagement)
+        .to receive(:account_creation_device_profiling_collecting_enabled?)
+        .and_return(:collect_only)
+    end
+    it 'triggers threatmetrix job call' do
+      expect(AccountCreationThreatMetrixJob).to receive(:perform_later)
+      subject.call(user_id, 'phone', analytics, threatmetrix_attrs)
+    end
   end
 end

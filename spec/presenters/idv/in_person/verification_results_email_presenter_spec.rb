@@ -3,34 +3,53 @@ require 'rails_helper'
 RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   include Rails.application.routes.url_helpers
 
-  let(:location_name) { 'FRIENDSHIP' }
+  let(:visited_location_name) { 'ACQUAINTANCESHIP' }
   let(:status_updated_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:sp) { nil }
-  let!(:enrollment) do
+  let(:current_address_matches_id) { true }
+  let(:enrollment) do
     create(
       :in_person_enrollment,
       :pending,
       service_provider: sp,
-      selected_location_details: { name: location_name },
+      selected_location_details: { name: 'FRIENDSHIP' },
+      current_address_matches_id: current_address_matches_id,
     )
   end
 
-  subject(:presenter) { described_class.new(enrollment: enrollment, url_options: {}) }
+  subject(:presenter) do
+    described_class.new(
+      enrollment: enrollment, url_options: {},
+      visited_location_name: visited_location_name
+    )
+  end
 
-  describe '#location_name' do
-    it 'returns the enrollment location name' do
-      expect(presenter.location_name).to eq(location_name)
+  describe 'visited_location_name' do
+    it 'returns the location that USPS reports the user visited for their proofing attempt' do
+      expect(presenter.visited_location_name).to eq(visited_location_name)
     end
   end
 
   describe '#formatted_verified_date' do
-    around do |example|
-      Time.use_zone('UTC') { example.run }
+    before do
+      enrollment.update(status_updated_at: DateTime.new(2024, 7, 5))
     end
 
-    it 'returns a formatted verified date' do
-      enrollment.update(status_updated_at: status_updated_at)
-      expect(presenter.formatted_verified_date).to eq 'July 13, 2022'
+    [
+      ['English', :en, 'July 4, 2024'],
+      ['Spanish', :es, '4 de julio de 2024'],
+      ['French', :fr, '4 juillet 2024'],
+      ['Chinese', :zh, '2024年7月4日'],
+    ].each do |language, locale, expected|
+      context "when locale is #{language}" do
+        before do
+          I18n.locale = locale
+        end
+
+        it "returns the formatted due date in #{language}" do
+          expect(presenter.formatted_verified_date).to eq(expected)
+        end
+      end
     end
   end
 
@@ -54,6 +73,25 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
 
       it 'returns friendly name of service provider' do
         expect(presenter.service_provider_or_app_name).to eq(sp.friendly_name)
+      end
+    end
+  end
+
+  describe '#service_provider_homepage_url' do
+    context 'without service provider' do
+      let(:sp) { nil }
+
+      it 'returns nil' do
+        expect(presenter.service_provider_homepage_url).to eq(nil)
+      end
+    end
+
+    context 'with service provider' do
+      let(:sp_url) { 'https://service.provider.gov' }
+      let(:sp) { create(:service_provider, return_to_sp_url: sp_url) }
+
+      it 'returns SP homepage url' do
+        expect(presenter.service_provider_homepage_url).to eq(sp_url)
       end
     end
   end

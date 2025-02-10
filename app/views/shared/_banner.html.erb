@@ -1,14 +1,14 @@
-<header aria-label="banner">
+<header>
   <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
-  <section class="usa-banner" aria-label="<%= t('shared.banner.landmark_label') %>">
+  <section class="usa-banner usa-banner--centered" aria-label="<%= t('shared.banner.landmark_label') %>">
     <div class="usa-accordion">
       <div class="usa-banner__header">
         <div class="usa-banner__inner">
           <%= image_tag(
-                asset_url('us-flag.png'),
+                asset_url('us_flag.svg'),
                 alt: t('image_description.us_flag'),
-                size: '18x12',
-                class: 'margin-right-1',
+                size: '16x11',
+                class: 'usa-banner__header-flag',
               ) %>
           <div class="grid-col-fill tablet:grid-col-auto">
             <p class="usa-banner__header-text">
@@ -22,14 +22,13 @@
         </div>
       </div>
       <div class="usa-banner__content usa-accordion__content" id="gov-banner">
-        <%= javascript_tag(nonce: true) do %>
-          document.getElementById('gov-banner').setAttribute('hidden', '');
-        <% end %>
         <div class="grid-row grid-gap-lg">
           <div class="usa-banner__guidance tablet:grid-col-6">
             <%= image_tag(
                   asset_url('icon-dot-gov.svg'),
-                  alt: 'Dot gov',
+                  size: 40,
+                  alt: '',
+                  aria: { hidden: true },
                   class: 'usa-banner__icon usa-media-block__img',
                 ) %>
             <div class="usa-media-block__body">
@@ -42,7 +41,9 @@
           <div class="usa-banner__guidance tablet:grid-col-6">
             <%= image_tag(
                   asset_url('icon-https.svg'),
-                  alt: 'Https',
+                  size: 40,
+                  alt: '',
+                  aria: { hidden: true },
                   class: 'usa-banner__icon usa-media-block__img',
                 ) %>
             <div class="usa-media-block__body">
@@ -60,7 +61,7 @@
     <% if content_for?(:header) %>
       <%= yield(:header) %>
     <% else %>
-      <% if decorated_session.sp_name %>
+      <% if decorated_sp_session.sp_name %>
         <%= render 'shared/nav_branded' %>
       <% else %>
         <%= render 'shared/nav_lite' %>

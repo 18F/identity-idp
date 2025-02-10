@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Fingerprinter do
+RSpec.describe Fingerprinter do
   describe '.fingerprint_cert' do
     context 'ssl_cert is nil' do
       it 'returns nil' do

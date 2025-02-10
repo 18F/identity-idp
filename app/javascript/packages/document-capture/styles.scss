@@ -1,5 +1,8 @@
-@import 'identity-style-guide/dist/assets/scss/packages/required';
-@import './components/acuant-capture';
-@import './components/acuant-capture-canvas';
-@import './components/review-issues-step';
-@import './components/selfie-capture';
+@forward 'usa-collection/src/styles';
+
+@forward './components/acuant-capture';
+@forward './components/acuant-capture-canvas';
+@forward './components/acuant-selfie-capture-canvas';
+@forward './components/file-input';
+@forward './components/location-collection-item';
+@forward './components/select-error';

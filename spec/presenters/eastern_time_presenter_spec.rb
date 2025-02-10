@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EasternTimePresenter do
+RSpec.describe EasternTimePresenter do
   describe '#to_s' do
     it 'returns the formatted timestamp in a string' do
       str = '2017-04-12 18:19:18 UTC'

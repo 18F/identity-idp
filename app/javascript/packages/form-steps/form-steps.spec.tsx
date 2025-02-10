@@ -110,16 +110,6 @@ describe('FormSteps', () => {
     },
   ];
 
-  let originalHash;
-
-  beforeEach(() => {
-    originalHash = window.location.hash;
-  });
-
-  afterEach(() => {
-    window.location.hash = originalHash;
-  });
-
   describe('getStepIndexByName', () => {
     it('returns -1 if no step by name', () => {
       const result = getStepIndexByName(STEPS, 'third');
@@ -365,12 +355,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
   });
 
-  it('resets hash in URL if there is no matching step', () => {
-    window.location.hash = '#example';
-    render(<FormSteps steps={STEPS} />);
-    expect(window.location.hash).to.equal('');
-  });
-
   it('syncs step by history events', async () => {
     const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
@@ -415,7 +399,7 @@ describe('FormSteps', () => {
 
     await userEvent.click(getByText(t('forms.buttons.continue')));
 
-    await expect(findByText('Second Title')).to.be.fulfilled();
+    await findByText('Second Title');
     await expect(checkFormHasExpectedErrors()).to.be.rejected();
 
     window.history.back();

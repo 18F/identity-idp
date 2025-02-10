@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Mock::DdpMockClient do
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   let(:threatmetrix_session_id) { SecureRandom.uuid }
@@ -17,11 +17,6 @@ RSpec.describe Proofing::Mock::DdpMockClient do
   end
 
   subject(:instance) { described_class.new }
-
-  it_behaves_like_mock_proofer(
-    mock_proofer_class: Proofing::Mock::DdpMockClient,
-    real_proofer_class: Proofing::LexisNexis::Ddp::Proofer,
-  )
 
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
@@ -36,9 +31,11 @@ RSpec.describe Proofing::Mock::DdpMockClient do
     context 'with explicit no_result' do
       let(:redis_result) { 'no_result' }
 
-      it 'has a nil review status' do
+      it 'has an exception result' do
         expect(result.review_status).to be_nil
-        expect(result.response_body['review_status']).to be_nil
+        expect(result.response_body).to be_nil
+        expect(result.exception.inspect).to include('Unexpected ThreatMetrix review_status value')
+        expect(result.success?).to eq(false)
       end
     end
 
@@ -49,6 +46,22 @@ RSpec.describe Proofing::Mock::DdpMockClient do
         expect(result.review_status).to eq('reject')
         expect(result.response_body['review_status']).to eq('reject')
       end
+      it 'has an error on result' do
+        expect(result.errors).to eql(review_status: ['reject'])
+      end
+    end
+
+    context 'with review' do
+      let(:redis_result) { 'review' }
+
+      it 'has a review status' do
+        expect(result.review_status).to eq('review')
+        expect(result.response_body['review_status']).to eq('review')
+      end
+
+      it 'has an error on result' do
+        expect(result.errors).to eql(review_status: ['review'])
+      end
     end
 
     context 'with pass' do
@@ -57,6 +70,19 @@ RSpec.describe Proofing::Mock::DdpMockClient do
       it 'has a pass status' do
         expect(result.review_status).to eq('pass')
         expect(result.response_body['review_status']).to eq('pass')
+      end
+      it 'does not have an error on result' do
+        expect(result.errors).to eql({})
+      end
+    end
+
+    context 'with failed request' do
+      let(:redis_result) { 'pass' }
+
+      subject(:instance) { described_class.new response_fixture_file: 'error_response.json' }
+
+      it 'records request error' do
+        expect(result.errors).to eql({ request_result: ['fail_invalid_parameter'] })
       end
     end
   end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class IdTokenBuilder
-  JWT_SIGNING_ALGORITHM = 'RS256'.freeze
+  JWT_SIGNING_ALGORITHM = 'RS256'
   NUM_BYTES_FIRST_128_BITS = 128 / 8
 
   attr_reader :identity, :now
@@ -14,10 +16,14 @@ class IdTokenBuilder
   def id_token
     JWT.encode(
       jwt_payload,
-      AppArtifacts.store.oidc_private_key,
+      AppArtifacts.store.oidc_primary_private_key,
       'RS256',
-      kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+      kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
     )
+  end
+
+  def ttl
+    session_accessor.ttl
   end
 
   private
@@ -25,49 +31,83 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity).user_info.
-      merge(id_token_claims).
-      merge(timestamp_claims)
+    OpenidConnectUserInfoPresenter.new(identity, session_accessor: session_accessor)
+      .user_info
+      .merge(id_token_claims)
+      .merge(timestamp_claims)
   end
 
   def id_token_claims
-    {
-      acr: acr,
+    claims = {
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
     }
+
+    if !sp_requests_vot?
+      claims[:acr] = acr
+    end
+
+    claims
   end
 
   def timestamp_claims
     {
-      exp: @custom_expiration || expires,
+      exp: @custom_expiration || session_accessor.expires_at.to_i,
       iat: now.to_i,
       nbf: now.to_i,
     }
   end
 
   def acr
-    ial = identity.ial
-    case ial
-    when Idp::Constants::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2_STRICT then Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+    return nil unless identity.acr_values.present?
+    resolved_authn_context.asserted_ial_acr
+  end
+
+  def sp_requests_vot?
+    return false unless identity.vtr.present?
+    IdentityConfig.store.use_vot_in_sp_requests
+  end
+
+  def vot
+    return nil unless sp_requests_vot?
+    resolved_authn_context.result.component_values.map(&:name).join('.')
+  end
+
+  def determine_ial_max_acr
+    if identity.user.identity_verified?
+      Vot::AcrComponentValues::IAL2
     else
-      raise "Unknown ial #{ial}"
+      Vot::AcrComponentValues::IAL1
     end
   end
 
+  def resolved_authn_context
+    @resolved_authn_context ||= AuthnContextResolver.new(
+      user: identity.user,
+      service_provider: identity.service_provider_record,
+      vtr: parsed_vtr_value,
+      acr_values: identity.acr_values,
+    )
+  end
+
+  def parsed_vtr_value
+    return nil unless sp_requests_vot?
+    JSON.parse(identity.vtr)
+  end
+
   def expires
-    ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
     now.to_i + ttl
   end
 
   def hash_token(token)
     leftmost_128_bits = Digest::SHA256.digest(token).byteslice(0, NUM_BYTES_FIRST_128_BITS)
     Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
+  end
+
+  def session_accessor
+    @session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
 end

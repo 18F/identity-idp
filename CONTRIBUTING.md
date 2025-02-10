@@ -4,7 +4,7 @@ We’re so glad you’re thinking about contributing to a Technology Transformat
 
 TTS is committed to building a safe, welcoming, harassment-free culture for everyone. We expect everyone on the TTS team and everyone within TTS spaces, including contributors to our projects, to follow the [TTS Code of Conduct](https://github.com/18F/code-of-conduct/blob/master/code-of-conduct.md).
 
-We encourage you to read this project’s CONTRIBUTING policy (you are here), its [LICENSE](LICENSE.md), [README](README.md)
+We encourage you to read this project’s CONTRIBUTING policy (you are here), its [LICENSE](LICENSE.md), and its [README](README.md). When you are ready to make a pull request, read our [pull request process](https://handbook.login.gov/articles/pull-request-review.html), which is a part of [the Login.gov Handbook](https://handbook.login.gov/).
 
 If you have any questions or want to read more, check out the [18F Open Source Policy GitHub repository]( https://github.com/18f/open-source-policy), or [send us an email](mailto:18f@gsa.gov).
 
@@ -26,10 +26,8 @@ pull request is about.
 - If the pull request is in response to a Jira ticket, include the ticket ID in
 the commit title (e.g. "LG-1234 Add the stuff to the thing")
 
-- Include a changelog message which describes the changes in human-readable
-terms. These messages are included in release notes, so they should be easy to
-understand for our partners and users. In the rare case that a change should
-not be included in release notes, add `[skip changelog]` to the commit.
+- Include a changelog message which describes the changes in human-readable terms. Refer to the
+[_Changelog Messages_ section](#changelog-messages) below for specific changelog requirements.
 
 Example:
 
@@ -52,7 +50,9 @@ changelog: Internal, Automated Testing, Improve performance of test suite
 
 #### Changelog Messages
 
-You must include a changelog message in one commit of your pull request.
+You must include a changelog message in one commit of your pull request. The changelog message
+describes the changes in human-readable terms. These messages are included in release notes, so they
+should be easy to understand for our partners and users.
 
 A changelog message should be written in the following format:
 
@@ -63,14 +63,17 @@ changelog: [Category], [Subcategory], [Description]
 Replace `[Category]`, `[Subcategory]`, and `[Description]` with text relevant for your changes:
 
 - **Category** must be one of the following:
-   - **Improvements** are user-facing improvements to the application experience, such as a new UI component or updated text.
+   - **User-Facing Improvements** are improvements to the application experience benefitting the end-user, such as a new UI component or updated text.
    - **Bug Fixes** are corrections to a broken behavior, such as preventing a raised exception.
    - **Internal** are changes which benefit the Login.gov team, such as analytics or code quality.
    - **Upcoming Features** are iterations contributing to a feature which has not yet been enabled for users in production.
-- **Subcategory** does not have any restrictions, but you should try to maintain consistency with changesets affecting similar parts of the application (for example, "In-person proofing").
+- **Subcategory** can be any value, but it cannot contain commas. Try to maintain consistency with changesets affecting similar parts of the application (for example, "In-person proofing").
 - **Description** is a plain language description of the specific changes.
 
 If multiple pull requests iterate on the same feature, it's a good idea to use the same commit message, since identical messages will be combined into a single entry when the release notes are compiled.
+
+In the rare case that a change should not be included in release notes, add `[skip changelog]` to
+the commit.
 
 ### Additional notes on pull requests and code reviews
 
@@ -84,6 +87,10 @@ reading.
 - Keep pull requests as small as possible, and focused on a single topic
 - Once a pull request is good to go, the person who opened it squashes related
 commits together, merges it, then deletes the branch.
+
+Everyone is encouraged to participate in code review. To solicit feedback from specific people,
+consider adding individuals or groups as requested reviewers on your pull request. Most internal
+product teams have a team handle which can be used to notify everyone on that team.
 
 ## Public domain
 

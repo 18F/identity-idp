@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/passwords/new.html.erb' do
+RSpec.describe 'devise/passwords/new.html.erb' do
   let(:sp) do
     build_stubbed(
       :service_provider,
@@ -11,24 +11,24 @@ describe 'devise/passwords/new.html.erb' do
   before do
     @password_reset_email_form = PasswordResetEmailForm.new('')
     view_context = ActionController::Base.new.view_context
-    allow(view_context).to receive(:new_user_session_url).
-      and_return('https://www.example.com/')
-    allow(view_context).to receive(:sign_up_email_path).
-      and_return('/sign_up/enter_email')
-    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
-      and_return('/users/password/new')
+    allow(view_context).to receive(:new_user_session_url)
+      .and_return('https://www.example.com/')
+    allow(view_context).to receive(:sign_up_email_path)
+      .and_return('/sign_up/enter_email')
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path)
+      .and_return('/users/password/new')
 
-    @decorated_session = DecoratedSession.new(
+    @decorated_sp_session = ServiceProviderSessionCreator.new(
       sp: sp,
       view_context: view_context,
       sp_session: {},
       service_provider_request: ServiceProviderRequestProxy.new,
-    ).call
-    allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    ).create_session
+    allow(view).to receive(:decorated_sp_session).and_return(@decorated_sp_session)
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.passwords.forgot'))
+    expect(view).to receive(:title=).with(t('titles.passwords.forgot'))
 
     render
   end
@@ -51,10 +51,10 @@ describe 'devise/passwords/new.html.erb' do
     expect(rendered).to have_xpath("//input[@autocorrect='off']")
   end
 
-  it 'has a cancel link that points to the decorated_session cancel_link_url' do
+  it 'has a cancel link that points to the decorated_sp_session cancel_link_url' do
     render
 
-    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_sp_session.cancel_link_url)
   end
 
   it 'has sp alert for certain service providers' do

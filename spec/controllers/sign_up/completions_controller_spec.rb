@@ -1,20 +1,22 @@
 require 'rails_helper'
 
-describe SignUp::CompletionsController do
+RSpec.describe SignUp::CompletionsController do
+  let(:temporary_email) { 'name@temporary.com' }
+
   describe '#show' do
     let(:current_sp) { create(:service_provider) }
 
     context 'user signed in, sp info present' do
       before do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to account page when SP request URL is not present' do
-        user = create(:user)
+        user = create(:user, :fully_registered)
         stub_sign_in(user)
         subject.session[:sp] = {
           issuer: current_sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         }
         get :show
 
@@ -22,56 +24,127 @@ describe SignUp::CompletionsController do
       end
 
       context 'IAL1' do
-        it 'tracks page visit' do
-          user = create(:user)
+        let(:user) { create(:user, :fully_registered, email: temporary_email) }
+
+        before do
+          DisposableEmailDomain.create(name: 'temporary.com')
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: false, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           get :show
+        end
 
-          expect(@analytics).to have_received(:track_event).with(
+        it 'tracks page visit' do
+          expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: false,
-            ialmax: nil,
-            service_provider_name: subject.decorated_session.sp_name,
+            ialmax: false,
+            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
           )
+        end
+
+        it 'creates a presenter object that is not requesting ial2' do
+          expect(assigns(:presenter).ial2_requested?).to eq false
         end
       end
 
       context 'IAL2' do
         let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
         let(:pii) { { ssn: '123456789' } }
 
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: true, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
+          get :show
         end
 
         it 'tracks page visit' do
-          get :show
-
-          expect(@analytics).to have_received(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'User registration: agency handoff visited',
             ial2: true,
-            ialmax: nil,
-            service_provider_name: subject.decorated_session.sp_name,
+            ialmax: false,
+            service_provider_name: subject.decorated_sp_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
-            sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
           )
+        end
+
+        it 'creates a presenter object that is requesting ial2' do
+          expect(assigns(:presenter).ial2_requested?).to eq true
+        end
+
+        context 'user is not identity verified' do
+          let(:user) { create(:user) }
+          it 'redirects to idv_url' do
+            get :show
+
+            expect(response).to redirect_to(idv_url)
+          end
+        end
+      end
+
+      context 'IALMax' do
+        let(:user) do
+          create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
+        end
+        let(:pii) { { ssn: '123456789' } }
+
+        before do
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
+          }
+          Pii::Cacher.new(user, controller.user_session).save_decrypted_pii(pii, 123)
+
+          get :show
+        end
+
+        it 'tracks page visit' do
+          expect(@analytics).to have_logged_event(
+            'User registration: agency handoff visited',
+            ial2: false,
+            ialmax: true,
+            service_provider_name: subject.decorated_sp_session.sp_name,
+            page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
+            sp_session_requested_attributes: [:email],
+            in_account_creation_flow: false,
+          )
+        end
+
+        context 'verified user' do
+          it 'creates a presenter object that is requesting ial2' do
+            expect(assigns(:presenter).ial2_requested?).to eq true
+          end
+        end
+
+        context 'unverified user' do
+          let(:user) { create(:user) }
+          it 'creates a presenter object that is requesting ial2' do
+            expect(assigns(:presenter).ial2_requested?).to eq false
+          end
         end
       end
     end
@@ -114,8 +187,13 @@ describe SignUp::CompletionsController do
         user = create(:user)
         sp = create(:service_provider, issuer: 'https://awesome')
         stub_sign_in(user)
-        subject.session[:sp] = { issuer: sp.issuer, ial2: false, requested_attributes: [:email],
-                                 request_url: 'http://localhost:3000' }
+        subject.session[:sp] = {
+          issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          requested_attributes: [:email],
+          request_url: 'http://localhost:3000',
+        }
+
         get :show
 
         expect(response).to render_template(:show)
@@ -128,40 +206,39 @@ describe SignUp::CompletionsController do
 
     before do
       stub_analytics
-      allow(@analytics).to receive(:track_event)
       @linker = instance_double(IdentityLinker)
       allow(@linker).to receive(:link_identity).and_return(true)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
     context 'IAL1' do
+      let(:user) { create(:user, :fully_registered) }
       it 'tracks analytics' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: false,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           issuer: 'foo',
           request_url: 'http://example.com',
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User registration: complete',
           ial2: false,
-          ialmax: nil,
-          service_provider_name: subject.decorated_session.sp_name,
+          ialmax: false,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_request_requested_attributes: nil,
-          sp_session_requested_attributes: nil,
+          in_account_creation_flow: true,
         )
       end
 
       it 'updates verified attributes' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
           issuer: 'foo',
-          ial: 1,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
@@ -178,9 +255,9 @@ describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page if the session request_url is removed' do
-        stub_sign_in
+        stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: false,
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           issuer: 'foo',
           requested_attributes: ['email'],
         }
@@ -188,31 +265,69 @@ describe SignUp::CompletionsController do
         patch :update
         expect(response).to redirect_to account_path
       end
+
+      context 'with a disposable email address' do
+        let(:user) { create(:user, :fully_registered, email: temporary_email) }
+
+        it 'logs disposable domain' do
+          DisposableEmailDomain.create(name: 'temporary.com')
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            issuer: 'foo',
+            request_url: 'http://example.com',
+          }
+          subject.user_session[:in_account_creation_flow] = true
+
+          patch :update
+
+          expect(@analytics).to have_logged_event(
+            'User registration: complete',
+            ial2: false,
+            ialmax: false,
+            page_occurence: 'agency-page',
+            needs_completion_screen_reason: :new_sp,
+            in_account_creation_flow: true,
+            disposable_email_domain: 'temporary.com',
+          )
+        end
+      end
     end
 
     context 'IAL2' do
       it 'tracks analytics' do
-        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        DisposableEmailDomain.create(name: 'temporary.com')
+        user = create(
+          :user,
+          :fully_registered,
+          profiles: [create(:profile, :verified, :active)],
+          email: temporary_email,
+        )
         stub_sign_in(user)
         sp = create(:service_provider, issuer: 'https://awesome')
+        create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user)
         subject.session[:sp] = {
           issuer: sp.issuer,
-          ial2: true,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
+        subject.user_session[:in_account_creation_flow] = true
 
         patch :update
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'User registration: complete',
           ial2: true,
-          ialmax: nil,
-          service_provider_name: subject.decorated_session.sp_name,
+          ialmax: false,
+          service_provider_name: subject.decorated_sp_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
-          sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
+          in_account_creation_flow: true,
+          disposable_email_domain: 'temporary.com',
+          in_person_proofing_status: 'passed',
+          doc_auth_result: 'Passed',
         )
       end
 
@@ -222,7 +337,7 @@ describe SignUp::CompletionsController do
         sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
           issuer: sp.issuer,
-          ial: 2,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name verified_at],
         }
@@ -232,6 +347,31 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
+        allow(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
+          .with(user, sp.issuer)
+        freeze_time do
+          travel_to(now)
+          patch :update
+        end
+      end
+
+      it 'sends the in-person proofing completion survey' do
+        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        stub_sign_in(user)
+        sp = create(:service_provider, issuer: 'https://awesome')
+        subject.session[:sp] = {
+          issuer: sp.issuer,
+          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          request_url: 'http://example.com',
+          requested_attributes: %w[email first_name verified_at],
+        }
+        allow(@linker).to receive(:link_identity).with(
+          verified_attributes: %w[email first_name verified_at],
+          last_consented_at: now,
+          clear_deleted_at: true,
+        )
+        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
+          .with(user, sp.issuer)
         freeze_time do
           travel_to(now)
           patch :update

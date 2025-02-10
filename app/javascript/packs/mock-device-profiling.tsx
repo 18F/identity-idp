@@ -11,7 +11,7 @@ function loadSessionId(): string | undefined {
 }
 
 function submitMockFraudResult({ result, sessionId }: { result: string; sessionId?: string }) {
-  window.fetch('/test/device_profiling', {
+  fetch('/test/device_profiling', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -62,7 +62,7 @@ const CHAOS_OPTIONS: ChaosOption[] = [
 ];
 
 function MockDeviceProfilingOptions() {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState('pass');
 
   useEffect(() => {
     if (selectedValue === 'chaotic') {
@@ -79,10 +79,10 @@ function MockDeviceProfilingOptions() {
   const inputId = `select-input-${instanceId}`;
 
   const options = [
-    { value: 'no_result', title: 'No Result' },
     { value: 'pass', title: 'Pass' },
     { value: 'reject', title: 'Reject' },
     { value: 'review', title: 'Review' },
+    { value: 'no_result', title: 'No Result' },
     { value: 'chaotic', title: 'Do something chaotic' },
   ];
 
@@ -113,15 +113,6 @@ function MockDeviceProfilingOptions() {
   );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const ssnInput = document.getElementsByName('doc_auth[ssn]')[0];
-
-  if (ssnInput) {
-    const passwordToggle = ssnInput.closest('lg-password-toggle');
-
-    const div = document.createElement('div');
-    passwordToggle?.parentElement?.appendChild(div);
-
-    render(<MockDeviceProfilingOptions />, div);
-  }
-});
+const appRoot = document.createElement('div');
+currentScript?.after(appRoot);
+render(<MockDeviceProfilingOptions />, appRoot);

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OtpDeliverySelectionForm
   include ActiveModel::Model
   include OtpDeliveryPreferenceValidator
@@ -15,7 +17,7 @@ class OtpDeliverySelectionForm
 
   def submit(params)
     self.otp_delivery_preference = params[:otp_delivery_preference]
-    self.resend = params[:resend]
+    self.resend = params[:resend] == 'true'
 
     @success = valid?
 
@@ -33,8 +35,7 @@ class OtpDeliverySelectionForm
   attr_reader :success, :user
 
   def change_otp_delivery_preference_to_sms
-    user_attributes = { otp_delivery_preference: 'sms' }
-    UpdateUser.new(user: user, attributes: user_attributes).call
+    user.update!(otp_delivery_preference: 'sms')
   end
 
   def extra_analytics_attributes
@@ -53,6 +54,6 @@ class OtpDeliverySelectionForm
   end
 
   def confirmed_phone?
-    UserSessionContext.authentication_context?(context)
+    UserSessionContext.authentication_or_reauthentication_context?(context)
   end
 end

@@ -1,0 +1,47 @@
+@use 'uswds-core' as * with (
+  $theme-table-border-color: 'primary-darker',
+  $theme-table-header-background-color: 'primary-darker',
+  $theme-table-header-text-color: 'white'
+);
+
+@forward 'usa-prose';
+@forward 'usa-table';
+@forward 'usa-alert';
+
+.bg-secondary {
+  @include u-bg('secondary');
+}
+
+.margin-bottom-4 {
+  @include u-margin-bottom(4);
+}
+
+.margin-top-4 {
+  @include u-margin-top(4);
+}
+
+.height-05 {
+  @include u-height(0.5);
+}
+
+.border-transparent {
+  @include u-border-color('transparent');
+}
+
+.report-title,
+.report-subtitle {
+  color: color('primary-darker');
+}
+
+.table-number {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.usa-alert.usa-alert--info.usa-alert--email {
+  .usa-alert__body {
+    &::before {
+      background-image: url('email/info.png');
+    }
+  }
+}

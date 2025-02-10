@@ -83,9 +83,9 @@ RSpec.describe UuidReporter do
 
   describe '.run' do
     context 'with valid inputs' do
-      let!(:user1) { create(:user, :signed_up, email: 'user1@example.com') }
-      let!(:user2) { create(:user, :signed_up, email: 'user2@example.com') }
-      let!(:user3) { create(:user, :signed_up, email: 'user3@example.com') }
+      let!(:user1) { create(:user, :fully_registered, email: 'user1@example.com') }
+      let!(:user2) { create(:user, :fully_registered, email: 'user2@example.com') }
+      let!(:user3) { create(:user, :fully_registered, email: 'user3@example.com') }
       let!(:uuid1) do
         IdentityLinker.new(user1, sp1).link_identity
         AgencyIdentity.find_by(user_id: user1.id, agency_id: agency.id).uuid

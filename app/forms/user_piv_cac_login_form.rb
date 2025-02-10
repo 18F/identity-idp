@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPivCacLoginForm
   include ActiveModel::Model
   include PivCacFormHelpers
@@ -30,7 +32,7 @@ class UserPivCacLoginForm
   end
 
   def user_found
-    maybe_user = Db::PivCacConfiguration.find_user_by_x509(x509_dn_uuid)
+    maybe_user = PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)&.user
     if maybe_user.present?
       self.user = maybe_user
       true

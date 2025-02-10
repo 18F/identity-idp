@@ -1,7 +1,7 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
-import defaultUpload from '../services/upload';
+import defaultUpload, { UploadFormEntriesError } from '../services/upload';
 import type { PII } from '../services/upload';
 
 const UploadContext = createContext({
@@ -9,11 +9,9 @@ const UploadContext = createContext({
   getStatus: () => Promise.resolve({} as UploadSuccessResponse),
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
-  backgroundUploadURLs: {} as Record<string, string>,
-  backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
-  csrf: null as string | null,
   formData: {} as Record<string, any>,
+  submitAttempts: 0,
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -27,7 +25,7 @@ export interface UploadFieldError {
   /**
    * Field name
    */
-  field: 'front' | 'back' | 'selfie' | 'network';
+  field: 'front' | 'back' | 'network';
 
   /**
    * Error message.
@@ -45,11 +43,6 @@ interface UploadOptions {
    * Endpoint to which payload should be sent.
    */
   endpoint: string;
-
-  /**
-   * CSRF token to send as parameter to upload implementation.
-   */
-  csrf: string | null;
 }
 
 export interface UploadSuccessResponse {
@@ -63,7 +56,10 @@ export interface UploadSuccessResponse {
    */
   isPending: boolean;
 }
-
+export interface ImageFingerprints {
+  front: string[] | null;
+  back: string[] | null;
+}
 export interface UploadErrorResponse {
   /**
    * Whether request was successful.
@@ -83,7 +79,12 @@ export interface UploadErrorResponse {
   /**
    * Number of remaining doc capture attempts for user.
    */
-  remaining_attempts?: number;
+  remaining_submit_attempts?: number;
+
+  /**
+   * Number of submitted doc capture attempts for user
+   */
+  submit_attempts?: number;
 
   /**
    * Boolean to decide if capture hints should be shown with error.
@@ -96,9 +97,39 @@ export interface UploadErrorResponse {
   ocr_pii?: PII;
 
   /**
+   * Whether the unsuccessful result was any result other than passed or attention with barcode.
+   */
+  result_code_invalid: boolean;
+
+  /**
    * Whether the unsuccessful result was the failure type.
    */
   result_failed: boolean;
+
+  /**
+   * Whether the selfie captured matched the image on the id.
+   */
+  selfie_status?: string;
+
+  /**
+   * Whether the doc type is clearly not supported type.
+   */
+  doc_type_supported: boolean;
+
+  /*
+   * Whether the selfie passed the liveness check from trueid
+   */
+  selfie_live?: boolean;
+
+  /*
+   * Whether the selfie passed the quality check from trueid.
+   */
+  selfie_quality_good?: boolean;
+
+  /**
+   * Record of failed image fingerprints
+   */
+  failed_image_fingerprints: ImageFingerprints | null;
 }
 
 export type UploadImplementation = (
@@ -118,16 +149,6 @@ interface UploadContextProviderProps {
   isMockClient?: boolean;
 
   /**
-   * URLs to which payload values corresponding to key should be uploaded as soon as possible.
-   */
-  backgroundUploadURLs: Record<string, string>;
-
-  /**
-   * Background upload encryption key.
-   */
-  backgroundUploadEncryptKey?: CryptoKey;
-
-  /**
    * Endpoint to which payload should be sent.
    */
   endpoint: string;
@@ -141,11 +162,6 @@ interface UploadContextProviderProps {
    * Interval at which to poll for status, in milliseconds.
    */
   statusPollInterval?: number;
-
-  /**
-   * CSRF token to send as parameter to upload implementation.
-   */
-  csrf: string | null;
 
   /**
    * Extra form data to merge into the payload before uploading
@@ -172,33 +188,40 @@ const DEFAULT_FORM_DATA = {};
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
-  backgroundUploadURLs = {},
-  backgroundUploadEncryptKey,
   endpoint,
   statusEndpoint,
   statusPollInterval,
-  csrf,
   formData = DEFAULT_FORM_DATA,
   flowPath,
   children,
 }: UploadContextProviderProps) {
-  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
+  const [submitAttempts, setSubmitAttempts] = useState(0);
+
+  const uploadWithFormData = async (payload) => {
+    try {
+      const result = await upload({ ...payload, ...formData }, { endpoint });
+      return result;
+    } catch (error) {
+      if (error instanceof UploadFormEntriesError && error.submitAttempts !== undefined) {
+        setSubmitAttempts(error.submitAttempts);
+      }
+      throw error;
+    }
+  };
 
   const getStatus = () =>
     statusEndpoint
-      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT', csrf })
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' })
       : Promise.reject();
 
   const value = useObjectMemo({
-    upload: uploadWithCSRF,
+    upload: uploadWithFormData,
     getStatus,
     statusPollInterval,
-    backgroundUploadURLs,
-    backgroundUploadEncryptKey,
     isMockClient,
     flowPath,
-    csrf,
     formData,
+    submitAttempts,
   });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

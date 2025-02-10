@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'digest'
 
 # This is only used in development mode. Routes aren't constructed unless

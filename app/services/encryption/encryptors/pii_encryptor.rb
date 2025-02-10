@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   module Encryptors
     class PiiEncryptor
@@ -31,12 +33,17 @@ module Encryption
           )
           decode(encoded_encrypted_data)
         end
-      end
+      end.freeze
 
       def initialize(password)
         @password = password
         @aes_cipher = AesCipher.new
-        @kms_client = KmsClient.new
+        @single_region_kms_client = KmsClient.new(
+          kms_key_id: IdentityConfig.store.aws_kms_key_id,
+        )
+        @multi_region_kms_client = KmsClient.new(
+          kms_key_id: IdentityConfig.store.aws_kms_multi_region_key_id,
+        )
       end
 
       def encrypt(plaintext, user_uuid: nil)
@@ -44,15 +51,30 @@ module Encryption
         cost = IdentityConfig.store.scrypt_cost
         aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
-        kms_encrypted_ciphertext = kms_client.encrypt(
+        single_region_kms_encrypted_ciphertext = single_region_kms_client.encrypt(
           aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
         )
-        Ciphertext.new(kms_encrypted_ciphertext, salt, cost).to_s
+        single_region_ciphertext = Ciphertext.new(
+          single_region_kms_encrypted_ciphertext, salt, cost
+        ).to_s
+
+        multi_region_kms_encrypted_ciphertext = multi_region_kms_client.encrypt(
+          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+        )
+        multi_region_ciphertext = Ciphertext.new(
+          multi_region_kms_encrypted_ciphertext, salt, cost
+        ).to_s
+
+        RegionalCiphertextPair.new(
+          single_region_ciphertext: single_region_ciphertext,
+          multi_region_ciphertext: multi_region_ciphertext,
+        )
       end
 
-      def decrypt(ciphertext_string, user_uuid: nil)
+      def decrypt(ciphertext_pair, user_uuid: nil)
+        ciphertext_string = ciphertext_pair.multi_or_single_region_ciphertext
         ciphertext = Ciphertext.parse_from_string(ciphertext_string)
-        aes_encrypted_ciphertext = kms_client.decrypt(
+        aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
         )
         aes_encryption_key = scrypt_password_digest(salt: ciphertext.salt, cost: ciphertext.cost)
@@ -61,7 +83,7 @@ module Encryption
 
       private
 
-      attr_reader :password, :aes_cipher, :kms_client
+      attr_reader :password, :aes_cipher, :single_region_kms_client, :multi_region_kms_client
 
       def kms_encryption_context(user_uuid:)
         {

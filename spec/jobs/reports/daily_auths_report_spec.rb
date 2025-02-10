@@ -12,12 +12,12 @@ RSpec.describe Reports::DailyAuthsReport do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:s3_public_reports_enabled).
-      and_return(s3_public_reports_enabled)
-    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
-      and_return(s3_report_bucket_prefix)
-    allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix).
-      and_return(s3_report_public_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_public_reports_enabled)
+      .and_return(s3_public_reports_enabled)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+      .and_return(s3_report_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix)
+      .and_return(s3_report_public_bucket_prefix)
 
     Aws.config[:s3] = {
       stub_responses: {
@@ -70,14 +70,19 @@ RSpec.describe Reports::DailyAuthsReport do
           friendly_name: 'The App',
           agency: agency,
         )
-        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
-        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
-        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
+        # rubocop:disable Layout/LineLength
+        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+
+        # extra non-billable row that shouldn't be counter
+        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: false)
+        # rubocop:enable Layout/LineLength
       end
 
       it 'aggregates by issuer' do
-        expect(report).to receive(:upload_file_to_s3_bucket).
-          exactly(2).times do |path:, body:, content_type:, bucket:|
+        expect(report).to receive(:upload_file_to_s3_bucket)
+          .exactly(2).times do |path:, body:, content_type:, bucket:|
             parsed = JSON.parse(body, symbolize_names: true)
 
             expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)
@@ -106,16 +111,6 @@ RSpec.describe Reports::DailyAuthsReport do
 
         report.perform(report_date)
       end
-    end
-  end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
     end
   end
 end

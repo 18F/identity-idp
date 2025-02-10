@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::PendingPresenter do
+RSpec.describe AccountReset::PendingPresenter do
   let(:user) { create(:user) }
   let(:requested_at) { 22.hours.ago }
   let(:account_reset_request) do
@@ -20,6 +20,36 @@ describe AccountReset::PendingPresenter do
 
   describe '#time_remaining_until_granted' do
     before { I18n.locale = :en }
+    before do
+      allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+        .and_return(10)
+    end
+
+    context 'fraud user' do
+      let(:user) { create(:user, :fraud_review_pending) }
+      context 'when the remaining time is greater than 1 week' do
+        let(:requested_at) { 10.days.ago - (9.days + 21.minutes) }
+
+        it 'returns its description in week and days' do
+          expect(subject.time_remaining_until_granted).to eq '1 week and 2 days'
+        end
+      end
+      context 'when the remaining time is greater than 3 days and less than 1 weeks' do
+        let(:requested_at) { 10.days.ago - (5.days + 21.hours) }
+
+        it 'returns its description in hours and minutes' do
+          expect(subject.time_remaining_until_granted).to eq '5 days and 21 hours'
+        end
+      end
+
+      context 'when the remaining time is less than 1 day' do
+        let(:requested_at) { 10.days.ago - (10.hours + 21.minutes) }
+
+        it 'returns its description in hours and minutes' do
+          expect(subject.time_remaining_until_granted).to eq '10 hours and 21 minutes'
+        end
+      end
+    end
 
     context 'when the remaining time is greater than 1 hour' do
       let(:requested_at) { 24.hours.ago - (2.hours + 21.minutes) }

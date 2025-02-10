@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DisplayablePiiFormatter
   FormattedPii = Struct.new(
     :email, :all_emails, :verified_at, :x509_subject, :x509_issuer, :full_name,
@@ -6,10 +8,12 @@ class DisplayablePiiFormatter
 
   attr_reader :current_user
   attr_reader :pii
+  attr_reader :selected_email_id
 
-  def initialize(current_user:, pii:)
+  def initialize(current_user:, pii:, selected_email_id:)
     @current_user = current_user
     @pii = pii
+    @selected_email_id = selected_email_id
   end
 
   # @return [FormattedPii]
@@ -34,7 +38,11 @@ class DisplayablePiiFormatter
   private
 
   def email
-    EmailContext.new(current_user).last_sign_in_email_address.email
+    if @selected_email_id
+      current_user.confirmed_email_addresses.find(@selected_email_id).email
+    else
+      current_user.last_sign_in_email_address.email
+    end
   end
 
   def all_emails
@@ -70,7 +78,7 @@ class DisplayablePiiFormatter
 
   def dob
     pii_dob = pii[:dob]
-    pii_dob ? DateParser.parse_legacy(pii_dob).to_formatted_s(:long) : ''
+    pii_dob ? I18n.l(DateParser.parse_legacy(pii_dob), format: :long) : ''
   end
 
   def phone

@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 module Users
-  class EditPhoneController < ReauthnRequiredController
+  class EditPhoneController < ApplicationController
     include RememberDeviceConcern
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
     before_action :confirm_user_can_remove_phone, only: %i[destroy]
+    before_action :confirm_recently_authenticated_2fa
 
     def edit
       analytics.phone_change_viewed
@@ -14,7 +18,7 @@ module Users
     def update
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
       result = @edit_phone_form.submit(edit_phone_params)
-      analytics.phone_change_submitted(**result.to_h)
+      analytics.phone_change_submitted(**result)
       if result.success?
         redirect_to account_url
       else

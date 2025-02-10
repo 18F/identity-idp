@@ -1,10 +1,11 @@
-<% title t('account_reset.pending.header') %>
+<% self.title = t('account_reset.pending.header') %>
 
 <%= render PageHeadingComponent.new.with_content(t('account_reset.pending.header')) %>
 
 <p>
   <%= t(
         'account_reset.pending.wait_html',
+        waiting_period: @pending_presenter.account_reset_deletion_period,
         interval: @pending_presenter.time_remaining_until_granted,
       ) %>
 </p>

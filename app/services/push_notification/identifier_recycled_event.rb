@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module PushNotification
   class IdentifierRecycledEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-recycled'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-recycled'
 
     attr_reader :user, :email
 

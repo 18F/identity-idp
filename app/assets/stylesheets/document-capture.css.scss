@@ -1,2 +1,2 @@
-@import 'required';
-@import '../../javascript/packages/document-capture/styles';
+@forward 'uswds-core';
+@forward '../../javascript/packages/document-capture/styles';

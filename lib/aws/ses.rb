@@ -1,20 +1,24 @@
+# frozen_string_literal: true
+
 ##
 # ActionMailer delivery method for SES inspired by https://github.com/drewblas/aws-ses
 #
 module Aws
   module SES
     class Base
-      cattr_accessor :region_pool
-
       def initialize(*); end
 
       def deliver(mail)
-        response = ses_client.send_raw_email(raw_message: { data: mail.to_s })
-        mail.message_id = "#{response.message_id}@email.amazonses.com"
+        response = ses_client.send_raw_email(
+          raw_message: { data: mail.to_s },
+          configuration_set_name: IdentityConfig.store.ses_configuration_set_name,
+        )
+
+        mail.header[:ses_message_id] = response.message_id
         response
       end
 
-      alias deliver! deliver
+      alias_method :deliver!, :deliver
 
       private
 

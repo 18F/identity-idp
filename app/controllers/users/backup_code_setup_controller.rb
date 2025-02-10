@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Users
   class BackupCodeSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
+    include ReauthenticationRequiredConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -10,24 +13,35 @@ module Users
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
+    before_action :confirm_recently_authenticated_2fa, except: [:continue]
+    before_action :validate_multi_mfa_selection, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
 
     def index
-      track_backup_codes_confirmation_setup_visit
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+
+      generate_codes
+      track_backup_codes_created
+      render :create
     end
 
-    def create
-      generate_codes
-      result = BackupCodeSetupForm.new(current_user).submit
-      analytics.backup_code_setup_visit(**result.to_h)
-      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+    def new; end
 
-      save_backup_codes
+    def create
+      result = BackupCodeSetupForm.new(current_user).submit
+      visit_result = result.to_h.merge(analytics_properties_for_visit)
+      analytics.backup_code_setup_visit(**visit_result)
+
+      generate_codes
       track_backup_codes_created
     end
 
-    def edit; end
+    def edit
+      analytics.backup_code_regenerate_visit(**analytics_properties_for_visit)
+    end
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
@@ -39,7 +53,7 @@ module Users
 
     def refreshed
       @codes = user_session[:backup_codes]
-      render 'create'
+      render :create
     end
 
     def delete
@@ -48,30 +62,47 @@ module Users
       PushNotification::HttpPush.deliver(event)
       flash[:success] = t('notices.backup_codes_deleted')
       revoke_remember_device(current_user)
-      redirect_to account_two_factor_authentication_path
+      if in_multi_mfa_selection_flow?
+        redirect_to authentication_methods_setup_path
+      else
+        redirect_to account_two_factor_authentication_path
+      end
     end
 
-    def reminder
-      flash.now[:success] = t('notices.authenticated_successfully')
-    end
+    def confirm_backup_codes; end
 
     private
 
+    def validate_multi_mfa_selection
+      redirect_to backup_code_confirm_setup_url unless in_multi_mfa_selection_flow?
+    end
+
+    def analytics_properties_for_visit
+      { in_account_creation_flow: in_account_creation_flow? }
+    end
+
     def track_backup_codes_created
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
+      create_user_event(:backup_codes_added)
+
       analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_account_creation_flow: in_account_creation_flow?,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes', analytics)
+      Funnel::Registration::AddMfa.call(
+        current_user.id,
+        'backup_codes',
+        analytics,
+        threatmetrix_attrs,
+      )
     end
 
     def mfa_user
       @mfa_user ||= MfaContext.new(current_user)
-    end
-
-    def track_backup_codes_confirmation_setup_visit
-      analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      )
     end
 
     def ensure_backup_codes_in_session
@@ -79,8 +110,8 @@ module Users
     end
 
     def generate_codes
-      revoke_remember_device(current_user)
-      @codes = generator.generate
+      revoke_remember_device(current_user) if current_user.backup_code_configurations.any?
+      @codes = generator.delete_and_regenerate
       user_session[:backup_codes] = @codes
     end
 
@@ -93,29 +124,13 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
-    end
-
-    def save_backup_codes
-      mark_user_as_fully_authenticated
-      generator.save(user_session[:backup_codes])
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-      create_user_event(:backup_codes_added)
-    end
-
     def generator
       @generator ||= BackupCodeGenerator.new(current_user)
     end
 
     def authorize_backup_code_disable
-      return if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      return if MfaPolicy.new(current_user).multiple_factors_enabled? ||
+                in_multi_mfa_selection_flow?
       redirect_to account_two_factor_authentication_path
     end
 
@@ -123,7 +138,7 @@ module Users
       {
         success: true,
         multi_factor_auth_method: 'backup_codes',
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_account_creation_flow: in_account_creation_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end

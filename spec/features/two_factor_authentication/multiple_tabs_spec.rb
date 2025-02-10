@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'user interacts with 2FA across multiple browser tabs' do
+RSpec.feature 'user interacts with 2FA across multiple browser tabs' do
   include SpAuthHelper
   include SamlAuthHelper
 

@@ -1,0 +1,144 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+require 'net/http'
+require 'optparse'
+
+# Posts a message to Slack via webhook
+class NotifySlack
+  def run(argv:, stdin:, stdout:)
+    channel = nil
+    username = nil
+    text = nil
+    webhook = nil
+    icon = ':login-gov:'
+    raise_on_failure = false
+
+    program_name = File.basename($PROGRAM_NAME)
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~STR
+        #{program_name} [options]
+
+        Usage:
+
+        * Using arguments
+
+          #{program_name} --text "my *message*" \\
+           --channel "#some-channel" \\
+           --webhook https://example.com/webhook
+
+        * Passing text over STDIN
+
+          echo "my *message*" | #{program_name} --text - \\
+            --channel "#some-channel" \\
+            --webhook https://example.com/webhook
+
+        Options:
+      STR
+
+      opts.on('--channel CHANNEL', 'which channel to notify') do |channel_v|
+        channel = channel_v
+      end
+
+      opts.on('--webhook WEBHOOK', 'Slack webhook URL') do |webhook_v|
+        webhook = webhook_v
+      end
+
+      opts.on('--username USERNAME', 'which username to notify as') do |username_v|
+        username = username_v
+      end
+
+      opts.on('--text TEXT', 'text of notification, pass - to read from STDIN') do |text_v|
+        if text_v == '-'
+          if stdin.tty?
+            stdout.print 'please enter text of message: '
+            text = stdin.gets
+          else
+            text = stdin.read
+          end
+        else
+          text = text_v
+        end
+      end
+
+      opts.on('--icon ICON', 'slack emoji to use as icon (optional)') do |icon_v|
+        icon = icon_v
+      end
+
+      opts.on('--[no-]raise', <<~EOS) do |raise_v|
+        raise errors/exit uncleanly if the webhook fails. defaults to not raising
+      EOS
+        raise_on_failure = raise_v
+      end
+
+      opts.on('--help') do
+        puts opts
+        exit 0
+      end
+    end
+
+    parser.parse!(argv)
+
+    if !channel || !username || !text || !webhook
+      stdout.puts parser
+      exit 1
+    end
+
+    notify(
+      webhook: webhook,
+      channel: channel,
+      username: username,
+      text: text,
+      icon: format_icon(icon),
+    )
+    stdout.puts 'OK'
+  rescue Net::HTTPClientException => err
+    stdout.puts "#{program_name} HTTP ERROR: #{err.response.code}"
+    raise err if raise_on_failure
+  rescue => err
+    stdout.puts "#{program_name} ERROR: #{err.message}"
+    raise err if raise_on_failure
+  end
+
+  # @raise [Net::HTTPClientException] throws an error for non-successful response
+  # @return [Net::HTTPResponse]
+  def notify(webhook:, channel:, username:, text:, icon:)
+    url = URI(webhook)
+
+    req = Net::HTTP::Post.new(url)
+    req.form_data = {
+      'payload' => {
+        channel: channel,
+        username: username,
+        text: text,
+        icon_emoji: icon,
+      }.to_json,
+    }
+
+    Net::HTTP.start(
+      url.hostname,
+      url.port,
+      use_ssl: url.scheme == 'https',
+      open_timeout: 1,
+      read_timeout: 1,
+      write_timeout: 1,
+      ssl_timeout: 1,
+    ) do |http|
+      http.request(req)
+    end.value
+  end
+
+  def format_icon(icon)
+    if icon.start_with?(':') && icon.end_with?(':')
+      icon
+    else
+      ":#{icon}:"
+    end
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  NotifySlack.new.run(argv: ARGV, stdin: STDIN, stdout: STDOUT)
+end

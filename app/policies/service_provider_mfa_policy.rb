@@ -1,61 +1,50 @@
-class ServiceProviderMfaPolicy
-  AAL3_METHODS = %w[webauthn webauthn_platform piv_cac].freeze
+# frozen_string_literal: true
 
-  attr_reader :mfa_context, :auth_method, :service_provider
+class ServiceProviderMfaPolicy
+  attr_reader :mfa_context, :auth_methods_session, :resolved_authn_context_result
 
   def initialize(
     user:,
-    service_provider:,
-    auth_method:,
-    aal_level_requested:,
-    piv_cac_requested:
+    auth_methods_session:,
+    resolved_authn_context_result:
   )
     @user = user
     @mfa_context = MfaContext.new(user)
-    @auth_method = auth_method
-    @service_provider = service_provider
-    @aal_level_requested = aal_level_requested
-    @piv_cac_requested = piv_cac_requested
+    @auth_methods_session = auth_methods_session
+    @resolved_authn_context_result = resolved_authn_context_result
   end
 
   def user_needs_sp_auth_method_verification?
     # If the user needs to setup a new MFA method, return false so they go to
     # setup instead of verification
     return false if user_needs_sp_auth_method_setup?
+    return false if !piv_cac_required? && !phishing_resistant_required?
+    valid_auth_methods_for_sp_auth.blank?
+  end
 
+  def valid_auth_methods_for_sp_auth
+    all_auth_methods = auth_methods_session.auth_events.pluck(:auth_method)
     if piv_cac_required?
-      auth_method.to_s != 'piv_cac'
-    elsif aal3_required?
-      !AAL3_METHODS.include?(auth_method.to_s)
+      all_auth_methods & [TwoFactorAuthenticatable::AuthMethod::PIV_CAC]
+    elsif phishing_resistant_required?
+      all_auth_methods & TwoFactorAuthenticatable::AuthMethod::PHISHING_RESISTANT_METHODS.to_a
     else
-      false
+      all_auth_methods
     end
   end
 
   def user_needs_sp_auth_method_setup?
     return true if piv_cac_required? && !piv_cac_enabled?
-    return true if aal3_required? && !aal3_enabled?
+    return true if phishing_resistant_required? && !phishing_resistant_enabled?
     false
   end
 
-  def auth_method_confirms_to_sp_request?
-    !user_needs_sp_auth_method_setup? && !user_needs_sp_auth_method_verification?
-  end
-
-  def aal3_required?
-    return aal3_requested? if aal_requested?
-
-    service_provider&.default_aal == 3
+  def phishing_resistant_required?
+    resolved_authn_context_result.phishing_resistant?
   end
 
   def piv_cac_required?
-    piv_cac_requested?
-  end
-
-  def allow_user_to_switch_method?
-    return false if piv_cac_required?
-    return true unless aal3_required?
-    piv_cac_enabled? && webauthn_enabled?
+    resolved_authn_context_result.hspd12?
   end
 
   def multiple_factors_enabled?
@@ -64,24 +53,12 @@ class ServiceProviderMfaPolicy
 
   private
 
-  def aal3_enabled?
+  def phishing_resistant_enabled?
     piv_cac_enabled? || webauthn_enabled?
-  end
-
-  def aal_requested?
-    @aal_level_requested.present?
-  end
-
-  def aal3_requested?
-    @aal_level_requested == 3
   end
 
   def piv_cac_enabled?
     mfa_context.piv_cac_configurations.any?(&:mfa_enabled?)
-  end
-
-  def piv_cac_requested?
-    @piv_cac_requested
   end
 
   def webauthn_enabled?

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe KeyRotator::AttributeEncryption do
+RSpec.describe KeyRotator::AttributeEncryption do
   describe '#rotate' do
     let(:rotator) { described_class.new(email_address) }
     let(:email_address) { create(:email_address) }

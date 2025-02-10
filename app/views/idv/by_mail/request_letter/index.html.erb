@@ -1,0 +1,66 @@
+<% self.title = t('titles.idv.get_letter') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: :verify_address,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render AlertComponent.new(
+      type: :info,
+      message: t('idv.messages.gpo.info_alert'),
+      class: 'margin-bottom-4',
+    ) %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.mail.verify')) %>
+
+<p>
+  <%= t('idv.messages.gpo.timeframe_html') %>
+  <br />
+  <%= new_tab_link_to(
+        t('idv.messages.gpo.learn_more_verify_by_mail'),
+        help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-address-by-mail',
+          flow: :idv,
+          step: :gpo_send_letter,
+        ),
+      )
+  %>
+</p>
+<p>
+  <%= t('idv.messages.gpo.address_on_file') %>
+</p>
+
+<p>
+  <%= render 'shared/address',
+             address: @applicant.slice(:address1, :address2, :city, :state, :zipcode)
+  %>
+</p>
+
+<p>
+  <%= t(
+        'idv.messages.gpo.start_over_html',
+        start_over_link_html: link_to(
+          t('idv.messages.gpo.start_over_link_text'),
+          idv_confirm_start_over_before_letter_path,
+        ),
+      )
+  %>
+</p>
+
+<div class="margin-y-5">
+  <%= button_to t('idv.buttons.mail.send'),
+                idv_request_letter_path,
+                method: 'put',
+                class: 'usa-button usa-button--big usa-button--wide' %>
+</div>
+
+<% if FeatureManagement.idv_by_mail_only? %>
+  <%= render 'idv/doc_auth/cancel', step: 'gpo' %>
+<% else %>
+  <%= render 'idv/shared/back', fallback_path: idv_phone_path %>
+<% end %>

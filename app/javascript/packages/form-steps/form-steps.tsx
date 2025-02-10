@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { FormEventHandler, RefCallback, FC } from 'react';
+import type { FC, FormEventHandler, RefCallback } from 'react';
 import { Alert } from '@18f/identity-components';
 import { replaceVariables } from '@18f/identity-i18n';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
@@ -8,6 +8,7 @@ import FormStepsContext from './form-steps-context';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from './use-history-param';
 import useForceRender from './use-force-render';
+import FormError from './form-error';
 
 export interface FormStepError<V> {
   /**
@@ -31,7 +32,7 @@ interface FormStepRegisterFieldOptions {
 export type RegisterFieldCallback = (
   field: string,
   options?: Partial<FormStepRegisterFieldOptions>,
-) => undefined | RefCallback<HTMLInputElement>;
+) => undefined | RefCallback<HTMLElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
@@ -166,12 +167,6 @@ interface FormStepsProps {
   promptOnNavigate?: boolean;
 
   /**
-   * When using path fragments for maintaining history, the base path to which the current step name
-   * is appended.
-   */
-  basePath?: string;
-
-  /**
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
@@ -219,10 +214,20 @@ function getFieldActiveErrorFieldElement(
   fields: Record<string, FieldsRefEntry>,
 ) {
   const error = errors.find(({ field }) => field && fields[field]?.element);
-
   if (error) {
     return fields[error.field!].element || undefined;
   }
+}
+
+export function StepErrorAlert({ error }: { error: Error }) {
+  const { message } = error;
+  const messageProcessor = error instanceof FormError ? error.messageProcessor : null;
+  const transformedMessage = messageProcessor ? messageProcessor(message) : message;
+  return (
+    <Alert key={message} type="error" className="margin-bottom-4">
+      {transformedMessage}
+    </Alert>
+  );
 }
 
 function FormSteps({
@@ -236,13 +241,13 @@ function FormSteps({
   initialActiveErrors = [],
   autoFocus,
   promptOnNavigate = true,
-  basePath,
   titleFormat,
 }: FormStepsProps) {
+  const stepNames = steps.map((step) => step.name);
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep, stepNames);
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepCanComplete, setStepCanComplete] = useState<boolean | undefined>(undefined);
@@ -264,7 +269,6 @@ function FormSteps({
 
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
-
   useEffect(() => {
     // reset stepName if it doesn't correspond to an existing step
     const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
@@ -323,29 +327,32 @@ function FormSteps({
    * Returns array of form errors for the current set of values.
    */
   function getValidationErrors(): FormStepError<Record<string, Error>>[] {
-    return Object.keys(fields.current).reduce((result, key) => {
-      const { element, isRequired } = fields.current[key];
-      const isActive = !!element;
+    return Object.keys(fields.current).reduce(
+      (result, key) => {
+        const { element, isRequired } = fields.current[key];
+        const isActive = !!element;
 
-      let error: Error | undefined;
-      if (isActive) {
-        if (element instanceof HTMLInputElement) {
-          element.checkValidity();
+        let error: Error | undefined;
+        if (isActive) {
+          if (element instanceof HTMLInputElement) {
+            element.checkValidity();
+          }
+
+          if (element instanceof HTMLInputElement && element.validationMessage) {
+            error = new Error(element.validationMessage);
+          } else if (isRequired && !values[key]) {
+            error = new RequiredValueMissingError();
+          }
         }
 
-        if (element instanceof HTMLInputElement && element.validationMessage) {
-          error = new Error(element.validationMessage);
-        } else if (isRequired && !values[key]) {
-          error = new RequiredValueMissingError();
+        if (error) {
+          result = result.concat({ field: key, error });
         }
-      }
 
-      if (error) {
-        result = result.concat({ field: key, error });
-      }
-
-      return result;
-    }, [] as FormStepError<Record<string, Error>>[]);
+        return result;
+      },
+      [] as FormStepError<Record<string, Error>>[],
+    );
   }
 
   // An empty steps array is allowed, in which case there is nothing to render.
@@ -424,7 +431,7 @@ function FormSteps({
   };
 
   // wrap setter in a function to pass to FormStepsContext
-  const changeStepCanComplete = (isComplete: boolean) => {
+  const changeStepCanComplete = (isComplete?: boolean) => {
     setStepCanComplete(isComplete);
   };
 
@@ -434,9 +441,7 @@ function FormSteps({
     <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
-        <Alert key={error.message} type="error" className="margin-bottom-4">
-          {error.message}
-        </Alert>
+        <StepErrorAlert key={error.message} error={error} />
       ))}
       <FormStepsContext.Provider
         value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}

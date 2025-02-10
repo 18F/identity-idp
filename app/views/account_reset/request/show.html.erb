@@ -1,4 +1,4 @@
-<% title t('account_reset.request.title') %>
+<% self.title = t('account_reset.request.title') %>
 
 <%= render PageHeadingComponent.new.with_content(t('account_reset.request.title')) %>
 
@@ -8,7 +8,7 @@
 
 <h2><%= t('account_reset.request.delete_account') %></h2>
 
-<% t('account_reset.request.delete_account_info').each do |info_p| %>
+<% t('account_reset.request.delete_account_info', interval: @account_reset_deletion_period_interval).each do |info_p| %>
   <p><%= info_p %></p>
 <% end %>
 
@@ -25,7 +25,3 @@
       class: 'usa-button usa-button--unstyled',
       method: :post,
     ) { t('account_reset.request.yes_continue') } %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('links.cancel'), root_url %>
-<% end %>

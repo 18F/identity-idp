@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe BackupCodeSetupForm do
+RSpec.describe BackupCodeSetupForm do
 end

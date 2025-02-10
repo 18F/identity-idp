@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PivCacConfiguration < ApplicationRecord
   belongs_to :user
 
@@ -9,7 +11,7 @@ class PivCacConfiguration < ApplicationRecord
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::PivCacSelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::SignInPivCacSelectionPresenter.new(user:, configuration: self)]
     else
       []
     end

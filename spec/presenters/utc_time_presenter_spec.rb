@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UtcTimePresenter do
+RSpec.describe UtcTimePresenter do
   describe '#to_s' do
     it 'returns the formatted timestamp in a string' do
       timestamp = Time.use_zone('UTC') do

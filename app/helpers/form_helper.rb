@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FormHelper
   # This method is single statement spread across many lines for readability
   def us_states_territories

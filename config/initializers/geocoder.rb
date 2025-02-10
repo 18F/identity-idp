@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # For some reason the test result class does not impelement the `language=`
 # method. This patches an empty method onto it to prevent NoMethodErrors in
 # the tests
@@ -11,7 +13,7 @@ end
 
 GEO_DATA_FILEPATH = Rails.root.join(IdentityConfig.store.geo_data_file_path).freeze
 
-if Rails.env.production? && File.exist?(GEO_DATA_FILEPATH)
+if File.exist?(GEO_DATA_FILEPATH) && !Rails.env.test?
   Geocoder.configure(
     ip_lookup: :geoip2,
     geoip2: {

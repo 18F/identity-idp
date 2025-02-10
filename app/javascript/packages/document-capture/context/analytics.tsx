@@ -43,7 +43,7 @@ type AnalyticsContextProviderProps = Pick<AnalyticsContextValue, 'trackEvent'> &
 
 const DEFAULT_EVENT_METADATA: Record<string, any> = {};
 
-export const LOGGED_STEPS: string[] = ['location', 'prepare', 'switch_back'];
+export const LOGGED_STEPS: string[] = ['prepare', 'location', 'switch_back'];
 
 const AnalyticsContext = createContext<AnalyticsContextValue>({
   trackEvent: () => Promise.resolve(),
@@ -66,6 +66,7 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
 
     setSubmitEventMetadataState(DEFAULT_EVENT_METADATA);
   };
+
   const trackVisitEvent: TrackVisitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
       trackEvent(`IdV: ${stepName} visited`);

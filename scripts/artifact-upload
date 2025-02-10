@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'yaml'
 require 'open3'
@@ -33,7 +34,7 @@ branch_environments.map do |upload_environment|
   raise 'artifact copy failed' unless status.success?
 
   assets_sync_command = <<-CMD
-    aws s3 sync --size-only --cache-control max-age=31536000 --exclude .sprockets-manifest-*.json public/assets s3://#{static_bucket}/assets
+    aws s3 sync --size-only --cache-control max-age=31536000 --exclude ".manifest.json" public/assets s3://#{static_bucket}/assets
   CMD
   _output, status = Open3.capture2(assets_sync_command)
   raise 'assets sync failed' unless status.success?

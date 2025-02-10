@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
+RSpec.describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   let(:type) { 'otp_requests' }
-  let(:decorated_user) { instance_double(UserDecorator) }
-  let(:presenter) { described_class.new(type, decorated_user) }
+  let(:user) { instance_double(User) }
+  let(:presenter) { described_class.new(type, user) }
 
   describe '#type' do
     subject { presenter.type }
@@ -11,10 +11,10 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
     it { is_expected.to eq(type) }
   end
 
-  describe '#decorated_user' do
-    subject { presenter.decorated_user }
+  describe '#user' do
+    subject { presenter.user }
 
-    it { is_expected.to eq(decorated_user) }
+    it { is_expected.to eq(user) }
   end
 
   describe '#locked_reason' do

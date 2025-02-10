@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     module Ddp
@@ -150,7 +152,6 @@ module Proofing
           national_id_worst_score
           org_id
           policy
-          policy_details_api
           policy_engine_version
           policy_score
           page_time_on
@@ -189,18 +190,13 @@ module Proofing
           true_ip_score
           true_ip_worst_score
           unknown_session
-        ]
+        ].freeze
 
         # @param [Hash, nil] parsed JSON response body
         def self.redact(hash)
           return { error: 'TMx response body was empty' } if hash.nil?
           return { error: 'TMx response body was malformed' } unless hash.is_a? Hash
-          filtered_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
-          unfiltered_keys = hash.keys - filtered_response_h.keys
-          unfiltered_keys.each do |key|
-            filtered_response_h[key] = '[redacted]'
-          end
-          filtered_response_h
+          hash.slice(*ALLOWED_RESPONSE_FIELDS)
         end
       end
     end

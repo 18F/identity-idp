@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NullServiceProviderRequest
   def uuid; end
 

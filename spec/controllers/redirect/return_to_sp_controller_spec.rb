@@ -1,12 +1,11 @@
 require 'rails_helper'
 
-describe Redirect::ReturnToSpController do
+RSpec.describe Redirect::ReturnToSpController do
   let(:current_sp) { build(:service_provider) }
 
   before do
     allow(subject).to receive(:current_sp).and_return(current_sp)
     stub_analytics
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#cancel' do
@@ -35,7 +34,7 @@ describe Redirect::ReturnToSpController do
           service_provider: current_sp, oidc_state: state, oidc_redirect_uri: redirect_uri,
         ).return_to_sp_url
         expect(response).to redirect_to(expected_redirect_uri)
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
           hash_including(redirect_url: expected_redirect_uri),
         )
@@ -58,7 +57,7 @@ describe Redirect::ReturnToSpController do
           service_provider: current_sp, oidc_state: state, oidc_redirect_uri: redirect_uri,
         ).return_to_sp_url
         expect(response).to redirect_to(expected_redirect_uri)
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
           hash_including(redirect_url: expected_redirect_uri),
         )
@@ -72,7 +71,7 @@ describe Redirect::ReturnToSpController do
         get 'cancel'
 
         expect(response).to redirect_to('https://sp.gov/return_to_sp')
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Return to SP: Cancelled',
           hash_including(redirect_url: 'https://sp.gov/return_to_sp'),
         )
@@ -98,7 +97,7 @@ describe Redirect::ReturnToSpController do
         get 'failure_to_proof'
 
         expect(response).to redirect_to('https://sp.gov/failure_to_proof')
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Return to SP: Failed to proof',
           hash_including(redirect_url: 'https://sp.gov/failure_to_proof'),
         )
@@ -109,7 +108,7 @@ describe Redirect::ReturnToSpController do
       it 'logs with extra analytics properties' do
         get 'failure_to_proof', params: { step: 'first', location: 'bottom' }
 
-        expect(@analytics).to have_received(:track_event).with(
+        expect(@analytics).to have_logged_event(
           'Return to SP: Failed to proof',
           hash_including(
             redirect_url: a_kind_of(String),

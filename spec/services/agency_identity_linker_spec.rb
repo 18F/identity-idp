@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AgencyIdentityLinker do
+RSpec.describe AgencyIdentityLinker do
   let(:user) { create(:user) }
   describe '#link_identity' do
     before(:each) { init_env(user) }
@@ -20,10 +20,10 @@ describe AgencyIdentityLinker do
       user.destroy!
       expect(User.where(id: user.id).count).to eq(0)
       user2 = create(:user)
-      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }.
-        to raise_error ActiveRecord::RecordNotUnique
-      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }
+        .to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }
+        .to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'does not allow agency_identity uuid to be reused after user deletes account' do
@@ -37,10 +37,10 @@ describe AgencyIdentityLinker do
       expect(AgencyIdentity.where(user_id: user.id).count).to eq(0)
       expect(AgencyIdentity.where(uuid: 'UUID1').count).to eq(0)
       user2 = create(:user)
-      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }.
-        to raise_error ActiveRecord::RecordNotUnique
-      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }.
-        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp3', 'UUID1') }
+        .to raise_error ActiveRecord::RecordNotUnique
+      expect { create_service_provider_identity(user2, 'sp4', 'UUID2') }
+        .to raise_error ActiveRecord::RecordNotUnique
     end
 
     it 'links identity with 1 sp' do
@@ -123,7 +123,7 @@ describe AgencyIdentityLinker do
 
         it 'persists the service provider identity as an agency identity' do
           expect(subject.uuid).to eq uuid
-          ai = AgencyIdentity.where(user: user, agency: agency).take
+          ai = AgencyIdentity.find_by(user: user, agency: agency)
           expect(subject).to eq ai
         end
       end

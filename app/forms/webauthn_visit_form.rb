@@ -1,11 +1,19 @@
+# frozen_string_literal: true
+
 class WebauthnVisitForm
   include ActiveModel::Model
+  include ActionView::Helpers::UrlHelper
+  include Rails.application.routes.url_helpers
+
+  attr_reader :url_options, :in_mfa_selection_flow
 
   INVALID_STATE_ERROR = 'InvalidStateError'
   NOT_SUPPORTED_ERROR = 'NotSupportedError'
 
-  def initialize(user)
+  def initialize(user:, url_options:, in_mfa_selection_flow:)
     @user = user
+    @url_options = url_options
+    @in_mfa_selection_flow = in_mfa_selection_flow
   end
 
   def submit(params)
@@ -16,6 +24,14 @@ class WebauthnVisitForm
 
   def platform_authenticator?
     @platform_authenticator
+  end
+
+  def current_mfa_setup_path
+    if !in_mfa_selection_flow && mfa_user.two_factor_enabled?
+      account_path
+    else
+      authentication_methods_setup_path
+    end
   end
 
   private
@@ -39,7 +55,7 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_platform_setup.not_supported')
     else
-      I18n.t('errors.webauthn_platform_setup.general_error')
+      webauthn_platform_general_error
     end
   end
 
@@ -50,7 +66,41 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_setup.not_supported')
     else
-      I18n.t('errors.webauthn_setup.general_error')
+      webauthn_general_error
+    end
+  end
+
+  def webauthn_platform_general_error
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: link_to(
+          I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+          current_mfa_setup_path,
+        ),
+      )
+    end
+  end
+
+  def webauthn_general_error
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: link_to(
+          I18n.t('errors.webauthn_setup.additional_methods_link'),
+          current_mfa_setup_path,
+        ),
+      )
     end
   end
 

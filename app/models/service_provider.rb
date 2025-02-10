@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fingerprinter'
 require 'identity_validations'
 
@@ -5,6 +7,8 @@ class ServiceProvider < ApplicationRecord
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
+  # In order to preserve unique user UUIDs, we do not want to destroy Identity records
+  # when we destroy a ServiceProvider
   has_many :identities, inverse_of: :service_provider_record,
                         foreign_key: 'service_provider',
                         primary_key: 'issuer',
@@ -16,15 +20,31 @@ class ServiceProvider < ApplicationRecord
            primary_key: 'issuer',
            dependent: :destroy
 
-  # Do not define validations in this model.
+  has_one :integration,
+          inverse_of: :service_provider,
+          foreign_key: 'issuer',
+          primary_key: 'issuer',
+          class_name: 'Agreements::Integration',
+          dependent: nil
+
+  # Do not define validations in this model
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
 
   scope(:active, -> { where(active: true) })
   scope(
     :with_push_notification_urls,
-    -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') },
+    -> {
+      where.not(push_notification_url: nil)
+        .where.not(push_notification_url: '')
+        .where(active: true)
+    },
   )
+
+  IAA_INTERNAL = 'LGINTERNAL'
+
+  scope(:internal, -> { where(iaa: IAA_INTERNAL) })
+  scope(:external, -> { where.not(iaa: IAA_INTERNAL).or(where(iaa: nil)) })
 
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
@@ -48,6 +68,18 @@ class ServiceProvider < ApplicationRecord
 
     @allowed_list ||= config
     @allowed_list.include? issuer
+  end
+
+  def identity_proofing_allowed?
+    ial.present? && ial >= 2
+  end
+
+  def ialmax_allowed?
+    IdentityConfig.store.allowed_ialmax_providers.include?(issuer)
+  end
+
+  def facial_match_ial_allowed?
+    IdentityConfig.store.facial_match_general_availability_enabled
   end
 
   private

@@ -1,49 +1,54 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     module Ddp
-      class Proofer < LexisNexis::Proofer
-        vendor_name 'lexisnexis:ddp'
+      class Proofer
+        VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
-        required_attributes :threatmetrix_session_id,
-                            :state_id_number,
-                            :first_name,
-                            :last_name,
-                            :dob,
-                            :ssn,
-                            :address1,
-                            :city,
-                            :state,
-                            :zipcode,
-                            :request_ip
+        attr_reader :config
 
-        optional_attributes :address2, :phone, :email, :uuid_prefix
-
-        stage :resolution
-
-        proof do |applicant, result|
-          proof_applicant(applicant, result)
+        def initialize(attrs)
+          @config = Config.new(attrs)
         end
 
-        def send_verification_request(applicant)
-          VerificationRequest.new(config: config, applicant: applicant).send
-        end
-
-        def proof_applicant(applicant, result)
-          response = send_verification_request(applicant)
-          process_response(response, result)
+        def proof(applicant)
+          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          build_result_from_response(response)
+        rescue => exception
+          NewRelic::Agent.notice_error(exception)
+          Proofing::DdpResult.new(success: false, exception: exception)
         end
 
         private
 
-        def process_response(response, result)
-          body = response.response_body
+        def build_result_from_response(verification_response)
+          result = Proofing::DdpResult.new
+          body = verification_response.response_body
+
           result.response_body = body
           result.transaction_id = body['request_id']
           request_result = body['request_result']
           review_status = body['review_status']
+
+          validate_review_status!(review_status)
+
           result.review_status = review_status
           result.add_error(:request_result, request_result) unless request_result == 'success'
           result.add_error(:review_status, review_status) unless review_status == 'pass'
+          result.account_lex_id = body['account_lex_id']
+          result.session_id = body['session_id']
+
+          result.success = !result.errors?
+          result.client = 'lexisnexis'
+
+          result
+        end
+
+        def validate_review_status!(review_status)
+          return if VALID_REVIEW_STATUSES.include?(review_status)
+
+          raise "Unexpected ThreatMetrix review_status value: #{review_status}"
         end
       end
     end

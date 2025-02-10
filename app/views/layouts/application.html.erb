@@ -1,3 +1,37 @@
-<% background_cls 'tablet:bg-primary-lighter' %>
+<%= content_for(:head) do %>
+  <%= javascript_include_tag('init.js', nopush: false, integrity: 'sha256-eMXV2njRJxgQrFbuljRT/UTWePGrhl83bHHDDd+jFPw=') %>
+<% end %>
 
-<%= render template: 'layouts/base' %>
+<%= extends_layout :base, body_class: local_assigns.fetch(:body_class, 'site tablet:bg-primary-lighter') do %>
+  <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
+  <%= render 'shared/banner' %>
+  <%= content_tag(
+        local_assigns[:user_main_tag] == false ? 'div' : 'main',
+        class: 'site-wrap bg-primary-lighter',
+        id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
+      ) do %>
+    <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card padding-x-2 tablet:padding-x-10 tablet:margin-bottom-8' %>">
+      <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
+      <%= render FlashComponent.new(flash: flash) %>
+      <%= yield %>
+    </div>
+  <% end %>
+  <%= render 'shared/footer_lite' %>
+
+  <% if current_user %>
+    <%= render partial: 'session_timeout/ping',
+               locals: {
+                 warning: session_timeout_warning,
+                 start: session_timeout_start,
+                 frequency: session_timeout_frequency,
+                 modal: session_modal,
+               } %>
+  <% elsif !@skip_session_expiration %>
+    <%= render partial: 'session_timeout/expire_session',
+               locals: {
+                 session_timeout_in: Devise.timeout_in,
+               } %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('application') %>
+<% end %>

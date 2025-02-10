@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Aamva
     module Response
@@ -6,8 +8,8 @@ module Proofing
 
         def initialize(http_response)
           @http_response = http_response
-          handle_soap_error
           handle_http_error
+          handle_soap_error
           parse_response
         end
 

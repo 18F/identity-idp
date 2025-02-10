@@ -39,6 +39,11 @@
         },
         {
           "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssuerType",
+          "Values": [{"Value": "StateProvince"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
           "Name": "DocClassCode",
           "Values": [{"Value": "DriversLicense"}]
         },
@@ -648,6 +653,11 @@
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_AddressLine1",
           "Values": [{"Value": "1 MUDRY FARM RD"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_AddressLine2",
+          "Values": [{"Value": "APT 3E"}]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",

@@ -1,0 +1,4 @@
+<%= content_tag('div', **tag_options, class: ['lg-verification-badge', border_css_class, *tag_options[:class]]) do %>
+  <%= render IconComponent.new(icon:, class: icon_css_class) %>
+  <%= content %>
+<% end %>

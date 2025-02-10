@@ -5,8 +5,13 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 require:
   - rubocop-rails
+  - rubocop-rspec
   - rubocop-performance
+  - rubocop-capybara
+  - ./lib/linters/i18n_helper_html_linter.rb
+  - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
+  - ./lib/linters/image_size_linter.rb
   - ./lib/linters/mail_later_linter.rb
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
@@ -24,8 +29,8 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  TargetRubyVersion: 2.7
-  TargetRailsVersion: 6.0
+  TargetRubyVersion: 3.3.0
+  TargetRailsVersion: 7.2
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
@@ -39,8 +44,23 @@ Bundler/DuplicatedGem:
 Bundler/InsecureProtocolSource:
   Enabled: true
 
+Capybara/CurrentPathExpectation:
+  Enabled: true
+
 Gemspec/DuplicatedAssignment:
   Enabled: true
+
+IdentityIdp/I18nHelperHtmlLinter:
+  Enabled: true
+  Include:
+    - app/views/**/*.erb
+    - app/components/**/*.erb
+    - app/controllers/**/*.rb
+
+IdentityIdp/AnalyticsEventNameLinter:
+  Enabled: true
+  Include:
+    - app/services/analytics_events.rb
 
 IdentityIdp/LocalizedValidationMessageLinter:
   Enabled: true
@@ -57,6 +77,15 @@ IdentityIdp/ErrorsAddLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
+
+IdentityIdp/ImageSizeLinter:
+  Enabled: true
+  Exclude:
+    - app/components/barcode_component.html.erb
+    - app/views/partials/multi_factor_authentication/_mfa_selection.html.erb
+    - app/views/shared/_nav_branded.html.erb
+    - app/views/sign_up/completions/show.html.erb
+    - app/views/users/two_factor_authentication_setup/index.html.erb
 
 IdentityIdp/RedirectBackLinter:
   Enabled: true
@@ -102,7 +131,7 @@ Layout/DefEndAlignment:
 Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
-  EnforcedStyle: trailing
+  EnforcedStyle: leading
   SupportedStyles:
     - leading
     - trailing
@@ -224,6 +253,9 @@ Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
 
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
@@ -286,6 +318,7 @@ Layout/SpaceAroundMethodCallOperator:
 Layout/SpaceAroundOperators:
   Enabled: true
   EnforcedStyleForExponentOperator: space
+  AllowForAlignment: false
 
 Layout/SpaceBeforeBlockBraces:
   Enabled: true
@@ -356,6 +389,9 @@ Lint/BooleanSymbol:
   Enabled: true
 
 Lint/CircularArgumentReference:
+  Enabled: true
+
+Lint/ConstantReassignment:
   Enabled: true
 
 Lint/Debugger:
@@ -598,6 +634,10 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AllowUnusedKeywordArguments: false
 
+Lint/UnusedBlockArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: true
+
 Lint/UriEscapeUnescape:
   Enabled: true
 
@@ -621,7 +661,7 @@ Metrics/BlockLength:
   CountComments: false
   Enabled: true
   Max: 25
-  IgnoredMethods:
+  AllowedMethods:
     - Struct.new
     - RedactedStruct.new
   Exclude:
@@ -631,14 +671,6 @@ Metrics/BlockLength:
     - config/routes.rb
     - spec/**/*.rb
     - scripts/**/*
-
-Metrics/ModuleLength:
-  CountComments: false
-  Max: 200
-  Description: Avoid modules longer than 200 lines of code.
-  Enabled: true
-  Exclude:
-    - spec/**/*
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
@@ -672,6 +704,15 @@ Naming/MemoizedInstanceVariableName:
 
 Naming/MethodParameterName:
   MinNameLength: 2
+
+Naming/PredicateName:
+  Enabled: true
+  AllowedMethods:
+    - is_a?
+  ForbiddenPrefixes:
+    # overriding to allow "has_"
+    - is_
+    - have_
 
 Naming/VariableName:
   Exclude:
@@ -769,6 +810,15 @@ Performance/Squeeze:
 Performance/StartWith:
   Enabled: true
 
+Performance/StringBytesize:
+  Enabled: true
+
+Performance/StringIdentifierArgument:
+  Enabled: true
+
+Performance/StringInclude:
+  Enabled: true
+
 Performance/StringReplacement:
   Enabled: true
 
@@ -778,7 +828,19 @@ Performance/UnfreezeString:
 Performance/UriDefaultParser:
   Enabled: true
 
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: true
+
+Rails/ActionControllerTestCase:
+  Enabled: true
+
+Rails/ActionOrder:
+  Enabled: false
+
 Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+Rails/ActiveSupportOnLoad:
   Enabled: true
 
 Rails/AddColumnIndex:
@@ -796,7 +858,28 @@ Rails/ApplicationMailer:
 Rails/Blank:
   Enabled: false
 
+Rails/CompactBlank:
+  Enabled: false
+
+Rails/DangerousColumnNames:
+  Enabled: true
+
 Rails/Delegate:
+  Enabled: false
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: false
+
+Rails/DotSeparatedKeys:
+  Enabled: false
+
+Rails/DuplicateAssociation:
+  Enabled: true
+
+Rails/DurationArithmetic:
+  Enabled: false
+
+Rails/DuplicateScope:
   Enabled: false
 
 Rails/DynamicFindBy:
@@ -804,6 +887,12 @@ Rails/DynamicFindBy:
     - spec/features/**/*.rb
 
 Rails/EagerEvaluationLogMessage:
+  Enabled: true
+
+Rails/EnumSyntax:
+  Enabled: true
+
+Rails/EnvLocal:
   Enabled: true
 
 Rails/ExpandedDateRange:
@@ -815,6 +904,9 @@ Rails/FilePath:
 Rails/FindById:
   Enabled: true
 
+Rails/FreezeTime:
+  Enabled: true
+
 Rails/HttpPositionalArguments:
   Description: Use keyword arguments instead of positional arguments in http method calls.
   Enabled: true
@@ -822,7 +914,16 @@ Rails/HttpPositionalArguments:
     - spec/**/*
     - test/**/*
 
+Rails/I18nLazyLookup:
+  Enabled: false
+
 Rails/I18nLocaleAssignment:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/IgnoredColumnsAssignment:
   Enabled: false
 
 Rails/Inquiry:
@@ -834,16 +935,34 @@ Rails/MailerName:
 Rails/MatchRoute:
   Enabled: true
 
+Rails/MigrationClassName:
+  Enabled: true
+
 Rails/NegateInclude:
   Enabled: false
 
-Rails/Pluck:
+Rails/Output:
   Enabled: true
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - db/**/*.rb
+    - lib/**/*.rb
+    - spec/**/*.rb # in addition to default
+
+Rails/Pluck:
+  Enabled: false
 
 Rails/PluckInWhere:
   Enabled: true
 
 Rails/Present:
+  Enabled: false
+
+Rails/RedundantActiveRecordAllMethod:
+  Enabled: true
+
+Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
 Rails/RedundantTravelBack:
@@ -858,11 +977,37 @@ Rails/RenderInline:
 Rails/RenderPlainText:
   Enabled: true
 
+Rails/ResponseParsedBody:
+  Enabled: false
+
+Rails/RootJoinChain:
+  Enabled: true
+
+Rails/RootPathnameMethods:
+  Enabled: false
+
+Rails/RootPublicPath:
+  Enabled: true
+
+Rails/SelectMap:
+  Enabled: true
+
 Rails/ShortI18n:
   Enabled: true
 
+Rails/SkipsModelValidations:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+
+Rails/StripHeredoc:
+  Enabled: false
+
 Rails/SquishedSQLHeredocs:
   Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Enabled: true
 
 Rails/TimeZone:
   Description: Checks the correct usage of time zone aware methods.
@@ -876,7 +1021,22 @@ Rails/TimeZone:
 Rails/TimeZoneAssignment:
   Enabled: true
 
+Rails/ToFormattedS:
+  Enabled: false
+
+Rails/ToSWithArgument:
+  Enabled: false
+
+Rails/TopLevelHashWithIndifferentAccess:
+  Enabled: true
+
+Rails/TransactionExitStatement:
+  Enabled: true
+
 Rails/UnusedIgnoredColumns:
+  Enabled: true
+
+Rails/UnusedRenderContent:
   Enabled: true
 
 Rails/WhereEquals:
@@ -885,8 +1045,26 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: true
 
+Rails/WhereMissing:
+  Enabled: true
+
 Rails/WhereNot:
   Enabled: false
+
+Rails/WhereNotWithMultipleConditions:
+  Enabled: true
+
+Rails/WhereRange:
+  Enabled: false
+
+RSpec/LeakyConstantDeclaration:
+  Enabled: true
+
+RSpec/MissingExpectationTargetMethod:
+  Enabled: true
+
+RSpec/RedundantPredicateMatcher:
+  Enabled: true
 
 Security/Eval:
   Enabled: true
@@ -904,6 +1082,10 @@ Security/YAMLLoad:
   Enabled: true
   SafeAutoCorrect: false
 
+Style/Alias:
+  Enabled: true
+  EnforcedStyle: prefer_alias_method
+
 Style/AndOr:
   Description: Use &&/|| instead of and/or.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
@@ -913,6 +1095,7 @@ Style/AndOr:
     - conditionals
 
 Style/ArgumentsForwarding:
+  UseAnonymousForwarding: false
   Enabled: true
 
 Style/ArrayJoin:
@@ -948,6 +1131,9 @@ Style/ClassEqualityComparison:
 Style/ClassMethods:
   Enabled: true
 
+Style/CollectionMethods:
+  Enabled: true
+
 Style/ColonMethodCall:
   Enabled: true
 
@@ -966,6 +1152,9 @@ Style/DefWithParentheses:
   Enabled: true
 
 Style/Dir:
+  Enabled: true
+
+Style/DirEmpty:
   Enabled: true
 
 Style/EachForSimpleLoop:
@@ -1000,9 +1189,22 @@ Style/EndBlock:
 Style/EvalWithLocation:
   Enabled: true
 
+Style/ExactRegexpMatch:
+  Enabled: true
+
 Style/For:
   Enabled: true
   EnforcedStyle: each
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - '.irbrc'
+    - '.rubocop.yml'
+    - 'Brewfile'
+    - 'Gemfile'
+    - 'Rakefile'
 
 Style/GlobalVars:
   Enabled: true
@@ -1016,6 +1218,7 @@ Style/HashExcept:
 
 Style/HashSyntax:
   EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: either
 
 Style/IdenticalConditionalBranches:
   Enabled: true
@@ -1026,7 +1229,7 @@ Style/IfInsideElse:
 Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
-  Enabled: true
+  Enabled: false
 
 Style/IfUnlessModifierOfIfUnless:
   Enabled: true
@@ -1053,7 +1256,7 @@ Style/LineEndConcatenation:
 
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
-  IgnoredMethods: []
+  AllowedMethods: []
 
 Style/MethodDefParentheses:
   Enabled: true
@@ -1084,6 +1287,10 @@ Style/MultilineMemoization:
 Style/MultilineWhenThen:
   Enabled: true
 
+Style/MutableConstant:
+  Enabled: true
+  EnforcedStyle: strict
+
 Style/NegatedWhile:
   Enabled: true
 
@@ -1112,6 +1319,9 @@ Style/NumericLiteralPrefix:
   EnforcedOctalStyle: zero_with_o
 
 Style/OneLineConditional:
+  Enabled: true
+
+Style/OpenStructUse:
   Enabled: true
 
 Style/OptionalArguments:
@@ -1157,6 +1367,21 @@ Style/RedundantFreeze:
   Enabled: true
 
 Style/RedundantInterpolation:
+  Enabled: true
+
+Style/RedundantHeredocDelimiterQuotes:
+  Enabled: true
+
+Style/RedundantLineContinuation:
+  Enabled: true
+
+Style/RedundantArrayConstructor:
+  Enabled: true
+
+Style/RedundantFilterChain:
+  Enabled: true
+
+Style/RedundantRegexpConstructor:
   Enabled: true
 
 Style/RedundantParentheses:

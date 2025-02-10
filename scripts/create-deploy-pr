@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+GIT_REMOTE=${GIT_REMOTE:-origin}
+SOURCE=${SOURCE:-}
+DEPLOY_BRANCH=stages/prod
+PATCH=${PATCH:-}
+DRY_RUN=${DRY_RUN:-0}
+CHANGELOG_FILE=${CHANGELOG_FILE:-tmp/.rc-changelog.md}
+FORMAT_CHANGELOG=${FORMAT_CHANGELOG:-}
+GH_REPO=${GH_REPO:-18f/identity-idp}
+STATUS_PROMOTION_LABEL='status - promotion'
+
+function check_gh_configuration {
+    if ! which gh > /dev/null 2>&1; then
+        echo "Github CLI (gh) is not installed. You can install it with: brew install gh"
+        exit 1
+    fi
+
+    if [ "${CI:-}" == "1" ] && [ -z "${GH_TOKEN:-}" ]; then
+        # gh will not work in CI unless GH_TOKEN is explicitly set.
+        echo "You must set the GH_TOKEN environment variable."
+        exit 1
+    fi
+
+    # Verify our git remote aligns with GH configuration
+    GIT_REMOTE_REPO=$(
+        git remote get-url "$GIT_REMOTE" \
+        | sed -E 's#(^https?://github.com/|^git@github.com:|\.git$)##g' \
+        | tr '[:upper:]' '[:lower:]' \
+    )
+
+    if [ "$GIT_REMOTE_REPO" != "$GH_REPO" ]; then
+        echo "\$GH_REPO is set to a different value ($GH_REPO) than the git remote ($GIT_REMOTE - $GIT_REMOTE_REPO) in use."
+        exit 1
+    fi
+}
+
+function get_last_rc {
+    GH_OUTPUT=$(gh release list --exclude-drafts --exclude-pre-releases --limit 1 || true)
+    LAST_RC=$(echo "$GH_OUTPUT" | grep -E --only-matching 'RC [0-9]+(\.[0-9]+)?' | sed 's/RC //')
+    if [ -z "$LAST_RC" ]; then
+        echo 0
+    else
+        echo "$LAST_RC"
+    fi
+}
+
+function get_next_rc {
+    LAST_RC="$1"; shift
+    MAJOR=$(echo "$LAST_RC" | sed -E 's/\.[0-9]+//')
+    MINOR=$(echo "$LAST_RC" | sed -E 's/[0-9]+(\.|$)//')
+
+    if [ "$PATCH" == "1" ]; then
+        # Doing a patch, so increment minor version by 1
+        if [ -z "$MINOR" ]; then
+            MINOR=0
+        fi
+
+        MINOR=$((MINOR + 1))
+    else
+        # Not doing a patch, clear minor and increment major
+        MAJOR=$((MAJOR + 1))
+        MINOR=0
+    fi
+
+    if [ "$MINOR" == "0" ]; then
+        echo "$MAJOR"
+    else
+        echo "$MAJOR.$MINOR"
+    fi
+}
+
+function get_staging_sha {
+    curl --silent https://idp.staging.login.gov/api/deploy.json | jq -r .git_sha
+}
+
+check_gh_configuration
+git fetch $GIT_REMOTE
+
+RC_BRANCH=stages/rc-$(date +'%Y-%m-%d')
+if git rev-parse "$GIT_REMOTE/$RC_BRANCH" > /dev/null 2>&1; then
+    echo "RC branch $RC_BRANCH already exists. Delete that branch and re-run this workflow to create a PR." >&2
+    exit 1
+fi
+
+LAST_RC=$(get_last_rc)
+NEXT_RC=$(get_next_rc "$LAST_RC")
+echo "Last RC was ${LAST_RC}. The next RC will be ${NEXT_RC}."
+
+if [ -z "$SOURCE" ]; then
+    SHA=$(get_staging_sha)
+    echo "Staging currently running ${SHA}"
+else
+    SHA=$(git rev-parse "$SOURCE" || true)
+    if [ -z "$SHA" ]; then
+        echo "Invalid source: '$SOURCE'"
+        exit 17
+    elif [ "$SOURCE" == "$SHA" ]; then
+        echo "Using $SHA as the source"
+    else
+        echo "Using '$SOURCE' ($SHA) as the source"
+    fi
+fi
+
+mkdir -p "$(dirname "$CHANGELOG_FILE")" || true
+
+echo "Building changelog..."
+scripts/changelog_check.rb -s "$SHA" -b "${GIT_REMOTE}/${DEPLOY_BRANCH}" > "$CHANGELOG_FILE"
+
+if [ "$FORMAT_CHANGELOG" != "" ]; then
+    # Pipe the changelog in as stdin to the hook
+    echo "Executing changelog formatting hook '${FORMAT_CHANGELOG}'..."
+    ORIGINAL_CHANGELOG_FILE="${CHANGELOG_FILE}.orig"
+    mv "$CHANGELOG_FILE" "$ORIGINAL_CHANGELOG_FILE"
+    cat "$ORIGINAL_CHANGELOG_FILE" | sh -c "$FORMAT_CHANGELOG" > "$CHANGELOG_FILE"
+    echo "Diff:"
+    diff --color=auto "$ORIGINAL_CHANGELOG_FILE" "$CHANGELOG_FILE"
+fi
+
+if [[ $DRY_RUN -eq 0 ]]; then
+    echo "Pushing $RC_BRANCH to $GIT_REMOTE..."
+    git push "$GIT_REMOTE" "$SHA:refs/heads/$RC_BRANCH"
+
+    gh label create "$STATUS_PROMOTION_LABEL" 2>/dev/null || true
+
+    # Create PR
+    echo "Creating PR..."
+    gh pr create \
+        --title "Deploy RC ${NEXT_RC} to Production" \
+        --label "$STATUS_PROMOTION_LABEL" \
+        --base "$DEPLOY_BRANCH" \
+        --head "$RC_BRANCH" \
+        --body-file "$CHANGELOG_FILE"
+else
+    echo "Dry run. Not creating PR."
+fi
+
+

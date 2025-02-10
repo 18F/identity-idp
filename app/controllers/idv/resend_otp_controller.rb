@@ -1,16 +1,19 @@
+# frozen_string_literal: true
+
 module Idv
   class ResendOtpController < ApplicationController
-    include IdvSession
+    include Idv::AvailabilityConcern
+    include IdvSessionConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 
-    # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_user_phone_confirmation_needed
     before_action :confirm_user_phone_confirmation_session_started
 
     def create
       result = send_phone_confirmation_otp
-      analytics.idv_phone_confirmation_otp_resent(**result.to_h)
+      analytics.idv_phone_confirmation_otp_resent(**result)
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -30,7 +33,7 @@ module Idv
 
     def confirm_user_phone_confirmation_needed
       return unless idv_session.user_phone_confirmation
-      redirect_to idv_review_url
+      redirect_to idv_enter_password_url
     end
 
     def confirm_user_phone_confirmation_session_started

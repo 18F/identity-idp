@@ -1,10 +1,20 @@
-import { createContext, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import useCounter from '../hooks/use-counter';
+import SelfieCaptureContext from './selfie-capture';
 
 interface CaptureAttemptMetadata {
   isAssessedAsGlare: boolean;
   isAssessedAsBlurry: boolean;
+  isAssessedAsUnsupported: boolean;
+}
+
+interface UploadedImageFingerprints {
+  /**
+   * array url safe encoded base64  sha256 digest
+   */
+  front: string[] | null;
+  back: string[] | null;
 }
 
 interface FailedCaptureAttemptsContextInterface {
@@ -19,15 +29,23 @@ interface FailedCaptureAttemptsContextInterface {
   failedSubmissionAttempts: number;
 
   /**
+   * There's a bug with Safari on iOS where if you deny camera permissions
+   * three times the prompt stops appearing. To avoid this we keep track
+   * and force a full page reload on the third time.
+   */
+  failedCameraPermissionAttempts: number;
+
+  /**
    * Callback when submission attempt fails.
    * Used to increment the failedSubmissionAttempts
    */
-  onFailedSubmissionAttempt: () => void;
+  onFailedSubmissionAttempt: (failedImageFingerprints: UploadedImageFingerprints) => void;
 
   /**
-   * Number of failed attempts before showing tips
+   * A wrapper around incrementFailedCameraPermissionAttempts
    */
-  maxFailedAttemptsBeforeTips: number;
+  onFailedCameraPermissionAttempt: () => void;
+
   /**
    * The maximum number of failed Acuant capture attempts
    * before use of the native camera option is triggered
@@ -61,40 +79,45 @@ interface FailedCaptureAttemptsContextInterface {
    * after maxCaptureAttemptsBeforeNativeCamera number of failed attempts
    */
   forceNativeCamera: boolean;
+
+  failedSubmissionImageFingerprints: UploadedImageFingerprints;
 }
 
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
   isAssessedAsGlare: false,
   isAssessedAsBlurry: false,
+  isAssessedAsUnsupported: false,
 };
 
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
   failedCaptureAttempts: 0,
   failedSubmissionAttempts: 0,
+  failedCameraPermissionAttempts: 0,
   onFailedCaptureAttempt: () => {},
   onFailedSubmissionAttempt: () => {},
+  onFailedCameraPermissionAttempt: () => {},
   onResetFailedCaptureAttempts: () => {},
   maxCaptureAttemptsBeforeNativeCamera: Infinity,
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
-  maxFailedAttemptsBeforeTips: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
+  failedSubmissionImageFingerprints: { front: [], back: [] },
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
 
 interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
-  maxFailedAttemptsBeforeTips: number;
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
+  failedFingerprints: { front: []; back: [] };
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
-  maxFailedAttemptsBeforeTips,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
+  failedFingerprints = { front: [], back: [] },
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,
@@ -102,19 +125,31 @@ function FailedCaptureAttemptsContextProvider({
   const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
     useCounter();
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
+  const [failedCameraPermissionAttempts, incrementFailedCameraPermissionAttempts] = useCounter();
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+
+  const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
+    useState<UploadedImageFingerprints>(failedFingerprints);
 
   function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
     incrementFailedCaptureAttempts();
     setLastAttemptMetadata(metadata);
   }
 
-  function onFailedSubmissionAttempt() {
+  function onFailedSubmissionAttempt(failedOnes: UploadedImageFingerprints) {
     incrementFailedSubmissionAttempts();
+    setFailedSubmissionImageFingerprints(failedOnes);
   }
 
-  const forceNativeCamera =
+  function onFailedCameraPermissionAttempt() {
+    incrementFailedCameraPermissionAttempts();
+  }
+
+  const hasExhaustedAttempts =
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
+
+  const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
   return (
     <FailedCaptureAttemptsContext.Provider
@@ -124,11 +159,13 @@ function FailedCaptureAttemptsContextProvider({
         onResetFailedCaptureAttempts,
         failedSubmissionAttempts,
         onFailedSubmissionAttempt,
+        failedCameraPermissionAttempts,
+        onFailedCameraPermissionAttempt,
         maxCaptureAttemptsBeforeNativeCamera,
         maxSubmissionAttemptsBeforeNativeCamera,
-        maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
         forceNativeCamera,
+        failedSubmissionImageFingerprints,
       }}
     >
       {children}
@@ -138,3 +175,4 @@ function FailedCaptureAttemptsContextProvider({
 
 export default FailedCaptureAttemptsContext;
 export { FailedCaptureAttemptsContextProvider as Provider };
+export { UploadedImageFingerprints };

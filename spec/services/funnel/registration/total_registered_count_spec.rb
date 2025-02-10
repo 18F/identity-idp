@@ -1,7 +1,16 @@
 require 'rails_helper'
 
-describe Funnel::Registration::TotalRegisteredCount do
+RSpec.describe Funnel::Registration::TotalRegisteredCount do
+  let(:user) { create(:user) }
   let(:analytics) { FakeAnalytics.new }
+  let(:threatmetrix_attrs) do
+    {
+      user_id: user.id,
+      request_ip: Faker::Internet.ip_v4_address,
+      threatmetrix_session_id: 'test-session',
+      email: user.email,
+    }
+  end
   subject { described_class }
 
   it 'returns 0' do
@@ -9,17 +18,12 @@ describe Funnel::Registration::TotalRegisteredCount do
   end
 
   it 'returns 0 until the user is fully registered' do
-    user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
+    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
 
-    Funnel::Registration::AddPassword.call(user_id)
-
-    expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
-
-    Funnel::Registration::AddMfa.call(user_id, 'phone', analytics)
+    Funnel::Registration::AddMfa.call(user_id, 'phone', analytics, threatmetrix_attrs)
 
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(1)
   end
@@ -40,8 +44,6 @@ describe Funnel::Registration::TotalRegisteredCount do
   def register_user
     user = create(:user)
     user_id = user.id
-    Funnel::Registration::Create.call(user_id)
-    Funnel::Registration::AddPassword.call(user_id)
-    Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics)
+    Funnel::Registration::AddMfa.call(user_id, 'backup_codes', analytics, threatmetrix_attrs)
   end
 end

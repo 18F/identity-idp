@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     class VerificationErrorParser
@@ -10,7 +12,7 @@ module Proofing
       end
 
       def parsed_errors
-        { base: base_error_message }.merge(product_error_messages)
+        { base: base_error_message }.merge(product_error_messages).compact
       end
 
       def verification_status
@@ -27,9 +29,7 @@ module Proofing
         if verification_status == 'error'
           error_information = body.fetch('Information', {}).to_json
           "Response error with code '#{error_code}': #{error_information}"
-        elsif error_code.nil?
-          'Verification failed without a reason code'
-        else
+        elsif error_code.present?
           "Verification failed with code: '#{error_code}'"
         end
       end
@@ -47,15 +47,21 @@ module Proofing
         return {} if products.nil?
 
         products.each_with_object({}) do |product, error_messages|
-          if product['ProductType'] == 'InstantVerify'
-            next if product['ProductStatus'] == 'pass'
-          elsif product['ProductStatus'] == 'pass'
-            next
-          end
+          next unless should_log?(product)
+
+          # don't log PhoneFinder reflected PII
+          product.delete('ParameterDetails') if product['ProductType'] == 'PhoneFinder'
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
         end
+      end
+
+      def should_log?(product)
+        return true if product['ProductStatus'] != 'pass'
+        return true if product['ProductType'] == 'InstantVerify'
+        return true if product['Items']&.flat_map(&:keys)&.include?('ItemReason')
+        return false
       end
     end
   end

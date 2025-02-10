@@ -1,8 +1,8 @@
-<% title t('account.navigation.history') %>
+<% self.title = t('account.navigation.history') %>
 
 <%= render PageHeadingComponent.new.with_content(t('account.navigation.history')) %>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <div class="margin-top-0 border-bottom border-primary-light">
     <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.devices') %>
@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div class="card profile-info-box">
+<div class="card">
   <div class="margin-top-0 border-bottom border-primary-light">
     <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.activity') %>

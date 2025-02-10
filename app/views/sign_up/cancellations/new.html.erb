@@ -1,7 +1,7 @@
-<% title t('headings.cancellations.prompt') %>
+<% self.title = t('headings.cancellations.prompt') %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.header { t('headings.cancellations.prompt') } %>
+  <% c.with_header { t('headings.cancellations.prompt') } %>
 
   <p>
     <strong><%= t('sign_up.cancel.warning_header') %></strong>
@@ -9,21 +9,18 @@
 
   <ul class="usa-list">
     <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
-    <li><%= t('users.delete.bullet_2_loa1') %></li>
+    <li><%= t('users.delete.bullet_2_basic') %></li>
     <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
     <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
   </ul>
 
-  <% c.action_button(
-       action: ->(**tag_options, &block) do
-         button_to(sign_up_destroy_path, method: :delete, **tag_options, &block)
-       end,
+  <% c.with_action_button(
+       url: sign_up_destroy_path,
+       method: :delete,
      ) { t('forms.buttons.cancel') } %>
 
-  <% c.action_button(
-       action: ->(**tag_options, &block) do
-         link_to(@presenter.go_back_path, **tag_options, &block)
-       end,
+  <% c.with_action_button(
+       url: @presenter.go_back_path,
        outline: true,
      ) { t('links.go_back') } %>
 <% end %>

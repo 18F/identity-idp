@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_troubleshooting_options.html.erb' do
+RSpec.describe 'shared/_troubleshooting_options.html.erb' do
   let(:heading) { '' }
   let(:heading_tag) { nil }
   let(:options) { [{ text: 'One', url: '#one' }, { text: 'Two', url: '#two' }] }

@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .usa-button {
   // Temporary: To be backported to design system. Margins should be applied at the button element,
   // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and
@@ -5,16 +7,18 @@
   margin-right: 0;
 }
 
-.usa-button--unstyled {
-  // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
-  // of a link.
-  display: inline;
-  width: auto;
-}
-
 .usa-button:disabled.usa-button--active,
-.usa-button--disabled.usa-button--active {
-  &:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse) {
+.usa-button[aria-disabled='true'].usa-button--active {
+  &:not(
+      .usa-button--unstyled,
+      .usa-button--secondary,
+      .usa-button--accent-cool,
+      .usa-button--accent-warm,
+      .usa-button--base,
+      .usa-button--outline,
+      .usa-button--inverse,
+      .usa-button--danger
+    ) {
     @include set-text-and-bg('primary-darker', $context: 'Button');
   }
 }

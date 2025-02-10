@@ -1,11 +1,8 @@
+# frozen_string_literal: true
+
 module Idv
   module PhoneOtpSendable
     extend ActiveSupport::Concern
-
-    included do
-      before_action :confirm_two_factor_authenticated
-      before_action :handle_locked_out_user
-    end
 
     def send_phone_confirmation_otp
       send_phone_confirmation_otp_service.call

@@ -1,25 +1,23 @@
+# frozen_string_literal: true
+
 module Funnel
   module Registration
     class AddMfa
-      def self.call(user_id, mfa_method, analytics)
+      def self.call(user_id, mfa_method, analytics, threatmetrix_attrs)
         now = Time.zone.now
-        funnel = RegistrationLog.find_by(user_id: user_id)
-        return if funnel.blank? || funnel.second_mfa.present?
+        funnel = RegistrationLog.create_or_find_by(user_id: user_id)
+        return if funnel.registered_at.present?
 
-        if funnel.first_mfa.present?
-          params = {
-            second_mfa: mfa_method,
-          }
-        else
-          params = {
-            first_mfa: mfa_method,
-            first_mfa_at: now,
-            registered_at: now,
-          }
-          analytics.user_registration_user_fully_registered(mfa_method: mfa_method)
-        end
+        analytics.user_registration_user_fully_registered(mfa_method: mfa_method)
+        process_threatmetrix_for_user(
+          threatmetrix_attrs,
+        )
+        funnel.update!(registered_at: now)
+      end
 
-        funnel.update!(params)
+      def self.process_threatmetrix_for_user(threatmetrix_attrs)
+        return unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+        AccountCreationThreatMetrixJob.perform_later(**threatmetrix_attrs)
       end
     end
   end

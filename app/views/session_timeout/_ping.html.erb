@@ -1,13 +1,10 @@
 <%= tag.div id: 'session-timeout-cntnr',
             data: {
-              timeout_url: timeout_url,
+              timeout_url: new_user_session_url(timeout: :session, request_id: sp_session[:request_id]),
+              sessions_url: api_internal_sessions_path,
               warning: warning,
               start: start,
               frequency: frequency,
-              warning_info_html: render(
-                partial: 'session_timeout/warning',
-                locals: { modal: modal },
-              ),
             } %>
-
+<%= render(partial: 'session_timeout/warning', locals: { modal_presenter: modal }) %>
 <%= javascript_packs_tag_once 'session-timeout-ping' %>

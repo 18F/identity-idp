@@ -1,0 +1,17 @@
+document:
+  first_name: 'John'
+  last_name: 'Doe'
+  address1: 1800 F Street
+  address2: Apt 3
+  city: Bayside
+  state: NY
+  zipcode: '11364'
+  dob: 10/06/1938
+  phone: +1 314-555-1212
+  state_id_jurisdiction: 'ND'
+  state_id_number: '1111111111111'
+doc_auth_result: Passed
+failed_alerts: []
+portrait_match_results:
+  FaceMatchResult: Fail
+  FaceErrorMessage: 'Successful. Liveness: Live'

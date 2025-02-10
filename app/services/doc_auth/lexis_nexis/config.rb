@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     Config = RedactedStruct.new(
@@ -5,12 +7,14 @@ module DocAuth
       :base_url, # required
       :request_mode,
       :trueid_account_id,
-      :trueid_liveness_cropping_workflow,
-      :trueid_liveness_nocropping_workflow,
       :trueid_noliveness_cropping_workflow,
       :trueid_noliveness_nocropping_workflow,
+      :trueid_liveness_cropping_workflow,
+      :trueid_liveness_nocropping_workflow,
       :trueid_password,
       :trueid_username,
+      :hmac_key_id,
+      :hmac_secret_key,
       :warn_notifier, # optional
       :locale,
       :dpi_threshold,
@@ -21,10 +25,10 @@ module DocAuth
         :account_id,
         :base_url,
         :request_mode,
-        :trueid_liveness_cropping_workflow,
-        :trueid_liveness_nocropping_workflow,
         :trueid_noliveness_cropping_workflow,
         :trueid_noliveness_nocropping_workflow,
+        :trueid_liveness_cropping_workflow,
+        :trueid_liveness_nocropping_workflow,
         :locale,
         :dpi_threshold,
         :sharpness_threshold,
@@ -35,6 +39,6 @@ module DocAuth
         raise 'config missing base_url' if !base_url
         raise 'config missing locale' if !locale
       end
-    end
+    end.freeze
   end
 end

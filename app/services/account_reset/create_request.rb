@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 module AccountReset
   class CreateRequest
-    def initialize(user)
+    include AccountResetConcern
+    include ActionView::Helpers::DateHelper
+
+    def initialize(user, requesting_issuer)
       @user = user
+      @requesting_issuer = requesting_issuer
     end
 
     def call
@@ -17,7 +23,7 @@ module AccountReset
 
     private
 
-    attr_reader :user
+    attr_reader :user, :requesting_issuer
 
     def create_request
       request = AccountResetRequest.create_or_find_by(user: user)
@@ -27,13 +33,15 @@ module AccountReset
         cancelled_at: nil,
         granted_at: nil,
         granted_token: nil,
+        requesting_issuer: requesting_issuer,
       )
       request
     end
 
     def notify_user_by_email(request)
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_request(user, email_address, request).deliver_now_or_later
+        UserMailer.with(user: user, email_address: email_address).account_reset_request(request)
+          .deliver_now_or_later
       end
     end
 
@@ -43,6 +51,7 @@ module AccountReset
       @telephony_response = Telephony.send_account_reset_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
+        interval: account_reset_deletion_period_interval(user),
       )
     end
 

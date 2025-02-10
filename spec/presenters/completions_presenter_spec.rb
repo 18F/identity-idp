@@ -1,6 +1,9 @@
 require 'rails_helper'
 
-describe CompletionsPresenter do
+RSpec.describe CompletionsPresenter do
+  include ActionView::Helpers::OutputSafetyHelper
+  include ActionView::Helpers::TagHelper
+
   let(:identities) do
     [
       build(
@@ -10,10 +13,11 @@ describe CompletionsPresenter do
       ),
     ]
   end
-  let(:current_user) { create(:user, :signed_up, identities: identities) }
+  let(:current_user) { create(:user, :fully_registered, identities: identities) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
+  let(:selected_email_id) { current_user.email_addresses.first.id }
   let(:decrypted_pii) do
-    {
+    Pii::Attributes.new(
       first_name: 'Testy',
       last_name: 'Testerson',
       ssn: '900123456',
@@ -24,7 +28,7 @@ describe CompletionsPresenter do
       zipcode: '20405',
       dob: '1990-01-01',
       phone: '+12022121000',
-    }
+    )
   end
   let(:requested_attributes) do
     [
@@ -38,12 +42,13 @@ describe CompletionsPresenter do
 
   subject(:presenter) do
     described_class.new(
-      current_user: current_user,
-      current_sp: current_sp,
-      decrypted_pii: decrypted_pii,
-      requested_attributes: requested_attributes,
-      ial2_requested: ial2_requested,
-      completion_context: completion_context,
+      current_user:,
+      current_sp:,
+      decrypted_pii:,
+      requested_attributes:,
+      ial2_requested:,
+      completion_context:,
+      selected_email_id:,
     )
   end
 
@@ -146,62 +151,50 @@ describe CompletionsPresenter do
     end
   end
 
-  describe '#image_name' do
-    context 'ial2 sign in' do
-      let(:ial2_requested) { true }
-
-      it 'renders the ial2 image' do
-        expect(presenter.image_name).to eq('user-signup-ial2.svg')
-      end
-    end
-
-    context 'ial1 sign in' do
-      let(:ial2_requested) { false }
-
-      it 'renders the ial1 image' do
-        expect(presenter.image_name).to eq('user-signup-ial1.svg')
-      end
-    end
-  end
-
   describe '#intro' do
-    describe 'ial1' do
-      context 'consent has expired since the last sign in' do
-        let(:identities) do
-          [
-            build(
-              :service_provider_identity,
-              service_provider: current_sp.issuer,
-              last_consented_at: 2.years.ago,
-            ),
-          ]
-        end
-        let(:completion_context) { :consent_expired }
+    it 'renders the standard intro message' do
+      expect(presenter.intro).to eq(
+        t(
+          'help_text.requested_attributes.intro_html',
+          sp_html: content_tag(:strong, current_sp.friendly_name),
+        ),
+      )
+    end
 
-        it 'renders the expired IAL1 consent intro message' do
-          expect(presenter.intro).to eq(
-            I18n.t(
-              'help_text.requested_attributes.ial1_consent_reminder_html',
-              sp: current_sp.friendly_name,
-            ),
-          )
-        end
+    context 'consent has expired since the last sign in' do
+      let(:identities) do
+        [
+          build(
+            :service_provider_identity,
+            service_provider: current_sp.issuer,
+            last_consented_at: 2.years.ago,
+          ),
+        ]
       end
+      let(:completion_context) { :consent_expired }
 
-      context 'when consent has not expired' do
-        it 'renders the standard intro message' do
-          expect(presenter.intro).to eq(
-            I18n.t(
-              'help_text.requested_attributes.ial1_intro_html',
-              sp: current_sp.friendly_name,
-            ),
-          )
-        end
+      it 'renders the expired consent intro message' do
+        expect(presenter.intro).to eq(
+          safe_join(
+            [
+              t(
+                'help_text.requested_attributes.consent_reminder_html',
+                sp_html: content_tag(:strong, current_sp.friendly_name),
+              ),
+              t(
+                'help_text.requested_attributes.intro_html',
+                sp_html: content_tag(:strong, current_sp.friendly_name),
+              ),
+            ],
+            ' ',
+          ),
+        )
       end
     end
 
     describe 'ial2' do
       let(:ial2_requested) { true }
+
       context 'consent has expired since the last sign in' do
         let(:identities) do
           [
@@ -214,22 +207,42 @@ describe CompletionsPresenter do
         end
         let(:completion_context) { :consent_expired }
 
-        it 'renders the expired IAL2 consent intro message' do
+        it 'renders the expired consent intro message' do
           expect(presenter.intro).to eq(
-            I18n.t(
-              'help_text.requested_attributes.ial2_consent_reminder_html',
-              sp: current_sp.friendly_name,
+            safe_join(
+              [
+                t(
+                  'help_text.requested_attributes.consent_reminder_html',
+                  sp_html: content_tag(:strong, current_sp.friendly_name),
+                ),
+                t(
+                  'help_text.requested_attributes.intro_html',
+                  sp_html: content_tag(:strong, current_sp.friendly_name),
+                ),
+              ],
+              ' ',
             ),
           )
         end
       end
 
-      context 'when consent has not expired' do
-        it 'renders the standard intro message' do
+      context 'user has reverified since last consent for sp' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.months.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :reverified_after_consent }
+
+        it 'renders the reverified IAL2 consent intro message' do
           expect(presenter.intro).to eq(
-            I18n.t(
-              'help_text.requested_attributes.ial2_intro_html',
-              sp: current_sp.friendly_name,
+            t(
+              'help_text.requested_attributes.ial2_reverified_consent_info_html',
+              sp_html: content_tag(:strong, current_sp.friendly_name),
             ),
           )
         end
@@ -238,16 +251,14 @@ describe CompletionsPresenter do
   end
 
   describe '#pii' do
+    subject(:pii) { presenter.pii }
+
     context 'ial1' do
       context 'with a subset of attributes requested' do
         let(:requested_attributes) { [:email] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-            },
-          )
+          expect(pii).to eq(email: current_user.email)
         end
       end
 
@@ -255,24 +266,27 @@ describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :all_emails] }
 
         it 'only displays all_emails' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-            },
-          )
+          expect(pii).to eq(all_emails: [current_user.email])
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              all_emails: [current_user.email],
-              verified_at: nil,
-              x509_issuer: nil,
-              x509_subject: nil,
-            },
+          expect(pii).to eq(
+            all_emails: [current_user.email],
+            verified_at: nil,
+            x509_issuer: nil,
+            x509_subject: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            all_emails
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end
@@ -284,31 +298,49 @@ describe CompletionsPresenter do
         let(:requested_attributes) { [:email, :given_name, :phone] }
 
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              email: current_user.email,
-              full_name: 'Testy Testerson',
-              phone: '+1 202-212-1000',
-            },
+          expect(pii).to eq(
+            email: current_user.email,
+            full_name: 'Testy Testerson',
+            phone: '+1 202-212-1000',
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            email
+            full_name
+            phone
+          ]
         end
       end
 
       context 'with all attributes requested' do
         it 'properly scopes and resolve attributes' do
-          expect(presenter.pii).to eq(
-            {
-              full_name: 'Testy Testerson',
-              address: '123 main st apt 123 Washington, DC 20405',
-              phone: '+1 202-212-1000',
-              all_emails: [current_user.email],
-              birthdate: 'January 01, 1990',
-              social_security_number: '900-12-3456',
-              verified_at: nil,
-              x509_subject: nil,
-              x509_issuer: nil,
-            },
+          expect(pii).to eq(
+            full_name: 'Testy Testerson',
+            address: '123 main st apt 123 Washington, DC 20405',
+            phone: '+1 202-212-1000',
+            all_emails: [current_user.email],
+            birthdate: 'January 1, 1990',
+            social_security_number: '900-12-3456',
+            verified_at: nil,
+            x509_subject: nil,
+            x509_issuer: nil,
           )
+        end
+
+        it 'builds hash with sorted keys' do
+          expect(pii.keys).to eq %i[
+            all_emails
+            full_name
+            address
+            phone
+            birthdate
+            social_security_number
+            x509_subject
+            x509_issuer
+            verified_at
+          ]
         end
       end
     end

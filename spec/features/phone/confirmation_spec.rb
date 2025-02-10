@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'phone otp confirmation' do
+RSpec.describe 'phone otp confirmation' do
   let(:phone) { '2025551234' }
   let(:formatted_phone) { PhoneFormatter.format(phone) }
 
@@ -14,13 +14,13 @@ describe 'phone otp confirmation' do
       select_2fa_option(:phone)
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
-      click_send_security_code
+      click_send_one_time_code
     end
 
     def expect_successful_otp_confirmation(delivery_method)
       expect(page).to have_content(t('notices.phone_confirmed'))
 
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(auth_method_confirmation_path)
       expect(phone_configuration.confirmed_at).to_not be_nil
       expect(phone_configuration.delivery_preference).to eq(delivery_method.to_s)
     end
@@ -28,13 +28,13 @@ describe 'phone otp confirmation' do
     def expect_failed_otp_confirmation(_delivery_method)
       visit account_path
 
-      expect(current_path).to eq(authentication_methods_setup_path)
+      expect(page).to have_current_path(authentication_methods_setup_path)
       expect(phone_configuration).to be_nil
     end
   end
 
   context 'on sign in' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:phone) { user.phone_configurations.first.phone }
 
     it_behaves_like 'phone otp confirmation', :sms
@@ -52,12 +52,14 @@ describe 'phone otp confirmation' do
     def expect_failed_otp_confirmation(delivery_method)
       visit account_path
 
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: delivery_method))
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: delivery_method),
+      )
     end
   end
 
   context 'add phone' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice
@@ -69,7 +71,7 @@ describe 'phone otp confirmation' do
       end
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
-      click_continue
+      click_send_one_time_code
     end
 
     def expect_successful_otp_confirmation(delivery_method)
@@ -85,7 +87,7 @@ describe 'phone otp confirmation' do
   end
 
   def phone_configuration
-    user.reload.phone_configurations.detect do |phone_configuration|
+    user.reload.phone_configurations.find do |phone_configuration|
       phone_configuration.phone == formatted_phone
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'telephony'
 require 'pinpoint_supported_countries'
 
@@ -5,9 +7,12 @@ require 'pinpoint_supported_countries'
 Telephony.config do |c|
   c.adapter = IdentityConfig.store.telephony_adapter.to_sym
   c.logger = if FeatureManagement.log_to_stdout?
-               Logger.new(STDOUT, level: :info)
+               ActiveSupport::Logger.new(STDOUT, level: :info)
              else
-               Logger.new('log/telephony.log', level: :info)
+               ActiveSupport::Logger.new(
+                 Rails.root.join('log', Idp::Constants::TELEPHONY_LOG_FILENAME),
+                 level: :info,
+               )
              end
 
   c.voice_pause_time = IdentityConfig.store.voice_otp_pause_time
@@ -22,6 +27,7 @@ Telephony.config do |c|
     c.pinpoint.add_sms_config do |sms|
       sms.application_id = sms_json_config['application_id']
       sms.region = sms_json_config['region']
+      sms.country_code_shortcodes = sms_json_config['country_code_shortcodes'] || {}
       sms.shortcode = sms_json_config['shortcode']
       sms.country_code_longcode_pool = sms_json_config['country_code_longcode_pool'] || {}
       sms.credential_role_arn = sms_json_config['credential_role_arn']

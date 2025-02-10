@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/doc_auth/_cancel.html.erb' do
+RSpec.describe 'idv/doc_auth/_cancel.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:locals) { {} }

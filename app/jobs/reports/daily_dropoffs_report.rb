@@ -1,17 +1,27 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class DailyDropoffsReport < BaseReport
     REPORT_NAME = 'daily-dropoffs-report'
 
-    include GoodJob::ActiveJobExtensions::Concurrency
+    STEPS = %w[
+      welcome
+      agreement
+      capture_document
+      cap_doc_submit
+      ssn
+      verify_info
+      verify_submit
+      phone
+      phone_submit
+      encrypt
+      personal_key
+      verified
+    ].freeze
 
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
-    attr_reader :report_date
+    attr_accessor :report_date
 
     def perform(report_date)
       @report_date = report_date
@@ -22,8 +32,8 @@ module Reports
       [
         bucket_name, # default reporting bucket
         IdentityConfig.store.s3_public_reports_enabled && public_bucket_name,
-      ].select(&:present?).
-        each do |bucket_name|
+      ].select(&:present?)
+        .each do |bucket_name|
         upload_file_to_s3_bucket(
           path: path,
           body: body,
@@ -50,7 +60,7 @@ module Reports
           agency
           start
           finish
-        ] + Db::DocAuthLog::DropOffRatesHelper::STEPS
+        ] + STEPS
 
         query_results.each do |sp_result|
           csv << [
@@ -60,7 +70,7 @@ module Reports
             sp_result['agency'],
             start.iso8601,
             finish.iso8601,
-            *Db::DocAuthLog::DropOffRatesHelper::STEPS.map { |step| sp_result[step].to_i },
+            *STEPS.map { |step| sp_result[step].to_i },
           ]
         end
       end
@@ -109,6 +119,9 @@ module Reports
             COALESCE(CASE WHEN doc_auth_logs.verify_submit_count > 0 THEN 1 else null END)
           ) AS verify_submit
         , COUNT(doc_auth_logs.verify_phone_view_at) AS phone
+        , COUNT(
+            COALESCE(CASE WHEN doc_auth_logs.verify_phone_submit_count > 0 THEN 1 else null END)
+          ) AS phone_submit
         , COUNT(doc_auth_logs.encrypt_view_at) AS encrypt
         , COUNT(doc_auth_logs.verified_view_at) AS personal_key
         , COUNT(profiles.id) AS verified

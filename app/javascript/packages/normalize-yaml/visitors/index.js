@@ -1,18 +1,37 @@
 import smartPunctuation from './smart-punctuation.js';
 import sortKeys from './sort-keys.js';
+import collapseSpacing from './collapse-spacing.js';
 
-/** @typedef {import('yaml').visitor} Visitor */
+/** @typedef {import('../').NormalizeOptions} NormalizeOptions */
+/** @typedef {(options: NormalizeOptions) => YAMLVisitor} Visitor */
+/** @typedef {import('yaml').visitor} YAMLVisitor */
 /** @typedef {import('../').Formatter} Formatter */
 
 /** @type {Record<Formatter, Visitor>} */
-const DEFAULT_VISITORS = { smartPunctuation, sortKeys };
+const DEFAULT_VISITORS = { smartPunctuation, sortKeys, collapseSpacing };
+
+/** @type {(...callbacks: Array<(...args: any[]) => any>) => (...args: any[]) => void} */
+const over =
+  (...callbacks) =>
+  (...args) =>
+    callbacks.forEach((callback) => callback(...args));
 
 /**
- * @param {{ exclude?: Formatter[] }} exclude
+ * @param {NormalizeOptions} options
  *
- * @return {Visitor}
+ * @return {YAMLVisitor}
  */
-export const getVisitors = ({ exclude = [] }) =>
-  Object.entries(DEFAULT_VISITORS)
+export function getUnifiedVisitor(options) {
+  const { exclude = [] } = options;
+  return Object.entries(DEFAULT_VISITORS)
     .filter(([formatter]) => !exclude.includes(/** @type {Formatter} */ (formatter)))
-    .reduce((result, [, visitor]) => Object.assign(result, visitor), /* @type {Visitor} */ {});
+    .map(([_formatter, visitor]) => visitor)
+    .reduce((result, visitor) => {
+      const yamlVisitor = visitor(options);
+      Object.entries(yamlVisitor).forEach(([key, callback]) => {
+        result[key] = result[key] ? over(result[key], callback) : callback;
+      });
+
+      return result;
+    }, /** @type {YAMLVisitor} */ ({}));
+}

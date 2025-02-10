@@ -1,4 +1,4 @@
-<% title t('titles.verify_email') %>
+<% self.title = t('titles.verify_email') %>
 
 <% if @resend_confirmation %>
   <%= render AlertComponent.new(
@@ -15,31 +15,30 @@
    <%= t('notices.signed_up_but_unconfirmed.first_paragraph_end') %>
 </p>
 
-<div class="width-10">
-  <hr class="margin-y-4 border-width-05 border-info">
-</div>
+<p><%= t('devise.registrations.close_window') %></p>
 
-<%= simple_form_for @resend_email_confirmation_form,
-                    html: { class: 'margin-bottom-2' },
-                    url: sign_up_register_path do |f| %>
-  <%= f.input :email, as: :hidden %>
-  <%= f.input :resend, as: :hidden %>
-  <%= f.input :request_id, as: :hidden %>
-  <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
-  <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
-
-  <% link = link_to(
-       t('notices.use_diff_email.link'),
-       sign_up_email_path(request_id: params[:request_id]),
-     ) %>
-  <p><%= t('notices.use_diff_email.text_html', link: link) %></p>
-  <p><%= t('devise.registrations.close_window') %></p>
-
-  <% if FeatureManagement.enable_load_testing_mode? %>
-    <%= link_to(
-          'CONFIRM NOW',
-          sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
-          id: 'confirm-now',
-        ) %>
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+  <% c.with_option(component: FormLinkComponent) do %>
+    <%= t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
+    <%= simple_form_for @resend_email_confirmation_form,
+                        html: { class: 'display-none' },
+                        url: sign_up_register_path do |f| %>
+      <%= f.input :email, as: :hidden %>
+      <%= f.input :resend, as: :hidden %>
+      <%= f.input :terms_accepted, as: :hidden %>
+      <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
+    <% end %>
   <% end %>
+  <% c.with_option(
+       url: sign_up_email_path,
+     ).with_content(t('notices.use_diff_email.link').upcase_first) %>
+<% end %>
+
+<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
+  <%= link_to(
+        'CONFIRM NOW',
+        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+        id: 'confirm-now',
+      ) %>
 <% end %>

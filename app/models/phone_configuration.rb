@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneConfiguration < ApplicationRecord
   include EncryptableAttribute
 
@@ -6,33 +8,34 @@ class PhoneConfiguration < ApplicationRecord
 
   encrypted_attribute(name: :phone)
 
-  enum delivery_preference: { sms: 0, voice: 1 }
+  enum :delivery_preference, { sms: 0, voice: 1 }
 
   def formatted_phone
-    Phonelib.parse(phone).international
+    PhoneFormatter.format(phone)
   end
 
   def masked_phone
-    return '' if phone.blank?
-
-    formatted = Phonelib.parse(phone).national
-    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
+    PhoneFormatter.mask(phone)
   end
 
   def selection_presenters
     options = []
 
-    capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
-
     if capabilities.supports_sms?
-      options << TwoFactorAuthentication::SmsSelectionPresenter.new(configuration: self)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter
+        .new(user:, configuration: self, delivery_method: :sms)
     end
 
     if capabilities.supports_voice?
-      options << TwoFactorAuthentication::VoiceSelectionPresenter.new(configuration: self)
+      options << TwoFactorAuthentication::SignInPhoneSelectionPresenter
+        .new(user:, configuration: self, delivery_method: :voice)
     end
 
     options
+  end
+
+  def capabilities
+    PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
   end
 
   def friendly_name

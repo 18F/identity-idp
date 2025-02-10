@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class SendPhoneConfirmationOtp
     attr_reader :telephony_response
@@ -8,8 +10,15 @@ module Idv
     end
 
     def call
-      otp_rate_limiter.reset_count_and_otp_last_sent_at if user.decorate.no_longer_locked_out?
+      otp_rate_limiter.reset_count_and_otp_last_sent_at if user.no_longer_locked_out?
 
+      # The pattern for checking the rate limiter, incrementing, then checking again was introduced
+      # in this change: https://github.com/18F/identity-idp/pull/2216
+      #
+      # This adds protection against a race condition that would result in sending a large number
+      # of OTPs and/or needlessly making atomic increments to the rate limit counter if
+      # a bad actor sends many requests at the same time.
+      #
       return too_many_otp_sends_response if rate_limit_exceeded?
       otp_rate_limiter.increment
       return too_many_otp_sends_response if rate_limit_exceeded?
@@ -52,16 +61,29 @@ module Idv
     end
 
     def send_otp
+      length, format = case delivery_method
+                       when :voice
+                         ['ten', 'digit']
+                       else
+                         ['six', 'character']
+                       end
+
       idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
       @telephony_response = Telephony.send_confirmation_otp(
         otp: code,
         to: phone,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: I18n.t("telephony.format_type.#{format}"),
+        otp_length: I18n.t("telephony.format_length.#{length}"),
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
+        extra_metadata: {
+          area_code: parsed_phone.area_code,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          resend: nil,
+        },
       )
-      add_cost
       otp_sent_response
     end
 
@@ -69,10 +91,6 @@ module Idv
       FormResponse.new(
         success: telephony_response.success?, extra: extra_analytics_attributes,
       )
-    end
-
-    def add_cost
-      Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
     end
 
     def extra_analytics_attributes

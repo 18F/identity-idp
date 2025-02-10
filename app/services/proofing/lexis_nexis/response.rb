@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     class Response
@@ -11,8 +13,6 @@ module Proofing
       end
 
       def verification_errors
-        return {} if verification_status == 'passed'
-
         verification_error_parser.parsed_errors
       end
 
@@ -28,9 +28,25 @@ module Proofing
         @reference ||= response_body.dig('Status', 'Reference')
       end
 
+      def transaction_reason_code
+        response_body.dig('Status', 'TransactionReasonCode', 'Code')
+      end
+
       # @api private
       def response_body
         @response_body ||= JSON.parse(response.body)
+      rescue JSON::ParserError
+        # IF a JSON parse error occurs the resulting error message will contain the portion of the
+        # response body where the error occured. This portion of the response could potentially
+        # include sensitive informaiton. This commit scrubs the error message by raising a JSON
+        # parse error with a generic message.
+        content_type = response.headers&.[]('Content-Type')
+        error_message = "An error occured parsing the response body JSON, status=#{response.status} content_type=#{content_type}" # rubocop:disable Layout/LineLength
+        raise JSON::ParserError, error_message
+      end
+
+      def product_list
+        @product_list = response_body.fetch('Products', [])
       end
 
       private

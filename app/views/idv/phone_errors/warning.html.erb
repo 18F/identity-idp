@@ -1,4 +1,62 @@
-<%= render('idv/phone_errors/warning') do %>
-  <p><%= t('idv.failure.phone.warning') %></p>
-  <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      title: t('titles.failure.phone_verification'),
+      heading: t('idv.failure.phone.warning.heading'),
+      current_step: :verify_phone,
+    ) do %>
+
+      <% if @phone %>
+        <p>
+          <%= t('idv.failure.phone.warning.you_entered') %>
+          <strong><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
+        </p>
+      <% end %>
+
+      <p>
+        <%= t('idv.failure.phone.warning.next_steps_html') %>
+        <%= new_tab_link_to(
+              t('idv.failure.phone.warning.learn_more_link'),
+              help_center_redirect_path(
+                category: 'verify-your-identity',
+                article: 'phone-number',
+                flow: :idv,
+                step: :phone,
+                location: 'learn_more',
+              ),
+            ) %>
+      </p>
+
+      <p>
+        <%= t('idv.failure.warning.attempts_html', count: @remaining_submit_attempts) %>
+      </p>
+
+      <div class="margin-y-5">
+        <%= render ButtonComponent.new(
+              url: idv_phone_path,
+              big: true,
+              wide: true,
+            ).with_content(t('idv.failure.phone.warning.try_again_button')) %>
+      </div>
+
+      <% if @gpo_letter_available %>
+        <hr>
+
+        <h2><%= t('idv.failure.phone.warning.gpo.heading') %></h2>
+
+        <p>
+          <%= t('idv.failure.phone.warning.gpo.explanation') %>
+          <%= t('idv.failure.phone.warning.gpo.how_long_it_takes_html') %>
+        </p>
+
+        <div class="margin-y-5">
+          <%= render ButtonComponent.new(
+                url: idv_request_letter_path,
+                big: true,
+                wide: true,
+                outline: true,
+              ).with_content(t('idv.failure.phone.warning.gpo.button')) %>
+        </div>
+      <% end %>
 <% end %>
+<%= render('idv/doc_auth/cancel', step: 'phone') %>

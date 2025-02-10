@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 class Event < ApplicationRecord
   belongs_to :user
   belongs_to :device
 
-  attr_accessor :disavowal_token
-
-  enum event_type: {
+  enum :event_type, {
     account_created: 1,
     phone_confirmed: 2,
     password_changed: 3,
@@ -27,6 +27,8 @@ class Event < ApplicationRecord
     email_deleted: 20,
     phone_added: 21,
     password_invalidated: 22,
+    sign_in_unsuccessful_2fa: 23,
+    sign_in_notification_timeframe_expired: 24,
   }
 
   validates :event_type, presence: true

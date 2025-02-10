@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccessTokenVerifier
   include ActionView::Helpers::TranslationHelper
   include ActiveModel::Model
@@ -9,17 +11,21 @@ class AccessTokenVerifier
     @identity = nil
   end
 
+  # @return [Array(FormResponse, ServiceProviderIdentity), Array(FormResponse, nil)]
   def submit
-    FormResponse.new(
-      success: valid?, errors: errors, extra: {
-        client_id: identity&.service_provider,
-        ial: identity&.ial,
-      }
-    )
-  end
+    success = valid?
 
-  def identity
-    valid? ? @identity : nil
+    response = FormResponse.new(
+      success:,
+      errors:,
+      extra: {
+        client_id: @identity&.service_provider,
+        ial: @identity&.ial,
+        integration_errors:,
+      },
+    )
+
+    [response, @identity]
   end
 
   private
@@ -32,9 +38,9 @@ class AccessTokenVerifier
   end
 
   def load_identity(access_token)
-    identity = ServiceProviderIdentity.where(access_token: access_token).take
+    identity = ServiceProviderIdentity.find_by(access_token: access_token)
 
-    if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
+    if identity && OutOfBandSessionAccessor.new(identity.rails_session_id).ttl.positive?
       @identity = identity
     else
       errors.add(
@@ -54,7 +60,7 @@ class AccessTokenVerifier
     end
 
     bearer, access_token = header.split(' ', 2)
-    if bearer != 'Bearer'
+    if bearer != 'Bearer' || access_token.blank?
       errors.add(
         :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
         type: :malformed_authorization
@@ -63,5 +69,15 @@ class AccessTokenVerifier
     end
 
     access_token
+  end
+
+  def integration_errors
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_bearer_token_auth,
+      integration_exists: @identity&.service_provider.present?,
+      request_issuer: @identity&.service_provider,
+    }
   end
 end

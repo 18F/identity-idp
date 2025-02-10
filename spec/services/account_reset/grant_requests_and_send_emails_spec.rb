@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::GrantRequestsAndSendEmails do
+RSpec.describe AccountReset::GrantRequestsAndSendEmails do
   include AccountResetHelper
 
   let(:user) { create(:user) }
@@ -10,83 +10,192 @@ describe AccountReset::GrantRequestsAndSendEmails do
     let(:now) { Time.zone.now }
 
     context 'after waiting the full wait period' do
-      it 'does not send notifications when the notifications were already sent' do
-        before_waiting_the_full_wait_period(now) do
-          create_account_reset_request_for(user)
+      context 'standard user' do
+        it 'does not send notifications when the notifications were already sent' do
+          before_waiting_the_full_wait_period(now) do
+            create_account_reset_request_for(user)
+          end
+
+          AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
         end
 
-        AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-        expect(notifications_sent).to eq(0)
+        it 'does not send notifications when the request was cancelled' do
+          before_waiting_the_full_wait_period(now) do
+            create_account_reset_request_for(user)
+            cancel_request_for(user)
+          end
+
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
+        end
+
+        it 'sends notifications after a request is granted' do
+          before_waiting_the_full_wait_period(now) do
+            create_account_reset_request_for(user)
+          end
+
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+
+          expect(notifications_sent).to eq(1)
+        end
+
+        it 'sends 2 notifications after 2 requests are granted' do
+          before_waiting_the_full_wait_period(now) do
+            create_account_reset_request_for(user)
+            create_account_reset_request_for(user2)
+          end
+
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+
+          expect(notifications_sent).to eq(2)
+        end
       end
 
-      it 'does not send notifications when the request was cancelled' do
-        before_waiting_the_full_wait_period(now) do
-          create_account_reset_request_for(user)
-          cancel_request_for(user)
+      context 'possible fraud user' do
+        let(:user) { create(:user, :fraud_review_pending) }
+        let(:user2) { create(:user, :fraud_rejection) }
+        before do
+          allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+            .and_return(10)
+        end
+        it 'does not send notifications when the notifications were already sent' do
+          before_waiting_the_full_fraud_wait_period(now) do
+            create_account_reset_request_for(user)
+          end
+
+          AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
         end
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-        expect(notifications_sent).to eq(0)
-      end
+        it 'does not send notifications when the request was cancelled' do
+          before_waiting_the_full_fraud_wait_period(now) do
+            create_account_reset_request_for(user)
+            cancel_request_for(user)
+          end
 
-      it 'sends notifications after a request is granted' do
-        before_waiting_the_full_wait_period(now) do
-          create_account_reset_request_for(user)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
         end
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+        it 'sends notifications after a request is granted' do
+          before_waiting_the_full_fraud_wait_period(now) do
+            create_account_reset_request_for(user)
+          end
 
-        expect(notifications_sent).to eq(1)
-      end
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
 
-      it 'sends 2 notifications after 2 requests are granted' do
-        before_waiting_the_full_wait_period(now) do
-          create_account_reset_request_for(user)
-          create_account_reset_request_for(user2)
+          expect(notifications_sent).to eq(1)
         end
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+        it 'sends 2 notifications after 2 requests are granted' do
+          before_waiting_the_full_fraud_wait_period(now) do
+            create_account_reset_request_for(user)
+            create_account_reset_request_for(user2)
+          end
 
-        expect(notifications_sent).to eq(2)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+
+          expect(notifications_sent).to eq(2)
+        end
       end
     end
 
     context 'after not waiting the full wait period' do
-      it 'does not send notifications after a request' do
-        create_account_reset_request_for(user)
+      context 'standard user' do
+        it 'does not send notifications before a request wait period is done' do
+          create_account_reset_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-        expect(notifications_sent).to eq(0)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
+        end
+
+        it 'does not send notifications when the request was cancelled' do
+          create_account_reset_request_for(user)
+          cancel_request_for(user)
+
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          expect(notifications_sent).to eq(0)
+        end
       end
 
-      it 'does not send notifications when the request was cancelled' do
-        create_account_reset_request_for(user)
-        cancel_request_for(user)
+      context 'possible fraud user' do
+        let(:user) { create(:user, :fraud_review_pending) }
+        let(:user2) { create(:user, :fraud_rejection) }
+        context 'with fraud wait period set' do
+          it 'does not send notifications before a request wait period is done' do
+            create_account_reset_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
-        expect(notifications_sent).to eq(0)
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            expect(notifications_sent).to eq(0)
+          end
+
+          it 'does not send notifications when the request was cancelled' do
+            create_account_reset_request_for(user)
+            cancel_request_for(user)
+
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            expect(notifications_sent).to eq(0)
+          end
+
+          it 'should not send if its in between regular wait period and fraud wait period' do
+            before_waiting_the_full_wait_period(now) do
+              create_account_reset_request_for(user)
+              create_account_reset_request_for(user2)
+            end
+
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+
+            expect(notifications_sent).to eq(0)
+          end
+        end
+
+        context 'with fraud wait period not set' do
+          before do
+            allow(IdentityConfig.store).to receive(:account_reset_fraud_user_wait_period_days)
+              .and_return(nil)
+          end
+          it 'does not send notifications before a request wait period is done' do
+            create_account_reset_request_for(user)
+
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            expect(notifications_sent).to eq(0)
+          end
+
+          it 'does not send notifications when the request was cancelled' do
+            create_account_reset_request_for(user)
+            cancel_request_for(user)
+
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+            expect(notifications_sent).to eq(0)
+          end
+
+          it 'should send if its after regular wait period' do
+            before_waiting_the_full_wait_period(now) do
+              create_account_reset_request_for(user)
+              create_account_reset_request_for(user2)
+            end
+
+            notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+
+            expect(notifications_sent).to eq(2)
+          end
+        end
       end
-    end
-  end
-
-  describe '#good_job_concurrency_key' do
-    it 'is the job name and the current time, rounded to the nearest 5 minutes' do
-      now = Time.zone.at(1629819000)
-
-      job_now = AccountReset::GrantRequestsAndSendEmails.new(now)
-      expect(job_now.good_job_concurrency_key).to eq("grant-requests-and-send-emails-#{now.to_i}")
-
-      job_plus_1m = AccountReset::GrantRequestsAndSendEmails.new(now + 1.minute)
-      expect(job_plus_1m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
-
-      job_plus_5m = AccountReset::GrantRequestsAndSendEmails.new(now + 5.minutes)
-      expect(job_plus_5m.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
     end
   end
 
   def before_waiting_the_full_wait_period(now)
     days = IdentityConfig.store.account_reset_wait_period_days.days
+    travel_to(now - 1 - days) do
+      yield
+    end
+  end
+
+  def before_waiting_the_full_fraud_wait_period(now)
+    days = IdentityConfig.store.account_reset_fraud_user_wait_period_days.days
     travel_to(now - 1 - days) do
       yield
     end

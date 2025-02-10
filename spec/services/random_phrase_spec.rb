@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe RandomPhrase do
+RSpec.describe RandomPhrase do
   describe '#initialize' do
     it 'checks for profanity and regenerates a random number when it finds' do
       profane = Base32::Crockford.decode('FART')
       not_profane = Base32::Crockford.decode('ABCD')
 
-      expect(SecureRandom).to receive(:random_number).
-        and_return(profane, not_profane)
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(profane, not_profane)
 
       phrase = RandomPhrase.new(num_words: 1)
 

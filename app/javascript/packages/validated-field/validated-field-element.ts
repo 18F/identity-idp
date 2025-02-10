@@ -1,47 +1,37 @@
-/**
- * Set of text-like input types, used in determining whether the width of the error message should
- * be constrained to match the width of the input.
- */
-const TEXT_LIKE_INPUT_TYPES = new Set([
-  'date',
-  'datetime-local',
-  'email',
-  'month',
-  'number',
-  'password',
-  'search',
-  'tel',
-  'text',
-  'time',
-  'url',
-]);
-
 class ValidatedFieldElement extends HTMLElement {
-  errorStrings: Partial<ValidityState> = {};
-
   input: HTMLInputElement | null;
 
   inputWrapper: HTMLElement | null;
 
   errorMessage: HTMLElement | null;
 
-  descriptorId?: string | null;
-
   connectedCallback() {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
-    this.descriptorId = this.input?.getAttribute('aria-describedby');
-    this.errorMessage = this.getErrorElement();
-    try {
-      Object.assign(
-        this.errorStrings,
-        JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || ''),
-      );
-    } catch {}
-
+    this.errorMessage = this.ownerDocument.getElementById(this.errorId);
     this.input?.addEventListener('input', () => this.setErrorMessage());
     this.input?.addEventListener('input', () => this.setInputIsValid(true));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
+  }
+
+  get errorStrings(): Partial<ValidityState> {
+    try {
+      return JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || '');
+    } catch {
+      return {};
+    }
+  }
+
+  get errorId(): string {
+    return this.getAttribute('error-id')!;
+  }
+
+  get descriptorIdRefs(): string[] {
+    return this.input?.getAttribute('aria-describedby')?.split(' ').filter(Boolean) || [];
+  }
+
+  get isValid(): boolean {
+    return this.input?.getAttribute('aria-invalid') !== 'true';
   }
 
   /**
@@ -68,12 +58,12 @@ class ValidatedFieldElement extends HTMLElement {
    */
   setErrorMessage(message?: string | null) {
     if (message) {
-      this.getOrCreateErrorMessageElement().textContent = message;
-      if (this.errorMessage?.style.display === 'none') {
-        this.errorMessage.style.display = '';
-      }
+      this.getOrCreateErrorMessageElement();
+      this.errorMessage!.textContent = message;
+      this.errorMessage!.classList.remove('display-none');
     } else if (this.errorMessage) {
-      this.errorMessage.style.display = 'none';
+      this.errorMessage.textContent = '';
+      this.errorMessage.classList.add('display-none');
     }
   }
 
@@ -83,8 +73,18 @@ class ValidatedFieldElement extends HTMLElement {
    * @param isValid Whether input is valid.
    */
   setInputIsValid(isValid: boolean) {
+    if (isValid === this.isValid) {
+      return;
+    }
+
     this.input?.classList.toggle('usa-input--error', !isValid);
     this.input?.setAttribute('aria-invalid', String(!isValid));
+
+    const idRefs = this.descriptorIdRefs.filter((idRef) => idRef !== this.errorId);
+    if (!isValid) {
+      idRefs.push(this.errorId);
+    }
+    this.input?.setAttribute('aria-describedby', idRefs.join(' '));
   }
 
   /**
@@ -119,33 +119,11 @@ class ValidatedFieldElement extends HTMLElement {
     if (!this.errorMessage) {
       this.errorMessage = this.ownerDocument.createElement('div');
       this.errorMessage.classList.add('usa-error-message');
-
-      const descriptorId = (this.descriptorId?.split(' ') || []).find(
-        (id) => document.getElementById(id) === null,
-      );
-
-      if (descriptorId) {
-        this.errorMessage.id = descriptorId;
-      }
-      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
-        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
-      }
-
+      this.errorMessage.id = this.errorId;
       this.inputWrapper?.appendChild(this.errorMessage);
     }
 
     return this.errorMessage;
-  }
-
-  private getErrorElement(): HTMLElement | null {
-    const describedByElementIds = this.descriptorId?.split(' ') || [];
-
-    return (
-      describedByElementIds
-        .map((id) => document.getElementById(id))
-        .find((element) => element?.classList.contains('usa-error-message')) ||
-      this.querySelector('.usa-error-message')
-    );
   }
 
   /**

@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe 'account_reset/delete_account/show.html.erb' do
+RSpec.describe 'account_reset/delete_account/show.html.erb' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('account_reset.delete_account.title'))
+    expect(view).to receive(:title=).with(t('account_reset.delete_account.title'))
 
     render
   end

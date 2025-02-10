@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
@@ -19,14 +21,19 @@ class UserPivCacSetupForm
     FormResponse.new(
       success: success && process_valid_submission,
       errors: errors,
-      extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
+      extra: extra_analytics_attributes,
     )
   end
 
   private
 
   def process_valid_submission
-    Db::PivCacConfiguration.create(user, x509_dn_uuid, @name, x509_issuer)
+    user.piv_cac_configurations.create!(
+      x509_dn_uuid: x509_dn_uuid,
+      name: @name,
+      x509_issuer: x509_issuer,
+    )
+
     event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
     PushNotification::HttpPush.deliver(event)
     true
@@ -43,7 +50,7 @@ class UserPivCacSetupForm
     self.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
     self.x509_issuer = @data['issuer']
-    if Db::PivCacConfiguration.find_user_by_x509(x509_dn_uuid)
+    if PivCacConfiguration.exists?(x509_dn_uuid: x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false
     else
@@ -54,6 +61,7 @@ class UserPivCacSetupForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'piv_cac',
+      key_id: key_id,
     }
   end
 

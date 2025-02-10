@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/jobfail.html.erb' do
+RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:gpo_letter_available) { false }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    decorated_sp_session = instance_double(ServiceProviderSession, sp_name: sp_name)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
     assign(:gpo_letter_available, gpo_letter_available)
 
     render
@@ -23,19 +23,15 @@ describe 'idv/phone_errors/jobfail.html.erb' do
   it 'shows contact support option' do
     expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-      href: MarketingSite.contact_url,
+      href: contact_redirect_url,
     )
   end
 
   context 'gpo verification disabled' do
     it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
-      )
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end
@@ -45,12 +41,8 @@ describe 'idv/phone_errors/jobfail.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
-      )
-      expect(rendered).to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),
-        href: idv_gpo_path,
+        href: idv_request_letter_path,
       )
     end
   end

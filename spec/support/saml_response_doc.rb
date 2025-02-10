@@ -33,7 +33,7 @@ class SamlResponseDoc
   def raw_xml_response
     if @test_type == 'feature'
       xml_response
-    elsif @response.body.match?(/<html>/)
+    elsif @response.body.include?('<html')
       html_response
     else
       @response.body
@@ -52,7 +52,7 @@ class SamlResponseDoc
   end
 
   def response_doc
-    if raw_xml_response.match?(/EncryptedData/)
+    if raw_xml_response.include?('EncryptedData')
       @original_encrypted = true
       Nokogiri::XML(
         OneLogin::RubySaml::Response.new(
@@ -210,13 +210,13 @@ class SamlResponseDoc
   end
 
   def organization_name
-    organization_nodeset[0].
-      xpath('./ds:OrganizationName', ds: Saml::XML::Namespaces::METADATA)[0].content
+    organization_nodeset[0]
+      .xpath('./ds:OrganizationName', ds: Saml::XML::Namespaces::METADATA)[0].content
   end
 
   def organization_display_name
-    organization_nodeset[0].
-      xpath(
+    organization_nodeset[0]
+      .xpath(
         './ds:OrganizationDisplayName',
         ds: Saml::XML::Namespaces::METADATA,
       ).first.content
@@ -230,13 +230,13 @@ class SamlResponseDoc
   end
 
   def attribute_authority_organization_name
-    attribute_authority_organization_nodeset[0].
-      xpath('./ds:OrganizationName', ds: Saml::XML::Namespaces::METADATA)[0].content
+    attribute_authority_organization_nodeset[0]
+      .xpath('./ds:OrganizationName', ds: Saml::XML::Namespaces::METADATA)[0].content
   end
 
   def attribute_authority_organization_display_name
-    attribute_authority_organization_nodeset[0].
-      xpath(
+    attribute_authority_organization_nodeset[0]
+      .xpath(
         './ds:OrganizationDisplayName',
         ds: Saml::XML::Namespaces::METADATA,
       ).first.content

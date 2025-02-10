@@ -1,0 +1,8 @@
+{
+  "name": "@18f/identity-captcha-submit-button",
+  "version": "1.0.0",
+  "private": true,
+  "sideEffects": [
+    "./captcha-submit-button-element.ts"
+  ]
+}

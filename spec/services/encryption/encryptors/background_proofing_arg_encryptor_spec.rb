@@ -1,20 +1,22 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
+RSpec.describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
   let(:plaintext) { '{ "foo": "bar" }' }
 
   describe '#encrypt' do
     it 'returns a KMS wrapped AES encrypted ciphertext' do
       aes_encryptor = instance_double(Encryption::Encryptors::AesEncryptor)
       kms_client = instance_double(Encryption::KmsClient)
-      allow(aes_encryptor).to receive(:encrypt).
-        with(plaintext, IdentityConfig.store.session_encryption_key[0...32]).
-        and_return('aes output')
-      allow(kms_client).to receive(:encrypt).
-        with('aes output', 'context' => 'session-encryption').
-        and_return('kms output')
+      allow(aes_encryptor).to receive(:encrypt)
+        .with(plaintext, IdentityConfig.store.session_encryption_key[0...32])
+        .and_return('aes output')
+      allow(kms_client).to receive(:encrypt)
+        .with('aes output', 'context' => 'session-encryption')
+        .and_return('kms output')
       allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(aes_encryptor)
-      allow(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+      allow(Encryption::KmsClient).to receive(:new).with(
+        kms_key_id: IdentityConfig.store.aws_kms_session_key_id,
+      ).and_return(kms_client)
 
       expected_ciphertext = Base64.strict_encode64('kms output')
 
@@ -28,7 +30,9 @@ describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
       expect(client).to receive(:encrypt).with(
         instance_of(String), 'context' => 'session-encryption'
       ).and_return('kms_ciphertext')
-      allow(Encryption::KmsClient).to receive(:new).and_return(client)
+      allow(Encryption::KmsClient).to receive(:new).with(
+        kms_key_id: IdentityConfig.store.aws_kms_session_key_id,
+      ).and_return(client)
 
       subject.encrypt(plaintext)
     end

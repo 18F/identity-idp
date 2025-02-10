@@ -1,0 +1,26 @@
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      title: t('titles.failure.information_not_verified'),
+      heading: t('idv.warning.state_id.heading'),
+      current_step: :verify_info,
+      action: {
+        text: t('idv.warning.state_id.try_again_button'),
+        url: @try_again_path,
+      },
+      secondary_action: {
+        text: t('idv.warning.state_id.cancel_button', app_name: APP_NAME),
+        url: return_to_sp_failure_to_proof_url(step: 'verify_info', location: 'state_id_warning'),
+      },
+    ) do |c| %>
+
+  <p><%= t('idv.warning.state_id.explanation') %></p>
+
+  <p class="margin-bottom-0"><%= t('idv.warning.state_id.next_steps.preamble') %></p>
+  <ul>
+    <% t('idv.warning.state_id.next_steps.items_html', app_name: APP_NAME).each do |item| %>
+      <li><%= item %></li>
+    <% end %>
+  </ul>
+<% end %>
+

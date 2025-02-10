@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DocAuthLog < ApplicationRecord
   belongs_to :user
 
@@ -6,8 +8,4 @@ class DocAuthLog < ApplicationRecord
              foreign_key: 'issuer',
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
-
-  def self.verified_users_count
-    Profile.where.not(verified_at: nil).count
-  end
 end

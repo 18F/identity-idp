@@ -1,18 +1,16 @@
-<%= title t('titles.revoke_consent') %>
+<% self.title = t('titles.revoke_consent') %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.revoke_consent')) %>
 
 <p>
   <%= t(
         'account.revoke_consent.longer_description_html',
-        service_provider: content_tag(:b, @service_provider.friendly_name),
+        service_provider_html: content_tag(:b, @service_provider.friendly_name),
       ) %>
 </p>
 
 <%= button_to(service_provider_revoke_url(@service_provider.id), method: 'delete', class: 'usa-button usa-button--wide usa-button--big margin-top-4') { t('forms.buttons.continue') } %>
 
-<div class="margin-top-4 border-top border-primary-light">
-  <div class="margin-top-1">
-    <%= link_to(t('links.cancel'), account_url) %>
-  </div>
-</div>
+<%= render PageFooterComponent.new do %>
+  <%= link_to(t('links.cancel'), account_connected_accounts_path) %>
+<% end %>

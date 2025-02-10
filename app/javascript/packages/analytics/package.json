@@ -1,5 +1,17 @@
 {
   "name": "@18f/identity-analytics",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "make digital-analytics-program.js"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./click-observer-element": "./click-observer-element.ts",
+    "./digital-analytics-program": "./digital-analytics-program.js"
+  },
+  "sideEffects": [
+    "./click-observer-element.ts",
+    "./digital-analytics-program.js"
+  ]
 }

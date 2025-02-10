@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module PushNotification
   class MfaLimitAccountLockedEvent
     include IssSubEvent
 
     EVENT_TYPE =
-      'https://schemas.login.gov/secevent/risc/event-type/mfa-limit-account-locked'.freeze
+      'https://schemas.login.gov/secevent/risc/event-type/mfa-limit-account-locked'
 
     attr_reader :user
 

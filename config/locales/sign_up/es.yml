@@ -1,8 +1,0 @@
----
-es:
-  sign_up:
-    agree_and_continue: Aceptar y continuar
-    cancel:
-      success: Su cuenta ha sido eliminada. No guardamos su información.
-      warning_header: 'Si cancela ahora:'
-    terms: He leído y acepto el %{app_name}

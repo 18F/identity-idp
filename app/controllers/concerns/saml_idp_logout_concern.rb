@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'saml_idp/logout_response_builder'
 
 module SamlIdpLogoutConcern
@@ -21,13 +23,20 @@ module SamlIdpLogoutConcern
     sign_out if user_signed_in?
   end
 
-  def handle_valid_sp_remote_logout_request(user_id)
+  def handle_valid_sp_remote_logout_request(user_id:, issuer:)
     # Remotely delete the user's current session
-    session_id = ServiceProviderIdentity.
-      find_by(user_id: user_id, service_provider: saml_request.issuer).
-      rails_session_id
+    session_id = ServiceProviderIdentity
+      .where(user_id: user_id, service_provider: issuer)
+      .pick(:rails_session_id)
 
-    OutOfBandSessionAccessor.new(session_id).destroy
+    if session_id
+      OutOfBandSessionAccessor.new(session_id).destroy
+      user = User.find_by(id: user_id)
+      analytics.remote_logout_completed(
+        service_provider: issuer,
+        user_id: user&.uuid,
+      )
+    end
     sign_out if user_signed_in?
 
     # rubocop:disable Rails/RenderInline
@@ -58,20 +67,17 @@ module SamlIdpLogoutConcern
       oidc: false,
       saml_request_valid: sp_initiated ? valid_saml_request? : true,
     )
-    irs_attempts_api_tracker.logout_initiated(
-      success: true,
-    )
   end
 
-  def track_remote_logout_event
+  def track_remote_logout_event(issuer)
     analytics.remote_logout_initiated(
-      service_provider: saml_request&.issuer,
+      service_provider: issuer,
       saml_request_valid: valid_saml_request?,
     )
   end
 
   def saml_response_signature_options
-    endpoint = SamlEndpoint.new(request)
+    endpoint = SamlEndpoint.new(params[:path_year])
     {
       x509_certificate: endpoint.x509_certificate,
       secret_key: endpoint.secret_key,

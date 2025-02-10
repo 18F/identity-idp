@@ -8,7 +8,7 @@ RSpec.describe CountdownComponent, type: :component do
   end
 
   it 'renders element with expected attributes and initial expiration time' do
-    rendered = render_inline CountdownComponent.new(expiration: expiration)
+    rendered = render_inline CountdownComponent.new(expiration:)
 
     element = rendered.css('lg-countdown', text: '1 minute and 1 second').first
     expect(element).to be_present
@@ -20,7 +20,7 @@ RSpec.describe CountdownComponent, type: :component do
   context 'with tag options' do
     it 'renders with attributes' do
       rendered = render_inline CountdownComponent.new(
-        expiration: expiration,
+        expiration:,
         data: { foo: 'bar' },
       )
 
@@ -31,7 +31,7 @@ RSpec.describe CountdownComponent, type: :component do
   context 'with custom update interval' do
     it 'assigns update interval in milliseconds' do
       rendered = render_inline CountdownComponent.new(
-        expiration: expiration,
+        expiration:,
         update_interval: 30.seconds,
       )
 
@@ -42,7 +42,7 @@ RSpec.describe CountdownComponent, type: :component do
   context 'with controlled start immediately' do
     it 'assigns attribute to start immediately' do
       rendered = render_inline CountdownComponent.new(
-        expiration: expiration,
+        expiration:,
         start_immediately: false,
       )
 

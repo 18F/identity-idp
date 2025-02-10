@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class OpenidConnectTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i
+  ISSUED_AT_LEEWAY_SECONDS = 10
 
   ATTRS = %i[
     client_assertion
@@ -15,7 +17,7 @@ class OpenidConnectTokenForm
 
   attr_reader(*ATTRS)
 
-  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
+  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
   validates_inclusion_of :grant_type, in: %w[authorization_code]
   validates_inclusion_of :client_assertion_type,
@@ -46,11 +48,14 @@ class OpenidConnectTokenForm
 
   def response
     if valid?
+      id_token_builder = IdTokenBuilder.new(identity: identity, code: code)
+      @ttl = id_token_builder.ttl
+
       {
         access_token: identity.access_token,
         token_type: 'Bearer',
-        expires_in: Pii::SessionStore.new(identity.rails_session_id).ttl,
-        id_token: IdTokenBuilder.new(identity: identity, code: code).id_token,
+        expires_in: @ttl,
+        id_token: id_token_builder.id_token,
       }
     else
       { error: errors.to_a.join(' ') }
@@ -68,8 +73,9 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    @identity = ServiceProviderIdentity.where(session_uuid: code).
-      order(updated_at: :desc).first
+    @identity = ServiceProviderIdentity
+      .where(session_uuid: code)
+      .order(updated_at: :desc).first
   end
 
   def pkce?
@@ -196,6 +202,22 @@ class OpenidConnectTokenForm
       client_id: client_id,
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
+      code_verifier_present: code_verifier.present?,
+      service_provider_pkce: service_provider&.pkce,
+      ial: identity&.ial,
+      integration_errors:,
+    }
+  end
+
+  def integration_errors
+    return nil if valid? || client_id.blank?
+
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      event: :oidc_token_request,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id,
     }
   end
 

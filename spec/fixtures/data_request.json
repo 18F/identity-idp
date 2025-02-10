@@ -13,6 +13,7 @@
     "mfa_configurations": {
       "phone_configurations": [
         {
+          "id": 123456,
           "phone": "+1 555-555-5555",
           "created_at": "2021-10-21T14:53:08.803Z",
           "confirmed_at": "2021-10-21T14:53:08.790Z"

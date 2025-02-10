@@ -1,24 +1,24 @@
 require 'rails_helper'
 
-feature 'Two Factor Authentication' do
+RSpec.feature 'Two Factor Authentication' do
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa
 
       attempt_to_bypass_2fa_setup
 
-      expect(current_path).to eq authentication_methods_setup_path
+      expect(page).to have_current_path authentication_methods_setup_path
 
       select_2fa_option('phone')
 
       click_continue
 
-      expect(page).
-        to have_content t('titles.phone_setup')
+      expect(page)
+        .to have_content t('headings.add_info.phone')
 
-      send_security_code_without_entering_phone_number
+      send_one_time_code_without_entering_phone_number
 
-      expect(current_path).to eq phone_setup_path
+      expect(page).to have_current_path phone_setup_path
 
       submit_2fa_setup_form_with_empty_string_phone
 
@@ -31,7 +31,10 @@ feature 'Two Factor Authentication' do
       submit_2fa_setup_form_with_valid_phone
 
       expect(page).to_not have_content t('errors.messages.improbable_phone')
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: 'sms'),
+        ignore_query: true,
+      )
       expect(MfaContext.new(user).phone_configurations).to be_empty
       expect(user.sms?).to eq true
     end
@@ -45,9 +48,9 @@ feature 'Two Factor Authentication' do
         select_phone_delivery_option(:voice)
         select 'Bahamas', from: 'new_phone_form_international_code'
         fill_in 'new_phone_form_phone', with: unsupported_phone
-        click_send_security_code
+        click_send_one_time_code
 
-        expect(current_path).to eq phone_setup_path
+        expect(page).to have_current_path phone_setup_path
         expect(page).to have_content t(
           'two_factor_authentication.otp_delivery_preference.voice_unsupported',
           location: 'Bahamas',
@@ -55,7 +58,62 @@ feature 'Two Factor Authentication' do
 
         click_on t('two_factor_authentication.choose_another_option')
 
-        expect(current_path).to eq authentication_methods_setup_path
+        expect(page).to have_current_path authentication_methods_setup_path
+      end
+    end
+
+    context 'with a number that has opted out of SMS delivery' do
+      let(:user) { create(:user, :with_phone) }
+      let(:phone_configuration) { user.phone_configurations.first }
+
+      before do
+        PhoneNumberOptOut.create_or_find_with_phone(phone_configuration.phone)
+        opt_out_manager = instance_double('Telephony::Pinpoint::OptOutManager')
+        allow(opt_out_manager)
+          .to receive(:opt_in_phone_number)
+          .with(phone_configuration.formatted_phone)
+          .and_return(FormResponse.new(success: true))
+        allow_any_instance_of(TwoFactorAuthentication::SmsOptInController)
+          .to receive(:opt_out_manager).and_return(opt_out_manager)
+      end
+
+      scenario 'renders the sms opt-out error screen when signing in' do
+        sign_in_before_2fa(user)
+
+        expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
+
+        click_button t('forms.buttons.send_one_time_code')
+
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect(page).to have_current_path(account_path)
+      end
+
+      scenario 'allows a user to recreate their account after account reset' do
+        sign_in_before_2fa(user)
+        email = user.last_sign_in_email_address.email
+
+        expect(page).to have_content(t('two_factor_authentication.opt_in.title'))
+
+        click_link t('two_factor_authentication.login_options_link_text')
+        click_link t('two_factor_authentication.account_reset.link')
+        click_link t('account_reset.request.yes_continue')
+        click_button t('account_reset.request.yes_continue')
+
+        reset_email
+
+        travel_to (IdentityConfig.store.account_reset_wait_period_days + 1).days.from_now do
+          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          open_last_email
+          click_email_link_matching(/delete_account\?token/)
+          click_button t('account_reset.request.yes_continue')
+          click_link t('account_reset.confirm_delete_account.link_text')
+          sign_up_with(email)
+          open_last_email
+          click_email_link_matching(/confirmation_token/)
+          expect(page).to have_content(t('devise.confirmations.confirmed'))
+        end
       end
     end
 
@@ -64,48 +122,43 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
 
-        expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
-
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
-        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 364'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
 
-        fill_in 'new_phone_form_phone', with: '+212 5376'
-        expect(page).to have_css('.phone-input__example', text: '0650-123456')
+        fill_in 'new_phone_form_phone', with: '+353 537'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
-        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
+        expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'IE'
 
         fill_in 'new_phone_form_phone', with: ''
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
         expect(page).to have_content(t('errors.messages.phone_required'))
         fill_in 'new_phone_form_phone', with: '+81 54354'
 
-        click_send_security_code
+        click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
-        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
@@ -211,43 +264,43 @@ feature 'Two Factor Authentication' do
     visit account_path
   end
 
-  def send_security_code_without_entering_phone_number
-    click_send_security_code
+  def send_one_time_code_without_entering_phone_number
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
     fill_in 'new_phone_form_phone', with: ''
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
     fill_in 'new_phone_form_phone', with: 'five one zero five five five four three two one'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   def submit_2fa_setup_form_with_valid_phone
     fill_in 'new_phone_form_phone', with: '703-555-1212'
-    click_send_security_code
+    click_send_one_time_code
   end
 
   describe 'When the user has already set up 2FA' do
     it 'automatically sends the OTP to the preferred delivery method' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(page).
-        to have_content t('two_factor_authentication.header_text')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page)
+        .to have_content t('two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       check 'remember_device'
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
 
     def attempt_to_bypass_2fa
@@ -255,22 +308,57 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user can return to the 2fa options screen' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'user does not have to focus on OTP field', js: true do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
+      input = page.find_field(t('components.one_time_code_input.label'))
+      expect(page.evaluate_script('document.activeElement.id')).to eq(input[:id])
+    end
+
+    it 'validates OTP format', js: true do
+      user = create(:user, :fully_registered)
+      sign_in_before_2fa(user)
+
+      input = page.find_field(t('components.one_time_code_input.label'))
+
+      # Invalid: Unsupported characters
+      input.fill_in with: 'BADBAD'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
+
+      # Invalid: Not enough characters, with prefix
+      fill_in t('components.one_time_code_input.label'), with: '#12345'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
+
+      # Invalid: Not enough characters, without prefix
+      fill_in t('components.one_time_code_input.label'), with: '12345'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.phone_otp_format'))
+
+      # Valid: Enough characters, with prefix
+      input.fill_in with: '#123456'
+      expect(input.value).to eq('#123456')
+      page.evaluate_script('document.activeElement.closest("form").reportValidity()')
+      expect(page).not_to have_content(t('errors.messages.phone_otp_format'))
+
+      # Valid: Enough characters, without prefix
+      input.fill_in with: '123456'
+      expect(input.value).to eq('123456')
+      page.evaluate_script('document.activeElement.closest("form").reportValidity()')
+      expect(page).not_to have_content(t('errors.messages.phone_otp_format'))
     end
 
     scenario 'the user changes delivery method' do
-      user = create(:user, :signed_up, otp_delivery_preference: :sms)
+      user = create(:user, :fully_registered, otp_delivery_preference: :sms)
       sign_in_before_2fa(user)
 
       choose_another_security_option('voice')
@@ -285,79 +373,55 @@ feature 'Two Factor Authentication' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
 
       choose_another_security_option('sms')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_piv_cac_path
 
       choose_another_security_option('voice')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
     it 'allows totp fallback when configured' do
-      user = create(:user, :signed_up, :with_piv_or_cac, :with_authentication_app)
+      user = create(:user, :fully_registered, :with_piv_or_cac, :with_authentication_app)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
 
       choose_another_security_option('auth_app')
 
-      expect(current_path).to eq login_two_factor_authenticator_path
+      expect(page).to have_current_path login_two_factor_authenticator_path
     end
 
     scenario 'user can cancel PIV/CAC process' do
-      user = create(:user, :signed_up, :with_piv_or_cac)
+      user = create(:user, :fully_registered, :with_piv_or_cac)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_current_path login_two_factor_piv_cac_path
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'user uses PIV/CAC as their second factor' do
-      stub_piv_cac_service
-
       user = user_with_piv_cac
       sign_in_before_2fa(user)
+      stub_piv_cac_service(uuid: user.piv_cac_configurations.first.x509_dn_uuid)
 
-      nonce = visit_login_two_factor_piv_cac_and_get_nonce
+      click_on t('forms.piv_cac_mfa.submit')
+      follow_piv_cac_redirect
 
-      visit_piv_cac_service(
-        login_two_factor_piv_cac_path,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-        nonce: nonce,
-      )
-      expect(current_path).to eq account_path
-    end
-
-    scenario 'user uses incorrect PIV/CAC as their second factor' do
-      stub_piv_cac_service
-
-      user = user_with_piv_cac
-      sign_in_before_2fa(user)
-
-      nonce = visit_login_two_factor_piv_cac_and_get_nonce
-
-      visit_piv_cac_service(
-        login_two_factor_piv_cac_path,
-        uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
-        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
-        nonce: nonce,
-      )
-      expect(current_path).to eq login_two_factor_piv_cac_path
-      expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
+      expect(page).to have_current_path account_path
     end
 
     context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
         create(
-          :user, :signed_up,
+          :user, :fully_registered,
           otp_delivery_preference: 'voice',
           with: { phone: '+12255551000', delivery_preference: 'voice' }
         )
@@ -368,27 +432,18 @@ feature 'Two Factor Authentication' do
 
       it 'does not change their OTP delivery preference' do
         allow(OtpRateLimiter).to receive(:new).and_return(otp_rate_limiter)
-        allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-          and_return(false)
+        allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+          .and_return(false)
 
         sign_in_user(user)
 
-        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
 
         choose_another_security_option('sms')
 
         expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
         expect(user.reload.otp_delivery_preference).to eq 'voice'
       end
-    end
-  end
-
-  describe 'when the user is not piv/cac enabled' do
-    it 'has no link to piv/cac during login' do
-      user = create(:user, :signed_up)
-      sign_in_before_2fa(user)
-
-      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
     end
   end
 
@@ -399,26 +454,26 @@ feature 'Two Factor Authentication' do
 
       choose_another_security_option('sms')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_authenticator_path
 
       choose_another_security_option('voice')
 
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
     scenario 'user can cancel TOTP process' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path root_path
     end
 
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
-      user = create(:user, :signed_up, :with_authentication_app)
+      user = create(:user, :fully_registered, :with_authentication_app)
       Db::AuthAppConfiguration.create(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
@@ -427,15 +482,14 @@ feature 'Two Factor Authentication' do
         fill_in 'code', with: otp
         click_submit_default
 
-        expect(current_path).to eq(account_path)
+        expect(page).to have_current_path(account_path)
 
         set_new_browser_session
         sign_in_user(user)
         fill_in 'code', with: otp
         click_submit_default
 
-        # expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-        expect(current_path).to eq login_two_factor_authenticator_path
+        expect(page).to have_current_path login_two_factor_authenticator_path
       end
     end
   end
@@ -452,26 +506,26 @@ feature 'Two Factor Authentication' do
       sign_in_and_2fa_user
       visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
 
       visit user_two_factor_authentication_path
 
-      expect(current_path).to eq account_path
+      expect(page).to have_current_path account_path
     end
   end
 
   describe 'clicking the logo image during 2fa process' do
-    it 'returns them to the home page' do
-      user = create(:user, :signed_up)
+    it 'prompts them to 2FA' do
+      user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
-      expect(current_path).to eq root_path
+      expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: :sms)
     end
   end
 
   describe 'clicking footer links during 2FA' do
     it 'renders the requested pages' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.help'), match: :first
 
@@ -489,17 +543,88 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'second factor locked' do
+  describe 'webauthn_platform' do
+    include WebAuthnHelper
+
     before do
-      allow_any_instance_of(UserDecorator).to receive(:locked_out?).and_return(true)
-      allow_any_instance_of(UserDecorator).to receive(:lockout_time_expiration).
-        and_return(Time.zone.now + 10.minutes)
+      allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
     end
 
-    scenario 'presents the failure screen', :js do
-      sign_in_user(user_with_2fa)
+    let!(:webauthn_configuration) do
+      create(
+        :webauthn_configuration,
+        credential_id: credential_id,
+        credential_public_key: credential_public_key,
+        platform_authenticator: true,
+        user: user,
+      )
+    end
+    let(:user) do
+      create(:user)
+    end
 
-      expect(page).to have_content t('titles.account_locked')
+    context 'sign in' do
+      it 'allows user to be signed in without issue' do
+        mock_webauthn_verification_challenge
+        sign_in_user(webauthn_configuration.user)
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
+
+        expect(page).to have_current_path(account_path)
+      end
+    end
+  end
+
+  describe 'rate limiting' do
+    let(:max_attempts) { 2 }
+    let(:user) { create(:user, :fully_registered) }
+    before do
+      allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts)
+        .and_return(max_attempts)
+    end
+
+    def wrong_phone_otp
+      loop do
+        code = rand(100000...999999).to_s
+        return code if code != last_phone_otp
+      end
+    end
+
+    def submit_wrong_otp
+      fill_in t('components.one_time_code_input.label'), with: wrong_phone_otp
+      click_submit_default
+    end
+
+    it 'locks the user from further attempts after exceeding the configured max' do
+      sign_in_before_2fa(user)
+      max_attempts.times { submit_wrong_otp }
+
+      expect(page).to have_content(t('titles.account_locked'))
+
+      # Users session should be terminated and they should still be locked out if they sign in again
+      within('.page-header') { click_on APP_NAME }
+      fill_in_credentials_and_submit(user.email_addresses.first.email, user.password)
+      expect(page).to have_content(t('titles.account_locked'))
+    end
+
+    context 'when the user is locked out' do
+      let(:max_attempts) { 1 }
+
+      before do
+        sign_in_before_2fa(user)
+        submit_wrong_otp
+      end
+
+      it 'allows the user to sign in again after lockout has expired' do
+        travel (IdentityConfig.store.lockout_period_in_minutes - 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
+          expect(page).to have_content(t('titles.account_locked'))
+        end
+
+        travel (IdentityConfig.store.lockout_period_in_minutes + 1).minutes do
+          signin(user.email_addresses.first.email, user.password)
+          expect(page).to have_content(t('two_factor_authentication.header_text'))
+        end
+      end
     end
   end
 end

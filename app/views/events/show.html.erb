@@ -1,12 +1,12 @@
 <% content_for(:header) do %>
-  <%= render 'accounts/nav_auth', enable_mobile_nav: false, greeting: @presenter.header_personalization %>
+  <%= render 'accounts/nav_auth', greeting: @presenter.header_personalization %>
 <% end %>
 
-<% title t('titles.account') %>
+<% self.title = t('titles.account') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.account.activity')) %>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <div class="border-bottom border-primary-light">
     <h2 class="margin-top-0">
       <%= @device.nice_name %>

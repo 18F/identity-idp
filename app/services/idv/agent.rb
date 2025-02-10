@@ -1,17 +1,21 @@
+# frozen_string_literal: true
+
 module Idv
   class Agent
     def initialize(applicant)
       @applicant = applicant.symbolize_keys
     end
 
+    # @param document_capture_session [DocumentCaptureSession]
+    # @param proofing_components [Idv::ProofingComponents]
     def proof_resolution(
       document_capture_session,
-      should_proof_state_id:,
       trace_id:,
       user_id:,
       threatmetrix_session_id:,
       request_ip:,
-      issuer:
+      ipp_enrollment_in_progress:,
+      proofing_components:
     )
       document_capture_session.create_proofing_session
 
@@ -21,14 +25,14 @@ module Idv
 
       job_arguments = {
         encrypted_arguments: encrypted_arguments,
-        should_proof_state_id: should_proof_state_id,
-        dob_year_only: false,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         user_id: user_id,
+        service_provider_issuer: document_capture_session.issuer,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        issuer: issuer,
+        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+        proofing_components: proofing_components.to_h,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
@@ -57,29 +61,6 @@ module Idv
       else
         AddressProofingJob.perform_now(**job_arguments)
       end
-    end
-
-    def proof_document(
-      document_capture_session,
-      liveness_checking_enabled:,
-      trace_id:,
-      image_metadata:,
-      analytics_data:,
-      flow_path: 'standard'
-    )
-      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
-        @applicant.to_json,
-      )
-
-      DocumentProofingJob.perform_later(
-        encrypted_arguments: encrypted_arguments,
-        liveness_checking_enabled: liveness_checking_enabled,
-        result_id: document_capture_session.result_id,
-        trace_id: trace_id,
-        image_metadata: image_metadata,
-        analytics_data: analytics_data,
-        flow_path: flow_path,
-      )
     end
   end
 end

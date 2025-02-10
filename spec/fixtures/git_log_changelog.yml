@@ -40,8 +40,9 @@ squashed_commit_with_multiple_commits:
     body:* add check to see if platform is available
 
     * add alert
+    This reverts commit d964871.
 
-    * changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
+    * changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
 
     * fix linting, debug
     Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>
@@ -51,11 +52,12 @@ squashed_commit_with_multiple_commits:
   commit_messages:
     - '* add check to see if platform is available'
     - '* add alert'
-    - '* changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
+    - 'This reverts commit d964871.'
+    - '* changelog: User-Facing Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
     - '* fix linting, debug'
     - 'Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>'
     - 'Co-authored-by: Zach Margolis <zachary.margolis@gsa.gov>'
-  category: 'Improvements'
+  category: 'User-Facing Improvements'
   subcategory: 'Webauthn'
   change: 'Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
   pr_number: '5976'
@@ -72,6 +74,19 @@ squashed_commit_with_skip:
     - '- Lets us set log level to minimize STDOUT output'
     - '  from Identity::Hostdata (downloading files from S3, etc)'
     - '[skip changelog]'
+squashed_commit_with_revert:
+  commit_log: |
+    title: Revert "LG-8653: Add personal key generation date" (#7816)
+    body:
+    This reverts commit d964871.
+    DELIMITER
+  title: 'Revert "LG-8653: Add personal key generation date" (#7816)'
+  commit_messages:
+    - 'This reverts commit d964871.'
+  category: 'Bug Fixes'
+  subcategory: 'Code Revert'
+  change: 'Revert changes introduced in d964871'
+  pr_number: '7816'
 squashed_commit_invalid:
   commit_log: |
     title: LG-5629 account buttons part 2 (#5945)
@@ -82,7 +97,7 @@ squashed_commit_invalid:
 commit_changelog_capitalized:
   commit_log: |
     title: Improve changelog tool flexibility for commit messages (#7000)
-    body:Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages
+    body:ChAngElOg: Internal, Changelog, Improve changelog tool flexibility for commit messages
     DELIMITER
   title: Improve changelog tool flexibility for commit messages (#7000)
   category: Internal
@@ -90,7 +105,19 @@ commit_changelog_capitalized:
   change: Improve changelog tool flexibility for commit messages
   pr_number: '7000'
   commit_messages:
-    - 'Changelog: Internal, Changelog, Improve changelog tool flexibility for commit messages'
+    - 'ChAngElOg: Internal, Changelog, Improve changelog tool flexibility for commit messages'
+commit_changelog_symbols:
+  commit_log: |
+    title: Support symbols in changelog message subcategory (#9697)
+    body:changelog: Internal, Build Tooling (Changelog Script), Support symbols in changelog message subcategory
+    DELIMITER
+  title: Support symbols in changelog message subcategory (#9697)
+  category: Internal
+  subcategory: Build Tooling (Changelog Script)
+  change: Support symbols in changelog message subcategory
+  pr_number: '9697'
+  commit_messages:
+    - 'changelog: Internal, Build Tooling (Changelog Script), Support symbols in changelog message subcategory'
 commit_changelog_whitespace:
   commit_log: |
     title: Improve changelog tool flexibility for commit messages (#7000)
@@ -103,3 +130,30 @@ commit_changelog_whitespace:
   pr_number: '7000'
   commit_messages:
     - 'changelog:Internal,Changelog,Improve changelog tool flexibility for commit messages'
+commit_changelog_with_commas_in_change:
+  commit_log: |
+    title: Improve changelog tool flexibility for commit messages (#7000)
+    body:changelog:Internal,Changelog,Allow listing one, two, and more items with commas
+    DELIMITER
+  title: Improve changelog tool flexibility for commit messages (#7000)
+  category: Internal
+  subcategory: Changelog
+  change: Allow listing one, two, and more items with commas
+  pr_number: '7000'
+  commit_messages:
+    - 'changelog:Internal,Changelog,Allow listing one, two, and more items with commas'
+dependabot_dependency_update:
+  commit_log: |
+    title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+    body:...
+
+    Signed-off-by: dependabot[bot] <support@github.com>
+    DELIMITER
+  title: Bump libphonenumber-js from 1.10.46 to 1.10.47 (#9332)
+  category: Internal
+  subcategory: Dependencies
+  change: Update dependencies to latest versions
+  pr_number: '9332'
+  commit_messages:
+    - '...'
+    - 'Signed-off-by: dependabot[bot] <support@github.com>'

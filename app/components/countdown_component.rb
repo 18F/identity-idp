@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CountdownComponent < BaseComponent
   attr_reader :expiration, :update_interval, :start_immediately, :tag_options
 
@@ -23,7 +25,7 @@ class CountdownComponent < BaseComponent
       data: {
         expiration: expiration.iso8601,
         update_interval: update_interval_in_ms,
-        start_immediately: start_immediately,
+        start_immediately:,
       }.merge(tag_options[:data].to_h),
     )
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is used by Rack-based servers to start the application.
 
 # Don't buffer stdout.  We want logs to be available in real time.
@@ -8,5 +10,4 @@ STDOUT.sync = true
 
 require ::File.expand_path('../config/environment', __FILE__)
 
-use Rack::ContentLength
 run Rails.application

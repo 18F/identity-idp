@@ -1,11 +1,14 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
-require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
+require 'extensions/capybara/node/simple'
+
+# temporary fix for local development feature tests
+# remove when we get a new working version of Chromedriver
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless') if !ENV['SHOW_BROWSER']
+  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
   options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
   options.add_argument('--window-size=1200x700')
   options.add_argument('--no-sandbox')
@@ -14,18 +17,17 @@ Capybara.register_driver :headless_chrome do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 capabilities: [options]
+                                 options: options
 end
 Capybara.javascript_driver = :headless_chrome
-Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
-  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \
-                      'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                      'HeadlessChrome/88.0.4324.150 Safari/537.36'
+  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) ' \
+                      'AppleWebKit/603.1.23 (KHTML, like Gecko) ' \
+                      'HeadlessChrome/88.0.4324.150 Safari/602.1'
 
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless') if !ENV['SHOW_BROWSER']
+  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
   options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
@@ -36,12 +38,12 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 capabilities: [options]
+                                 options: options
 end
 
 Capybara.server = :puma, { Silent: true }
 
-Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || '0.5').to_f
+Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || 0).to_f
 Capybara.asset_host = ENV['RAILS_ASSET_HOST'] || 'http://localhost:3000'
 Capybara.automatic_label_click = true # USWDS styles native checkbox/radio as offscreen
 Capybara.enable_aria_label = true

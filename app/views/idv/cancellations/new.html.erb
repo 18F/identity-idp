@@ -1,26 +1,22 @@
-<% title t('titles.idv.cancellation_prompt') %>
+<% self.title = t('titles.idv.cancellation_prompt') %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% if @hybrid_session %>
-    <% c.header { t('idv.cancel.headings.prompt.hybrid') } %>
+    <% c.with_header { t('idv.cancel.headings.prompt.hybrid') } %>
 
     <p><%= t('idv.cancel.description.hybrid') %></p>
 
-    <% c.action_button(
-         action: ->(**tag_options, &block) do
-           button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
-         end,
+    <% c.with_action_button(
+         url: idv_cancel_path(step: params[:step], location: 'cancel'),
          method: :delete,
        ).with_content(t('forms.buttons.cancel')) %>
-    <% c.action_button(
-         action: ->(**tag_options, &block) do
-           button_to(idv_cancel_path(step: params[:step]), **tag_options, &block)
-         end,
+    <% c.with_action_button(
+         url: idv_cancel_path(step: params[:step]),
          method: :put,
          outline: true,
        ).with_content(t('links.go_back')) %>
   <% else %>
-    <% c.header { t('idv.cancel.headings.prompt.standard') } %>
+    <% c.with_header { t('idv.cancel.headings.prompt.standard') } %>
 
     <h2 class="margin-top-4 margin-bottom-2"><%= t('idv.cancel.headings.start_over') %></h2>
 
@@ -28,22 +24,21 @@
 
     <div class="margin-top-4">
       <%= render ButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_session_path(step: params[:step]), **tag_options, &block)
-            end,
+            url: idv_session_path(step: params[:step]),
             method: :delete,
             big: true,
             wide: true,
-          ).with_content(t('idv.cancel.actions.start_over')) %>
+            form: { 'aria-label': t('idv.cancel.actions.start_over') },
+          ).with_content(t('idv.cancel.actions.start_over'))
+      %>
       <div class="margin-top-2">
         <%= render ButtonComponent.new(
-              action: ->(**tag_options, &block) do
-                button_to(idv_cancel_path(step: params[:step]), **tag_options, &block)
-              end,
+              url: idv_cancel_path(step: params[:step]),
               method: :put,
               big: true,
               wide: true,
               outline: true,
+              form: { 'aria-label': t('idv.cancel.actions.keep_going') },
             ).with_content(t('idv.cancel.actions.keep_going')) %>
       </div>
     </div>
@@ -58,14 +53,15 @@
 
     <div class="margin-top-4">
       <%= render SpinnerButtonComponent.new(
-            action: ->(**tag_options, &block) do
-              button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
-            end,
+            url: idv_cancel_path(step: params[:step], location: 'cancel'),
             method: :delete,
             big: true,
             wide: true,
             outline: true,
-            form: { data: { form_steps_wait: '' } },
+            form: {
+              "aria-label": @presenter.exit_action_text,
+              data: { form_steps_wait: '' },
+            },
           ).with_content(@presenter.exit_action_text) %>
     </div>
   <% end %>

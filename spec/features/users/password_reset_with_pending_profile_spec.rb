@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'reset password with pending profile' do
+RSpec.feature 'reset password with pending profile' do
   include PersonalKeyHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   scenario 'password reset email includes warning for pending profile' do
     profile = create(
       :profile,
-      deactivation_reason: :gpo_verification_pending,
+      gpo_verification_pending_at: 1.day.ago,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '+1 703-555-9999' },
       user: user,
     )

@@ -1,29 +1,33 @@
-class BlockLinkComponent < BaseComponent
-  attr_reader :url, :action, :new_tab, :tag_options
+# frozen_string_literal: true
 
-  def initialize(url:, action: tag.method(:a), new_tab: false, **tag_options)
-    @action = action
+class BlockLinkComponent < BaseComponent
+  attr_reader :url, :action, :new_tab, :tag_options, :component
+
+  alias_method :new_tab?, :new_tab
+
+  def initialize(url: '#', component: nil, new_tab: false, **tag_options)
     @url = url
+    @component = component
     @new_tab = new_tab
     @tag_options = tag_options
   end
 
   def css_class
     classes = ['usa-link', 'block-link', *tag_options[:class]]
-    classes << 'usa-link--external' if new_tab
+    classes << 'usa-link--external' if new_tab?
     classes
   end
 
   def target
-    '_blank' if new_tab
+    '_blank' if new_tab?
   end
 
   def wrapper(&block)
-    wrapper = action.call(**tag_options, href: url, class: css_class, target: target, &block)
-    if wrapper.respond_to?(:render_in)
-      render wrapper, &block
+    if component
+      render component.new(href: url, class: css_class), &block
     else
-      wrapper
+      action = tag.method(:a)
+      action.call(**tag_options, href: url, class: css_class, target:, &block)
     end
   end
 end

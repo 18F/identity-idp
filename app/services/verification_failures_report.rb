@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VerificationFailuresReport
   def self.call(service_provider, start_time, end_time)
     report_sql = <<~SQL

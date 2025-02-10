@@ -1,5 +1,11 @@
+# frozen_string_literal: true
+
 module Users
   class ResetPasswordsController < Devise::PasswordsController
+    include AuthorizationCountConcern
+    before_action :store_sp_metadata_in_session, only: [:edit]
+    before_action :store_token_in_session, only: [:edit]
+
     def new
       analytics.password_reset_visit
       @password_reset_email_form = PasswordResetEmailForm.new('')
@@ -9,7 +15,7 @@ module Users
       @password_reset_email_form = PasswordResetEmailForm.new(email)
       result = @password_reset_email_form.submit
 
-      analytics.password_reset_email(**result.to_h)
+      analytics.password_reset_email(**result)
 
       if result.success?
         handle_valid_email
@@ -19,36 +25,31 @@ module Users
     end
 
     def edit
-      result = PasswordResetTokenValidator.new(token_user).submit
-
-      analytics.password_reset_token(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_email_confirmed(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
-
-      if result.success?
-        @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+      if params[:reset_password_token]
+        redirect_to edit_user_password_url
       else
-        handle_invalid_or_expired_token(result)
+        result = PasswordResetTokenValidator.new(token_user).submit
+
+        analytics.password_reset_token(**result)
+        if result.success?
+          @reset_password_form = ResetPasswordForm.new(user: build_user)
+          @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        else
+          handle_invalid_or_expired_token(result)
+        end
       end
     end
 
-    # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(resource)
+      @reset_password_form = ResetPasswordForm.new(user: resource)
 
       result = @reset_password_form.submit(user_params)
 
-      analytics.password_reset_password(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_new_password_submitted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
+      analytics.password_reset_password(**result)
 
       if result.success?
+        session.delete(:reset_password_token)
         handle_successful_password_reset
       else
         handle_unsuccessful_password_reset(result)
@@ -57,6 +58,12 @@ module Users
 
     protected
 
+    def store_sp_metadata_in_session
+      return if params[:request_id].blank?
+      StoreSpMetadataInSession.new(session:, request_id: params[:request_id]).call
+      bump_auth_count
+    end
+
     def forbidden_passwords(email_addresses)
       email_addresses.flat_map do |email_address|
         ForbiddenPasswords.new(email_address.email).call
@@ -64,7 +71,7 @@ module Users
     end
 
     def email_params
-      params.require(:password_reset_email_form).permit(:email, :resend, :request_id)
+      params.require(:password_reset_email_form).permit(:email, :resend)
     end
 
     def email
@@ -72,39 +79,30 @@ module Users
     end
 
     def request_id
-      email_params[:request_id]
+      sp_session[:request_id]
     end
 
     def handle_valid_email
-      create_account_if_email_not_found
+      RequestPasswordReset.new(
+        email: email,
+        request_id: request_id,
+        analytics: analytics,
+      ).perform
 
       session[:email] = email
       resend_confirmation = email_params[:resend]
 
-      redirect_to forgot_password_url(resend: resend_confirmation, request_id: request_id)
+      redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
-    def create_account_if_email_not_found
-      user, result = RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
-      ).perform
-
-      return unless result
-
-      analytics.user_registration_email(**result.to_h)
-      irs_attempts_api_tracker.user_registration_email_submitted(
-        email: email,
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
-      create_user_event(:account_created, user)
+    def store_token_in_session
+      return if session[:reset_password_token]
+      session[:reset_password_token] = params[:reset_password_token]
     end
 
     def handle_invalid_or_expired_token(result)
       flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
+      session.delete(:reset_password_token)
       redirect_to new_user_password_url
     end
 
@@ -116,12 +114,16 @@ module Users
       user
     end
 
+    def password_token
+      session[:reset_password_token] || params[:reset_password_token]
+    end
+
     def token_user
-      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(password_token)
     end
 
     def build_user
-      User.new(reset_password_token: params[:reset_password_token])
+      User.new(reset_password_token: password_token)
     end
 
     def handle_successful_password_reset
@@ -139,6 +141,7 @@ module Users
     def handle_unsuccessful_password_reset(result)
       reset_password_token_errors = result.errors[:reset_password_token]
       if reset_password_token_errors.present?
+        session.delete(:reset_password_token)
         flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return
@@ -149,13 +152,13 @@ module Users
     end
 
     def create_reset_event_and_send_notification
-      event = create_user_event_with_disavowal(:password_changed, resource)
-      UserAlerts::AlertUserAboutPasswordChange.call(resource, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed, resource)
+      UserAlerts::AlertUserAboutPasswordChange.call(resource, disavowal_token)
     end
 
     def user_params
-      params.require(:reset_password_form).
-        permit(:password, :reset_password_token)
+      params.require(:reset_password_form)
+        .permit(:password, :password_confirmation, :reset_password_token)
     end
 
     def assert_reset_token_passed

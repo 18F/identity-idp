@@ -1,33 +1,31 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::VerificationClient do
+RSpec.describe Proofing::Aamva::VerificationClient do
   let(:applicant) do
-    applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
+    Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-4567-abcd-efgh',
       first_name: 'Testy',
       last_name: 'McTesterson',
       dob: '10/29/1942',
-    )
-    applicant.state_id_data.merge!(
       state_id_number: '123456789',
       state_id_jurisdiction: 'CA',
       state_id_type: 'drivers_license',
     )
-    applicant
   end
 
   subject(:verification_client) { described_class.new(AamvaFixtures.example_config) }
 
   describe '#send_verification_request' do
-    it 'should get the auth token from the auth client' do
-      auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-      allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-      allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
+    before do
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token)
+        .and_return('ThisIsTheToken')
+    end
 
-      verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url).
-        to_return(body: AamvaFixtures.verification_response, status: 200).
-        with do |request|
-          xml_text_at_path(request.body, '//ns:token').gsub(/\s/, '') == 'ThisIsTheToken'
+    it 'gets the auth token from the auth client' do
+      verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url)
+        .to_return(body: AamvaFixtures.verification_response, status: 200)
+        .with do |request|
+          xml_text_at_path(request.body, '//dldv:token').gsub(/\s/, '') == 'ThisIsTheToken'
         end
 
       verification_client.send_verification_request(
@@ -37,45 +35,190 @@ describe Proofing::Aamva::VerificationClient do
 
       expect(verification_stub).to have_been_requested
     end
+  end
+
+  describe '#send_verification_request' do
+    let(:response_body) { AamvaFixtures.verification_response }
+    let(:response_http_status) { 200 }
+
+    before do
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token)
+        .and_return('ThisIsTheToken')
+
+      stub_request(:post, AamvaFixtures.example_config.verification_url)
+        .to_return(body: response_body, status: response_http_status)
+    end
+
+    let(:response) do
+      verification_client.send_verification_request(
+        applicant: applicant,
+        session_id: '1234-abcd-efgh',
+      )
+    end
 
     context 'when verification is successful' do
-      it 'should return a successful response' do
-        auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-        allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-        allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
-        stub_request(:post, AamvaFixtures.example_config.verification_url).
-          to_return(body: AamvaFixtures.verification_response, status: 200)
-
-        response = verification_client.send_verification_request(
-          applicant: applicant,
-          session_id: '1234-abcd-efgh',
-        )
-
+      it 'returns a successful response' do
         expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-        expect(response.success?).to eq(true)
+        expect(response.verification_results).to eq(
+          {
+            address1: true,
+            address2: true,
+            city: true,
+            dob: true,
+            height: true,
+            sex: true,
+            weight: true,
+            eye_color: true,
+            first_name: true,
+            last_name: true,
+            middle_name: true,
+            name_suffix: true,
+            state: true,
+            state_id_expiration: true,
+            state_id_issued: true,
+            state_id_number: true,
+            state_id_type: true,
+            zipcode: true,
+          },
+        )
       end
     end
 
     context 'when verification is not successful' do
-      it 'should return an unsuccessful response with errors' do
-        auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-        allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-        allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
-
-        stub_request(:post, AamvaFixtures.example_config.verification_url).
-          to_return(status: 200, body: modify_xml_at_xpath(
+      context 'because we have a valid response and a 200 status, but the response says "no"' do
+        let(:response_body) do
+          modify_xml_at_xpath(
             AamvaFixtures.verification_response,
             '//PersonBirthDateMatchIndicator',
             'false',
-          ))
+          )
+        end
 
-        response = verification_client.send_verification_request(
-          applicant: applicant,
-          session_id: '1234-abcd-efgh',
-        )
+        it 'returns an unsuccessful response with errors' do
+          expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
+          expect(response.verification_results).to eq(
+            {
+              address1: true,
+              address2: true,
+              city: true,
+              dob: false,
+              height: true,
+              sex: true,
+              weight: true,
+              eye_color: true,
+              first_name: true,
+              last_name: true,
+              middle_name: true,
+              name_suffix: true,
+              state: true,
+              state_id_expiration: true,
+              state_id_issued: true,
+              state_id_number: true,
+              state_id_type: true,
+              zipcode: true,
+            },
+          )
+        end
+      end
 
-        expect(response).to be_a Proofing::Aamva::Response::VerificationResponse
-        expect(response.success?).to eq(false)
+      context 'because we have a valid response and a non-200 status, and the response says "no"' do
+        let(:response_body) do
+          modify_xml_at_xpath(
+            AamvaFixtures.verification_response,
+            '//PersonBirthDateMatchIndicator',
+            'false',
+          )
+        end
+        let(:response_http_status) { 500 }
+
+        it 'throws an exception about the status code' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Unexpected status code in response: 500/,
+          )
+        end
+      end
+
+      context 'because we have an MVA timeout and 500 status' do
+        let(:response_body) { AamvaFixtures.soap_fault_response }
+        let(:response_http_status) { 500 }
+
+        it 'throws an exception about the MVA timeout' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
+          )
+        end
+
+        it 'throws an exception about the status code' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Unexpected status code in response: 500/,
+          )
+        end
+      end
+
+      context 'because we have an MVA timeout and 200 status' do
+        let(:response_body) { AamvaFixtures.soap_fault_response }
+        let(:response_http_status) { 200 }
+
+        it 'parses the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+        end
+
+        it 'throws an exception about the MVA timeout' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
+          )
+        end
+      end
+
+      context 'because we have an invalid response and a 200 status' do
+        let(:response_body) { 'error: computer has no brain.<br>' }
+
+        it 'tries to parse the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+        end
+
+        it 'throws a SOAP exception' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Malformed XML/,
+          )
+        end
+      end
+
+      context 'because we have an invalid response and a non-200 status' do
+        let(:response_body) { '<h1>I\'m a teapot' }
+        let(:response_http_status) { 418 }
+
+        it 'tries to parse the raw response body' do
+          begin
+            response
+          rescue Proofing::Aamva::VerificationError
+          end
+        end
+
+        it 'throws an error which complains about the invalid response' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Missing end tag for '\/h1'/,
+          )
+        end
+
+        it 'throws an error which complains about the HTTP error code' do
+          expect { response }.to raise_error(
+            Proofing::Aamva::VerificationError,
+            /Unexpected status code in response: 418/,
+          )
+        end
       end
     end
   end

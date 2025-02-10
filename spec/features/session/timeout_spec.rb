@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Session Timeout' do
+RSpec.feature 'Session Timeout' do
   context 'when SP info no longer in session but request_id params exists' do
     it 'preserves the branded experience' do
       issuer = 'http://localhost:3000'
@@ -15,7 +15,7 @@ feature 'Session Timeout' do
       visit root_url(request_id: sp_request.uuid)
 
       expect(page).to have_link sp.friendly_name
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
     end
   end
 
@@ -28,7 +28,7 @@ feature 'Session Timeout' do
       visit root_path
 
       expect(page).to have_link sp.friendly_name
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
     end
   end
 

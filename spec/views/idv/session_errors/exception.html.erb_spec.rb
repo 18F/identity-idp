@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/exception.html.erb' do
+RSpec.describe 'idv/session_errors/exception.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:try_again_path) { '/example/path' }
 
   before do
-    decorated_session = instance_double(
-      ServiceProviderSessionDecorator,
+    decorated_sp_session = instance_double(
+      ServiceProviderSession,
       sp_name: sp_name,
       sp_issuer: sp_issuer,
     )
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
 
     assign(:try_again_path, try_again_path)
 
@@ -25,7 +25,7 @@ describe 'idv/session_errors/exception.html.erb' do
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-      href: MarketingSite.contact_url,
+      href: contact_redirect_url,
     )
   end
 
@@ -35,12 +35,8 @@ describe 'idv/session_errors/exception.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'exception'),
-      )
-      expect(rendered).to have_link(
         t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-        href: MarketingSite.contact_url,
+        href: contact_redirect_url,
       )
     end
   end

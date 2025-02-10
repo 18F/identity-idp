@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'barby'
 require 'barby/barcode/code_128'
 require 'barby/outputter/html_outputter'
@@ -34,7 +36,7 @@ class BarcodeComponent < BaseComponent
   end
 
   def css_class
-    [*tag_options[:class], 'display-inline-block margin-0']
+    [*tag_options[:class], 'display-inline-block']
   end
 
   private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SecureHeadersAllowList
   def self.csp_with_sp_redirect_uris(action_url_domain, sp_redirect_uris)
     ["'self'"] + reduce_sp_redirect_uris_for_csp([action_url_domain, *sp_redirect_uris].compact)

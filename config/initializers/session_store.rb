@@ -1,20 +1,27 @@
+# frozen_string_literal: true
+
 require 'session_encryptor'
-require 'legacy_session_encryptor'
-require 'session_encryptor_error_handler'
+
+APPLICATION_SESSION_COOKIE_KEY = '_identity_idp_session'
 
 Rails.application.config.session_store(
   :redis_session_store,
-  key: '_identity_idp_session',
+  key: APPLICATION_SESSION_COOKIE_KEY,
+  # cookie expires with browser close
+  expire_after: nil,
   redis: {
-    # cookie expires with browser close
-    expire_after: nil,
+    read_public_id: false,
+    write_public_id: false,
+    read_private_id: true,
+    write_private_id: true,
 
     # Redis expires session after N minutes
     ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,
 
     key_prefix: "#{IdentityConfig.store.domain_name}:session:",
-    url: IdentityConfig.store.redis_url,
+    client_pool: REDIS_POOL,
   },
-  on_session_load_error: SessionEncryptorErrorHandler,
+  on_session_load_error: proc { |error, _sid| raise error },
+  on_redis_down: proc { |error| raise error },
   serializer: SessionEncryptor.new,
 )

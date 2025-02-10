@@ -1,36 +1,33 @@
-<% title t('titles.account') %>
+<% self.title = t('titles.account') %>
 
-<% if @presenter.showing_any_partials? %>
+<%= render 'accounts/header', presenter: @presenter %>
+
+<% if @presenter.showing_alerts? %>
   <div class="margin-bottom-4">
-    <% if @presenter.show_personal_key_partial? %>
-      <%= render 'accounts/personal_key', presenter: @presenter %>
-    <% end %>
-
     <% if @presenter.show_password_reset_partial? %>
       <%= render 'accounts/password_reset', presenter: @presenter %>
     <% end %>
-
-    <% if @presenter.show_gpo_partial? %>
-      <%= render 'accounts/pending_profile_gpo' %>
-    <% end %>
-
     <% if @presenter.show_service_provider_continue_partial? %>
       <%= render 'accounts/service_provider_continue', presenter: @presenter %>
     <% end %>
   </div>
 <% end %>
 
-<%= render 'accounts/header', presenter: @presenter %>
+<% if @presenter.show_idv_partial? %>
+  <div class="card">
+    <%= render 'accounts/identity_verification' %>
+  </div>
+<% end %>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <h2 class="margin-top-0 margin-bottom-4"><%= t('account.index.email_preferences') %></h2>
 
   <%= render 'emails' %>
 
   <h3 class="margin-top-3"><%= t('i18n.language') %></h3>
   <div class="grid-row padding-1 border border-primary-light">
-    <div class="grid-col-8">
-      <%= @presenter.decorated_user.email_language_preference_description %>
+    <div class="grid-col-8" lang="<%= @presenter.user.email_language || I18n.default_locale %>">
+      <%= @presenter.user.email_language_preference_description %>
     </div>
     <div class="grid-col-4 text-right">
       <%= link_to(t('forms.buttons.edit'), account_email_language_path) %>
@@ -38,7 +35,7 @@
   </div>
 </div>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <h2 class="margin-bottom-1 margin-top-0">
     <%= t('account.index.password') %>
   </h2>
@@ -53,49 +50,43 @@
 </div>
 
 <% if @presenter.show_manage_personal_key_partial? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/manage_personal_key' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::PhonePolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'phone' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/auth_apps' %>
   </div>
 <% end %>
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? &&
-    IdentityConfig.store.platform_authentication_enabled %>
-  <div class="margin-bottom-4 card profile-info-box">
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? %>
+  <div class="card">
     <%= render 'accounts/webauthn_platform' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).roaming_configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/webauthn_roaming' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::PivCacPolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/piv_cac' %>
   </div>
 <% end %>
 
 <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/backup_codes' %>
   </div>
-<% end %>
-
-<% if @presenter.show_pii_partial? %>
-  <%= render 'accounts/pii', pii: @presenter.pii,
-                             locked_for_session: @presenter.locked_for_session %>
 <% end %>

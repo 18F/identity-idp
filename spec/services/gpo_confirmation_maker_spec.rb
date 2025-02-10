@@ -1,16 +1,21 @@
 require 'rails_helper'
 
-describe GpoConfirmationMaker do
+RSpec.describe GpoConfirmationMaker do
   let(:otp) { '123ABC' }
   let(:issuer) { 'this-is-an-issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
   let(:zipcode) { '12345' }
   let(:decrypted_attributes) do
     {
-      address1: '123 main st', address2: '',
-      city: 'Baton Rouge', state: 'Louisiana', zipcode: zipcode,
-      first_name: 'Robert', last_name: 'Robertson',
-      otp: otp, issuer: issuer
+      address1: '123 main st',
+      address2: '',
+      city: 'Baton Rouge',
+      state: 'Louisiana',
+      zipcode: zipcode,
+      first_name: 'Robert',
+      last_name: 'Robertson',
+      otp: otp,
+      issuer: issuer,
     }
   end
   let(:pii) do
@@ -23,7 +28,9 @@ describe GpoConfirmationMaker do
   end
   let(:profile) { create(:profile) }
 
-  subject { described_class.new(pii: pii, service_provider: service_provider, profile: profile) }
+  subject do
+    described_class.new(pii: pii, service_provider: service_provider, profile: profile)
+  end
 
   describe '#perform' do
     before do
@@ -60,37 +67,47 @@ describe GpoConfirmationMaker do
       profane = Base32::Crockford.decode('FART')
       not_profane = Base32::Crockford.decode('ABCD')
 
-      expect(SecureRandom).to receive(:random_number).
-        and_return(profane, not_profane)
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(profane, not_profane)
 
       expect(subject.otp).to eq('000000ABCD')
     end
   end
 
-  context 'with a nil zipcode' do
-    let(:zipcode) { nil }
+  [
+    [nil, false],
+    ['1234', false],
+    ['12345+0', '12345'],
+    ['12345 - 0', '12345'],
+    ['12345- 0', '12345'],
+    ['12345-0', '12345'],
+    ['12345-6', '12345'],
+    ['12345-67', '12345'],
+    ['12345-678', '12345'],
+    ['12345-6789', '12345-6789'],
+    ['12345-67890', '12345'],
+  ].each do |input, expected|
+    context "when zipcode = #{input.inspect}" do
+      let(:zipcode) { input }
+      describe '#perform' do
+        if expected
+          it 'accepts the zipcode' do
+            expect { subject.perform }.not_to raise_error
+          end
+        else
+          it 'raises an error' do
+            expect { subject.perform }.to raise_error(GpoConfirmationMaker::InvalidEntryError)
+          end
+        end
 
-    describe '#perform' do
-      it 'accepts the zipcode' do
-        subject.perform
-
-        gpo_confirmation = GpoConfirmation.first
-        entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to be_nil
-      end
-    end
-  end
-
-  context 'with a (bogus) zip+1 zipcode' do
-    let(:zipcode) { '12345+0' }
-
-    describe '#perform' do
-      it 'strips the +0 from the zipcode' do
-        subject.perform
-
-        gpo_confirmation = GpoConfirmation.first
-        entry_hash = gpo_confirmation.entry
-        expect(entry_hash[:zipcode]).to eq '12345'
+        if expected.is_a?(String)
+          it "formats the zipcode as #{expected.inspect}" do
+            subject.perform
+            gpo_confirmation = GpoConfirmation.first
+            entry_hash = gpo_confirmation.entry
+            expect(entry_hash[:zipcode]).to eq expected
+          end
+        end
       end
     end
   end

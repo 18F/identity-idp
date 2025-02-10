@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Telephony
   module Pinpoint
     class AwsCredentialBuilder
@@ -41,7 +43,7 @@ module Telephony
 
       def notify_role_failure(error:, region:)
         error_log = { error: error, region: region }
-        Telephony.config.logger.warn(error_log.to_json)
+        Telephony.log_warn(event: error_log)
       end
     end
   end

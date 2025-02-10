@@ -1,27 +1,47 @@
 require 'rails_helper'
 
-describe 'Account Reset Request: Delete Account', email: true do
+RSpec.describe 'Account Reset Request: Delete Account', email: true do
   include PushNotificationsHelper
+  include OidcAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
+
+  let(:service_provider) do
+    create(
+      :service_provider,
+      active: true,
+      redirect_uris: ['http://localhost:7654/auth/result'],
+      ial: 2,
+    )
+  end
 
   context 'as an IAL1 user' do
     it 'allows the user to delete their account after 24 hours' do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
+
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
@@ -29,7 +49,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
-      travel_to(Time.zone.now + 2.days + 1) do
+      travel_to(Time.zone.now + 2.days + 2) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
@@ -69,16 +89,29 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+
+      click_link t('account_reset.request.yes_continue')
+
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
+
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
@@ -121,16 +154,25 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page)
+        .to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       click_button t('account_reset.request.yes_continue')
 
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_start'),
         )
-      expect(page).
-        to have_content user_email
-      expect(page).
-        to have_content strip_tags(
+      expect(page)
+        .to have_content user_email
+      expect(page)
+        .to have_content strip_tags(
           t('account_reset.confirm_request.instructions_end'),
         )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
@@ -140,27 +182,6 @@ describe 'Account Reset Request: Delete Account', email: true do
       visit account_path
 
       expect(page).to have_current_path(new_user_session_path)
-    end
-  end
-
-  context 'as an IAL2 user' do
-    let(:user) do
-      create(
-        :profile,
-        :active,
-        :verified,
-        pii: { first_name: 'John', ssn: '111223333' },
-      ).user
-    end
-
-    it 'does allow the user to delete their account from 2FA screen' do
-      signin(user_email, user.password)
-      click_link t('two_factor_authentication.login_options_link_text')
-
-      # Visiting account reset directly should redirect to 2FA
-      visit account_reset_request_path
-
-      expect(page.current_path).to eq(account_reset_request_path)
     end
   end
 end

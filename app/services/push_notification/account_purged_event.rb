@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module PushNotification
   class AccountPurgedEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-purged'.freeze
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-purged'
 
     attr_reader :user
 

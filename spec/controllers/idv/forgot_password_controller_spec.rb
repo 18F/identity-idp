@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe Idv::ForgotPasswordController do
+RSpec.describe Idv::ForgotPasswordController do
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    it 'includes before_actions from IdvSessionConcern' do
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -11,14 +11,12 @@ describe Idv::ForgotPasswordController do
     before do
       stub_sign_in
       stub_analytics
-
-      allow(@analytics).to receive(:track_event)
     end
 
     it 'tracks the event in analytics when referer is nil' do
       get :new
 
-      expect(@analytics).to have_received(:track_event).with('IdV: forgot password visited')
+      expect(@analytics).to have_logged_event('IdV: forgot password visited')
     end
   end
 
@@ -28,20 +26,12 @@ describe Idv::ForgotPasswordController do
     before do
       stub_sign_in(user)
       stub_analytics
-      stub_attempts_tracker
-      allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
-    it 'tracks analytics events' do
+    it 'tracks appropriate events' do
       post :update
 
-      expect(@analytics).to have_received(:track_event).with('IdV: forgot password confirmed')
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :forgot_password_email_sent,
-        email: user.email,
-        success: true,
-      )
+      expect(@analytics).to have_logged_event('IdV: forgot password confirmed')
     end
   end
 end

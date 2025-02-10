@@ -6,11 +6,29 @@ const {
 
 describe('getAdditionalAssetFilename', () => {
   it('adds suffix to an existing file name', () => {
-    const original = 'original.js';
-    const suffix = 'en';
+    const filename = 'original.js';
+    const locale = 'en';
+    const content = 'content';
+    const includeHash = false;
     const expected = 'original.en.js';
 
-    expect(getAdditionalAssetFilename(original, suffix)).to.equal(expected);
+    expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(
+      expected,
+    );
+  });
+
+  context('with hash included', () => {
+    it('adds suffix to an file name', () => {
+      const filename = 'original.js';
+      const locale = 'en';
+      const content = 'content';
+      const includeHash = true;
+      const expected = 'original-ae771fd2.en.js';
+
+      expect(getAdditionalAssetFilename({ filename, locale, content, includeHash })).to.equal(
+        expected,
+      );
+    });
   });
 });
 

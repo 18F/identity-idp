@@ -1,0 +1,8 @@
+forms.button.cancel: "Cancelar"
+forms.button.reset: "Reiniciar"
+forms.button.submit: "Enviar"
+forms.dynamic: "Dinámico"
+forms.key1: "value1-es"
+forms.key2: "value2-es"
+forms.messages.one: "Un mensaje"
+forms.messages.other: "%{count} mensajes"

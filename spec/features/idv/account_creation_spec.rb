@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IAL2 account creation' do
+RSpec.describe 'IAL2 account creation' do
   include IdvHelper
   include DocAuthHelper
   include SamlAuthHelper

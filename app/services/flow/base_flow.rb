@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 module Flow
   class BaseFlow
+    include Failure
+
     attr_accessor :flow_session
-    attr_reader :steps, :actions, :current_user, :current_sp, :params, :request, :json,
+    attr_reader :current_user, :current_sp, :params, :request, :json,
                 :http_status, :controller
 
-    def initialize(controller, steps, actions, session)
+    def initialize(controller, session)
       @controller = controller
-      @steps = steps.with_indifferent_access
-      @actions = actions.with_indifferent_access
       @redirect = nil
       @json = nil
       @flow_session = session
@@ -15,7 +17,7 @@ module Flow
 
     def next_step
       return @redirect if @redirect
-      step, _klass = steps.detect do |_step, klass|
+      step, _klass = steps.find do |_step, klass|
         !@flow_session[klass.to_s]
       end
       step
@@ -34,18 +36,26 @@ module Flow
       steps[step] || actions[step]
     end
 
+    def step_handler_instance(step)
+      @step_handler_instances ||= {}
+      @step_handler_instances[step] ||= step_handler(step)&.new(self)
+    end
+
     def handle(step)
       @flow_session[:error_message] = nil
-      handler = step_handler(step)
+      handler = step_handler_instance(step)
       return failure("Unhandled step #{step}") unless handler
       wrap_send(handler)
     end
 
     def extra_view_variables(step)
-      handler = step_handler(step)
+      handler = step_handler_instance(step)
       return failure("Unhandled step #{step}") unless handler
-      obj = handler.new(self)
-      obj.extra_view_variables
+      handler.extra_view_variables
+    end
+
+    def extra_analytics_properties
+      {}
     end
 
     def flow_path
@@ -55,9 +65,8 @@ module Flow
     private
 
     def wrap_send(handler)
-      obj = handler.new(self)
-      value = obj.base_call
-      form_response(obj, value)
+      value = handler.base_call
+      form_response(handler, value)
     end
 
     def form_response(obj, value)
@@ -71,6 +80,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :current_sp, :params, :request,
-             :poll_with_meta_refresh, :analytics, :irs_attempts_api_tracker, to: :@controller
+             :poll_with_meta_refresh, :analytics, to: :@controller
   end
 end

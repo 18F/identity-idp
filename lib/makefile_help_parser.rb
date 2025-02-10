@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'open3'
-require 'set'
 
 # Parses comment strings (## help) out of the Makefile
 # and also uses the `make --print-data-base` output to expand out targets based on variables
@@ -79,7 +80,7 @@ class MakefileHelpParser
     raw_makefile = File.readlines(makefile_path)
 
     raw_makefile.map.with_index.select do |line, _lineno|
-      line =~ / ## /
+      line.include?(' ## ')
     end.flat_map do |line, lineno|
       targets, rest = line.chomp.split(':', 2)
       _sources, comment = rest.split(' ## ')
@@ -100,9 +101,9 @@ class MakefileHelpParser
     expanded_makefile.split("\n\n").map do |stanza|
       m = stanza.match(/^#  .* \(from [`']#{makefile_path}', line (?<lineno>\d+)\):$/)
       [stanza, m && m[:lineno].to_i]
-    end.
-      select { |_stanza, lineno| lineno }.
-      each do |stanza, lineno|
+    end
+      .select { |_stanza, lineno| lineno }
+      .each do |stanza, lineno|
         target = stanza.split("\n").first.split(':').first
 
         targets[lineno] << target
@@ -112,10 +113,8 @@ class MakefileHelpParser
   end
 end
 
-# rubocop:disable Style/IfUnlessModifier
 # rubocop:disable Rails/Output
 if $PROGRAM_NAME == __FILE__
   puts MakefileHelpParser.new.pretty_rules
 end
 # rubocop:enable Rails/Output
-# rubocop:enable Style/IfUnlessModifier

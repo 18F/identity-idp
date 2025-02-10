@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPivCacLoginForm do
+RSpec.describe UserPivCacLoginForm do
   let(:user) { create(:user) }
   let(:piv_cac_configuration) do
     create(:piv_cac_configuration, user_id: user.id, x509_dn_uuid: 'random-uuid-for-x509-subject')
@@ -22,6 +22,7 @@ describe UserPivCacLoginForm do
           'uuid' => piv_cac_configuration.x509_dn_uuid,
           'subject' => 'x509-subject',
           'nonce' => nonce,
+          'key_id' => 'foo',
         }
       end
 
@@ -30,7 +31,7 @@ describe UserPivCacLoginForm do
 
         expect(result.success?).to eq true
         expect(result.errors).to eq({})
-        expect(result.extra).to eq({ key_id: nil })
+        expect(result.extra).to eq({ key_id: 'foo' })
       end
     end
 

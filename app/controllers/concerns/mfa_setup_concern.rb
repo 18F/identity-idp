@@ -1,27 +1,27 @@
+# frozen_string_literal: true
+
 module MfaSetupConcern
   extend ActiveSupport::Concern
+  include RecommendWebauthnPlatformConcern
 
   def next_setup_path
-    if user_needs_confirmation_screen?
-      auth_method_confirmation_url
-    elsif next_setup_choice
+    if next_setup_choice
       confirmation_path
-    else
-      if user_session[:mfa_selections]
-        analytics.user_registration_mfa_setup_complete(
-          mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
-          enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
-          success: true,
-        )
-      end
+    elsif recommend_webauthn_platform_for_sms_user?(:recommend_for_account_creation)
+      webauthn_platform_recommended_path
+    elsif suggest_second_mfa?
+      auth_method_confirmation_path
+    elsif user_session[:mfa_selections]
+      track_user_registration_mfa_setup_complete_event
       user_session.delete(:mfa_selections)
-      nil
+
+      sign_up_completed_path
     end
   end
 
   def confirmation_path(next_mfa_selection_choice = nil)
     user_session[:next_mfa_selection_choice] = next_mfa_selection_choice || next_setup_choice
+
     case user_session[:next_mfa_selection_choice]
     when 'voice', 'sms', 'phone'
       phone_setup_url
@@ -45,11 +45,6 @@ module MfaSetupConcern
     redirect_to user_two_factor_authentication_url
   end
 
-  def user_needs_confirmation_screen?
-    suggest_second_mfa? &&
-      IdentityConfig.store.select_multiple_mfa_options
-  end
-
   def in_multi_mfa_selection_flow?
     return false unless user_session[:mfa_selections].present?
     mfa_selection_index < mfa_selection_count
@@ -60,8 +55,17 @@ module MfaSetupConcern
   end
 
   def suggest_second_mfa?
-    return false unless user_session[:mfa_selections]
-    mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
+    return false if !in_multi_mfa_selection_flow?
+    return false if current_user.webauthn_platform_recommended_dismissed_at?
+    mfa_context.enabled_mfa_methods_count < 2
+  end
+
+  def first_mfa_selection_path
+    confirmation_path(user_session[:mfa_selections].first)
+  end
+
+  def in_account_creation_flow?
+    user_session[:in_account_creation_flow] || false
   end
 
   def mfa_selection_count
@@ -72,7 +76,43 @@ module MfaSetupConcern
     user_session[:mfa_selection_index] || 0
   end
 
+  def set_mfa_selections(selections)
+    user_session[:mfa_selections] = selections
+  end
+
+  def show_skip_additional_mfa_link?
+    !(mfa_context.enabled_mfa_methods_count == 1 &&
+       mfa_context.webauthn_platform_configurations.count == 1)
+  end
+
+  def check_if_possible_piv_user
+    if current_user.piv_cac_recommended_dismissed_at.nil? && current_user.has_fed_or_mil_email?
+      redirect_to login_piv_cac_recommended_path
+    end
+  end
+
+  def threatmetrix_attrs
+    {
+      user_id: current_user.id,
+      request_ip: request&.remote_ip,
+      threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
+      email: current_user.last_sign_in_email_address.email,
+      uuid_prefix: current_sp&.app_id,
+    }
+  end
+
   private
+
+  def track_user_registration_mfa_setup_complete_event
+    analytics.user_registration_mfa_setup_complete(
+      mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+      in_account_creation_flow: user_session[:in_account_creation_flow] || false,
+      enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
+      success: true,
+    )
+  end
 
   def determine_next_mfa
     return unless user_session[:mfa_selections]

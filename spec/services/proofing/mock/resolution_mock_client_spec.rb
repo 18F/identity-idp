@@ -25,6 +25,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -45,6 +49,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -65,6 +73,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -85,6 +97,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -105,6 +121,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -125,6 +145,10 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end
@@ -140,11 +164,41 @@ RSpec.describe Proofing::Mock::ResolutionMockClient do
         expect(result.to_h).to eq(
           success: false,
           errors: {},
-          exception: Proofing::TimeoutError.new('address mock timeout'),
+          exception: Proofing::TimeoutError.new('resolution mock timeout'),
           timed_out: true,
           reference: reference,
           transaction_id: transaction_id,
           vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
+        )
+      end
+    end
+
+    context 'with a simulated AAMVA parsing error' do
+      it 'returns a parsing error result with exception' do
+        applicant[:first_name] = 'Parse'
+
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({})
+        expect(result.to_h).to eq(
+          success: false,
+          errors: {},
+          exception: Proofing::Aamva::VerificationError.new(
+            'Unexpected status code in response: 504',
+          ),
+          timed_out: false,
+          reference: reference,
+          transaction_id: transaction_id,
+          vendor_name: 'ResolutionMock',
+          can_pass_with_additional_verification: false,
+          attributes_requiring_additional_verification: [],
+          vendor_workflow: nil,
+          verified_attributes: nil,
         )
       end
     end

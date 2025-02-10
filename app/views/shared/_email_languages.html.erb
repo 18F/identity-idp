@@ -10,21 +10,24 @@ locals:
       label: t('forms.registration.labels.email_language'),
       hint: local_assigns.fetch(
         :hint,
-        t(
-          'account.email_language.languages_list',
-          app_name: APP_NAME,
-          list: I18n.available_locales.
-            map { |locale| t("account.email_language.name.#{locale}") }.
-            to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
-        ),
+        t('account.email_language.languages_list', app_name: APP_NAME),
       ),
       collection: I18n.available_locales.map do |locale|
+        label = locale == I18n.locale ?
+          t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
+          t("i18n.locale.#{locale}")
+
         [
-          locale == I18n.locale ?
-            t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
-            t("i18n.locale.#{locale}"),
+          content_tag(
+            :span,
+            label,
+            lang: locale,
+            aria: { hidden: true },
+          ),
           locale,
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
+          lang: locale,
+          aria: { label: label },
         ]
       end,
     ) %>

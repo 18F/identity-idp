@@ -11,9 +11,6 @@ interface I18nOptions {
   strings?: Entries;
 }
 
-const hasOwn = (object: object, key: string): boolean =>
-  Object.prototype.hasOwnProperty.call(object, key);
-
 /**
  * Returns the pluralization object key corresponding to the given number.
  *
@@ -33,7 +30,7 @@ const getPluralizationKey = (count: number): keyof PluralizedEntry =>
  * @return Entry string or object.
  */
 const getEntry = (strings: Entries, key: string): Entry =>
-  hasOwn(strings, key) ? strings[key] : key;
+  Object.hasOwn(strings, key) ? strings[key] : key;
 
 /**
  * Returns true if the given entry is a pluralization entry, or false otherwise.
@@ -83,7 +80,9 @@ function getString(entry: Entry, count?: number): string | string[] {
  * @return String with variables substituted.
  */
 export const replaceVariables = (string: string, variables: Variables): string =>
-  string.replace(/%{(\w+)}/g, (match, key) => (hasOwn(variables, key) ? variables[key] : match));
+  string.replace(/%{(\w+)}/g, (match, key) =>
+    Object.hasOwn(variables, key) ? variables[key] : match,
+  );
 
 class I18n {
   strings: Entries;

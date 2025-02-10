@@ -1,36 +1,80 @@
 require 'rails_helper'
 
-describe UserAlerts::AlertUserAboutAccountVerified do
+RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
   describe '#call' do
-    let(:user) { create(:user, :signed_up) }
-    let(:disavowal_token) { 'the_disavowal_token' }
-    let(:device) { create(:device, user: user) }
-    let(:date_time) { Time.zone.now }
+    let(:user) { profile.user }
+    let(:profile) do
+      create(
+        :profile,
+        :active,
+        initiating_service_provider: service_provider,
+      )
+    end
+    let(:service_provider) { create(:service_provider) }
 
     it 'sends an email to all confirmed email addresses' do
       create_list(:email_address, 2, user: user)
       create(:email_address, user: user, confirmed_at: nil)
       confirmed_email_addresses = user.confirmed_email_addresses
 
-      allow(UserMailer).to receive(:account_verified).and_call_original
+      described_class.call(profile: profile)
 
-      described_class.call(
-        user: user,
-        date_time: date_time,
-        sp_name: '',
-        disavowal_token: disavowal_token,
-      )
+      expect_delivered_email_count(3)
 
-      expect(UserMailer).to have_received(:account_verified).
-        exactly(confirmed_email_addresses.count).times
+      confirmed_email_addresses.each do |email_address|
+        expect_delivered_email(
+          to: [email_address.email],
+          subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+        )
+      end
+    end
 
-      confirmed_email_addresses.each do |email|
-        expect(UserMailer).to have_received(:account_verified).
-          with(user,
-               email,
-               date_time: date_time,
-               sp_name: '',
-               disavowal_token: disavowal_token)
+    context 'when no service provider initiated the proofing event' do
+      let(:service_provider) { nil }
+
+      it 'sends the email linking to Login.gov' do
+        described_class.call(profile: profile)
+
+        expect_delivered_email(
+          to: [user.last_sign_in_email_address.email],
+          subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+          body: [
+            'http://www.example.com/redirect/return_to_sp/account_verified_cta',
+          ],
+        )
+      end
+    end
+
+    context 'when a service provider with no url' do
+      let(:service_provider) { ServiceProvider.new }
+
+      it 'sends an email without the call to action' do
+        described_class.call(profile: profile)
+
+        email_body = last_email.text_part.decoded.squish
+        expect(email_body).to_not include(
+          'http://www.example.com/redirect/return_to_sp/account_verified_cta',
+        )
+      end
+    end
+
+    context 'when a service provider does have a url' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          friendly_name: 'Example App',
+          return_to_sp_url: 'http://example.com',
+        )
+      end
+
+      it 'sends an email with the call to action linking to the sp' do
+        described_class.call(profile: profile)
+
+        expect_delivered_email(
+          to: [user.last_sign_in_email_address.email],
+          subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+          body: ['http://example.com'],
+        )
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CountrySupportController < ApplicationController
   prepend_before_action :skip_session_load
   prepend_before_action :skip_session_expiration

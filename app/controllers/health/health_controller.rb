@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Health
   class HealthController < AbstractHealthController
     private
@@ -5,7 +7,6 @@ module Health
     def health_checker
       checkers = {
         database: DatabaseHealthChecker,
-        account_reset: AccountResetHealthChecker,
       }
       MultiHealthChecker.new(**checkers)
     end

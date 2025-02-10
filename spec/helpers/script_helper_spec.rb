@@ -1,15 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ScriptHelper do
-  describe '#javascript_include_tag_without_preload' do
-    it 'avoids modifying headers' do
-      output = javascript_include_tag_without_preload 'application'
-
-      expect(response.header['Link']).to be_nil
-      expect(output).to have_css('script', visible: :all)
-    end
-  end
-
   describe '#javascript_packs_tag_once' do
     it 'returns nil' do
       output = javascript_packs_tag_once('application')
@@ -27,13 +18,17 @@ RSpec.describe ScriptHelper do
 
     context 'scripts enqueued' do
       before do
+        javascript_packs_tag_once('application')
         javascript_packs_tag_once('document-capture', 'document-capture')
-        javascript_packs_tag_once('application', prepend: true)
-        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
-        allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
-          and_return(['/application.js', '/document-capture.js'])
-        allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
-          and_return(['clock.svg', 'identity-style-guide/dist/assets/img/sprite.svg'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources)
+          .with('application').and_return(['/application.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources)
+          .with('document-capture').and_return(['/document-capture.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_assets).with(
+          'application',
+          'document-capture',
+        )
+          .and_return(['clock.svg', 'sprite.svg'])
       end
 
       it 'prints asset paths sources' do
@@ -44,8 +39,7 @@ RSpec.describe ScriptHelper do
           visible: :all,
           text: {
             'clock.svg' => 'http://test.host/clock.svg',
-            'identity-style-guide/dist/assets/img/sprite.svg' =>
-              'http://test.host/identity-style-guide/dist/assets/img/sprite.svg',
+            'sprite.svg' => 'http://test.host/sprite.svg',
           }.to_json,
         )
       end
@@ -67,8 +61,7 @@ RSpec.describe ScriptHelper do
             visible: :all,
             text: {
               'clock.svg' => 'http://assets.example.com/clock.svg',
-              'identity-style-guide/dist/assets/img/sprite.svg' =>
-                'http://example.com/identity-style-guide/dist/assets/img/sprite.svg',
+              'sprite.svg' => 'http://example.com/sprite.svg',
             }.to_json,
           )
         end
@@ -78,27 +71,101 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags
 
         expect(output).to have_css(
-          "script:not([crossorigin])[src^='/polyfill.js'][nomodule] ~ \
-          script:not([crossorigin])[src^='/application.js'] ~ \
+          "script:not([crossorigin])[src^='/application.js'] ~ \
           script:not([crossorigin])[src^='/document-capture.js']",
           count: 1,
           visible: :all,
         )
       end
 
+      it 'adds preload header without nopush attribute' do
+        render_javascript_pack_once_tags
+
+        expect(response.headers['link']).to eq(
+          '</application.js>;rel=preload;as=script,' \
+            '</document-capture.js>;rel=preload;as=script',
+        )
+        expect(response.headers['link']).to_not include('nopush')
+      end
+
       context 'with script integrity available' do
         before do
-          allow(AssetSources).to receive(:get_integrity).and_return(nil)
-          allow(AssetSources).to receive(:get_integrity).with('/application.js').
-            and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
+          allow(Rails.application.config.asset_sources).to receive(:get_integrity).and_return(nil)
+          allow(Rails.application.config.asset_sources).to receive(:get_integrity)
+            .with('/application.js')
+            .and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
         end
 
         it 'adds integrity attribute' do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[src^='/polyfill.js']:not([integrity]) ~ \
-            script[src^='/application.js'][integrity^='sha256-']",
+            "script[src^='/application.js'][integrity^='sha256-']",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
+      context 'with preload links header disabled' do
+        before do
+          javascript_packs_tag_once('application', preload_links_header: false)
+        end
+
+        it 'does not append preload header' do
+          render_javascript_pack_once_tags
+
+          expect(response.headers['link']).to eq('</document-capture.js>;rel=preload;as=script')
+        end
+      end
+
+      context 'with attributes' do
+        before do
+          javascript_packs_tag_once('track-errors', defer: true)
+          allow(Rails.application.config.asset_sources).to receive(:get_sources)
+            .with('track-errors').and_return(['/track-errors.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets)
+            .with('application', 'document-capture', 'track-errors')
+            .and_return([])
+        end
+
+        it 'adds attribute' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/track-errors.js'][defer]",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
+      context 'with url parameters' do
+        before do
+          javascript_packs_tag_once(
+            'digital-analytics-program',
+            url_params: { agency: 'gsa' },
+            async: true,
+          )
+          allow(Rails.application.config.asset_sources).to receive(:get_sources)
+            .with('digital-analytics-program').and_return(['/digital-analytics-program.js'])
+          allow(Rails.application.config.asset_sources).to receive(:get_assets)
+            .with('application', 'document-capture', 'digital-analytics-program')
+            .and_return([])
+        end
+
+        it 'includes url parameters in script url for the pack' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/digital-analytics-program.js?agency=gsa'][async]:not([url_params])",
+            count: 1,
+            visible: :all,
+          )
+
+          # URL parameters should not be added to other scripts
+          expect(output).to have_css(
+            "script[src^='/application.js']",
             count: 1,
             visible: :all,
           )
@@ -117,8 +184,7 @@ RSpec.describe ScriptHelper do
           output = render_javascript_pack_once_tags
 
           expect(output).to have_css(
-            "script[crossorigin][src^='/polyfill.js'][nomodule] ~ \
-            script[crossorigin][src^='/application.js'] ~ \
+            "script[crossorigin][src^='/application.js'] ~ \
             script[crossorigin][src^='/document-capture.js']",
             count: 1,
             visible: :all,
@@ -139,16 +205,15 @@ RSpec.describe ScriptHelper do
 
     context 'with named scripts argument' do
       before do
-        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
-        allow(AssetSources).to receive(:get_sources).with('application').
-          and_return(['/application.js'])
+        allow(Rails.application.config.asset_sources).to receive(:get_sources).with('application')
+          .and_return(['/application.js'])
       end
 
       it 'enqueues those scripts before printing them' do
         output = render_javascript_pack_once_tags('application')
 
         expect(output).to have_css(
-          "script[src^='/polyfill.js'][nomodule] ~ script[src='/application.js']",
+          "script[src='/application.js']",
           visible: :all,
         )
       end

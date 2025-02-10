@@ -1,21 +1,21 @@
 require 'rails_helper'
 
-describe Idv::ResendOtpController do
-  let(:user) { build(:user) }
+RSpec.describe Idv::ResendOtpController do
+  let(:user) { create(:user) }
 
   let(:phone) { '+1 (225) 555-5000' }
   let(:user_phone_confirmation) { false }
   let(:delivery_method) { 'sms' }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.start(
+    Idv::PhoneConfirmationSession.start(
       phone: phone,
       delivery_method: delivery_method,
+      user: user,
     )
   end
 
   before do
     stub_analytics
-    allow(@analytics).to receive(:track_event)
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -25,8 +25,8 @@ describe Idv::ResendOtpController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    it 'includes before_actions from IdvSessionConcern' do
+      expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
   end
 
@@ -43,41 +43,31 @@ describe Idv::ResendOtpController do
     context 'the user has already confirmed their phone' do
       let(:user_phone_confirmation) { true }
 
-      it 'redirects to the review step' do
+      it 'redirects to the enter password step' do
         post :create
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_enter_password_path)
       end
     end
 
     it 'tracks an analytics event' do
       post :create
 
-      expected_result = {
-        success: true,
-        phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
-        errors: {},
-        otp_delivery_preference: :sms,
-        country_code: 'US',
-        area_code: '225',
-        rate_limit_exceeded: false,
-        telephony_response: instance_of(Telephony::Response),
-      }
-
-      expect(@analytics).to have_received(:track_event).with(
+      expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp resent',
-        expected_result,
+        hash_including(
+          success: true,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
+          errors: {},
+          otp_delivery_preference: :sms,
+          country_code: 'US',
+          area_code: '225',
+          rate_limit_exceeded: false,
+          telephony_response: instance_of(Telephony::Response),
+        ),
       )
     end
 
     context 'Telephony raises an exception' do
-      let(:telephony_error_analytics_hash) do
-        {
-          error: 'Telephony::TelephonyError',
-          message: 'error message',
-          context: 'idv',
-          country: 'US',
-        }
-      end
       let(:telephony_error) do
         Telephony::TelephonyError.new('error message')
       end
@@ -90,23 +80,26 @@ describe Idv::ResendOtpController do
       end
 
       before do
-        stub_analytics
         allow(Telephony).to receive(:send_confirmation_otp).and_return(telephony_response)
       end
 
       it 'tracks an analytics events' do
-        expect(@analytics).to receive(:track_event).ordered.with(
+        post :create
+
+        expect(@analytics).to have_logged_event(
           'IdV: phone confirmation otp resent',
           hash_including(
             success: false,
             telephony_response: telephony_response,
           ),
         )
-        expect(@analytics).to receive(:track_event).ordered.with(
-          'Vendor Phone Validation failed', telephony_error_analytics_hash
+        expect(@analytics).to have_logged_event(
+          'Vendor Phone Validation failed',
+          error: 'Telephony::TelephonyError',
+          message: 'error message',
+          context: 'idv',
+          country: 'US',
         )
-
-        post :create
       end
     end
   end

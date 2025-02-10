@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EmailAddress do
+RSpec.describe EmailAddress do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_presence_of(:encrypted_email) }
@@ -86,6 +86,86 @@ describe EmailAddress do
       email_address.confirmation_sent_at = Time.zone.now - valid_for_hours - 1.minute
       email_address.save
       expect(email_address.confirmation_period_expired?).to be_truthy
+    end
+  end
+
+  describe '#fed_or_mil_email?' do
+    subject(:result) { email_address.fed_or_mil_email? }
+
+    context 'with an email that is in federal_email_domains' do
+      let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+      let(:email) { 'example@gsa.gov' }
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'with an email that has a .mil TLD' do
+      let(:email) { 'example@example.mil' }
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'with an email that is neither in federal_email_domains nor has a .mil TLD' do
+      let(:email) { 'example@bad.gov' }
+
+      it { expect(result).to eq(false) }
+    end
+  end
+
+  describe '#mil_email?' do
+    subject(:result) { email_address.mil_email? }
+
+    context 'with an email that does not have a .mil TLD' do
+      let(:email) { 'example@example.gov' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with an email that has a .mil TLD' do
+      let(:email) { 'example@example.mil' }
+
+      it { expect(result).to eq(true) }
+    end
+  end
+
+  describe 'destruction' do
+    let(:user) { create(:user) }
+    let(:email) { 'jd@example.com' }
+    let(:email_address) { create(:email_address, email: email) }
+
+    it 'removes associated identity email address id' do
+      user.identities << ServiceProviderIdentity.create(
+        service_provider: 'http://localhost:3000',
+        last_authenticated_at: Time.zone.now,
+        email_address_id: user.email_addresses.last.id,
+      )
+
+      user.email_addresses.last.destroy
+
+      expect(user.identities.last.email_address_id).to be(nil)
+    end
+  end
+
+  describe '#fed_email?' do
+    subject(:result) { email_address.fed_email? }
+    let!(:federal_email_domain) { create(:federal_email_domain, name: 'gsa.gov') }
+
+    context 'with an email domain that is not in federal_email_domains' do
+      let(:email) { 'example@bad.gov' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with an email domain that is in federal_email_domains' do
+      let(:email) { 'example@gsa.gov' }
+
+      it { expect(result).to eq(true) }
+    end
+
+    context 'with a bad email address that has no domain' do
+      let(:email) { 'email_with_no_domain' }
+
+      it { expect(result).to eq(false) }
     end
   end
 end

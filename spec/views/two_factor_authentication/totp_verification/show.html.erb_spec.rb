@@ -1,12 +1,10 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/totp_verification/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_authentication_app) }
+RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
+  let(:user) { create(:user, :fully_registered, :with_authentication_app) }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(
       two_factor_authentication_method: 'authenticator',
-      user_email: view.current_user.email,
-      phone_enabled: TwoFactorAuthentication::PhonePolicy.new(user).enabled?,
     )
   end
 
@@ -35,7 +33,7 @@ describe 'two_factor_authentication/totp_verification/show.html.erb' do
 
   it 'shows the correct help text' do
     expect(rendered).to have_content 'Enter the code from your authenticator app.'
-    expect(rendered).to have_content "enter the code corresponding to #{user.email}"
+    expect(rendered).to have_content "enter the code corresponding to #{APP_NAME}"
   end
 
   it 'allows the user to fallback to SMS and voice' do

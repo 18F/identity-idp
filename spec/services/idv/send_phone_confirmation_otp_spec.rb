@@ -1,22 +1,24 @@
 require 'rails_helper'
 
-describe Idv::SendPhoneConfirmationOtp do
+RSpec.describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '+1 225-555-5000' }
+  let(:parsed_phone) { Phonelib.parse(phone) }
   let(:delivery_preference) { :sms }
   let(:otp_code) { '777777' }
   let(:user_phone_confirmation_session) do
-    PhoneConfirmation::ConfirmationSession.new(
+    Idv::PhoneConfirmationSession.new(
       code: '123456',
       phone: phone,
       sent_at: Time.zone.now,
       delivery_method: delivery_preference,
+      user: user,
     )
   end
   let(:idv_session) do
     Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
   end
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   let(:exceeded_otp_send_limit) { false }
   let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: phone, phone_confirmed: true) }
@@ -25,15 +27,13 @@ describe Idv::SendPhoneConfirmationOtp do
     # Setup Idv::Session
     idv_session.user_phone_confirmation_session = user_phone_confirmation_session
 
-    # Mock PhoneConfirmation::CodeGenerator
-    allow(PhoneConfirmation::CodeGenerator).to receive(:call).
-      and_return(otp_code)
+    allow(Idv::PhoneConfirmationSession).to receive(:generate_code).and_return(otp_code)
 
     # Mock OtpRateLimiter
-    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true).
-      and_return(otp_rate_limiter)
-    allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-      and_return(exceeded_otp_send_limit)
+    allow(OtpRateLimiter).to receive(:new).with(user: user, phone: phone, phone_confirmed: true)
+      .and_return(otp_rate_limiter)
+    allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+      .and_return(exceeded_otp_send_limit)
   end
 
   subject { described_class.new(user: user, idv_session: idv_session) }
@@ -60,8 +60,15 @@ describe Idv::SendPhoneConfirmationOtp do
           to: phone,
           expiration: 10,
           channel: :sms,
+          otp_format: 'character',
+          otp_length: '6',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end
@@ -87,8 +94,15 @@ describe Idv::SendPhoneConfirmationOtp do
           to: phone,
           expiration: 10,
           channel: :voice,
+          otp_format: 'digit',
+          otp_length: '10',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: nil,
+          },
         )
       end
     end
@@ -109,8 +123,8 @@ describe Idv::SendPhoneConfirmationOtp do
 
   describe '#user_locked_out?' do
     before do
-      allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).
-        and_return(exceeded_otp_send_limit)
+      allow(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        .and_return(exceeded_otp_send_limit)
     end
 
     context 'the user is locked out' do

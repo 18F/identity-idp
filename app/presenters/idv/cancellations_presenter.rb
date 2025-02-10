@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Idv
   class CancellationsPresenter
     include Rails.application.routes.url_helpers
@@ -26,7 +28,7 @@ module Idv
           'idv.cancel.description.exit.with_sp_html',
           app_name: APP_NAME,
           sp_name: sp_name,
-          account_page_link: link_to(t('idv.cancel.description.account_page'), account_path),
+          account_page_link_html: link_to(t('idv.cancel.description.account_page'), account_path),
         )
       else
         t(

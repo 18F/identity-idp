@@ -1,4 +1,17 @@
+# frozen_string_literal: true
+
 require 'utf8_cleaner'
+
+Rails.application.configure do
+  config.ahoy = ActiveSupport::OrderedOptions.new
+  config.ahoy.event_logger = if FeatureManagement.log_to_stdout?
+                               ActiveSupport::Logger.new(STDOUT)
+                             else
+                               ActiveSupport::Logger.new(
+                                 Rails.root.join('log', Idp::Constants::EVENT_LOG_FILENAME),
+                               )
+                             end
+end
 
 Ahoy.api = false
 # Period of inactivity before a new visit is created
@@ -10,8 +23,8 @@ Ahoy.track_bots = true
 
 module Ahoy
   class Store < Ahoy::BaseStore
-    def track_visit(data)
-      log_visit(data)
+    def track_visit(_data)
+      nil
     end
 
     def track_event(data)
@@ -19,6 +32,7 @@ module Ahoy
       data[:id] = data.delete(:event_id)
       data[:visitor_id] = ahoy.visitor_token
       data[:visit_id] = data.delete(:visit_token)
+      data[:log_filename] = Idp::Constants::EVENT_LOG_FILENAME
 
       log_event(data)
     end
@@ -35,39 +49,13 @@ module Ahoy
 
     protected
 
-    def log_visit(data)
-      visit_logger.info data.to_json
-    end
-
     def log_event(data)
-      event_logger.info data.to_json
-    end
-
-    def visit_logger
-      @visit_logger ||= if FeatureManagement.log_to_stdout?
-                          ActiveSupport::Logger.new(STDOUT)
-                        else
-                          ActiveSupport::Logger.new(Rails.root.join('log', 'visits.log'))
-                        end
-    end
-
-    def event_logger
-      @event_logger ||= if FeatureManagement.log_to_stdout?
-                          ActiveSupport::Logger.new(STDOUT)
-                        else
-                          ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
-                        end
+      Rails.application.config.ahoy.event_logger.info(data.to_json)
     end
 
     def invalid_uuid?(token)
-      # The match? method does not exist for the Regexp class in Ruby < 2.4
-      # Here, it comes from Active Support. Once we upgrade to Ruby 2.5,
-      # we probably want to ignore the Rails definition and use Ruby's.
-      # To do that, we'll need to set `config.active_support.bare = true`,
-      # and then only require the extensions we use.
       token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
-      uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
-      !uuid_regex.match?(token)
+      !Idp::Constants::UUID_REGEX.match?(token)
     end
   end
 end

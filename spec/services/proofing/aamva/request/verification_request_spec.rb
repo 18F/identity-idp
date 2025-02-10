@@ -1,8 +1,10 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Request::VerificationRequest do
+RSpec.describe Proofing::Aamva::Request::VerificationRequest do
+  let(:state_id_jurisdiction) { 'CA' }
+  let(:state_id_number) { '123456789' }
   let(:applicant) do
-    applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
+    Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-abcd-efgh',
       first_name: 'Testy',
       last_name: 'McTesterson',
@@ -11,13 +13,10 @@ describe Proofing::Aamva::Request::VerificationRequest do
       city: 'Sterling',
       state: 'VA',
       zipcode: '20176-1234',
-    )
-    applicant.state_id_data.merge!(
-      state_id_number: '123456789',
-      state_id_jurisdiction: 'CA',
+      state_id_number: state_id_number,
+      state_id_jurisdiction: state_id_jurisdiction,
       state_id_type: 'drivers_license',
     )
-    applicant
   end
   let(:auth_token) { 'KEYKEYKEY' }
   let(:transaction_id) { '1234-abcd-efgh' }
@@ -34,7 +33,7 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
   describe '#body' do
     it 'should be a request body' do
-      expect(subject.body).to eq(AamvaFixtures.verification_request)
+      expect(subject.body).to match_xml(AamvaFixtures.verification_request)
     end
 
     it 'should escape XML in applicant data' do
@@ -48,7 +47,10 @@ describe Proofing::Aamva::Request::VerificationRequest do
       applicant.address2 = 'Apt 1'
 
       document = REXML::Document.new(subject.body)
-      address_node = REXML::XPath.first(document, '//ns:verifyDriverLicenseDataRequest/ns1:Address')
+      address_node = REXML::XPath.first(
+        document,
+        '//dldv:verifyDriverLicenseDataRequest/aa:Address',
+      )
 
       address_node_element_names = address_node.elements.map(&:name)
       address_node_element_values = address_node.elements.map(&:text)
@@ -72,6 +74,123 @@ describe Proofing::Aamva::Request::VerificationRequest do
         ],
       )
     end
+
+    it 'includes issue date if present' do
+      applicant.state_id_data.state_id_issued = '2024-05-06'
+      expect(subject.body).to include(
+        '<aa:DriverLicenseIssueDate>2024-05-06</aa:DriverLicenseIssueDate>',
+      )
+    end
+
+    it 'includes expiration date if present' do
+      applicant.state_id_data.state_id_expiration = '2030-01-02'
+      expect(subject.body).to include(
+        '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
+      )
+    end
+
+    it 'includes height if it is present' do
+      applicant.height = '63'
+      expect(subject.body).to include(
+        '<aa:PersonHeightMeasure>63</aa:PersonHeightMeasure>',
+      )
+    end
+
+    it 'includes weight if it is present' do
+      applicant.weight = 190
+      expect(subject.body).to include(
+        '<aa:PersonWeightMeasure>190</aa:PersonWeightMeasure>',
+      )
+    end
+
+    it 'includes eye_color if it is present' do
+      applicant.eye_color = 'blu'
+      expect(subject.body).to include(
+        '<aa:PersonEyeColorCode>blu</aa:PersonEyeColorCode>',
+      )
+    end
+
+    it 'includes name_suffix if it is present' do
+      applicant.name_suffix = 'JR'
+      expect(subject.body).to include(
+        '<nc:PersonNameSuffixText>JR</nc:PersonNameSuffixText>',
+      )
+    end
+
+    it 'includes middle_name if it is present' do
+      applicant.middle_name = 'test_name'
+      expect(subject.body).to include(
+        '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+      )
+    end
+
+    context '#sex' do
+      context 'when the sex is male' do
+        it 'sends a sex code value of 1' do
+          applicant.sex = 'male'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>1</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is female' do
+        it 'sends a sex code value of 2' do
+          applicant.sex = 'female'
+          expect(subject.body).to include(
+            '<aa:PersonSexCode>2</aa:PersonSexCode>',
+          )
+        end
+      end
+
+      context 'when the sex is blank' do
+        it 'does not send a sex code value' do
+          applicant.sex = nil
+          expect(subject.body).to_not include('<aa:PersonSexCode>')
+        end
+      end
+    end
+
+    context '#state_id_type' do
+      context 'when the type is a Drivers License' do
+        it 'includes DocumentCategoryCode=1' do
+          applicant.state_id_data.state_id_type = 'drivers_license'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
+          )
+        end
+      end
+
+      context 'when the type is a learners permit' do
+        it 'includes DocumentCategoryCode=2' do
+          applicant.state_id_data.state_id_type = 'drivers_permit'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
+          )
+        end
+      end
+
+      context 'when the type is an ID Card' do
+        it 'includes DocumentCategoryCode=3' do
+          applicant.state_id_data.state_id_type = 'state_id_card'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
+          )
+        end
+      end
+
+      context 'when the type is something invalid' do
+        it 'does not add a DocumentCategoryCode for nil ID type' do
+          applicant.state_id_data.state_id_type = nil
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+        end
+
+        it 'does not add a DocumentCategoryCode for invalid ID types' do
+          applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+        end
+      end
+    end
   end
 
   describe '#headers' do
@@ -94,20 +213,29 @@ describe Proofing::Aamva::Request::VerificationRequest do
   describe '#send' do
     context 'when the request is successful' do
       it 'returns a response object' do
-        stub_request(:post, config.verification_url).
-          to_return(body: AamvaFixtures.verification_response, status: 200)
+        stub_request(:post, config.verification_url)
+          .to_return(body: AamvaFixtures.verification_response, status: 200)
 
-        result = subject.send
+        response = subject.send
 
-        expect(result.success?).to eq(true)
+        expect(response).to be_an_instance_of(Proofing::Aamva::Response::VerificationResponse)
+      end
+
+      it 'sends state id jurisdiction to AAMVA' do
+        applicant.state_id_data.state_id_jurisdiction = 'NY'
+        expect(
+          Nokogiri::XML(subject.body) do |config|
+            config.strict
+          end.text,
+        ).to match(/NY/)
       end
     end
 
     # rubocop:disable Layout/LineLength
     context 'when the request times out' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_timeout
+        stub_request(:post, config.verification_url)
+          .to_timeout
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,
@@ -119,13 +247,35 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
     context 'when the connection fails' do
       it 'raises an error' do
-        stub_request(:post, config.verification_url).
-          to_raise(Faraday::ConnectionFailed.new('error'))
+        stub_request(:post, config.verification_url)
+          .to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { subject.send }.to raise_error(
           ::Proofing::TimeoutError,
           'AAMVA raised Faraday::ConnectionFailed waiting for verification response: error',
         )
+      end
+    end
+  end
+
+  describe 'South Carolina id number padding' do
+    let(:state_id_jurisdiction) { 'SC' }
+    let(:rendered_state_id_number) do
+      body = REXML::Document.new(subject.body)
+      REXML::XPath.first(body, '//nc:IdentificationID')&.text
+    end
+
+    context 'id is greater than 8 digits' do
+      it 'passes the id through as is' do
+        expect(rendered_state_id_number).to eq(state_id_number)
+      end
+    end
+
+    context 'id is less than 8 digits' do
+      let(:state_id_number) { '1234567' }
+
+      it 'zero-pads the id to 8 digits' do
+        expect(rendered_state_id_number).to eq("0#{state_id_number}")
       end
     end
   end

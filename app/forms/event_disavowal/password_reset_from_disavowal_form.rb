@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventDisavowal
   class PasswordResetFromDisavowalForm
     include ActiveModel::Model
@@ -26,14 +28,14 @@ module EventDisavowal
     end
 
     def update_user
-      attributes = { password: password }
-      UpdateUser.new(user: user, attributes: attributes).call
+      user.update!(password: password)
     end
 
     def mark_profile_inactive
+      return if user.active_profile.blank?
+
       user.active_profile&.deactivate(:password_reset)
       Funnel::DocAuth::ResetSteps.call(@user.id)
-      user.proofing_component&.destroy
     end
 
     def extra_analytics_attributes

@@ -1,5 +1,11 @@
+# frozen_string_literal: true
+
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :confirmed_phone, :required, :allowed_countries, :delivery_methods,
+  attr_reader :form,
+              :confirmed_phone,
+              :required,
+              :allowed_countries,
+              :delivery_methods,
               :tag_options
 
   alias_method :f, :form
@@ -37,8 +43,8 @@ class PhoneInputComponent < BaseComponent
 
   def international_phone_codes
     translated_international_codes = PhoneNumberCapabilities.translated_international_codes
-    supported_country_codes.
-      map do |code_key|
+    supported_country_codes
+      .map do |code_key|
         code_data = translated_international_codes[code_key]
 
         [
@@ -46,8 +52,8 @@ class PhoneInputComponent < BaseComponent
           code_key,
           { data: international_phone_codes_data(code_data) },
         ]
-      end.
-      sort_by do |label, code_key, _data|
+      end
+      .sort_by do |label, code_key, _data|
         # Sort alphabetically by label, but put the US first in the list
         [code_key == 'US' ? -1 : 1, label]
       end
@@ -56,7 +62,8 @@ class PhoneInputComponent < BaseComponent
   def strings
     {
       country_code_label: t('components.phone_input.country_code_label'),
-      invalid_phone: t('errors.messages.invalid_phone_number'),
+      invalid_phone_us: t('errors.messages.invalid_phone_number.us'),
+      invalid_phone_international: t('errors.messages.invalid_phone_number.international'),
       unsupported_country: unsupported_country_string,
     }
   end

@@ -52,7 +52,7 @@ RSpec.describe JobHelpers::S3Helper do
         "https://s3.region-name.amazonaws.com/#{bucket_name}/#{prefix}?param=true&signature=123"
       end
 
-      it 'downloads by extracing prefix and bucket from s3 URLs' do
+      it 'downloads by extracting prefix and bucket from s3 URLs' do
         expect(s3_helper.download(url)).to eq(body)
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe JobHelpers::S3Helper do
         "https://#{bucket_name}.s3.region-name.amazonaws.com/#{prefix}?param=true&signature=123"
       end
 
-      it 'downloads by extracing prefix and bucket from s3 URLs' do
+      it 'downloads by extracting prefix and bucket from s3 URLs' do
         expect(s3_helper.download(url)).to eq(body)
       end
     end

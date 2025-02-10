@@ -1,17 +1,22 @@
-<% title t('forms.backup_code_regenerate.confirm') %>
+<% self.title = t('forms.backup_code_regenerate.confirm') %>
 
-<%= image_tag(asset_url('status/warning.svg'), alt: t('errors.alt.warning'), width: 54, class: 'display-block margin-bottom-4') %>
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('forms.backup_code_regenerate.confirm') } %>
 
-<%= render PageHeadingComponent.new.with_content(t('forms.backup_code_regenerate.confirm')) %>
+  <p><%= t('forms.backup_code_regenerate.caution') %></p>
 
-<p>
-  <%= t('forms.backup_code_regenerate.caution') %>
-</p>
+  <%= render ButtonComponent.new(
+        url: backup_code_setup_path,
+        method: :post,
+        big: true,
+        wide: true,
+        class: 'margin-top-3 margin-bottom-2',
+      ).with_content(t('account.index.backup_code_confirm_regenerate')) %>
 
-<%= form_tag(backup_code_setup_path, method: :patch, class: 'margin-top-5') do %>
-  <%= button_tag t('account.index.backup_code_confirm_regenerate'), type: 'submit',
-                                                                    class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
+  <%= render ButtonComponent.new(
+        url: account_path,
+        big: true,
+        wide: true,
+        outline: true,
+      ).with_content(t('links.cancel')) %>
 <% end %>
-
-<%= link_to t('links.cancel'), account_path,
-            class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>

@@ -29,7 +29,7 @@ enum StatusCodes {
 enum ResultType {
   SUCCESS = 'SUCCESS',
   CANCELLED = 'CANCELLED',
-  THROTTLED = 'THROTTLED',
+  RATE_LIMITED = 'RATE_LIMITED',
 }
 
 /**
@@ -82,10 +82,10 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  async onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
-    await this.trackEvent('IdV: Link sent capture doc polling complete', {
+  onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
+    this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
-      isThrottled: result === ResultType.THROTTLED,
+      isRateLimited: result === ResultType.RATE_LIMITED,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {
@@ -105,7 +105,7 @@ export class DocumentCapturePolling {
   }
 
   async poll() {
-    const response = await window.fetch(this.statusEndpoint);
+    const response = await fetch(this.statusEndpoint);
     const { redirect } = (await response.json()) as { redirect?: string };
 
     switch (response.status) {
@@ -118,7 +118,7 @@ export class DocumentCapturePolling {
         break;
 
       case StatusCodes.TOO_MANY_REQUESTS: {
-        this.onComplete({ result: ResultType.THROTTLED, redirect });
+        this.onComplete({ result: ResultType.RATE_LIMITED, redirect });
         break;
       }
 

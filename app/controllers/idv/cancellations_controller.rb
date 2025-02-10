@@ -1,23 +1,28 @@
+# frozen_string_literal: true
+
 module Idv
   class CancellationsController < ApplicationController
-    include IdvSession
+    include Idv::AvailabilityConcern
+    include IdvSessionConcern
     include GoBackHelper
 
     before_action :confirm_idv_needed
 
     def new
-      properties = ParseControllerFromReferer.new(request.referer).call
       analytics.idv_cancellation_visited(step: params[:step], **properties)
       self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
       @presenter = CancellationsPresenter.new(
-        sp_name: decorated_session.sp_name,
+        sp_name: decorated_sp_session.sp_name,
         url_options: url_options,
       )
     end
 
     def update
-      analytics.idv_cancellation_go_back(step: params[:step])
+      analytics.idv_cancellation_go_back(
+        step: params[:step],
+        **extra_analytics_attributes,
+      )
       redirect_to session_go_back_path || idv_path
     end
 
@@ -33,20 +38,43 @@ module Idv
 
     private
 
+    def barcode_step?
+      params[:step] == 'barcode'
+    end
+
+    def enrollment
+      current_user.pending_in_person_enrollment
+    end
+
+    def extra_analytics_attributes
+      extra = {}
+      if barcode_step? && enrollment
+        extra.merge!(
+          cancelled_enrollment: false,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      end
+      extra
+    end
+
+    def properties
+      ParseControllerFromReferer.new(request.referer).call
+    end
+
     def cancel_session
       if hybrid_session?
         cancel_document_capture_session
       else
-        cancel_in_person_enrollment_if_exists
+        cancel_establishing_in_person_enrollments
         idv_session = user_session[:idv]
         idv_session&.clear
         user_session['idv/in_person'] = {}
-        reset_doc_auth
       end
     end
 
     def cancelled_redirect_path
-      if decorated_session.sp_name
+      if decorated_sp_session.sp_name
         return_to_sp_failure_to_proof_path(location_params)
       else
         account_path
@@ -55,11 +83,6 @@ module Idv
 
     def location_params
       params.permit(:step, :location).to_h.symbolize_keys
-    end
-
-    def reset_doc_auth
-      user_session.delete('idv/doc_auth')
-      user_session['idv'] = {}
     end
 
     def cancel_document_capture_session
@@ -90,11 +113,10 @@ module Idv
       end
     end
 
-    def cancel_in_person_enrollment_if_exists
+    def cancel_establishing_in_person_enrollments
       return if !IdentityConfig.store.in_person_proofing_enabled
-      current_user.pending_in_person_enrollment&.update(status: :cancelled)
-      UspsInPersonProofing::EnrollmentHelper.
-        cancel_stale_establishing_enrollments_for_user(current_user)
+      UspsInPersonProofing::EnrollmentHelper
+        .cancel_stale_establishing_enrollments_for_user(current_user)
     end
   end
 end

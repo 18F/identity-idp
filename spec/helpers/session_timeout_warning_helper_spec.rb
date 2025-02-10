@@ -1,30 +1,6 @@
 require 'rails_helper'
 
-describe SessionTimeoutWarningHelper do
-  describe '#expires_at' do
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
-    it 'returns time before now' do
-      expect(helper.expires_at).to be < Time.zone.now
-    end
-
-    context 'with session expiration' do
-      before do
-        allow(helper).to receive(:session).and_return(session_expires_at: Time.zone.now + 1)
-      end
-
-      it 'returns time remaining in user session' do
-        expect(helper.expires_at).to be > Time.zone.now
-      end
-    end
-  end
-
-  def time_between_warning_and_timeout
-    IdentityConfig.store.session_timeout_warning_seconds
-  end
-
+RSpec.describe SessionTimeoutWarningHelper do
   describe '#timeout_refresh_path' do
     let(:http_host) { 'example.com' }
     before do
@@ -40,25 +16,24 @@ describe SessionTimeoutWarningHelper do
     context 'with no params in the request url' do
       let(:path_info) { '/foo/bar' }
 
-      it 'adds timeout=true params' do
-        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=true')
+      it 'adds timeout params' do
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=form')
       end
     end
 
     context 'with params in the request url' do
       let(:path_info) { '/foo/bar?key=value' }
 
-      it 'adds timeout=true and preserves params' do
-        expect(helper.timeout_refresh_path).to eq('/foo/bar?key=value&timeout=true')
+      it 'adds timeout and preserves params' do
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?key=value&timeout=form')
       end
     end
 
-    context 'with timeout=true and request_id=123 \
-            in the query params already' do
-      let(:path_info) { '/foo/bar?timeout=true&request_id=123' }
+    context 'with timeout and request_id in the query params already' do
+      let(:path_info) { '/foo/bar?timeout=form&request_id=123' }
 
       it 'is the same' do
-        expect(helper.timeout_refresh_path).to eq('/foo/bar?request_id=123&timeout=true')
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?request_id=123&timeout=form')
       end
     end
 
@@ -67,7 +42,7 @@ describe SessionTimeoutWarningHelper do
       let(:http_host) { "mTpvPME6'));select pg_sleep(9); --" }
 
       it 'does not blow up' do
-        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=true')
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=form')
       end
     end
 
@@ -77,6 +52,16 @@ describe SessionTimeoutWarningHelper do
       it 'does not blow up' do
         expect(helper.timeout_refresh_path).to be_nil
       end
+    end
+  end
+
+  describe 'session timeout configuration' do
+    it 'uses delay and warning settings whose sum is a multiple of 60' do
+      expect((session_timeout_start + session_timeout_warning) % 60).to eq 0
+    end
+
+    it 'uses frequency and warning settings whose sum is a multiple of 60' do
+      expect((session_timeout_frequency + session_timeout_warning) % 60).to eq 0
     end
   end
 end

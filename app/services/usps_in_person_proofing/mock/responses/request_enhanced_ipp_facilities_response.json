@@ -1,0 +1,70 @@
+{
+  "postOffices": [
+    {
+      "parking": "Street",
+      "hours": [
+        {
+          "weekdayHours": "8:30 AM - 5 PM"
+        },
+        {
+          "saturdayHours": "9:00 AM - 2:00 PM"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.24 mi",
+      "streetAddress": "300 E ANYWHERE AVE",
+      "city": "SOMETOWN",
+      "phone": "414-555-0809",
+      "name": "ANYPLACE",
+      "zip4": "9998",
+      "state": "WI",
+      "zip5": "53202"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 8:00 PM"
+        },
+        {
+          "saturdayHours": "Closed"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.46 mi",
+      "streetAddress": "345 W FAKE NAME AVE",
+      "city": "MILWAUKEE",
+      "phone": "414-555-2308",
+      "name": "MILWAUKEE",
+      "zip4": "3099",
+      "state": "WI",
+      "zip5": "53203"
+    },
+    {
+      "parking": "Lot",
+      "hours": [
+        {
+          "weekdayHours": "9:00 AM - 8:00 PM"
+        },
+        {
+          "saturdayHours": "Closed"
+        },
+        {
+          "sundayHours": "Closed"
+        }
+      ],
+      "distance": "0.86 mi",
+      "streetAddress": "99 W MADE UP LANE",
+      "city": "MILWAUKEE",
+      "phone": "414-555-5555",
+      "name": "MILWAUKEE",
+      "zip4": "3099",
+      "state": "WI",
+      "zip5": "53203"
+    }
+   ]
+}

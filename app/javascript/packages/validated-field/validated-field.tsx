@@ -1,4 +1,12 @@
-import { useRef, useEffect, Children, cloneElement, createElement } from 'react';
+import {
+  useRef,
+  useEffect,
+  Children,
+  cloneElement,
+  createElement,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import type {
   MutableRefObject,
   ReactNode,
@@ -19,6 +27,11 @@ interface ValidatedFieldProps {
    * if invalid.
    */
   validate?: ValidatedFieldValidator;
+
+  /**
+   * Optional key and value that indicates the error and resulting error message
+   */
+  messages?: Record<string, string>;
 
   /**
    * Optional input to use in place of the default rendered input. The input will be cloned and
@@ -56,13 +69,20 @@ export function getErrorMessages(inputType?: string) {
   return messages;
 }
 
-function ValidatedField({
-  validate = () => {},
-  children,
-  ...inputProps
-}: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>) {
+function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
+  {
+    validate = () => {},
+    messages,
+    children,
+    ...inputProps
+  }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
+  forwardedRef,
+) {
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
+  // WILLFIX: we shouldn't be returning the HTML input child below as it could
+  //          result in a stale reference. This will be fixed with LG-8494
+  useImperativeHandle(forwardedRef, () => fieldRef.current?.input);
   useEffect(() => {
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
@@ -73,13 +93,23 @@ function ValidatedField({
         } catch (error) {
           nextError = error.message;
         }
+        // this is here in case the component validation state changes during the validate call
+        nextError = nextError || (input.validity.customError && input.validationMessage) || '';
 
         input.setCustomValidity(nextError);
-        return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
+        return (
+          !nextError &&
+          (input instanceof HTMLSelectElement
+            ? HTMLSelectElement.prototype.checkValidity.call(input)
+            : HTMLInputElement.prototype.checkValidity.call(input))
+        );
       };
 
       input.reportValidity = () => {
         input.checkValidity();
+        if (input instanceof HTMLSelectElement) {
+          return HTMLSelectElement.prototype.reportValidity.call(input);
+        }
         return HTMLInputElement.prototype.reportValidity.call(input);
       };
     }
@@ -87,8 +117,8 @@ function ValidatedField({
 
   const errorId = `validated-field-error-${instanceId}`;
 
-  const input: ReactHTMLElement<HTMLInputElement> = children
-    ? (Children.only(children) as ReactHTMLElement<HTMLInputElement>)
+  const input: ReactHTMLElement<HTMLInputElement | HTMLSelectElement> = children
+    ? (Children.only(children) as ReactHTMLElement<InputType>)
     : createElement('input');
 
   const inputClasses = ['validated-field__input', inputProps.className, input.props.className]
@@ -96,15 +126,14 @@ function ValidatedField({
     .join(' ');
 
   return (
-    <lg-validated-field ref={fieldRef}>
+    <lg-validated-field ref={fieldRef} error-id={errorId}>
       <script type="application/json" className="validated-field__error-strings">
-        {JSON.stringify(getErrorMessages(inputProps.type))}
+        {JSON.stringify({ ...getErrorMessages(inputProps.type), ...messages })}
       </script>
       <div className="validated-field__input-wrapper">
         {cloneElement(input, {
           ...inputProps,
           'aria-invalid': false,
-          'aria-describedby': errorId,
           className: inputClasses,
         })}
       </div>
@@ -112,4 +141,4 @@ function ValidatedField({
   );
 }
 
-export default ValidatedField;
+export default forwardRef(ValidatedField);

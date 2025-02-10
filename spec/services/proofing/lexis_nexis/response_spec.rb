@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::Response do
+RSpec.describe Proofing::LexisNexis::Response do
   let(:response_status_code) { 200 }
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }
   let(:response) do
@@ -38,7 +38,11 @@ describe Proofing::LexisNexis::Response do
     end
 
     context 'with a passed verification' do
-      it { expect(subject.verification_errors).to eq({}) }
+      it 'returns a hash of error' do
+        errors = subject.verification_errors
+
+        expect(errors).to have_key(:'Execute Instant Verify')
+      end
     end
   end
 
@@ -75,6 +79,56 @@ describe Proofing::LexisNexis::Response do
           expect(errors).to include(:base, :'Execute Instant Verify')
           expect(errors[:base]).to eq("Invalid status in response body: 'fake_status'")
         end
+      end
+    end
+  end
+
+  describe '#product_list' do
+    context 'for a response with a product list' do
+      it 'returns the product list' do
+        product_list = subject.product_list
+
+        expect(product_list.length).to eq(1)
+        expect(product_list.first['ProductType']).to eq('InstantVerify')
+      end
+    end
+
+    context 'for a response without a product list' do
+      let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
+
+      it 'returns an empty array' do
+        product_list = subject.product_list
+
+        expect(product_list).to eq([])
+      end
+    end
+  end
+
+  describe '#transaction_reason_code' do
+    context 'for a response with a transaction reason code' do
+      let(:response_body) { LexisNexisFixtures.instant_verify_identity_not_found_response_json }
+
+      it 'returns the reason code' do
+        expect(subject.transaction_reason_code).to eq('total.scoring.model.verification.fail')
+      end
+    end
+
+    context 'for a response without a transaciton reason code' do
+      it 'returns nil' do
+        expect(subject.transaction_reason_code).to eq(nil)
+      end
+    end
+  end
+
+  describe '#response_body' do
+    context 'the result includes invalid JSON' do
+      let(:response_body) { '$":^&' }
+
+      it 'raises a JSON parse error with a generic error message' do
+        expect { subject.response_body }.to raise_error(
+          JSON::ParserError,
+          'An error occured parsing the response body JSON, status=200 content_type=',
+        )
       end
     end
   end

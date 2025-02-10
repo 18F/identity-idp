@@ -1,12 +1,3 @@
-## A few parts of this project are not in the public domain
-
-### Files licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)
-
-The SVG elements embedded in `app/javascript/packages/components/icon.jsx` are adapted from icons
-provided by [Font Awesome](https://fontawesome.com/), licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
-
-## The rest of this project is in the worldwide public domain
-
 As a work of the United States Government, this project is in the
 public domain within the United States.
 

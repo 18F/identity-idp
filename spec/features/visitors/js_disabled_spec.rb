@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'JavaScript progressive enhancement' do
+RSpec.feature 'JavaScript progressive enhancement' do
   describe 'banner' do
     context 'javascript disabled' do
       it 'displays content visibly' do

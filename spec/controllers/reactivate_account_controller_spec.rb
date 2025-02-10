@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReactivateAccountController do
+RSpec.describe ReactivateAccountController do
   let(:user) { create(:user, profiles: profiles) }
   let(:profiles) { [] }
 
@@ -14,16 +14,19 @@ describe ReactivateAccountController do
 
   describe '#index' do
     context 'with a password reset profile' do
-      let(:profiles) { [create(:profile, :password_reset)] }
+      let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
       it 'renders the index template' do
+        stub_analytics
+
         get :index
 
+        expect(@analytics).to have_logged_event('Reactivate Account Visited')
         expect(subject).to render_template(:index)
       end
     end
 
-    context 'wthout a password reset profile' do
+    context 'without a password reset profile' do
       let(:profiles) { [create(:profile, :active)] }
       it 'redirects to the root url' do
         get :index
@@ -34,11 +37,13 @@ describe ReactivateAccountController do
   end
 
   describe '#update' do
-    let(:profiles) { [create(:profile, :password_reset)] }
+    let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
     it 'redirects user to idv_url' do
+      stub_analytics
       put :update
 
+      expect(@analytics).to have_logged_event('Reactivate Account Submitted')
       expect(subject.user_session[:acknowledge_personal_key]).to be_nil
       expect(response).to redirect_to idv_url
     end

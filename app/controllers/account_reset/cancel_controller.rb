@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module AccountReset
   class CancelController < ApplicationController
     def show
       return render :show unless token
 
       result = AccountReset::ValidateCancelToken.new(token).call
-      analytics.account_reset_cancel_token_validation(**result.to_h)
+      analytics.account_reset_cancel_token_validation(**result)
 
       if result.success?
         handle_valid_token
@@ -16,11 +18,13 @@ module AccountReset
     def create
       result = AccountReset::Cancel.new(session[:cancel_token]).call
 
-      analytics.account_reset_cancel(**result.to_h)
+      analytics.account_reset_cancel(**result)
 
-      handle_success if result.success?
-
-      redirect_to root_url
+      if result.success?
+        handle_success
+      else
+        redirect_to root_url
+      end
     end
 
     private
@@ -41,6 +45,7 @@ module AccountReset
         'two_factor_authentication.account_reset.successful_cancel',
         app_name: APP_NAME,
       )
+      redirect_to root_url
     end
 
     def token

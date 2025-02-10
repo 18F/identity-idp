@@ -16,7 +16,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
     context 'with a struct that has a redis_key_prefix' do
       it 'prefixes the id' do
-        expect(key).to eq("example:prefix:#{id}")
+        expect(key).to eq("redis-pool:example:prefix:#{id}")
       end
     end
 
@@ -109,8 +109,8 @@ RSpec.describe EncryptedRedisStructStorage do
         let(:id) { '' }
 
         it 'errors' do
-          expect { EncryptedRedisStructStorage.store(struct_class.new) }.
-            to raise_error(ArgumentError, 'id cannot be empty')
+          expect { EncryptedRedisStructStorage.store(struct_class.new) }
+            .to raise_error(ArgumentError, 'id cannot be empty')
         end
       end
 

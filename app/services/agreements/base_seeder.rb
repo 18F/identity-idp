@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Agreements
   class BaseSeeder
     def initialize(rails_env: Rails.env, yaml_path: 'config')
@@ -59,7 +61,7 @@ module Agreements
     def records
       file = Rails.root.join(yaml_path, filename).read
       content = ERB.new(file).result
-      YAML.safe_load(content).fetch(rails_env, {})
+      YAML.safe_load(content, permitted_classes: [Date]).fetch(rails_env, {})
     end
   end
 end

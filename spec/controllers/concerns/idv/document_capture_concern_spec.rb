@@ -1,29 +1,70 @@
 require 'rails_helper'
 
-RSpec.describe Idv::DocumentCaptureConcern, type: :controller do
-  controller ApplicationController do
-    include Idv::DocumentCaptureConcern
-
-    before_action :override_document_capture_step_csp
-
-    def index; end
-  end
-
-  describe '#override_document_capture_step_csp' do
-    it 'sets the headers for the document capture step' do
-      get :index, params: { step: 'document_capture' }
-
-      csp = response.request.content_security_policy
-      expect(csp.script_src).to include("'unsafe-eval'")
-      expect(csp.style_src).to include("'unsafe-inline'")
-      expect(csp.img_src).to include('blob:')
+RSpec.describe Idv::DocumentCaptureConcern, :controller do
+  idv_document_capture_controller_class = Class.new(ApplicationController) do
+    def self.name
+      'AnonymousController'
     end
 
-    it 'does not set headers for any other step' do
-      get :index, params: { step: 'some_other_step' }
+    include Idv::DocumentCaptureConcern
 
-      secure_header_config = response.request.headers.env['secure_headers_request_config']
-      expect(secure_header_config).to be_nil
+    def show
+      render plain: 'Hello'
+    end
+  end
+
+  describe '#selfie_requirement_met?' do
+    controller(idv_document_capture_controller_class) do
+    end
+
+    context 'selfie checks enabled' do
+      before do
+        stored_result = instance_double(DocumentCaptureSessionResult)
+        allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)
+        allow(controller).to receive(:stored_result).and_return(stored_result)
+
+        resolution_result = Vot::Parser.new(vector_of_trust: vot).parse
+        allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
+      end
+
+      context 'SP requires facial_match' do
+        let(:vot) { 'Pb' }
+
+        context 'selfie check performed' do
+          let(:selfie_check_performed) { true }
+
+          it 'returns true' do
+            expect(controller.selfie_requirement_met?).to eq(true)
+          end
+        end
+
+        context 'selfie check not performed' do
+          let(:selfie_check_performed) { false }
+
+          it 'returns false' do
+            expect(controller.selfie_requirement_met?).to eq(false)
+          end
+        end
+      end
+
+      context 'SP does not require facial_match' do
+        let(:vot) { 'P1' }
+
+        context 'selfie check performed' do
+          let(:selfie_check_performed) { true }
+
+          it 'returns true' do
+            expect(controller.selfie_requirement_met?).to eq(true)
+          end
+        end
+
+        context 'selfie check not performed' do
+          let(:selfie_check_performed) { false }
+          it 'returns true' do
+            expect(controller.selfie_requirement_met?).to eq(true)
+          end
+        end
+      end
     end
   end
 end

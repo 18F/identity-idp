@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe 'devise/passwords/edit.html.erb' do
+RSpec.describe 'devise/passwords/edit.html.erb' do
   before do
-    user = build_stubbed(:user, :signed_up)
-    @reset_password_form = ResetPasswordForm.new(user)
+    user = build_stubbed(:user, :fully_registered)
+    @reset_password_form = ResetPasswordForm.new(user: user)
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.passwords.change'))
+    expect(view).to receive(:title=).with(t('titles.passwords.change'))
 
     render
   end

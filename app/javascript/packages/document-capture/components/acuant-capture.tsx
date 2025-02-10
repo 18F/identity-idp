@@ -1,48 +1,47 @@
+import { Button, FullScreen } from '@18f/identity-components';
+import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
   useContext,
-  useRef,
-  useState,
-  useMemo,
   useEffect,
   useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
-import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { Button, FullScreen } from '@18f/identity-components';
-import type { FullScreenRefHandle } from '@18f/identity-components';
 import type { FocusTrap } from 'focus-trap';
-import type { ReactNode, MouseEvent, Ref } from 'react';
-import AnalyticsContext from '../context/analytics';
-import AcuantContext from '../context/acuant';
-import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import NativeCameraABTestContext from '../context/native-camera-a-b-test';
-import AcuantCamera from './acuant-camera';
+import type { FullScreenRefHandle } from '@18f/identity-components';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { useI18n } from '@18f/identity-react-i18n';
+import { removeUnloadProtection } from '@18f/identity-url';
+import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
+import AcuantSelfieCamera from './acuant-selfie-camera';
+import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
+import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
-import FileInput from './file-input';
+import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
+import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
+import SelfieCaptureContext from '../context/selfie-capture';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import FileInput from './file-input';
 import UploadContext from '../context/upload';
-import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type {
-  AcuantSuccessResponse,
-  AcuantDocumentType,
-  AcuantCaptureFailureError,
-} from './acuant-camera';
+import useCounter from '../hooks/use-counter';
+import { useLogCameraInfo } from '../hooks/use-log-camera-info';
 
-type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
-type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
+type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
 interface ImageAnalyticsPayload {
   /**
    * Image width, or null if unknown
    */
-  width: number | null;
+  width?: number | null;
   /**
    * Image height, or null if unknown
    */
-  height: number | null;
+  height?: number | null;
   /**
    * Mime type, or null if unknown
    */
@@ -52,26 +51,47 @@ interface ImageAnalyticsPayload {
    */
   source: ImageSource;
   /**
-   * Total number of attempts at this point
+   * Total number of attempts to capture / upload an image at this point
    */
-  attempt?: number;
+  captureAttempts?: number;
   /**
    * Size of the image in bytes
    */
   size: number;
+  /**
+   * Whether the Acuant SDK captured the image automatically, or using the tap to
+   * capture functionality
+   */
+  acuantCaptureMode?: AcuantCaptureMode | null;
+
+  /**
+   * Fingerprint of the image, base64 encoded SHA-256 digest
+   */
+  fingerprint?: string | null;
+
+  /**
+   *
+   */
+  failedImageResubmission: boolean;
+
+  /**
+   * Image file name
+   */
+  fileName?: string;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel;
+  documentType: string;
   dpi: number;
   moire: number;
   glare: number;
-  glareScoreThreshold: number;
+  glareScoreThreshold: number | null;
   isAssessedAsGlare: boolean;
   sharpness: number;
-  sharpnessScoreThreshold: number;
+  sharpnessScoreThreshold: number | null;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
+  isAssessedAsUnsupported: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -95,12 +115,6 @@ interface AcuantCaptureProps {
    * Camera permission declined callback
    */
   onCameraAccessDeclined?: () => void;
-  /**
-   * Facing mode of caopture. If capture is not
-   * specified and a camera is supported, defaults
-   * to the Acuant environment camera capture.
-   */
-  capture: 'user' | 'environment';
   /**
    * Optional additional class names
    */
@@ -127,11 +141,6 @@ interface AcuantCaptureProps {
 const NBSP_UNICODE = '\u00A0';
 
 /**
- * A noop function.
- */
-const noop = () => {};
-
-/**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  */
@@ -139,19 +148,12 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
   error instanceof Error;
 
 /**
- * Returns a human-readable document label corresponding to the given document type constant.
- *
+ * Returns a human-readable document label corresponding to the given document type constant,
+ * such as "id" "passport" or "none"
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel {
-  switch (documentType) {
-    case 1:
-      return 'id';
-    case 2:
-      return 'passport';
-    default:
-      return 'none';
-  }
-}
+const getDocumentTypeLabel = (documentType: AcuantDocumentType): string =>
+  AcuantDocumentType[documentType]?.toLowerCase() ??
+  `An error in document type returned: ${documentType}`;
 
 export function getNormalizedAcuantCaptureFailureMessage(
   error: AcuantCaptureFailureError,
@@ -188,6 +190,31 @@ export function getNormalizedAcuantCaptureFailureMessage(
   }
 }
 
+function getFingerPrint(file: File): Promise<string | null> {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataBuffer = reader.result;
+      window.crypto.subtle
+        .digest('SHA-256', dataBuffer as ArrayBuffer)
+        .then((arrayBuffer) => {
+          const digestArray = new Uint8Array(arrayBuffer);
+          const strDigest = digestArray.reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            '',
+          );
+          const base64String = window.btoa(strDigest);
+          const urlSafeBase64String = base64String
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+          resolve(urlSafeBase64String);
+        })
+        .catch(() => null);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
 function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
   let objectURL: string;
   return file.type.indexOf('image/') === 0
@@ -204,6 +231,22 @@ function getImageDimensions(file: File): Promise<{ width: number | null; height:
         })
         .catch(() => ({ width: null, height: null }))
     : Promise.resolve({ width: null, height: null });
+}
+
+function getImageMetadata(
+  file: File,
+): Promise<{ width: number | null; height: number | null; fingerprint: string | null }> {
+  const dimension = getImageDimensions(file);
+  const fingerprint = getFingerPrint(file);
+  return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
+    function (resolve) {
+      Promise.all([dimension, fingerprint])
+        .then((results) => {
+          resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
+        })
+        .catch(() => ({ width: null, height: null, fingerprint: null }));
+    },
+  );
 }
 
 /**
@@ -261,7 +304,6 @@ function AcuantCapture(
     value,
     onChange = () => {},
     onCameraAccessDeclined = () => {},
-    capture,
     className,
     allowUpload = true,
     errorMessage,
@@ -272,7 +314,7 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
-    isAcuantLoaded,
+    acuantCaptureMode,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -280,30 +322,42 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
+  const { isSelfieCaptureEnabled, immediatelyBeginCapture } = useContext(SelfieCaptureContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
-  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
-  const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
-  const [attempt, incrementAttempt] = useCounter(1);
+  const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
+  const selfieAttempts = useRef(0);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const [imageCaptureText, setImageCaptureText] = useState('');
+  // There's some pretty significant changes to this component when it's used for
+  // selfie capture vs document image capture. This controls those changes.
+  const selfieCapture = name === 'selfie';
+  // When it's the back of the ID we want to log information about the camera
+  // This hook does that.
+  const isBackOfId = name === 'back';
+  useLogCameraInfo({ isBackOfId, hasStartedCropping });
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
+    selfieCapture && immediatelyBeginCapture,
+  );
 
   const {
     failedCaptureAttempts,
     onFailedCaptureAttempt,
+    failedCameraPermissionAttempts,
+    onFailedCameraPermissionAttempt,
     onResetFailedCaptureAttempts,
     failedSubmissionAttempts,
     forceNativeCamera,
+    failedSubmissionImageFingerprints,
   } = useContext(FailedCaptureAttemptsContext);
-
-  const { nativeCameraABTestingEnabled, nativeCameraOnly } = useContext(NativeCameraABTestContext);
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -334,8 +388,14 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt };
-    incrementAttempt();
+    const enhancedPayload = {
+      ...payload,
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+      acuantCaptureMode: payload.source === 'upload' ? null : acuantCaptureMode,
+      liveness_checking_required: isSelfieCaptureEnabled,
+    };
+    incrementCaptureAttempts();
     return enhancedPayload;
   }
 
@@ -344,32 +404,47 @@ function AcuantCapture(
    */
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
-    if (nextValue) {
-      const { width, height } = await getImageDimensions(nextValue);
+    let hasFailed = false;
 
+    if (nextValue) {
+      const { width, height, fingerprint } = await getImageMetadata(nextValue);
+      hasFailed = failedSubmissionImageFingerprints[name]?.includes(fingerprint);
       analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
+        fingerprint,
         mimeType: nextValue.type,
         source: 'upload',
         size: nextValue.size,
+        failedImageResubmission: hasFailed,
+        fileName: nextValue.name,
       });
-
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
+      trackEvent(
+        name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
+        analyticsPayload,
+      );
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
   }
 
   /**
-   * Given a click source, returns a higher-order function that, when called, will log an event
+   * Given a clickSource, returns a higher-order function that, when called, will log an event
    * before calling the original function.
    */
-  function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
+  function withLoggedClick(clickSource: string, metadata: { isDrop: boolean } = { isDrop: false }) {
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          trackEvent(`IdV: ${name} image clicked`, { source, ...metadata });
+          trackEvent(
+            name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
+            {
+              click_source: clickSource,
+              ...metadata,
+              liveness_checking_required: isSelfieCaptureEnabled,
+              captureAttempts,
+            },
+          );
         }
 
         return fn(...args);
@@ -412,6 +487,16 @@ function AcuantCapture(
   }
 
   /**
+   * Responds to a drag and drop file upload by either preventing the default action
+   * or allowing the file to be uploaded
+   */
+  function startDragDropUpload(event) {
+    if (!allowUpload) {
+      event.preventDefault();
+    }
+  }
+
+  /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
@@ -419,16 +504,10 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
-      const isEnvironmentCapture = capture !== 'user';
-      const shouldStartSelfieCapture =
-        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
-      let shouldStartAcuantCapture =
-        isAcuantCaptureCapable &&
-        capture !== 'user' &&
-        !isForceUploading.current &&
-        !forceNativeCamera;
+      const shouldStartAcuantCapture =
+        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
 
-      if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
+      if (isAcuantCaptureCapable && forceNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
@@ -436,25 +515,11 @@ function AcuantCapture(
         });
       }
 
-      if (shouldStartAcuantCapture && nativeCameraABTestingEnabled) {
-        trackEvent('IdV: Native camera A/B Test', {
-          native_camera_only: nativeCameraOnly,
-        });
-        shouldStartAcuantCapture = !nativeCameraOnly;
-      }
-
-      if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
+      if (!allowUpload || shouldStartAcuantCapture) {
         event.preventDefault();
       }
 
-      if (shouldStartSelfieCapture) {
-        window.AcuantPassiveLiveness.startSelfieCapture(
-          ifStillMounted((nextImageData) => {
-            const dataURI = `data:image/jpeg;base64,${nextImageData}`;
-            onChangeAndResetError(dataURI);
-          }),
-        );
-      } else if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
+      if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
 
@@ -464,19 +529,97 @@ function AcuantCapture(
     }
   }
 
+  function onSelfieCaptureOpen() {
+    trackEvent('idv_sdk_selfie_image_capture_opened', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+
+    setImageCaptureText('');
+  }
+
+  function onSelfieCaptureClosed() {
+    trackEvent('idv_sdk_selfie_image_capture_closed_without_photo', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+
+    setImageCaptureText('');
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieCaptureSuccess({ image }: { image: string }) {
+    const analyticsPayload: ImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      size: getDecodedBase64ByteSize(image),
+      failedImageResubmission: false,
+    });
+
+    trackEvent('idv_selfie_image_added', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+
+    onChangeAndResetError(image, analyticsPayload);
+    onResetFailedCaptureAttempts();
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieCaptureFailure(error) {
+    trackEvent('idv_sdk_selfie_image_capture_failed', {
+      sdk_error_code: error.code,
+      sdk_error_message: error.message,
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+
+    if (fullScreenRef.current?.focusTrap) {
+      suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+    }
+
+    // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+    // previously failed for any reason, including declined permission. Since the cookie
+    // never expires, and since we want to re-prompt even if the user had previously
+    // declined, unset the cookie value when failure occurs for permissions.
+    setAcuantFailureCookie(null);
+    onCameraAccessDeclined();
+
+    // Due to a bug with Safari on iOS we force the page to refresh on the third
+    // time a user denies permissions.
+    onFailedCameraPermissionAttempt();
+    if (failedCameraPermissionAttempts > 2) {
+      removeUnloadProtection();
+      window.location.reload();
+    }
+    setIsCapturingEnvironment(false);
+  }
+
+  function onSelfieRetaken() {
+    trackEvent('idv_sdk_selfie_image_re_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
-    const isAssessedAsGlare = glare < glareThreshold;
-    const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
+
+    const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
+    const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
+    const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
-      assessment = 'glare';
-    } else if (isAssessedAsBlurry) {
+    if (isAssessedAsBlurry) {
       setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
       assessment = 'blurry';
+    } else if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
+      assessment = 'glare';
+    } else if (isAssessedAsUnsupported) {
+      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      assessment = 'unsupported';
     } else {
       assessment = 'success';
     }
@@ -486,6 +629,7 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
+      isAssessedAsUnsupported,
       documentType: getDocumentTypeLabel(cardType),
       dpi,
       moire,
@@ -497,58 +641,104 @@ function AcuantCapture(
       isAssessedAsBlurry,
       assessment,
       size: getDecodedBase64ByteSize(nextCapture.image.data),
+      fingerprint: null,
+      failedImageResubmission: false,
+      liveness_checking_required: false,
+      selfie_attempts: selfieAttempts.current,
     });
 
-    trackEvent(`IdV: ${name} image added`, analyticsPayload);
+    trackEvent(
+      name === 'selfie' ? 'idv_selfie_image_added' : `IdV: ${name} image added`,
+      analyticsPayload,
+    );
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
-      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
+      onFailedCaptureAttempt({
+        isAssessedAsGlare,
+        isAssessedAsBlurry,
+        isAssessedAsUnsupported,
+      });
     }
 
     setIsCapturingEnvironment(false);
   }
 
+  function onAcuantImageCaptureFailure(error: AcuantCaptureFailureError, code: string | undefined) {
+    const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
+    if (isAcuantCameraAccessFailure(error)) {
+      if (fullScreenRef.current?.focusTrap) {
+        suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+      }
+
+      // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+      // previously failed for any reason, including declined permission. Since the cookie
+      // never expires, and since we want to re-prompt even if the user had previously
+      // declined, unset the cookie value when failure occurs for permissions.
+      setAcuantFailureCookie(null);
+
+      onCameraAccessDeclined();
+
+      // Due to a bug with Safari on iOS we force the page to refresh on the third
+      // time a user denies permissions.
+      onFailedCameraPermissionAttempt();
+      if (failedCameraPermissionAttempts > 2) {
+        removeUnloadProtection();
+        window.location.reload();
+      }
+    } else if (code === SEQUENCE_BREAK_CODE) {
+      setOwnErrorMessage(
+        `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
+          .split(' ')
+          .join(NBSP_UNICODE)}`,
+      );
+
+      refreshAcuantFailureCookie();
+    } else if (error === undefined) {
+      // Show a more generic error message when there's a cropping error.
+      // Errors with a value of `undefined` are cropping errors.
+      setOwnErrorMessage(t('errors.general'));
+    } else {
+      setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+    }
+
+    setIsCapturingEnvironment(false);
+    trackEvent('IdV: Image capture failed', {
+      field: name,
+      acuantCaptureMode,
+      error: getNormalizedAcuantCaptureFailureMessage(error, code),
+      liveness_checking_required: isSelfieCaptureEnabled,
+    });
+  }
+
+  function onImageCaptureFeedback(text: string) {
+    setImageCaptureText(text);
+  }
+
+  function onSelfieTaken() {
+    selfieAttempts.current += 1;
+    trackEvent('idv_sdk_selfie_image_taken', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
+  function onImageCaptureInitialized() {
+    trackEvent('idv_sdk_selfie_image_capture_initialized', {
+      captureAttempts,
+      selfie_attempts: selfieAttempts.current,
+    });
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      {isCapturingEnvironment && (
+      {isCapturingEnvironment && !selfieCapture && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-          onImageCaptureFailure={(error, code) => {
-            const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
-            if (isAcuantCameraAccessFailure(error)) {
-              if (fullScreenRef.current?.focusTrap) {
-                suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
-              }
-
-              // Internally, Acuant sets a cookie to bail on guided capture if initialization had
-              // previously failed for any reason, including declined permission. Since the cookie
-              // never expires, and since we want to re-prompt even if the user had previously
-              // declined, unset the cookie value when failure occurs for permissions.
-              setAcuantFailureCookie(null);
-
-              onCameraAccessDeclined();
-            } else if (code === SEQUENCE_BREAK_CODE) {
-              setOwnErrorMessage(
-                `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
-                  .split(' ')
-                  .join(NBSP_UNICODE)}`,
-              );
-
-              refreshAcuantFailureCookie();
-            } else {
-              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
-            }
-
-            setIsCapturingEnvironment(false);
-            trackEvent('IdV: Image capture failed', {
-              field: name,
-              error: getNormalizedAcuantCaptureFailureMessage(error, code),
-            });
-          }}
+          onImageCaptureFailure={onAcuantImageCaptureFailure}
         >
           {!hasStartedCropping && (
             <FullScreen
@@ -561,6 +751,29 @@ function AcuantCapture(
           )}
         </AcuantCamera>
       )}
+      {isCapturingEnvironment && selfieCapture && (
+        <AcuantSelfieCamera
+          onImageCaptureSuccess={onSelfieCaptureSuccess}
+          onImageCaptureFailure={onSelfieCaptureFailure}
+          onImageCaptureOpen={onSelfieCaptureOpen}
+          onImageCaptureClose={onSelfieCaptureClosed}
+          onImageCaptureFeedback={onImageCaptureFeedback}
+          onImageCaptureInitialized={onImageCaptureInitialized}
+          onSelfieTaken={onSelfieTaken}
+          onSelfieRetaken={onSelfieRetaken}
+        >
+          <FullScreen
+            ref={fullScreenRef}
+            label={t('doc_auth.headings.selfie_capture')}
+            hideCloseButton
+          >
+            <AcuantSelfieCaptureCanvas
+              imageCaptureText={imageCaptureText}
+              onSelfieCaptureClosed={onSelfieCaptureClosed}
+            />
+          </FullScreen>
+        </AcuantSelfieCamera>
+      )}
       <FileInput
         ref={inputRef}
         label={label}
@@ -571,12 +784,11 @@ function AcuantCapture(
         fileLoadingText={t('doc_auth.info.image_loading')}
         fileLoadedText={t('doc_auth.info.image_loaded')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png']}
-        capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         isValuePending={hasStartedCropping}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
-        onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
+        onDrop={withLoggedClick('placeholder', { isDrop: true })(startDragDropUpload)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />
@@ -599,14 +811,15 @@ function AcuantCapture(
         {isMobile &&
           hasCapture &&
           allowUpload &&
-          formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
+          formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
+            'lg-or': ({ children }) => (
+              <span className="padding-left-1 padding-right-1">{children}</span>
+            ),
             'lg-upload': ({ children }) => (
-              <span className="padding-left-1">
-                <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
-                  {children}
-                </Button>
-              </span>
+              <Button isUnstyled onClick={withLoggedClick('button')(forceUpload)}>
+                {children}
+              </Button>
             ),
           })}
       </div>
@@ -615,3 +828,4 @@ function AcuantCapture(
 }
 
 export default forwardRef(AcuantCapture);
+export { AcuantDocumentType };

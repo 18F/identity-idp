@@ -1,0 +1,45 @@
+<% self.title = t('titles.select_email') %>
+
+<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
+  <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
+
+  <p id="select-email-intro">
+    <%= t('help_text.select_preferred_email_html', sp: @sp_name) %>
+  </p>
+
+  <%= simple_form_for(@select_email_form, url: sign_up_select_email_path) do |f| %>
+    <%= f.input(
+          :selected_email_id,
+          as: :radio_buttons,
+          label: false,
+          wrapper_html: {
+            aria: {
+              labelledby: 'select-email-heading',
+              describedby: 'select-email-intro',
+            },
+          },
+          collection: @user_emails.map do |email|
+            [
+              email.email,
+              email.id,
+              checked: email.email == @last_sign_in_email_address,
+            ]
+          end,
+        ) %>
+    <%= f.submit t('help_text.requested_attributes.select_email_link'), class: 'margin-top-1' %>
+  <% end %>
+
+  <% if @can_add_email %>
+    <%= render ButtonComponent.new(
+          url: add_email_path(in_select_email_flow: true),
+          outline: true,
+          big: true,
+          wide: true,
+          class: 'margin-top-2',
+        ).with_content(t('account.index.email_add')) %>
+  <% end %>
+
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('forms.buttons.back'), sign_up_completed_path %>
+  <% end %>
+<% end %>

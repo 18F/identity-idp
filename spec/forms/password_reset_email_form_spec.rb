@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PasswordResetEmailForm do
+RSpec.describe PasswordResetEmailForm do
   subject { PasswordResetEmailForm.new(' Test@example.com ') }
 
   it_behaves_like 'email validation'
@@ -9,7 +9,7 @@ describe PasswordResetEmailForm do
   describe '#submit' do
     context 'when email is valid and user exists' do
       it 'returns hash with properties about the event and the user' do
-        user = create(:user, :signed_up, email: 'test1@test.com')
+        user = create(:user, :fully_registered, email: 'test1@test.com')
         subject = PasswordResetEmailForm.new('Test1@test.com')
 
         expect(subject.submit.to_h).to eq(
@@ -49,6 +49,38 @@ describe PasswordResetEmailForm do
           confirmed: false,
           active_profile: false,
         )
+      end
+
+      it 'returns false and adds errors to the form object when domain is invalid' do
+        subject = PasswordResetEmailForm.new('test@çà.com')
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        expect(subject.submit.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          user_id: 'nonexistent-uuid',
+          confirmed: false,
+          active_profile: false,
+        )
+      end
+    end
+
+    context 'disposable domains' do
+      before do
+        expect(BanDisposableEmailValidator).to receive(:config).and_return(%w[spamdomain.com])
+      end
+
+      it 'bans direct matches to disposable domains' do
+        form = PasswordResetEmailForm.new('foo@spamdomain.com')
+
+        expect(form.submit).to_not be_success
+      end
+
+      it 'bans subdomains of disposable domains' do
+        form = PasswordResetEmailForm.new('foo@sub.bar.spamdomain.com')
+
+        expect(form.submit).to_not be_success
       end
     end
   end

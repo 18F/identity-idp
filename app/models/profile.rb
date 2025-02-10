@@ -1,52 +1,293 @@
+# frozen_string_literal: true
+
 class Profile < ApplicationRecord
-  self.ignored_columns = %w[phone_confirmed]
+  # IDV levels equivalent to facial match
+  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+  # Facial match through IAL2 opt-in flow
+  FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
   belongs_to :user
+  # rubocop:disable Rails/InverseOf
+  belongs_to :initiating_service_provider,
+             class_name: 'ServiceProvider',
+             foreign_key: 'initiating_service_provider_issuer',
+             primary_key: 'issuer',
+             optional: true
+  # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
-  scope(:active, -> { where(active: true) })
-  scope(:verified, -> { where.not(verified_at: nil) })
+  has_one :establishing_in_person_enrollment,
+          -> { where(status: :establishing).order(created_at: :desc) },
+          class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
+          dependent: :destroy
 
-  enum deactivation_reason: {
+  enum :deactivation_reason, {
     password_reset: 1,
     encryption_error: 2,
-    gpo_verification_pending: 3,
+    gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
-    in_person_verification_pending: 5,
-    threatmetrix_review_pending: 6,
+    in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
+  }
+
+  enum :fraud_pending_reason, {
+    threatmetrix_review: 1,
+    threatmetrix_reject: 2,
+  }
+
+  enum :idv_level, {
+    legacy_unsupervised: 1,
+    legacy_in_person: 2,
+    unsupervised_with_selfie: 3,
+    in_person: 4,
   }
 
   attr_reader :personal_key
 
+  # Class methods
+  def self.active
+    where(active: true)
+  end
+
+  def self.verified
+    where.not(verified_at: nil)
+  end
+
+  def self.facial_match
+    where(idv_level: FACIAL_MATCH_IDV_LEVELS)
+  end
+
+  def self.facial_match_opt_in
+    where(idv_level: FACIAL_MATCH_OPT_IN)
+  end
+
+  def self.fraud_rejection
+    where.not(fraud_rejection_at: nil)
+  end
+
+  def self.fraud_review_pending
+    where.not(fraud_review_pending_at: nil)
+  end
+
+  def self.gpo_verification_pending
+    where.not(gpo_verification_pending_at: nil)
+  end
+
+  def self.in_person_verification_pending
+    where.not(in_person_verification_pending_at: nil)
+  end
+
+  # Instance methods
+  def fraud_review_pending?
+    fraud_review_pending_at.present?
+  end
+
+  def fraud_rejection?
+    fraud_rejection_at.present?
+  end
+
+  def gpo_verification_pending?
+    gpo_verification_pending_at.present?
+  end
+
+  def pending_reasons
+    [
+      *(:gpo_verification_pending if gpo_verification_pending?),
+      *(:fraud_check_pending if fraud_deactivation_reason?),
+      *(:in_person_verification_pending if in_person_verification_pending?),
+    ]
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
-  def activate
+  def activate(reason_deactivated: nil)
+    confirm_that_profile_can_be_activated!
+
     now = Time.zone.now
-    is_reproof = Profile.find_by(user_id: user_id, active: true)
+    profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
+    is_reproof = profile_to_deactivate.present?
+    is_facial_match_upgrade = is_reproof && facial_match? && !profile_to_deactivate.facial_match?
+
+    attrs = {
+      active: true,
+      activated_at: now,
+    }
+
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
+
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
+      update!(attrs)
     end
+    track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def tmx_status
+    return nil unless IdentityConfig.store.in_person_proofing_enforce_tmx
+    return nil unless FeatureManagement.proofing_device_profiling_decisioning_enabled?
+
+    fraud_pending_reason || :threatmetrix_pass
+  end
+
+  def reason_not_to_activate
+    if pending_reasons.any?
+      "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+    elsif deactivation_reason.present?
+      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+    end
+  end
+
+  def remove_gpo_deactivation_reason
+    update!(gpo_verification_pending_at: nil)
+    update!(deactivation_reason: nil) if gpo_verification_pending_NO_LONGER_USED?
+  end
+
+  def activate_after_passing_review
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+  end
+
+  def activate_after_fraud_review_unnecessary
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+  end
+
+  def activate_after_passing_in_person
+    transaction do
+      update!(
+        in_person_verification_pending_at: nil,
+      )
+      activate
+    end
+  end
+
+  def activate_after_password_reset
+    if password_reset?
+      transaction do
+        update!(
+          deactivation_reason: nil,
+        )
+        activate(reason_deactivated: :password_reset)
+      end
+    end
+  end
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
   end
 
+  # Update the profile's deactivation reason to "encryption_error". As a
+  # side-effect, when the profile has an associated pending in-person
+  # enrollment it will be updated to have a status of "cancelled".
+  def deactivate_due_to_encryption_error
+    update!(
+      active: false,
+      deactivation_reason: :encryption_error,
+    )
+
+    if in_person_enrollment&.pending?
+      in_person_enrollment.cancelled!
+    end
+  end
+
+  def fraud_deactivation_reason?
+    fraud_review_pending? || fraud_rejection?
+  end
+
+  def in_person_verification_pending?
+    in_person_verification_pending_at.present?
+  end
+
+  def deactivate_due_to_gpo_expiration
+    raise 'Profile is not pending GPO verification' if gpo_verification_pending_at.nil?
+    update!(
+      active: false,
+      gpo_verification_pending_at: nil,
+      gpo_verification_expired_at: Time.zone.now,
+    )
+  end
+
+  def deactivate_due_to_in_person_verification_cancelled
+    update!(
+      active: false,
+      in_person_verification_pending_at: nil,
+      deactivation_reason: deactivation_reason.presence || :verification_cancelled,
+    )
+  end
+
+  def deactivate_for_in_person_verification
+    update!(active: false, in_person_verification_pending_at: Time.zone.now)
+  end
+
+  def deactivate_for_gpo_verification
+    update!(active: false, gpo_verification_pending_at: Time.zone.now)
+  end
+
+  def deactivate_for_fraud_review
+    update!(
+      active: false,
+      fraud_review_pending_at: Time.zone.now,
+      fraud_rejection_at: nil,
+      in_person_verification_pending_at: nil,
+    )
+  end
+
+  def deactivate_due_to_ipp_expiration_during_fraud_review
+    update!(
+      active: false,
+      in_person_verification_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
+    )
+  end
+
+  def reject_for_fraud(notify_user:)
+    update!(
+      active: false,
+      fraud_review_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
+    )
+    UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
+  end
+
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+
+    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii,
+      multi_region_ciphertext: encrypted_pii_multi_region,
+    )
+
+    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
   # @return [Pii::Attributes]
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
-    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+
+    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii_recovery,
+      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
+    )
+
+    decrypted_recovery_json = encryptor.decrypt(
+      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+    )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
@@ -56,17 +297,21 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     encrypt_recovery_pii(pii)
   end
 
   # @param [Pii::Attributes] pii
-  def encrypt_recovery_pii(pii)
-    personal_key = personal_key_generator.create
+  def encrypt_recovery_pii(pii, personal_key: nil)
+    personal_key ||= personal_key_generator.generate!
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     @personal_key = personal_key
   end
 
@@ -83,28 +328,19 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def includes_liveness_check?
-    return false if proofing_components.blank?
-    proofing_components['liveness_check'].present?
+  def profile_age_in_seconds
+    (Time.zone.now - created_at).round
   end
 
-  def includes_phone_check?
-    return false if proofing_components.blank?
-    proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
-  def strict_ial2_proofed?
-    return false unless active
-    return false unless includes_liveness_check?
-    return true if IdentityConfig.store.gpo_allowed_for_strict_ial2
-    includes_phone_check?
-  end
-
-  def has_proofed_before?
-    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
+  def facial_match?
+    FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
   private
+
+  def confirm_that_profile_can_be_activated!
+    raise reason_not_to_activate if reason_not_to_activate
+  end
 
   def personal_key_generator
     @personal_key_generator ||= PersonalKeyGenerator.new(user)
@@ -126,5 +362,14 @@ class Profile < ApplicationRecord
   def send_push_notifications
     event = PushNotification::ReproofCompletedEvent.new(user: user)
     PushNotification::HttpPush.deliver(event)
+  end
+
+  def track_facial_match_reproof
+    SpUpgradedFacialMatchProfile.create(
+      user: user,
+      upgraded_at: Time.zone.now,
+      idv_level: idv_level,
+      issuer: initiating_service_provider_issuer,
+    )
   end
 end

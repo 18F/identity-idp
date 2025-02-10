@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RiscDeliveryJob < ApplicationJob
   queue_as :low
 
@@ -10,23 +12,43 @@ class RiscDeliveryJob < ApplicationJob
 
   retry_on(
     *NETWORK_ERRORS,
-    wait: :exponentially_longer,
+    wait: :polynomially_longer,
     attempts: 2,
-  )
+  ) do |job, exception|
+    args = job.arguments.first
+    job.track_event(
+      success: false,
+      error: exception.message,
+      event_type: args[:event_type],
+      issuer: args[:issuer],
+      user: args[:user],
+    )
+  end
+
   retry_on RedisRateLimiter::LimitError,
-           wait: :exponentially_longer,
-           attempts: 10
+           wait: :polynomially_longer,
+           attempts: 10 do |job, exception|
+             args = job.arguments.first
+             job.track_event(
+               success: false,
+               error: exception.message,
+               event_type: args[:event_type],
+               issuer: args[:issuer],
+               user: args[:user],
+             )
+           end
 
   def self.warning_error_classes
     NETWORK_ERRORS + [RedisRateLimiter::LimitError]
   end
 
   def perform(
-    push_notification_url:,
-    jwt:,
     event_type:,
     issuer:,
-    now: Time.zone.now
+    jwt:,
+    push_notification_url:,
+    now: Time.zone.now,
+    user: nil
   )
     response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
@@ -36,45 +58,18 @@ class RiscDeliveryJob < ApplicationJob
         'Content-Type' => 'application/secevent+jwt',
       ) do |req|
         req.options.context = {
-          service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
+          service_name: 'risc_http_push_async',
         }
       end
     end
 
-    unless response.success?
-      Rails.logger.warn(
-        {
-          event: 'http_push_error',
-          transport: inline? ? 'direct' : 'async',
-          event_type: event_type,
-          service_provider: issuer,
-          status: response.status,
-        }.to_json,
-      )
-    end
-  rescue *NETWORK_ERRORS => err
-    raise err if self.executions < 2 && !inline?
-
-    Rails.logger.warn(
-      {
-        event: 'http_push_error',
-        transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
-        service_provider: issuer,
-        error: err.message,
-      }.to_json,
-    )
-  rescue RedisRateLimiter::LimitError => err
-    raise err if self.executions < 10 && !inline?
-
-    Rails.logger.warn(
-      {
-        event: 'http_push_rate_limit',
-        transport: inline? ? 'direct' : 'async',
-        event_type: event_type,
-        service_provider: issuer,
-        error: err.message,
-      }.to_json,
+    track_event(
+      error: response.success? ? nil : 'http_push_error',
+      event_type:,
+      issuer:,
+      status: response.status,
+      success: response.success?,
+      user:,
     )
   end
 
@@ -95,13 +90,25 @@ class RiscDeliveryJob < ApplicationJob
       f.request :instrumentation, name: 'request_log.faraday'
       f.adapter :net_http
       f.options.timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.read_timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.open_timeout = IdentityConfig.store.risc_notifications_request_timeout
-      f.options.write_timeout = IdentityConfig.store.risc_notifications_request_timeout
     end
   end
 
-  def inline?
-    queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
+  def track_event(event_type:, issuer:, success:, user:, error: nil, status: nil)
+    analytics(user).risc_security_event_pushed(
+      client_id: issuer,
+      error:,
+      event_type:,
+      status:,
+      success:,
+    )
+  end
+
+  def analytics(user)
+    @analytics ||= Analytics.new(
+      request: nil,
+      session: {},
+      sp: nil,
+      user: user || AnonymousUser.new,
+    )
   end
 end

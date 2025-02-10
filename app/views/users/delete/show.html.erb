@@ -1,4 +1,4 @@
-<% title t('titles.confirmations.delete') %>
+<% self.title = t('titles.confirmations.delete') %>
 
 <%= render PageHeadingComponent.new.with_content(t('users.delete.heading')) %>
 
@@ -8,28 +8,29 @@
 
 <ul>
   <li class="margin-bottom-1"><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
-  <li class="margin-bottom-1"><%= current_user.decorate.delete_account_bullet_key %></li>
+  <li class="margin-bottom-1"><%= current_user.delete_account_bullet_key %></li>
   <li class="margin-bottom-1"><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
   <li class="margin-bottom-1"><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
 </ul>
 
-<%= simple_form_for(
-      current_user,
-      url: account_delete_path,
-      html: { autocomplete: 'off', method: :post },
-    ) do |f| %>
+<%= simple_form_for(current_user, url: account_delete_path, method: :post) do |f| %>
   <p class="margin-bottom-4">
     <%= t('users.delete.instructions') %>
   </p>
 
   <%= render PasswordToggleComponent.new(
         form: f,
-        name: :password,
-        label: t('idv.form.password'),
-        required: true,
+        field_options: {
+          name: :password,
+          label: t('idv.form.password'),
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
+        },
       ) %>
 
-  <%= f.submit t('users.delete.actions.delete'), danger: true, class: 'margin-top-1 margin-bottom-2' %>
+  <%= f.submit t('users.delete.actions.delete'), danger: true, class: 'margin-top-5 margin-bottom-2' %>
 <% end %>
 
 <%= link_to(

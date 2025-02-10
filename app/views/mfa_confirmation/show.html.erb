@@ -1,6 +1,6 @@
-<% title t('titles.mfa_setup.suggest_second_mfa') %>
+<% self.title = @content.heading %>
 
-<%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
+<%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
 
 <%= render PageHeadingComponent.new.with_content(@content.heading) %>
 
@@ -10,15 +10,17 @@
 
 <div class="col-12">
   <%= link_to(
-        second_mfa_setup_path,
+        authentication_methods_setup_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { @content.button } %>
 </div>
 
-<%= button_to(
-      auth_method_confirmation_skip_path,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-    ) do %>
-  <%= t('mfa.skip') %>
+<% if @content.show_skip_additional_mfa_link? %>
+  <%= button_to(
+        auth_method_confirmation_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= t('mfa.skip') %>
+  <% end %>
 <% end %>

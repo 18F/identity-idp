@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IdentityLinker do
+RSpec.describe IdentityLinker do
   describe '#link_identity' do
     let(:user) { create(:user) }
     let(:service_provider) { build(:service_provider, issuer: 'test.host') }
@@ -17,9 +17,9 @@ describe IdentityLinker do
         uuid: last_identity.uuid,
       }
 
-      identity_attributes = last_identity.attributes.symbolize_keys.
-        except(:created_at, :updated_at, :id, :session_uuid,
-               :last_authenticated_at, :nonce)
+      identity_attributes = last_identity.attributes.symbolize_keys
+        .except(:created_at, :updated_at, :id, :session_uuid,
+                :last_authenticated_at, :nonce)
 
       expect(last_identity.session_uuid).to match(/.{8}-.{4}-.{4}-.{4}-.{12}/)
       expect(last_identity.last_authenticated_at).to be_present
@@ -30,15 +30,21 @@ describe IdentityLinker do
       rails_session_id = SecureRandom.hex
       nonce = SecureRandom.hex
       ial = 3
+      acr_values = 'http://idmanagement.gov/ns/assurance/aal/1'
+      vtr = ['C2.Pb'].to_json
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
+      verified_attributes = %w[address email]
 
       IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
         nonce: nonce,
         ial: ial,
+        acr_values: acr_values,
+        vtr: vtr,
         scope: scope,
         code_challenge: code_challenge,
+        verified_attributes: verified_attributes.map(&:to_sym),
       )
       user.reload
 
@@ -46,17 +52,20 @@ describe IdentityLinker do
       expect(last_identity.nonce).to eq(nonce)
       expect(last_identity.rails_session_id).to eq(rails_session_id)
       expect(last_identity.ial).to eq(ial)
+      expect(last_identity.acr_values).to eq(acr_values)
+      expect(last_identity.vtr).to eq(vtr)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
+      expect(last_identity.verified_attributes).to eq(verified_attributes)
     end
 
     context 'identity.last_consented_at' do
       let(:now) { Time.zone.now }
       let(:six_months_ago) { 6.months.ago }
 
-      it 'does override a previous last_consented_at by default' do
-        IdentityLinker.new(user, service_provider).
-          link_identity(last_consented_at: six_months_ago)
+      it 'does not override a previous last_consented_at by default' do
+        IdentityLinker.new(user, service_provider)
+          .link_identity(last_consented_at: six_months_ago)
         last_identity = user.reload.last_identity
         expect(last_identity.last_consented_at.to_i).to eq(six_months_ago.to_i)
 
@@ -66,15 +75,34 @@ describe IdentityLinker do
       end
 
       it 'updates last_consented_at when present' do
-        IdentityLinker.new(user, service_provider).
-          link_identity(last_consented_at: now)
+        IdentityLinker.new(user, service_provider)
+          .link_identity(last_consented_at: now)
 
         last_identity = user.reload.last_identity
         expect(last_identity.last_consented_at.to_i).to eq(now.to_i)
       end
     end
 
-    context 'clear_deleted_at' do
+    context 'identity.verified_attributes' do
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(
+          verified_attributes: %i[address email],
+        )
+      end
+
+      it 'adds to verified_attributes' do
+        expect do
+          IdentityLinker.new(user, service_provider).link_identity(
+            verified_attributes: %i[all_emails verified_at],
+          )
+        end.to(
+          change { user.identities.last.verified_attributes }
+            .to(%w[address all_emails email verified_at]),
+        )
+      end
+    end
+
+    context ':clear_deleted_at' do
       let(:yesterday) { 1.day.ago }
 
       before do
@@ -84,34 +112,34 @@ describe IdentityLinker do
       end
 
       subject(:link_identity) do
-        IdentityLinker.new(user, service_provider).
-          link_identity(clear_deleted_at: clear_deleted_at)
+        IdentityLinker.new(user, service_provider)
+          .link_identity(clear_deleted_at: clear_deleted_at)
       end
 
-      context 'clear_deleted_at is nil' do
+      context ':clear_deleted_at is nil' do
         let(:clear_deleted_at) { nil }
 
         it 'nulls out deleted_at' do
-          expect { link_identity }.
-            to_not change { user.reload.last_identity.deleted_at&.to_i }.
-            from(yesterday.to_i)
+          expect { link_identity }
+            .to_not change { user.reload.last_identity.deleted_at&.to_i }
+            .from(yesterday.to_i)
         end
       end
 
-      context 'clear_deleted_at is true' do
+      context ':clear_deleted_at is true' do
         let(:clear_deleted_at) { true }
 
         it 'nulls out deleted_at' do
-          expect { link_identity }.
-            to change { user.reload.last_identity.deleted_at&.to_i }.
-            from(yesterday.to_i).to(nil)
+          expect { link_identity }
+            .to change { user.reload.last_identity.deleted_at&.to_i }
+            .from(yesterday.to_i).to(nil)
         end
       end
     end
 
     it 'rejects bad attributes names' do
-      expect { IdentityLinker.new(user, service_provider).link_identity(foobar: true) }.
-        to raise_error(ArgumentError)
+      expect { IdentityLinker.new(user, service_provider).link_identity(foobar: true) }
+        .to raise_error(ArgumentError)
     end
 
     it 'does not link to an identity record if the provider is nil' do
@@ -126,6 +154,99 @@ describe IdentityLinker do
 
       IdentityLinker.new(user, service_provider1).link_identity(rails_session_id: rails_session_id)
       IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
+    end
+
+    context 'identity.last_ial2_authenticated_at' do
+      context 'the request includes identity proofing' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.last_ial2_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request is IALMax and verified_at is null' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+          expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request is IALMax and verified_at is not null' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+          expect(
+            user.last_identity.last_ial2_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+    end
+
+    context 'identity.last_ial1_authenticated_at' do
+      context 'the request includes identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(user.last_identity.last_ial1_authenticated_at).to be_nil
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(
+            user.last_identity.last_ial1_authenticated_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+    end
+
+    context 'identity.verified_at' do
+      context 'the request includes identity proofing and verified_at is null' do
+        it 'sets the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.verified_at,
+          ).to be_within(1.second).of(Time.zone.now)
+        end
+      end
+
+      context 'the request includes identity proofing and verified_at is not null' do
+        it 'does not set the timestamp' do
+          freeze_time
+          travel_to 1.week.ago do
+            IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          end
+          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+
+          expect(
+            user.last_identity.verified_at,
+          ).to eq(1.week.ago)
+        end
+      end
+
+      context 'the request does not include identity proofing' do
+        it 'does not set the timestamp' do
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+
+          expect(user.last_identity.verified_at).to be_nil
+        end
+      end
     end
   end
 end

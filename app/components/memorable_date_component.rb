@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Provides a component that accepts a date using the inputs specified
 # by USWDS here: https://designsystem.digital.gov/components/memorable-date/
@@ -54,6 +56,10 @@ class MemorableDateComponent < BaseComponent
     @tag_options = tag_options
     @error_messages = error_messages
     @range_errors = range_errors
+  end
+
+  def self.scripts
+    super + ValidatedFieldComponent.scripts
   end
 
   # Get error messages to be provided to the component.
@@ -118,13 +124,21 @@ class MemorableDateComponent < BaseComponent
     end
   end
 
+  def has_errors?
+    form.object.respond_to?(:errors) && form.object.errors.key?(name)
+  end
+
+  def error_msg
+    form.object.errors[name]&.first
+  end
+
   # Configure default generic error messages for component,
   # then integrate any overrides
   def generate_error_messages(label, min, max, override_error_messages)
     base_error_messages = {
       missing_month_day_year: t(
         'components.memorable_date.errors.missing_month_day_year',
-        label: label,
+        label:,
       ),
       missing_month_day: t('components.memorable_date.errors.missing_month_day'),
       missing_month_year: t('components.memorable_date.errors.missing_month_year'),
@@ -140,7 +154,7 @@ class MemorableDateComponent < BaseComponent
     if label && min
       base_error_messages[:range_underflow] =
         t(
-          'components.memorable_date.errors.range_underflow', label: label,
+          'components.memorable_date.errors.range_underflow', label:,
                                                               date: i18n_long_format(min)
         )
     end
@@ -148,7 +162,7 @@ class MemorableDateComponent < BaseComponent
     if label && max
       base_error_messages[:range_overflow] =
         t(
-          'components.memorable_date.errors.range_overflow', label: label,
+          'components.memorable_date.errors.range_overflow', label:,
                                                              date: i18n_long_format(max)
         )
     end
@@ -157,7 +171,7 @@ class MemorableDateComponent < BaseComponent
       base_error_messages[:outside_date_range] =
         t(
           'components.memorable_date.errors.outside_date_range',
-          label: label,
+          label:,
           min: i18n_long_format(min),
           max: i18n_long_format(max),
         )

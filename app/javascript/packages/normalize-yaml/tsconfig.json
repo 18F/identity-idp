@@ -1,0 +1,11 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "types",
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true
+  },
+  "include": ["./**/*.js"],
+  "exclude": ["types", "**/*.spec.js"]
+}

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PivCac
   class CheckConfig
     def self.call

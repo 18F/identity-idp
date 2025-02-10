@@ -2,7 +2,12 @@
   "name": "@18f/identity-assets",
   "private": true,
   "version": "1.0.0",
+  "exports": {
+    ".": "./index.ts",
+    "./webpack-plugin": "./webpack-plugin.js"
+  },
   "peerDependencies": {
     "webpack": ">=5"
-  }
+  },
+  "sideEffects": false
 }

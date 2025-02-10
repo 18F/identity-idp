@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::AesCipher do
+RSpec.describe Encryption::AesCipher do
   let(:plaintext) { 'some long secret' }
   let(:cek) { SecureRandom.random_bytes(32) }
 
@@ -36,7 +36,7 @@ describe Encryption::AesCipher do
       cipher = subject.class.encryption_cipher
 
       expect(cipher).to be_kind_of(OpenSSL::Cipher)
-      expect(cipher.name).to eq 'id-aes256-GCM'
+      expect(cipher.name).to eq OpenSSL::Cipher.new('aes-256-gcm').name
     end
   end
 end

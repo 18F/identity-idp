@@ -1,20 +1,41 @@
 require 'rails_helper'
 
-feature 'Email confirmation during sign up' do
+RSpec.feature 'Email confirmation during sign up' do
+  it 'requires user to accept rules of use when registering email' do
+    visit sign_up_email_path
+    fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+    click_submit_default
+
+    expect(page).to have_current_path(sign_up_email_path)
+    expect(page).to have_content(t('errors.registration.terms'))
+
+    fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+    check t('sign_up.terms', app_name: APP_NAME)
+    click_submit_default
+
+    expect(page).to have_current_path(sign_up_verify_email_url)
+    expect(page).not_to have_content(t('errors.registration.terms'))
+  end
+
   scenario 'confirms valid email and sets valid password' do
-    allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
+    stub_analytics
     reset_email
     email = 'test@example.com'
     sign_up_with(email)
     open_email(email)
     visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
 
-    expect(page.html).not_to include(t('notices.dap_participation'))
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
+    # Regression: Previously, this event had been logged multiple times per confirmation.
+    expect(@analytics).to have_logged_event('User Registration: Email Confirmation').once
+
     fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: Features::SessionHelper::VALID_PASSWORD
+
     click_button t('forms.buttons.continue')
 
     expect(current_url).to eq authentication_methods_setup_url
@@ -25,14 +46,14 @@ feature 'Email confirmation during sign up' do
     it 'sends the user the confirmation email again' do
       email = 'test@example.com'
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
 
-      expect { sign_up_with(email) }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { sign_up_with(email) }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
       )
@@ -43,8 +64,8 @@ feature 'Email confirmation during sign up' do
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
 
-      expect { click_on t('links.resend') }.
-        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect { click_on t('notices.signed_up_but_unconfirmed.resend_confirmation_email') }
+        .to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
         t('user_mailer.email_confirmation_instructions.subject'),
@@ -67,16 +88,13 @@ feature 'Email confirmation during sign up' do
 
   context 'confirmed user is signed out and tries to confirm again' do
     it 'redirects to sign in page with message that user is already confirmed' do
-      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       sign_up_and_set_password
+      logout(:user)
 
-      visit destroy_user_session_url
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(page.html).to include(t('notices.dap_participation'))
       action = t('devise.confirmations.sign_in')
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: action)
+      expect(page).to have_content t('devise.confirmations.already_confirmed', action:)
       expect(current_url).to eq new_user_session_url
     end
   end

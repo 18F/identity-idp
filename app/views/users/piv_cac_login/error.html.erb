@@ -1,4 +1,4 @@
-<% title @presenter.title %>
+<% self.title = @presenter.title %>
 
 <%= render PageHeadingComponent.new do %>
   <%= @presenter.heading %>
@@ -8,8 +8,8 @@
   <%= @presenter.description %>
 </p>
 
-<div class="margin-top-4">
-  <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
-</div>
-
-<%= render 'shared/cancel', link: new_user_session_url %>
+<%= render ButtonComponent.new(
+      url: new_user_session_url,
+      class: 'margin-top-3',
+      big: true,
+    ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>

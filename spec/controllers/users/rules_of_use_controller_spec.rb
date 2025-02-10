@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Users::RulesOfUseController do
   let(:rules_of_use_updated_at) { 1.day.ago }
   let(:accepted_terms_at) { nil }
-  let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+  let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
   before do
-    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
-      and_return(rules_of_use_updated_at)
+    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+      .and_return(rules_of_use_updated_at)
   end
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
@@ -33,9 +33,10 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('Rules of Use Visited')
 
         action
+
+        expect(@analytics).to have_logged_event('Rules of Use Visited')
       end
     end
 
@@ -64,9 +65,10 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('Rules of Use Visited')
 
         action
+
+        expect(@analytics).to have_logged_event('Rules of Use Visited')
       end
     end
 
@@ -116,10 +118,59 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs a successful analytics event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('Rules of Use Submitted', hash_including(success: true))
 
         action
+
+        expect(@analytics).to have_logged_event(
+          'Rules of Use Submitted',
+          hash_including(success: true),
+        )
+      end
+
+      it 'includes service provider URIs in form-action CSP header when enabled' do
+        allow(IdentityConfig.store).to(
+          receive(:openid_connect_content_security_form_action_enabled).and_return(true),
+        )
+        sp = create(:service_provider, issuer: 'example-issuer', redirect_uris: ['https://example.com'])
+        params = {
+          client_id: sp.issuer,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email',
+          redirect_uri: sp.redirect_uris.first,
+          state: '1234567890123456789012',
+          nonce: '1234567890123456789012',
+        }
+        session[:sp] = {
+          issuer: sp.issuer,
+          request_url: "http://test.com?#{URI.encode_www_form(params)}",
+        }
+        action
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'", 'https://example.com'])
+      end
+
+      it 'does not include service provider URIs in form-action CSP header when disabled' do
+        allow(IdentityConfig.store).to(
+          receive(:openid_connect_content_security_form_action_enabled).and_return(false),
+        )
+        sp = create(:service_provider, issuer: 'example-issuer', redirect_uris: ['https://example.com'])
+        params = {
+          client_id: sp.issuer,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email',
+          redirect_uri: sp.redirect_uris.first,
+          state: '1234567890123456789012',
+          nonce: '1234567890123456789012',
+        }
+        session[:sp] = {
+          issuer: sp.issuer,
+          request_url: "http://test.com?#{URI.encode_www_form(params)}",
+        }
+        action
+        expect(response.request.content_security_policy.form_action)
+          .to match_array(["'self'"])
       end
     end
 
@@ -146,10 +197,13 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs a failure analytics event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('Rules of Use Submitted', hash_including(success: false))
 
         action
+
+        expect(@analytics).to have_logged_event(
+          'Rules of Use Submitted',
+          hash_including(success: false),
+        )
       end
     end
   end

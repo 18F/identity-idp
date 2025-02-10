@@ -1,0 +1,155 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+Dir.chdir(__dir__) { require 'bundler/setup' }
+
+require 'active_support'
+require 'active_support/core_ext/enumerable' # index_by
+require 'active_support/core_ext/integer/time'
+require 'optparse'
+require 'terminal-table'
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
+require 'reporting/unknown_progress_bar'
+
+class EmailDeliveries
+  include Reporting::CloudwatchQueryQuoting
+
+  # @return [EmailDeliveries]
+  def self.parse!(argv: ARGV, out: STDOUT)
+    show_help = false
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~EOM
+        Usage: #{$PROGRAM_NAME} uuid1 [uuid2...]
+
+        Looks up email deliveries by user UUID, within the last week
+
+        Options:
+      EOM
+
+      opts.on('--help', 'Show this help message') do
+        show_help = true
+      end
+    end
+
+    uuids = parser.order(argv)
+
+    if uuids.empty? || show_help
+      out.puts parser
+      exit 1
+    end
+
+    new(uuids: uuids)
+  end
+
+  attr_reader :uuids
+
+  def initialize(uuids:, progress_bar: true)
+    @uuids = uuids
+    @progress_bar = progress_bar
+  end
+
+  def progress_bar?
+    @progress_bar
+  end
+
+  def run(out: STDOUT)
+    results = query_data(uuids)
+
+    table = Terminal::Table.new
+    table << %w[user_id email_address_id timestamp message_id email_action events]
+    table << :separator
+
+    results.each do |result|
+      table << [
+        result.user_id,
+        result.email_address_id,
+        result.timestamp,
+        result.message_id.slice(0..24),
+        result.email_action,
+        result.events.join(', '),
+      ]
+    end
+
+    out.puts table
+  end
+
+  Result = Struct.new(
+    :user_id,
+    :email_address_id,
+    :timestamp,
+    :message_id,
+    :email_action,
+    :events,
+    keyword_init: true,
+  )
+
+  # @return [Array<Result>]
+  def query_data(uuids)
+    Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
+      event_log = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
+        query: <<~EOS,
+          fields
+            @timestamp
+          , properties.user_id AS user_id
+          , properties.event_properties.email_address_id AS email_address_id
+          , properties.event_properties.ses_message_id AS ses_message_id
+          , properties.event_properties.action AS email_action
+          | filter name = 'Email Sent'
+          | filter properties.user_id IN #{quote(uuids)}
+          | limit 10000
+        EOS
+        from: 1.week.ago,
+        to: Time.now,
+      )
+
+      events_by_message_id = event_log.index_by { |event| event['ses_message_id'] }
+
+      message_id_filters = events_by_message_id.keys.map do |message_id|
+        "@message LIKE /#{message_id}/"
+      end.join(' OR ')
+
+      email_events = cloudwatch_client('/aws/lambda/SESAllEvents_Lambda').fetch(
+        query: <<~EOS,
+          fields
+            eventType AS event_type, mail.commonHeaders.messageId as ses_message_id,
+            bounce.bounceType as bounce_type, bounce.bounceSubType as bounce_sub_type
+          | filter #{message_id_filters}
+          | display @timestamp, event_type, ses_message_id, bounce_type, bounce_sub_type
+          | limit 10000
+        EOS
+        from: 1.week.ago,
+        to: Time.now,
+      )
+
+      email_events.
+        group_by { |event| event['ses_message_id'] }.
+        map do |message_id, events|
+          Result.new(
+            user_id: events_by_message_id[message_id]['user_id'],
+            email_address_id: events_by_message_id[message_id]['email_address_id'],
+            email_action: events_by_message_id[message_id]['email_action'],
+            timestamp: events_by_message_id[message_id]['@timestamp'],
+            message_id: message_id,
+            events: events.sort_by { |e| e['@timestamp'] }.map { |e| [e['event_type'], e['bounce_type'], e['bounce_sub_type']].compact.join('-') },
+          )
+        end
+    end
+  end
+
+  def cloudwatch_client(log_group_name)
+    Reporting::CloudwatchClient.new(
+      ensure_complete_logs: false,
+      slice_interval: nil,
+      progress: false,
+      log_group_name: log_group_name,
+    )
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  EmailDeliveries.parse!.run
+end

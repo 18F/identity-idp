@@ -1,32 +1,32 @@
+# frozen_string_literal: true
+
 require 'rack/timeout/base'
 
 module Rack
   class Timeout
-    @excludes = [
-      '/api/verify/images',
-      '/verify/doc_auth/selfie',
-      '/verify/doc_auth/document_capture',
-      '/verify/doc_auth/verify',
-      '/verify/capture_doc/document_capture',
-      '/verify/doc_auth/link_sent',
-    ]
-
-    class << self
-      attr_accessor :excludes
-    end
+    EXCLUDES = ([
+      '/verify/verify_info',
+      '/verify/phone',
+      '/verify/document_capture',
+      '/verify/link_sent',
+    ].flat_map do |path|
+      [path] + IdentityConfig.store.available_locales.map { |locale| "/#{locale}#{path}" }
+    end + ['/api/verify/images']).freeze
 
     def call_with_excludes(env)
-      if env['REQUEST_URI']&.start_with?(*self.class.excludes)
+      if EXCLUDES.any? { |path| env['REQUEST_URI']&.start_with?(path) }
         @app.call(env)
       else
         call_without_excludes(env)
       end
     end
 
-    alias call_without_excludes call
-    alias call call_with_excludes
+    alias_method :call_without_excludes, :call
+    alias_method :call, :call_with_excludes
   end
 end
+
+Rack::Timeout::Logger.level = Logger::ERROR
 
 Rails.application.config.middleware.insert_before(
   Rack::Runtime,

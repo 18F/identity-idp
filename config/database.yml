@@ -24,9 +24,11 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
+    adapter: postgresql
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
+    adapter: postgresql
     replica: true
   worker_jobs:
     <<: *defaults
@@ -36,6 +38,7 @@ development:
 test:
   primary: &test
     <<: *defaults
+    adapter: postgresql
     pool: 10
     checkout_timeout: 10
     database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
@@ -44,6 +47,7 @@ test:
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *test
+    adapter: postgresql
     replica: true
   worker_jobs:
     <<: *test
@@ -51,8 +55,23 @@ test:
     migrations_paths: db/worker_jobs_migrate
 
 <%
-  pool = if Identity::Hostdata.instance_role == 'worker'
-    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp + IdentityConfig.store.database_pool_extra_connections_for_worker
+  worker_pool = if Identity::Hostdata.instance_role == 'worker'
+    GoodJobConnectionPoolSize.calculate_worker_pool_size(
+      queues: IdentityConfig.store.good_job_queues,
+      cron_enabled: true,
+      max_threads: IdentityConfig.store.good_job_max_threads,
+    )
+  else
+    IdentityConfig.store.database_pool_idp
+  end
+%>
+
+<%
+  primary_pool = if Identity::Hostdata.instance_role == 'worker'
+    GoodJobConnectionPoolSize.calculate_primary_pool_size(
+      queues: IdentityConfig.store.good_job_queues,
+      max_threads: IdentityConfig.store.good_job_max_threads,
+    )
   else
     IdentityConfig.store.database_pool_idp
   end
@@ -61,22 +80,26 @@ test:
 production:
   primary:
     <<: *defaults
+    adapter: postgresql
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_username %>
-    host: <%= IdentityConfig.store.database_host %>
+    host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
-    pool: <%= pool %>
-    sslmode: 'verify-full'
+    pool: <%= primary_pool %>
+    advisory_locks: <%= IdentityConfig.store.database_advisory_locks_enabled %>
+    prepared_statements: <%= IdentityConfig.store.database_prepared_statements_enabled %>
+    sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
+    adapter: postgresql
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_readonly_username %>
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
-    pool: <%= pool %>
-    sslmode: 'verify-full'
+    pool: <%= primary_pool %>
+    sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
   worker_jobs:
@@ -85,7 +108,7 @@ production:
     username: <%= IdentityConfig.store.database_worker_jobs_username %>
     host: <%= IdentityConfig.store.database_worker_jobs_host %>
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
-    pool: <%= pool %>
-    sslmode: 'verify-full'
+    pool: <%= worker_pool %>
+    sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate

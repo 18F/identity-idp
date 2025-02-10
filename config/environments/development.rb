@@ -1,13 +1,12 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   config.cache_classes = false
   config.eager_load = false
   config.consider_all_requests_local = true
   config.active_support.deprecation = :log
   config.active_record.migration_error = :page_load
-  config.assets.debug = true
-  config.assets.digest = true
-  config.assets.gzip = false
-  config.assets.raise_runtime_errors = true
+  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.i18n.raise_on_missing_translations = true
 
   # Raise exceptions for disallowed deprecations.
@@ -25,12 +24,15 @@ Rails.application.configure do
   }
   config.action_mailer.asset_host = IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.show_previews = IdentityConfig.store.rails_mailer_previews_enabled
+  config.action_mailer.delivery_method = IdentityConfig.store.development_mailer_deliver_method
+  if IdentityConfig.store.development_mailer_deliver_method == :letter_opener
+    config.action_mailer.perform_deliveries = true
+  end
 
   routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
-  config.lograge.ignore_actions = ['Users::SessionsController#active']
+  config.lograge.ignore_actions = ['Api::Internal::SessionsController#show']
 
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
@@ -38,15 +40,15 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}",
+      Rack::CACHE_CONTROL => "public, max-age=#{2.days.in_seconds}",
     }
   else
     config.action_controller.perform_caching = false
 
     config.cache_store = :null_store
     config.public_file_server.headers = {
-      'Cache-Control' => 'public, no-cache, must-revalidate',
-      'Vary' => '*',
+      Rack::CACHE_CONTROL => 'public, no-cache, must-revalidate',
+      'vary' => '*',
     }
   end
 

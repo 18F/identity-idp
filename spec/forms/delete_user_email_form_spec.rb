@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DeleteUserEmailForm do
+RSpec.describe DeleteUserEmailForm do
   describe '#submit' do
     subject(:submit) { form.submit }
 
@@ -27,7 +27,7 @@ describe DeleteUserEmailForm do
     end
 
     context 'with multiple email addresses' do
-      let(:user) { create(:user, :signed_up, :with_multiple_emails) }
+      let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
 
@@ -43,18 +43,18 @@ describe DeleteUserEmailForm do
       end
 
       it 'notifies subscribers that the identifier was recycled and the email changed' do
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::IdentifierRecycledEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::IdentifierRecycledEvent.new(
             user: user,
             email: email_address.email,
           )).ordered
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::EmailChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::EmailChangedEvent.new(
             user: user,
             email: email_address.email,
           )).ordered
-        expect(PushNotification::HttpPush).to receive(:deliver).once.
-          with(PushNotification::RecoveryInformationChangedEvent.new(
+        expect(PushNotification::HttpPush).to receive(:deliver).once
+          .with(PushNotification::RecoveryInformationChangedEvent.new(
             user: user,
           )).ordered
 
@@ -63,8 +63,8 @@ describe DeleteUserEmailForm do
     end
 
     context 'with a email of a different user' do
-      let(:user) { create(:user, :signed_up, :with_multiple_emails) }
-      let(:other_user) { create(:user, :signed_up, :with_multiple_emails) }
+      let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
+      let(:other_user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { other_user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
 

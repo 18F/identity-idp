@@ -1,6 +1,6 @@
 require 'shoulda/matchers'
 
-shared_examples 'a phone form' do
+RSpec.shared_examples 'a phone form' do
   describe 'phone presence validation' do
     it 'is invalid when phone is blank' do
       params[:phone] = ''
@@ -13,7 +13,7 @@ shared_examples 'a phone form' do
   describe 'phone uniqueness' do
     context 'when phone is already taken' do
       it 'is valid' do
-        second_user = build_stubbed(:user, :signed_up, with: { phone: '+1 (202) 555-1213' })
+        second_user = build_stubbed(:user, :fully_registered, with: { phone: '+1 (202) 555-1213' })
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(
           phone_configuration: {

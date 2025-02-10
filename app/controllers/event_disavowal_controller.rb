@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventDisavowalController < ApplicationController
   before_action :validate_disavowed_event
 
@@ -8,13 +10,13 @@ class EventDisavowalController < ApplicationController
       success: true,
       extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
     )
-    analytics.event_disavowal(**result.to_h)
+    analytics.event_disavowal(**result)
     @forbidden_passwords = forbidden_passwords
   end
 
   def create
     result = password_reset_from_disavowal_form.submit(password_reset_params)
-    analytics.event_disavowal_password_reset(**result.to_h)
+    analytics.event_disavowal_password_reset(**result)
     if result.success?
       handle_successful_password_reset
     else
@@ -43,8 +45,12 @@ class EventDisavowalController < ApplicationController
 
   def validate_disavowed_event
     result = EventDisavowal::ValidateDisavowedEvent.new(disavowed_event).call
-    return if result.success?
-    analytics.event_disavowal_token_invalid(**result.to_h)
+    if result.success?
+      sign_out
+      return
+    end
+
+    analytics.event_disavowal_token_invalid(**result)
     flash[:error] = (result.errors[:event] || result.errors.first.last).first
     redirect_to root_url
   end

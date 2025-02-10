@@ -1,0 +1,28 @@
+<% self.title = t('titles.backup_codes') %>
+
+<%= render PageHeadingComponent.new.with_content(t('titles.backup_codes')) %>
+
+<p>
+  <%= t('two_factor_authentication.backup_codes.warning_html') %>
+</p>
+
+<p>
+  <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
+</p>
+
+<%= render ButtonComponent.new(
+      url: authentication_methods_setup_path,
+      big: true,
+      full_width: false,
+      class: 'margin-top-3 margin-bottom-1',
+    ).with_content(t('mfa.add')) %>
+
+<%= render PageFooterComponent.new do %>
+  <%= button_to(
+        auth_method_confirmation_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= t('forms.buttons.continue') %>
+  <% end %>
+<% end %>

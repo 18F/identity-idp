@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Response::AuthenticationTokenResponse do
+RSpec.describe Proofing::Aamva::Response::AuthenticationTokenResponse do
   let(:status_code) { 200 }
   let(:response_body) { AamvaFixtures.authentication_token_response }
   let(:http_response) do
@@ -22,6 +22,18 @@ describe Proofing::Aamva::Response::AuthenticationTokenResponse do
         expect { subject }.to raise_error(
           Proofing::Aamva::AuthenticationError,
           'Unexpected status code in response: 500',
+        )
+      end
+    end
+
+    context 'with a non-200 status code and a non-xml body' do
+      let(:status_code) { 504 }
+      let(:response_body) { '<h1>Oh no</h1><hr><p>This is not xml.' }
+
+      it 'raises a AuthenticationError' do
+        expect { subject }.to raise_error(
+          Proofing::Aamva::AuthenticationError,
+          'Unexpected status code in response: 504',
         )
       end
     end

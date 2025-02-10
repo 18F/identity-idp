@@ -1,21 +1,21 @@
 require 'rails_helper'
 
-describe 'GPO verification routes' do
-  GET_ROUTES = %w[
-    verify/usps
-  ].freeze
+RSpec.describe 'GPO verification routes' do
+  let(:get_routes) do
+    %w[
+      verify/by_mail/request_letter
+    ]
+  end
 
-  CREATE_ROUTES = %w[
-    verify/usps
-  ].freeze
-
-  PUT_ROUTES = %w[
-    verify/usps
-  ].freeze
+  let(:put_routes) do
+    %w[
+      verify/by_mail/request_letter
+    ]
+  end
 
   before do
-    allow(FeatureManagement).to receive(:enable_gpo_verification?).
-      and_return(enable_gpo_verification)
+    allow(FeatureManagement).to receive(:gpo_verification_enabled?)
+      .and_return(enable_gpo_verification)
     Rails.application.reload_routes!
   end
 
@@ -27,19 +27,14 @@ describe 'GPO verification routes' do
     end
 
     it 'does not route to endpoints controlled by feature flag' do
-      GET_ROUTES.each do |route|
-        expect(get: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
+      get_routes.each do |route|
+        expect(get: route)
+          .to route_to(controller: 'pages', action: 'page_not_found', path: route)
       end
 
-      CREATE_ROUTES.each do |route|
-        expect(post: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
-      end
-
-      PUT_ROUTES.each do |route|
-        expect(put: route).
-          to route_to(controller: 'pages', action: 'page_not_found', path: route)
+      put_routes.each do |route|
+        expect(put: route)
+          .to route_to(controller: 'pages', action: 'page_not_found', path: route)
       end
     end
   end
@@ -52,16 +47,12 @@ describe 'GPO verification routes' do
     end
 
     it 'routes to endpoints controlled by feature flag' do
-      GET_ROUTES.each do |route|
-        expect(get: route).to be_routable
+      get_routes.each do |route|
+        expect(get: route).to route_to(controller: 'idv/by_mail/request_letter', action: 'index')
       end
 
-      CREATE_ROUTES.each do |route|
-        expect(post: route).to be_routable
-      end
-
-      PUT_ROUTES.each do |route|
-        expect(put: route).to be_routable
+      put_routes.each do |route|
+        expect(put: route).to route_to(controller: 'idv/by_mail/request_letter', action: 'create')
       end
     end
   end

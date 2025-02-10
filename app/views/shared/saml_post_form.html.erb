@@ -1,0 +1,23 @@
+<% self.title = t('headings.redirecting') %>
+
+<%= extends_layout :base do %>
+  <div class="grid-container tablet:padding-y-6 no-js">
+    <div class="grid-row">
+      <div class="tablet:grid-col-6 tablet:grid-offset-3">
+        <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
+
+        <p>
+          <%= t('saml_idp.shared.saml_post_binding.no_js') %>
+        </p>
+
+        <%= simple_form_for('', url: action_url) do |f| %>
+          <% form_params.each do |key, val| %>
+            <%= hidden_field_tag(key, val) %>
+          <% end %>
+          <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: '' } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <%= render_javascript_pack_once_tags 'click-immediate' %>
+<% end %>

@@ -1,11 +1,19 @@
+# frozen_string_literal: true
+
 class AddUserEmailForm
   include ActiveModel::Model
   include FormAddEmailValidator
+  include ActionView::Helpers::TranslationHelper
 
-  attr_reader :email
+  attr_reader :email, :in_select_email_flow
+  alias_method :in_select_email_flow?, :in_select_email_flow
 
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
+  end
+
+  def initialize(in_select_email_flow: false)
+    @in_select_email_flow = in_select_email_flow
   end
 
   def user
@@ -16,7 +24,7 @@ class AddUserEmailForm
     @user = user
     @email = params[:email]
     @email_address = email_address_record(@email)
-
+    @request_id = params[:request_id]
     if valid?
       process_successful_submission
     else
@@ -39,18 +47,20 @@ class AddUserEmailForm
   private
 
   attr_writer :email
-  attr_reader :success, :email_address
+  attr_reader :success, :email_address, :request_id
 
   def process_successful_submission
     @success = true
     email_address.save!
-    SendAddEmailConfirmation.new(user).call(email_address)
+    SendAddEmailConfirmation.new(user)
+      .call(email_address:, in_select_email_flow: in_select_email_flow?, request_id:)
   end
 
   def extra_analytics_attributes
     {
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
+      in_select_email_flow: in_select_email_flow?,
     }
   end
 

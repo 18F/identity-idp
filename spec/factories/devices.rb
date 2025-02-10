@@ -8,5 +8,14 @@ FactoryBot.define do
     last_used_at { Time.zone.now }
     last_ip { '127.0.0.1' }
     user
+
+    trait :authenticated do
+      events do
+        [
+          association(:event, event_type: :sign_in_before_2fa),
+          association(:event, event_type: :sign_in_after_2fa),
+        ]
+      end
+    end
   end
 end

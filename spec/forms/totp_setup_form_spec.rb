@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TotpSetupForm do
+RSpec.describe TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }
@@ -26,8 +26,8 @@ describe TotpSetupForm do
       end
 
       it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
         form = TotpSetupForm.new(user, secret, code, name)
 
         form.submit
@@ -80,7 +80,7 @@ describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          error_details: { name: [:blank] },
+          error_details: { name: { blank: true } },
           errors: { name: [t('errors.messages.blank')] },
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -95,7 +95,7 @@ describe TotpSetupForm do
 
         expect(form2.submit.to_h).to include(
           success: false,
-          error_details: { name: [t('errors.piv_cac_setup.unique_name')] },
+          error_details: { name: { unique_name: true } },
           errors: { name: [t('errors.piv_cac_setup.unique_name')] },
         )
       end

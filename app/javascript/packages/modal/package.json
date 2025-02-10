@@ -2,12 +2,7 @@
   "name": "@18f/identity-modal",
   "version": "1.0.0",
   "private": true,
-  "peerDependencies": {
-    "react": "*"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
-  }
+  "sideEffects": [
+    "./modal-element.ts"
+  ]
 }

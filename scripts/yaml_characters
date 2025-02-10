@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+require_relative '../config/environment'
+
+excluded_locales = []
+excluded_paths = []
+excluded_key_scopes = []
+
+OptionParser.new do |opts|
+  opts.banner = <<~TXT
+    Usage
+    =======================
+
+      #{$PROGRAM_NAME} [OPTIONS]
+
+      Prints all unique characters from Rails loaded I18n data, which can be used in combination
+      with font subsetting to optimize font sizes.
+
+  TXT
+
+  opts.on('--exclude-locale=LOCALE', 'Disregard characters from the given locale') do |locale|
+    excluded_locales << locale.to_sym
+  end
+
+  opts.on('--exclude-path=PATH', 'Disregard characters from the given relative path') do |path|
+    excluded_paths << File.join(Dir.pwd, path, '')
+  end
+
+  opts.on('--exclude-gem-path=GEM', 'Disregard characters loaded by the given gem') do |gem|
+    excluded_paths << File.join(Gem.loaded_specs[gem].full_gem_path, '')
+  end
+
+  opts.on('--exclude-key-scope=SCOPE', 'Exclude keys in the given top-level key scope') do |scope|
+    excluded_key_scopes << scope.to_sym
+  end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    STDOUT.puts opts
+    exit
+  end
+end.parse!(ARGV)
+
+def sanitize(string)
+  string.gsub(/<.+?>/, '').gsub(/%{.+?}/, '').gsub(/[\n\r\t]/, '')
+end
+
+def hash_values(hash)
+  hash.values.flat_map do |value|
+    case value
+    when Hash
+      hash_values(value)
+    when Array
+      value
+    else
+      [value]
+    end
+  end
+end
+
+I18n.load_path.reject! do |load_path|
+  excluded_paths.any? { |path| load_path.start_with?(path) }
+end
+
+I18n.backend.eager_load!
+
+data = I18n.backend.translations.slice(*I18n.available_locales - excluded_locales)
+excluded_key_scopes.each { |scope| data.each_key { |locale| data[locale].delete(scope) } }
+strings = hash_values(data)
+joined_string = strings.join('')
+sanitized_string = sanitize(joined_string)
+characters = sanitized_string.chars.to_a.uniq.sort.join('')
+
+STDOUT.puts characters

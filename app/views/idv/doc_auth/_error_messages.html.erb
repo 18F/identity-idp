@@ -1,8 +1,0 @@
-<% unless flow_session[:error_message].nil? %>
-  <%= render AlertComponent.new(
-        type: :error,
-        class: 'margin-bottom-4',
-      ) do %>
-    <%= flow_session[:error_message] %>
-  <% end %>
-<% end %>

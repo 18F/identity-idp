@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Mails a letter to the designated receiver
 class GpoDailyTestSender
   def run

@@ -1,41 +1,35 @@
-<% title t('account.navigation.two_factor_authentication') %>
+<% self.title = t('account.navigation.two_factor_authentication') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.account.two_factor')) %>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
     <%= render 'accounts/phone' %>
   <% end %>
 </div>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <%= render 'accounts/auth_apps' %>
 </div>
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? &&
-    IdentityConfig.store.platform_authentication_enabled %>
-  <div class="margin-bottom-4 card profile-info-box">
-    <%= render 'accounts/webauthn_platform' %>
-  </div>
-<% end %>
+<div class="card">
+  <%= render 'accounts/webauthn_platform' %>
+</div>
 
+<div class="card">
+  <%= render 'accounts/webauthn_roaming' %>
+</div>
 
-<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? %>
-  <div class="margin-bottom-4 card profile-info-box">
-    <%= render 'accounts/webauthn_roaming' %>
-  </div>
-<% end %>
-
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <%= render 'accounts/piv_cac' %>
 </div>
 
-<div class="margin-bottom-4 card profile-info-box">
+<div class="card">
   <%= render 'accounts/backup_codes' %>
 </div>
 
 <% if @presenter.show_manage_personal_key_partial? %>
-  <div class="margin-bottom-4 card profile-info-box">
+  <div class="card">
     <%= render 'accounts/manage_personal_key' %>
   </div>
 <% end %>

@@ -1,16 +1,11 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class TotalIal2CostsReport < BaseReport
-    REPORT_NAME = 'total-ial2-costs'.freeze
+    REPORT_NAME = 'total-ial2-costs'
     NUM_LOOKBACK_DAYS = 45
-
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
 
     def perform(date)
       results = transaction_with_timeout { query(date) }

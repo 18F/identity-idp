@@ -7,7 +7,7 @@
       <%= render AlertComponent.new(type: :error, id: 'emails', class: 'margin-bottom-1', message: flash[:email_error]) %>
     <% end %>
   </div>
-  <% @presenter.decorated_user.visible_email_addresses.each do |email| %>
+  <% @presenter.user.visible_email_addresses.each do |email| %>
     <div class="padding-1 border-top border-left border-right border-primary-light">
       <div class="grid-row grid-gap-2">
         <div class="grid-col-fill">
@@ -32,7 +32,7 @@
 </div>
 <% if EmailPolicy.new(current_user).can_add_email? %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) { link_to(add_email_path, **tag_options, &block) },
+        url: add_email_path,
         outline: true,
         icon: :add,
         class: 'margin-top-2',

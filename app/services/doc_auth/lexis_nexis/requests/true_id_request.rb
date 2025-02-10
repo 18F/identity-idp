@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
-        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_enabled
+        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required
 
         def initialize(
           config:,
@@ -11,15 +13,24 @@ module DocAuth
           front_image:,
           back_image:,
           selfie_image: nil,
-          liveness_checking_enabled: nil,
-          image_source: nil
+          image_source: nil,
+          images_cropped: false,
+          liveness_checking_required: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
           @back_image = back_image
           @selfie_image = selfie_image
-          @liveness_checking_enabled = liveness_checking_enabled
           @image_source = image_source
+          @images_cropped = images_cropped
+          # when set to required, be sure to pass in selfie_image
+          @liveness_checking_required = liveness_checking_required
+        end
+
+        def request_context
+          {
+            workflow: workflow,
+          }
         end
 
         private
@@ -29,11 +40,10 @@ module DocAuth
             Document: {
               Front: encode(front_image),
               Back: encode(back_image),
+              Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: 'DriversLicense',
-            },
+            }.compact,
           }
-
-          document[:Document][:Selfie] = encode(selfie_image) if liveness_checking_enabled
 
           settings.merge(document).to_json
         end
@@ -41,8 +51,9 @@ module DocAuth
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
-            liveness_checking_enabled,
             config,
+            liveness_checking_required,
+            request_context,
           )
         end
 
@@ -63,14 +74,14 @@ module DocAuth
         end
 
         def workflow
-          if liveness_checking_enabled && acuant_sdk_source?
-            config.trueid_liveness_nocropping_workflow
-          elsif liveness_checking_enabled && !acuant_sdk_source?
-            config.trueid_liveness_cropping_workflow
-          elsif !liveness_checking_enabled && acuant_sdk_source?
-            config.trueid_noliveness_nocropping_workflow
+          if @images_cropped
+            liveness_checking_required ?
+              config.trueid_liveness_nocropping_workflow :
+              config.trueid_noliveness_nocropping_workflow
           else
-            config.trueid_noliveness_cropping_workflow
+            liveness_checking_required ?
+              config.trueid_liveness_cropping_workflow :
+              config.trueid_noliveness_cropping_workflow
           end
         end
 

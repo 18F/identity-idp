@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module VerifySpAttributesConcern
   def needs_completion_screen_reason
     return nil if sp_session[:issuer].blank?
@@ -8,6 +10,8 @@ module VerifySpAttributesConcern
       :new_sp
     elsif !requested_attributes_verified?(sp_session_identity)
       :new_attributes
+    elsif reverified_after_consent?(sp_session_identity)
+      :reverified_after_consent
     elsif consent_has_expired?(sp_session_identity)
       :consent_expired
     elsif consent_was_revoked?(sp_session_identity)
@@ -20,7 +24,7 @@ module VerifySpAttributesConcern
       current_user,
       current_sp,
     ).link_identity(
-      ial: sp_session_ial,
+      ial: linked_identity_ial,
       verified_attributes: sp_session[:requested_attributes],
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
@@ -30,10 +34,9 @@ module VerifySpAttributesConcern
   def consent_has_expired?(sp_session_identity)
     return false unless sp_session_identity
     return false if sp_session_identity.deleted_at.present?
-    last_estimated_consent = sp_session_identity.last_consented_at || sp_session_identity.created_at
+    last_estimated_consent = last_estimated_consent_for(sp_session_identity)
     !last_estimated_consent ||
-      last_estimated_consent < ServiceProviderIdentity::CONSENT_EXPIRATION.ago ||
-      verified_after_consent?(last_estimated_consent)
+      last_estimated_consent < ServiceProviderIdentity::CONSENT_EXPIRATION.ago
   end
 
   def consent_was_revoked?(sp_session_identity)
@@ -41,12 +44,34 @@ module VerifySpAttributesConcern
     sp_session_identity.deleted_at.present?
   end
 
+  def reverified_after_consent?(sp_session_identity)
+    return false unless sp_session_identity
+    return false if sp_session_identity.deleted_at.present?
+    last_estimated_consent = last_estimated_consent_for(sp_session_identity)
+    return false if last_estimated_consent.nil?
+    verified_after_consent?(last_estimated_consent)
+  end
+
   private
+
+  def last_estimated_consent_for(sp_session_identity)
+    sp_session_identity.last_consented_at || sp_session_identity.created_at
+  end
 
   def verified_after_consent?(last_estimated_consent)
     verification_timestamp = current_user.active_profile&.verified_at
 
     verification_timestamp.present? && last_estimated_consent < verification_timestamp
+  end
+
+  def linked_identity_ial
+    if resolved_authn_context_result.ialmax?
+      0
+    elsif resolved_authn_context_result.identity_proofing?
+      2
+    else
+      1
+    end
   end
 
   def find_sp_session_identity

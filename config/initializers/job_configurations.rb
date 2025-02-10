@@ -1,8 +1,16 @@
-cron_1m = '* * * * *'
+# frozen_string_literal: true
+
 cron_5m = '0/5 * * * *'
+cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
+cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
+cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
+cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
+cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
+cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
+s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -22,29 +30,11 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Send OMB Fitara report to s3
-      omb_fitara_report: {
-        class: 'Reports::OmbFitaraReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Monthly Auths Report to S3
-      unique_monthly_auths: {
-        class: 'Reports::UniqueMonthlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Unique Yearly Auths Report to S3
-      unique_yearly_auths: {
-        class: 'Reports::UniqueYearlyAuthsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Agency User Counts Report to S3
-      agency_user_counts: {
-        class: 'Reports::AgencyUserCountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
+      # Send new device alert notifications
+      create_new_device_alert_send_emails: {
+        class: 'CreateNewDeviceAlert',
+        cron: cron_5m,
+        args: -> { [Time.zone.now] },
       },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
@@ -58,62 +48,26 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Sp User Quotas Report to S3
-      sp_user_quotas: {
-        class: 'Reports::SpUserQuotasReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send Doc Auth Funnel Report to S3
-      doc_auth_funnel_report: {
-        class: 'Reports::DocAuthFunnelReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Proofing Costs Report to S3
-      proofing_costs: {
-        class: 'Reports::ProofingCostsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Doc auth drop off rates per sprint to S3
-      doc_auth_dropoff_per_sprint: {
-        class: 'Reports::DocAuthDropOffRatesPerSprintReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # SP Costs Report to S3
-      sp_costs: {
-        class: 'Reports::SpCostReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_iaa: {
-        class: 'Reports::AgencyInvoiceIaaSupplementReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Agency Invoice Supplement Report to S3
-      sp_invoice_supplement_by_issuer: {
-        class: 'Reports::AgencyInvoiceIssuerSupplementReport',
+      # Email user counts for specific issuer
+      sp_issuer_user_counts: {
+        class: 'Reports::SpIssuerUserCountsReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
       # Combined Invoice Supplement Report to S3
-      combined_invoice_supplement_report: {
-        class: 'Reports::CombinedInvoiceSupplementReport',
+      combined_invoice_supplement_report_v2: {
+        class: 'Reports::CombinedInvoiceSupplementReportV2',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Idv Legacy Conversion Supplement Report to S3
+      idv_legacy_conversion_supplement_report: {
+        class: 'Reports::IdvLegacyConversionSupplementReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
       agreement_summary_report: {
         class: 'Reports::AgreementSummaryReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Total SP Costs Report to S3
-      total_sp_costs: {
-        class: 'Reports::TotalSpCostReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -129,33 +83,9 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # SP Active Users Report to S3
-      sp_active_users_period_pf_performance: {
-        class: 'Reports::SpActiveUsersOverPeriodOfPerformanceReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Doc auth drop off rates report
-      doc_auth_dropoff_rates: {
-        class: 'Reports::DocAuthDropOffRatesReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # IAA Billing Report
-      iaa_billing_report: {
-        class: 'Reports::IaaBillingReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send deleted user accounts to S3
       deleted_user_accounts: {
         class: 'Reports::DeletedUserAccountsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
-      # Send GPO Report to S3
-      gpo_report: {
-        class: 'Reports::GpoReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -171,12 +101,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Partner API reports to S3
-      partner_api_reports: {
-        class: 'Agreements::Reports::PartnerApiReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Send daily auth report to S3
       daily_auths: {
         class: 'Reports::DailyAuthsReport',
@@ -186,6 +110,12 @@ else
       # Send daily dropoffs report to S3
       daily_dropoffs: {
         class: 'Reports::DailyDropoffsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday] },
+      },
+      # Send daily registrations report to S3
+      daily_registrations: {
+        class: 'Reports::DailyRegistrationsReport',
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
@@ -200,10 +130,10 @@ else
         class: 'HeartbeatJob',
         cron: cron_5m,
       },
-      # Queue psql stats job to GoodJob
-      psql_stats_job: {
-        class: 'PsqlStatsJob',
-        cron: cron_1m,
+      # Queue usps in-person visit notifications job to GoodJob
+      in_person_enrollments_ready_for_status_check_job: {
+        class: 'InPerson::EnrollmentsReadyForStatusCheckJob',
+        cron: IdentityConfig.store.in_person_enrollments_ready_job_cron,
         args: -> { [Time.zone.now] },
       },
       # Queue usps proofing job to GoodJob
@@ -212,12 +142,125 @@ else
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
+      # Queue usps proofing job to GoodJob for ready enrollments
+      get_usps_ready_proofing_results_job: {
+        class: 'GetUspsReadyProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_ready_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Queue usps proofing job to GoodJob for waiting enrollments
+      get_usps_waiting_proofing_results_job: {
+        class: 'GetUspsWaitingProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_waiting_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Queue daily in-person proofing reminder email job
+      email_reminder_job: {
+        class: 'InPerson::EmailReminderJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Periodically verify signature on ThreatMetrix javascript
       verify_threat_metrix_js: {
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
-    }
+      # Reject profiles that have been in fraud_review_pending for 30 days
+      fraud_rejection: {
+        class: 'FraudRejectionDailyJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Data warehouse stale data check
+      table_summary_stats_export_job: {
+        class: 'DataWarehouse::TableSummaryStatsExportJob',
+        cron: gpo_cron_24h,
+        args: -> { [Time.zone.now.yesterday.end_of_day] },
+      },
+      # Send Duplicate SSN report to S3
+      duplicate_ssn: {
+        class: 'Reports::DuplicateSsnReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday] },
+      },
+      # Send Identity Verification report to S3
+      identity_verification_report: {
+        class: 'Reports::IdentityVerificationReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday] },
+      },
+      # Refresh USPS auth tokens
+      usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
+                                  {
+                                    class: 'UspsAuthTokenRefreshJob',
+                                    cron: cron_12m,
+                                  }
+                                end),
+      # Account creation/deletion stats for OKRs
+      quarterly_account_stats: {
+        class: 'Reports::QuarterlyAccountStats',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Send reminder letters for old, outstanding GPO verification codes
+      send_gpo_code_reminders: {
+        class: 'GpoReminderJob',
+        cron: cron_24h,
+        args: -> { [14.days.ago] },
+      },
+      # Expire old GPO profiles
+      expire_gpo_profiles: {
+        class: 'GpoExpirationJob',
+        cron: cron_24h,
+      },
+      # Monthly report checking in on key metrics
+      monthly_key_metrics_report: {
+        class: 'Reports::MonthlyKeyMetricsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Send previous week's authentication reports to partners
+      weekly_authentication_report: {
+        class: 'Reports::AuthenticationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Send fraud metrics to Team Judy
+      fraud_metrics_report: {
+        class: 'Reports::FraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous week's drop off report
+      weekly_drop_off_report: {
+        class: 'Reports::DropOffReport',
+        cron: cron_every_monday_1am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous week's protocols report
+      weekly_protocols_report: {
+        class: 'Reports::ProtocolsReport',
+        cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous months's mfa report
+      monthly_mfa_report: {
+        class: 'Reports::MfaReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Download and store Socure reason codes
+      socure_reason_code_download: {
+        class: 'SocureReasonCodeDownloadJob',
+        cron: cron_every_monday,
+      },
+      # Daily sensitive tag column job
+      daily_sensitive_column_job: {
+        class: 'DataWarehouse::DailySensitiveColumnJob',
+        cron: s3_cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+    }.compact
   end
   # rubocop:enable Metrics/BlockLength
 

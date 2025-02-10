@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Default populates a uuid field with a v4 UUID.
 module NonNullUuid
   extend ActiveSupport::Concern

@@ -9,8 +9,8 @@ RSpec.describe ProcessListComponent, type: :component do
 
   it 'renders items slot content at default heading level' do
     rendered = render_inline ProcessListComponent.new do |c|
-      c.item(heading: 'Item 1') { 'Item 1 Content' }
-      c.item(heading: 'Item 2') { 'Item 2 Content' }
+      c.with_item(heading: 'Item 1') { 'Item 1 Content' }
+      c.with_item(heading: 'Item 2') { 'Item 2 Content' }
     end
 
     expect(rendered).to have_css('h2.usa-process-list__heading', text: 'Item 1')
@@ -19,10 +19,20 @@ RSpec.describe ProcessListComponent, type: :component do
     expect(rendered).to have_css('.usa-process-list__item', text: 'Item 2 Content')
   end
 
+  it 'renders items with custom heading id' do
+    rendered = render_inline ProcessListComponent.new do |c|
+      c.with_item(heading: 'Item 1', heading_id: 'heading-id-1')
+      c.with_item(heading: 'Item 2', heading_id: 'heading-id-2')
+    end
+
+    expect(rendered).to have_selector('#heading-id-1', text: 'Item 1')
+    expect(rendered).to have_selector('#heading-id-2', text: 'Item 2')
+  end
+
   context 'custom heading level' do
     it 'renders items slot content at custom heading level' do
       rendered = render_inline ProcessListComponent.new(heading_level: :h3) do |c|
-        c.item(heading: 'Item') { '' }
+        c.with_item(heading: 'Item') { '' }
       end
 
       expect(rendered).to have_css('h3.usa-process-list__heading', text: 'Item')

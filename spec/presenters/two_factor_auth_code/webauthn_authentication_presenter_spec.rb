@@ -1,66 +1,43 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
+RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   include Rails.application.routes.url_helpers
 
   let(:view) { ActionController::Base.new.view_context }
   let(:reauthn) {}
-  let(:presenter) do
-    TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, service_provider: nil,
-          view: view, platform_authenticator: platform_authenticator)
-  end
-
-  let(:allow_user_to_switch_method) { false }
-  let(:aal3_required) { false }
-  let(:platform_authenticator) { false }
-  let(:multiple_factors_enabled) { false }
-  let(:service_provider_mfa_policy) do
-    instance_double(
-      ServiceProviderMfaPolicy,
-      aal3_required?: aal3_required,
-      allow_user_to_switch_method?: allow_user_to_switch_method,
-      multiple_factors_enabled?: multiple_factors_enabled,
+  let(:credentials) { [] }
+  subject(:presenter) do
+    TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
+      data: { reauthn:, credentials: },
+      service_provider: nil,
+      view: view,
+      platform_authenticator: platform_authenticator,
     )
   end
 
-  before do
-    allow(presenter).to receive(:service_provider_mfa_policy).and_return service_provider_mfa_policy
+  let(:phishing_resistant_required) { false }
+  let(:platform_authenticator) { false }
+
+  describe '#webauthn_title' do
+    it 'shows title for security key mfa' do
+      expect(subject.webauthn_title).to eq(t('titles.present_webauthn'))
+    end
+
+    context 'when using platform authenticator mfa' do
+      let(:platform_authenticator) { true }
+      it 'shows title for platform authenticator mfa' do
+        expect(subject.webauthn_title).to eq(
+          t('two_factor_authentication.webauthn_platform_header_text'),
+        )
+      end
+    end
   end
 
   describe '#webauthn_help' do
-    context 'with aal3 required' do
-      let(:aal3_required) { true }
+    let(:phishing_resistant_required) { false }
 
-      context 'the user only has a security key enabled' do
-        let(:allow_user_to_switch_method) { false }
-
-        it 'returns the help text for just the security key' do
-          expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_only_html'),
-          )
-        end
-      end
-
-      context 'the user has a security key and PIV enabled' do
-        let(:allow_user_to_switch_method) { true }
-
-        it 'returns the help text for the security key or PIV' do
-          expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html'),
-          )
-        end
-      end
-    end
-
-    context 'with aal3 not required' do
-      let(:aal3_required) { false }
-
-      it 'displays the help text' do
-        expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_html'),
-        )
-      end
+    it 'returns the help text for security key' do
+      expect(presenter.webauthn_help).to eq(t('instructions.mfa.webauthn.confirm_webauthn'))
     end
 
     context 'with a platform authenticator' do
@@ -68,7 +45,7 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'returns the help text for a platform authenticator' do
         expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME),
+          t('instructions.mfa.webauthn.confirm_webauthn_platform_html'),
         )
       end
     end
@@ -94,42 +71,6 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#multiple_factors_enabled?' do
-    context 'with multiple factors enabled in user policy' do
-      let(:multiple_factors_enabled) { true }
-
-      it 'returns true' do
-        expect(presenter.multiple_factors_enabled?).to be_truthy
-      end
-    end
-
-    context 'with multiple factors not enabled for user policy' do
-      it 'returns false' do
-        expect(presenter.multiple_factors_enabled?).to be_falsey
-      end
-    end
-  end
-
-  describe '#verified_info_text' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_verified.info'),
-        )
-      end
-    end
-
-    context 'with a platform authenticator' do
-      let(:platform_authenticator) { true }
-
-      it 'renders the platform authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.info'),
-        )
-      end
-    end
-  end
-
   describe '#header' do
     context 'with a roaming authenticator' do
       it 'renders the roaming authenticator header' do
@@ -150,56 +91,26 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#verified_header' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_verified.header'),
-        )
+  describe '#troubleshooting_options' do
+    let(:phishing_resistant_required) { false }
+
+    it 'includes option to choose another authentication method' do
+      expect(presenter.troubleshooting_options.size).to eq(2)
+      expect(presenter.troubleshooting_options.first).to satisfy do |c|
+        c.url == login_two_factor_options_path &&
+          c.content == t('two_factor_authentication.login_options_link_text')
       end
     end
 
-    context 'with a platform authenticator' do
+    context 'with platform authenticator' do
       let(:platform_authenticator) { true }
 
-      it 'renders the platform authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.header'),
-        )
+      it 'includes option to learn more about face or touch unlock' do
+        expect(presenter.troubleshooting_options.size).to eq(3)
+        expect(presenter.troubleshooting_options[1]).to satisfy do |c|
+          c.content == t('instructions.mfa.webauthn_platform.learn_more_help')
+        end
       end
-    end
-  end
-
-  describe '#help_text' do
-    it 'supplies no help text' do
-      expect(presenter.help_text).to eq('')
-    end
-  end
-
-  describe '#link_text' do
-    let(:aal3_required) { true }
-
-    context 'with multiple AAL3 methods' do
-      let(:allow_user_to_switch_method) { true }
-
-      it 'supplies link text' do
-        expect(presenter.link_text).to eq(t('two_factor_authentication.webauthn_piv_available'))
-      end
-    end
-
-    context 'with only one AAL3 method do' do
-      it 'supplies no link text' do
-        expect(presenter.link_text).to eq('')
-      end
-    end
-  end
-
-  describe '#fallback_question' do
-    let(:allow_user_to_switch_method) { true }
-
-    it 'supplies a fallback_question' do
-      expect(presenter.fallback_question).to \
-        eq(t('two_factor_authentication.webauthn_fallback.question'))
     end
   end
 
@@ -220,6 +131,12 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'returns the sign out path' do
         expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
       end
+    end
+  end
+
+  describe '#credentials' do
+    it 'returns credentials from initialized data' do
+      expect(presenter.credentials).to eq credentials
     end
   end
 

@@ -1,0 +1,37 @@
+{
+  "name": "@18f/identity-address-search",
+  "version": "3.4.0",
+  "type": "module",
+  "private": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "webpack"
+  },
+  "exports": {
+    ".": {
+      "source": "./index.tsx",
+      "default": "./dist/index.js"
+    }
+  },
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/18f/identity-idp/issues"
+  },
+  "homepage": "https://github.com/18f/identity-idp",
+  "dependencies": {
+    "focus-trap": "^6.7.1",
+    "swr": "^2.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "@18f/identity-i18n": ">=1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18f/identity-idp.git",
+    "directory": "app/javascript/packages/address-search"
+  },
+  "sideEffects": false
+}

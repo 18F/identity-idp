@@ -19,20 +19,16 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
-  def self.document_face_image
-    load_image_data('id-face.jpg')
-  end
-
-  def self.document_face_image_multipart
-    Rack::Test::UploadedFile.new(fixture_path('id-face.jpg'), 'image/jpeg')
-  end
-
   def self.selfie_image
     load_image_data('selfie.jpg')
   end
 
   def self.selfie_image_multipart
     Rack::Test::UploadedFile.new(fixture_path('selfie.jpg'), 'image/jpeg')
+  end
+
+  def self.selfie_image_data_uri
+    "data:image/jpeg;base64,#{Base64.strict_encode64(selfie_image)}"
   end
 
   def self.error_yaml_multipart
@@ -47,6 +43,22 @@ module DocAuthImageFixtures
     path = File.join(
       File.dirname(__FILE__),
       '../fixtures/ial2_test_credential_no_dob.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
+  def self.portrait_match_success_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_portrait_match_success.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
+  def self.portrait_match_fail_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_portrait_match_failure.yml',
     )
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end

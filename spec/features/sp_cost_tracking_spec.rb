@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'SP Costing', :email do
+RSpec.feature 'SP Costing', :email do
   include SpAuthHelper
   include SamlAuthHelper
   include IdvHelper
@@ -12,21 +12,27 @@ feature 'SP Costing', :email do
   let(:email) { 'test@test.com' }
   let(:password) { Features::SessionHelper::VALID_PASSWORD }
 
+  before do
+    allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
+      .and_return([issuer])
+  end
+
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
     create_ial2_user_from_sp(email)
 
     expect_sp_cost_type(0, 2, 'acuant_front_image')
     expect_sp_cost_type(1, 2, 'acuant_back_image')
     expect_sp_cost_type(2, 2, 'acuant_result')
+    expect_sp_cost_type(3, 2, 'threatmetrix')
     expect_sp_cost_type(
-      3, 2, 'lexis_nexis_resolution',
+      4, 2, 'lexis_nexis_resolution',
       transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(
-      4, 2, 'aamva',
+      5, 2, 'aamva',
       transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID
     )
-    expect_sp_cost_type(5, 2, 'lexis_nexis_address')
+    expect_sp_cost_type(6, 2, 'lexis_nexis_address')
   end
 
   it 'logs the cost to the SP for reproofing', js: true do
@@ -39,7 +45,7 @@ feature 'SP Costing', :email do
     user.active_profile.update!(verified_at: 60.days.ago)
 
     visit_idp_from_sp_with_ial2(:oidc, verified_within: '45d')
-    fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, password)
+    fill_in_credentials_and_submit(user.last_sign_in_email_address.email, password)
     fill_in_code_with_last_totp(user)
     click_submit_default
     complete_all_doc_auth_steps_before_password_step

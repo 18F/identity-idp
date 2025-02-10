@@ -1,99 +1,211 @@
 require 'rails_helper'
 
-describe RegisterUserEmailForm do
+RSpec.describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
-  let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
+  subject { RegisterUserEmailForm.new(analytics:) }
 
   it_behaves_like 'email validation'
 
   describe '#submit' do
-    context 'when email is already taken' do
-      it 'sets success to true to prevent revealing account existence' do
-        existing_user = create(:user, :signed_up, email: 'taken@gmail.com')
+    let(:anonymous_uuid) { 'anonymous-uuid' }
+    let(:email_domain) { 'gmail.com' }
+    let(:registered_email_address) { 'taken@' + email_domain }
+    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }
+    let(:unregistered_email_address) { 'not_taken@' + email_domain }
+    let(:registered_and_confirmed_user) do
+      [:user, :fully_registered, **{ email: registered_email_address }]
+    end
+    let(:unconfirmed_user_registered_email) do
+      [
+        :user,
+        **{
+          email: registered_email_address,
+          email_language: 'en',
+          confirmed_at: nil,
+          uuid: '123',
+        },
+      ]
+    end
+    context 'when the user is suspended' do
+      it 'sends the correct email to a fully registered and confirmed user' do
+        user = create(*registered_and_confirmed_user)
+        user.suspend!
 
-        mailer = instance_double(ActionMailer::MessageDelivery)
-        allow(UserMailer).to receive(:signup_with_your_email).
-          with(existing_user, existing_user.email).and_return(mailer)
-        allow(mailer).to receive(:deliver_now_or_later)
+        subject.submit(email: registered_email_address, terms_accepted: '1')
 
-        extra = {
-          email_already_exists: true,
-          throttled: false,
-          user_id: existing_user.uuid,
-          domain_name: 'gmail.com',
-        }
-
-        expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1').to_h).to eq(
-          success: true,
-          errors: {},
-          **extra,
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [registered_email_address],
+          subject: t('user_mailer.suspended_create_account.subject'),
         )
-        expect(subject.email).to eq 'taken@gmail.com'
-        expect(mailer).to have_received(:deliver_now_or_later)
+        expect(subject.send(:email_address_record).user).to eq(user)
+      end
+      it 'sends the correct email to a taken email on an unconfirmed user' do
+        user = create(*unconfirmed_user_registered_email)
+        user.suspend!
+
+        subject.submit(email: registered_email_address, terms_accepted: '1')
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [registered_email_address],
+          subject: t('user_mailer.suspended_create_account.subject'),
+        )
+        expect(subject.send(:email_address_record).user).to eq(user)
+      end
+      it 'sends the correct email to and unconfimed email on a confirmed user' do
+        old_user = create(:user)
+        old_user.suspend!
+        email_address = create(:email_address, user: old_user, confirmed_at: nil)
+
+        subject.submit(email: email_address.email, terms_accepted: '1')
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [email_address.email],
+          subject: t('user_mailer.suspended_create_account.subject'),
+        )
+        expect(subject.send(:email_address_record).user).to eq(old_user)
+      end
+    end
+
+    context 'email submission with special characters' do
+      context 'mx record are gmail' do
+        shared_examples 'blocked email address' do |email_address|
+          it 'sends the email with error code' do
+            user = create(*registered_and_confirmed_user)
+            user.suspend!
+
+            subject.submit(email: email_address, terms_accepted: '1')
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              to: [registered_email_address],
+              subject: t('user_mailer.suspended_create_account.subject'),
+            )
+            expect(subject.send(:blocked_email_address).user).to eq(user)
+          end
+        end
+        context 'when email contains a plus sign' do
+          it_behaves_like 'blocked email address', 'taken+1@gmail.com'
+        end
+        context 'when email contains a dot' do
+          it_behaves_like 'blocked email address', 'tak.en@gmail.com'
+        end
+      end
+    end
+
+    context 'when email is already taken' do
+      let!(:existing_user) { create(*registered_and_confirmed_user) }
+      let(:params) do
+        {
+          email: variation_of_preexisting_email,
+          email_language: 'en',
+          terms_accepted: '1',
+        }
+      end
+      let(:extra_params) do
+        {
+          email_already_exists: true,
+          rate_limited: false,
+          user_id: existing_user.uuid,
+          domain_name: email_domain,
+          email_language: 'en',
+        }
       end
 
-      it 'creates throttle events after reaching throttle limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: 'taken@example.com', email_already_registered: true,
+      it 'sets success to true to prevent revealing account existence' do
+        expect(subject.submit(params).to_h).to eq(success: true, errors: {}, **extra_params)
+        expect(subject.email).to eq registered_email_address
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [subject.email],
+          subject: t('mailer.email_reuse_notice.subject'),
         )
+      end
 
-        create(:user, :signed_up, email: 'taken@example.com')
-
-        (IdentityConfig.store.reg_confirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'TAKEN@example.com', terms_accepted: '1')
+      it 'creates rate_limiter events after reaching rate_limiter limit' do
+        IdentityConfig.store.reg_confirmed_email_max_attempts.times do
+          subject.submit(params)
         end
 
         expect(analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :reg_confirmed_email,
+          'Rate Limit Reached',
+          limiter_type: :reg_confirmed_email,
         )
       end
     end
 
     context 'when email is already taken and existing user is unconfirmed' do
-      it 'sends confirmation instructions to existing user' do
-        user = create(:user, email: 'existing@test.com', confirmed_at: nil, uuid: '123')
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
-
-        send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
-        expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).with(
-          user,
-        ).and_return(send_sign_up_email_confirmation)
-
-        extra = {
-          email_already_exists: true,
-          throttled: false,
-          user_id: user.uuid,
-          domain_name: 'test.com',
+      let!(:existing_user) do
+        create(*unconfirmed_user_registered_email)
+      end
+      let(:params) do
+        {
+          email: variation_of_preexisting_email,
+          email_language: 'fr',
+          terms_accepted: '1',
         }
+      end
+      let(:extra_params) do
+        {
+          email_already_exists: true,
+          rate_limited: false,
+          user_id: existing_user.uuid,
+          domain_name: email_domain,
+          email_language: 'fr',
+        }
+      end
+      let(:send_sign_up_email_confirmation) { instance_double(SendSignUpEmailConfirmation) }
 
-        expect(subject.submit(email: user.email, terms_accepted: '1').to_h).to eq(
+      it 'sends confirmation instructions to existing user' do
+        expect(send_sign_up_email_confirmation).to receive(:call)
+        expect(SendSignUpEmailConfirmation).to receive(:new)
+          .with(existing_user)
+          .and_return(send_sign_up_email_confirmation)
+
+        result = subject.submit(params).to_h
+
+        expect(result).to eq(
           success: true,
           errors: {},
-          **extra,
+          **extra_params,
         )
       end
 
-      it 'creates throttle events after reaching throttle limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: 'test@example.com', email_already_registered: false,
-        )
+      it 'updates users language preference' do
+        expect do
+          subject.submit(params)
+        end.to change { existing_user.reload.email_language }.from('en').to('fr')
+      end
 
-        create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
-        (IdentityConfig.store.reg_unconfirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'test@example.com', terms_accepted: '1')
+      it 'creates rate_limiter events after reaching rate_limiter limit' do
+        IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
+          subject.submit(email: registered_email_address, terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :reg_unconfirmed_email,
+          'Rate Limit Reached',
+          limiter_type: :reg_unconfirmed_email,
         )
+      end
+
+      context 'with the same normalized email address' do
+        let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
+
+        it 'creates rate_limiter events after reaching rate_limiter limit' do
+          1.upto(rate_limit) do |i|
+            RegisterUserEmailForm.new(analytics:)
+              .submit(
+                email: "taken+#{i}@gmail.com", terms_accepted: '1',
+              )
+          end
+
+          expect(analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :reg_unconfirmed_email,
+          )
+        end
       end
     end
 
@@ -104,8 +216,8 @@ describe RegisterUserEmailForm do
 
         send_sign_up_email_confirmation = instance_double(SendSignUpEmailConfirmation)
         expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).
-          and_return(send_sign_up_email_confirmation)
+        expect(SendSignUpEmailConfirmation).to receive(:new)
+          .and_return(send_sign_up_email_confirmation)
 
         result = subject.submit(email: email_address.email, terms_accepted: '1')
         uuid = result.extra[:user_id]
@@ -118,13 +230,18 @@ describe RegisterUserEmailForm do
     end
 
     context 'when email is not already taken' do
+      let(:email) { unregistered_email_address }
+      let(:email_language) { 'en' }
+      let(:params) { { email:, terms_accepted: '1', email_language: } }
+
       it 'is valid' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com', terms_accepted: '1')
+        submit_form = subject.submit(params)
         extra = {
           email_already_exists: false,
-          throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
-          domain_name: 'gmail.com',
+          rate_limited: false,
+          user_id: User.find_with_email(email).uuid,
+          domain_name: email_domain,
+          email_language:,
         }
 
         expect(submit_form.to_h).to eq(
@@ -135,50 +252,168 @@ describe RegisterUserEmailForm do
       end
 
       it 'saves the user email_language for a valid form' do
-        form = RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker)
+        form = RegisterUserEmailForm.new(analytics:)
 
-        response = form.submit(
-          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: '1',
-        )
+        response = form.submit(params.merge(email_language: 'fr'))
         expect(response).to be_success
 
-        expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
+        expect(User.find_with_email(unregistered_email_address).email_language).to eq('fr')
+      end
+
+      context 'with the same normalized email address' do
+        let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
+
+        it 'creates rate_limiter events after reaching rate_limiter limit' do
+          1.upto(rate_limit) do |i|
+            RegisterUserEmailForm.new(analytics:)
+              .submit(params.merge(email: "taken+#{i}@gmail.com"))
+          end
+
+          expect(analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :reg_unconfirmed_email,
+          )
+        end
       end
     end
 
     context 'when email is invalid' do
       it 'returns false and adds errors to the form object' do
+        invalid_email = 'invalid_email'
         errors = { email: [t('valid_email.validations.email.invalid')] }
 
         extra = {
           email_already_exists: false,
-          throttled: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'invalid_email',
+          rate_limited: false,
+          user_id: anonymous_uuid,
+          domain_name: invalid_email,
         }
 
-        expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to include(
+        expect(subject.submit(email: invalid_email, terms_accepted: '1').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
           **extra,
+        )
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns false and adds errors to the form object when domain is invalid' do
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        extra = {
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: anonymous_uuid,
+          domain_name: 'çà.com',
+        }
+
+        expect(subject.submit(email: 'test@çà.com', terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns false and adds errors when domain is blocked and email exists' do
+        blocked_domain = 'blocked.com'
+        blocked_email = 'test@' + blocked_domain
+        email_address = create(:email_address, email: blocked_email)
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+        allow(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
+
+        extra = {
+          email_already_exists: true,
+          rate_limited: false,
+          user_id: email_address.user.uuid,
+          domain_name: blocked_domain,
+        }
+
+        expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns false and adds errors when subdomain is blocked' do
+        blocked_domain = 'blocked.com'
+        blocked_email = 'test@sub.' + blocked_domain
+
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+        expect(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
+
+        expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: 'anonymous-uuid',
+          domain_name: 'sub.blocked.com',
+        )
+        expect_delivered_email_count(0)
+      end
+    end
+
+    context 'when terms accepted using castable value' do
+      let(:email) { unregistered_email_address }
+      let(:email_language) { 'en' }
+      let(:params) { { email:, email_language:, terms_accepted: 'true' } }
+
+      it 'is successful' do
+        result = subject.submit(params)
+
+        expect(result.to_h).to eq(
+          success: true,
+          errors: {},
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: User.find_with_email(email).uuid,
+          domain_name: email_domain,
+          email_language:,
+        )
+      end
+    end
+
+    context 'when terms not accepted' do
+      let(:email_language) { 'en' }
+      let(:params) { { email: unregistered_email_address, email_language: } }
+
+      it 'is unsuccessful with error for terms accepted' do
+        result = subject.submit(params)
+
+        expect(result.to_h).to eq(
+          success: false,
+          errors: { terms_accepted: [t('errors.registration.terms')] },
+          error_details: { terms_accepted: { terms: true } },
+          email_already_exists: false,
+          rate_limited: false,
+          user_id: 'anonymous-uuid',
+          domain_name: email_domain,
+          email_language:,
         )
       end
     end
 
     context 'when request_id is invalid' do
       it 'returns successful and does not include request_id in email' do
+        invalid_id = 'fake_id'
         submit_form = subject.submit(
-          email: 'not_taken@example.com',
-          request_id: 'fake_id',
+          email: unregistered_email_address,
+          request_id: invalid_id,
           terms_accepted: '1',
         )
 
         expect(submit_form.success?).to eq true
 
         last_email = ActionMailer::Base.deliveries.last
-        expect(last_email.to).to eq ['not_taken@example.com']
-        expect(last_email.body).to_not include 'fake_id'
+        expect(last_email.to).to eq [unregistered_email_address]
+        expect(last_email.body).to_not include invalid_id
       end
     end
 
@@ -192,15 +427,17 @@ describe RegisterUserEmailForm do
         )
         request_id = sp_request.uuid
         submit_form = subject.submit(
-          email: 'not_taken@example.com',
+          email: unregistered_email_address,
           request_id: request_id,
           terms_accepted: '1',
+          email_language: 'en',
         )
         extra = {
-          domain_name: 'example.com',
+          domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
-          user_id: User.find_with_email('not_taken@example.com').uuid,
+          rate_limited: false,
+          user_id: User.find_with_email(unregistered_email_address).uuid,
+          email_language: 'en',
         }
 
         expect(submit_form.to_h).to eq(
@@ -210,7 +447,7 @@ describe RegisterUserEmailForm do
         )
 
         last_email = ActionMailer::Base.deliveries.last
-        expect(last_email.to).to eq ['not_taken@example.com']
+        expect(last_email.to).to eq [unregistered_email_address]
         expect(last_email.body).to_not include request_id
       end
     end
@@ -218,15 +455,17 @@ describe RegisterUserEmailForm do
     context 'when request_id is blank' do
       it 'returns success with no errors' do
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: unregistered_email_address,
           request_id: nil,
           terms_accepted: '1',
+          email_language: 'en',
         )
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
+          rate_limited: false,
+          user_id: User.find_with_email(unregistered_email_address).uuid,
+          email_language: 'en',
         }
 
         expect(submit_form.to_h).to eq(
@@ -240,17 +479,49 @@ describe RegisterUserEmailForm do
     context 'when user does not agree to terms' do
       it 'returns failure with errors' do
         errors = { terms_accepted: [t('errors.registration.terms')] }
+        params = {
+          email: unregistered_email_address,
+          email_language: 'en',
+        }
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
-          user_id: 'anonymous-uuid',
+          rate_limited: false,
+          user_id: anonymous_uuid,
+          email_language: 'en',
         }
 
-        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        submit_form = subject.submit(params)
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
+      end
+
+      it 'returns failure with errors when email already exists' do
+        email_address = create(
+          :email_address,
+          email: registered_email_address,
+          user: build(:user, accepted_terms_at: nil),
+        )
+        errors = { terms_accepted: [t('errors.registration.terms')] }
+        params = {
+          email: registered_email_address,
+          email_language: 'en',
+        }
+        extra = {
+          domain_name: email_domain,
+          email_already_exists: true,
+          rate_limited: false,
+          user_id: email_address.user.uuid,
+          email_language: 'en',
+        }
+
+        submit_form = subject.submit(params)
+        expect(submit_form.success?).to eq false
+        expect(submit_form.extra).to eq extra
+        expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
       end
     end
 
@@ -258,13 +529,14 @@ describe RegisterUserEmailForm do
       it 'returns failure with errors' do
         errors = { email_language: [t('errors.messages.inclusion')] }
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
-          user_id: 'anonymous-uuid',
+          rate_limited: false,
+          user_id: anonymous_uuid,
+          email_language: '01234567890',
         }
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: unregistered_email_address,
           terms_accepted: '1',
           email_language: '01234567890',
         )
@@ -272,6 +544,7 @@ describe RegisterUserEmailForm do
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
+        expect_delivered_email_count(0)
       end
     end
   end

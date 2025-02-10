@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'SAML IALMAX sign in' do
+RSpec.feature 'SAML IALMAX sign in' do
   include SamlAuthHelper
 
   context 'with an ial2 SP' do
@@ -9,7 +9,9 @@ feature 'SAML IALMAX sign in' do
         user = user_with_piv_cac
         visit_idp_from_saml_sp_with_ialmax
         signin_with_piv(user)
+        click_submit_default
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -23,10 +25,12 @@ feature 'SAML IALMAX sign in' do
       end
 
       scenario 'password sign in' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         visit_idp_from_saml_sp_with_ialmax
         sign_in_live_with_2fa(user)
+        click_submit_default
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -47,9 +51,11 @@ feature 'SAML IALMAX sign in' do
         user.piv_cac_configurations.create(x509_dn_uuid: 'helloworld', name: 'My PIV Card')
         visit_idp_from_saml_sp_with_ialmax
         signin_with_piv(user)
-        fill_in 'user[password]', with: user.password
         click_submit_default
+        fill_in 'user[password]', with: user.password
+        click_submit_default_twice
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -68,7 +74,9 @@ feature 'SAML IALMAX sign in' do
         user = create(:profile, :active, :verified, pii: pii).user
         visit_idp_from_saml_sp_with_ialmax
         sign_in_live_with_2fa(user)
+        click_submit_default
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -93,7 +101,9 @@ feature 'SAML IALMAX sign in' do
         user.piv_cac_configurations.create(x509_dn_uuid: 'helloworld', name: 'My PIV Card')
         visit_idp_from_saml_sp_with_ialmax
         signin_with_piv(user)
+        click_submit_default
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -114,7 +124,9 @@ feature 'SAML IALMAX sign in' do
         )
         visit_idp_from_saml_sp_with_ialmax
         sign_in_live_with_2fa(user)
+        click_submit_default
         click_agree_and_continue
+        click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
         expect(xmldoc.attribute_value_for(:ial)).to eq(
@@ -131,9 +143,9 @@ feature 'SAML IALMAX sign in' do
 
   context 'with an ial1 SP' do
     before do
-      ServiceProvider.
-        find_by(issuer: 'saml_sp_ial2').
-        update!(ial: 1)
+      ServiceProvider
+        .find_by(issuer: 'saml_sp_ial2')
+        .update!(ial: 1)
     end
 
     scenario 'returns an ial1 responses even with an ial2 user' do
@@ -141,7 +153,9 @@ feature 'SAML IALMAX sign in' do
       user = create(:profile, :active, :verified, pii: pii).user
       visit_idp_from_saml_sp_with_ialmax
       sign_in_live_with_2fa(user)
+      click_submit_default
       click_agree_and_continue
+      click_submit_default
 
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
       expect(xmldoc.attribute_value_for(:ial)).to eq(

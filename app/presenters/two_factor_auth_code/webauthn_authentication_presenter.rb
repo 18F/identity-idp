@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthCode
   # The WebauthnAuthenticationPresenter class is the presenter for webauthn verification
   class WebauthnAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :credential_ids, :user_opted_remember_device_cookie
+    attr_reader :credentials, :user_opted_remember_device_cookie
 
     def initialize(data:, view:, service_provider:, remember_device_default: true,
                    platform_authenticator: false)
@@ -16,16 +18,19 @@ module TwoFactorAuthCode
       )
     end
 
-    def webauthn_help
-      if service_provider_mfa_policy.aal3_required? &&
-         service_provider_mfa_policy.allow_user_to_switch_method?
-        t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html')
-      elsif service_provider_mfa_policy.aal3_required?
-        t('instructions.mfa.webauthn.confirm_webauthn_only_html')
-      elsif platform_authenticator?
-        t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME)
+    def webauthn_title
+      if platform_authenticator?
+        t('two_factor_authentication.webauthn_platform_header_text')
       else
-        t('instructions.mfa.webauthn.confirm_webauthn_html')
+        t('titles.present_webauthn')
+      end
+    end
+
+    def webauthn_help
+      if platform_authenticator?
+        t('instructions.mfa.webauthn.confirm_webauthn_platform_html')
+      else
+        t('instructions.mfa.webauthn.confirm_webauthn')
       end
     end
 
@@ -37,26 +42,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def login_text
-      if platform_authenticator?
-        t('forms.webauthn_platform_setup.login_text')
-      else
-        t('forms.webauthn_setup.login_text')
-      end
-    end
-
-    def help_text
-      ''
-    end
-
-    def verified_info_text
-      if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_verified.info')
-      else
-        t('two_factor_authentication.webauthn_verified.info')
-      end
-    end
-
     def header
       if platform_authenticator?
         t('two_factor_authentication.webauthn_platform_header_text')
@@ -65,36 +50,21 @@ module TwoFactorAuthCode
       end
     end
 
-    def verified_header
+    def troubleshooting_options
+      options = [choose_another_method_troubleshooting_option]
       if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_verified.header')
-      else
-        t('two_factor_authentication.webauthn_verified.header')
+        options << BlockLinkComponent.new(
+          url: help_center_redirect_path(
+            category: 'trouble-signing-in',
+            article: 'face-or-touch-unlock',
+            flow: :two_factor_authentication,
+            step: redirect_location_step,
+          ),
+          new_tab: true,
+        ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help'))
       end
-    end
-
-    def link_text
-      if service_provider_mfa_policy.aal3_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          t('two_factor_authentication.webauthn_piv_available')
-        else
-          ''
-        end
-      else
-        super
-      end
-    end
-
-    def link_path
-      if service_provider_mfa_policy.aal3_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          login_two_factor_piv_cac_url
-        else
-          ''
-        end
-      else
-        super
-      end
+      options << learn_more_about_authentication_options_troubleshooting_option
+      options
     end
 
     def cancel_link
@@ -105,25 +75,8 @@ module TwoFactorAuthCode
       end
     end
 
-    def webauthn_not_enabled_link
-      if platform_authenticator?
-        login_two_factor_webauthn_error_path
-      else
-        login_two_factor_options_path
-      end
-    end
-
-    def fallback_question
-      return '' unless service_provider_mfa_policy.allow_user_to_switch_method?
-      if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_fallback.question')
-      else
-        t('two_factor_authentication.webauthn_fallback.question')
-      end
-    end
-
-    def multiple_factors_enabled?
-      service_provider_mfa_policy.multiple_factors_enabled?
+    def redirect_location_step
+      :webauthn_verification
     end
 
     def platform_authenticator?

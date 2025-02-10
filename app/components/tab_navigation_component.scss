@@ -1,0 +1,20 @@
+@use 'uswds-core' as *;
+
+@forward 'usa-button-group/src/styles';
+
+.tab-navigation .usa-button-group--segmented {
+  .usa-button-group__item {
+    flex-basis: 50%;
+  }
+
+  .usa-button-group__item:last-child > .usa-button,
+  .usa-button {
+    width: 100%;
+  }
+
+  .usa-button--big {
+    @include at-media-max('tablet') {
+      font-size: units(2);
+    }
+  }
+}

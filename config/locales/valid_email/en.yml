@@ -1,6 +1,0 @@
----
-en:
-  valid_email:
-    validations:
-      email:
-        invalid: Email address is not valid

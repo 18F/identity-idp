@@ -9,7 +9,7 @@ module.exports = (api) => {
   return {
     presets: [
       ['@babel/preset-env', { targets }],
-      '@babel/typescript',
+      ['@babel/typescript', { optimizeConstEnums: true }],
       [
         '@babel/preset-react',
         {
@@ -18,12 +18,11 @@ module.exports = (api) => {
       ],
     ],
     plugins: [
-      ['@babel/plugin-proposal-decorators', { version: 'legacy' }],
       [
         'polyfill-corejs3',
         {
           method: 'usage-global',
-          targets: targets ?? '> 1% and supports es6-module',
+          targets,
         },
       ],
       ['polyfill-regenerator', { method: 'usage-global', targets }],

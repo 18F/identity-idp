@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp verification step spec', :js do
+RSpec.feature 'phone otp verification step spec', :js do
   include IdvStepHelper
 
   it 'requires the user to enter the correct otp before continuing' do
@@ -10,22 +10,22 @@ feature 'phone otp verification step spec', :js do
     complete_idv_steps_before_phone_otp_verification_step(user)
 
     # Attempt to bypass the step
-    visit idv_review_path
-    expect(current_path).to eq(idv_otp_verification_path)
+    visit idv_enter_password_path
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     # Enter an incorrect otp
     fill_in 'code', with: '000000'
     click_submit_default
 
     expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-    expect(current_path).to eq(idv_otp_verification_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     # Enter the correct code
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
   it 'rejects OTPs after they are expired' do
@@ -49,19 +49,21 @@ feature 'phone otp verification step spec', :js do
 
     sent_message_count = Telephony::Test::Message.messages.count
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(Telephony::Test::Message.messages.count).to eq(sent_message_count + 1)
-    expect(current_path).to eq(idv_otp_verification_path)
+    expect(page).to have_current_path(idv_otp_verification_path)
 
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+    expect(page).to have_current_path(idv_enter_password_path)
   end
 
   it 'redirects back to the step with an error if Telephony raises an error on resend' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(4)
+
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
@@ -73,15 +75,14 @@ feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
     expect(page).to have_current_path(idv_phone_path)
 
     allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-    fill_out_phone_form_ok
-    click_idv_continue
+    fill_out_phone_form_ok('2342255432')
     choose_idv_otp_delivery_method_sms
 
     calling_area_error = Telephony::InvalidCallingAreaError.new('error message')
@@ -92,7 +93,7 @@ feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
 
     expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)

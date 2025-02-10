@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'saml_idp_constants'
 require 'custom_devise_failure_app'
 require 'mailable'
@@ -32,13 +34,13 @@ end
 Warden::Manager.after_authentication do |user, auth, options|
   if auth.env['action_dispatch.cookies']
     expected_cookie_value = "#{user.class}-#{user.id}"
-    actual_cookie_value = auth.env['action_dispatch.cookies'].
-      signed[TwoFactorAuthenticatable::REMEMBER_2FA_COOKIE]
+    actual_cookie_value = auth.env['action_dispatch.cookies']
+      .signed[TwoFactorAuthenticatable::REMEMBER_2FA_COOKIE]
     bypass_by_cookie = actual_cookie_value == expected_cookie_value
   end
 
   unless bypass_by_cookie
     auth.session(options[:scope])[TwoFactorAuthenticatable::NEED_AUTHENTICATION] =
-      user.need_two_factor_authentication?(auth.request)
+      MfaPolicy.new(user).two_factor_enabled?
   end
 end

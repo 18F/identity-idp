@@ -1,4 +1,4 @@
-<% title t('titles.reactivate_account') %>
+<% self.title = t('titles.reactivate_account') %>
 
 <div class="no-js">
   <%= render AlertComponent.new(
@@ -29,9 +29,14 @@
   <%= t('instructions.account.reactivate.explanation') %>
 </p>
 
-<div class="scale-down">
-  <%= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX' %>
-</div>
+<figure class="margin-0 scale-down" aria-label="<%= t('users.personal_key.accessible_labels.preview') %>">
+  <%= render 'partials/personal_key/key',
+             code: 'XXXX-XXXX-XXXX-XXXX',
+             code_example: true,
+             personal_key_generated_at: @personal_key_generated_at,
+             show_save_buttons: false
+  %>
+</figure>
 
 <div class="grid-row">
   <div class="tablet:grid-col-10 tablet:grid-offset-1">

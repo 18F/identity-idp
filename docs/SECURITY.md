@@ -9,7 +9,7 @@ Our application is continuously monitored for CVE, OSVDB, XSS, SQL injection and
 
 #### Encryption at rest
 
-All PII is encrypted at rest with a symmetric key derived from the user's passphrase, using a NIST-approved pbkdf2 algorithm that relies on a AWS Key Management Service (KMS) which are NIST PUB 140-2 [validated](https://csrc.nist.gov/projects/cryptographic-module-validation-program/Certificate/3139) HSMs.
+All PII is encrypted at rest with a symmetric key derived from the user's passphrase, using a NIST-approved pbkdf2 algorithm that relies on an AWS Key Management Service (KMS) which are NIST PUB 140-2 [validated](https://csrc.nist.gov/projects/cryptographic-module-validation-program/Certificate/3139) HSMs.
 
 #### Encryption in transit
 

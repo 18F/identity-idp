@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe KeyRotator::HmacFingerprinter do
+RSpec.describe KeyRotator::HmacFingerprinter do
   describe '#rotate' do
     let(:pii_hash) do
       {

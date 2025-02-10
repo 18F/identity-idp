@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/cancellations/destroy.html.erb' do
+RSpec.describe 'idv/cancellations/destroy.html.erb' do
   before { render }
 
   it 'renders heading' do

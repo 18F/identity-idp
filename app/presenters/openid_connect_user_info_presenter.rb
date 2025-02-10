@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 class OpenidConnectUserInfoPresenter
   include Rails.application.routes.url_helpers
 
   attr_reader :identity
 
-  def initialize(identity)
+  def initialize(identity, session_accessor: nil)
     @identity = identity
+    @out_of_band_session_accessor = session_accessor
   end
 
   def user_info
@@ -12,14 +15,22 @@ class OpenidConnectUserInfoPresenter
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
-      email: email_from_sp_identity,
+      email: identity.email_address_for_sharing.email,
       email_verified: true,
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
-    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
+    info[:locale] = web_locale if scoper.locale_requested?
+    info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
+    if identity.vtr.nil?
+      info[:ial] = authn_context_resolver.asserted_ial_acr
+      info[:aal] = identity.requested_aal_value
+    else
+      info[:vot] = vot_values
+      info[:vtm] = IdentityConfig.store.vtm_url
+    end
 
     scoper.filter(info)
   end
@@ -30,20 +41,25 @@ class OpenidConnectUserInfoPresenter
 
   private
 
-  def uuid_from_sp_identity(identity)
-    AgencyIdentityLinker.new(identity).link_identity.uuid
+  def vot_values
+    AuthnContextResolver.new(
+      user: identity.user,
+      vtr: JSON.parse(identity.vtr),
+      service_provider: identity&.service_provider_record,
+      acr_values: nil,
+    ).result.expanded_component_values
   end
 
-  def email_from_sp_identity
-    email_context.last_sign_in_email_address.email
+  def uuid_from_sp_identity(identity)
+    AgencyIdentityLinker.new(identity).link_identity.uuid
   end
 
   def all_emails_from_sp_identity(identity)
     identity.user.confirmed_email_addresses.map(&:email)
   end
 
-  def email_context
-    @email_context ||= EmailContext.new(identity.user)
+  def web_locale
+    out_of_band_session_accessor.load_web_locale
   end
 
   def ial2_attributes
@@ -62,7 +78,7 @@ class OpenidConnectUserInfoPresenter
     {
       x509_subject: stringify_attr(x509_data.subject),
       x509_issuer: stringify_attr(x509_data.issuer),
-      x509_presented: x509_data.presented,
+      x509_presented: !!x509_data.presented.raw,
     }
   end
 
@@ -109,31 +125,40 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_data
-    @ial2_data ||= begin
-      if ial2_session? || ialmax_session? || ial2_strict_session?
-        Pii::SessionStore.new(identity.rails_session_id).load
-      else
-        Pii::Attributes.new_from_hash({})
-      end
-    end
+    @ial2_data ||= out_of_band_session_accessor.load_pii(active_profile.id) ||
+                   Pii::Attributes.new_from_hash({})
+  end
+
+  def identity_proofing_requested_for_verified_user?
+    return false unless active_profile.present?
+    resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
+  end
+
+  def resolved_authn_context_result
+    authn_context_resolver.result
+  end
+
+  def authn_context_resolver
+    @authn_context_resolver ||= AuthnContextResolver.new(
+      user: identity.user,
+      service_provider: identity&.service_provider_record,
+      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
+      acr_values: identity.acr_values,
+    )
   end
 
   def ial2_session?
     identity.ial == Idp::Constants::IAL2
   end
 
-  def ial2_strict_session?
-    identity.ial == Idp::Constants::IAL2_STRICT
-  end
-
   def ialmax_session?
-    identity.ial&.zero?
+    identity.ial == Idp::Constants::IAL_MAX
   end
 
   def x509_data
     @x509_data ||= begin
       if x509_session?
-        X509::SessionStore.new(identity.rails_session_id).load
+        out_of_band_session_accessor.load_x509
       else
         X509::Attributes.new_from_hash({})
       end
@@ -144,9 +169,17 @@ class OpenidConnectUserInfoPresenter
     identity.piv_cac_enabled?
   end
 
+  def active_profile
+    identity.user&.active_profile
+  end
+
   def verified_at
     return if identity&.service_provider_record&.ial.to_i < 2
 
-    identity.user.active_profile&.verified_at&.to_i
+    active_profile&.verified_at&.to_i
+  end
+
+  def out_of_band_session_accessor
+    @out_of_band_session_accessor ||= OutOfBandSessionAccessor.new(identity.rails_session_id)
   end
 end

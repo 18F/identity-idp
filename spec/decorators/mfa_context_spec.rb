@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MfaContext do
+RSpec.describe MfaContext do
   let(:mfa) { MfaContext.new(user) }
 
   context 'with no user' do
@@ -204,6 +204,22 @@ describe MfaContext do
     end
   end
 
+  describe '#two_factor_enabled?' do
+    subject(:two_factor_enabled?) { mfa.two_factor_enabled? }
+
+    context 'when user has an associated mfa' do
+      let(:user) { create(:user, :with_phone) }
+
+      it { expect(two_factor_enabled?).to eq(true) }
+    end
+
+    context 'when user does not have any associated mfa' do
+      let(:user) { create(:user) }
+
+      it { expect(two_factor_enabled?).to eq(false) }
+    end
+  end
+
   describe '#enabled_mfa_methods_count' do
     context 'with 2 phones' do
       it 'returns 2' do
@@ -229,7 +245,7 @@ describe MfaContext do
       it 'returns 2' do
         user = create(:user)
         create(:webauthn_configuration, user: user)
-        create(:webauthn_configuration, platform_authenticator: true, user: user)
+        create(:webauthn_configuration, :platform_authenticator, user: user)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
@@ -290,117 +306,6 @@ describe MfaContext do
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and a personal key and personal key retired' do
-      it 'returns 0' do
-        allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(true)
-        user = create(:user, :with_phone, :with_personal_key)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(0)
-      end
-    end
-  end
-
-  describe '#enabled_non_restricted_mfa_methods_count' do
-    context 'with 2 phones' do
-      it 'returns 0' do
-        user = create(:user, :with_phone)
-        create(:phone_configuration, user: user, phone: '+1 703-555-1213')
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(0)
-      end
-    end
-
-    context 'with 2 webauthn tokens' do
-      it 'returns 2' do
-        user = create(:user)
-        create_list(:webauthn_configuration, 2, user: user)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(2)
-      end
-    end
-
-    context 'with 1 webauthn roaming authenticator and one platform authenticator' do
-      it 'returns 2' do
-        user = create(:user)
-        create(:webauthn_configuration, user: user)
-        create(:webauthn_configuration, platform_authenticator: true, user: user)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(2)
-      end
-    end
-
-    context 'with a phone and a webauthn token' do
-      it 'returns 1' do
-        user = create(:user, :with_phone)
-        create(:webauthn_configuration, user: user)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and 10 backup codes' do
-      it 'returns 1' do
-        user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and 10 used backup codes' do
-      it 'returns 0' do
-        user = create(:user, :with_phone)
-        create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(0)
-      end
-    end
-
-    context 'with a phone and a PIV/CAC' do
-      it 'returns 1' do
-        user = create(:user, :with_phone, :with_piv_or_cac)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and an auth app' do
-      it 'returns 1' do
-        user = create(:user, :with_phone, :with_authentication_app)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and a personal key' do
-      it 'returns 1' do
-        allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(false)
-        user = create(:user, :with_phone, :with_personal_key)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
-      end
-    end
-
-    context 'with a phone and a personal key and personal key retired' do
-      it 'returns 0' do
-        allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(true)
-        user = create(:user, :with_phone, :with_personal_key)
-        subject = described_class.new(user.reload)
-
-        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(0)
       end
     end
   end

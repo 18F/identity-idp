@@ -1,26 +1,25 @@
-<% title t('titles.passwords.change') %>
+<% self.title = t('titles.passwords.change') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
-<p><%= t('instructions.password.password_key') %></p>
+<p id="password-description">
+  <%= t('instructions.password.password_key') %>
+</p>
 
-<%= simple_form_for(
-      @reset_password_form,
-      url: user_password_path,
-      html: { autocomplete: 'off',
-              method: :put },
-    ) do |f| %>
+<%= simple_form_for(@reset_password_form, url: user_password_path, method: :put) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
-        label: t('forms.passwords.edit.labels.password'),
-        required: true,
+        password_label: t('forms.passwords.edit.labels.password'),
+        forbidden_passwords: @forbidden_passwords,
+        field_options: {
+          input_html: {
+            aria: { describedby: 'password-description' },
+          },
+        },
       ) %>
-  <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'margin-bottom-4' %>
+  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
-
-<%= javascript_packs_tag_once 'pw-strength' %>

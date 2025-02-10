@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class OpenidConnectAttributeScoper
   X509_SCOPES = %w[
     x509
     x509:subject
     x509:issuer
     x509:presented
-  ]
+  ].freeze
 
   IAL2_SCOPES = %w[
     address
@@ -13,26 +15,29 @@ class OpenidConnectAttributeScoper
     profile:name
     profile:birthdate
     social_security_number
-  ]
+  ].freeze
 
-  VALID_SCOPES = %w[
+  VALID_SCOPES = (%w[
     email
     all_emails
+    locale
     openid
     profile:verified_at
-  ] + X509_SCOPES + IAL2_SCOPES
+  ] + X509_SCOPES + IAL2_SCOPES).freeze
 
-  VALID_IAL1_SCOPES = %w[
+  VALID_IAL1_SCOPES = (%w[
     email
     all_emails
+    locale
     openid
     profile:verified_at
-  ] + X509_SCOPES
+  ] + X509_SCOPES).freeze
 
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
     email_verified: %w[email],
     all_emails: %w[all_emails],
+    locale: %w[locale],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],
@@ -56,7 +61,7 @@ class OpenidConnectAttributeScoper
     end
   end.with_indifferent_access.freeze
 
-  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys
+  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
 
   attr_reader :scopes
 
@@ -78,6 +83,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def locale_requested?
+    scopes.include?('locale')
   end
 
   def filter(user_info)

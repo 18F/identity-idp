@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module IdentityIdp
@@ -14,17 +16,17 @@ module RuboCop
       #   #good
       #   redirect_back fallback_location: '/', allow_other_host: false
       #
-      class RedirectBackLinter < RuboCop::Cop::Cop
-        MSG = 'Please set a fallback_location and the allow_other_host parameter to false'.freeze
+      class RedirectBackLinter < RuboCop::Cop::Base
+        MSG = 'Please set a fallback_location and the allow_other_host parameter to false'
 
-        RESTRICT_ON_SEND = [:redirect_back]
+        RESTRICT_ON_SEND = [:redirect_back].freeze
 
         def_node_matcher :redirect_back_matcher, <<~PATTERN
           (send nil? :redirect_back $...)
         PATTERN
 
         def on_send(node)
-          add_offense(node, location: :expression) && return if node.arguments.empty?
+          add_offense(node) && return if node.arguments.empty?
 
           sets_fallback_location, sets_allow_other_host_false = false
           redirect_back_matcher(node) do |arguments|
@@ -43,7 +45,7 @@ module RuboCop
 
           return if sets_fallback_location && sets_allow_other_host_false
 
-          add_offense(node, location: :expression)
+          add_offense(node)
         end
       end
     end

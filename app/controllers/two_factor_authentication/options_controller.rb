@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TwoFactorAuthentication
   class OptionsController < ApplicationController
     include TwoFactorAuthenticatable
@@ -32,7 +34,7 @@ module TwoFactorAuthentication
     def create
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
-      analytics.multi_factor_auth_option_list(**result.to_h)
+      analytics.multi_factor_auth_option_list(**result)
 
       if result.success?
         process_valid_form
@@ -48,10 +50,11 @@ module TwoFactorAuthentication
       TwoFactorLoginOptionsPresenter.new(
         user: current_user,
         view: view_context,
-        user_session_context: context,
+        reauthentication_context: UserSessionContext.reauthentication_context?(context),
         service_provider: current_sp,
-        aal3_required: service_provider_mfa_policy.aal3_required?,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        add_piv_cac_after_2fa: user_session[:add_piv_cac_after_2fa].present?,
       )
     end
 

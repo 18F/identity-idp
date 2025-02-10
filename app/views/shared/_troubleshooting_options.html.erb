@@ -6,6 +6,6 @@ locals:
 * class: Additional class names to add to wrapper element.
 %>
 <%= render TroubleshootingOptionsComponent.new(class: local_assigns[:class]) do |c| %>
-  <% c.header(heading_level: local_assigns[:heading_tag] || :h2).with_content(heading) %>
-  <% options.each { |option| c.option(**option.except(:text)).with_content(option[:text]) } %>
+  <% c.with_header(heading_level: local_assigns[:heading_tag] || :h2).with_content(heading) %>
+  <% options.each { |option| c.with_option(**option.except(:text)).with_content(option[:text]) } %>
 <% end %>

@@ -5,8 +5,7 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
-const { dig, fromPairs, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } =
-  RailsI18nWebpackPlugin;
+const { compact } = RailsI18nWebpackPlugin;
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
@@ -43,7 +42,7 @@ describe('RailsI18nWebpackPlugin', () => {
           filename: 'actual[name].js',
         },
         optimization: {
-          chunkIds: 'deterministic',
+          chunkIds: 'named',
           splitChunks: {
             chunks: 'all',
             minSize: 0,
@@ -54,26 +53,20 @@ describe('RailsI18nWebpackPlugin', () => {
         try {
           expect(webpackError).to.be.null();
 
-          for (const chunkSuffix of ['1', '946', '452']) {
-            // eslint-disable-next-line no-await-in-loop
-            const [script, en, es, fr] = await Promise.all([
-              fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}.js`)),
-              ...['.en.js', '.es.js', '.fr.js'].map(async (localeSuffix) => [
-                await fs.readFile(
-                  path.resolve(__dirname, `spec/fixtures/expected${chunkSuffix}${localeSuffix}`),
-                  'utf-8',
-                ),
-                await fs.readFile(
-                  path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}${localeSuffix}`),
-                  'utf-8',
-                ),
-              ]),
-            ]);
+          const fixtures = await fs.readdir(path.resolve(__dirname, 'spec/fixtures'));
+          const expectedFiles = fixtures.filter((file) => file.startsWith('expected'));
 
-            expect(script).to.not.be.empty();
-            for (const [expected, actual] of [en, es, fr]) {
-              expect(expected).to.equal(actual);
-            }
+          for (const expectedFile of expectedFiles) {
+            const suffix = expectedFile.slice('expected'.length);
+            const actualFile = `actual${suffix}`;
+            // eslint-disable-next-line no-await-in-loop
+            const [expected, actual] = await Promise.all(
+              [expectedFile, actualFile].map((file) =>
+                fs.readFile(path.resolve(__dirname, 'spec/fixtures', file), 'utf-8'),
+              ),
+            );
+
+            expect(expected).to.equal(actual);
           }
 
           expect(onMissingString).to.have.callCount(7);
@@ -92,29 +85,11 @@ describe('RailsI18nWebpackPlugin', () => {
             ),
           );
 
-          expect(manifest.entrypoints['1'].assets.js).to.include.all.members([
-            'actual1.js',
-            'actual1.en.js',
-            'actual1.es.js',
-            'actual1.fr.js',
-            'actual452.en.js',
-            'actual452.es.js',
-            'actual452.fr.js',
-            'actual946.js',
-            'actual946.en.js',
-            'actual946.es.js',
-            'actual946.fr.js',
-          ]);
-          expect(manifest.entrypoints['2'].assets.js).to.include.all.members([
-            'actual2.js',
-            'actual452.en.js',
-            'actual452.es.js',
-            'actual452.fr.js',
-            'actual946.js',
-            'actual946.en.js',
-            'actual946.es.js',
-            'actual946.fr.js',
-          ]);
+          // 3 outputs + 3 x 3 languages - 1 dynamic output
+          expect(manifest.entrypoints['1'].assets.js).to.have.lengthOf(11);
+
+          // 3 outputs + 2 x 3 languages (no locale strings for base output) - 1 dynamic output
+          expect(manifest.entrypoints['2'].assets.js).to.have.lengthOf(8);
 
           done();
         } catch (error) {
@@ -123,49 +98,68 @@ describe('RailsI18nWebpackPlugin', () => {
       },
     );
   });
-});
 
-describe('dig', () => {
-  it('returns undefined when called on a nullish object', () => {
-    const object = undefined;
-    const result = dig(object, ['a', 'b']);
+  context('in production mode', () => {
+    it('adds hash suffix to javascript locale assets', (done) => {
+      webpack(
+        {
+          mode: 'production',
+          devtool: false,
+          entry: path.resolve(__dirname, 'spec/fixtures/production/in.js'),
+          plugins: [
+            new RailsI18nWebpackPlugin({
+              configPath: path.resolve(__dirname, 'spec/fixtures/locales'),
+            }),
+            new WebpackAssetsManifest({
+              entrypoints: true,
+              publicPath: true,
+              writeToDisk: true,
+              output: 'actualmanifest.json',
+            }),
+          ],
+          externals: {
+            '@18f/identity-i18n': '_i18n_',
+          },
+          output: {
+            path: path.resolve(__dirname, 'spec/fixtures/production'),
+            filename: 'actual[name].js',
+          },
+        },
+        async (webpackError) => {
+          try {
+            expect(webpackError).to.be.null();
+            const manifest = JSON.parse(
+              await fs.readFile(
+                path.resolve(__dirname, 'spec/fixtures/production/actualmanifest.json'),
+                'utf-8',
+              ),
+            );
 
-    expect(result).to.be.undefined();
-  });
-
-  it('returns undefined when path is unreachable', () => {
-    const object = {};
-    const result = dig(object, ['a', 'b']);
-
-    expect(result).to.be.undefined();
-  });
-
-  it('returns value at path', () => {
-    const object = { a: { b: 1 } };
-    const result = dig(object, ['a', 'b']);
-
-    expect(result).to.be.equal(1);
-  });
-});
-
-describe('fromPairs', () => {
-  it('returns pairs of key value in object form', () => {
-    const pairs = [
-      ['a', 1],
-      ['b', 2],
-    ];
-    const result = fromPairs(pairs);
-
-    expect(result).to.deep.equal({ a: 1, b: 2 });
-  });
-});
-
-describe('uniq', () => {
-  it('returns unique values', () => {
-    const values = [1, 2, 2, 3];
-    const result = uniq(values);
-
-    expect(result).to.deep.equal([1, 2, 3]);
+            expect(manifest).to.deep.equal({
+              'actualmain-5b00aabc.en.js': 'actualmain-5b00aabc.en.js',
+              'actualmain-941d1f5f.es.js': 'actualmain-941d1f5f.es.js',
+              'actualmain.js': 'actualmain.js',
+              entrypoints: {
+                main: {
+                  assets: {
+                    js: [
+                      'actualmain.js',
+                      'actualmain-5b00aabc.en.js',
+                      'actualmain-941d1f5f.es.js',
+                      'actualmain-5b00aabc.fr.js',
+                    ],
+                  },
+                },
+              },
+              'main.js': 'actualmain-5b00aabc.fr.js',
+            });
+            done();
+          } catch (error) {
+            done(error);
+          }
+        },
+      );
+    });
   });
 });
 
@@ -175,45 +169,5 @@ describe('compact', () => {
     const result = compact(values);
 
     expect(result).to.deep.equal([1]);
-  });
-});
-
-describe('getKeyPath', () => {
-  it('returns key path parts', () => {
-    const key = 'a.b.c';
-    const result = getKeyPath(key);
-
-    expect(result).to.deep.equal(['a', 'b', 'c']);
-  });
-});
-
-describe('getKeyDomain', () => {
-  context('key', () => {
-    const key = 'a.b.c';
-
-    it('returns domain', () => {
-      const result = getKeyDomain(key);
-
-      expect(result).to.equal('a');
-    });
-  });
-
-  context('key path', () => {
-    const keyPath = ['a', 'b', 'c'];
-
-    it('returns domain', () => {
-      const result = getKeyDomain(keyPath);
-
-      expect(result).to.equal('a');
-    });
-  });
-});
-
-describe('getKeyDomains', () => {
-  it('returns unique set of domains for keys', () => {
-    const keys = ['a.b.c', 'a.d.e', 'b.f.g'];
-    const domains = getKeyDomains(keys);
-
-    expect(domains).to.deep.equal(['a', 'b']);
   });
 });

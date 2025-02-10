@@ -7,7 +7,7 @@
  * @return {boolean}
  */
 export function isIPad() {
-  const { userAgent, maxTouchPoints } = window.navigator;
+  const { userAgent, maxTouchPoints } = navigator;
   return /ipad/i.test(userAgent) || (/macintosh/i.test(userAgent) && maxTouchPoints === 5);
 }
 
@@ -18,7 +18,7 @@ export function isIPad() {
  * @return {boolean}
  */
 export function isLikelyMobile() {
-  return isIPad() || /iphone|android/i.test(window.navigator.userAgent);
+  return isIPad() || /iphone|android/i.test(navigator.userAgent);
 }
 
 /**
@@ -28,18 +28,6 @@ export function isLikelyMobile() {
  */
 export function hasMediaAccess() {
   return !!navigator.mediaDevices;
-}
-
-/**
- * Returns a boolean promise of whether or not the device has a video input device.
- *
- * @return {Promise}
- */
-export async function hasCamera() {
-  if (hasMediaAccess()) {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    return devices.some((device) => device.kind === 'videoinput');
-  }
 }
 
 /**

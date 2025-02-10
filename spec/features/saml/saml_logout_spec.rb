@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'SAML logout' do
+RSpec.feature 'SAML logout' do
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do
@@ -18,8 +18,8 @@ feature 'SAML logout' do
 
         # Sign out of the IDP
         visit account_path
-        first(:link, t('links.sign_out')).click
-        expect(current_path).to eq root_path
+        first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path root_path
 
         # SAML logout request
         visit_saml_logout_request_url(
@@ -84,7 +84,7 @@ feature 'SAML logout' do
 
         # The user should be signed out
         visit account_path
-        expect(current_path).to eq root_path
+        expect(page).to have_current_path root_path
       end
     end
 
@@ -102,7 +102,38 @@ feature 'SAML logout' do
 
         # The user should be signed out
         visit account_path
-        expect(current_path).to eq root_path
+        expect(page).to have_current_path root_path
+      end
+    end
+
+    context 'when signed in with another browser' do
+      it 'redirects to the SP after concurrent session logout' do
+        user = user_with_2fa
+
+        perform_in_browser(:one) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:two) do
+          visit_idp_from_sp_with_ial1(:saml)
+          sign_in_live_with_2fa(user)
+        end
+
+        perform_in_browser(:one) do
+          visit_saml_logout_request_url(
+            overrides: {
+              issuer: SamlAuthHelper::SP_ISSUER,
+            },
+          )
+
+          # It should contain a SAMLResponse
+          expect(page.find('#SAMLResponse', visible: false)).to be_truthy
+
+          # The user should be signed out
+          visit account_path
+          expect(page).to have_current_path root_path
+        end
       end
     end
 
@@ -120,7 +151,10 @@ feature 'SAML logout' do
           },
         )
 
-        expect(current_path).to eq(api_saml_logout2022_path)
+        expect(page).to have_current_path(
+          api_saml_logout_path(path_year: SamlAuthHelper::PATH_YEAR),
+          ignore_query: true,
+        )
         expect(page.driver.status_code).to eq(400)
 
         # The user should be signed in
@@ -134,7 +168,7 @@ feature 'SAML logout' do
     it 'logs the user out and redirects to the sign in page' do
       sign_in_and_2fa_user(user)
 
-      visit api_saml_logout2022_path
+      visit api_saml_logout_path(path_year: SamlAuthHelper::PATH_YEAR)
 
       expect(page).to have_content(t('devise.sessions.signed_out'))
       expect(page).to have_current_path(root_path)
@@ -150,21 +184,32 @@ feature 'SAML logout' do
     let(:agency) { sp.agency }
 
     it "terminates the user's session remotely" do
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
       # set up SP identity and agency identity
       user = sign_in_live_with_2fa
       visit_saml_authn_request_url
       click_continue
       click_agree_and_continue
+      click_button(t('forms.buttons.submit.default'))
 
-      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
+      identity = ServiceProviderIdentity
+        .find_by(user_id: user.id, service_provider: saml_settings.issuer)
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq true
 
       # simulate a remote request
+      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
-      identity = ServiceProviderIdentity.
-        find_by(user_id: user.id, service_provider: saml_settings.issuer)
-      session_id = identity.rails_session_id
-      expect(OutOfBandSessionAccessor.new(session_id).load).to be_empty
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq false
+
+      expect(fake_analytics.events['Remote Logout initiated']).to eq(
+        [{ service_provider: sp.issuer, saml_request_valid: true }],
+      )
+      expect(fake_analytics.events['Remote Logout completed']).to eq(
+        [{ service_provider: sp.issuer, user_id: user.uuid }],
+      )
 
       # should be logged out...
       visit account_path

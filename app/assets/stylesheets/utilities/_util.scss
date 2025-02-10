@@ -1,4 +1,4 @@
-// supplemental utility classes
+@use 'uswds-core' as *;
 
 html.no-js .js {
   display: none;
@@ -12,16 +12,4 @@ html.js .no-js {
   // trigger anti-aliasing in chrome
   backface-visibility: hidden;
   transform: scale(0.7);
-}
-
-@include at-media('tablet') {
-  .sm-left-align {
-    text-align: left;
-  }
-}
-
-.half-center {
-  margin: 0 auto;
-  text-align: center;
-  width: 300px;
 }

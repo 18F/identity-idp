@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 module Telephony
   module Test
     class SmsSender
+      LANDLINE_PHONE_NUMBER = '+1 225-555-3000'
+
       # rubocop:disable Lint/UnusedMethodArgument
-      def send(message:, to:, country_code:, otp: nil)
+      def deliver(message:, to:, country_code:, otp: nil)
         error = ErrorSimulator.new.error_for_number(to)
         if error.nil?
           Message.messages.push(Message.new(body: message, to: to, otp: otp))
@@ -36,10 +40,20 @@ module Telephony
             error: error,
           )
         else
+          type = phone_type(phone_number)
+
           PhoneNumberInfo.new(
-            type: :mobile,
-            carrier: 'Test Mobile Carrier',
+            type: type,
+            carrier: "Test #{type.to_s.capitalize} Carrier",
           )
+        end
+      end
+
+      def phone_type(phone_number)
+        if phone_number == LANDLINE_PHONE_NUMBER
+          :landline
+        else
+          :mobile
         end
       end
 

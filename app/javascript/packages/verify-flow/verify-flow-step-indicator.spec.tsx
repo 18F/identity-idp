@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 import { StepStatus } from '@18f/identity-step-indicator';
-import { AddressVerificationMethodContextProvider } from './context/address-verification-method-context';
 import VerifyFlowStepIndicator, {
   getStepStatus,
   VerifyFlowPath,
@@ -30,27 +29,11 @@ describe('VerifyFlowStepIndicator', () => {
   it('renders step indicator for the current step', () => {
     const { getByText } = render(<VerifyFlowStepIndicator currentStep="personal_key" />);
 
-    const current = getByText('step_indicator.flows.idv.secure_account');
+    const current = getByText('step_indicator.flows.idv.re_enter_password');
     expect(current.closest('.step-indicator__step--current')).to.exist();
 
-    const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
+    const previous = getByText('step_indicator.flows.idv.verify_phone');
     expect(previous.closest('.step-indicator__step--complete')).to.exist();
-  });
-
-  context('with gpo as address verification method', () => {
-    it('revises the flow path to omit address verification and add letter step', () => {
-      const { queryByText } = render(
-        <AddressVerificationMethodContextProvider initialMethod="gpo">
-          <VerifyFlowStepIndicator currentStep="personal_key" />
-        </AddressVerificationMethodContextProvider>,
-      );
-
-      const verifyAddress = queryByText('step_indicator.flows.idv.verify_phone_or_address');
-      const getALetter = queryByText('step_indicator.flows.idv.get_a_letter');
-
-      expect(verifyAddress).to.not.exist();
-      expect(getALetter).to.exist();
-    });
   });
 
   context('with in-person flow path', () => {

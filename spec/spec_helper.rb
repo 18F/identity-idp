@@ -9,10 +9,11 @@ end
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 
-RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
+RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?.freeze
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
+  config.disable_monkey_patching!
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true
@@ -30,6 +31,9 @@ RSpec.configure do |config|
   config.profile_examples = RSPEC_RUNNING_IN_PARALLEL ? 10 : 0
 end
 
+require 'retries'
+Retries.sleep_enabled = false
+
 require 'webmock/rspec'
 WebMock.disable_net_connect!(
   allow: [
@@ -41,7 +45,9 @@ WebMock.disable_net_connect!(
 )
 
 require 'zonebie'
-Zonebie.quiet = true
+if !ENV['CI']
+  Zonebie.quiet = true
+end
 require 'zonebie/rspec'
 
 RSpec::Expectations.configuration.on_potential_false_positives = :nothing

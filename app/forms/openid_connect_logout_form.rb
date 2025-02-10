@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectLogoutForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -17,24 +19,23 @@ class OpenidConnectLogoutForm
 
   validates :client_id,
             presence: {
-              message: I18n.t('openid_connect.logout.errors.client_id_missing'),
+              message: ->(_, _) { I18n.t('openid_connect.logout.errors.client_id_missing') },
             },
             if: :reject_id_token_hint?
-  validates :client_id,
-            absence: true,
-            unless: -> { accept_client_id? }
   validates :id_token_hint,
             absence: {
-              message: I18n.t('openid_connect.logout.errors.id_token_hint_present'),
+              message: ->(_, _) { I18n.t('openid_connect.logout.errors.id_token_hint_present') },
             },
             if: :reject_id_token_hint?
   validates :post_logout_redirect_uri, presence: true
-  validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
+  validates :state,
+            length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH },
+            if: -> { !state.nil? }
 
   validate :id_token_hint_or_client_id_present,
-           if: -> { accept_client_id? && !reject_id_token_hint? }
+           if: -> { !reject_id_token_hint? }
   validate :validate_identity, unless: :reject_id_token_hint?
-  validate :valid_client_id, if: :accept_client_id?
+  validate :valid_client_id
 
   def initialize(params:, current_user:)
     ATTRS.each do |key|
@@ -45,6 +46,7 @@ class OpenidConnectLogoutForm
     @identity = load_identity
   end
 
+  # @return [FormResponse]
   def submit
     @success = valid?
 
@@ -53,42 +55,59 @@ class OpenidConnectLogoutForm
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
+  # Used by RedirectUriValidator
+  def service_provider
+    return @service_provider if defined?(@service_provider)
+    sp_from_client_id = ServiceProvider.find_by(issuer: client_id)
+
+    @service_provider =
+      if reject_id_token_hint?
+        sp_from_client_id
+      else
+        identity&.service_provider_record || sp_from_client_id
+      end
+
+    @service_provider
+  end
+
   private
 
   attr_reader :identity, :success
-
-  def accept_client_id?
-    IdentityConfig.store.accept_client_id_in_oidc_logout || reject_id_token_hint?
-  end
 
   def reject_id_token_hint?
     IdentityConfig.store.reject_id_token_hint_in_logout
   end
 
   def load_identity
-    identity_from_client_id = current_user&.
-      identities&.
-      find_by(service_provider: client_id)
+    identity_from_client_id = current_user
+      &.identities
+      &.find_by(service_provider: client_id)
 
     if reject_id_token_hint?
       identity_from_client_id
     else
+      identity_from_token_hint(id_token_hint) || identity_from_client_id
+    end
+  end
+
+  def identity_from_token_hint(id_token_hint)
+    return nil if id_token_hint.blank?
+    payload, _headers = nil
+
+    begin
       payload, _headers = JWT.decode(
-        id_token_hint, AppArtifacts.store.oidc_public_key, true,
+        id_token_hint, Rails.application.config.oidc_public_key_queue, true,
         algorithm: 'RS256',
         leeway: Float::INFINITY
       ).map(&:with_indifferent_access)
-
-      identity_from_payload(payload) || identity_from_client_id
+    rescue JWT::DecodeError
     end
-  rescue JWT::DecodeError
-    nil
-  end
 
-  def identity_from_payload(payload)
-    uuid = payload[:sub]
-    sp = payload[:aud]
-    AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    if payload
+      uuid = payload[:sub]
+      sp = payload[:aud]
+      AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    end
   end
 
   def id_token_hint_or_client_id_present
@@ -99,6 +118,16 @@ class OpenidConnectLogoutForm
       t('openid_connect.logout.errors.no_client_id_or_id_token_hint'),
       type: :client_id_or_id_token_hint_missing,
     )
+  end
+
+  def integration_errors
+    return nil if valid?
+    {
+      error_details: errors.full_messages,
+      error_types: errors.attribute_names,
+      integration_exists: service_provider.present?,
+      request_issuer: client_id || service_provider&.issuer,
+    }
   end
 
   def valid_client_id
@@ -123,23 +152,15 @@ class OpenidConnectLogoutForm
     end
   end
 
-  # Used by RedirectUriValidator
-  def service_provider
-    sp_from_client_id = ServiceProvider.find_by(issuer: client_id)
-
-    if reject_id_token_hint?
-      sp_from_client_id
-    else
-      identity&.service_provider_record || sp_from_client_id
-    end
-  end
-
   def extra_analytics_attributes
     {
+      client_id_parameter_present: client_id.present?,
+      id_token_hint_parameter_present: id_token_hint.present?,
       client_id: service_provider&.issuer,
       redirect_uri: redirect_uri,
       sp_initiated: true,
       oidc: true,
+      integration_errors:,
     }
   end
 
@@ -148,9 +169,10 @@ class OpenidConnectLogoutForm
   end
 
   def logout_redirect_uri
-    uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
+    return nil if errors.include?(:redirect_uri)
+    return post_logout_redirect_uri unless state.present?
 
-    UriService.add_params(uri, state: state)
+    UriService.add_params(post_logout_redirect_uri, state: state)
   end
 
   def error_redirect_uri

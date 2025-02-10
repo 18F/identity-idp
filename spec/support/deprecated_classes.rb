@@ -1,10 +1,10 @@
 class ActionView::Helpers::TagHelper::TagBuilder
   def self.deprecated_classes
     @deprecated_classes ||= begin
-      YAML.safe_load(File.read(File.expand_path('../../../.erb-lint.yml', __FILE__))).
-        dig('linters', 'DeprecatedClasses', 'rule_set').
-        flat_map { |rule| rule['deprecated'] }.
-        map { |regex_str| Regexp.new "^#{regex_str}$" }
+      YAML.safe_load(File.read(File.expand_path('../../../.erb_lint.yml', __FILE__)))
+        .dig('linters', 'DeprecatedClasses', 'rule_set')
+        .flat_map { |rule| rule['deprecated'] }
+        .map { |regex_str| Regexp.new "^#{regex_str}$" }
     end
   end
 

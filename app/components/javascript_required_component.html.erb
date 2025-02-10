@@ -1,6 +1,6 @@
 <noscript>
   <%= render StatusPageComponent.new(status: :error) do |c| %>
-    <% c.header { header } %>
+    <% c.with_header { header } %>
 
     <% if intro %>
       <p><%= intro %></p>
@@ -10,13 +10,13 @@
 
     <ul class="usa-list">
       <% browser_resources.each do |resource| %>
-        <li><%= new_window_link_to resource[:name], resource[:url] %></li>
+        <li><%= new_tab_link_to resource[:name], resource[:url] %></li>
       <% end %>
     </ul>
 
     <p><strong><%= t('components.javascript_required.next_step') %></strong></p>
   <% end %>
-  <link rel="stylesheet" href="<%= no_js_detect_css_path %>">
+  <link rel="stylesheet" href="<%= no_js_detect_css_path(location:) %>">
 </noscript>
 <div class="js">
   <% if was_no_js? %>

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Devices' do
-  let(:user) { create(:user, :signed_up) }
+RSpec.describe 'Devices' do
+  let(:user) { create(:user, :fully_registered) }
   before do
-    user = create(:user, :signed_up, otp_delivery_preference: 'sms')
+    user = create(:user, :fully_registered, otp_delivery_preference: 'sms')
     sign_in_and_2fa_user(user)
     create(
       :device,
@@ -18,6 +18,6 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
   end
 
   scenario 'viewing devices' do
-    expect(page).to have_content('Chrome 71 on macOS 10')
+    expect(page).to have_content('Chrome 71 on macOS')
   end
 end

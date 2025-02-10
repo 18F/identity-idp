@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-describe Encryption::KmsClient do
+RSpec.describe Encryption::KmsClient do
   before do
+    stub_const(
+      'Encryption::KmsClient::KMS_CLIENT_POOL',
+      FakeConnectionPool.new { aws_kms_client },
+    )
+
     # rubocop:disable Layout/LineLength
     stub_mapped_aws_kms_client(
       [
         { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'a' * 3000, ciphertext: 'us-south-1:kms1', key_id: key_id, region: 'us-south-1' },
-
         { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'b' * 3000, ciphertext: 'us-south-1:kms2', key_id: key_id, region: 'us-south-1' },
-
         { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'c' * 3000, ciphertext: 'us-south-1:kms3', key_id: key_id, region: 'us-south-1' },
       ],
     )
     # rubocop:enable Layout/LineLength
@@ -23,21 +23,20 @@ describe Encryption::KmsClient do
       'b' * 3000 => 'local2',
       'c' * 3000 => 'local3',
     }.each do |plaintext, ciphertext|
-      allow(encryptor).to receive(:encrypt).
-        with(plaintext, local_encryption_key).
-        and_return(ciphertext)
-      allow(encryptor).to receive(:decrypt).
-        with(ciphertext, local_encryption_key).
-        and_return(plaintext)
+      allow(encryptor).to receive(:encrypt)
+        .with(plaintext, local_encryption_key)
+        .and_return(ciphertext)
+      allow(encryptor).to receive(:decrypt)
+        .with(ciphertext, local_encryption_key)
+        .and_return(plaintext)
     end
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
-    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
-    allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)
     allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
     allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
   end
 
+  let(:aws_kms_client) { Aws::KMS::Client.new(region: aws_region) }
   let(:key_id) { 'key1' }
   let(:plaintext) { 'a' * 3000 + 'b' * 3000 + 'c' * 3000 }
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
@@ -51,23 +50,8 @@ describe Encryption::KmsClient do
   end
 
   let(:aws_region) { 'us-north-1' }
-  let(:aws_kms_regions) { %w[us-north-1 us-south-1] }
 
-  let(:kms_multi_region_enabled) { true }
-
-  let(:kms_regionalized_ciphertext) do
-    'KMSc' + %w[kms1 kms2 kms3].map do |kms|
-      payload = {
-        regions: {
-          'us-north-1' => Base64.strict_encode64("us-north-1:#{kms}"),
-          'us-south-1' => Base64.strict_encode64("us-south-1:#{kms}"),
-        },
-      }
-      Base64.strict_encode64(payload.to_json)
-    end.to_json
-  end
-
-  let(:kms_legacy_ciphertext) do
+  let(:kms_ciphertext) do
     'KMSc' + %w[
       us-north-1:kms1
       us-north-1:kms2
@@ -83,18 +67,35 @@ describe Encryption::KmsClient do
 
   describe '#encrypt' do
     context 'with KMS enabled' do
-      context 'with multi region enabled' do
-        it 'encrypts with KMS multi region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_regionalized_ciphertext)
-        end
+      it 'encrypts with KMS' do
+        result = subject.encrypt(plaintext, encryption_context)
+        expect(result).to eq(kms_ciphertext)
       end
-      context 'with multi region disabled' do
-        let(:kms_multi_region_enabled) { false }
+    end
 
-        it 'encrypts with KMS legacy single region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_legacy_ciphertext)
+    context 'with a KMS key ID specified' do
+      subject { described_class.new(kms_key_id: 'custom-key-id') }
+
+      before do
+        stub_mapped_aws_kms_client(
+          [
+            # rubocop:disable Layout/LineLength
+            { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: 'custom-key-id', region: 'us-north-1' },
+            { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: 'custom-key-id', region: 'us-north-1' },
+            { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: 'custom-key-id', region: 'us-north-1' },
+            # rubocop:enable Layout/LineLength
+          ],
+        )
+      end
+
+      it 'encrypts with the specified key ID' do
+        result = subject.encrypt(plaintext, encryption_context)
+
+        expect(result).to eq(kms_ciphertext)
+        expect(aws_kms_client.api_requests.count).to eq(3)
+
+        aws_kms_client.api_requests.each do |api_request|
+          expect(api_request[:params][:key_id]).to eq('custom-key-id')
         end
       end
     end
@@ -110,17 +111,20 @@ describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(:encrypt, encryption_context)
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        :encrypt,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
 
       subject.encrypt(plaintext, encryption_context)
     end
   end
 
   describe '#decrypt' do
-    context 'with a ciphertext encrypted with KMS multi region' do
-      let(:kms_multi_region_enabled) { true }
+    context 'with a ciphertext encrypted with KMS' do
       it 'decrypts the ciphertext with KMS' do
-        result = subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+        result = subject.decrypt(kms_ciphertext, encryption_context)
         expect(result).to eq(plaintext)
       end
     end
@@ -136,12 +140,12 @@ describe Encryption::KmsClient do
     context 'with a contextless ciphertext' do
       before do
         contextless_client = Encryption::ContextlessKmsClient.new
-        allow(contextless_client).to receive(:decrypt).
-          with('KMSx123abc').
-          and_return('plaintext')
-        allow(contextless_client).to receive(:decrypt).
-          with('123abc').
-          and_return('plaintext')
+        allow(contextless_client).to receive(:decrypt)
+          .with('KMSx123abc', log_context: encryption_context)
+          .and_return('plaintext')
+        allow(contextless_client).to receive(:decrypt)
+          .with('123abc', log_context: encryption_context)
+          .and_return('plaintext')
         allow(Encryption::ContextlessKmsClient).to receive(:new).and_return(contextless_client)
       end
 
@@ -163,8 +167,12 @@ describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
-      subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        :decrypt,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
+      subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
 end

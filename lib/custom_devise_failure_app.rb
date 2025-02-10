@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class overrides the default `i18n_message` defined by Devise
 # in order to allow customizing the `devise.failure.invalid` and
 # 'devise.failure.not_found_in_database' error messages with a link
@@ -7,6 +9,10 @@ class CustomDeviseFailureApp < Devise::FailureApp
     message = warden_message || default || :unauthenticated
 
     message.is_a?(Symbol) ? build_message(message) : message.to_s
+  end
+
+  def redirect_url
+    request.env["devise_#{warden_message}_failure_redirect_url"] || super
   end
 
   private
@@ -35,7 +41,7 @@ class CustomDeviseFailureApp < Devise::FailureApp
       I18n.t("#{prefix}_link_text"),
       new_user_password_url(locale: locale_url_param, request_id: sp_session[:request_id]),
     )
-    I18n.t("#{prefix}_html", link: link)
+    I18n.t("#{prefix}_html", link_html: link)
   end
 
   def helper

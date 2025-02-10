@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VendorOutageAlertComponent < BaseComponent
   include LinkHelper
 
@@ -37,6 +39,6 @@ class VendorOutageAlertComponent < BaseComponent
   end
 
   def vendor_status
-    @vendor_status ||= VendorStatus.new
+    @vendor_status ||= OutageStatus.new
   end
 end

@@ -1,0 +1,19 @@
+<%#
+locals:
+* threatmetrix_session_id: Session id for users threatmetrix session
+* threatmetrix_javascript_urls: Url for threatmetrix javascript
+* threatmetrix_iframe_url: Iframe as fallback in case javascript fails. 
+%>
+<% if threatmetrix_session_id.present? %>
+  <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
+    <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>
+  <% end %>
+  <noscript>
+    <%= content_tag(
+          :iframe,
+          '',
+          src: threatmetrix_iframe_url,
+          style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
+        ) %>
+  </noscript>
+<% end %>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module Aamva
     class VerificationClient
@@ -20,7 +22,7 @@ module Proofing
       private
 
       def auth_token
-        @auth_token ||= AuthenticationClient.new.fetch_token(config)
+        @auth_token ||= AuthenticationClient.auth_token(config)
       end
     end
   end

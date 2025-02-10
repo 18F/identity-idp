@@ -4,7 +4,7 @@
     "RequestId": "7890",
     "TransactionStatus": "failed",
     "TransactionReasonCode": {
-      "Code": "total.scoring.model.verification.fail"
+      "Code": "priority.scoring.model.verification.fail"
     },
     "Reference": "0987:1234-abcd"
   },
@@ -15,7 +15,7 @@
       "ProductConfigurationName": "REDACTED_CONFIGURATION",
       "ProductStatus": "fail",
       "ProductReason": {
-        "Code": "total.scoring.model.verification.fail"
+        "Code": "priority.scoring.model.verification.fail"
       },
       "Items": [
         {

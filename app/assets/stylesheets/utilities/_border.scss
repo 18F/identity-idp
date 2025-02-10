@@ -1,10 +1,5 @@
-.border-dashed {
-  border-style: dashed;
-}
+@use '../variables/app' as *;
 
 .rounded-xl {
   border-radius: $border-radius-xl;
-}
-.rounded-xxl {
-  border-radius: $border-radius-xxl;
 }

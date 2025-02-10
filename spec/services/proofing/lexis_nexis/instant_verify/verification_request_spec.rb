@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
+RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
   let(:dob) { '01/01/1980' }
   let(:applicant) do
     {
@@ -15,6 +15,9 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       city: 'Baton Rouge',
       state: 'LA',
       zipcode: '70802-12345',
+      state_id_number: '132465879',
+      state_id_jurisdiction: 'LA',
+      state_id_type: 'drivers_license',
     }
   end
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }
@@ -65,7 +68,34 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
 
   describe '#url' do
     it 'returns a url for the Instant Verify endpoint' do
-      expect(subject.url).to eq('https://example.com/restws/identity/v2/test_account/customers.gsa.instant.verify.workflow/conversation')
+      expect(subject.url).to eq('https://example.com/restws/identity/v2/test_account/gsa2.chk32.test.wf/conversation')
+    end
+  end
+
+  describe '#build_request_headers' do
+    context 'HMAC Auth disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_hmac_auth_enabled).and_return(false)
+      end
+
+      it 'does not include a HMAC Authorization header' do
+        expect(subject.send(:build_request_headers)['Authorization']).to be_nil
+      end
+    end
+
+    context 'HMAC Auth enabled' do
+      let(:token) do
+        'HMAC-SHA256 keyid=HMAC-KEY-ID ts=timestamp nonce=nonce bodyHash=base64digest signature=sig'
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_hmac_auth_enabled).and_return(true)
+        allow(subject).to receive(:hmac_authorization).and_return(token)
+      end
+
+      it 'includes an Authorization header with the HMAC token' do
+        expect(subject.send(:build_request_headers)['Authorization']).to eq(token)
+      end
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PushNotification
   class LocalEventQueue
     class << self

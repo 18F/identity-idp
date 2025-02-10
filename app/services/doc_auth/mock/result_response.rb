@@ -1,19 +1,34 @@
+# frozen_string_literal: true
+
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
-      attr_reader :uploaded_file, :config, :liveness_enabled
+      include DocAuth::ClassificationConcern
+      include DocAuth::SelfieConcern
+      include DocAuth::Mock::YmlLoaderConcern
 
-      def initialize(uploaded_file, config, liveness_enabled)
+      attr_reader :uploaded_file, :config
+
+      def initialize(uploaded_file, config, selfie_required = false)
         @uploaded_file = uploaded_file.to_s
         @config = config
-        @liveness_enabled = liveness_enabled
+        @selfie_required = selfie_required
         super(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
+          doc_type_supported: id_type_supported?,
+          selfie_live: selfie_live?,
+          selfie_quality_good: selfie_quality_good?,
+          selfie_status: selfie_status,
           extra: {
             doc_auth_result: doc_auth_result,
+            portrait_match_results: portrait_match_results,
             billed: true,
+            classification_info: classification_info,
+            workflow: workflow,
+            liveness_checking_required: @selfie_required,
+            **@response_info.to_h,
           },
         )
       end
@@ -22,26 +37,41 @@ module DocAuth
         @errors ||= begin
           file_data = parsed_data_from_uploaded_file
 
-          if file_data.blank? || attention_with_barcode?
+          if file_data.blank?
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
-            failed = file_data.dig('failed_alerts')
+            failed = file_data.dig('failed_alerts')&.dup
             passed = file_data.dig('passed_alerts')
-            liveness_result = file_data.dig('liveness_result')
+            face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
+            classification_info = file_data.dig('classification_info')&.symbolize_keys
+            # Pass and doc type is ok
+            has_fields = [
+              doc_auth_result,
+              image_metrics,
+              failed,
+              passed,
+              face_match_result,
+              classification_info,
+            ].any?(&:present?)
 
-            if [doc_auth_result, image_metrics, failed, passed, liveness_result].any?(&:present?)
+            if has_fields
+              # Error generator is not to be called when it's not failure
+              # allows us to test successful results
+              return {} if all_doc_capture_values_passing?(
+                doc_auth_result, id_type_supported?
+              )
+
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
-              mock_args[:failed] = failed.map!(&:symbolize_keys) if failed.present?
+              mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
-              mock_args[:liveness_result] = liveness_result if liveness_result.present?
-
-              fake_response_info = create_response_info(**mock_args)
-
-              ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
+              mock_args[:liveness_enabled] = face_match_result ? true : false
+              mock_args[:classification_info] = classification_info if classification_info.present?
+              @response_info = create_response_info(**mock_args)
+              ErrorGenerator.new(config).generate_doc_auth_errors(@response_info)
             elsif file_data.include?(:general) # general is the key for errors from parsing
               file_data
             end
@@ -51,19 +81,48 @@ module DocAuth
 
       def pii_from_doc
         if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
-          raw_pii&.symbolize_keys || {}
+          parsed_pii_from_doc
         else
-          Idp::Constants::MOCK_IDV_APPLICANT
+          Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         end
       end
 
       def success?
-        errors.blank? || attention_with_barcode?
+        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
+      end
+
+      def self.create_network_error_response
+        errors = { network: true }
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: Faraday::TimeoutError.new,
+          extra: { vendor: 'Mock' },
+        )
+      end
+
+      def doc_auth_success?
+        (doc_auth_result_from_uploaded_file == 'Passed' ||
+          errors.blank? ||
+          attention_with_barcode?
+        ) && id_type_supported?
+      end
+
+      def selfie_status
+        if @selfie_required
+          return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
+          portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
+        else
+          :not_processed
+        end
+      end
+
+      def workflow
+        selfie_check_performed? ? 'test_liveness_workflow' : 'test_non_liveness_workflow'
       end
 
       private
@@ -72,10 +131,20 @@ module DocAuth
         parsed_data_from_uploaded_file&.dig('failed_alerts')
       end
 
+      def parsed_pii_from_doc
+        if parsed_data_from_uploaded_file.has_key?('document')
+          Pii::StateId.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
+              parsed_data_from_uploaded_file['document'].symbolize_keys,
+            ).slice(*Pii::StateId.members),
+          )
+        end
+      end
+
       def parsed_data_from_uploaded_file
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
 
-        @parsed_data_from_uploaded_file = parse_uri || parse_yaml
+        @parsed_data_from_uploaded_file = parse_uri || parse_yaml(uploaded_file)
       end
 
       def doc_auth_result
@@ -86,12 +155,33 @@ module DocAuth
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
+      def portrait_match_results
+        parsed_data_from_uploaded_file.dig('portrait_match_results')
+          &.transform_keys! { |key| key.to_s.camelize }
+          &.deep_symbolize_keys
+      end
+
+      def classification_info
+        info = parsed_data_from_uploaded_file&.[]('classification_info') || {}
+        info.to_h.symbolize_keys
+      end
+
       def doc_auth_result_from_success
         if success?
-          DocAuth::Acuant::ResultCodes::PASSED.name
+          DocAuth::LexisNexis::ResultCodes::PASSED.name
         else
-          DocAuth::Acuant::ResultCodes::CAUTION.name
+          DocAuth::LexisNexis::ResultCodes::CAUTION.name
         end
+      end
+
+      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
+        doc_auth_result == 'Passed' &&
+          id_type_supported &&
+          (selfie_check_performed? ? selfie_passed? : true)
+      end
+
+      def selfie_passed?
+        selfie_status == :success
       end
 
       def parse_uri
@@ -103,30 +193,6 @@ module DocAuth
         end
       rescue URI::InvalidURIError
         # no-op, allows falling through to YAML parsing
-      end
-
-      def parse_yaml
-        data = YAML.safe_load(uploaded_file, permitted_classes: [Date])
-        if data.is_a?(Hash)
-          if (m = data.dig('document', 'dob').to_s.
-            match(%r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}))
-            data['document']['dob'] = Date.new(m[:year].to_i, m[:month].to_i, m[:day].to_i)
-          end
-
-          if data.dig('document', 'zipcode')
-            data['document']['zipcode'] = data.dig('document', 'zipcode').to_s
-          end
-
-          JSON.parse(data.to_json) # converts Dates back to strings
-        else
-          { general: ["YAML data should have been a hash, got #{data.class}"] }
-        end
-      rescue Psych::SyntaxError
-        if uploaded_file.ascii_only? # don't want this error for images
-          { general: ['invalid YAML file'] }
-        else
-          {}
-        end
       end
 
       ATTENTION_WITH_BARCODE_ALERT = { 'name' => '2D Barcode Read', 'result' => 'Attention' }.freeze
@@ -150,8 +216,9 @@ module DocAuth
         doc_auth_result: 'Failed',
         passed: [],
         failed: DEFAULT_FAILED_ALERTS,
-        liveness_result: nil,
-        image_metrics: DEFAULT_IMAGE_METRICS
+        liveness_enabled: false,
+        image_metrics: DEFAULT_IMAGE_METRICS,
+        classification_info: nil
       )
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
@@ -164,7 +231,8 @@ module DocAuth
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
           liveness_enabled: liveness_enabled,
-          portrait_match_results: { FaceMatchResult: liveness_result },
+          classification_info: classification_info,
+          portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
         }
       end
     end

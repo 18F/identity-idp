@@ -1,29 +1,34 @@
-<% title t('titles.edit_info.password') %>
+<% self.title = t('titles.edit_info.password') %>
+
+<% if @update_password_presenter.required_password_change? %>
+  <%= render AlertComponent.new(
+        type: :warning,
+        class: 'margin-bottom-4',
+      ) do
+        t('users.password_compromised.warning', app_name: APP_NAME)
+      end
+  %>
+<% end %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.password')) %>
 
 <p id="password-description">
-  <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
+  <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
 
-<%= simple_form_for(
-      @update_user_password_form, url: manage_password_path,
-                                  html: { autocomplete: 'off', method: :patch }
-    ) do |f| %>
+<%= simple_form_for(@update_user_password_form, url: manage_password_path, method: :patch) do |f| %>
   <%= f.error_notification %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
-        name: :password,
-        label: t('forms.passwords.edit.labels.password'),
-        required: true,
-        input_html: { aria: { describedby: 'password-description' } },
+        password_label: t('forms.passwords.edit.labels.password'),
+        forbidden_passwords: @update_password_presenter.forbidden_passwords,
+        field_options: @update_password_presenter.aria_described_by_if_eligible,
       ) %>
-  <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.submit t('forms.buttons.submit.update'), class: 'margin-top-2 margin-bottom-4' %>
+  <%= f.submit @update_password_presenter.submit_text, class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
 
-<%= render 'shared/cancel', link: account_path %>
-
-<%= javascript_packs_tag_once 'pw-strength' %>
+<% unless @update_password_presenter.required_password_change? %>
+  <%= render 'shared/cancel', link: account_path %>
+<% end %>

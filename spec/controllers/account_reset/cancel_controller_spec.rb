@@ -1,58 +1,57 @@
 require 'rails_helper'
 
-describe AccountReset::CancelController do
+RSpec.describe AccountReset::CancelController do
   include AccountResetHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   describe '#create' do
     it 'logs a good token to the analytics' do
       token = create_account_reset_request_for(user)
       session[:cancel_token] = token
-
       stub_analytics
-      analytics_hash = {
+
+      post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel',
         success: true,
         errors: {},
         user_id: user.uuid,
         message_id: 'fake-message-id',
         request_id: 'fake-message-request-id',
-      }
-
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
-
-      post :create
+      )
     end
 
     it 'logs a bad token to the analytics' do
       stub_analytics
-      analytics_hash = {
-        success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
-        error_details: {
-          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
-        },
-        user_id: 'anonymous-uuid',
-      }
-
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
       session[:cancel_token] = 'FOO'
 
       post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel',
+        success: false,
+        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
+        error_details: {
+          token: { cancel_token_invalid: true },
+        },
+        user_id: 'anonymous-uuid',
+      )
     end
 
     it 'logs a missing token to the analytics' do
       stub_analytics
-      analytics_hash = {
-        success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
-        error_details: { token: [:blank] },
-        user_id: 'anonymous-uuid',
-      }
-
-      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
 
       post :create
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel',
+        success: false,
+        errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
+        error_details: { token: { blank: true } },
+        user_id: 'anonymous-uuid',
+      )
     end
 
     it 'redirects to the root without a flash message when the token is missing or invalid' do
@@ -66,8 +65,8 @@ describe AccountReset::CancelController do
 
       post :create
 
-      expect(flash[:success]).
-        to eq t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
+      expect(flash[:success])
+        .to eq t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
       expect(response).to redirect_to root_url
     end
 
@@ -86,19 +85,18 @@ describe AccountReset::CancelController do
   describe '#show' do
     it 'redirects to root if the token does not match one in the DB' do
       stub_analytics
-      properties = {
+
+      get :show, params: { token: 'FOO' }
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel token validation',
         user_id: 'anonymous-uuid',
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
-          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
+          token: { cancel_token_invalid: true },
         },
-      }
-      expect(@analytics).to receive(:track_event).
-        with('Account Reset: cancel token validation', properties)
-
-      get :show, params: { token: 'FOO' }
-
+      )
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)
     end

@@ -1,16 +1,17 @@
 require 'rails_helper'
 
-describe 'sign_up/completions/show.html.erb' do
-  let(:user) { create(:user, :signed_up) }
+RSpec.describe 'sign_up/completions/show.html.erb' do
+  let(:user) { create(:user, :fully_registered) }
   let(:service_provider) { create(:service_provider) }
+  let(:selected_email_id) { user.email_addresses.first.id }
   let(:decrypted_pii) { {} }
   let(:requested_attributes) { [:email] }
   let(:ial2_requested) { false }
   let(:completion_context) { :new_sp }
 
   let(:view_context) { ActionController::Base.new.view_context }
-  let(:decorated_session) do
-    ServiceProviderSessionDecorator.new(
+  let(:decorated_sp_session) do
+    ServiceProviderSession.new(
       sp: service_provider,
       view_context: view_context,
       sp_session: {},
@@ -22,17 +23,18 @@ describe 'sign_up/completions/show.html.erb' do
     CompletionsPresenter.new(
       current_user: user,
       current_sp: service_provider,
-      decrypted_pii: decrypted_pii,
-      requested_attributes: requested_attributes,
-      ial2_requested: ial2_requested,
-      completion_context: completion_context,
+      decrypted_pii:,
+      requested_attributes:,
+      ial2_requested:,
+      completion_context:,
+      selected_email_id:,
     )
   end
 
   before do
     @user = user
     @presenter = presenter
-    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
   end
 
   it 'shows the app name, not the agency name' do
@@ -43,12 +45,42 @@ describe 'sign_up/completions/show.html.erb' do
     expect(text).to_not include(service_provider.agency.name)
     expect(text).to include(
       view_context.strip_tags(
-        I18n.t(
-          'help_text.requested_attributes.ial1_intro_html',
-          sp: service_provider.friendly_name,
+        t(
+          'help_text.requested_attributes.intro_html',
+          sp_html: content_tag(:strong, service_provider.friendly_name),
         ),
       ),
     )
+  end
+
+  it 'shows cancel link on completion screen' do
+    render
+    expect(rendered).to have_link(
+      t('links.cancel'),
+      href: sign_up_completed_cancel_path,
+    )
+  end
+
+  context 'select email to send to partner and select email feature is disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(
+        :feature_select_email_to_share_enabled,
+      ).and_return(false)
+    end
+
+    it 'does not show change link' do
+      render
+
+      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
+    end
+  end
+
+  context 'select email to send to partner' do
+    it 'shows email change link' do
+      render
+
+      expect(rendered).to include(t('help_text.requested_attributes.change_email_link'))
+    end
   end
 
   context 'the all_emails scope is requested' do
@@ -95,55 +127,26 @@ describe 'sign_up/completions/show.html.erb' do
 
   describe 'MFA CTA banner' do
     let(:multiple_factors_enabled) { nil }
-    let(:select_multiple_mfa_options) { nil }
 
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).
-        and_return(select_multiple_mfa_options)
       @multiple_factors_enabled = multiple_factors_enabled
     end
 
     context 'with multiple factors disabled' do
       let(:multiple_factors_enabled) { false }
 
-      context 'with multiple MFA feature flag disabled' do
-        let(:select_multiple_mfa_options) { false }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
-      end
-
-      context 'with multiple MFA feature flag enabled' do
-        let(:select_multiple_mfa_options) { true }
-
-        it 'shows a banner if the user selects one MFA option' do
-          render
-          expect(rendered).to have_content(t('mfa.second_method_warning.text'))
-        end
+      it 'shows a banner if the user selects one MFA option' do
+        render
+        expect(rendered).to have_content(t('mfa.second_method_warning.text'))
       end
     end
 
     context 'with multiple factors enabled' do
       let(:multiple_factors_enabled) { true }
 
-      context 'with multiple MFA feature flag disabled' do
-        let(:select_multiple_mfa_options) { false }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
-      end
-
-      context 'with multiple MFA feature flag enabled' do
-        let(:select_multiple_mfa_options) { true }
-
-        it 'does not show a banner' do
-          render
-          expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
-        end
+      it 'does not show a banner' do
+        render
+        expect(rendered).not_to have_content(t('mfa.second_method_warning.text'))
       end
     end
   end

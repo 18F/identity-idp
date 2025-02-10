@@ -1,174 +1,139 @@
 require_relative 'document_capture_step_helper'
+require_relative 'interaction_helper'
+require_relative '../user_agent_helper'
 
 module DocAuthHelper
+  include InteractionHelper
   include DocumentCaptureStepHelper
+  include UserAgentHelper
 
-  GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
+  GOOD_SSN = (Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]).freeze
+  GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
+  SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
-  def session_from_completed_flow_steps(finished_step)
-    session = { doc_auth: {} }
-    Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
-      session[:doc_auth][klass.to_s] = true
-      return session if step == finished_step
-    end
-    session
+  def clear_and_fill_in(field_name, text)
+    fill_in field_name, with: ''
+    fill_in field_name, with: text
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_FAILS_RESOLUTION
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: '000-00-0000'
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
-    fill_in t('idv.form.ssn_label_html'), with: GOOD_SSN
+    fill_in t('idv.form.ssn_label'), with: GOOD_SSN
   end
 
   def fill_out_ssn_form_fail
-    fill_in t('idv.form.ssn_label_html'), with: ''
+    fill_in t('idv.form.ssn_label'), with: ''
   end
 
   def click_doc_auth_back_link
     click_on '‹ ' + t('forms.buttons.back')
   end
 
-  def idv_ip_get_started_step
-    idv_inherited_proofing_step_path(step: :get_started)
-  end
-
-  def idv_ip_verify_info_step
-    idv_inherited_proofing_step_path(step: :verify_info)
-  end
-
-  def idv_inherited_proofing_agreement_step
-    idv_inherited_proofing_step_path(step: :agreement)
-  end
-
-  def idv_doc_auth_welcome_step
-    idv_doc_auth_step_path(step: :welcome)
-  end
-
-  def idv_doc_auth_agreement_step
-    idv_doc_auth_step_path(step: :agreement)
-  end
-
-  def idv_doc_auth_upload_step
-    idv_doc_auth_step_path(step: :upload)
-  end
-
-  def idv_doc_auth_ssn_step
-    idv_doc_auth_step_path(step: :ssn)
-  end
-
-  def idv_doc_auth_document_capture_step
-    idv_doc_auth_step_path(step: :document_capture)
-  end
-
-  def idv_doc_auth_verify_step
-    idv_doc_auth_step_path(step: :verify)
-  end
-
-  def idv_doc_auth_send_link_step
-    idv_doc_auth_step_path(step: :send_link)
-  end
-
-  def idv_doc_auth_link_sent_step
-    idv_doc_auth_step_path(step: :link_sent)
-  end
-
-  def idv_doc_auth_email_sent_step
-    idv_doc_auth_step_path(step: :email_sent)
+  def click_send_link
+    click_on t('forms.buttons.send_link')
   end
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
-    visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    visit idv_welcome_url unless current_path == idv_welcome_url
+    click_idv_continue if current_path == idv_mail_only_warning_path
+
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_welcome_step
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_inherited_proofing_steps_before_get_started_step(expect_accessible: false)
-    visit idv_ip_get_started_step unless current_path == idv_ip_get_started_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-  end
-
-  def complete_get_started_step
-    click_on t('inherited_proofing.buttons.continue')
-  end
-
-  def complete_inherited_proofing_steps_before_agreement_step(expect_accessible: false)
-    complete_inherited_proofing_steps_before_get_started_step(expect_accessible: expect_accessible)
-    complete_get_started_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-  end
-
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     complete_welcome_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_agreement_step
-    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
+    find(
+      'label',
+      text: t('doc_auth.instructions.consent', app_name: APP_NAME),
+      wait: 5,
+    ).click
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_upload_step
-    if javascript_enabled?
-      # By default, user would be prevented from continuing on desktop if the proofing flow requires
-      # liveness and there is no detectable camera. This forces the desktop link to be visible.
-      page.find('#upload-comp-liveness-off', visible: :all).evaluate_script('this.className = ""')
-    end
-    click_on t('doc_auth.info.upload_computer_link')
+  def complete_hybrid_handoff_step
+    # If there is a phone outage, the hybrid_handoff step is
+    # skipped and the user is taken straight to document capture.
+    return if OutageStatus.new.any_phone_vendor_outage?
+    click_on t('forms.buttons.upload_photos')
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.current_path == idv_doc_auth_document_capture_step
-    complete_upload_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    return if page.current_path == idv_document_capture_path
+    if IdentityConfig.store.in_person_proofing_opt_in_enabled
+      click_on t('forms.buttons.continue_remote')
+    end
+    complete_hybrid_handoff_step
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_document_capture_step
-    attach_and_submit_images
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
+                                                       facial_match_required: false)
+    complete_doc_auth_steps_before_welcome_step
+    complete_welcome_step
+    complete_agreement_step
+    if remote
+      if facial_match_required
+        click_on t('forms.buttons.continue_remote_mobile')
+      else
+        click_on t('forms.buttons.continue_remote')
+      end
+    else
+      click_on t('forms.buttons.continue_ipp')
+    end
   end
 
-  def complete_doc_auth_steps_before_email_sent_step
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-    complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.info.upload_computer_link')
+  def complete_document_capture_step(with_selfie: false)
+    if with_selfie
+      attach_liveness_images
+    else
+      expect(page).to have_current_path(idv_document_capture_path)
+      attach_images
+    end
+
+    submit_images
   end
 
-  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
-    click_idv_continue
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
+  # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
+  def complete_document_capture_step_with_yml(proofing_yml, expected_path: idv_ssn_url)
+    attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
+    attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
+    click_on I18n.t('forms.buttons.submit.default')
+    expect(page).to have_current_path(expected_path, wait: 10)
   end
 
   def mobile_device
-    Browser.new(
-      'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
-AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-    )
+    Browser.new(mobile_user_agent)
   end
 
-  def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
-    complete_document_capture_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    complete_document_capture_step(with_selfie: with_selfie)
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_ssn_step
@@ -176,81 +141,70 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
-  def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
+  def complete_doc_auth_steps_before_verify_step(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_ssn_step(
+      expect_accessible: expect_accessible,
+      with_selfie: with_selfie,
+    )
     complete_ssn_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_verify_step
-    click_idv_continue
+    click_idv_submit_default
   end
 
-  def complete_doc_auth_steps_before_address_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_button t('idv.buttons.change_address_label')
-  end
-
-  def complete_doc_auth_steps_before_send_link_step
-    complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
+  def complete_doc_auth_steps_before_address_step(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_verify_step(with_selfie: with_selfie)
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+    click_link t('idv.buttons.change_address_label')
   end
 
   def complete_doc_auth_steps_before_link_sent_step
-    complete_doc_auth_steps_before_send_link_step
-    fill_out_doc_auth_phone_form_ok
-    click_idv_continue
+    complete_doc_auth_steps_before_hybrid_handoff_step
+    click_send_link
   end
 
-  def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+  def complete_gpo_verification(user)
+    otp = 'ABC123'
+    create(
+      :gpo_confirmation_code,
+      profile: User.find(user.id).pending_profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+    )
+    fill_in t('idv.gpo.form.otp_label'), with: otp
+    click_button t('idv.gpo.form.submit')
+  end
+
+  def complete_letter_enqueued
+    # Exit Login.gov and return to SP
+    click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
+  end
+
+  def complete_all_doc_auth_steps(expect_accessible: false, with_selfie: false)
+    complete_doc_auth_steps_before_verify_step(
+      expect_accessible: expect_accessible,
+      with_selfie: with_selfie,
+    )
     complete_verify_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
-    complete_all_doc_auth_steps(expect_accessible: expect_accessible)
+  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false, with_selfie: false)
+    complete_all_doc_auth_steps(expect_accessible: expect_accessible, with_selfie: with_selfie)
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
-    expect(page).to have_current_path(idv_review_path, wait: 10)
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to have_current_path(idv_enter_password_path, wait: 10)
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_proofing_steps
-    complete_all_doc_auth_steps_before_password_step
+  def complete_proofing_steps(with_selfie: false)
+    complete_all_doc_auth_steps_before_password_step(with_selfie: with_selfie)
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
     click_agree_and_continue
-  end
-
-  def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = Idp::Constants::MOCK_IDV_APPLICANT.dup
-    pii_with_no_name[:last_name] = nil
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Response.new(
-        pii_from_doc: pii_with_no_name,
-        extra: {
-          doc_auth_result: 'Passed',
-          billed: true,
-        },
-        success: true,
-        errors: {},
-      ),
-    )
-  end
-
-  def mock_general_doc_auth_client_error(method)
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: method,
-      response: DocAuth::Response.new(
-        success: false,
-        errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
-      ),
-    )
   end
 
   def mock_doc_auth_attention_with_barcode
@@ -263,55 +217,15 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       method: :get_results,
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
         attention_with_barcode_response,
-        false,
         DocAuth::LexisNexis::Config.new,
       ),
     )
-  end
-
-  def mock_doc_auth_acuant_error_unknown
-    failed_http_response = instance_double(
-      Faraday::Response,
-      body: AcuantFixtures.get_results_response_failure,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::Acuant::Responses::GetResultsResponse.new(
-        failed_http_response,
-        DocAuth::Acuant::Config.new,
-      ),
-    )
-  end
-
-  def set_up_document_capture_result(uuid:, idv_result:)
-    dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
-    dcs.create_doc_auth_session
-    if idv_result
-      dcs.store_doc_auth_result(
-        result: idv_result.except(:pii_from_doc),
-        pii: idv_result[:pii_from_doc],
-      )
-    end
   end
 
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
     click_submit_default
-  end
-
-  def fill_out_address_form_ok
-    fill_in 'idv_form_address1', with: '123 Main St'
-    fill_in 'idv_form_city', with: 'Nowhere'
-    select 'Virginia', from: 'idv_form_state'
-    fill_in 'idv_form_zipcode', with: '66044'
-  end
-
-  def fill_out_address_form_resolution_fail
-    fill_in 'idv_form_address1', with: '123 Main St'
-    fill_in 'idv_form_city', with: 'Nowhere'
-    select 'Virginia', from: 'idv_form_state'
-    fill_in 'idv_form_zipcode', with: '00000'
   end
 
   def fill_out_address_form_fail
@@ -321,7 +235,20 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     fill_in 'idv_form_zipcode', with: '1'
   end
 
-  def fill_out_doc_auth_phone_form_ok(phone = '415-555-0199')
-    fill_in :doc_auth_phone, with: phone
+  def complete_all_idv_steps_with(threatmetrix:)
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
+    user = create(:user, :fully_registered)
+    visit_idp_from_ial1_oidc_sp(
+      client_id: service_provider.issuer,
+    )
+    visit root_path
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_ssn_step
+    select threatmetrix, from: :mock_profiling_result
+    complete_ssn_step
+    complete_verify_step
+    complete_phone_step(user)
+    complete_enter_password_step(user)
+    acknowledge_and_confirm_personal_key
   end
 end

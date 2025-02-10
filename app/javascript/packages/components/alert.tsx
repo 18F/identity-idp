@@ -1,11 +1,11 @@
-import { forwardRef } from 'react';
+import { forwardRef, createElement } from 'react';
 import type { ReactNode, ForwardedRef } from 'react';
 
-export type AlertType = 'success' | 'warning' | 'error' | 'info' | 'other';
+export type AlertType = 'success' | 'warning' | 'error' | 'info';
 
 interface AlertProps {
   /**
-   * Alert type. Defaults to "other".
+   * Alert type.
    */
   type?: AlertType;
 
@@ -23,20 +23,26 @@ interface AlertProps {
    * Child elements.
    */
   children?: ReactNode;
+
+  /**
+   * Which tag to use for the usa-alert__text element.
+   * Optional and defaults to p
+   */
+  textTag?: string;
 }
 
 function Alert(
-  { type = 'other', className, isFocusable, children }: AlertProps,
+  { type, className, isFocusable, children, textTag = 'p' }: AlertProps,
   ref: ForwardedRef<any>,
 ) {
-  const classes = [`usa-alert usa-alert--${type}`, className].filter(Boolean).join(' ');
+  const classes = ['usa-alert', type && `usa-alert--${type}`, className].filter(Boolean).join(' ');
   const role = type === 'error' ? 'alert' : 'status';
+
+  const inner = createElement(textTag, { className: 'usa-alert__text' }, children);
 
   return (
     <div ref={ref} className={classes} role={role} tabIndex={isFocusable ? -1 : undefined}>
-      <div className="usa-alert__body">
-        <p className="usa-alert__text">{children}</p>
-      </div>
+      <div className="usa-alert__body">{inner}</div>
     </div>
   );
 }

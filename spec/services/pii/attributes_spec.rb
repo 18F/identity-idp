@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::Attributes do
+RSpec.describe Pii::Attributes do
   let(:password) { 'I am the password' }
 
   describe '#new_from_hash' do
@@ -34,6 +34,46 @@ describe Pii::Attributes do
       )
 
       expect(pii.first_name).to eq('Test')
+    end
+
+    it 'parses state ID address keys' do
+      pii = described_class.new_from_hash(
+        identity_doc_address1: '1600 Pennsylvania Avenue',
+        identity_doc_address2: 'Apt 2',
+        identity_doc_city: 'Washington',
+        state_id_jurisdiction: 'DC',
+        identity_doc_zipcode: '20005',
+        identity_doc_address_state: 'NY',
+      )
+
+      expect(pii.identity_doc_address1).to eq('1600 Pennsylvania Avenue')
+      expect(pii.identity_doc_address2).to eq('Apt 2')
+      expect(pii.identity_doc_city).to eq('Washington')
+      expect(pii.state_id_jurisdiction).to eq('DC')
+      expect(pii.identity_doc_zipcode).to eq('20005')
+      expect(pii.identity_doc_address_state).to eq('NY')
+    end
+
+    it 'normalizes whitespace in values' do
+      pii = described_class.new_from_hash(
+        identity_doc_address1: "  1600\r\r Pennsylvania Avenue\t",
+        identity_doc_address2: ' Apt 2 ',
+        identity_doc_city: ' Washington ',
+        state_id_jurisdiction: ' DC  ',
+        identity_doc_zipcode: ' 20005 ',
+        identity_doc_address_state: ' NY ',
+      )
+      expect(pii.identity_doc_address1).to eq('1600 Pennsylvania Avenue')
+      expect(pii.identity_doc_address2).to eq('Apt 2')
+      expect(pii.identity_doc_city).to eq('Washington')
+      expect(pii.state_id_jurisdiction).to eq('DC')
+      expect(pii.identity_doc_zipcode).to eq('20005')
+      expect(pii.identity_doc_address_state).to eq('NY')
+    end
+
+    it 'accepts Date values' do
+      pii = described_class.new_from_hash(dob: Date.new(2000, 1, 2))
+      expect(pii.dob).to eql(Date.new(2000, 1, 2))
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CompletionsDecider
   def initialize(user_agent:, request_url:)
     @user_agent = user_agent

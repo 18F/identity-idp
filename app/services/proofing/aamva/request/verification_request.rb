@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'erb'
 require 'faraday'
 require 'rexml/document'
@@ -9,11 +11,11 @@ module Proofing
   module Aamva
     module Request
       class VerificationRequest
-        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'.freeze
+        CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'
         DEFAULT_VERIFICATION_URL =
-          'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'.freeze
+          'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
         SOAP_ACTION =
-          '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'.freeze
+          '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'
 
         extend Forwardable
 
@@ -60,34 +62,123 @@ module Proofing
           user_provided_data_map.each do |xpath, data|
             REXML::XPath.first(document, xpath).add_text(data)
           end
-          add_street_address_line_2_to_rexml_document(document) if applicant.address2.present?
+
+          add_optional_element(
+            'nc:PersonMiddleName',
+            value: applicant.middle_name,
+            document:,
+            inside: '//nc:PersonName',
+          )
+
+          add_optional_element(
+            'nc:PersonNameSuffixText',
+            value: applicant.name_suffix,
+            document:,
+            inside: '//nc:PersonName',
+          )
+
+          add_optional_element(
+            'aa:PersonHeightMeasure',
+            value: applicant.height,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:PersonWeightMeasure',
+            value: applicant.weight,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:PersonEyeColorCode',
+            value: applicant.eye_color,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_sex_code(applicant.sex, document)
+
+          add_optional_element(
+            'nc:AddressDeliveryPointText',
+            value: applicant.address2,
+            document:,
+            after: '//aa:Address/nc:AddressDeliveryPointText',
+          )
+
+          add_optional_element(
+            'aa:DriverLicenseIssueDate',
+            value: applicant.state_id_data.state_id_issued,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_optional_element(
+            'aa:DriverLicenseExpirationDate',
+            value: applicant.state_id_data.state_id_expiration,
+            document:,
+            inside: '//dldv:verifyDriverLicenseDataRequest',
+          )
+
+          add_state_id_type(
+            applicant.state_id_data.state_id_type,
+            document,
+          )
+
           @body = document.to_s
         end
 
-        def add_street_address_line_2_to_rexml_document(document)
-          old_address_node = document.delete_element('//ns1:Address')
-          new_address_node = old_address_node.clone
-          old_address_node.children.each do |child_node|
-            next unless child_node.node_type == :element
+        def add_state_id_type(id_type, document)
+          category_code = case id_type
+                          when 'drivers_license'
+                            1
+                          when 'drivers_permit'
+                            2
+                          when 'state_id_card'
+                            3
+                          end
 
-            new_element = child_node.clone
-            new_element.add_text(child_node.text)
-            new_address_node.add_element(new_element)
-
-            if child_node.name == 'AddressDeliveryPointText'
-              new_address_node.add_element(address_line_2_element)
-            end
+          if category_code
+            add_optional_element(
+              'aa:DocumentCategoryCode',
+              value: category_code,
+              document:,
+              inside: '//dldv:verifyDriverLicenseDataRequest',
+            )
           end
-          REXML::XPath.first(
-            document,
-            '//ns:verifyDriverLicenseDataRequest',
-          ).add_element(new_address_node)
         end
 
-        def address_line_2_element
-          element = REXML::Element.new('ns2:AddressDeliveryPointText')
-          element.add_text(applicant.address2)
-          element
+        def add_sex_code(sex_value, document)
+          sex_code = case sex_value
+                     when 'male'
+                       1
+                     when 'female'
+                       2
+                     end
+
+          if sex_code
+            add_optional_element(
+              'aa:PersonSexCode',
+              value: sex_code,
+              document:,
+              inside: '//dldv:verifyDriverLicenseDataRequest',
+            )
+          end
+        end
+
+        def add_optional_element(name, value:, document:, inside: nil, after: nil)
+          return if value.blank?
+
+          el = REXML::Element.new(name)
+          el.text = value
+
+          if inside
+            REXML::XPath.first(document, inside).add_element(el)
+          elsif after
+            sibling = REXML::XPath.first(document, after)
+            sibling.parent.insert_after(sibling, el)
+          end
         end
 
         def build_request_body
@@ -105,6 +196,9 @@ module Proofing
         end
 
         def message_destination_id
+          # Note: AAMVA uses this field to route the request to the appropriate state DMV.
+          #       We are required to use 'P6' as the jurisdiction when we make requests
+          #       in the AAMVA CERT/Test environment.
           return 'P6' if config.cert_enabled.to_s == 'true'
           applicant.state_id_data.state_id_jurisdiction
         end
@@ -128,16 +222,25 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//ns2:IdentificationID' => applicant.state_id_data.state_id_number,
-            '//ns1:MessageDestinationId' => message_destination_id,
-            '//ns2:PersonGivenName' => applicant.first_name,
-            '//ns2:PersonSurName' => applicant.last_name,
-            '//ns1:PersonBirthDate' => applicant.dob,
-            '//ns2:AddressDeliveryPointText' => applicant.address1,
-            '//ns2:LocationCityName' => applicant.city,
-            '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
-            '//ns2:LocationPostalCode' => applicant.zipcode,
+            '//nc:IdentificationID' => state_id_number,
+            '//aa:MessageDestinationId' => message_destination_id,
+            '//nc:PersonGivenName' => applicant.first_name,
+            '//nc:PersonSurName' => applicant.last_name,
+            '//aa:PersonBirthDate' => applicant.dob,
+            '//nc:AddressDeliveryPointText' => applicant.address1,
+            '//nc:LocationCityName' => applicant.city,
+            '//nc:LocationStateUsPostalServiceCode' => applicant.state,
+            '//nc:LocationPostalCode' => applicant.zipcode,
           }
+        end
+
+        def state_id_number
+          case applicant.state_id_data.state_id_jurisdiction
+          when 'SC'
+            applicant.state_id_data.state_id_number.rjust(8, '0')
+          else
+            applicant.state_id_data.state_id_number
+          end
         end
 
         def timeout

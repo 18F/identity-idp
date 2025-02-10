@@ -1,0 +1,33 @@
+@use 'uswds-core' as *;
+
+lg-phone-input {
+  display: block;
+
+  .validated-field__input-wrapper {
+    margin-top: units(0.5);
+  }
+
+  .iti__flag {
+    background-image: url('/flags.png');
+
+    @media (resolution >= 2x) {
+      background-image: url('/flags@2x.png');
+    }
+  }
+
+  .iti__search-input {
+    @extend %block-input-styles;
+  }
+
+  .iti__dial-code {
+    color: color('ink');
+  }
+}
+
+.phone-input__international-code-wrapper {
+  display: none;
+
+  .no-js & {
+    display: block;
+  }
+}

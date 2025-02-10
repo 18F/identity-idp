@@ -1,29 +1,23 @@
+# frozen_string_literal: true
+
 module Proofing
   module Aamva
     class AuthenticationClient
       AAMVA_TOKEN_FRESHNESS_SECONDS = 28 * 60
+      AUTH_TOKEN_CACHE_KEY = 'aamva_api_auth_token'
 
-      class << self
-        attr_accessor :auth_token
-        attr_accessor :auth_token_expiration
-      end
-
-      def self.token_mutex
-        @token_mutex ||= Mutex.new
-      end
-
-      def fetch_token(config)
-        AuthenticationClient.token_mutex.synchronize do
-          if AuthenticationClient.auth_token.nil? || auth_token_expired?
-            send_auth_token_request(config)
-          end
-          AuthenticationClient.auth_token
+      def self.auth_token(config)
+        Rails.cache.fetch(
+          AUTH_TOKEN_CACHE_KEY,
+          skip_nil: true,
+          expires_in: AAMVA_TOKEN_FRESHNESS_SECONDS,
+        ) do
+          send_auth_token_request(config)
         end
       end
 
-      private
-
-      def send_auth_token_request(config)
+      private_class_method
+      def self.send_auth_token_request(config)
         sct_request = Request::SecurityTokenRequest.new(config)
         sct_response = sct_request.send
         token_request = Request::AuthenticationTokenRequest.new(
@@ -34,12 +28,7 @@ module Proofing
           server_hmac_secret: sct_response.nonce,
         )
         token_response = token_request.send
-        AuthenticationClient.auth_token = token_response.auth_token
-        AuthenticationClient.auth_token_expiration = Time.zone.now + AAMVA_TOKEN_FRESHNESS_SECONDS
-      end
-
-      def auth_token_expired?
-        (AuthenticationClient.auth_token_expiration - Time.zone.now).negative?
+        token_response.auth_token
       end
     end
   end

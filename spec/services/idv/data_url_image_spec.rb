@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DataUrlImage do
+RSpec.describe Idv::DataUrlImage do
   let(:data) { 'abc def' }
   let(:data_url) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
   subject(:data_url_image) { described_class.new(data_url) }
@@ -12,6 +12,12 @@ describe Idv::DataUrlImage do
       it 'raises an error' do
         expect { data_url_image }.to raise_error Idv::DataUrlImage::InvalidUrlFormatError
       end
+    end
+  end
+
+  describe '#content_type' do
+    it 'returns the content type' do
+      expect(data_url_image.content_type).to eq('image/jpeg')
     end
   end
 

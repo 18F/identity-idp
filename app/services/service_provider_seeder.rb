@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end
 
-  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env)
+  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env, yaml_path: 'config')
     @rails_env = rails_env
     @deploy_env = deploy_env
+    @yaml_path = yaml_path
   end
 
   def run
@@ -35,14 +38,36 @@ class ServiceProviderSeeder
     end
   end
 
+  def write_review_app_yaml(dashboard_url:)
+    hash = {
+      @rails_env.to_s => {
+        'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard' => {
+          'friendly_name' => 'Dashboard',
+          'agency' => 'GSA',
+          'agency_id' => 2,
+          'logo' => '18f.svg',
+          'certs' => ['identity_dashboard_cert'],
+          'return_to_sp_url' => dashboard_url,
+          'redirect_uris' => [
+            "#{dashboard_url}/auth/logindotgov/callback",
+            dashboard_url,
+          ],
+          'push_notification_url' => "#{dashboard_url}/api/security_events",
+        },
+      },
+    }
+
+    File.write(Rails.root.join(@yaml_path, 'service_providers.yml'), hash.to_yaml)
+  end
+
   private
 
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join('config', 'service_providers.yml').read
-    content = ERB.new(file).result
-    YAML.safe_load(content).fetch(rails_env)
+    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
+    file.gsub!('%{env}', deploy_env) if deploy_env
+    YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
     Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
     raise syntax_error
@@ -55,10 +80,16 @@ class ServiceProviderSeeder
     return true if rails_env != 'production'
 
     restrict_env = config['restrict_to_deploy_env']
+    in_prod = deploy_env == 'prod'
+    in_sandbox = !%w[prod staging].include?(deploy_env)
+    in_staging = deploy_env == 'staging'
 
-    is_production_or_has_a_restriction = (deploy_env == 'prod' || restrict_env.present?)
+    return true if restrict_env == 'prod' && in_prod
+    return true if restrict_env == 'staging' && in_staging
+    return true if restrict_env == 'sandbox' && in_sandbox
+    return true if restrict_env.blank? && !in_prod
 
-    !is_production_or_has_a_restriction || (restrict_env == deploy_env)
+    false
   end
 
   def check_for_missing_sps
@@ -73,6 +104,12 @@ class ServiceProviderSeeder
     extra_sp_error = ExtraServiceProviderError.new(
       "Extra service providers found in DB: #{extra_sps.join(', ')}",
     )
-    NewRelic::Agent.notice_error(extra_sp_error)
+
+    if IdentityConfig.store.team_ursula_email.present?
+      ReportMailer.warn_error(
+        email: IdentityConfig.store.team_ursula_email,
+        error: extra_sp_error,
+      ).deliver_now
+    end
   end
 end

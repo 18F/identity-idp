@@ -34,6 +34,11 @@ AM:
   name: Armenia
   supports_sms: true
   supports_voice: false
+AO:
+  country_code: '244'
+  name: Angola
+  supports_sms: true
+  supports_voice: false
 AR:
   country_code: '54'
   name: Argentina
@@ -94,8 +99,8 @@ BH:
   name: Bahrain
   supports_sms: true
   supports_voice: true
-BL:
-  country_code: '590'
+BI:
+  country_code: '257'
   name: Burundi
   supports_sms: true
   supports_voice: false
@@ -371,7 +376,7 @@ GP:
   supports_voice: false
 GQ:
   country_code: '240'
-  name: Equitorial Guinea
+  name: Equatorial Guinea
   supports_sms: true
   supports_voice: false
 GR:
@@ -483,7 +488,7 @@ JP:
   country_code: '81'
   name: Japan
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 KE:
   country_code: '254'
   name: Kenya
@@ -683,7 +688,7 @@ MY:
   country_code: '60'
   name: Malaysia
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 MZ:
   country_code: '258'
   name: Mozambique
@@ -748,7 +753,7 @@ PA:
   country_code: '507'
   name: Panama
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 PE:
   country_code: '51'
   name: Peru
@@ -773,7 +778,7 @@ PK:
   country_code: '92'
   name: Pakistan
   supports_sms: true
-  supports_voice: true
+  supports_voice: false
 PL:
   country_code: '48'
   name: Poland
@@ -906,7 +911,7 @@ SV:
   supports_voice: true
 SZ:
   country_code: '268'
-  name: Swaziland
+  name: Eswatini
   supports_sms: true
   supports_voice: false
 TC:

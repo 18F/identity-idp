@@ -1,16 +1,11 @@
+# frozen_string_literal: true
+
 require 'identity/hostdata'
 require 'csv'
 
 module Reports
   class DeletedUserAccountsReport < BaseReport
-    REPORT_NAME = 'deleted-user-accounts-report'.freeze
-
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
+    REPORT_NAME = 'deleted-user-accounts-report'
 
     def perform(_date)
       configs = IdentityConfig.store.deleted_user_accounts_report_configs
@@ -20,12 +15,12 @@ module Reports
         issuers = report_hash['issuers']
         report = deleted_user_accounts_data_for_issuers(issuers)
         emails.each do |email|
-          UserMailer.deleted_user_accounts_report(
+          ReportMailer.deleted_user_accounts_report(
             email: email,
             name: name,
             issuers: issuers,
             data: report,
-          ).deliver_now_or_later
+          ).deliver_now
         end
       end
     end
@@ -33,7 +28,7 @@ module Reports
     private
 
     def deleted_user_accounts_data_for_issuers(issuers)
-      csv = CSV.new('', row_sep: "\r\n")
+      csv = CSV.new(+'', row_sep: "\r\n")
       issuers.each do |issuer|
         transaction_with_timeout do
           rows = DeletedAccountsReport.call(issuer, 10_000)

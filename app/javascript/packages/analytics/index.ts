@@ -1,39 +1,27 @@
-import type { noticeError } from 'newrelic';
 import { getConfigValue } from '@18f/identity-config';
 
-type NewRelicAgent = { noticeError: typeof noticeError };
+export { default as isTrackableErrorEvent } from './is-trackable-error-event';
 
-interface NewRelicGlobals {
-  newrelic?: NewRelicAgent;
-}
+/**
+ * Metadata used to identify the source of an error.
+ */
+type ErrorMetadata = { errorId?: never; filename: string } | { errorId: string; filename?: never };
 
 /**
  * Logs an event.
  *
  * @param event Event name.
  * @param payload Payload object.
- *
- * @return Promise resolving once event has been logged.
  */
-export async function trackEvent(event: string, payload: object = {}): Promise<void> {
+export function trackEvent(event: string, payload?: object) {
   const endpoint = getConfigValue('analyticsEndpoint');
-  if (!endpoint) {
-    return;
-  }
 
-  try {
-    await window.fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event, payload }),
-    });
-  } catch (error) {
-    // An error would only be thrown if a network error occurred during the fetch request, which is
-    // a scenario we can ignore. By absorbing the error, it should be assumed that an awaited call
-    // to `trackEvent` would never create an interrupt due to a thrown error, since an unsuccessful
-    // status code on the request is not an error.
-    //
-    // See: https://fetch.spec.whatwg.org/#dom-global-fetch
+  // Make analytics requests using sendBeacon(), which can be prioritized appropriately by the
+  // browser and have a better chance of succeeding during page unload than fetch().
+  if (endpoint && navigator.sendBeacon) {
+    const eventJson = JSON.stringify({ event, payload });
+    const blob = new Blob([eventJson], { type: 'application/json' });
+    navigator.sendBeacon(endpoint, blob);
   }
 }
 
@@ -41,7 +29,8 @@ export async function trackEvent(event: string, payload: object = {}): Promise<v
  * Logs an error.
  *
  * @param error Error object.
+ * @param metadata Metadata used to identify the source of an error, including either the filename
+ * from an ErrorEvent object, or a unique identifier.
  */
-export function trackError(error: Error) {
-  (globalThis as typeof globalThis & NewRelicGlobals).newrelic?.noticeError(error);
-}
+export const trackError = ({ name, message, stack }: Error, { filename, errorId }: ErrorMetadata) =>
+  trackEvent('Frontend Error', { name, message, stack, filename, error_id: errorId });

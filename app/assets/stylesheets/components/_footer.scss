@@ -1,23 +1,112 @@
-// 1. Avoid the IE 10-11 `min-height` bug.
-// 2. Set `flex-shrink` to `0` to prevent some browsers from
-//    letting these items shrink to smaller than their content's default
-//    minimum size. See http://bit.ly/1Mn35US for details.
-// 3. Use `%` instead of `vh` since `vh` is buggy in older mobile Safari.
-html {
+@use 'uswds-core' as *;
+
+html,
+body {
   height: 100%;
 }
 
 .site {
   display: flex;
   flex-direction: column;
-  height: 100%; // 1, 3
 }
 
 .footer {
-  flex: none; // 2
-  position: relative;
+  @include u-bg('primary-lighter');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 0.75rem;
+
+  @include at-media('desktop') {
+    @include u-bg('primary-darker');
+    flex-direction: row;
+  }
+
+  a {
+    @include u-padding-y(1);
+    text-decoration: none;
+
+    @include at-media('desktop') {
+      @include u-padding-y(0);
+      &,
+      &:visited {
+        color: color($theme-link-reverse-color);
+      }
+
+      &:hover {
+        color: color($theme-link-reverse-hover-color);
+      }
+    }
+  }
+
+  > .footer__agency-logo:first-child {
+    display: none;
+
+    @include at-media('desktop') {
+      display: inline-flex;
+    }
+  }
+}
+
+.footer__agency-logo {
+  display: inline-flex;
+  align-items: center;
+
+  &.usa-link--external::after {
+    margin-top: 0;
+  }
 }
 
 .site-wrap {
   flex: 1 0 auto; // 2
+}
+
+.footer__language-picker {
+  @include at-media-max('tablet') {
+    &.language-picker {
+      width: 100%;
+    }
+  }
+
+  @include at-media('tablet') {
+    @include u-margin-y(1);
+  }
+
+  @include at-media('desktop') {
+    @include u-margin-x(2);
+  }
+}
+
+.footer__links {
+  @include u-border-top(1px, 'primary-light');
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+
+  @include at-media('desktop') {
+    @include u-padding-y(1);
+    @include u-margin-top(0);
+    @include u-border-top(0);
+    width: auto;
+  }
+
+  & + .footer__links {
+    @include u-border-top(0);
+  }
+
+  a:not(:last-child) {
+    @include u-margin-right(1);
+
+    @include at-media('tablet') {
+      @include u-margin-right(2);
+    }
+  }
+
+  .footer__agency-logo {
+    @include at-media('desktop') {
+      display: none;
+    }
+  }
 }

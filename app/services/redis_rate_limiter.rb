@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Implementation of https://redis.com/redis-best-practices/basic-rate-limiting/
 class RedisRateLimiter
   class LimitError < StandardError; end
@@ -7,7 +9,7 @@ class RedisRateLimiter
   # @param [String] key the item to throttle on
   # @param [Integer] max_requests the max number of requests allowed per interval
   # @param [Integer] interval number of seconds
-  def initialize(key:, max_requests:, interval:, redis_pool: REDIS_POOL)
+  def initialize(key:, max_requests:, interval:, redis_pool: REDIS_THROTTLE_POOL)
     @key = key
     @max_requests = max_requests
     @interval = interval.to_i
@@ -47,6 +49,6 @@ class RedisRateLimiter
   # @return [String]
   def build_key(now)
     rounded_seconds = (now.to_i / interval) * interval
-    "redis-rate-limiter:#{key}:#{rounded_seconds}"
+    "throttle:redis-rate-limiter:#{key}:#{rounded_seconds}"
   end
 end

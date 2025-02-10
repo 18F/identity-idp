@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe OtpDeliverySelectionForm do
+RSpec.describe OtpDeliverySelectionForm do
   let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
   subject do
     OtpDeliverySelectionForm.new(
@@ -31,7 +31,7 @@ describe OtpDeliverySelectionForm do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(subject.submit(otp_delivery_preference: 'sms', resend: true).to_h).to eq(
+        expect(subject.submit(otp_delivery_preference: 'sms', resend: 'true').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -48,7 +48,7 @@ describe OtpDeliverySelectionForm do
 
         extra = {
           otp_delivery_preference: 'foo',
-          resend: nil,
+          resend: false,
           country_code: nil,
           area_code: nil,
           context: 'authentication',
@@ -71,21 +71,16 @@ describe OtpDeliverySelectionForm do
 
     context 'with voice preference and unsupported phone' do
       it 'changes the otp_delivery_preference to sms' do
-        user = build_stubbed(:user, otp_delivery_preference: 'voice')
+        user = build(:user, otp_delivery_preference: 'voice')
         form = OtpDeliverySelectionForm.new(
           user,
           '+12423270143',
           'authentication',
         )
-        attributes = { otp_delivery_preference: 'sms' }
 
-        updated_user = instance_double(UpdateUser)
-        allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: attributes).and_return(updated_user)
-
-        expect(updated_user).to receive(:call)
-
-        form.submit(otp_delivery_preference: 'voice')
+        expect do
+          form.submit(otp_delivery_preference: 'voice')
+        end.to(change { user.otp_delivery_preference }.to('sms'))
       end
     end
 
@@ -98,9 +93,9 @@ describe OtpDeliverySelectionForm do
           'authentication',
         )
 
-        expect(UpdateUser).to_not receive(:new)
-
-        form.submit(otp_delivery_preference: 'voice')
+        expect do
+          form.submit(otp_delivery_preference: 'voice')
+        end.to_not(change { user.otp_delivery_preference })
       end
     end
   end

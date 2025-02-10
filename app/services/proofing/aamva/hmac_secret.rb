@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'openssl'
 
@@ -25,7 +27,7 @@ module Proofing
 
       attr_reader :client_secret, :server_secret, :psha1
 
-      alias secret client_secret
+      alias_method :secret, :client_secret
 
       def initialize(encoded_client_secret, encoded_server_secret)
         @client_secret = Base64.decode64(encoded_client_secret)

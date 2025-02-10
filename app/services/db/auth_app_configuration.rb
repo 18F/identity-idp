@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Db
   class AuthAppConfiguration
     def self.create(user, otp_secret_key, totp_timestamp, name = Time.zone.now.to_s)
@@ -37,10 +39,6 @@ module Db
         code, drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
               drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS
       )
-    end
-
-    def self.delete(current_user, auth_app_cfg_id)
-      ::AuthAppConfiguration.where(user_id: current_user.id, id: auth_app_cfg_id).delete_all
     end
 
     def self.update_timestamp(cfg, new_timestamp)

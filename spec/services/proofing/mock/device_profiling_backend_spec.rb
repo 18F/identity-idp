@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Mock::DeviceProfilingBackend do
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_POOL.with { |client| client.flushdb }
   end
 
   subject(:backend) { described_class.new }
@@ -12,8 +12,8 @@ RSpec.describe Proofing::Mock::DeviceProfilingBackend do
 
   describe '#record_profiling_result' do
     it 'raises with unknown result' do
-      expect { backend.record_profiling_result(session_id: session_id, result: 'aaa') }.
-        to raise_error(ArgumentError)
+      expect { backend.record_profiling_result(session_id: session_id, result: 'aaa') }
+        .to raise_error(ArgumentError)
     end
 
     it 'sets the value in redis' do

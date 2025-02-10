@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :dev do
   desc 'Sample data for local development environment'
   task prime: :environment do
@@ -54,9 +56,9 @@ namespace :dev do
       while num_created < num_users
         email_addr = "testuser#{num_created}@example.com"
         user = User.find_with_email(email_addr) || User.create!
-        setup_user(user, email: email_addr, pw: pw, num: num_created)
+        setup_user(user, email: email_addr, pw: pw, num: num_created) unless user.confirmed?
 
-        if ENV['VERIFIED']
+        if ENV['VERIFIED'] && user.active_profile.nil?
           profile = Profile.new(user: user)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
@@ -72,6 +74,120 @@ namespace :dev do
         end
 
         num_created += 1
+        progress&.increment
+      end
+    end
+  end
+
+  desc 'Create in-person enrollments for N random users'
+  task random_in_person_users: [:environment, :random_users] do
+    is_enhanced_ipp = false
+    sponsor_id = IdentityConfig.store.usps_ipp_sponsor_id
+    usps_request_delay_ms = (ENV['USPS_REQUEST_DELAY_MS'] || 0).to_i
+    num_users = (ENV['NUM_USERS'] || 100).to_i
+    pw = 'salty pickles'
+    unless ENV['PROGRESS'] == 'no'
+      progress = ProgressBar.create(
+        title: 'Enrollments',
+        total: num_users,
+        format: '%t: |%B| %j%% [%a / %e]',
+      )
+    end
+    random = Random.new(num_users)
+    raw_enrollment_status = ENV['ENROLLMENT_STATUS'] || InPersonEnrollment::STATUS_PENDING
+    enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
+    is_established = [
+      InPersonEnrollment::STATUS_PENDING,
+      InPersonEnrollment::STATUS_PASSED,
+      InPersonEnrollment::STATUS_FAILED,
+      InPersonEnrollment::STATUS_EXPIRED,
+    ].include?(raw_enrollment_status)
+
+    create_in_usps = !!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
+
+    InPersonEnrollment.transaction do
+      (0...num_users).each do |n|
+        email_addr = "testuser#{n}@example.com"
+        user = User.find_with_email(email_addr)
+        next if user.nil?
+        if is_established
+          unless raw_enrollment_status == InPersonEnrollment::STATUS_PENDING &&
+                 !user.pending_in_person_enrollment.nil?
+            profile = Profile.new(user: user)
+
+            # Convert index to a string of letters to be a valid last name for the USPS API
+            usps_compatible_number_alternative = n.to_s.chars.map do |c|
+              ('a'.ord + c.to_i).chr
+            end.join('')
+
+            pii = Pii::Attributes.new_from_hash(
+              first_name: 'Test',
+              last_name: "User #{usps_compatible_number_alternative}",
+              dob: '1970-05-01',
+              ssn: "666-#{n}", # doesn't need to be legit 9 digits, just unique
+              address1: '1200 FORESTVILLE DR',
+              city: 'GREAT FALLS',
+              state: 'VA',
+              zipcode: '22066',
+              identity_doc_address1: '1200 FORESTVILLE DR',
+              identity_doc_city: 'GREAT FALLS',
+              identity_doc_address_state: 'VA',
+              identity_doc_zipcode: '22066',
+            )
+            personal_key = profile.encrypt_pii(pii, pw)
+
+            if raw_enrollment_status === InPersonEnrollment::STATUS_PENDING && create_in_usps
+              enrollment = InPersonEnrollment.find_or_initialize_by(
+                user: user,
+                status: :establishing,
+                profile: profile,
+                sponsor_id: sponsor_id,
+              )
+              enrollment.save!
+
+              success = false
+              num_attempts = 0
+              max_attempts = (ENV['MAX_NUM_ATTEMPTS'] || 3).to_i
+              until success || num_attempts >= max_attempts
+                num_attempts += 1
+                begin
+                  UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+                    user: user,
+                    pii: pii,
+                    is_enhanced_ipp: is_enhanced_ipp,
+                  )
+                rescue StandardError => e
+                  Rails.logger.error 'Exception raised while enrolling user: ' + e.message
+                  raise e if num_attempts == max_attempts
+                else
+                  success = true
+                end
+                Kernel.sleep(usps_request_delay_ms / 1000.0) if usps_request_delay_ms
+              end
+            else
+              enrollment = InPersonEnrollment.create!(
+                user: user,
+                profile: profile,
+                status: enrollment_status,
+                enrollment_established_at: Time.zone.now - random.rand(0..5).days,
+                unique_id: SecureRandom.hex(9),
+                enrollment_code: SecureRandom.hex(16),
+                sponsor_id: sponsor_id,
+              )
+
+              if raw_enrollment_status == InPersonEnrollment::STATUS_PASSED
+                enrollment.profile.activate
+              end
+            end
+            Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
+          end
+        else
+          InPersonEnrollment.create!(
+            user: user,
+            status: enrollment_status,
+            sponsor_id: sponsor_id,
+          )
+        end
         progress&.increment
       end
     end

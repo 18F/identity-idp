@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module Idv
   class ForgotPasswordController < ApplicationController
-    include IdvSession
+    include Idv::AvailabilityConcern
+    include IdvSessionConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
@@ -12,7 +15,7 @@ module Idv
     def update
       analytics.idv_forgot_password_confirmed
       request_id = sp_session[:request_id]
-      email = current_user.confirmed_email_addresses.first.email
+      email = current_user.last_sign_in_email_address.email
       reset_password(email, request_id)
     end
 
@@ -24,7 +27,6 @@ module Idv
         email: email,
         request_id: request_id,
         analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).perform
       # The user/email is always found so...
       session[:email] = email

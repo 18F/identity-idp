@@ -1,24 +1,26 @@
-<% title t('titles.passwords.change') %>
+<% self.title = t('titles.passwords.change') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
-<%= simple_form_for(
-      @password_reset_from_disavowal_form,
-      url: events_disavowal_url,
-      html: { autocomplete: 'off',
-              method: :post },
-    ) do |f| %>
+<%= simple_form_for(@password_reset_from_disavowal_form, url: events_disavowal_url) do |f| %>
     <%= f.input :disavowal_token, as: :hidden,
                                   input_html: { value: @disavowal_token, name: :disavowal_token } %>
     <%= render PasswordToggleComponent.new(
           form: f,
-          label: t('forms.passwords.edit.labels.password'),
-          required: true,
+          field_options: {
+            label: t('forms.passwords.edit.labels.password'),
+            required: true,
+            input_html: {
+              id: 'new-password',
+              autocomplete: 'new-password',
+            },
+          },
         ) %>
-    <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
+    <%= render PasswordStrengthComponent.new(
+          input_id: 'new-password',
+          forbidden_passwords: @forbidden_passwords,
+        ) %>
     <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
-
-<%= javascript_packs_tag_once 'pw-strength' %>

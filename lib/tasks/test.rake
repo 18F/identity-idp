@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :test do
   # Use `> log/test.log` to empty test.log before re-running tests to get an accurate list
   # Note you must run tests with `COVERAGE=true` to generate scannable logs.

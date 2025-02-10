@@ -1,3 +1,9 @@
-<% title t('titles.personal_key') %>
+<% self.title = t('titles.personal_key') %>
 
-<%= render('shared/personal_key', code: @code, update_path: manage_personal_key_path) %>
+<%= render(
+      'shared/personal_key',
+      code: @code,
+      personal_key_generated_at: @personal_key_generated_at,
+      update_path: manage_personal_key_path,
+    )
+%>

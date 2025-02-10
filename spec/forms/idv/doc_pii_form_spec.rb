@@ -1,9 +1,12 @@
 require 'rails_helper'
 
-describe Idv::DocPiiForm do
+RSpec.describe Idv::DocPiiForm do
+  include DocPiiHelper
+
   let(:user) { create(:user) }
   let(:subject) { Idv::DocPiiForm.new(pii: pii) }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
+  let(:valid_state_id_expiration) { Time.zone.today.to_s }
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
   end
@@ -12,24 +15,74 @@ describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_issued: '2024-01-01',
+      state_id_expiration: valid_state_id_expiration,
     }
   end
   let(:name_errors_pii) do
-    { first_name: nil, last_name: nil, dob: valid_dob,
-      state: Faker::Address.state_abbr }
+    {
+      first_name: nil,
+      last_name: nil,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
   end
   let(:name_and_dob_errors_pii) do
-    { first_name: nil, last_name: nil, dob: nil,
-      state: Faker::Address.state_abbr }
+    {
+      first_name: nil,
+      last_name: nil,
+      dob: nil,
+      address1: Faker::Address.street_address,
+      state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
   end
   let(:dob_min_age_error_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: too_young_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:state_id_expired_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_issued: '2024-01-01',
+      state_id_expiration: '2024-07-25',
+    }
+  end
+  let(:state_id_expiration_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_issued: '2024-01-01',
+      state_id_expiration: nil,
     }
   end
   let(:non_string_zipcode_pii) do
@@ -37,8 +90,77 @@ describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: 12345,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:nil_zipcode_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      state: Faker::Address.state_abbr,
+      zipcode: nil,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:state_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: 'YORK',
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:jurisdiction_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: Faker::Address.street_address,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'XX',
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:address1_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: nil,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: 'S59397998',
+      state_id_expiration: valid_state_id_expiration,
+    }
+  end
+  let(:nil_state_id_number_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: nil,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
+      state_id_number: nil,
+      state_id_expiration: valid_state_id_expiration,
     }
   end
   let(:pii) { nil }
@@ -55,7 +177,9 @@ describe Idv::DocPiiForm do
         expect(result.errors).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'present',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -68,10 +192,12 @@ describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.full_name_check')]
+        expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -84,12 +210,18 @@ describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
-          t('doc_auth.errors.general.no_liveness'),
-        ]
+        expect(result.errors.keys)
+          .to contain_exactly(
+            :name,
+            :dob,
+            :zipcode,
+            :jurisdiction,
+          )
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -102,12 +234,52 @@ describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:dob_min_age]).to eq [
           t('doc_auth.errors.pii.birth_date_min_age'),
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
+        )
+      end
+    end
+
+    context 'when the ID expiration is not present' do
+      let(:pii) { state_id_expiration_error_pii }
+
+      it 'the form is valid' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.errors[:state_id_expiration]).to be_empty
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'present',
+          id_expiration_status: 'missing',
+        )
+      end
+    end
+
+    context 'when the ID is expired' do
+      let(:pii) { state_id_expired_error_pii }
+
+      it 'returns a single state ID expiration error' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:state_id_expiration]).to eq [
+          t('doc_auth.errors.general.no_liveness'),
+        ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'present',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -120,12 +292,34 @@ describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [
+        expect(result.errors[:zipcode]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: [[:pii]],
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
+        )
+      end
+    end
+
+    context 'when there is a nil zipcode' do
+      let(:pii) { nil_zipcode_pii }
+
+      it 'returns a single generic pii error' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:zipcode]).to eq [
+          t('doc_auth.errors.general.no_liveness'),
+        ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
         )
       end
     end
@@ -138,6 +332,59 @@ describe Idv::DocPiiForm do
 
         expect(result.extra[:attention_with_barcode]).to eq(true)
       end
+    end
+
+    context 'when there is no address1 information' do
+      let(:subject) { Idv::DocPiiForm.new(pii: address1_error_pii) }
+
+      it 'returns an error for not being able to read the address' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: pii_like_keypaths,
+          id_issued_status: 'missing',
+          id_expiration_status: 'present',
+        )
+      end
+    end
+  end
+
+  context 'when there is an invalid jurisdiction' do
+    let(:subject) { Idv::DocPiiForm.new(pii: jurisdiction_error_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:jurisdiction]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+    end
+  end
+
+  context 'when there is an invalid state' do
+    let(:subject) { Idv::DocPiiForm.new(pii: state_error_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+    end
+  end
+
+  context 'when the state_id_number is missing' do
+    let(:subject) { Idv::DocPiiForm.new(pii: nil_state_id_number_pii) }
+
+    it 'responds with an unsuccessful result' do
+      result = subject.submit
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:state_id_number]).to eq(
+        [I18n.t('doc_auth.errors.general.no_liveness')],
+      )
     end
   end
 end

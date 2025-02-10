@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Risc
   # Controller to receive SET (Security Event Tokens)
   class SecurityEventsController < ApplicationController
@@ -9,7 +11,7 @@ module Risc
       form = SecurityEventForm.new(body: request.body.read)
       result = form.submit
 
-      analytics.security_event_received(**result.to_h)
+      analytics.security_event_received(**result)
 
       if result.success?
         head :accepted

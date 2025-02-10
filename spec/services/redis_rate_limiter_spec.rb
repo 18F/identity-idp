@@ -4,9 +4,9 @@ RSpec.describe RedisRateLimiter do
   let(:now) { Time.zone.now }
 
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
   end
 
   let(:key) { 'some-unique-identifier' }
@@ -62,7 +62,7 @@ RSpec.describe RedisRateLimiter do
 
     context 'when the key exists and is under the limit' do
       before do
-        REDIS_POOL.with { |r| r.set(rate_limiter.build_key(now), '1') }
+        REDIS_THROTTLE_POOL.with { |r| r.set(rate_limiter.build_key(now), '1') }
       end
 
       it 'is false' do
@@ -72,7 +72,7 @@ RSpec.describe RedisRateLimiter do
 
     context 'when the key exists and is at the limit' do
       before do
-        REDIS_POOL.with { |r| r.set(rate_limiter.build_key(now), max_requests) }
+        REDIS_THROTTLE_POOL.with { |r| r.set(rate_limiter.build_key(now), max_requests) }
       end
 
       it 'is true' do
@@ -85,19 +85,20 @@ RSpec.describe RedisRateLimiter do
     context 'when the key does not exist in redis' do
       it 'sets the value to 1 when' do
         expect { rate_limiter.increment(now) }.to(
-          change { REDIS_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }.from(nil).to('1'),
+          change { REDIS_THROTTLE_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }
+            .from(nil).to('1'),
         )
       end
     end
 
     context 'when the key exists in redis' do
       before do
-        REDIS_POOL.with { |r| r.set(rate_limiter.build_key(now), '3') }
+        REDIS_THROTTLE_POOL.with { |r| r.set(rate_limiter.build_key(now), '3') }
       end
 
       it 'increments the value' do
         expect { rate_limiter.increment(now) }.to(
-          change { REDIS_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }.to('4'),
+          change { REDIS_THROTTLE_POOL.with { |r| r.get(rate_limiter.build_key(now)) } }.to('4'),
         )
       end
     end
@@ -105,7 +106,7 @@ RSpec.describe RedisRateLimiter do
     it 'sets the TTL of the key to interval minus 1' do
       rate_limiter.increment(now)
 
-      ttl = REDIS_POOL.with { |r| r.ttl(rate_limiter.build_key(now)) }
+      ttl = REDIS_THROTTLE_POOL.with { |r| r.ttl(rate_limiter.build_key(now)) }
       expect(ttl).to be_within(1).of(interval - 1) # allow for some clock drift in specs
     end
   end

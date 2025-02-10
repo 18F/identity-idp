@@ -59,7 +59,7 @@ end
 def create_accounts_from_csv(data)
   require 'csv'
   accounts_created = []
-  users = File.exists?(data) ? CSV.read(data, headers: true) : CSV.parse(data, headers: true)
+  users = File.exist?(data) ? CSV.read(data, headers: true) : CSV.parse(data, headers: true)
   users.each do |row|
     email = row['email']
     if User.find_with_email(email).present?

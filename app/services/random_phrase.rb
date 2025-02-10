@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper for generating and normalizing random strings, that can be formatted as groups of 4 letters
 class RandomPhrase
   attr_reader :words, :separator
@@ -15,9 +17,9 @@ class RandomPhrase
   end
 
   def self.format(str, separator: ' ')
-    normalize(str).
-      chars.each_slice(WORD_LENGTH).map(&:join).join(separator).
-      upcase
+    normalize(str)
+      .chars.each_slice(WORD_LENGTH).map(&:join).join(separator)
+      .upcase
   end
 
   def self.normalize(str, num_words: nil)

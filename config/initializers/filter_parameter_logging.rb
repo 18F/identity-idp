@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Be sure to restart your server when you modify this file.
 SAFE_KEYS = %w[
   action
@@ -12,7 +14,7 @@ SAFE_KEYS = %w[
   utf8
 ].freeze
 
-SANITIZED_VALUE = '[FILTERED]'.freeze
+SANITIZED_VALUE = '[FILTERED]'
 
 Rails.application.config.filter_parameters << lambda do |key, value|
   if value.respond_to?(:replace)

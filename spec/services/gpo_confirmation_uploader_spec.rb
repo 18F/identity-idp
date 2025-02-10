@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe GpoConfirmationUploader do
-  let(:uploader) { described_class.new }
+  let(:uploader) { described_class.new(now) }
+  let(:now) { Time.zone.now }
 
   let(:export) { 'foo|bar' }
   let(:confirmations) do
@@ -22,8 +23,11 @@ RSpec.describe GpoConfirmationUploader do
     ]
   end
 
+  let(:job_analytics) { FakeAnalytics.new }
+
   before do
     allow(IdentityConfig.store).to receive(:usps_upload_enabled).and_return(true)
+    allow(uploader).to receive(:analytics).and_return(job_analytics)
   end
 
   describe '#generate_export' do
@@ -52,12 +56,13 @@ RSpec.describe GpoConfirmationUploader do
     subject { uploader.send(:upload_export, export) }
 
     let(:sftp_connection) { instance_double('Net::SFTP::Session') }
-    let(:string_io) { StringIO.new(export) }
 
     it 'uploads the export via sftp' do
       expect(Net::SFTP).to receive(:start).with(*sftp_options).and_yield(sftp_connection)
-      expect(StringIO).to receive(:new).with(export).and_return(string_io)
-      expect(sftp_connection).to receive(:upload!).with(string_io, upload_folder)
+      expect(sftp_connection).to receive(:upload!) do |string_io, folder|
+        expect(string_io.string).to eq(export)
+        expect(folder).to eq(upload_folder)
+      end
 
       subject
     end
@@ -68,6 +73,28 @@ RSpec.describe GpoConfirmationUploader do
       expect(Net::SFTP).to_not receive(:start)
 
       subject
+    end
+
+    context 'when an SSH error occurs' do
+      it 'retries the upload' do
+        expect(Net::SFTP).to receive(:start).twice.with(*sftp_options).and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!).once.and_raise(Net::SSH::ConnectionTimeout)
+        expect(sftp_connection).to receive(:upload!).once
+
+        subject
+      end
+
+      it 'raises after 5 unsuccessful retries' do
+        expect(Net::SFTP).to receive(:start)
+          .exactly(5).times
+          .with(*sftp_options)
+          .and_yield(sftp_connection)
+        expect(sftp_connection).to receive(:upload!)
+          .exactly(5).times
+          .and_raise(Net::SSH::ConnectionTimeout)
+
+        expect { subject }.to raise_error(Net::SSH::ConnectionTimeout)
+      end
     end
   end
 
@@ -87,13 +114,19 @@ RSpec.describe GpoConfirmationUploader do
         log = logs.first
         expect(log.ftp_at).to be_present
         expect(log.letter_requests_count).to eq(1)
+        expect(job_analytics).to have_logged_event(
+          :gpo_confirmation_upload,
+          success: true,
+          gpo_confirmation_count: confirmations.count,
+        )
       end
     end
 
     context 'when there is an error' do
       it 'notifies NewRelic and does not clear confirmations if SFTP fails' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
-        expect(uploader).to receive(:upload_export).with(export).and_raise(StandardError)
+        expect(uploader).to receive(:upload_export).with(export)
+          .and_raise(StandardError, 'test error')
         expect(uploader).not_to receive(:clear_confirmations)
 
         expect(NewRelic::Agent).to receive(:notice_error)
@@ -101,6 +134,62 @@ RSpec.describe GpoConfirmationUploader do
         expect { subject }.to raise_error
 
         expect(GpoConfirmation.count).to eq 1
+        expect(job_analytics).to have_logged_event(
+          :gpo_confirmation_upload,
+          success: false,
+          exception: 'test error',
+          gpo_confirmation_count: 0,
+        )
+      end
+    end
+
+    context 'when an a confirmation is not valid' do
+      let!(:valid_confirmation) do
+        GpoConfirmation.create!(
+          entry: {
+            first_name: 'John',
+            last_name: 'Johnson',
+            address1: '123 Sesame St',
+            address2: '',
+            city: 'Anytown',
+            state: 'WA',
+            zipcode: '98021',
+            otp: 'ZYX987',
+            issuer: '',
+          },
+        )
+      end
+      let!(:invalid_confirmation) do
+        confirmation = GpoConfirmation.new
+        confirmation.entry = {
+          first_name: 'John',
+          last_name: 'Johnson',
+          address1: '123 Sesame St',
+          address2: '',
+          city: 'Anytown',
+          state: 'WA',
+          zipcode: nil,
+          otp: 'ZYX654',
+          issuer: '',
+        }
+        confirmation.save(validate: false)
+      end
+
+      it 'excludes the invalid confirmation from the set to be considered' do
+        expect(uploader).to receive(:generate_export).with([valid_confirmation]).and_return(export)
+        expect(uploader).to receive(:upload_export).with(export)
+        expect(uploader).to receive(:clear_confirmations).with([valid_confirmation])
+        subject
+      end
+
+      it 'tells New Relic that there are invalid records' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(GpoConfirmationUploader::InvalidGpoConfirmationsPresent)
+
+        expect(uploader).to receive(:generate_export).with([valid_confirmation]).and_return(export)
+        expect(uploader).to receive(:upload_export).with(export)
+        expect(uploader).to receive(:clear_confirmations).with([valid_confirmation])
+        subject
       end
     end
   end
@@ -115,7 +204,7 @@ RSpec.describe GpoConfirmationUploader do
   end
 
   def upload_folder
-    timestamp = Time.zone.now.strftime('%Y%m%d-%H%M%S')
+    timestamp = now.strftime('%Y%m%d-%H%M%S')
     File.join(IdentityConfig.store.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 

@@ -1,57 +1,4 @@
-$radio-checkbox-space: 1.5rem;
-
-@include at-media('tablet') {
-  input,
-  select,
-  textarea {
-    font-size: $form-field-font-size-sm;
-  }
-}
-
-legend {
-  font-weight: $heading-font-weight;
-}
-
-label {
-  display: inline-block;
-  margin-bottom: units(0.5);
-}
-
-textarea {
-  resize: vertical;
-}
-
-.field {
-  background-color: #f2f9ff;
-  border-style: solid;
-  border-width: $border-width;
-  border-color: $border-color;
-  border-radius: $border-radius;
-  color: color('ink');
-  font-weight: $bold-font-weight;
-
-  &[type='number'],
-  &.phone {
-    @include u-font-family('mono');
-  }
-
-  &:focus {
-    border-color: color('primary');
-    box-shadow: 0 0 0 2px rgba(color('primary'), 0.5);
-    outline: none;
-  }
-
-  &.usa-input--error {
-    @include u-border($theme-input-state-border-width, 'error');
-  }
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-appearance: none;
-  margin: 0;
-}
+@use 'uswds-core' as *;
 
 // ===============================================
 // Pending upstream Login Design System revisions:
@@ -59,7 +6,6 @@ input::-webkit-inner-spin-button {
 
 .usa-form-group--error {
   border-left-style: none;
-  margin-top: units(3); // Remove after: https://github.com/uswds/uswds/issues/4189
   padding-left: 0;
 
   @include at-media('desktop') {

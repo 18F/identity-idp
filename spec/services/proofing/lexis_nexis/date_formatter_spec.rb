@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::DateFormatter do
+RSpec.describe Proofing::LexisNexis::DateFormatter do
   subject(:date_formatter) { described_class.new(date_string) }
 
   describe '#date' do

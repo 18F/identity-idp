@@ -27,8 +27,8 @@ RSpec.describe ProfanityDetector do
 
   describe '.without_profanity' do
     it 'keeps executing a block until it does not return something profane' do
-      expect(SecureRandom).to receive(:random_number).
-        and_return(
+      expect(SecureRandom).to receive(:random_number)
+        .and_return(
           Base32::Crockford.decode('FART1'),
           Base32::Crockford.decode('FART2'),
           Base32::Crockford.decode('ABCDE'),

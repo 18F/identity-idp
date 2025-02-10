@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Proofing
   module LexisNexis
     module InstantVerify
@@ -17,10 +19,13 @@ module Proofing
           'DOBFullVerified' => :dob,
           'DOBYearVerified' => :dob,
           'LexIDDeathMatch' => :dead,
+          'DriversLicense' => :state_id_number,
+          'DriversLicenseVerification' => :state_id_number,
         }.freeze
 
         def initialize(instant_verify_errors)
-          if instant_verify_errors.present?
+          items = instant_verify_errors&.dig('Items')
+          if items.present?
             @instant_verify_checks = instant_verify_errors['Items'].map do |item|
               InstantVerifyCheck.new(name: item['ItemName'], status: item['ItemStatus'])
             end

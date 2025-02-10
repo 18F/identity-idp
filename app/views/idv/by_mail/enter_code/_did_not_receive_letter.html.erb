@@ -1,0 +1,58 @@
+<% if !@can_request_another_letter %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+    <%= t(
+          'idv.gpo.alert_rate_limit_warning_html',
+          date_letter_was_sent: I18n.l(
+            @last_date_letter_was_sent,
+            format: :event_date,
+          ),
+        ) %>
+  <% end %>
+<% end %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.gpo.did_not_receive_letter.title')) %>
+
+<p>
+  <%= t(
+        'idv.gpo.did_not_receive_letter.intro_html',
+        date_letter_was_sent: I18n.l(
+          @last_date_letter_was_sent,
+          format: :event_date,
+        ),
+      ) %>
+</p>
+
+<%= render AccordionComponent.new(class: 'margin-bottom-4') do |c| %>
+  <% c.with_header { t('idv.gpo.address_accordion.title') } %>
+  <p><%= t('idv.gpo.address_accordion.body') %></p>
+  <p><%= render 'shared/address', address: @gpo_verify_form.pii %></p>
+  <p>
+    <%= t(
+          'idv.gpo.address_accordion.cta_html',
+          cta_link_html: link_to(
+            t('idv.gpo.address_accordion.cta_link'),
+            idv_confirm_start_over_path,
+          ),
+        ) %>
+  </p>
+<% end %>
+
+<p>
+  <%= t('idv.gpo.did_not_receive_letter.request_a_new_letter_html') %>
+</p>
+
+<% if @can_request_another_letter %>
+  <%= link_to t('idv.messages.gpo.resend'), idv_resend_letter_path, class: 'display-block margin-top-4' %>
+<% end %>
+
+<hr class="margin-y-4" />
+
+<h2><%= t('idv.gpo.title') %></h2>
+
+<p><%= t('idv.gpo.did_not_receive_letter.form.instructions') %></p>
+
+<%= render 'form' %>
+
+<hr class="margin-y-4" />
+
+<%= link_to t('idv.gpo.return_to_profile'), account_path %>

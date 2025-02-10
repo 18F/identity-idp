@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::Ddp::ResponseRedacter do
+RSpec.describe Proofing::LexisNexis::Ddp::ResponseRedacter do
   let(:json) do
-    Proofing::LexisNexis::Ddp::ResponseRedacter.
-      redact(sample_hash)
+    Proofing::LexisNexis::Ddp::ResponseRedacter
+      .redact(sample_hash)
   end
 
   describe 'self.redact' do
@@ -18,11 +18,8 @@ describe Proofing::LexisNexis::Ddp::ResponseRedacter do
       }
     end
     context 'hash with mixed known and unknown keys' do
-      it 'redacts values of unknown keys and allows known keys' do
+      it 'removes unknown keys and allows known keys' do
         expect(json).to eq(
-          'unknown_key' => '[redacted]',
-          'first_name' => '[redacted]',
-          'ssn_hash' => '[redacted]',
           'review_status' => 'safe value',
           'summary_risk_score' => 'safe value',
           'fraudpoint.score' => 'safe value',
@@ -48,7 +45,7 @@ describe Proofing::LexisNexis::Ddp::ResponseRedacter do
       end
     end
 
-    context 'empty hash agrument' do
+    context 'empty hash argument' do
       let(:sample_hash) do
         {}
       end

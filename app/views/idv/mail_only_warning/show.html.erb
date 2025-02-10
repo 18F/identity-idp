@@ -1,0 +1,39 @@
+<% self.title = t('vendor_outage.alerts.pinpoint.idv.header') %>
+
+<%= render StepIndicatorComponent.new(
+      steps: step_indicator_steps,
+      current_step: :getting_started,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    ) %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
+  <p>
+    <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name_html: content_tag(:strong, current_sp&.friendly_name || APP_NAME)) %>
+  </p>
+  <p>
+    <%= t('vendor_outage.alerts.pinpoint.idv.status_page_html', link_html: new_tab_link_to(t('vendor_outage.alerts.pinpoint.idv.status_page_link'), StatusPage.base_url)) %>
+  </p>
+  <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
+  <ul class="margin-bottom-5">
+    <% t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).each do |option| %>
+      <li>
+        <%= option %>
+      </li>
+    <% end %>
+  </ul>
+  <% c.with_action_button(
+       url: idv_url,
+       big: true,
+       wide: true,
+       class: 'usa-button',
+     ).with_content(t('doc_auth.buttons.continue')) %>
+  <% c.with_action_button(
+       url: exit_url,
+       big: true,
+       wide: true,
+       outline: true,
+       class: 'usa-button',
+     ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+<% end %>

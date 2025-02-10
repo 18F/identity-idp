@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SendAddEmailConfirmation
   attr_reader :user
 
@@ -5,8 +7,10 @@ class SendAddEmailConfirmation
     @user = user
   end
 
-  def call(email_address)
+  def call(email_address:, in_select_email_flow: nil, request_id: nil)
     @email_address = email_address
+    @in_select_email_flow = in_select_email_flow
+    @request_id = request_id
     update_email_address_record
     send_email
   end
@@ -21,7 +25,7 @@ class SendAddEmailConfirmation
     email_address.confirmation_sent_at
   end
 
-  attr_reader :email_address
+  attr_reader :email_address, :in_select_email_flow, :request_id
 
   def update_email_address_record
     email_address.update!(
@@ -33,9 +37,9 @@ class SendAddEmailConfirmation
   def already_confirmed_by_another_user?
     EmailAddress.where(
       email_fingerprint: Pii::Fingerprinter.fingerprint(email_address.email),
-    ).where.not(confirmed_at: nil).
-      where.not(user_id: email_address.user_id).
-      first
+    ).where.not(confirmed_at: nil)
+      .where.not(user_id: email_address.user_id)
+      .first
   end
 
   def send_email
@@ -47,16 +51,18 @@ class SendAddEmailConfirmation
   end
 
   def send_email_associated_with_another_account_email
-    UserMailer.add_email_associated_with_another_account(
-      email_address.email,
-    ).deliver_now_or_later
+    UserMailer.with(
+      user: user,
+      email_address: email_address,
+    ).add_email_associated_with_another_account
+      .deliver_now_or_later
   end
 
   def send_confirmation_email
-    UserMailer.add_email(
-      user,
-      email_address.email,
-      confirmation_token,
+    UserMailer.with(user: user, email_address: email_address).add_email(
+      token: confirmation_token,
+      from_select_email_flow: in_select_email_flow,
+      request_id:,
     ).deliver_now_or_later
   end
 end

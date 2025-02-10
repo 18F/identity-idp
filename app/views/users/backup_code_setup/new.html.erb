@@ -1,0 +1,25 @@
+<% self.title = t('two_factor_authentication.confirm_backup_code_setup_title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.confirm_backup_code_setup_title')) %>
+
+<% t(
+     'two_factor_authentication.confirm_backup_code_setup_content_html',
+     number_of_codes: BackupCodeGenerator::NUMBER_OF_CODES,
+   ).each do |desc_p| %>
+  <p><%= desc_p %></p>
+<% end %>
+
+<%= render ButtonComponent.new(
+      url: backup_code_setup_path,
+      method: :post,
+      big: true,
+      wide: true,
+      class: 'display-block margin-top-5 margin-bottom-2',
+    ).with_content(t('forms.buttons.continue')) %>
+
+<%= render ButtonComponent.new(
+      url: session[:account_redirect_path] || account_path,
+      big: true,
+      wide: true,
+      outline: true,
+    ).with_content(t('links.cancel')) %>

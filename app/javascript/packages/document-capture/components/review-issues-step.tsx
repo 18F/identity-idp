@@ -1,47 +1,35 @@
-import { useContext, useEffect, useState } from 'react';
-import { hasMediaAccess } from '@18f/identity-device';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
-import { PageHeading } from '@18f/identity-components';
-import { Cancel } from '@18f/identity-verify-flow';
+import { FormStepsContext } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import DeviceContext from '../context/device';
-import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import AcuantCapture from './acuant-capture';
-import SelfieCapture from './selfie-capture';
-import ServiceProviderContext from '../context/service-provider';
-import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import type { PII } from '../services/upload';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import SelfieCaptureContext from '../context/selfie-capture';
+import DocumentCaptureWarning from './document-capture-warning';
+import DocumentCaptureReviewIssues from './document-capture-review-issues';
 
-type DocumentSide = 'front' | 'back';
-
-interface ReviewIssuesStepValue {
+export interface ReviewIssuesStepValue {
   /**
    * Front image value.
    */
-  front: Blob | string | null | undefined;
+  front?: Blob | string | null | undefined;
 
   /**
    * Back image value.
    */
-  back: Blob | string | null | undefined;
+  back?: Blob | string | null | undefined;
 
   /**
-   * Back image value.
+   * Selfie image value.
    */
-  selfie: Blob | string | null | undefined;
+  selfie?: Blob | string | null | undefined;
 
   /**
    * Front image metadata.
    */
   front_image_metadata?: string;
-
   /**
    * Back image metadata.
    */
@@ -49,21 +37,17 @@ interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts: number;
-
-  isFailedResult: boolean;
-
-  captureHints: boolean;
-
+  remainingSubmitAttempts?: number;
+  submitAttempts?: number;
+  isResultCodeInvalid?: boolean;
+  isFailedResult?: boolean;
+  isFailedSelfie?: boolean;
+  isFailedDocType?: boolean;
+  isFailedSelfieLivenessOrQuality?: boolean;
+  captureHints?: boolean;
   pii?: PII;
+  failedImageFingerprints?: { front: string[] | null; back: string[] | null };
 }
-
-/**
- * Sides of document to present as file input.
- */
-const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
-
-const DISPLAY_ATTEMPTS = 3;
 
 function ReviewIssuesStep({
   value = {},
@@ -72,24 +56,60 @@ function ReviewIssuesStep({
   unknownFieldErrors = [],
   onError = () => {},
   registerField = () => undefined,
-  remainingAttempts = Infinity,
+  toPreviousStep = () => undefined,
+  remainingSubmitAttempts = Infinity,
+  submitAttempts,
+  isResultCodeInvalid = false,
   isFailedResult = false,
+  isFailedDocType = false,
+  isFailedSelfie = false,
+  isFailedSelfieLivenessOrQuality = false,
   pii,
   captureHints = false,
+  failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
-  const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
-  const serviceProvider = useContext(ServiceProviderContext);
   const { trackEvent } = useContext(AnalyticsContext);
-  const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
-  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
+  const [skipWarning, setSkipWarning] = useState(false);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
-  const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  useEffect(() => onFailedSubmissionAttempt(), []);
+  const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(
+    FailedCaptureAttemptsContext,
+  );
+  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
+
+  useLayoutEffect(() => {
+    let frontMetaData: { fingerprint: string | null } = { fingerprint: null };
+    try {
+      frontMetaData = JSON.parse(
+        typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata,
+      );
+    } catch (e) {}
+    const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
+      frontMetaData?.fingerprint ?? '',
+    );
+
+    let backMetaData: { fingerprint: string | null } = { fingerprint: null };
+    try {
+      backMetaData = JSON.parse(
+        typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata,
+      );
+    } catch (e) {}
+    const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
+      backMetaData?.fingerprint ?? '',
+    );
+    if (frontHasFailed || backHasFailed) {
+      setSkipWarning(true);
+    }
+  }, []);
+
   function onWarningPageDismissed() {
-    trackEvent('IdV: Capture troubleshooting dismissed');
+    trackEvent('IdV: Capture troubleshooting dismissed', {
+      liveness_checking_required: isSelfieCaptureEnabled,
+      submit_attempts: submitAttempts,
+    });
 
     setHasDismissed(true);
   }
@@ -97,119 +117,48 @@ function ReviewIssuesStep({
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
   useEffect(() => {
-    changeStepCanComplete(!!hasDismissed);
+    changeStepCanComplete(!!hasDismissed && !skipWarning);
   }, [hasDismissed]);
 
-  if (!hasDismissed) {
-    if (pii) {
-      return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
-    }
-
-    return (
-      <Warning
-        heading={t('errors.doc_auth.throttled_heading')}
-        actionText={t('idv.failure.button.warning')}
-        actionOnClick={onWarningPageDismissed}
-        location="doc_auth_review_issues"
-        remainingAttempts={remainingAttempts}
-        troubleshootingOptions={
-          <DocumentCaptureTroubleshootingOptions
-            location="post_submission_warning"
-            hasErrors={!!errors?.length}
-            showInPersonOption={!isFailedResult}
-          />
-        }
-      >
-        {!!unknownFieldErrors &&
-          unknownFieldErrors
-            .filter((error) => !['front', 'back', 'selfie'].includes(error.field!))
-            .map(({ error }) => <p key={error.message}>{error.message}</p>)}
-
-        {remainingAttempts <= DISPLAY_ATTEMPTS && (
-          <p>
-            <strong>
-              {remainingAttempts === 1
-                ? t('idv.failure.attempts.one')
-                : t('idv.failure.attempts.other', { count: remainingAttempts })}
-            </strong>
-          </p>
-        )}
-      </Warning>
-    );
+  if (!hasDismissed && pii) {
+    return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
   }
 
+  // Show warning screen
+  if (!hasDismissed && !skipWarning) {
+    // Warning(try again screen)
+    return (
+      <DocumentCaptureWarning
+        isResultCodeInvalid={isResultCodeInvalid}
+        isFailedDocType={isFailedDocType}
+        isFailedResult={isFailedResult}
+        isFailedSelfie={isFailedSelfie}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        remainingSubmitAttempts={remainingSubmitAttempts}
+        unknownFieldErrors={unknownFieldErrors}
+        actionOnClick={onWarningPageDismissed}
+        hasDismissed={false}
+      />
+    );
+  }
+  // Show review issue screen, hasDismissed = true
   return (
-    <>
-      <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
-      {captureHints && (
-        <>
-          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-          <ul>
-            <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-          </ul>
-        </>
-      )}
-      {DOCUMENT_SIDES.map((side) => (
-        <DocumentSideAcuantCapture
-          key={side}
-          side={side}
-          registerField={registerField}
-          value={value[side]}
-          onChange={onChange}
-          errors={errors}
-          onError={onError}
-          className="document-capture-review-issues-step__input"
-        />
-      ))}
-      {serviceProvider.isLivenessRequired && (
-        <>
-          <hr className="margin-y-4" />
-          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
-          <ul>
-            <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
-            <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
-          </ul>
-          {isMobile || !hasMediaAccess() ? (
-            <AcuantCapture
-              ref={registerField('selfie', { isRequired: true })}
-              capture="user"
-              label={t('doc_auth.headings.document_capture_selfie')}
-              bannerText={t('doc_auth.headings.photo')}
-              value={value.selfie}
-              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              allowUpload={false}
-              className="document-capture-review-issues-step__input"
-              errorMessage={selfieError?.message}
-              name="selfie"
-            />
-          ) : (
-            <SelfieCapture
-              ref={registerField('selfie', { isRequired: true })}
-              value={value.selfie}
-              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              errorMessage={selfieError?.message}
-              className={[
-                'document-capture-review-issues-step__input',
-                !value.selfie && 'document-capture-review-issues-step__input--unconstrained-width',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            />
-          )}
-        </>
-      )}
-      <FormStepsButton.Submit />
-      <DocumentCaptureTroubleshootingOptions />
-      <Cancel />
-    </>
+    <DocumentCaptureReviewIssues
+      isFailedSelfie={isFailedSelfie}
+      isFailedDocType={isFailedDocType}
+      isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+      remainingSubmitAttempts={remainingSubmitAttempts}
+      captureHints={captureHints}
+      value={value}
+      unknownFieldErrors={unknownFieldErrors}
+      registerField={registerField}
+      errors={errors}
+      onChange={onChange}
+      onError={onError}
+      toPreviousStep={toPreviousStep}
+      hasDismissed
+    />
   );
 }
 
-export default withBackgroundEncryptedUpload(ReviewIssuesStep);
+export default ReviewIssuesStep;

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EncryptedAttribute do
+RSpec.describe EncryptedAttribute do
   let(:email) { 'someone@example.com' }
   let(:fingerprint) { Pii::Fingerprinter.fingerprint(email) }
   let(:encrypted_email) do
@@ -28,8 +28,8 @@ describe EncryptedAttribute do
       encrypted_with_old_key = encrypted_email
       rotate_attribute_encryption_key_with_invalid_queue
 
-      expect { EncryptedAttribute.new(encrypted_with_old_key) }.
-        to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
+      expect { EncryptedAttribute.new(encrypted_with_old_key) }
+        .to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
     end
   end
 

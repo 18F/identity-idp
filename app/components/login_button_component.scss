@@ -1,0 +1,36 @@
+@use 'uswds-core' as *;
+
+.login-button__logo {
+  margin-left: 3px;
+}
+
+.login-button.login-button--primary-lighter {
+  @include u-bg('primary-lighter');
+  @include u-text('primary-darker');
+
+  &:hover {
+    @include u-bg('primary-light');
+  }
+}
+
+.login-button.login-button--primary {
+  @include u-bg('white');
+  @include u-text('primary-darker');
+  @include u-border(1px);
+  @include u-border('base');
+
+  &:hover {
+    @include u-border(1px);
+    @include u-border('base');
+    @include u-bg('primary-lighter');
+  }
+}
+
+.login-button.login-button--primary-darker {
+  @include u-bg('primary-darker');
+  @include u-text('white');
+
+  &:hover {
+    @include u-bg('primary-darkest');
+  }
+}

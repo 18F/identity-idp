@@ -1,18 +1,28 @@
+# frozen_string_literal: true
+
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:)
+    def initialize(idv_session:, trace_id:, analytics:)
       self.idv_session = idv_session
       @trace_id = trace_id
+      @analytics = analytics
     end
 
     def submit(step_params)
+      return rate_limited_result if rate_limiter.limited?
+      rate_limiter.increment!
+
       self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(:phone)
+      idv_session.previous_phone_step_params = step_params.slice(
+        :phone, :international_code,
+        :otp_delivery_preference
+      )
       proof_address
     end
 
     def failure_reason
-      return :fail if throttle.throttled?
+      return :fail if rate_limiter.limited?
+      return :no_idv_result if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
@@ -33,9 +43,12 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      throttle.increment! unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
-      handle_successful_proofing_attempt if success
+      if success
+        handle_successful_proofing_attempt
+      else
+        handle_failed_proofing_attempt
+      end
 
       delete_async
       FormResponse.new(
@@ -94,8 +107,22 @@ module Idv
       end
     end
 
-    def throttle
-      @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    def otp_delivery_preference
+      preference = idv_session.previous_phone_step_params[:otp_delivery_preference]
+      return :sms if preference.nil? || preference.empty?
+      preference.to_sym
+    end
+
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
+        user: idv_session.current_user,
+        rate_limit_type: :proof_address,
+      )
+    end
+
+    def rate_limited_result
+      @analytics.rate_limit_reached(limiter_type: :proof_address, step_name: :phone)
+      FormResponse.new(success: false)
     end
 
     def failed_due_to_timeout_or_exception?
@@ -103,19 +130,15 @@ module Idv
     end
 
     def update_idv_session
-      idv_session.address_verification_mechanism = :phone
       idv_session.applicant = applicant
-      idv_session.vendor_phone_confirmation = true
-      idv_session.user_phone_confirmation = false
-
-      ProofingComponent.create_or_find_by(user: idv_session.current_user).
-        update(address_check: 'lexis_nexis_address')
+      idv_session.mark_phone_step_started!
     end
 
     def start_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
         phone: PhoneFormatter.format(applicant[:phone]),
-        delivery_method: :sms,
+        delivery_method: otp_delivery_preference,
+        user: idv_session.current_user, # needed for 10-digit A/B test
       )
     end
 
@@ -146,6 +169,12 @@ module Idv
 
     def delete_async
       idv_session.idv_phone_step_document_capture_session_uuid = nil
+    end
+
+    def handle_failed_proofing_attempt
+      return if failure_reason == :timeout
+
+      idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
     end
   end
 end

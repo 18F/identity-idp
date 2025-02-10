@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MfaContext
   attr_reader :user
 
@@ -70,7 +72,7 @@ class MfaContext
     PersonalKeyConfiguration.new(user)
   end
 
-  def aal3_configurations
+  def phishing_resistant_configurations
     webauthn_configurations + piv_cac_configurations
   end
 
@@ -81,10 +83,10 @@ class MfaContext
 
   def two_factor_enabled?
     return true if phone_configurations.any?(&:mfa_enabled?)
-    return true if piv_cac_configurations.any?(&:mfa_enabled?)
-    return true if auth_app_configurations.any?(&:mfa_enabled?)
-    return true if backup_code_configurations.any?(&:mfa_enabled?)
     return true if webauthn_configurations.any?(&:mfa_enabled?)
+    return true if backup_code_configurations.any?(&:mfa_enabled?)
+    return true if auth_app_configurations.any?(&:mfa_enabled?)
+    return true if piv_cac_configurations.any?(&:mfa_enabled?)
     return false
   end
 
@@ -95,10 +97,6 @@ class MfaContext
       piv_cac_configurations.to_a.count(&:mfa_enabled?) +
       auth_app_configurations.to_a.count(&:mfa_enabled?) +
       personal_key_method_count
-  end
-
-  def enabled_non_restricted_mfa_methods_count
-    enabled_mfa_methods_count - phone_configurations.to_a.count(&:mfa_enabled?)
   end
 
   # returns a hash showing the count for each enabled 2FA configuration,

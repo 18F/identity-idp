@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'SAML RelayState' do
+RSpec.feature 'SAML RelayState' do
   include SamlAuthHelper
 
   context 'when RelayState is passed in authn request' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:relay_state_value) { '8431d690-2ed1-11eb-adc1-0242ac120002' }
     let(:params) { { RelayState: relay_state_value } }
 
@@ -17,7 +17,8 @@ feature 'SAML RelayState' do
         params: params,
       )
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect(find_field('RelayState', type: :hidden).value).to eq(relay_state_value)
@@ -31,8 +32,8 @@ feature 'SAML RelayState' do
         },
       )
       post_saml_authn_request(auth_settings, params)
-
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect(find_field('RelayState', type: :hidden).value).to eq(relay_state_value)
@@ -40,7 +41,7 @@ feature 'SAML RelayState' do
   end
 
   context 'when RelayState is NOT passed in authn request' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'does not return RelayState on GET authn request' do
       visit_saml_authn_request_url(
@@ -50,7 +51,8 @@ feature 'SAML RelayState' do
         },
       )
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect do
@@ -67,7 +69,8 @@ feature 'SAML RelayState' do
       )
       post_saml_authn_request(auth_settings)
 
-      login_and_confirm_sp(user)
+      login_and_confirm_sp(user, :saml)
+      click_submit_default
 
       expect(find_field('SAMLResponse', type: :hidden).value).not_to be_blank
       expect do

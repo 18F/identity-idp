@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .block-link {
   @include u-position('relative');
   @include u-display('block');
@@ -22,13 +24,10 @@
     &::before {
       @include u-border('1px', 'primary');
       border-radius: 6px;
-      bottom: 0;
+      inset: 0 units(-1) 0 units(-1);
       content: '';
-      left: units(-1);
       pointer-events: none;
       position: absolute;
-      right: units(-1);
-      top: 0;
     }
   }
 }

@@ -9,5 +9,8 @@
     "react": {
       "optional": true
     }
-  }
+  },
+  "sideEffects": [
+    "./spinner-button-element.ts"
+  ]
 }

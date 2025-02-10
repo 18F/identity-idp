@@ -1,7 +1,0 @@
-.mfa-selection {
-  .usa-checkbox__input--tile:checked
-    + label.checkbox__invalid.usa-checkbox__label.usa-checkbox__label--illustrated {
-    border-color: color('secondary');
-    border-width: 2px;
-  }
-}

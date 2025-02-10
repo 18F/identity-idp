@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Encryption
   class UakPasswordVerifier
     PasswordDigest = RedactedStruct.new(
@@ -26,7 +28,7 @@ module Encryption
           password_cost: password_cost,
         }.to_json
       end
-    end
+    end.freeze
 
     def self.digest(password)
       salt = SecureRandom.hex(32)
@@ -40,13 +42,15 @@ module Encryption
       ).to_s
     end
 
-    def self.verify(password:, digest:)
+    def self.verify(password:, digest:, user_uuid:, log_context:)
       return false if password.blank?
       parsed_digest = PasswordDigest.parse_from_string(digest)
       uak = UserAccessKey.new(
         password: password,
         salt: parsed_digest.password_salt,
         cost: parsed_digest.password_cost,
+        user_uuid: user_uuid,
+        log_context: log_context,
       )
       uak.unlock(parsed_digest.encryption_key)
       Devise.secure_compare(uak.encrypted_password, parsed_digest.encrypted_password)

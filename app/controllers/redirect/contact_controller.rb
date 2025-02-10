@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Redirect
   class ContactController < RedirectController
     def show
       redirect_to_and_log(
-        IdentityConfig.store.idv_contact_url,
+        MarketingSite.contact_url,
         tracker_method: analytics.method(:contact_redirect),
       )
     end

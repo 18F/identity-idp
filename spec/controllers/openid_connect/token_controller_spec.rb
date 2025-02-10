@@ -52,15 +52,23 @@ RSpec.describe OpenidConnect::TokenController do
 
       it 'tracks a successful event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token', {
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
             success: true,
             client_id: client_id,
             user_id: user.uuid,
             errors: {},
             code_digest: kind_of(String),
-          })
-        action
+            code_verifier_present: false,
+            expires_in: 0,
+            ial: 1,
+          }
+        )
+
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
     end
 
@@ -78,17 +86,32 @@ RSpec.describe OpenidConnect::TokenController do
 
       it 'tracks an unsuccessful event in analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token', {
+
+        action
+
+        expect(@analytics).to have_logged_event(
+          'OpenID Connect: token', {
             success: false,
             client_id: client_id,
             user_id: user.uuid,
             errors: hash_including(:grant_type),
             code_digest: kind_of(String),
+            code_verifier_present: false,
             error_details: hash_including(:grant_type),
-          })
+            ial: 1,
+          }
+        )
 
-        action
+        expect(@analytics).to have_logged_event(
+          :sp_integration_errors_present,
+          error_details: array_including(
+            'Grant type is not included in the list',
+          ),
+          error_types: { grant_type: true },
+          event: :oidc_token_request,
+          integration_exists: true,
+          request_issuer: client_id,
+        )
       end
     end
 
@@ -96,12 +119,16 @@ RSpec.describe OpenidConnect::TokenController do
       let(:code) { { nested: 'code' } }
 
       it 'is a 400 and has an error response and no id_token' do
+        stub_analytics
+
         action
         expect(response).to be_bad_request
 
         json = JSON.parse(response.body).with_indifferent_access
         expect(json[:error]).to be_present
         expect(json).to_not have_key(:id_token)
+
+        expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
     end
   end

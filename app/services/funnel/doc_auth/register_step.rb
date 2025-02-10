@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Funnel
   module DocAuth
     class RegisterStep
@@ -5,14 +7,11 @@ module Funnel
         agreement
         welcome
         upload
-        send_link
         link_sent
-        email_sent
         front_image
         back_image
         mobile_front_image
         mobile_back_image
-        selfie
         ssn
         verify
         verify_phone

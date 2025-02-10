@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UserAccessKey outputs various key hashing related to NIST encryption.
 #
 # Generate and store a 128-bit salt S.
@@ -14,7 +16,8 @@ module Encryption
 
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
-    def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil)
+    # rubocop:disable Layout/LineLength
+    def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil, user_uuid: nil, log_context: nil)
       cost ||= IdentityConfig.store.scrypt_cost
       scrypt_password = if scrypt_hash.present?
                           SCrypt::Password.new(scrypt_hash)
@@ -24,7 +27,10 @@ module Encryption
       self.cost = scrypt_password.cost
       self.salt = scrypt_password.salt
       self.z1, self.z2 = split_scrypt_digest(scrypt_password.digest)
+      @user_uuid = user_uuid
+      @log_context = log_context
     end
+    # rubocop:enable Layout/LineLength
 
     def as_scrypt_hash
       "#{cost}#{salt}$#{z1}#{z2}"
@@ -43,7 +49,13 @@ module Encryption
       self.masked_ciphertext = Base64.strict_decode64(encryption_key_arg)
       z1_padded = z1.dup.rjust(masked_ciphertext.length, '0')
       encrypted_random_r = xor(z1_padded, masked_ciphertext)
-      self.random_r = kms_client.decrypt(encrypted_random_r)
+      self.random_r = kms_client.decrypt(
+        encrypted_random_r,
+        log_context: {
+          context: @log_context,
+          user_uuid: @user_uuid,
+        },
+      )
       self.cek = OpenSSL::Digest::SHA256.hexdigest(z2 + random_r)
       self
     end
@@ -51,7 +63,7 @@ module Encryption
     def unlocked?
       cek.present?
     end
-    alias built? unlocked?
+    alias_method :built?, :unlocked?
 
     def encryption_key
       Base64.strict_encode64(masked_ciphertext)

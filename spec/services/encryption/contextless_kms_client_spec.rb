@@ -1,9 +1,16 @@
 require 'rails_helper'
 
-describe Encryption::ContextlessKmsClient do
+RSpec.describe Encryption::ContextlessKmsClient do
   let(:password_pepper) { '1' * 32 }
   let(:local_plaintext) { 'local plaintext' }
   let(:local_ciphertext) { 'local ciphertext' }
+
+  before do
+    stub_const(
+      'Encryption::ContextlessKmsClient::KMS_CLIENT_POOL',
+      FakeConnectionPool.new { Aws::KMS::Client.new },
+    )
+  end
 
   context 'with kms plaintext less than 4k' do
     let(:kms_plaintext) { 'kms plaintext' }
@@ -14,12 +21,12 @@ describe Encryption::ContextlessKmsClient do
       allow(IdentityConfig.store).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
-      allow(encryptor).to receive(:encrypt).
-        with(local_plaintext, password_pepper).
-        and_return(local_ciphertext)
-      allow(encryptor).to receive(:decrypt).
-        with(local_ciphertext, password_pepper).
-        and_return(local_plaintext)
+      allow(encryptor).to receive(:encrypt)
+        .with(local_plaintext, password_pepper)
+        .and_return(local_ciphertext)
+      allow(encryptor).to receive(:decrypt)
+        .with(local_ciphertext, password_pepper)
+        .and_return(local_plaintext)
       allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
 
       stub_aws_kms_client(kms_plaintext, kms_ciphertext)
@@ -94,12 +101,12 @@ describe Encryption::ContextlessKmsClient do
       allow(IdentityConfig.store).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
-      allow(encryptor).to receive(:encrypt).
-        with(local_plaintext, password_pepper).
-        and_return(local_ciphertext)
-      allow(encryptor).to receive(:decrypt).
-        with(local_ciphertext, password_pepper).
-        and_return(local_plaintext)
+      allow(encryptor).to receive(:encrypt)
+        .with(local_plaintext, password_pepper)
+        .and_return(local_ciphertext)
+      allow(encryptor).to receive(:decrypt)
+        .with(local_ciphertext, password_pepper)
+        .and_return(local_plaintext)
       allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
 
       stub_mapped_aws_kms_client(
@@ -141,9 +148,13 @@ describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the encryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(:encrypt)
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          :encrypt,
+          log_context: { context: 'abc' },
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
-        subject.encrypt(long_kms_plaintext)
+        subject.encrypt(long_kms_plaintext, log_context: { context: 'abc' })
       end
     end
 
@@ -173,9 +184,13 @@ describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the decryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(:decrypt)
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          :decrypt,
+          log_context: { context: 'abc' },
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
-        subject.decrypt('KMSx' + kms_ciphertext)
+        subject.decrypt('KMSx' + kms_ciphertext, log_context: { context: 'abc' })
       end
     end
 

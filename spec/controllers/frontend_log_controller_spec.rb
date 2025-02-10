@@ -1,10 +1,22 @@
 require 'rails_helper'
 
-describe FrontendLogController do
+RSpec.describe FrontendLogController do
+  describe '.LEGACY_EVENT_MAP' do
+    it 'has keys sorted alphabetically' do
+      expect(described_class::LEGACY_EVENT_MAP.keys)
+        .to eq(described_class::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
+    end
+  end
+
+  describe '.ALLOWED_EVENTS' do
+    it 'is sorted alphabetically' do
+      expect(described_class::ALLOWED_EVENTS).to eq(described_class::ALLOWED_EVENTS.sort)
+    end
+  end
+
   describe '#create' do
     subject(:action) { post :create, params: params, as: :json }
 
-    let(:fake_analytics) { FakeAnalytics.new }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:event) { 'Custom Event' }
     let(:payload) { { 'message' => 'To be logged...' } }
@@ -14,26 +26,31 @@ describe FrontendLogController do
     context 'user is signed in' do
       before do
         sign_in user
-        allow(controller).to receive(:analytics).and_return(fake_analytics)
+        stub_analytics
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload)
+      context 'with invalid event name' do
+        it 'responds as unsuccessful' do
+          action
 
-        action
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
+        it 'does not commit session' do
+          action
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
 
       context 'allowlisted analytics event' do
-        let(:event) { 'IdV: personal key visited' }
+        let(:event) { 'IdV: download personal key' }
 
         it 'succeeds' do
           action
 
-          expect(fake_analytics).to have_logged_event('IdV: personal key visited')
+          expect(@analytics).to have_logged_event('IdV: personal key downloaded')
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
@@ -42,12 +59,18 @@ describe FrontendLogController do
           let(:selected_location) { 'Bethesda' }
           let(:flow_path) { 'standard' }
           let(:event) { 'IdV: location submitted' }
-          let(:payload) { { 'selected_location' => selected_location, 'flow_path' => flow_path } }
+          let(:payload) do
+            {
+              'selected_location' => selected_location,
+              'flow_path' => flow_path,
+              'opted_in_to_in_person_proofing' => nil,
+            }
+          end
 
           it 'succeeds' do
             action
 
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
@@ -62,59 +85,60 @@ describe FrontendLogController do
             it 'gracefully sets the missing values to nil' do
               action
 
-              expect(fake_analytics).to have_logged_event(
+              expect(@analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
-                selected_location: nil,
               )
+            end
+          end
+
+          context 'with opt in flag enabled' do
+            let(:idv_session) do
+              { opt_in_analytics_properties: true }
+            end
+            let(:payload) do
+              {
+                'selected_location' => selected_location,
+                'flow_path' => flow_path,
+                'opted_in_to_in_person_proofing' => true,
+              }
+            end
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                .and_return(true)
+            end
+
+            it 'succeeds' do
+              action
+
+              expect(@analytics).to have_logged_event(
+                'IdV: in person proofing location submitted',
+                selected_location: selected_location,
+                flow_path: flow_path,
+                opted_in_to_in_person_proofing: true,
+              )
+              expect(response).to have_http_status(:ok)
+              expect(json[:success]).to eq(true)
             end
           end
         end
       end
 
-      context 'allowlisted analytics event with compound proc' do
-        let(:event) { 'IdV: password confirm submitted' }
-
-        it 'succeeds' do
-          action
-
-          expect(fake_analytics).to have_logged_event('IdV: review complete')
-          expect(fake_analytics).to have_logged_event('IdV: final resolution', success: true)
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
-        end
-      end
-
-      context 'empty payload' do
-        let(:payload) { {} }
-
-        it 'succeeds' do
-          expect(fake_analytics).to receive(:track_event).
-            with("Frontend: #{event}", payload)
-
-          action
-
-          expect(response).to have_http_status(:ok)
-          expect(json[:success]).to eq(true)
-        end
-      end
-
       context 'invalid param' do
         it 'rejects a non-hash payload' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params[:payload] = 'abc'
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
 
         it 'rejects a non-string event' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params[:event] = { abc: 'abc' }
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -122,21 +146,10 @@ describe FrontendLogController do
 
       context 'missing a parameter' do
         it 'rejects a request without specifying event' do
-          expect(fake_analytics).not_to receive(:track_event)
-
           params.delete('event')
           action
 
-          expect(response).to have_http_status(:bad_request)
-          expect(json[:success]).to eq(false)
-        end
-
-        it 'rejects a request without specifying payload' do
-          expect(fake_analytics).not_to receive(:track_event)
-
-          params.delete('payload')
-          action
-
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -159,17 +172,54 @@ describe FrontendLogController do
           }
         end
 
-        it 'logs the analytics event without the prefix' do
-          expect(fake_analytics).to receive(:track_event).with(
+        it 'logs the analytics event' do
+          action
+
+          expect(@analytics).to have_logged_event(
             'IdV: Native camera forced after failed attempts',
             field: field,
             failed_capture_attempts: failed_capture_attempts,
             failed_submission_attempts: failed_submission_attempts,
             flow_path: flow_path,
           )
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
+      context 'for an error event' do
+        let(:params) do
+          {
+            'event' => 'Frontend Error',
+            'payload' => {
+              'name' => 'name',
+              'message' => 'message',
+              'stack' => 'stack',
+              'filename' => 'filename',
+            },
+          }
+        end
+
+        it 'notices the error to NewRelic instead of analytics logger' do
+          allow_any_instance_of(FrontendErrorForm).to receive(:submit)
+            .and_return(FormResponse.new(success: true))
+          expect(NewRelic::Agent).to receive(:notice_error).with(
+            FrontendErrorLogger::FrontendError.new,
+            custom_params: {
+              frontend_error: {
+                name: 'name',
+                message: 'message',
+                stack: 'stack',
+                filename: 'filename',
+                error_id: nil,
+              },
+            },
+            expected: true,
+          )
 
           action
 
+          expect(@analytics).to_not have_logged_event
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
@@ -181,17 +231,33 @@ describe FrontendLogController do
 
       before do
         session[:doc_capture_user_id] = user_id
-        allow(Analytics).to receive(:new).and_return(fake_analytics)
-        expect(Analytics).to receive(:new).with(hash_including(user: user))
+        stub_analytics(user:)
       end
 
-      it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", payload)
+      context 'allowlisted analytics event' do
+        let(:event) { 'IdV: download personal key' }
 
-        action
+        it 'logs as the session-associated user' do
+          action
 
-        expect(response).to have_http_status(:ok)
-        expect(json[:success]).to eq(true)
+          expect(@analytics).to have_logged_event('IdV: personal key downloaded')
+        end
+      end
+
+      context 'with invalid event name' do
+        it 'responds as unsuccessful' do
+          action
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+          expect(json[:error_message]).to eq('invalid event')
+        end
+
+        it 'does not commit session' do
+          action
+
+          expect(request.session_options[:skip]).to eql(true)
+        end
       end
     end
   end

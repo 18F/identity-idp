@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
+    include ApplicationHelper
     include ActionView::Helpers::DateHelper
 
     before_action :check_remember_device_preference
@@ -17,9 +20,13 @@ module Users
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-      analytics.otp_delivery_selection(**result.to_h)
+      analytics.otp_delivery_selection(**result)
       if result.success?
-        handle_valid_otp_params(user_select_delivery_preference, user_selected_default_number)
+        handle_valid_otp_params(
+          result,
+          user_select_delivery_preference,
+          user_selected_default_number,
+        )
         update_otp_delivery_preference_if_needed
       else
         handle_invalid_otp_delivery_preference(result)
@@ -39,14 +46,14 @@ module Users
     end
 
     def phone_redirect
-      return unless phone_enabled? && !VendorStatus.new.any_phone_vendor_outage?
+      return unless phone_enabled? && !OutageStatus.new.any_phone_vendor_outage?
       validate_otp_delivery_preference_and_send_code
       true
     end
 
     def backup_code_redirect
       return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-      redirect_to login_two_factor_backup_code_url(reauthn_params)
+      redirect_to login_two_factor_backup_code_url
     end
 
     def redirect_on_nothing_enabled
@@ -73,17 +80,17 @@ module Users
 
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
-      analytics.otp_delivery_selection(**result.to_h)
-      phone_is_confirmed = UserSessionContext.authentication_context?(context)
+      analytics.otp_delivery_selection(**result)
+      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
       phone_capabilities = PhoneNumberCapabilities.new(
         parsed_phone,
         phone_confirmed: phone_is_confirmed,
       )
 
       if result.success?
-        handle_valid_otp_params(delivery_preference)
+        handle_valid_otp_params(result, delivery_preference)
       elsif phone_capabilities.supports_sms?
-        handle_valid_otp_params('sms')
+        handle_valid_otp_params(result, 'sms')
         flash[:error] = result.errors[:phone].first
       else
         handle_invalid_otp_delivery_preference(result)
@@ -129,7 +136,6 @@ module Users
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
         otp_delivery_preference: phone_configuration.delivery_preference,
-        reauthn: reauthn?,
       )
     end
 
@@ -141,7 +147,7 @@ module Users
     end
 
     def redirect_to_vendor_outage_if_phone_only
-      return unless VendorStatus.new.all_phone_vendor_outage? &&
+      return unless OutageStatus.new.all_phone_vendor_outage? &&
                     phone_enabled? &&
                     !MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to vendor_outage_path(from: :two_factor_authentication)
@@ -166,44 +172,41 @@ module Users
       )
     end
 
-    def reauthn_param
-      otp_form = params.permit(otp_delivery_selection_form: [:reauthn])
-      super || otp_form.dig(:otp_delivery_selection_form, :reauthn)
-    end
-
-    def handle_valid_otp_params(method, default = nil)
-      otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
+    def handle_valid_otp_params(otp_delivery_selection_result, method, default = nil)
+      otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
 
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends(
-          phone: parsed_phone.e164,
-          context: context,
-        )
+        return handle_too_many_otp_sends
       end
       otp_rate_limiter.increment
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends(
-          phone: parsed_phone.e164,
-          context: context,
-        )
+        return handle_too_many_otp_sends
+      end
+
+      if exceeded_short_term_otp_rate_limit?
+        return handle_too_many_short_term_otp_sends(method: method, default: default)
       end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
-      handle_telephony_result(method: method, default: default)
+      handle_telephony_result(
+        method: method,
+        default: default,
+        otp_delivery_selection_result: otp_delivery_selection_result,
+      )
     end
 
-    def handle_telephony_result(method:, default:)
-      track_events(otp_delivery_preference: method)
+    def handle_telephony_result(method:, default:, otp_delivery_selection_result:)
+      track_events(
+        otp_delivery_preference: method,
+        otp_delivery_selection_result: otp_delivery_selection_result,
+      )
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
           otp_make_default_number: default,
-          reauthn: reauthn?,
         )
       elsif @telephony_result.error.is_a?(Telephony::OptOutError)
-        # clear message from https://github.com/18F/identity-idp/blob/7ad3feab24f6f9e0e45224d9e9be9458c0a6a648/app/controllers/users/phones_controller.rb#L40
-        flash.delete(:info)
         opt_out = PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
         redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
       else
@@ -211,55 +214,51 @@ module Users
       end
     end
 
-    def track_events(otp_delivery_preference:)
+    def track_events(otp_delivery_preference:, otp_delivery_selection_result:)
       analytics.telephony_otp_sent(
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         context: context,
         otp_delivery_preference: otp_delivery_preference,
-        resend: params.dig(:otp_delivery_selection_form, :resend),
+        resend: otp_delivery_selection_result.extra[:resend],
+        adapter: Telephony.config.adapter,
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
+        recaptcha_annotation: RecaptchaAnnotator.annotate(
+          assessment_id: user_session[:phone_recaptcha_assessment_id],
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        ),
       )
-
-      if UserSessionContext.reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          reauthentication: true,
-          success: @telephony_result.success?,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      elsif UserSessionContext.authentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
-          reauthentication: false,
-          success: @telephony_result.success?,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent(
-          success: @telephony_result.success?,
-          phone_number: parsed_phone.e164,
-          otp_delivery_method: otp_delivery_preference,
-        )
-      end
     end
 
     def exceeded_otp_send_limit?
       return otp_rate_limiter.lock_out_user if otp_rate_limiter.exceeded_otp_send_limit?
     end
 
-    def phone_confirmation_throttle
-      @phone_confirmation_throttle ||= Throttle.new(
+    def phone_confirmation_rate_limiter
+      @phone_confirmation_rate_limiter ||= RateLimiter.new(
         user: current_user,
-        throttle_type: :phone_confirmation,
+        rate_limit_type: :phone_confirmation,
       )
+    end
+
+    def short_term_otp_rate_limiter
+      @short_term_otp_rate_limiter ||= RateLimiter.new(
+        user: current_user,
+        rate_limit_type: :short_term_phone_otp,
+      )
+    end
+
+    def exceeded_short_term_otp_rate_limit?
+      short_term_otp_rate_limiter.increment!
+      short_term_otp_rate_limiter.limited?
     end
 
     def exceeded_phone_confirmation_limit?
       return false unless UserSessionContext.confirmation_context?(context)
-      phone_confirmation_throttle.throttled_else_increment?
+      phone_confirmation_rate_limiter.increment!
+      phone_confirmation_rate_limiter.limited?
     end
 
     def send_user_otp(method)
@@ -271,19 +270,36 @@ module Users
       end
 
       current_user.create_direct_otp
-      params = {
+      otp_params = {
         to: phone_to_deliver_to,
         otp: current_user.direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        otp_format: t('telephony.format_type.digit'),
         channel: method.to_sym,
         domain: IdentityConfig.store.domain_name,
         country_code: parsed_phone.country,
+        extra_metadata: {
+          area_code: parsed_phone.area_code,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          resend: params.dig(:otp_delivery_selection_form, :resend),
+        },
       }
 
-      if UserSessionContext.authentication_context?(context)
-        Telephony.send_authentication_otp(**params)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        Telephony.send_authentication_otp(**otp_params)
       else
-        Telephony.send_confirmation_otp(**params)
+        Telephony.send_confirmation_otp(**otp_params, otp_length: otp_length)
+      end
+    end
+
+    def otp_length
+      configured_length = TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+      if configured_length == 6
+        I18n.t('telephony.format_length.six')
+      elsif configured_length == 10
+        I18n.t('telephony.format_length.ten')
+      else
+        raise "Missing translation for OTP length: #{configured_length}"
       end
     end
 
@@ -304,7 +320,9 @@ module Users
     end
 
     def phone_to_deliver_to
-      return phone_configuration&.phone if UserSessionContext.authentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        return phone_configuration&.phone
+      end
 
       user_session[:unconfirmed_phone]
     end
@@ -313,40 +331,61 @@ module Users
       @otp_rate_limiter ||= OtpRateLimiter.new(
         phone: phone_to_deliver_to,
         user: current_user,
-        phone_confirmed: UserSessionContext.authentication_context?(context),
+        phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
       )
     end
 
     def redirect_url
       if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
-        login_two_factor_piv_cac_url(reauthn_params)
+        login_two_factor_piv_cac_url
+      elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+        if user_session[:platform_authenticator_available] == false
+          login_two_factor_options_url
+        else
+          login_two_factor_webauthn_url(platform: true)
+        end
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url(webauthn_params)
+        login_two_factor_webauthn_url
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
-        login_two_factor_authenticator_url(reauthn_params)
+        login_two_factor_authenticator_url
       end
     end
 
-    def reauthn_params
-      if reauthn?
-        { reauthn: reauthn? }
-      else
-        {}
-      end
-    end
+    def handle_too_many_short_term_otp_sends(method:, default:)
+      analytics.rate_limit_reached(
+        limiter_type: short_term_otp_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: method,
+      )
 
-    def webauthn_params
-      params = reauthn_params
-      params[:platform] = current_user.webauthn_configurations.platform_authenticators.present?
-      params
+      flash[:error] = t(
+        'errors.messages.phone_confirmation_limited',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [short_term_otp_rate_limiter.expires_at, Time.zone.now].compact.max,
+        ),
+      )
+
+      redirect_to login_two_factor_url(
+        otp_delivery_preference: method,
+        otp_make_default_number: default,
+      )
     end
 
     def handle_too_many_confirmation_sends
+      analytics.rate_limit_reached(
+        limiter_type: phone_confirmation_rate_limiter.rate_limit_type,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+      )
+
       flash[:error] = t(
-        'errors.messages.phone_confirmation_throttled',
+        'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
-          [phone_confirmation_throttle.expires_at, Time.zone.now].compact.max,
+          [phone_confirmation_rate_limiter.expires_at, Time.zone.now].compact.max,
           except: :seconds,
         ),
       )

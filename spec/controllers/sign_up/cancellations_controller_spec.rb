@@ -1,30 +1,30 @@
 require 'rails_helper'
 
-describe SignUp::CancellationsController do
+RSpec.describe SignUp::CancellationsController do
   describe '#new' do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer' }
-
-      expect(@analytics).to receive(:track_event).with(
-        'User registration: cancellation visited', properties
-      )
 
       get :new
+
+      expect(@analytics).to have_logged_event(
+        'User registration: cancellation visited',
+        request_came_from: 'no referer',
+      )
     end
 
     it 'tracks the event in analytics when referer is present' do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new' }
-
-      expect(@analytics).to receive(:track_event).with(
-        'User registration: cancellation visited', properties
-      )
 
       get :new
+
+      expect(@analytics).to have_logged_event(
+        'User registration: cancellation visited',
+        request_came_from: 'users/sessions#new',
+      )
     end
   end
 
@@ -32,7 +32,7 @@ describe SignUp::CancellationsController do
     it 'redirects if no user is present' do
       delete :destroy
 
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
     end
 
     it 'redirects if user has completed sign up' do
@@ -68,13 +68,13 @@ describe SignUp::CancellationsController do
       delete :destroy
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
     end
 
     it 'redirects if confirmation_token is expired' do
       confirmation_token = '1'
       invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.in_seconds + 1)
 
       create(
         :user, email_addresses: [
@@ -89,7 +89,7 @@ describe SignUp::CancellationsController do
       subject.session[:user_confirmation_token] = confirmation_token
 
       delete :destroy
-      expect(response).to redirect_to(sign_up_email_resend_url)
+      expect(response).to redirect_to(sign_up_register_url)
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
     end
 
@@ -100,19 +100,21 @@ describe SignUp::CancellationsController do
 
       delete :destroy
 
-      expect(response).
-        to redirect_to new_user_session_path(request_id: 'foo')
+      expect(response)
+        .to redirect_to new_user_session_path(request_id: 'foo')
     end
 
     it 'tracks the event in analytics when referer is nil' do
       user = create(:user)
       stub_sign_in_before_2fa(user)
       stub_analytics
-      properties = { request_came_from: 'no referer' }
-
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
 
       delete :destroy
+
+      expect(@analytics).to have_logged_event(
+        'Account Deletion Requested',
+        request_came_from: 'no referer',
+      )
     end
 
     it 'tracks the event in analytics when referer is present' do
@@ -120,15 +122,18 @@ describe SignUp::CancellationsController do
       stub_sign_in_before_2fa(user)
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new' }
-
-      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
 
       delete :destroy
+
+      expect(@analytics).to have_logged_event(
+        'Account Deletion Requested',
+        request_came_from: 'users/sessions#new',
+      )
     end
 
     it 'calls ParseControllerFromReferer' do
       user = create(:user)
+
       stub_sign_in_before_2fa(user)
       expect_any_instance_of(ParseControllerFromReferer).to receive(:call).and_call_original
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringex/unidecoder'
 require 'stringex/core_ext'
 
@@ -11,6 +13,6 @@ module X509
     end
 
     delegate :blank?, :present?, :to_s, :to_date, :==, :eql?, to: :raw
-    alias to_str to_s
+    alias_method :to_str, :to_s
   end
 end
