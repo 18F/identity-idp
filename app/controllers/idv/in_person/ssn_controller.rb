@@ -11,7 +11,6 @@ module Idv
 
       before_action :confirm_step_allowed
       before_action :confirm_not_rate_limited_after_doc_auth
-      before_action :confirm_repeat_ssn, only: :show
       before_action :override_csp_for_threat_metrix,
                     if: -> { FeatureManagement.proofing_device_profiling_collecting_enabled? }
 
@@ -76,12 +75,6 @@ module Idv
       end
 
       private
-
-      def confirm_repeat_ssn
-        return if !idv_session.ssn
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_verify_info_url
-      end
 
       def next_url
         idv_in_person_verify_info_url

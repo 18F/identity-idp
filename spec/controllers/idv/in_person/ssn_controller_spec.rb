@@ -78,37 +78,24 @@ RSpec.describe Idv::InPerson::SsnController do
       )
     end
 
-    it 'adds a threatmetrix session id to idv_session' do
-      expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
-    end
+    context 'threatmetrix_session_id is nil' do
+      it 'adds a threatmetrix session id to idv_session' do
+        expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
+      end
 
-    it 'does not change threatmetrix_session_id when updating ssn' do
-      controller.idv_session.ssn = ssn
-      expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
-    end
-
-    context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_address_url }
-      before do
+      it 'sets a threatmetrix_session_id when updating ssn' do
         controller.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
+        expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
       end
+    end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
-
-          expect(response).to redirect_to(idv_in_person_verify_info_url)
-        end
+    context 'threatmetrix_session_id is not nil' do
+      before do
+        stub_up_to(:ipp_ssn, idv_session: controller.idv_session)
       end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_in_person_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        controller.idv_session.ssn = ssn
+        expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
       end
     end
 
