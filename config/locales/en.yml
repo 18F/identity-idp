@@ -1089,7 +1089,7 @@ idv.failure.phone.warning.next_steps_html: Try <strong>another</strong> number t
 idv.failure.phone.warning.try_again_button: Try another number
 idv.failure.phone.warning.you_entered: 'You entered:'
 idv.failure.sessions.exception: There was an internal error processing your request.
-idv.failure.sessions.fail_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
+idv.failure.sessions.fail_html: For your security, we limit the number of times you can attempt to verify personal information online. <strong>Try again in %{timeout}.</strong>
 idv.failure.sessions.heading: We couldn’t find records matching your personal information
 idv.failure.sessions.warning: Please check the information you entered and try again. Common mistakes are an incorrect Social Security number or ZIP Code.
 idv.failure.setup.fail_date_html: Call our contact center by <strong>%{date_html}</strong> to continue verifying your identity.

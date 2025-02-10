@@ -1100,7 +1100,7 @@ idv.failure.phone.warning.next_steps_html: Intente con <strong>otro</strong> nú
 idv.failure.phone.warning.try_again_button: Intentar con otro número
 idv.failure.phone.warning.you_entered: 'Usted ingresó:'
 idv.failure.sessions.exception: Hubo un error interno al procesar su solicitud.
-idv.failure.sessions.fail_html: Para evitar fraudes, limitamos el número de veces que puede intentar la verificación de un documento en línea. <strong>Vuelva intentarlo en %{timeout}.</strong>
+idv.failure.sessions.fail_html: Por su seguridad, limitamos el número de veces que puede intentar verificar la información personal en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
 idv.failure.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.failure.sessions.warning: Revise la información que ingresó y vuelva a intentarlo. Los errores más comunes suelen ser un número de Seguro Social o un código postal incorrecto.
 idv.failure.setup.fail_date_html: Llame a nuestro centro de atención antes del <strong>%{date_html}</strong> para seguir verificando su identidad.
