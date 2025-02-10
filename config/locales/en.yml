@@ -1053,8 +1053,8 @@ idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
 idv.errors.technical_difficulties: We are having technical difficulties
 idv.errors.try_again_later: Try again later.
-idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then, you must wait 6 hours before trying again.
-idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then, you must wait 6 hours before trying again.
+idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then you must wait 6 hours before trying again.
+idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
 idv.failure.button.warning: Try again
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: In the meantime, you can still begin the in-person verification process on %{app_name} and then visit a Post Office. If you urgently need access to services, please contact your agency directly.
