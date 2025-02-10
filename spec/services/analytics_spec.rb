@@ -166,28 +166,25 @@ RSpec.describe Analytics do
         allow(AbTests).to receive(:all).and_return(ab_tests)
       end
 
-      it 'includes ab_tests in logged event' do
-        expect(ahoy).to receive(:track).with(
-          'Trackable Event',
-          analytics_attributes.merge(
-            ab_tests: {
-              foo_test: {
-                bucket: anything,
-              },
-            },
-          ),
-        )
+      it 'does not include ab_tests in logged event' do
+        expect(ahoy).to receive(:track).with('Trackable Event', analytics_attributes)
 
         analytics.track_event('Trackable Event')
       end
 
-      context 'when should_log says not to' do
-        let(:should_log) { /some other event/ }
+      context 'for an included test' do
+        let(:should_log) { /Trackable/ }
 
-        it 'does not include ab_test in logged event' do
+        it 'includes ab_test bucket detail in logged event' do
           expect(ahoy).to receive(:track).with(
             'Trackable Event',
-            analytics_attributes,
+            analytics_attributes.merge(
+              ab_tests: {
+                foo_test: {
+                  bucket: kind_of(Symbol),
+                },
+              },
+            ),
           )
 
           analytics.track_event('Trackable Event')
