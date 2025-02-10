@@ -154,9 +154,7 @@ RSpec.describe Analytics do
               bucket_b: 50,
             },
             should_log:,
-          ) do |user:, **|
-            user.id
-          end,
+          ),
         }
       end
 
@@ -181,7 +179,7 @@ RSpec.describe Analytics do
             analytics_attributes.merge(
               ab_tests: {
                 foo_test: {
-                  bucket: kind_of(Symbol),
+                  bucket: be_in([:bucket_a, :bucket_b]),
                 },
               },
             ),
