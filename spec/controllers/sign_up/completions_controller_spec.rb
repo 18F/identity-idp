@@ -355,26 +355,117 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
 
-      it 'sends the in-person proofing completion survey' do
-        user = create(:user, profiles: [create(:profile, :verified, :active)])
-        stub_sign_in(user)
-        sp = create(:service_provider, issuer: 'https://awesome')
-        subject.session[:sp] = {
-          issuer: sp.issuer,
-          acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          request_url: 'http://example.com',
-          requested_attributes: %w[email first_name verified_at],
-        }
-        allow(@linker).to receive(:link_identity).with(
-          verified_attributes: %w[email first_name verified_at],
-          last_consented_at: now,
-          clear_deleted_at: true,
-        )
-        expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
-          .with(user, sp.issuer)
-        freeze_time do
-          travel_to(now)
+      context 'in person completion survey delievery enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled).and_return(true)
+        end
+      
+        it 'sends the in-person proofing completion survey' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
+          stub_sign_in(user)
+          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at],
+          }
+          allow(@linker).to receive(:link_identity).with(
+            verified_attributes: %w[email first_name verified_at],
+            last_consented_at: now,
+            clear_deleted_at: true,
+          )
+          expect(Idv::InPerson::CompletionSurveySender).to receive(:send_completion_survey)
+            .with(user, sp.issuer)
+          freeze_time do
+            travel_to(now)
+            patch :update
+          end
+        end
+
+        it 'updates follow_up_survey_sent on enrollment to true' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
+          stub_sign_in(user)
+          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+          e = create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user, issuer: sp.issuer)
+
+          expect(e.follow_up_survey_sent).to be false
+
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at],
+          }
+          allow(@linker).to receive(:link_identity).with(
+            verified_attributes: %w[email first_name verified_at],
+            last_consented_at: now,
+            clear_deleted_at: true,
+          )
+
           patch :update
+          e.reload
+
+          expect(e.follow_up_survey_sent).to be true
+        end
+      end
+
+      context 'in person completion survey delievery disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled).and_return(false)
+        end
+
+        it 'does not send the in-person proofing completion survey' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
+          stub_sign_in(user)
+          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at],
+          }
+          allow(@linker).to receive(:link_identity).with(
+            verified_attributes: %w[email first_name verified_at],
+            last_consented_at: now,
+            clear_deleted_at: true,
+          )
+          expect(Idv::InPerson::CompletionSurveySender).not_to receive(:send_completion_survey)
+            .with(user, sp.issuer)
+          freeze_time do
+            travel_to(now)
+            patch :update
+          end
+        end
+
+        it 'does not update enrollment' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
+          stub_sign_in(user)
+          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+          e = create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user, issuer: sp.issuer)
+
+          expect(e.follow_up_survey_sent).to be false
+
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at],
+          }
+          allow(@linker).to receive(:link_identity).with(
+            verified_attributes: %w[email first_name verified_at],
+            last_consented_at: now,
+            clear_deleted_at: true,
+          )
+
+          patch :update
+          e.reload
+
+          expect(e.follow_up_survey_sent).to be false
         end
       end
     end
