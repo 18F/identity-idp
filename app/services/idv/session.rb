@@ -303,7 +303,7 @@ module Idv
     end
 
     def invalidate_ssn_step!
-      session[:ssn] = nil
+      user_session['idv'].delete(:ssn)
     end
 
     def verify_info_step_complete?
