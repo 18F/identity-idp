@@ -143,8 +143,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def cancel_enrollment(enrollment)
     enrollment_outcomes[:enrollments_cancelled] += 1
-    enrollment.cancelled!
-    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
+    enrollment.cancel
   end
 
   def skip_enrollment(enrollment, profile_deactivation_reason)

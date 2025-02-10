@@ -1950,4 +1950,53 @@ RSpec.describe User do
       expect(user.last_sign_in_email_address).to eq(last_sign_in_email_address)
     end
   end
+
+  describe '#current_in_progress_in_person_enrollment_profile' do
+    let(:user) { create(:user) }
+
+    context 'when the user has a pending in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+
+      it 'returns the enrollments associated profile' do
+        expect(user.current_in_progress_in_person_enrollment_profile).to eq(enrollment.profile)
+      end
+    end
+
+    context 'when the user has an in_fraud_review in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+
+      it 'returns the enrollments associated profile' do
+        expect(user.current_in_progress_in_person_enrollment_profile).to eq(enrollment.profile)
+      end
+    end
+
+    context 'when the user has an in_fraud_review and in_fraud_review in-person enrollment' do
+      let!(:pending_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let!(:fraud_enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+
+      context 'when the pending enrollment was created more recently' do
+        before do
+          pending_enrollment.update(created_at: Time.zone.now)
+        end
+
+        it "returns the pending enrollment's associated profile" do
+          expect(user.current_in_progress_in_person_enrollment_profile).to eq(
+            pending_enrollment.profile,
+          )
+        end
+      end
+
+      context 'when the in_fraud_review enrollment was created more recently' do
+        before do
+          fraud_enrollment.update(created_at: Time.zone.now)
+        end
+
+        it "returns the in_fraud_review enrollment's associated profile" do
+          expect(user.current_in_progress_in_person_enrollment_profile).to eq(
+            fraud_enrollment.profile,
+          )
+        end
+      end
+    end
+  end
 end

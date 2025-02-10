@@ -533,15 +533,19 @@ class User < ApplicationRecord
     email_addresses.confirmed.last_sign_in
   end
 
-  def in_fraud_review_in_person_enrollments
-    in_person_enrollments.where(status: 'in_fraud_review').order(created_at: :desc)
+  # Find the user's most recent in-progress enrollment profile.
+  def current_in_progress_in_person_enrollment_profile
+    in_person_enrollments
+      .where(status: [:pending, :in_fraud_review])
+      .order(created_at: :desc)
+      .first&.profile
   end
 
   private
 
   def find_password_reset_profile
     FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_pending_in_person_or_active_profile :
+      find_in_person_in_progress_or_active_profile :
       find_active_profile
   end
 
@@ -549,10 +553,8 @@ class User < ApplicationRecord
     profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 
-  def find_pending_in_person_or_active_profile
-    pending_in_person_enrollment&.profile ||
-      in_fraud_review_in_person_enrollments.first&.profile ||
-      profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  def find_in_person_in_progress_or_active_profile
+    current_in_progress_in_person_enrollment_profile || find_active_profile
   end
 
   def lockout_period
