@@ -52,10 +52,11 @@ module Proofing
       # @param applicant [Hash]
       def proof(applicant)
         aamva_applicant = Aamva::Applicant.from_proofer_applicant(applicant)
-        request = build_verification_request(aamva_applicant)
-        response = request.send
+        verification_request = build_verification_request(aamva_applicant)
+        verification_response = verification_request.send
+        jurisdiction = applicant[:state_id_jurisdiction]
 
-        build_result(request, response, applicant[:state_id_jurisdiction])
+        build_result(verification_request:, verification_response:, jurisdiction:)
       rescue => exception
         Proofing::StateIdResult.new(
           success: false,
@@ -64,10 +65,8 @@ module Proofing
           vendor_name: 'aamva:state_id',
           transaction_id: nil,
           verified_attributes: [],
-          requested_attributes: requested_attributes(request),
-          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(
-            applicant[:state_id_jurisdiction],
-          ),
+          requested_attributes: requested_attributes(verification_request),
+          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(jurisdiction),
         )
       end
 
@@ -111,12 +110,15 @@ module Proofing
         present_attributes = verification_request
           .requested_attributes
           .compact
-          .filter { |_k, v| v == 1 }
+          .filter { |_k, v| v == :present }
           .keys
           .to_set
+
         blank_attributes = verification_request
           .requested_attributes
-          .filter { |_k, v| v == 0 }
+          .filter { |_k, v| v == :missing }
+          .transform_values { |_v| 0 }
+
         normalized = normalize_address_attributes(present_attributes).index_with(1)
         normalized.merge(blank_attributes)
       end

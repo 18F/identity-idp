@@ -88,7 +88,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         ],
       )
 
-      expect(subject.requested_attributes).to include(address2: 1)
+      expect(subject.requested_attributes).to include(address2: :present)
     end
 
     it 'includes issue date if present' do
@@ -96,7 +96,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:DriverLicenseIssueDate>2024-05-06</aa:DriverLicenseIssueDate>',
       )
-      expect(subject.requested_attributes).to include(state_id_issued: 1)
+      expect(subject.requested_attributes).to include(state_id_issued: :present)
     end
 
     it 'includes expiration date if present' do
@@ -104,7 +104,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
       )
-      expect(subject.requested_attributes).to include(state_id_expiration: 1)
+      expect(subject.requested_attributes).to include(state_id_expiration: :present)
     end
 
     it 'includes height if it is present' do
@@ -112,7 +112,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonHeightMeasure>63</aa:PersonHeightMeasure>',
       )
-      expect(subject.requested_attributes).to include(height: 1)
+      expect(subject.requested_attributes).to include(height: :present)
     end
 
     it 'includes weight if it is present' do
@@ -120,7 +120,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonWeightMeasure>190</aa:PersonWeightMeasure>',
       )
-      expect(subject.requested_attributes).to include(weight: 1)
+      expect(subject.requested_attributes).to include(weight: :present)
     end
 
     it 'includes eye_color if it is present' do
@@ -128,7 +128,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonEyeColorCode>blu</aa:PersonEyeColorCode>',
       )
-      expect(subject.requested_attributes).to include(eye_color: 1)
+      expect(subject.requested_attributes).to include(eye_color: :present)
     end
 
     it 'includes name_suffix if it is present' do
@@ -136,7 +136,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<nc:PersonNameSuffixText>JR</nc:PersonNameSuffixText>',
       )
-      expect(subject.requested_attributes).to include(name_suffix: 1)
+      expect(subject.requested_attributes).to include(name_suffix: :present)
     end
 
     it 'includes middle_name if it is present' do
@@ -144,7 +144,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
       )
-      expect(subject.requested_attributes).to include(middle_name: 1)
+      expect(subject.requested_attributes).to include(middle_name: :present)
     end
 
     context '#sex' do
@@ -313,24 +313,24 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       }
     end
 
-    it 'should set present fields to 1' do
+    it 'should set present fields to :present' do
       expect(subject.requested_attributes).to match(
-        first_name: 1,
-        last_name: 1,
-        dob: 1,
-        address1: 1,
-        city: 1,
-        state: 1,
-        zipcode: 1,
-        state_id_number: 1,
-        state_id_type: 1,
-        state_id_jurisdiction: 1,
+        first_name: :present,
+        last_name: :present,
+        dob: :present,
+        address1: :present,
+        city: :present,
+        state: :present,
+        zipcode: :present,
+        state_id_number: :present,
+        state_id_type: :present,
+        state_id_jurisdiction: :present,
       )
     end
 
-    it 'should set required blank fields to 0' do
+    it 'should set required blank fields to :missing' do
       applicant.first_name = nil
-      expect(subject.requested_attributes).to include(first_name: 0)
+      expect(subject.requested_attributes).to include(first_name: :missing)
     end
   end
 

@@ -73,11 +73,11 @@ module Proofing
         end
 
         # The requested attributes in the applicant PII hash. Values are:
-        # - +1+ - value present
-        # - +0+ - field is required, but value was blank
+        # - +:present+ - value present
+        # - +:missing+ - field is required, but value was blank
         #
         # @see Proofing::Aamva::Applicant#from_proofer_applicant for fields
-        # @return [Hash{Symbol => Integer}]
+        # @return [Hash{Symbol => Symbol}]
         def requested_attributes
           { **@requested_attributes }
         end
@@ -226,9 +226,9 @@ module Proofing
           VERIFICATION_REQUESTED_ATTRS.each do |attribute, rule|
             value = REXML::XPath.first(document, rule.xpath)&.text
             if value.present?
-              @requested_attributes[attribute] = 1
+              @requested_attributes[attribute] = :present
             elsif rule.required
-              @requested_attributes[attribute] = 0
+              @requested_attributes[attribute] = :missing
             end
           end
         end
