@@ -172,6 +172,7 @@ idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
 idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
+in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
 in_person_eipp_enrollment_validity_in_days: 7
@@ -530,6 +531,7 @@ production:
   feature_pending_in_person_password_reset_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true
+  in_person_completion_survey_delivery_enabled: false
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20
