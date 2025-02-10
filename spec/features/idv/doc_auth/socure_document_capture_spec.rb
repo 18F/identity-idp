@@ -114,25 +114,29 @@ RSpec.feature 'document capture step', :js do
           end
         end
 
-        it 'redirects to the rate limited error page' do
-          # recovers when fails to repeat webhook to an endpoint
-          allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-            .to receive(:send_http_post_request).and_raise('doh')
-          expect(page).to have_current_path(fake_socure_document_capture_app_url)
-          visit idv_socure_document_capture_path
-          expect(page).to have_current_path(idv_socure_document_capture_path)
-          socure_docv_upload_documents(
-            docv_transaction_token: @docv_transaction_token,
-          )
-          visit idv_socure_document_capture_path
-          expect(page).to have_current_path(idv_session_errors_rate_limited_path)
-          expect(fake_analytics).to have_logged_event(
-            'Rate Limit Reached',
-            limiter_type: :idv_doc_auth,
-          )
-          expect(fake_analytics).to have_logged_event(
-            :idv_socure_document_request_submitted,
-          )
+        context 'when we fail on the last attempt' do
+          before do
+            allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
+              .to receive(:send_http_post_request).and_raise('doh')
+          end
+
+          it 'redirects to the rate limited error page' do
+            expect(page).to have_current_path(fake_socure_document_capture_app_url)
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_socure_document_capture_path)
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_path
+            expect(page).to have_current_path(idv_session_errors_rate_limited_path)
+            expect(fake_analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :idv_doc_auth,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+          end
         end
 
         context 'successfully processes image on last attempt' do
@@ -146,6 +150,9 @@ RSpec.feature 'document capture step', :js do
             expect(page).to have_current_path(idv_socure_document_capture_path)
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
+            )
+            DocumentCaptureSession.find_by(user_id: @user.id).update(
+              last_doc_auth_result: 'Passed',
             )
 
             visit idv_socure_document_capture_update_path
