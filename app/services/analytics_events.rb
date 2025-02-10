@@ -7258,8 +7258,8 @@ module AnalyticsEvents
 
   # Tracks when user clicks on same tab that user landed on.
   # @param [String, nil] path that user was on when navigation tab was clicked
-  def tab_navigation_current_page_clicked(path: nil, **_extra)
-    track_event(:tab_navigation_current_page_clicked, path: path)
+  def tab_navigation_current_page_clicked(path: nil, **extra)
+    track_event(:tab_navigation_current_page_clicked, path:, **extra)
   end
 
   # @param [String] area_code Area code of phone number

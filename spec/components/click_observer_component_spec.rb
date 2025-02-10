@@ -19,8 +19,8 @@ RSpec.describe ClickObserverComponent, type: :component do
   end
 
   context 'with payload attribute' do
-    it 'renders with data-payload with json value' do
-      expect(rendered).to have_css('lg-click-observer[data-payload="{\"path\":\"/first\"}"]')
+    it 'renders with payload with json value' do
+      expect(rendered).to have_css('lg-click-observer[payload="{\"path\":\"/first\"}"]')
     end
   end
 

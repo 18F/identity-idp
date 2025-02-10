@@ -14,7 +14,7 @@ class ClickObserverComponent < BaseComponent
       :'lg-click-observer',
       content,
       'event-name': @event_name,
-      data: { payload: payload },
+      payload: payload,
       **tag_options,
     )
   end

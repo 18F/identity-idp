@@ -52,11 +52,11 @@ describe('ClickObserverElement', () => {
       });
     });
 
-    context('for an object with a data-payload', () => {
+    context('for an object with a payload', () => {
       context('with valid payload', () => {
         it('logs a single event with a payload', async () => {
           document.body.innerHTML = `
-          <lg-click-observer event-name="track-data-clicked" data-payload=${JSON.stringify({
+          <lg-click-observer event-name="track-data-clicked" payload=${JSON.stringify({
             path: '/first',
           })} >
             <button>Click me!</button>
@@ -74,7 +74,7 @@ describe('ClickObserverElement', () => {
       context('with invalid payload', () => {
         it('logs a single event with no payload', async () => {
           document.body.innerHTML = `
-          <lg-click-observer event-name="track-data-clicked" data-payload="invalid_data"}">
+          <lg-click-observer event-name="track-data-clicked" payload="invalid_data"}">
             <button>Click me!</button>
           </lg-click-observer>`;
           const observer = document.body.querySelector('lg-click-observer')!;
