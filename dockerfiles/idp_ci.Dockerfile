@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/ruby:3.3.6-bullseye
+FROM public.ecr.aws/docker/library/ruby:3.4.1-bullseye
 
 ENV NODE_MAJOR 22
 

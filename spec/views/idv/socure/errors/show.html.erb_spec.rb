@@ -46,7 +46,12 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
     it 'shows remaining attempts' do
       expect(rendered).to have_text(
-        strip_tags(t('idv.failure.warning.attempts_html', count: remaining_submit_attempts)),
+        strip_tags(
+          t(
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
+          ),
+        ),
       )
     end
 
@@ -117,7 +122,12 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
     it 'does not show remaining attempts' do
       expect(rendered).not_to have_text(
-        strip_tags(t('idv.failure.warning.attempts_html', count: remaining_submit_attempts)),
+        strip_tags(
+          t(
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
+          ),
+        ),
       )
     end
   end

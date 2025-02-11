@@ -90,26 +90,21 @@ module Idv
 
     attr_reader :current_user, :gpo_otp, :service_provider
 
+    VALID_SESSION_ATTRIBUTES.each do |attr|
+      define_method(attr) do
+        session[attr]
+      end
+
+      define_method(:"#{attr}=") do |val|
+        session[attr] = val
+      end
+    end
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
       @service_provider = service_provider
       set_idv_session
-    end
-
-    def method_missing(method_sym, *arguments, &block)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      if VALID_SESSION_ATTRIBUTES.include?(attr_name_sym)
-        return session[attr_name_sym] if arguments.empty?
-        session[attr_name_sym] = arguments.first
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_sym, include_private)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
     # @return [Profile]
@@ -265,17 +260,27 @@ module Idv
       Time.zone.now - Time.zone.parse(proofing_started_at) if proofing_started_at.present?
     end
 
-    def pii_from_user_in_flow_session
+    def pii_from_user_in_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
-    def has_pii_from_user_in_flow_session?
-      !!pii_from_user_in_flow_session
+    def has_pii_from_user_in_session?
+      !!pii_from_user_in_session
     end
 
     def invalidate_in_person_pii_from_user!
-      if has_pii_from_user_in_flow_session?
+      if has_pii_from_user_in_session?
         user_session['idv/in_person'][:pii_from_user] = nil
+      end
+    end
+
+    def invalidate_in_person_address_step!
+      if has_pii_from_user_in_session?
+        user_session['idv/in_person'][:pii_from_user][:address1] = nil
+        user_session['idv/in_person'][:pii_from_user][:address2] = nil
+        user_session['idv/in_person'][:pii_from_user][:city] = nil
+        user_session['idv/in_person'][:pii_from_user][:zipcode] = nil
+        user_session['idv/in_person'][:pii_from_user][:state] = nil
       end
     end
 
@@ -284,12 +289,12 @@ module Idv
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session? &&
+      has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
     end
 
     def ipp_state_id_complete?
-      has_pii_from_user_in_flow_session? &&
+      has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
@@ -370,7 +375,7 @@ module Idv
     end
 
     def session
-      user_session.fetch(:idv, {})
+      user_session[:idv] || {}
     end
 
     def build_profile_maker(user_password)

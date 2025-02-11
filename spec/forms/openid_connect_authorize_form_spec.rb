@@ -42,7 +42,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it 'is successful' do
         expect(result.to_h).to eq(
           success: true,
-          errors: nil,
           client_id: client_id,
           prompt: 'select_account',
           allow_prompt_login: true,
@@ -66,7 +65,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
         it 'is unsuccessful and has error messages' do
           expect(result.to_h).to eq(
             success: false,
-            errors: nil,
             error_details: { response_type: { inclusion: true } },
             client_id: client_id,
             prompt: 'select_account',

@@ -47,27 +47,24 @@ RSpec.describe Idv::Session do
     end
   end
 
-  describe '#method_missing' do
-    it 'disallows un-supported attributes' do
+  describe 'attribute methods' do
+    it 'disallows un-supported setters' do
       expect { subject.foo = 'bar' }.to raise_error NoMethodError
     end
 
-    it 'allows supported attributes' do
+    it 'allows using supported setters and getters' do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
-        subject.send attr, 'foo'
-        expect(subject.send(attr)).to eq 'foo'
+        expect(subject.send(attr)).to eq nil
         subject.send :"#{attr}=", 'foo'
         expect(subject.send(attr)).to eq 'foo'
       end
     end
-  end
 
-  describe '#respond_to_missing?' do
-    it 'disallows un-supported attributes' do
+    it 'allows checking for un-supported attributes' do
       expect(subject.respond_to?(:foo=, false)).to eq false
     end
 
-    it 'allows supported attributes' do
+    it 'allows checking for supported attributes' do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
         expect(subject.respond_to?(attr, false)).to eq true
         expect(subject.respond_to?(:"#{attr}=", false)).to eq true

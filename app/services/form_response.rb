@@ -19,7 +19,7 @@ class FormResponse
 
   def to_h
     hash = { success: success }
-    hash[:errors] = (!defined?(@error_details) && errors).presence if !serialize_error_details_only?
+    hash[:errors] = errors.presence if !defined?(@error_details) && !serialize_error_details_only?
     hash[:error_details] = flatten_details(error_details) if error_details.present?
     hash.merge!(extra)
     hash

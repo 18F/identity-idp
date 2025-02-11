@@ -26,6 +26,7 @@ class ReportMailer < ActionMailer::Base
   # @param [String] email
   # @param [String] subject
   # @param [String] env name of current deploy environment
+  # @param [String, String[]] message Message(s) to use as email prelude
   # @param [:csv,:xlsx] attachment_format
   # @param [Array<EmailableReport>] reports
   #   an array of tables (which are arrays of rows (arrays of strings))

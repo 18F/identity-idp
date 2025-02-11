@@ -60,7 +60,7 @@ module Idv
       Idv::StepInfo.new(
         key: :document_capture,
         controller: self,
-        next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
+        next_steps: [:ssn, :ipp_state_id],
         preconditions: ->(idv_session:, user:) {
           idv_session.flow_path == 'standard' && (
             # mobile

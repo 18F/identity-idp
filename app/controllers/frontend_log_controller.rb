@@ -58,6 +58,7 @@ class FrontendLogController < ApplicationController
     idv_selfie_image_added
     idv_selfie_image_clicked
     phone_input_country_changed
+    tab_navigation_current_page_clicked
   ].freeze
 
   EVENT_MAP = ALLOWED_EVENTS.index_by(&:to_s).merge(LEGACY_EVENT_MAP).freeze

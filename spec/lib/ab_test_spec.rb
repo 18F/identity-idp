@@ -2,12 +2,15 @@ require 'rails_helper'
 
 RSpec.describe AbTest do
   subject(:ab_test) do
-    AbTest.new(
+    AbTest.new(**options, &discriminator)
+  end
+
+  let(:options) do
+    {
       experiment_name: 'test',
       buckets:,
       should_log:,
-      &discriminator
-    )
+    }
   end
 
   let(:discriminator) do
@@ -32,17 +35,10 @@ RSpec.describe AbTest do
 
   let(:user_session) { {} }
 
-  let(:bucket) do
-    ab_test.bucket(
-      request:,
-      service_provider:,
-      session:,
-      user:,
-      user_session:,
-    )
-  end
-
   describe '#bucket' do
+    subject(:bucket) { ab_test.bucket(**bucket_options) }
+    let(:bucket_options) { { request:, service_provider:, session:, user:, user_session: } }
+
     it 'divides random uuids into the buckets with no automatic default' do
       results = {}
       1000.times do
@@ -160,6 +156,87 @@ RSpec.describe AbTest do
         expect { ab_test }.to raise_error(RuntimeError, 'invalid bucket data structure')
       end
     end
+
+    context 'with max_participants' do
+      let(:options) { super().merge(max_participants: 1, persist: true) }
+
+      it 'creates and returns new assignment' do
+        expect { bucket }.to change { AbTestAssignment.count }.by(1)
+        expect(bucket).to be_kind_of(Symbol)
+      end
+
+      context 'when maxed' do
+        before do
+          create(
+            :ab_test_assignment,
+            experiment: ab_test.experiment,
+            discriminator: 'existing-uuid',
+            bucket: 'foo',
+          )
+        end
+
+        it { is_expected.to be_nil }
+
+        it 'does not create a new assignment' do
+          expect { bucket }.not_to change { AbTestAssignment.count }
+        end
+
+        context 'with already-assigned participant' do
+          let(:discriminator) { ->(**) { 'existing-uuid' } }
+
+          it 'continues to return persisted value' do
+            expect(bucket).to eq(:foo)
+          end
+        end
+      end
+
+      context 'without persistance' do
+        let(:options) { super().merge(persist: false) }
+
+        it 'raises an error' do
+          expect { bucket }.to raise_error('max_participants requires persist to be true')
+        end
+      end
+    end
+
+    context 'with persisted ab test' do
+      let(:user) { create(:user) }
+      let(:discriminator) { nil }
+      let(:options) { super().merge(persist: true) }
+
+      context 'without existing assignment' do
+        it 'creates and returns new assignment' do
+          expect { bucket }.to change { AbTestAssignment.count }.by(1)
+          expect(bucket).to be_kind_of(Symbol)
+        end
+
+        context 'with persisted_read_only option' do
+          let(:bucket_options) { super().merge(persisted_read_only: true) }
+
+          it { is_expected.to be_nil }
+
+          it 'does not create a new assignment' do
+            expect { bucket }.not_to change { AbTestAssignment.count }
+          end
+        end
+      end
+
+      context 'with existing assignment' do
+        before do
+          create(
+            :ab_test_assignment,
+            experiment: ab_test.experiment,
+            discriminator: user.uuid,
+            bucket: 'foo',
+          )
+        end
+
+        it 'returns existing assignment without creating new' do
+          expect { bucket }.not_to change { AbTestAssignment.count }
+          expect(bucket).to eq(:foo)
+        end
+      end
+    end
   end
 
   describe '#include_in_analytics_event?' do
@@ -168,23 +245,20 @@ RSpec.describe AbTest do
     subject(:return_value) { ab_test.include_in_analytics_event?(event_name) }
 
     context 'when should_log is nil' do
-      it 'returns true' do
-        expect(return_value).to eql(true)
-      end
+      it { is_expected.to eql(false) }
     end
 
     context 'when Regexp is used' do
       context 'and it matches' do
         let(:should_log) { /cool/ }
-        it 'returns true' do
-          expect(return_value).to eql(true)
-        end
+
+        it { is_expected.to eql(true) }
       end
+
       context 'and it does not match' do
         let(:should_log) { /not cool/ }
-        it 'returns false' do
-          expect(return_value).to eql(false)
-        end
+
+        it { is_expected.to eql(false) }
       end
     end
 
@@ -225,6 +299,80 @@ RSpec.describe AbTest do
       let(:should_log) { false }
       it 'raises' do
         expect { return_value }.to raise_error
+      end
+    end
+  end
+
+  describe '#report' do
+    subject(:report) { ab_test.report }
+    let(:options) { super().merge(report: report_option) }
+    let(:report_option) do
+      { email: 'email@example.com', queries: [{ title: 'Example Query', query: 'limit 1' }] }
+    end
+
+    it 'builds struct value from given hash option' do
+      expect(report).to be_a(AbTest::ReportConfig)
+      expect(report.email).to eq('email@example.com')
+      expect(report.queries).to all be_a(AbTest::ReportQueryConfig)
+      expect(report.queries.first.title).to eq('Example Query')
+      expect(report.queries.first.query).to eq('limit 1')
+    end
+
+    context 'with nil report option' do
+      let(:report_option) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with blank options' do
+      let(:report_option) { {} }
+
+      it 'gracefully builds an empty struct value' do
+        expect(report).to be_a(AbTest::ReportConfig)
+        expect(report.email).to be_nil
+        expect(report.queries).to eq([])
+      end
+    end
+  end
+
+  describe '#active?' do
+    subject(:active) { ab_test.active? }
+
+    context 'with non-zero buckets' do
+      let(:buckets) { { foo: 0, bar: 30, baz: 0 } }
+
+      it { is_expected.to be true }
+    end
+
+    context 'with all zero buckets' do
+      let(:buckets) { { foo: 0, bar: 0, baz: 0 } }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with empty buckets' do
+      let(:buckets) { {} }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#participants_count' do
+    subject(:participants_count) { ab_test.participants_count }
+
+    context 'without persistance' do
+      let(:options) { super().merge(persist: false) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with persistance' do
+      let(:options) { super().merge(persist: true) }
+
+      it 'returns current number of test participants' do
+        create_list(:ab_test_assignment, 2, experiment: options[:experiment_name])
+
+        expect(participants_count).to eq(2)
       end
     end
   end

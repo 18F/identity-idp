@@ -390,6 +390,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#update' do
     before do
+      stub_sign_in(user)
+      subject.idv_session.flow_path = 'standard'
       get :update
     end
 

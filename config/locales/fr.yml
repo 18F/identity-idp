@@ -702,8 +702,8 @@ doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas accept
 doc_auth.instructions.text2: Vous n’aurez pas besoin de votre carte de sécurité sociale papier.
 doc_auth.instructions.text3: Nous comparons votre numéro de téléphone à vos informations personnelles et vous envoyons un code à usage unique sur votre téléphone.
 doc_auth.instructions.text4: Votre mot de passe s’enregistre et chiffre vos informations personnelles.
-doc_auth.rate_limit_warning.plural_html: Pour des raisons de sécurité, il vous reste <strong>%{remaining_attempts} tentatives</strong>.
-doc_auth.rate_limit_warning.singular_html: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+doc_auth.rate_limit_warning_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
+doc_auth.rate_limit_warning_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 doc_auth.tips.document_capture_hint: Doit être au format JPG ou PNG
 doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé
@@ -1054,7 +1054,7 @@ idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
 idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
 idv.errors.try_again_later: Veuillez réessayer ultérieurement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
-idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez ensuite attendre 6 heures avant de réessayer.
+idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
 idv.failure.button.warning: Réessayer
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: En attendant, vous pouvez toujours commencer la procédure de vérification en personne sur %{app_name} avant de vous rendre dans un bureau de poste. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
@@ -1100,8 +1100,8 @@ idv.failure.verify.exit: Quitter %{app_name}
 idv.failure.verify.fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: pour accéder aux services.
 idv.failure.verify.heading: Nous n’avons pas pu confirmer votre identité
-idv.failure.warning.attempts_html.one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-idv.failure.warning.attempts_html.other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
+idv.failure.warning.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
+idv.failure.warning.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.forgot_password.link_text: Mot de passe oublié?
 idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
 idv.forgot_password.reset_password: Réinitialiser le mot de passe

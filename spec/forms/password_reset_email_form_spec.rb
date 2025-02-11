@@ -14,7 +14,6 @@ RSpec.describe PasswordResetEmailForm do
 
         expect(subject.submit.to_h).to eq(
           success: true,
-          errors: nil,
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
@@ -27,7 +26,6 @@ RSpec.describe PasswordResetEmailForm do
       it 'returns hash with properties about the event and the nonexistent user' do
         expect(subject.submit.to_h).to eq(
           success: true,
-          errors: nil,
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
@@ -41,7 +39,6 @@ RSpec.describe PasswordResetEmailForm do
 
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: nil,
           error_details: { email: { invalid: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,
@@ -54,7 +51,6 @@ RSpec.describe PasswordResetEmailForm do
 
         expect(subject.submit.to_h).to include(
           success: false,
-          errors: nil,
           error_details: { email: { domain: true } },
           user_id: 'nonexistent-uuid',
           confirmed: false,

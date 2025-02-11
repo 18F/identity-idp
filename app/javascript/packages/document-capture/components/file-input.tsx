@@ -224,6 +224,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   );
   const isPendingValueReceived = useMemo(
     () => previousIsValuePending && !isValuePending && !!value,
+
     [value, isValuePending, previousIsValuePending],
   );
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
@@ -307,20 +308,31 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           {hint}
         </span>
       )}
+
       <StatusMessage status={Status.ERROR} id={errorId}>
         {shownErrorMessage}
       </StatusMessage>
-      <StatusMessage
-        id={successId}
-        status={Status.SUCCESS}
+
+      <span
         className={
           successMessage === fileLoadingText || successMessage === fileLoadedText
             ? 'usa-sr-only'
             : undefined
         }
       >
-        {!shownErrorMessage && successMessage}
-      </StatusMessage>
+        <StatusMessage
+          id={successId}
+          status={Status.SUCCESS}
+          className={
+            successMessage === fileLoadingText || successMessage === fileLoadedText
+              ? 'usa-sr-only'
+              : undefined
+          }
+        >
+          {!shownErrorMessage && successMessage}
+        </StatusMessage>
+      </span>
+
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
@@ -375,6 +387,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           <div className="usa-file-input__box">
             {isValuePending && <SpinnerDots isCentered className="text-base" />}
           </div>
+
           <input
             ref={inputRef}
             id={inputId}
