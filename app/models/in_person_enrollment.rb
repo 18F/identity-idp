@@ -13,6 +13,8 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
+  IN_PROGRESS_ENROLLMENT_STATUSES = %w[pending in_fraud_review].to_set.freeze
+
   STATUS_ESTABLISHING = 'establishing'
   STATUS_PENDING = 'pending'
   STATUS_PASSED = 'passed'

@@ -62,7 +62,9 @@ module Idv
 
     def cancel_previous_in_person_enrollments
       return unless IdentityConfig.store.in_person_proofing_enabled
-      UspsInPersonProofing::EnrollmentHelper.cancel_in_progress_enrollments(current_user)
+      UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
+        current_user,
+      )
     end
   end
 end

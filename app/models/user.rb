@@ -223,9 +223,14 @@ class User < ApplicationRecord
     pending_profile&.in_person_enrollment&.status
   end
 
+  # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments use
+  # to go to passed status when profiles were marked as in fraud review. Since LG-15216, this will
+  # no longer be the case.
   def ipp_enrollment_status_not_passed_or_in_fraud_review?
     !in_person_enrollment_status.blank? &&
-      ['passed', 'in_fraud_review'].exclude?(in_person_enrollment_status)
+      [InPersonEnrollment::STATUS_PASSED, InPersonEnrollment::STATUS_IN_FRAUD_REVIEW].exclude?(
+        in_person_enrollment_status,
+      )
   end
 
   def has_in_person_enrollment?
@@ -536,7 +541,7 @@ class User < ApplicationRecord
   # Find the user's most recent in-progress enrollment profile.
   def current_in_progress_in_person_enrollment_profile
     in_person_enrollments
-      .where(status: [:pending, :in_fraud_review])
+      .where(status: InPersonEnrollment::IN_PROGRESS_ENROLLMENT_STATUSES)
       .order(created_at: :desc)
       .first&.profile
   end

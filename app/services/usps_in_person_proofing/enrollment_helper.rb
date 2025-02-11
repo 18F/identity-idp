@@ -94,10 +94,12 @@ module UspsInPersonProofing
       # Cancel a user's associated establishing, pending, and in_fraud_review in-person enrollments.
       #
       # @param user [User] The user model
-      def cancel_in_progress_enrollments(user)
+      def cancel_establishing_and_in_progress_enrollments(user)
         user
           .in_person_enrollments
-          .where(status: [:establishing, :pending, :in_fraud_review])
+          .where(status:
+            [InPersonEnrollment::STATUS_ESTABLISHING] +
+            InPersonEnrollment::IN_PROGRESS_ENROLLMENT_STATUSES.to_a)
           .find_each(&:cancel)
       end
 
