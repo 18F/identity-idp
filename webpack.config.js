@@ -13,6 +13,7 @@ const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const mode = isProductionEnv ? 'production' : 'development';
 const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
+const originPort = process.env.ORIGIN_PORT || 3000;
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
@@ -97,6 +98,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         publicPath: './public',
         port: Number(devServerPort),
         headers: {
+          'Access-Control-Allow-Origin': `http://${host}:${originPort}`,
           'Cache-Control': 'no-store',
           Vary: '*',
         },
