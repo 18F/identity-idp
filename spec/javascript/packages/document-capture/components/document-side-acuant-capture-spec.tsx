@@ -11,6 +11,7 @@ describe('DocumentSideAcuantCapture', () => {
     onChange: () => undefined,
     onError: () => undefined,
     isReviewStep: false,
+    showSelfieHelp: () => undefined,
   };
 
   context('when selfie is _not_ enabled', () => {
