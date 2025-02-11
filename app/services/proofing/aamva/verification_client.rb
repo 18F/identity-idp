@@ -10,13 +10,17 @@ module Proofing
         @config = config
       end
 
-      def send_verification_request(applicant:, session_id: nil)
+      def build_verification_request(applicant:, session_id: nil)
         Request::VerificationRequest.new(
           applicant: applicant,
           session_id: session_id,
           auth_token: auth_token,
           config: config,
-        ).send
+        )
+      end
+
+      def send_verification_request(applicant:, session_id: nil)
+        build_verification_request(applicant:, session_id:).send
       end
 
       private
