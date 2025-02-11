@@ -7231,6 +7231,12 @@ module AnalyticsEvents
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
   end
 
+  # Tracks when user clicks on same tab that user landed on.
+  # @param [String, nil] path that user was on when navigation tab was clicked
+  def tab_navigation_current_page_clicked(path: nil, **extra)
+    track_event(:tab_navigation_current_page_clicked, path:, **extra)
+  end
+
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
