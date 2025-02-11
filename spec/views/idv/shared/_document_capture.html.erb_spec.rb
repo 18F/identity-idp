@@ -17,6 +17,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
+  let(:allow_ipp_override) { false }
   let(:skip_doc_auth_from_socure) { false }
   let(:socure_errors_timeout_url) { idv_socure_document_capture_errors_url(error_code: :timeout) }
   let(:opted_in_to_in_person_proofing) { false }
@@ -59,6 +60,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       socure_errors_timeout_url: socure_errors_timeout_url,
       opted_in_to_in_person_proofing: opted_in_to_in_person_proofing,
       mock_client: mock_client,
+      allow_ipp_override: allow_ipp_override,
     }
   end
 
