@@ -24,11 +24,13 @@ export function SelfieCaptureStep({
   selfieValue,
   isReviewStep,
   showHelp,
+  showSelfieHelp,
 }: {
   defaultSideProps: DefaultSideProps;
   selfieValue: ImageValue;
   isReviewStep: boolean;
   showHelp: boolean;
+  showSelfieHelp: () => void;
 }) {
   const { t } = useI18n();
 
@@ -55,6 +57,7 @@ export function SelfieCaptureStep({
           side="selfie"
           value={selfieValue}
           isReviewStep={isReviewStep}
+          showSelfieHelp={showSelfieHelp}
         />
       )}
     </>
@@ -73,6 +76,10 @@ export default function SelfieStep({
   const { flowPath } = useContext(UploadContext);
   const { showHelpInitially } = useContext(SelfieCaptureContext);
   const [showHelp, setShowHelp] = useState(showHelpInitially);
+
+  const showSelfieHelp = () => {
+    setShowHelp(true);
+  };
 
   function TakeSelfieButton() {
     return (
@@ -106,6 +113,7 @@ export default function SelfieStep({
         selfieValue={value.selfie}
         isReviewStep={false}
         showHelp={showHelp}
+        showSelfieHelp={showSelfieHelp}
       />
       {showHelp && <TakeSelfieButton />}
       {!showHelp && isLastStep && <FormStepsButton.Submit />}
