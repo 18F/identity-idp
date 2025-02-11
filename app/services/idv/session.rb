@@ -3,6 +3,7 @@
 module Idv
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_mechanism [String, nil]
+  # @attr allow_ipp_override [Boolean, nil]
   # @attr applicant [Struct, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
@@ -47,6 +48,7 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
       address_verification_mechanism
+      allow_ipp_override
       applicant
       doc_auth_vendor
       document_capture_session_uuid
