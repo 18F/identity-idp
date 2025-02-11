@@ -29,7 +29,6 @@ module Idv
       analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
       # reset if we visit or come back
       idv_session.skip_doc_auth_from_handoff = nil
-      idv_session.allow_ipp_override = nil
 
       render :show, locals: extra_view_variables
     end
@@ -64,8 +63,7 @@ module Idv
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen
                              # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff ||
-                             idv_session.allow_ipp_override)
+                             idv_session.skip_doc_auth_from_handoff)
                        },
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil

@@ -68,8 +68,7 @@ module Idv
               idv_session.skip_hybrid_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required || # desktop but selfie not required
-              idv_session.desktop_selfie_test_mode_enabled? ||
-              idv_session.allow_ipp_override
+              idv_session.desktop_selfie_test_mode_enabled?
           )
         },
         undo_step: ->(idv_session:, user:) do
@@ -98,7 +97,6 @@ module Idv
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
         socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
-        allow_ipp_override: idv_session.allow_ipp_override,
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
@@ -130,8 +128,8 @@ module Idv
       @previous_step_url = params[:step] == 'hybrid_handoff' ? idv_hybrid_handoff_path : nil
       # allow
       idv_session.flow_path = 'standard'
-      idv_session.allow_ipp_override = true
       idv_session.skip_doc_auth_from_handoff = @previous_step_url.present?
+      idv_session.skip_doc_auth_from_how_to_verify = params[:step] == 'how_to_verify'
       idv_session.skip_hybrid_handoff = nil
       true
     end

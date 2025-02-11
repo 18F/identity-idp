@@ -354,7 +354,7 @@ RSpec.describe Idv::DocumentCaptureController do
         allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
         get :show, params: { step: 'hybrid_handoff' }
         expect(response).to render_template :show
-        expect(subject.idv_session.allow_ipp_override).to eq(true)
+        expect(subject.idv_session.skip_doc_auth_from_handoff).to eq(true)
       end
     end
 
@@ -371,7 +371,7 @@ RSpec.describe Idv::DocumentCaptureController do
         get :show, params: { step: 'hybrid_handoff' }
 
         expect(response).to redirect_to(idv_hybrid_handoff_url)
-        expect(subject.idv_session.allow_ipp_override).to_not eq(true)
+        expect(subject.idv_session.skip_doc_auth_from_handoff).to_not eq(true)
       end
     end
   end

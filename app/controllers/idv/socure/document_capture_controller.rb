@@ -97,8 +97,7 @@ module Idv
               idv_session.skip_hybrid_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required ||
-              idv_session.desktop_selfie_test_mode_enabled? ||
-              idv_session.allow_ipp_override)
+              idv_session.desktop_selfie_test_mode_enabled?)
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
