@@ -9,6 +9,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
+      .and_return(true)
   end
 
   it 'works for a happy path', allow_browser_log: true do

@@ -358,13 +358,17 @@ RSpec.describe SignUp::CompletionsController do
       context 'in person completion survey delievery enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
+            .and_return(true)
         end
-      
+
         it 'sends the in-person proofing completion survey' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+          sp = create(
+            :service_provider, issuer: 'https://awesome',
+                               in_person_proofing_enabled: true
+          )
 
           subject.session[:sp] = {
             issuer: sp.issuer,
@@ -388,8 +392,14 @@ RSpec.describe SignUp::CompletionsController do
         it 'updates follow_up_survey_sent on enrollment to true' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
-          e = create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user, issuer: sp.issuer)
+          sp = create(
+            :service_provider, issuer: 'https://awesome',
+                               in_person_proofing_enabled: true
+          )
+          e = create(
+            :in_person_enrollment, status: 'passed', doc_auth_result: 'Passed',
+                                   user: user, issuer: sp.issuer
+          )
 
           expect(e.follow_up_survey_sent).to be false
 
@@ -415,13 +425,17 @@ RSpec.describe SignUp::CompletionsController do
       context 'in person completion survey delievery disabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
+            .and_return(false)
         end
 
         it 'does not send the in-person proofing completion survey' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
+          sp = create(
+            :service_provider, issuer: 'https://awesome',
+                               in_person_proofing_enabled: true
+          )
 
           subject.session[:sp] = {
             issuer: sp.issuer,
@@ -445,8 +459,14 @@ RSpec.describe SignUp::CompletionsController do
         it 'does not update enrollment' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          sp = create(:service_provider, issuer: 'https://awesome', in_person_proofing_enabled: true)
-          e = create(:in_person_enrollment, status: 'passed', doc_auth_result: 'Passed', user: user, issuer: sp.issuer)
+          sp = create(
+            :service_provider, issuer: 'https://awesome',
+                               in_person_proofing_enabled: true
+          )
+          e = create(
+            :in_person_enrollment, status: 'passed', doc_auth_result: 'Passed',
+                                   user: user, issuer: sp.issuer
+          )
 
           expect(e.follow_up_survey_sent).to be false
 

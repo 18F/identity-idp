@@ -531,7 +531,6 @@ production:
   feature_pending_in_person_password_reset_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true
-  in_person_completion_survey_delivery_enabled: false
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20
