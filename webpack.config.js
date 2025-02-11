@@ -97,7 +97,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         publicPath: './public',
         port: Number(devServerPort),
         headers: {
-          'Access-Control-Allow-Origin': '*',
           'Cache-Control': 'no-store',
           Vary: '*',
         },
