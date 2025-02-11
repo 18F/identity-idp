@@ -6,7 +6,7 @@ class VerifyPasswordForm
   validates :password, presence: true
   validate :validate_password
 
-  attr_reader :user, :password, :decrypted_pii
+  attr_reader :user, :password, :decrypted_pii, :personal_key
 
   def initialize(user:, password:, decrypted_pii:)
     @user = user
@@ -16,11 +16,10 @@ class VerifyPasswordForm
 
   def submit
     success = valid?
-    extra = {}
 
-    extra[:personal_key] = reencrypt_pii if success
+    @personal_key = reencrypt_pii if success
 
-    FormResponse.new(success: success, errors: errors, extra: extra)
+    FormResponse.new(success:, errors:, serialize_error_details_only: true)
   end
 
   private

@@ -9,20 +9,17 @@ module Idv
       include RenderConditionConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
-      before_action :confirm_not_rate_limited
+
+      before_action :confirm_not_rate_limited, except: :update
+      before_action -> do
+        confirm_not_rate_limited(check_last_submission: true)
+      end, only: :update
+
       before_action :confirm_step_allowed
       before_action -> do
         redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
       end, only: :show
       before_action :fetch_test_verification_data, only: [:update]
-
-      # reconsider and maybe remove these when implementing the real
-      # update handler
-      skip_before_action :redirect_unless_idv_session_user, only: [:update]
-      skip_before_action :confirm_two_factor_authenticated, only: [:update]
-      skip_before_action :confirm_idv_needed, only: [:update]
-      skip_before_action :confirm_not_rate_limited, only: [:update]
-      skip_before_action :confirm_step_allowed, only: [:update]
 
       def show
         idv_session.socure_docv_wait_polling_started_at = nil

@@ -79,7 +79,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedPresenter do
     def add_to_idv_session_applicant(pii:)
       pii_hash = Pii::StateId.members.index_with(nil).merge(pii)
 
-      idv_session.applicant(pii_hash)
+      idv_session.applicant = pii_hash
     end
 
     def add_to_gpo_pending_profile(pii:)

@@ -13,12 +13,13 @@ module Users
     end
 
     def update
-      result = verify_password_form.submit
+      form = verify_password_form
+      result = form.submit
 
-      analytics.reactivate_account_verify_password_submitted(success: result.success?)
+      analytics.reactivate_account_verify_password_submitted(**result.to_h)
 
       if result.success?
-        handle_success(result)
+        handle_success(personal_key: form.personal_key)
       else
         flash[:error] = t('errors.messages.password_incorrect')
         render :new
@@ -32,8 +33,8 @@ module Users
       redirect_to root_url
     end
 
-    def handle_success(result)
-      user_session[:personal_key] = result.extra[:personal_key]
+    def handle_success(personal_key:)
+      user_session[:personal_key] = personal_key
       reactivate_account_session.clear
       redirect_to manage_personal_key_url
     end
