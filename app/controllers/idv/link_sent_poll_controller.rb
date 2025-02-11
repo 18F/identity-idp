@@ -30,8 +30,6 @@ module Idv
           :gone
         elsif rate_limiter.limited? && !session_result_passed?
           :too_many_requests
-        elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
-          :ok
         elsif session_result.blank? || pending_barcode_attention_confirmation? ||
               redo_document_capture_pending?
           :accepted
@@ -79,16 +77,6 @@ module Idv
         user: document_capture_session.user,
         rate_limit_type: :idv_doc_auth,
       )
-    end
-
-    def user_has_establishing_in_person_enrollment?
-      return false unless IdentityConfig.store.in_person_proofing_enabled
-      current_user.establishing_in_person_enrollment.present?
-    end
-
-    def confirmed_barcode_attention_result?
-      !redo_document_capture_pending? && had_barcode_attention_result? &&
-        !document_capture_session.ocr_confirmation_pending?
     end
 
     def pending_barcode_attention_confirmation?
