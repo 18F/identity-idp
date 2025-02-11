@@ -131,7 +131,7 @@ module Idv
       # allow
       idv_session.flow_path = 'standard'
       idv_session.allow_ipp_override = true
-      # idv_session.skip_doc_auth_from_handoff = true
+      idv_session.skip_doc_auth_from_handoff = @previous_step_url.present?
       idv_session.skip_hybrid_handoff = nil
       true
     end
