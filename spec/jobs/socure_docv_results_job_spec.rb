@@ -153,32 +153,32 @@ RSpec.describe SocureDocvResultsJob do
       it 'logs an idv_doc_auth_submitted_pii_validation event' do
         perform
         expect(fake_analytics).to have_logged_event(
-                                    'IdV: doc auth image upload vendor pii validation',
-                                    hash_including(
-                                      :submit_attempts,
-                                      :remaining_submit_attempts,
-                                    ),
-                                  )
+          'IdV: doc auth image upload vendor pii validation',
+          hash_including(
+            :submit_attempts,
+            :remaining_submit_attempts,
+          ),
+        )
       end
 
       it 'logs an idv_socure_verification_data_requested event' do
         perform
         expect(fake_analytics).to have_logged_event(
-                                    :idv_socure_verification_data_requested,
-                                    hash_including(
-                                      expected_socure_log.merge({ async: true }),
-                                    ),
-                                  )
+          :idv_socure_verification_data_requested,
+          hash_including(
+            expected_socure_log.merge({ async: true }),
+          ),
+        )
       end
 
       it 'expect log with perform_now to have async eq false' do
         perform_now
         expect(fake_analytics).to have_logged_event(
-                                    :idv_socure_verification_data_requested,
-                                    hash_including(
-                                      expected_socure_log.merge({ async: false }),
-                                    ),
-                                  )
+          :idv_socure_verification_data_requested,
+          hash_including(
+            expected_socure_log.merge({ async: false }),
+          ),
+        )
       end
 
       context 'when the document capture session does not exist' do
@@ -216,7 +216,7 @@ RSpec.describe SocureDocvResultsJob do
 
           it 'logs the status, reference_id, and message' do
             perform
-            
+
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
@@ -224,7 +224,7 @@ RSpec.describe SocureDocvResultsJob do
                   vendor_status: 'Error',
                   reference_id: referenceId,
                   vendor_status_message: msg,
-                }
+                },
               ),
             )
           end

@@ -67,10 +67,10 @@ module DocAuth
 
         def selfie_status
           :not_processed
-       end
+        end
 
         def extra_attributes
-          value = {
+          {
             reference_id: get_data(DATA_PATHS[:reference_id]),
             vendor_status: get_data(DATA_PATHS[:status]),
             vendor_status_message: get_data(DATA_PATHS[:msg]),
@@ -91,8 +91,6 @@ module DocAuth
             birth_year: dob&.year,
             liveness_enabled: @biometric_comparison_required,
           }
-
-          value
         end
 
         private

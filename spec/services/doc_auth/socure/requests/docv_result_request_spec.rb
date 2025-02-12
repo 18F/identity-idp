@@ -25,7 +25,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
 
     before do
       allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
-                                       .and_return(fake_socure_endpoint)
+        .and_return(fake_socure_endpoint)
       allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     end
 

@@ -63,7 +63,7 @@ class SocureDocvResultsJob < ApplicationJob
         async:,
         pii_like_keypaths: [[:pii]],
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-        :selfie_status),
+               :selfie_status),
     )
   end
 
