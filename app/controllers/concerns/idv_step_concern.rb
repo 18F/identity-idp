@@ -7,7 +7,7 @@ module IdvStepConcern
   include IdvSessionConcern
   include RateLimitConcern
   include FraudReviewConcern
-  include DocAuthVendorConcern
+  include Idv::DocAuthVendorConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
 
