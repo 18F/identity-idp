@@ -55,7 +55,7 @@ module Reports
     end
 
     def build_report_maker(issuers:, agency_abbreviation:, time_range:)
-      Reporting::SpProofingEventsByUuid.new(issuers:, agency_abbreviation:, time_range:)
+      Reporting::SpIdvWeeklyDropoffReport.new(issuers:, agency_abbreviation:, time_range:)
     end
   end
 end
