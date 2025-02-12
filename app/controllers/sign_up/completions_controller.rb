@@ -123,6 +123,7 @@ module SignUp
     end
 
     def send_in_person_completion_survey
+      return unless IdentityConfig.store.in_person_completion_survey_delivery_enabled
       return unless resolved_authn_context_result.identity_proofing?
 
       Idv::InPerson::CompletionSurveySender.send_completion_survey(
