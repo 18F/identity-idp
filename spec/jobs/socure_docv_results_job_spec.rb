@@ -110,6 +110,7 @@ RSpec.describe SocureDocvResultsJob do
       expect(document_capture_session_result.attention_with_barcode).to eq(false)
       expect(document_capture_session_result.doc_auth_success).to eq(true)
       expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+      expect(document_capture_session.last_doc_auth_result).to eq('accept')
     end
 
     context 'Pii validation fails' do
@@ -169,6 +170,7 @@ RSpec.describe SocureDocvResultsJob do
         )
         document_capture_session.reload
         expect(document_capture_session.load_result).to be_nil
+        expect(document_capture_session.last_doc_auth_result).to be_nil
       end
     end
   end
