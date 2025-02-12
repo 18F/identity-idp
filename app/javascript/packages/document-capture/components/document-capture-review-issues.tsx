@@ -83,6 +83,7 @@ function DocumentCaptureReviewIssues({
           selfieValue={value.selfie}
           isReviewStep
           showHelp={false}
+          showSelfieHelp={() => undefined}
         />
       )}
       <FormStepsButton.Submit />
