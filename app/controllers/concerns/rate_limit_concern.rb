@@ -36,9 +36,8 @@ module RateLimitConcern
     return false if doc_session_uuid.blank?
 
     document_capture_session = DocumentCaptureSession.find_by(uuid: doc_session_uuid)
-    return false if document_capture_session.nil?
 
-    document_capture_session.last_doc_auth_result == 'Passed'
+    !!document_capture_session&.load_result&.success?
   end
 
   def confirm_not_rate_limited_for_phone_and_letter_address_verification
