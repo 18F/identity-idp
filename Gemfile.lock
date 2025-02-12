@@ -36,14 +36,15 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: bdf8e1f93707e413ecbd0f48d803e18812e19f90
-  tag: 0.23.5-18f
+  revision: 32e9be98c30bc5d01b4088500e4d518f724aadc5
+  tag: 0.23.6-18f
   specs:
-    saml_idp (0.23.5.pre.18f)
+    saml_idp (0.23.6.pre.18f)
       activesupport
       builder
       faraday
       nokogiri (>= 1.10.2)
+      ostruct
       pkcs11
 
 GIT
