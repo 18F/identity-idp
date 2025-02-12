@@ -9,13 +9,15 @@ module Idv
         include Idv::HybridMobile::HybridMobileConcern
         include RenderConditionConcern
         include SocureErrorsConcern
+        include IdvStepConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :validate_step_not_completed, only: [:show]
         before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> do
-          redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
-        end, only: :show
+        before_action :confirm_step_allowed, only: [:show]
+        # before_action -> do
+        #  redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
+        # end, only: :show
         before_action :fetch_test_verification_data, only: [:update]
 
         def show

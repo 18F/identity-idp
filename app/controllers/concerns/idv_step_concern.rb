@@ -7,6 +7,7 @@ module IdvStepConcern
   include IdvSessionConcern
   include RateLimitConcern
   include FraudReviewConcern
+  include DocAuthVendorConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
 
@@ -103,7 +104,14 @@ module IdvStepConcern
     # set it everytime, since user may switch SP
     idv_session.selfie_check_required = resolved_authn_context_result.facial_match?
     return if flow_policy.controller_allowed?(controller: self.class)
-
+    correct_vendor_path = redirect_to_correct_vendor(
+      idv_session.doc_auth_vendor,
+      in_hybrid_mobile: idv_session.flow_path == 'hybrid',
+    )
+    if correct_vendor_path.present?
+      redirect_to correct_vendor_path
+      return
+    end
     redirect_to url_for_latest_step
   end
 
@@ -118,5 +126,26 @@ module IdvStepConcern
 
   def clear_future_steps_from!(controller:)
     flow_policy.undo_future_steps_from_controller!(controller: controller)
+  end
+
+  def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
+    return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
+
+    expected_doc_auth_vendor = doc_auth_vendor
+    return if vendor == expected_doc_auth_vendor
+    return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+              expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+
+    correct_path = case expected_doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
+        in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                         : idv_socure_document_capture_path
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                         : idv_document_capture_path
+      else
+        return
+      end
+    return correct_path
   end
 end

@@ -16,9 +16,9 @@ module Idv
       end, only: :update
 
       before_action :confirm_step_allowed
-      before_action -> do
-        redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
-      end, only: :show
+      # before_action -> do
+      #  redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
+      # end, only: :show
       before_action :fetch_test_verification_data, only: [:update]
 
       def show
