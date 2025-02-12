@@ -44,7 +44,7 @@ module DocAuth
           JSON.parse(http_response.body, symbolize_names: true)
         end
 
-        def handle_connection_error(exception:, status: nil, status_message: nil)
+        def handle_connection_error(exception:, status: nil, status_message: nil, reference_id: nil)
           NewRelic::Agent.notice_error(exception)
           {
             success: false,
@@ -54,6 +54,7 @@ module DocAuth
               vendor: 'Socure',
               vendor_status: status,
               vendor_status_message: status_message,
+              reference_id:,
             }.compact,
           }
         end

@@ -18,6 +18,7 @@ class SocureDocvResultsJob < ApplicationJob
     docv_result_response = timer.time('vendor_request') do
       socure_document_verification_result
     end
+
     log_verification_request(
       docv_result_response:,
       vendor_request_time_in_ms: timer.results['vendor_request'],
@@ -55,15 +56,16 @@ class SocureDocvResultsJob < ApplicationJob
 
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
     analytics.idv_socure_verification_data_requested(
-      **docv_result_response.to_h.merge(
-        docv_transaction_token: document_capture_session.socure_docv_transaction_token,
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
-        vendor_request_time_in_ms:,
-        async:,
-        pii_like_keypaths: [[:pii]],
+      **{ reference_id: nil }.merge(
+        docv_result_response.to_h.merge(
+          submit_attempts: rate_limiter&.attempts,
+          remaining_submit_attempts: rate_limiter&.remaining_count,
+          vendor_request_time_in_ms:,
+          async:,
+          pii_like_keypaths: [[:pii]],
+        )
       ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-               :selfie_status),
+        :selfie_status),
     )
   end
 

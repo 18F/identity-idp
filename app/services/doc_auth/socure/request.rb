@@ -51,10 +51,11 @@ module DocAuth
           exception: exception,
           status: response_body.dig('status'),
           status_message: response_body.dig('msg'),
+          reference_id: response_body.dig('referenceId'),
         )
       end
 
-      def handle_connection_error(exception:, status: nil, status_message: nil)
+      def handle_connection_error(exception:, status: nil, status_message: nil, reference_id: nil)
         raise NotImplementedError
       end
 

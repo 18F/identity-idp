@@ -126,9 +126,9 @@ RSpec.describe SocureDocvResultsJob do
           expect(fake_analytics).to have_logged_event(
             :idv_socure_verification_data_requested,
             hash_including(
-              :socure_status,
+              :vendor_status,
               :reference_id,
-              :socure_msg,
+              :vendor_status_message,
             ),
           )
         end
@@ -186,9 +186,9 @@ RSpec.describe SocureDocvResultsJob do
 
         it 'raises an error and fails to store the result from the Socure DocV request' do
           expect { perform }.to raise_error(
-                                  RuntimeError,
-                                  "DocumentCaptureSession not found: #{document_capture_session_uuid}",
-                                )
+            RuntimeError,
+            "DocumentCaptureSession not found: #{document_capture_session_uuid}",
+          )
           document_capture_session.reload
           expect(document_capture_session.load_result).to be_nil
         end
@@ -196,8 +196,8 @@ RSpec.describe SocureDocvResultsJob do
     end
 
     context 'when we get a non-200 HTTP response back from Socure' do
-      %w[403 404 500].each do |http_status|
-        context 'Socure returns HTTP #{http_status} with an error body' do
+      %w[400 403 404 500].each do |http_status|
+        context "Socure returns HTTP #{http_status} with an error body" do
           let(:status) { 'Error' }
           let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
           let(:msg) { 'InternalServerException' }
@@ -220,17 +220,17 @@ RSpec.describe SocureDocvResultsJob do
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
-                :socure_status,
-                :reference_id,
-                :socure_msg,
+                {
+                  vendor_status: 'Error',
+                  reference_id: referenceId,
+                  vendor_status_message: msg,
+                }
               ),
             )
           end
         end
 
-        context 'Socure returns #{http_status} with no error body' do
-          let(:socure_response_body) { nil }
-
+        context "Socure returns HTTP #{http_status} with no error body" do
           before do
             stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore')
               .to_return(status: http_status)
