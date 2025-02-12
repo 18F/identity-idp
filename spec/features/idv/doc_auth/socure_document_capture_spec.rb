@@ -151,9 +151,6 @@ RSpec.feature 'document capture step', :js do
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
             )
-            DocumentCaptureSession.find_by(user_id: @user.id).update(
-              last_doc_auth_result: 'Passed',
-            )
 
             visit idv_socure_document_capture_update_path
             expect(page).to have_current_path(idv_ssn_url)
