@@ -88,6 +88,7 @@ class Analytics
         session:,
         user:,
         user_session:,
+        persisted_read_only: true,
       )
       if !bucket.blank?
         obj[test_id.downcase] = {

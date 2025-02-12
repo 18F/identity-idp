@@ -84,7 +84,7 @@ class FakeAnalytics < Analytics
       method_name = caller
         .grep(/analytics_events\.rb/)
         &.first
-        &.match(/:in `(?<method_name>[^']+)'/)
+        &.match(/:in '[\w\d]*#(?<method_name>[^']+)'/)
         &.[](:method_name)
         &.to_sym
 

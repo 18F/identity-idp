@@ -713,8 +713,8 @@ doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revi
 doc_auth.instructions.text2: No necesita la tarjeta física del Seguro Social.
 doc_auth.instructions.text3: Revisamos que su número de teléfono coincida con su información personal y enviamos un código de un solo uso a su teléfono.
 doc_auth.instructions.text4: Su contraseña guarda y cifra su información personal.
-doc_auth.rate_limit_warning.plural_html: Por motivos de seguridad, le quedan <strong>%{remaining_attempts} intentos</strong>.
-doc_auth.rate_limit_warning.singular_html: Por motivos de seguridad, le queda <strong>un intento</strong>.
+doc_auth.rate_limit_warning_html.one: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
+doc_auth.rate_limit_warning_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 doc_auth.tips.document_capture_hint: Debe ser un archivo JPG o PNG
 doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
@@ -1064,8 +1064,8 @@ idv.errors.pattern_mismatch.zipcode: Ingrese un código postal de 5 o 9 dígitos
 idv.errors.pattern_mismatch.zipcode_five: Ingrese un código postal de 5 dígitos.
 idv.errors.technical_difficulties: Estamos teniendo problemas técnicos
 idv.errors.try_again_later: Vuelva a intentarlo más tarde.
-idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
-idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego, debe esperar 6 horas antes de volver a intentarlo.
+idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
+idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
 idv.failure.button.warning: Vuelva a intentarlo
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: Mientras tanto, todavía puede iniciar el proceso de verificación en persona en %{app_name} y luego acudir a una oficina de correos. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
@@ -1111,8 +1111,8 @@ idv.failure.verify.exit: Salir de %{app_name}
 idv.failure.verify.fail_link_html: Obtenga ayuda en <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: para acceder a los servicios.
 idv.failure.verify.heading: No pudimos verificar su identidad
-idv.failure.warning.attempts_html.one: Por motivos de seguridad, le queda <strong>un intento</strong>.
-idv.failure.warning.attempts_html.other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
+idv.failure.warning.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
+idv.failure.warning.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.forgot_password.link_text: '¿Olvidó su contraseña?'
 idv.forgot_password.modal_header: '¿Está seguro de que no puede recordar su contraseña?'
 idv.forgot_password.reset_password: Restablecer la contraseña

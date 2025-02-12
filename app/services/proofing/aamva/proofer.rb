@@ -49,36 +49,42 @@ module Proofing
         @config = Config.new(config)
       end
 
+      # @param applicant [Hash]
       def proof(applicant)
         aamva_applicant = Aamva::Applicant.from_proofer_applicant(applicant)
+        verification_request = build_verification_request(aamva_applicant)
+        verification_response = verification_request.send
+        jurisdiction = applicant[:state_id_jurisdiction]
 
-        response = Aamva::VerificationClient.new(
-          config,
-        ).send_verification_request(
-          applicant: aamva_applicant,
-        )
-
-        build_result_from_response(response, applicant[:state_id_jurisdiction])
+        build_result(verification_request:, verification_response:, jurisdiction:)
       rescue => exception
         Proofing::StateIdResult.new(
-          success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
-          transaction_id: nil, verified_attributes: [],
-          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(
-            applicant[:state_id_jurisdiction],
-          )
+          success: false,
+          errors: {},
+          exception: exception,
+          vendor_name: 'aamva:state_id',
+          transaction_id: nil,
+          verified_attributes: [],
+          requested_attributes: requested_attributes(verification_request),
+          jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(jurisdiction),
         )
       end
 
       private
 
-      def build_result_from_response(verification_response, jurisdiction)
+      def build_verification_request(applicant)
+        Aamva::VerificationClient.new(config)
+          .build_verification_request(applicant:)
+      end
+
+      def build_result(verification_request:, verification_response:, jurisdiction:)
         Proofing::StateIdResult.new(
           success: successful?(verification_response),
           errors: parse_verification_errors(verification_response),
           exception: nil,
           vendor_name: 'aamva:state_id',
           transaction_id: verification_response.transaction_locator_id,
-          requested_attributes: requested_attributes(verification_response).index_with(1),
+          requested_attributes: requested_attributes(verification_request),
           verified_attributes: verified_attributes(verification_response),
           jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?(jurisdiction),
         )
@@ -98,13 +104,23 @@ module Proofing
         errors
       end
 
-      def requested_attributes(verification_response)
-        attributes = verification_response
-          .verification_results.filter { |_, verified| !verified.nil? }
+      # @param verification_request [Proofing::Aamva::Request::VerificationRequest]
+      def requested_attributes(verification_request)
+        return if verification_request.nil?
+        present_attributes = verification_request
+          .requested_attributes
+          .compact
+          .filter { |_k, v| v == :present }
           .keys
           .to_set
 
-        normalize_address_attributes(attributes)
+        blank_attributes = verification_request
+          .requested_attributes
+          .filter { |_k, v| v == :missing }
+          .transform_values { |_v| 0 }
+
+        normalized = normalize_address_attributes(present_attributes).index_with(1)
+        normalized.merge(blank_attributes)
       end
 
       def verified_attributes(verification_response)

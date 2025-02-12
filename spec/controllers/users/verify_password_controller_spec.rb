@@ -60,18 +60,19 @@ RSpec.describe Users::VerifyPasswordController do
       end
 
       describe '#update' do
-        let(:form) { instance_double(VerifyPasswordForm) }
-        let(:user_params) { { user: { password: user.password } } }
-
-        before do
-          expect(controller).to receive(:verify_password_form).and_return(form)
-        end
+        let(:password) { nil }
+        let(:user_params) { { user: { password: } } }
 
         context 'with valid password' do
-          let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: recovery_hash) }
+          let(:password) { user.password }
 
           before do
-            allow(form).to receive(:submit).and_return(response_ok)
+            pii = Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+            ReactivateAccountSession.new(
+              user:,
+              user_session: controller.user_session,
+            ).store_decrypted_pii(pii)
+
             put :update, params: user_params
           end
 
@@ -86,19 +87,17 @@ RSpec.describe Users::VerifyPasswordController do
             expect(response).to redirect_to(manage_personal_key_url)
           end
 
-          it 'sets a new personal key as a flash message' do
-            expect(controller.user_session[:personal_key]).to eq(key)
+          it 'sets the new personal key as a user session value' do
+            expect(controller.user_session[:personal_key]).to match(/^([A-Z0-9]{4}(-|$)){4}/)
           end
         end
 
         context 'without valid password' do
-          let(:response_bad) { FormResponse.new(success: false, errors: {}) }
+          let(:password) { user.password + 'wrong' }
 
           render_views
 
           before do
-            allow(form).to receive(:submit).and_return(response_bad)
-
             put :update, params: user_params
           end
 
@@ -106,6 +105,7 @@ RSpec.describe Users::VerifyPasswordController do
             expect(@analytics).to have_logged_event(
               :reactivate_account_verify_password_submitted,
               success: false,
+              error_details: { password: { password_incorrect: true } },
             )
           end
 

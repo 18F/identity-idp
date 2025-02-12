@@ -183,11 +183,13 @@ module Reporting
       uuid_map = Hash.new
 
       uuids.each_slice(1000) do |uuid_slice|
-        AgencyIdentity.joins(:user).where(
-          agency:,
-          users: { uuid: uuid_slice },
-        ).each do |agency_identity|
-          uuid_map[agency_identity.user.uuid] = agency_identity.uuid
+        Reports::BaseReport.transaction_with_timeout do
+          AgencyIdentity.joins(:user).where(
+            agency:,
+            users: { uuid: uuid_slice },
+          ).each do |agency_identity|
+            uuid_map[agency_identity.user.uuid] = agency_identity.uuid
+          end
         end
       end
 

@@ -1083,17 +1083,15 @@ module AnalyticsEvents
   end
 
   # @param [Hash] error
-  def idv_camera_info_error(error:, **_extra)
-    track_event(:idv_camera_info_error, error: error)
+  def idv_camera_info_error(error:, **extra)
+    track_event(:idv_camera_info_error, error:, **extra)
   end
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Array] camera_info Information on the users cameras max resolution
   #   as captured by the browser
-  def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
-    track_event(
-      :idv_camera_info_logged, flow_path: flow_path, camera_info: camera_info
-    )
+  def idv_camera_info_logged(flow_path:, camera_info:, **extra)
+    track_event(:idv_camera_info_logged, flow_path:, camera_info:, **extra)
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
@@ -4937,21 +4935,22 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
-    **_extra
+    **extra
   )
     track_event(
       :idv_selfie_image_clicked,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isDrop: isDrop,
-      click_source: click_source,
-      use_alternate_sdk: use_alternate_sdk,
-      captureAttempts: captureAttempts,
-      liveness_checking_required: liveness_checking_required,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      isDrop:,
+      click_source:,
+      use_alternate_sdk:,
+      captureAttempts:,
+      liveness_checking_required:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      **extra,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -6690,8 +6689,9 @@ module AnalyticsEvents
 
   # Submission event for the "verify password" page the user sees after entering their personal key.
   # @param [Boolean] success Whether the form was submitted successfully.
-  def reactivate_account_verify_password_submitted(success:, **extra)
-    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def reactivate_account_verify_password_submitted(success:, error_details: nil, **extra)
+    track_event(:reactivate_account_verify_password_submitted, success:, error_details:, **extra)
   end
 
   # Visit event for the "verify password" page the user sees after entering their personal key.
@@ -7229,6 +7229,12 @@ module AnalyticsEvents
   #   if user is changing email in consent flow
   def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
+  end
+
+  # Tracks when user clicks on same tab that user landed on.
+  # @param [String, nil] path that user was on when navigation tab was clicked
+  def tab_navigation_current_page_clicked(path: nil, **extra)
+    track_event(:tab_navigation_current_page_clicked, path:, **extra)
   end
 
   # @param [String] area_code Area code of phone number

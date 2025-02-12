@@ -10,6 +10,7 @@ require 'retries'
 module Proofing
   module Aamva
     module Request
+      RequestAttribute = Data.define(:xpath, :required).freeze
       class VerificationRequest
         CONTENT_TYPE = 'application/soap+xml;charset=UTF-8'
         DEFAULT_VERIFICATION_URL =
@@ -17,20 +18,45 @@ module Proofing
         SOAP_ACTION =
           '"http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseData"'
 
+        VERIFICATION_REQUESTED_ATTRS = {
+          first_name: RequestAttribute.new(xpath: '//nc:PersonGivenName', required: true),
+          middle_name: RequestAttribute.new(xpath: '//nc:PersonMiddleName', required: false),
+          last_name: RequestAttribute.new('//nc:PersonSurName', true),
+          name_suffix: RequestAttribute.new('//nc:PersonNameSuffixText', false),
+          dob: RequestAttribute.new('//aa:PersonBirthDate', true),
+          address1: RequestAttribute.new('//nc:AddressDeliveryPointText', true),
+          address2: RequestAttribute.new('//nc:AddressDeliveryPointText[2]', false),
+          city: RequestAttribute.new('//nc:LocationCityName', true),
+          state: RequestAttribute.new('//nc:LocationStateUsPostalServiceCode', true),
+          zipcode: RequestAttribute.new('//nc:LocationPostalCode', true),
+          state_id_number: RequestAttribute.new('//nc:IdentificationID', true),
+          state_id_type: RequestAttribute.new('//aa:DocumentCategoryCode', false),
+          state_id_expiration: RequestAttribute.new('//aa:DriverLicenseExpirationDate', false),
+          state_id_jurisdiction: RequestAttribute.new('//aa:MessageDestinationId', true),
+          state_id_issued: RequestAttribute.new('//aa:DriverLicenseIssueDate', false),
+          eye_color: RequestAttribute.new('//aa:PersonEyeColorCode', false),
+          height: RequestAttribute.new('//aa:PersonHeightMeasure', false),
+          sex: RequestAttribute.new('//aa:PersonSexCode', false),
+          weight: RequestAttribute.new('//aa:PersonWeightMeasure', false),
+        }.freeze
+
         extend Forwardable
 
         attr_reader :config, :body, :headers, :url
 
+        # @param applicant [Proofing::Aamva::Applicant]
         def initialize(config:, applicant:, session_id:, auth_token:)
           @config = config
           @applicant = applicant
           @transaction_id = session_id
           @auth_token = auth_token
+          @requested_attributes = {}
           @url = verification_url
           @body = build_request_body
           @headers = build_request_headers
         end
 
+        # @return [Proofing::Aamva::Response::VerificationResponse]
         def send
           Response::VerificationResponse.new(
             http_client.post(url, body, headers) do |req|
@@ -46,9 +72,21 @@ module Proofing
           config.verification_url || DEFAULT_VERIFICATION_URL
         end
 
+        # The requested attributes in the applicant PII hash. Values are:
+        # - +:present+ - value present
+        # - +:missing+ - field is required, but value was blank
+        #
+        # @see Proofing::Aamva::Applicant#from_proofer_applicant for fields
+        # @return [Hash{Symbol => Symbol}]
+        def requested_attributes
+          { **@requested_attributes }
+        end
+
         private
 
-        attr_reader :applicant, :transaction_id, :auth_token
+        # @return [Proofing::Aamva::Applicant]
+        attr_reader :applicant
+        attr_reader :transaction_id, :auth_token
 
         def http_client
           Faraday.new(request: { open_timeout: timeout, timeout: timeout }) do |faraday|
@@ -57,9 +95,10 @@ module Proofing
           end
         end
 
-        def add_user_provided_data_to_body
+        def add_user_provided_data_to_body(body)
           document = REXML::Document.new(body)
-          user_provided_data_map.each do |xpath, data|
+          user_provided_data_map.each do |attribute, data|
+            xpath = VERIFICATION_REQUESTED_ATTRS[attribute].xpath
             REXML::XPath.first(document, xpath).add_text(data)
           end
 
@@ -126,17 +165,18 @@ module Proofing
             document,
           )
 
-          @body = document.to_s
+          update_requested_attributes(document)
+          document.to_s
         end
 
         def add_state_id_type(id_type, document)
           category_code = case id_type
-                          when 'drivers_license'
-                            1
-                          when 'drivers_permit'
-                            2
-                          when 'state_id_card'
-                            3
+                            when 'drivers_license'
+                              1
+                            when 'drivers_permit'
+                              2
+                            when 'state_id_card'
+                              3
                           end
 
           if category_code
@@ -151,10 +191,10 @@ module Proofing
 
         def add_sex_code(sex_value, document)
           sex_code = case sex_value
-                     when 'male'
-                       1
-                     when 'female'
-                       2
+                       when 'male'
+                         1
+                       when 'female'
+                         2
                      end
 
           if sex_code
@@ -181,10 +221,22 @@ module Proofing
           end
         end
 
+        # @param document [REXML::Document]
+        def update_requested_attributes(document)
+          VERIFICATION_REQUESTED_ATTRS.each do |attribute, rule|
+            value = REXML::XPath.first(document, rule.xpath)&.text
+            if value.present?
+              @requested_attributes[attribute] = :present
+            elsif rule.required
+              @requested_attributes[attribute] = :missing
+            end
+          end
+        end
+
         def build_request_body
           renderer = ERB.new(request_body_template)
-          @body = renderer.result(binding)
-          add_user_provided_data_to_body
+          tmp_body = renderer.result(binding)
+          add_user_provided_data_to_body(tmp_body)
         end
 
         def build_request_headers
@@ -222,24 +274,24 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//nc:IdentificationID' => state_id_number,
-            '//aa:MessageDestinationId' => message_destination_id,
-            '//nc:PersonGivenName' => applicant.first_name,
-            '//nc:PersonSurName' => applicant.last_name,
-            '//aa:PersonBirthDate' => applicant.dob,
-            '//nc:AddressDeliveryPointText' => applicant.address1,
-            '//nc:LocationCityName' => applicant.city,
-            '//nc:LocationStateUsPostalServiceCode' => applicant.state,
-            '//nc:LocationPostalCode' => applicant.zipcode,
+            state_id_number: state_id_number,
+            state_id_jurisdiction: message_destination_id,
+            first_name: applicant.first_name,
+            last_name: applicant.last_name,
+            dob: applicant.dob,
+            address1: applicant.address1,
+            city: applicant.city,
+            state: applicant.state,
+            zipcode: applicant.zipcode,
           }
         end
 
         def state_id_number
           case applicant.state_id_data.state_id_jurisdiction
-          when 'SC'
-            applicant.state_id_data.state_id_number.rjust(8, '0')
-          else
-            applicant.state_id_data.state_id_number
+            when 'SC'
+              applicant.state_id_data.state_id_number.rjust(8, '0')
+            else
+              applicant.state_id_data.state_id_number
           end
         end
 
