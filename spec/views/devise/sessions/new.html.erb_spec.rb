@@ -41,13 +41,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   it 'includes a link to create a new account' do
     render
 
-    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_url)
-  end
-
-  it 'includes a link to create a new account' do
-    render
-
-    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_url)
+    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
   end
 
   it 'includes a link to security / privacy page and privacy statement act' do

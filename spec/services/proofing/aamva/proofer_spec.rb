@@ -2,15 +2,36 @@ require 'rails_helper'
 require 'ostruct'
 
 RSpec.describe Proofing::Aamva::Proofer do
-  let(:aamva_applicant) do
-    Aamva::Applicant.from_proofer_applicant(state_id_data)
-  end
+  let(:attribute) { :unknown }
 
   let(:state_id_data) do
     {
       state_id_number: '1234567890',
       state_id_jurisdiction: 'VA',
       state_id_type: 'drivers_license',
+      state_id_issued: '2024-05-06',
+      state_id_expiration: '2034-10-29',
+    }
+  end
+
+  let(:applicant) do
+    {
+      uuid: '1234-abcd-efgh',
+      first_name: 'Testy',
+      last_name: 'McTesterson',
+      middle_name: 'Spectacle',
+      name_suffix: 'III',
+      dob: '10/29/1942',
+      address1: '123 Sunnyside way',
+      address2: nil,
+      city: 'Sterling',
+      state: 'VA',
+      zipcode: '20176-1234',
+      eye_color: 'brn',
+      height: 63,
+      weight: 179,
+      sex: 'female',
+      **state_id_data,
     }
   end
 
@@ -27,26 +48,28 @@ RSpec.describe Proofing::Aamva::Proofer do
     }
   end
 
+  let(:config) { AamvaFixtures.example_config }
+
   subject do
-    described_class.new(AamvaFixtures.example_config.to_h)
+    described_class.new(config.to_h)
   end
 
   let(:verification_response) { AamvaFixtures.verification_response }
 
   before do
-    stub_request(:post, AamvaFixtures.example_config.auth_url)
+    stub_request(:post, config.auth_url)
       .to_return(
         { body: AamvaFixtures.security_token_response },
         { body: AamvaFixtures.authentication_token_response },
       )
-    stub_request(:post, AamvaFixtures.example_config.verification_url)
+    stub_request(:post, config.verification_url)
       .to_return(body: verification_response)
   end
 
   describe '#proof' do
     describe 'individual attributes' do
       subject(:result) do
-        described_class.new(AamvaFixtures.example_config.to_h).proof(state_id_data)
+        described_class.new(config.to_h).proof(applicant.compact_blank)
       end
 
       def self.when_missing(&block)
@@ -56,6 +79,10 @@ RSpec.describe Proofing::Aamva::Proofer do
               AamvaFixtures.verification_response,
               "//#{match_indicator_name}",
             )
+          end
+
+          before do
+            applicant[attribute] = nil
           end
 
           instance_eval(&block)
@@ -81,6 +108,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           it "does not stop #{logged_attribute} from appearing in requested_attributes" do
             expect(result.requested_attributes).to include(logged_attribute => 1)
           end
+
           it 'does not itself appear in requested_attributes' do
             expect(result.requested_attributes).not_to include(attribute => 1)
           end
@@ -187,7 +215,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       describe '#state' do
-        let(:attribute) { :city }
+        let(:attribute) { :state }
         let(:match_indicator_name) { 'AddressStateCodeMatchIndicator' }
 
         when_unverified do
@@ -444,7 +472,7 @@ RSpec.describe Proofing::Aamva::Proofer do
 
     context 'when verification is successful' do
       it 'the result is successful' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
         # TODO: Find a better way to express this than errors
@@ -475,7 +503,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'includes requested_attributes' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
@@ -483,6 +511,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_expiration: 1,
             state_id_number: 1,
             state_id_type: 1,
+            state_id_jurisdiction: 1,
             last_name: 1,
             first_name: 1,
             middle_name: 1,
@@ -507,7 +536,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'the result should be failed' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['UNVERIFIED'])
@@ -536,12 +565,13 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'includes requested_attributes' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
         expect(result.requested_attributes).to eq(
           {
             dob: 1,
             state_id_expiration: 1,
             state_id_issued: 1,
+            state_id_jurisdiction: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -567,7 +597,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'the result should be failed' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to include(dob: ['MISSING'])
@@ -596,11 +626,12 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'includes requested_attributes' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
         expect(result.requested_attributes).to eq(
           {
             state_id_expiration: 1,
             state_id_issued: 1,
+            state_id_jurisdiction: 1,
             state_id_number: 1,
             state_id_type: 1,
             last_name: 1,
@@ -612,32 +643,9 @@ RSpec.describe Proofing::Aamva::Proofer do
             sex: 1,
             weight: 1,
             eye_color: 1,
+            dob: 1,
           },
         )
-      end
-    end
-
-    context 'when issue / expiration present' do
-      let(:state_id_data) do
-        {
-          state_id_number: '1234567890',
-          state_id_jurisdiction: 'VA',
-          state_id_type: 'drivers_license',
-          state_id_issued: '2023-04-05',
-          state_id_expiration: '2030-01-02',
-        }
-      end
-
-      it 'includes them' do
-        expect(Proofing::Aamva::Request::VerificationRequest).to receive(:new).with(
-          hash_including(
-            applicant: satisfy do |a|
-              expect(a.state_id_data.state_id_issued).to eql('2023-04-05')
-              expect(a.state_id_data.state_id_expiration).to eql('2030-01-02')
-            end,
-          ),
-        )
-        subject.proof(state_id_data)
       end
     end
 
@@ -650,7 +658,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'includes exception in result' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
 
         expect(result.success?).to eq(false)
         expect(result.exception).to eq(exception)
@@ -661,7 +669,7 @@ RSpec.describe Proofing::Aamva::Proofer do
         let(:exception) { Proofing::TimeoutError.new }
 
         it 'returns false for mva exception attributes in result' do
-          result = subject.proof(state_id_data)
+          result = subject.proof(applicant)
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
@@ -680,7 +688,7 @@ RSpec.describe Proofing::Aamva::Proofer do
         end
 
         it 'returns true for mva_unavailable?' do
-          result = subject.proof(state_id_data)
+          result = subject.proof(applicant)
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
@@ -699,7 +707,7 @@ RSpec.describe Proofing::Aamva::Proofer do
         end
 
         it 'returns true for mva_system_error?' do
-          result = subject.proof(state_id_data)
+          result = subject.proof(applicant)
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
@@ -718,7 +726,7 @@ RSpec.describe Proofing::Aamva::Proofer do
         end
 
         it 'returns true for mva_timeout?' do
-          result = subject.proof(state_id_data)
+          result = subject.proof(applicant)
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
@@ -735,7 +743,7 @@ RSpec.describe Proofing::Aamva::Proofer do
           end
 
           it 'sets jurisdiction_in_maintenance_window to true' do
-            result = subject.proof(state_id_data)
+            result = subject.proof(applicant)
             expect(result.jurisdiction_in_maintenance_window?).to eq(true)
           end
         end
@@ -749,7 +757,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'sets jurisdiction_in_maintenance_window to true' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
         expect(result.jurisdiction_in_maintenance_window?).to eq(true)
       end
     end
@@ -761,7 +769,7 @@ RSpec.describe Proofing::Aamva::Proofer do
       end
 
       it 'sets jurisdiction_in_maintenance_window to false' do
-        result = subject.proof(state_id_data)
+        result = subject.proof(applicant)
         expect(result.jurisdiction_in_maintenance_window?).to eq(false)
       end
     end
