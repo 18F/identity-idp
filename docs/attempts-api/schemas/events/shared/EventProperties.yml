@@ -4,12 +4,21 @@ properties:
     type: string
     description: |
       Indicates the SP URL (redirect_uri) from which the action was triggered.
+  client_port:
+    type: string
+    description: Known more commonly as ephemeral port numbers associated  with the Client IP – This is NOT the CSP server port 443 or 80.
+  device_fingerprint:
+    type: string
+    description: Hashed cookie device UUID
   occurred_at:
     type: integer
     format: int64
     description: The time when the event occurred.
   subject:
     $ref: './Subject.yml'
+  useragent_string:
+    type: string
+    description: The end user's browser's useragent string, which identifies the type of browser, device and operating system being used as well as the version of the browser.
   user_ip_address:
     type: string
     description: The end user’s IP address.
