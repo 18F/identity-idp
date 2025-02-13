@@ -19,6 +19,10 @@ module Idv
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
+          if rate_limiter.limited?
+            redirect_to idv_hybrid_mobile_capture_complete_url
+          end
+
           session[:socure_docv_wait_polling_started_at] = nil
 
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
@@ -74,7 +78,7 @@ module Idv
             **result.to_h.merge(analytics_arguments),
           )
 
-          if result.success?
+          if result.success? || rate_limiter.limited?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
             redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
@@ -140,6 +144,10 @@ module Idv
             selfie_check_required: false,
             pii_like_keypaths: [[:pii]],
           }
+        end
+
+        def rate_limiter
+          @rate_limiter ||= RateLimiter.new(user: document_capture_user, rate_limit_type: :idv_doc_auth)
         end
       end
     end
