@@ -9,6 +9,7 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
+  include Idv::DocAuthVendorConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -100,6 +101,8 @@ module IdvStepConcern
   end
 
   def confirm_step_allowed
+    puts "confirm_step_allowed: vendor: #{doc_auth_vendor}"
+    puts "step info #{flow_policy.info_for_latest_step.vendor}"
     # set it everytime, since user may switch SP
     idv_session.selfie_check_required = resolved_authn_context_result.facial_match?
     return if flow_policy.controller_allowed?(controller: self.class)

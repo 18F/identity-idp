@@ -7,6 +7,7 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
+      include Idv::DocAuthVendorConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
 
@@ -16,9 +17,9 @@ module Idv
       end, only: :update
 
       before_action :confirm_step_allowed
-      before_action -> do
-        redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
-      end, only: :show
+      # before_action -> do
+      #  redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
+      # end, only: :show
       before_action :fetch_test_verification_data, only: [:update]
 
       def show
@@ -90,6 +91,7 @@ module Idv
           key: :socure_document_capture,
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
+          vendor: Idp::Constants::Vendors::SOCURE,
           preconditions: ->(idv_session:, user:) {
             idv_session.flow_path == 'standard' && (
               # mobile
@@ -97,7 +99,8 @@ module Idv
               idv_session.skip_hybrid_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required ||
-              idv_session.desktop_selfie_test_mode_enabled?)
+              idv_session.desktop_selfie_test_mode_enabled?
+            )
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
