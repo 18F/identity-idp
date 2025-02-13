@@ -185,8 +185,8 @@ RSpec.describe UserMailer, type: :mailer do
         expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
       end
 
-      it 'renders the in person warning banner' do
-        expect(mail.html_part.body).to have_content(
+      it 'does not render the in person warning banner' do
+        expect(mail.html_part.body).not_to have_content(
           strip_tags(
             t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
           ),
