@@ -1525,7 +1525,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                     create(:in_person_enrollment, :failed, profile:, user: profile.user).user
                   end
 
-                  it 'redirects to the user to verify thier account' do
+                  it 'redirects the user to verify their account' do
                     action
                     expect(controller).to redirect_to(idv_url)
                   end

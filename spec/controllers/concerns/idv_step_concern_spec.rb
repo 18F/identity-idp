@@ -262,7 +262,7 @@ RSpec.describe 'IdvStepConcern' do
 
     context 'with a passed in-person enrollment and a fraudulent profile' do
       let(:user) do
-        profile = create(:profile, :fraud_review_pending)
+        profile = create(:profile, :in_person_fraud_review_pending, in_person_enrollment: nil)
         create(:in_person_enrollment, :passed, profile:, user: profile.user).user
       end
 
@@ -274,10 +274,7 @@ RSpec.describe 'IdvStepConcern' do
     end
 
     context 'with a in_fraud_review in-person enrollment and a fraudulent profile' do
-      let(:user) do
-        profile = create(:profile, :fraud_review_pending)
-        create(:in_person_enrollment, :in_fraud_review, profile:, user: profile.user).user
-      end
+      let(:user) { create(:profile, :in_person_fraud_review_pending).user }
 
       it 'redirects to please call page' do
         get :show

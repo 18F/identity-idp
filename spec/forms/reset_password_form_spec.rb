@@ -187,7 +187,7 @@ RSpec.describe ResetPasswordForm, type: :model do
           end
         end
 
-        context 'when the profile is in fraud reivew for in person verification' do
+        context 'when the profile is in fraud review for in person verification' do
           let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
           let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
           let(:profile) { enrollment.profile }
@@ -445,7 +445,7 @@ RSpec.describe ResetPasswordForm, type: :model do
           end
         end
 
-        context 'when the profile is in fraud reivew for in person verification' do
+        context 'when the profile is in fraud review for in person verification' do
           let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
           let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
           let(:profile) { enrollment.profile }
