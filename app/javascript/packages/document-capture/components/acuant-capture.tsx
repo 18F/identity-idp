@@ -132,6 +132,10 @@ interface AcuantCaptureProps {
    * Prefix to prepend to user action analytics labels.
    */
   name: string;
+  /**
+   * Determine whether the selfie help text shoule be shown.
+   */
+  showSelfieHelp: () => void;
 }
 
 /**
@@ -308,6 +312,7 @@ function AcuantCapture(
     allowUpload = true,
     errorMessage,
     name,
+    showSelfieHelp,
   }: AcuantCaptureProps,
   ref: Ref<HTMLInputElement | null>,
 ) {
@@ -545,6 +550,7 @@ function AcuantCapture(
     });
 
     setImageCaptureText('');
+    showSelfieHelp();
     setIsCapturingEnvironment(false);
   }
 

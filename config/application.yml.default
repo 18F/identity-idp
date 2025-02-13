@@ -38,6 +38,7 @@ allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
+attempts_api_enabled: false
 attempts_api_event_ttl_seconds: 3_600
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
@@ -172,6 +173,7 @@ idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
 idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
+in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
 in_person_eipp_enrollment_validity_in_days: 7

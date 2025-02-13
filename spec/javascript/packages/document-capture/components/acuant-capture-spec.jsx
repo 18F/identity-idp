@@ -1068,6 +1068,7 @@ describe('document-capture/components/acuant-capture', () => {
 
   context('mobile selfie', () => {
     const trackEvent = sinon.stub();
+    const showSelfieHelp = sinon.stub();
 
     beforeEach(async () => {
       // Set up the components so that everything is as it would actually be -except- the AcuantSDK
@@ -1076,7 +1077,7 @@ describe('document-capture/components/acuant-capture', () => {
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="selfie" isReady />
+              <AcuantCapture label="Image" name="selfie" showSelfieHelp={showSelfieHelp} isReady />
             </AcuantContextProvider>
           </AnalyticsContext.Provider>
         </DeviceContext.Provider>,
@@ -1130,6 +1131,16 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.have.been.calledWith(
         'idv_sdk_selfie_image_capture_closed_without_photo',
       );
+    });
+
+    it('calls showSelfieHelp from onSelfieCaptureClosed', () => {
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onClosed();
+        }),
+      });
+
+      expect(showSelfieHelp).to.have.been.called();
     });
 
     it('calls trackEvent from onSelfieCaptureSuccess', () => {

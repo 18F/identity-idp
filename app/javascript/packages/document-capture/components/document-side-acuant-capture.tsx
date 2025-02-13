@@ -23,6 +23,7 @@ interface DocumentSideAcuantCaptureProps {
   onError: OnErrorCallback;
   className?: string;
   isReviewStep: boolean;
+  showSelfieHelp: () => void;
 }
 
 /**
@@ -54,6 +55,7 @@ function DocumentSideAcuantCapture({
   onError,
   className,
   isReviewStep,
+  showSelfieHelp,
 }: DocumentSideAcuantCaptureProps) {
   const error = errors.find(({ field }) => field === side)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
@@ -97,6 +99,7 @@ function DocumentSideAcuantCapture({
       name={side}
       className={className}
       allowUpload={isUploadAllowed}
+      showSelfieHelp={showSelfieHelp}
     />
   );
 }

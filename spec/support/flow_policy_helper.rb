@@ -38,6 +38,7 @@ module FlowPolicyHelper
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
       }
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+      idv_session.threatmetrix_session_id = 'a-random-session-id'
     when :verify_info
       idv_session.mark_verify_info_step_complete!
       idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup

@@ -302,6 +302,12 @@ module Idv
       ssn.present?
     end
 
+    def invalidate_ssn_step!
+      if user_session[:idv].has_key?(:ssn)
+        user_session[:idv].delete(:ssn)
+      end
+    end
+
     def verify_info_step_complete?
       resolution_successful
     end
