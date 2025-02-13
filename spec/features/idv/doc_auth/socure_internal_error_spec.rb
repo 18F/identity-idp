@@ -13,7 +13,6 @@ RSpec.describe 'when Socure throws an internal error' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
     allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
       .and_return(Idp::Constants::Vendors::SOCURE)
 
