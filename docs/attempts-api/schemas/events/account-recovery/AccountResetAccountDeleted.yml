@@ -1,0 +1,23 @@
+description: |
+  A user requesting an account reset has completed the process. As a result, the account was deleted successfully.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          token:
+            type: array
+            description: Errors that explain the failure.
+            items:
+              type: string
+              enum: 
+                - The link to delete your Login.gov account has expired. Please create another request to delete your account.
+      success:
+        type: boolean
+        description: |
+          Indicates whether the account was successfully deleted.
+     

@@ -1,0 +1,36 @@
+description: |
+  If users choose to upload a document via phone, they are sent a message containing a link to use for document upload to the phone. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties: 
+          telephony:
+            type: array
+            description: An OPTIONAL key that describes errors with the link sending telephony
+            items:
+              type: string
+              enum:
+                - DailyLimitReachedError
+                - DuplicateEndpointError
+                - InvalidCallingAreaError
+                - InvalidPhoneNumberError
+                - OptOutError
+                - PermanentFailureError
+                - SmsUnsupportedError
+                - TelephonyError
+                - TemporaryFailureError
+                - ThrottledError
+                - TimeoutError
+                - UnknownFailureError
+                - VoiceUnsupportedError
+      success:
+        type: boolean
+        description: |
+          Indicates whether the upload link was successfully sent to the user’s phone.

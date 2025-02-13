@@ -1,0 +1,9 @@
+description: |
+  During a login attempt, the user has exceeded the limit for requesting an OTP be sent to their phone.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+        description: User-provided phone number

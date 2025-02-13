@@ -1,0 +1,8 @@
+description: |
+  When the user exceeds the number of times they can request a new security code to be sent to their provided phone number for address verification. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string

@@ -1,0 +1,66 @@
+type: object
+title: Transmitter Configuration Response
+description: |
+  Metadata describing the Login.gov transmitter configuration.
+properties:
+  issuer:
+    type: string
+    description: |
+      Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
+
+      This MUST be identical to the iss claim value in Security Event Tokens issued from this Transmitter.
+    format: uri
+    example: https://secure.login.gov
+  jwks_uri:
+    type: string
+    description: |
+      URL of the Transmitter's JSON Web Key Set
+    format: uri
+    example: https://secure.login.gov/api/openid_connect/certs
+  delivery:
+    type: object
+    description: Details about the delivery method and endpoint
+    properties:
+      endpoint_url:
+        type: string
+        format: uri
+        description: |
+          The URL of the polling endpoint
+
+          prod: `https://secure.login.gov/api/attempts/poll`
+
+          sandbox: `https://idp.int.identitysandbox.gov/attempts/poll`
+        example: https://secure.login.gov/api/attempts/poll
+      method:
+        type: string
+        format: uri
+        enum:
+          - https://schemas.openid.net/secevent/risc/delivery-method/poll
+  delivery_methods_supported:
+    type: array
+    items:
+      type: string
+      format: uri
+      enum:
+        - https://schemas.openid.net/secevent/risc/delivery-method/poll
+    description: List of supported delivery method URIs.
+  status_endpoint:
+    type: string
+    format: uri
+    description: |
+      The URL of the Status Endpoint.
+
+      prod: `https://secure.login.gov/api/attempts/status`
+
+      sandbox: `https://idp.int.identitysandbox.gov/attempts/status`
+    example: https://secure.login.gov/api/attempts/status
+  verification_endpoint:
+    type: string
+    format: uri
+    description: |
+      The URL of the Verification Endpoint.
+
+      prod: `https://secure.login.gov/api/attempts/verification`
+
+      sandbox: `https://idp.int.identitysandbox.gov/attempts/verification`
+    example: https://secure.login.gov/api/attempts/verification

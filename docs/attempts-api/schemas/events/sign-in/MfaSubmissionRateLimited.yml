@@ -1,0 +1,14 @@
+description: |
+  The user has exceeded the limit for submitting an MFA code when signing in with a registered MFA device.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      mfa_device_type:
+        type: string
+        enum:
+          - backup_code
+          - otp
+          - piv_cac
+          - totp
+          - web_authn

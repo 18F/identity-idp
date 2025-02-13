@@ -1,0 +1,9 @@
+description: The user has selected a set of backup codes for MFA.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the backup codes were successfully generated

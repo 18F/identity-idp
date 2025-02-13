@@ -1,0 +1,10 @@
+description: |
+  The user, after having previously been sent an OTP code during phone enrollment, has been asked to submit that code.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the entered code matched what was sent AND was not expired.

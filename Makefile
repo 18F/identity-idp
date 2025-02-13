@@ -40,6 +40,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_readme \
 	lint_spec_file_name \
 	lintfix \
+	lint_openapi \
 	normalize_yaml \
 	optimize_assets \
 	optimize_svg \
@@ -107,6 +108,8 @@ endif
 	make lint_spec_file_name
 	@echo "--- lint migrations ---"
 	make lint_migrations
+	@echo "--- lint openapi spec ---"
+	make lint_openapi
 
 audit: ## Checks packages for vulnerabilities
 	@echo "--- bundler-audit ---"
@@ -180,6 +183,9 @@ lint_spec_file_name:
 		"(" -name '*.spec.js' -or -name '*.spec.ts' -or -name '*.spec.jsx' -or -name '*.spec.tsx' ")" \
 		-exec false {} + \
 		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
+
+lint_openapi:
+	@yarn lint:openapi	
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
