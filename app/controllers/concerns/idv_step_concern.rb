@@ -102,12 +102,39 @@ module IdvStepConcern
 
   def confirm_step_allowed
     puts "confirm_step_allowed: vendor: #{doc_auth_vendor}"
-    puts "step info #{flow_policy.info_for_latest_step.vendor}"
+    puts "step info #{flow_policy.info_for_latest_step.inspect}"
     # set it everytime, since user may switch SP
     idv_session.selfie_check_required = resolved_authn_context_result.facial_match?
-    return if flow_policy.controller_allowed?(controller: self.class)
+    return if flow_policy.controller_allowed?(controller: self.class, vendor: doc_auth_vendor)
 
+    redirect_vendor = flow_policy.get_correct_vendor_for_redirect(
+      controller: self.class, 
+      vendor: doc_auth_vendor
+    )
+    puts "redirect_vendor: #{redirect_vendor}"
+    if redirect_vendor.present?
+      vendor_path = get_correct_vendor_path(redirect_vendor, in_hybrid_mobile: false)
+      puts "vendor_path: #{vendor_path}"
+      if vendor_path.present?
+        redirect_to vendor_path
+        return
+      end
+    end
     redirect_to url_for_latest_step
+  end
+
+  def get_correct_vendor_path(vendor, in_hybrid_mobile:)
+    correct_path = case vendor
+      when Idp::Constants::Vendors::SOCURE
+        in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                         : idv_socure_document_capture_path
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                         : idv_document_capture_path
+      else
+        return
+      end
+      return correct_path
   end
 
   def url_for_latest_step

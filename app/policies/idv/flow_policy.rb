@@ -37,16 +37,29 @@ module Idv
         personal_key: Idv::PersonalKeyController.step_info,
       }.freeze
 
-    def initialize(idv_session:, user:)
+    def initialize(idv_session:, user:, document_capture_session: nil)
       @idv_session = idv_session
       @user = user
+      @document_capture_session = document_capture_session
     end
 
-    def controller_allowed?(controller:)
+    def controller_allowed?(controller:,vendor: nil)
       controller_name = controller < ApplicationController ?
                           StepInfo.full_controller_name(controller) : controller
       key = controller_to_key(controller: controller_name)
-      step_allowed?(key: key)
+      step_allowed?(key: key, vendor: vendor)
+    end
+
+    def get_correct_vendor_for_redirect(controller:,vendor: nil)
+      return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
+      controller_name = controller < ApplicationController ?
+                          StepInfo.full_controller_name(controller) : controller
+      key = controller_to_key(controller: controller_name)
+      return if vendor.nil? || steps[key].vendor.nil?
+      return if vendor == steps[key].vendor
+      
+      puts 'requires vendor redirect'
+      vendor
     end
 
     def info_for_latest_step
@@ -78,12 +91,19 @@ module Idv
       STEPS
     end
 
-    def step_allowed?(key:)
-      steps[key].preconditions.call(idv_session: idv_session, user: user)
+    def step_allowed?(key:, vendor: nil)
+      preconditions_met = steps[key].preconditions.call(idv_session: idv_session, user: user)
+      return false if !preconditions_met 
+
+      if vendor.nil? || IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
+        return true
+      end
+      puts "comparing steps[key] vendor: #{steps[key].vendor}, vendor: #{vendor}"
+      return steps[key].vendor == vendor
     end
 
     def undo_steps_from!(key:)
-      return if key == FINAL
+      return if key == FINAL || idv_session.nil?
 
       steps[key].next_steps.each do |next_step|
         undo_steps_from!(key: next_step)

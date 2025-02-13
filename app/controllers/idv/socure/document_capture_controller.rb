@@ -16,7 +16,7 @@ module Idv
         confirm_not_rate_limited(check_last_submission: true)
       end, only: :update
 
-      before_action :confirm_step_allowed
+      before_action :confirm_step_allowed, only: :show
       # before_action -> do
       #  redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
       # end, only: :show
@@ -91,7 +91,6 @@ module Idv
           key: :socure_document_capture,
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
-          vendor: Idp::Constants::Vendors::SOCURE,
           preconditions: ->(idv_session:, user:) {
             idv_session.flow_path == 'standard' && (
               # mobile

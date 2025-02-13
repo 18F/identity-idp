@@ -4,11 +4,16 @@ module Idv
   class StepInfo
     include ActiveModel::Validations
 
-    attr_reader :key, :controller, :action, :next_steps, :preconditions, :undo_step
+    attr_reader :key, :controller, :action, :next_steps, :preconditions, :undo_step, :vendor
 
     validates :controller, presence: true
     validates :action, presence: true
     validate :next_steps_validation, :preconditions_validation, :undo_step_validation
+
+    VENDOR_CONTROLLER_HASH = {
+      '/idv/document_capture' => Idp::Constants::Vendors::LEXIS_NEXIS,
+      '/idv/socure/document_capture' => Idp::Constants::Vendors::SOCURE
+    }
 
     def initialize(
       key:,
@@ -24,6 +29,7 @@ module Idv
       @preconditions = preconditions
       @undo_step = undo_step
       @action = action
+      @vendor = VENDOR_CONTROLLER_HASH[@controller]
 
       raise ArgumentError unless valid?
     end
