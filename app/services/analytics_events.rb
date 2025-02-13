@@ -5181,7 +5181,7 @@ module AnalyticsEvents
   # @param [Integer] issue_year Year document was issued
   # @param [Boolean] biometric_comparison_required does doc auth require biometirc
   # @param [String] vendor_status Socure's request status (used for errors)
-  # @param [String] vendor_msg socure's error message (used for errors)
+  # @param [String] vendor_status_message socure's error message (used for errors)
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
