@@ -307,6 +307,7 @@ module IdentityConfig
     config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)
     config.add(:participate_in_dap, type: :boolean)
+    config.add(:passports_api_health_check_endpoint, type: :string)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
