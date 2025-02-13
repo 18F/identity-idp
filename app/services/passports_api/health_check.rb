@@ -1,0 +1,2 @@
+module PassportsApi::HealthCheck
+end
