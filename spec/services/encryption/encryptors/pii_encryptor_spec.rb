@@ -6,13 +6,13 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
   subject { described_class.new(password) }
 
-  describe Encryption::Encryptors::PiiEncryptor::Ciphertext do
+  describe Encryption::Encryptors::PiiEncryptor::Digest do
     describe '.parse_from_string' do
       it 'does not blow up with unknown/new keys' do
-        blob = Encryption::Encryptors::PiiEncryptor::Ciphertext.new('encrypted_data').to_s
+        blob = described_class.new(encrypted_data: 'encrypted_data').to_s
         str = JSON.parse(blob).merge(some_new_field: 'some_new_field').to_json
 
-        ciphertext = Encryption::Encryptors::PiiEncryptor::Ciphertext.parse_from_string(str)
+        ciphertext = described_class.parse_from_string(str)
         expect(ciphertext.encrypted_data).to eq('encrypted_data')
       end
     end
@@ -60,18 +60,18 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         .with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
         .and_return('multi_region_kms_ciphertext')
 
-      ciphertext_single_region, ciphertext_multi_region = subject.encrypt(
+      digest_single_region, digest_multi_region = subject.encrypt(
         plaintext, user_uuid: 'uuid-123-abc'
       )
 
-      expect(ciphertext_single_region).to eq(
+      expect(digest_single_region.to_s).to eq(
         {
           encrypted_data: Base64.strict_encode64('single_region_kms_ciphertext'),
           salt: salt,
           cost: '800$8$1$',
         }.to_json,
       )
-      expect(ciphertext_multi_region).to eq(
+      expect(digest_multi_region.to_s).to eq(
         {
           encrypted_data: Base64.strict_encode64('multi_region_kms_ciphertext'),
           salt: salt,
@@ -118,33 +118,39 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         .with('aes_ciphertext', decoded_scrypt_digest)
         .and_return(plaintext)
 
-      ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-        single_region_ciphertext: {
-          encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
-          salt: salt,
-          cost: '800$8$1$',
-        }.to_json,
-        multi_region_ciphertext: {
-          encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
-          salt: salt,
-          cost: '800$8$1$',
-        }.to_json,
+      digest_pair = Encryption::RegionalDigestPair.new(
+        single_region_digest: double(
+          Encryption::Encryptors::PiiEncryptor::Digest,
+          to_s: {
+            encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
+            salt: salt,
+            cost: '800$8$1$',
+          }.to_json,
+        ),
+        multi_region_digest: double(
+          Encryption::Encryptors::PiiEncryptor::Digest,
+          to_s: {
+            encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
+            salt: salt,
+            cost: '800$8$1$',
+          }.to_json,
+        ),
       )
 
-      result = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
+      result = subject.decrypt(digest_pair, user_uuid: 'uuid-123-abc')
 
       expect(result).to eq(plaintext)
     end
 
     it 'uses the single region ciphertext if the multi-region ciphertext is nil' do
-      test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-        single_region_ciphertext: subject.encrypt(
+      test_digest_pair = Encryption::RegionalDigestPair.new(
+        single_region_digest: subject.encrypt(
           'single-region-text', user_uuid: '123abc'
-        ).single_region_ciphertext,
-        multi_region_ciphertext: nil,
+        ).single_region_digest,
+        multi_region_digest: nil,
       )
 
-      result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+      result = subject.decrypt(test_digest_pair, user_uuid: '123abc')
 
       expect(result).to eq('single-region-text')
     end
