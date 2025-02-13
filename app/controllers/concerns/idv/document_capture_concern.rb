@@ -106,6 +106,8 @@ module Idv
         success: @url.present?,
         document_type: document_request_body[:documentType],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
+        socure_status: response_hash[:status],
+        socure_msg: response_hash[:msg],
       }
       analytics_hash = log_extras
         .merge(analytics_arguments)
