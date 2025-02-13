@@ -64,12 +64,12 @@ RSpec.describe Encryption::PasswordVerifier do
         password: password, user_uuid: user_uuid,
       )
 
-      expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to match(
+      expect(JSON.parse(digest_pair.single_region_digest.to_s, symbolize_names: true)).to match(
         password_salt: salt,
         password_cost: IdentityConfig.store.scrypt_cost,
         encrypted_password: 'single_region_kms_ciphertext',
       )
-      expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
+      expect(JSON.parse(digest_pair.multi_region_digest.to_s, symbolize_names: true)).to match(
         password_salt: salt,
         password_cost: IdentityConfig.store.scrypt_cost,
         encrypted_password: 'multi_region_kms_ciphertext',
@@ -102,9 +102,15 @@ RSpec.describe Encryption::PasswordVerifier do
 
     it 'returns false for nonsense' do
       result = subject.verify(
-        digest_pair: Encryption::RegionalCiphertextPair.new(
-          single_region_ciphertext: 'nonsense',
-          multi_region_ciphertext: 'nonsense on stilts',
+        digest_pair: Encryption::RegionalDigestPair.new(
+          single_region_digest: double(
+            Encryption::PasswordVerifier::PasswordDigest,
+            to_s: 'nonsense',
+          ),
+          multi_region_digest: double(
+            Encryption::PasswordVerifier::PasswordDigest,
+            to_s: 'nonsense on stilts',
+          ),
         ),
         password: password,
         user_uuid: user_uuid,
@@ -115,9 +121,12 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'allows verification of legacy UAK passwords' do
-      legacy_digest_pair = Encryption::RegionalCiphertextPair.new(
-        single_region_ciphertext: Encryption::UakPasswordVerifier.digest(password),
-        multi_region_ciphertext: nil,
+      legacy_digest_pair = Encryption::RegionalDigestPair.new(
+        single_region_digest: double(
+          Encryption::PasswordVerifier::PasswordDigest,
+          to_s: Encryption::UakPasswordVerifier.digest(password),
+        ),
+        multi_region_digest: nil,
       )
 
       good_match_result = subject.verify(
@@ -144,7 +153,7 @@ RSpec.describe Encryption::PasswordVerifier do
         password: password,
         user_uuid: user_uuid,
       )
-      test_digest_pair.multi_region_ciphertext = nil
+      test_digest_pair.multi_region_digest = nil
 
       correct_password_result = subject.verify(
         password: password,
@@ -176,7 +185,7 @@ RSpec.describe Encryption::PasswordVerifier do
     it 'returns false if the digest is fresh' do
       digest = subject.create_digest_pair(
         password: password, user_uuid: user_uuid,
-      ).single_region_ciphertext
+      ).single_region_digest.to_s
 
       result = subject.stale_digest?(digest)
 

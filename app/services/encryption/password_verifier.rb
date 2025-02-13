@@ -5,6 +5,9 @@ module Encryption
     include ::NewRelic::Agent::MethodTracer
 
     PasswordDigest = RedactedStruct.new(
+      :kms_client,
+      :scrypted_password,
+      :user_kms_encryption_context,
       :encrypted_password,
       :encryption_key,
       :password_salt,
@@ -16,6 +19,11 @@ module Encryption
         new(data)
       rescue JSON::ParserError, TypeError, ArgumentError
         raise EncryptionError, 'digest contains invalid json'
+      end
+
+      def encrypted_password
+        self[:encrypted_password] ||
+          kms_client.encrypt(scrypted_password, user_kms_encryption_context)
       end
 
       def to_s
@@ -45,33 +53,29 @@ module Encryption
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
       scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
+      user_kms_encryption_context = kms_encryption_context(user_uuid:)
 
-      single_region_encrypted_password = single_region_kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
-      )
       single_region_digest = PasswordDigest.new(
-        encrypted_password: single_region_encrypted_password,
+        kms_client: single_region_kms_client,
+        scrypted_password:,
+        user_kms_encryption_context:,
         password_salt: salt,
         password_cost: cost,
-      ).to_s
-
-      multi_region_encrypted_password = multi_region_kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
+
       multi_region_digest = PasswordDigest.new(
-        encrypted_password: multi_region_encrypted_password,
+        kms_client: multi_region_kms_client,
+        scrypted_password:,
+        user_kms_encryption_context:,
         password_salt: salt,
         password_cost: cost,
-      ).to_s
-
-      RegionalCiphertextPair.new(
-        single_region_ciphertext: single_region_digest,
-        multi_region_ciphertext: multi_region_digest,
       )
+
+      RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
     end
 
     def verify(password:, digest_pair:, user_uuid:, log_context:)
-      digest = digest_pair.multi_or_single_region_ciphertext
+      digest = digest_pair.multi_or_single_region_digest.to_s
       password_digest = PasswordDigest.parse_from_string(digest)
       if password_digest.uak_password_digest?
         return verify_uak_digest(password, digest, user_uuid, log_context)
