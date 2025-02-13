@@ -288,7 +288,10 @@ RSpec.describe 'Hybrid Flow' do
           end
 
           visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
 
+          visit idv_hybrid_mobile_socure_document_capture_url
           expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
           expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         end
