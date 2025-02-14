@@ -106,6 +106,7 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
+doc_auth_passports_enabled: false
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_socure_max_allowed_users: 10_000
@@ -120,6 +121,11 @@ doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
 domain_name: login.gov
+dos_passport_client_id: ''
+dos_passport_client_secret: ''
+dos_passport_composite_healthcheck_endpoint: ''
+dos_passport_healthcheck_endpoint: ''
+dos_passport_mrz_endpoint: ''
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
