@@ -61,7 +61,7 @@ RSpec.describe DocAuth::Passports::HealthCheckResponseOk do
         expect(health_check_result).not_to be_success
       end
 
-      it 'does not include the body: key in the extras' do
+      it 'includes the body in the extras' do
         expect(health_check_result.extra[:body]).to eq('a 403 body')
       end
     end

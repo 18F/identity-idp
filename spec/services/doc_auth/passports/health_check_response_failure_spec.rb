@@ -27,6 +27,10 @@ RSpec.describe DocAuth::Passports::HealthCheckResponseFailure do
       it 'has the correct errors hash' do
         expect(health_check_result.errors).to eq({ network: http_status })
       end
+
+      it 'has the faraday exception' do
+        expect(health_check_result.exception).to eq(faraday_error)
+      end
     end
   end
 end
