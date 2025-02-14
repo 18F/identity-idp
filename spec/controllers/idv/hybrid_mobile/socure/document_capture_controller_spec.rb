@@ -383,6 +383,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
     before do
       stub_sign_in(user)
+      allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
     end
 
     it 'redirects to the capture complete page' do
