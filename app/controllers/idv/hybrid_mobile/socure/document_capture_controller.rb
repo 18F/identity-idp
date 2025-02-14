@@ -87,9 +87,9 @@ module Idv
 
         def errors
           result = handle_stored_result(
-          user: document_capture_user,
-          store_in_session: false,
-        )
+            user: document_capture_user,
+            store_in_session: false,
+          )
           @presenter = socure_errors_presenter(result)
         end
 
@@ -113,7 +113,6 @@ module Idv
         def wait_for_result?
           document_capture_session.reload unless document_capture_session.result_id
           return false if document_capture_session.load_result.present?
-
 
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
