@@ -12,17 +12,25 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
   describe '#fetch' do
     let(:result) { subject.fetch }
 
-    before do
-      stub_request(:get, health_check_endpoint)
-      result
-    end
+    context "happy path" do
+      before do
+        stub_request(:get, health_check_endpoint)
+        result
+      end
+      
+      it 'hits the endpoint' do
+        expect(WebMock).to have_requested(:get, health_check_endpoint)
+      end
 
-    it 'hits the endpoint' do
-      expect(WebMock).to have_requested(:get, health_check_endpoint)
-    end
+      it 'logs the request' do
+        expect(analytics).to have_logged_event(:passport_api_health_check)
+      end
 
-    it 'logs the request' do
-      expect(analytics).to have_logged_event(:passport_api_health_check)
+      describe "the #fetch result" do
+        it "succeeds" do
+          expect(result).to be_success
+        end
+      end
     end
   end
 end
