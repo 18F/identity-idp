@@ -34,7 +34,4 @@
         wide: true,
         **button_options,
       ).with_content(content) %>
-  <% if recaptcha_script_src.present? %>
-    <%= content_tag(:script, '', src: recaptcha_script_src, async: true) %>
-  <% end %>
 <% end %>
