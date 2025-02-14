@@ -15,6 +15,14 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
     context 'happy path' do
       before do
         stub_request(:get, health_check_endpoint)
+          .to_return_json(
+            body: {
+              name: 'Passport Match Process API',
+              status: 'Up',
+              environment: 'dev-share',
+              comments: 'Ok',
+            }
+          )
         result
       end
 
@@ -23,7 +31,17 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
       end
 
       it 'logs the request' do
-        expect(analytics).to have_logged_event(:passport_api_health_check)
+        expect(analytics).to have_logged_event(
+          :passport_api_health_check,
+          success: true,
+          body:
+          {
+            name: 'Passport Match Process API',
+            status: 'Up',
+            environment: 'dev-share',
+            comments: 'Ok',
+          }.to_json,
+        )
       end
 
       describe 'the #fetch result' do
