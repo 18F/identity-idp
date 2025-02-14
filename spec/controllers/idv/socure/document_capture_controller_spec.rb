@@ -36,7 +36,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       .and_return(vendor_switching_enabled)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
     allow(subject).to receive(:stored_result).and_return(stored_result)
-    allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(stored_result)
 
     user_session = {}
     allow(subject).to receive(:user_session).and_return(user_session)
@@ -384,6 +383,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     before do
       stub_sign_in(user)
       subject.idv_session.flow_path = 'standard'
+      allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
       get :update
     end
 
