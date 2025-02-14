@@ -1,7 +1,6 @@
 <% self.title = t('account_reset.confirm_delete_account.title') %>
 <%= render StatusPageComponent.new(status: :delete) do |c| %>
   <% c.with_header { t('account_reset.confirm_delete_account.title') } %>
-
   <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
   <p class="margin-bottom-0">
     <%= t(
