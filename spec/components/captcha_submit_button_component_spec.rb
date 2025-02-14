@@ -58,7 +58,6 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
 
       it 'renders script tag for recaptcha' do
         src = "https://www.google.com/recaptcha/enterprise.js?render=#{recaptcha_site_key}"
-
         expect(rendered).to have_css("script[src='#{src}']", visible: :all)
       end
     end
