@@ -8,13 +8,12 @@ module DocAuth
       end
 
       def fetch
-        response =
-          begin
-            faraday_response = Faraday.get(IdentityConfig.store.passports_api_health_check_endpoint)
-            HealthCheckResponse.new(faraday_response)
-          rescue Faraday::Error => faraday_error
-            HealthCheckResponse.new(faraday_error)
-          end
+        begin
+          faraday_response = connection.get
+          response = HealthCheckResponseOk.new(faraday_response)
+        rescue Faraday::Error => faraday_error
+          response = HealthCheckResponseFailure.new(faraday_error)
+        end
       ensure
         analytics.passport_api_health_check(
           success: response.success?,
@@ -25,6 +24,14 @@ module DocAuth
       private
 
       attr_reader :analytics
+
+      def connection
+        @connection ||= Faraday::Connection.new(
+          url: IdentityConfig.store.passports_api_health_check_endpoint,
+        ) do |builder|
+          builder.response :raise_error
+        end
+      end
     end
   end
 end

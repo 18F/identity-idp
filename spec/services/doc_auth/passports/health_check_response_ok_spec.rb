@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::Passports::HealthCheckResponse do
+RSpec.describe DocAuth::Passports::HealthCheckResponseOk do
   subject(:health_check_result) { described_class.new(faraday_result) }
 
   let(:faraday_result) do
@@ -15,7 +15,7 @@ RSpec.describe DocAuth::Passports::HealthCheckResponse do
     IdentityConfig.store.passports_api_health_check_endpoint
   end
 
-  context 'when initialized from a Faraday::Response' do
+  context 'when initialized from a 200' do
     before { stub_request(:get, health_check_endpoint) }
 
     it 'is successful' do
@@ -23,9 +23,9 @@ RSpec.describe DocAuth::Passports::HealthCheckResponse do
     end
   end
 
-  context 'when initialized from a Faraday::Error' do
+  context 'when initialized from a 403' do
     before { stub_request(:get, health_check_endpoint).to_raise(Faraday::Error) }
-        
+
     it 'is not successful' do
       expect(health_check_result).not_to be_success
     end
