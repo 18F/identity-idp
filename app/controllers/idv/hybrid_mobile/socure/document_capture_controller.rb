@@ -86,7 +86,11 @@ module Idv
         end
 
         def errors
-          @presenter = socure_errors_presenter(handle_stored_result)
+          result = handle_stored_result(
+          user: document_capture_user,
+          store_in_session: false,
+        )
+          @presenter = socure_errors_presenter(result)
         end
 
         private
