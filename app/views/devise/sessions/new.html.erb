@@ -48,9 +48,9 @@
           form: f,
           action: SignInRecaptchaForm::RECAPTCHA_ACTION,
           button_options: { full_width: true },
-        ).with_content(t('links.sign_in')) %>
+        ).with_content(t('forms.buttons.submit.default')) %>
   <% else %>
-    <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
+    <%= f.submit t('forms.buttons.submit.default'), full_width: true, wide: false %>
   <% end %>
 <% end %>
 <% if desktop_device? %>
