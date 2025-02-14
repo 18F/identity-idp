@@ -2,8 +2,8 @@
 
 module DocAuth
   module Passports
-    class HealthCheckResponseFailure < DocAuth::Response 
-     def initialize(faraday_error)
+    class HealthCheckResponseFailure < DocAuth::Response
+      def initialize(faraday_error)
         errors =
           if faraday_error.respond_to?(:status) # some subclasses don't
             { network: faraday_error.status }
