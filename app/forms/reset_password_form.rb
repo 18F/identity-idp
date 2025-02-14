@@ -70,12 +70,12 @@ class ResetPasswordForm
 
   def password_reset_profile
     FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_pending_in_person_or_active_profile :
+      find_in_progress_in_person_or_active_profile :
       active_profile
   end
 
-  def find_pending_in_person_or_active_profile
-    user.pending_in_person_enrollment&.profile || active_profile
+  def find_in_progress_in_person_or_active_profile
+    user.current_in_progress_in_person_enrollment_profile || active_profile
   end
 
   # It is possible for an account that is resetting their password to be "invalid".
@@ -104,7 +104,9 @@ class ResetPasswordForm
 
   def pending_profile_invalidated?
     if FeatureManagement.pending_in_person_password_reset_enabled?
-      pending_profile.present? && !pending_profile.in_person_verification_pending?
+      pending_profile.present? &&
+        !pending_profile.in_person_verification_pending? &&
+        !pending_profile.fraud_deactivation_reason?
     else
       pending_profile.present?
     end

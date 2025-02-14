@@ -259,5 +259,28 @@ RSpec.describe 'IdvStepConcern' do
         expect(response).to redirect_to idv_verify_by_mail_enter_code_url
       end
     end
+
+    context 'with a passed in-person enrollment and a fraudulent profile' do
+      let(:user) do
+        profile = create(:profile, :in_person_fraud_review_pending, in_person_enrollment: nil)
+        create(:in_person_enrollment, :passed, profile:, user: profile.user).user
+      end
+
+      it 'redirects to please call page' do
+        get :show
+
+        expect(response).to redirect_to idv_please_call_url
+      end
+    end
+
+    context 'with a in_fraud_review in-person enrollment and a fraudulent profile' do
+      let(:user) { create(:profile, :in_person_fraud_review_pending).user }
+
+      it 'redirects to please call page' do
+        get :show
+
+        expect(response).to redirect_to idv_please_call_url
+      end
+    end
   end
 end

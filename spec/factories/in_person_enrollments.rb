@@ -43,6 +43,21 @@ FactoryBot.define do
       status_updated_at { Time.zone.now }
     end
 
+    trait :in_fraud_review do
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status { :in_fraud_review }
+      status_updated_at { Time.zone.now }
+      profile do
+        association(
+          :profile,
+          :fraud_review_pending,
+          user: user,
+          in_person_enrollment: instance,
+        )
+      end
+    end
+
     trait :with_service_provider do
       service_provider { association :service_provider }
     end

@@ -708,7 +708,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
       # Then the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'in_fraud_review',
       )
 
       # And the user has a Profile that is deactivated with reason "encryption_error" and
@@ -728,7 +728,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
       expect(page).to have_current_path(idv_please_call_path)
       # And the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'in_fraud_review',
       )
       # And the user has a Profile that is pending fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(
@@ -829,7 +829,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
 
       # Then the user has an InPersonEnrollment with status "cancelled"
       expect(@user.in_person_enrollments.first).to have_attributes(
-        status: 'passed',
+        status: 'in_fraud_review',
       )
       # And the user has a Profile that is pending fraud review
       expect(@user.in_person_enrollments.first.profile).to have_attributes(

@@ -1494,6 +1494,44 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
+              context 'user has ipp enrollment with fraud review pending' do
+                context 'when the enrollment has a status of passed' do
+                  let(:user) do
+                    profile = create(:profile, :fraud_review_pending)
+                    create(:in_person_enrollment, :passed, profile:, user: profile.user).user
+                  end
+
+                  it 'redirects to fraud review page if fraud review is pending' do
+                    action
+                    expect(controller).to redirect_to(idv_please_call_url)
+                  end
+                end
+
+                context 'when the enrollment has a status of in_fraud_review' do
+                  let(:user) do
+                    profile = create(:profile, :fraud_review_pending)
+                    create(:in_person_enrollment, :in_fraud_review, profile:, user: profile.user).user
+                  end
+
+                  it 'redirects to fraud review page if fraud review is pending' do
+                    action
+                    expect(controller).to redirect_to(idv_please_call_url)
+                  end
+                end
+
+                context 'when the enrollment does not have a status of pending or in_fraud_review' do
+                  let(:user) do
+                    profile = create(:profile, :fraud_review_pending, deactivation_reason: :verification_cancelled)
+                    create(:in_person_enrollment, :failed, profile:, user: profile.user).user
+                  end
+
+                  it 'redirects the user to verify their account' do
+                    action
+                    expect(controller).to redirect_to(idv_url)
+                  end
+                end
+              end
+
               context 'user has two pending reasons' do
                 context 'user has gpo and fraud review pending' do
                   let(:user) do

@@ -32,7 +32,7 @@ module FraudReviewConcern
   # bypassing the typical flow of showing the Please Call or Fraud Rejection screens.
   def in_person_prevent_fraud_redirection?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
-      current_user.ipp_enrollment_status_not_passed? &&
+      current_user.ipp_enrollment_status_not_passed_or_in_fraud_review? &&
       (fraud_review_pending? || fraud_rejection?)
   end
 
