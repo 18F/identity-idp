@@ -6220,6 +6220,12 @@ module AnalyticsEvents
     )
   end
 
+  def passport_api_health_check
+    track_event(
+      :passport_api_health_check,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] active_profile_present Whether active profile existed at time of change
