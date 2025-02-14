@@ -54,11 +54,11 @@ class RecaptchaForm
     @recaptcha_result = recaptcha_result if recaptcha_token.present? && !exempt?
 
     log_analytics(result: @recaptcha_result) if @recaptcha_result
-    response = FormResponse.new(success: valid?, errors:, serialize_error_details_only: true)
+    response = FormResponse.new(success: valid?, errors:)
     [response, @recaptcha_result&.assessment_id]
   rescue Faraday::Error => error
     log_analytics(error:)
-    response = FormResponse.new(success: true, serialize_error_details_only: true)
+    response = FormResponse.new(success: true)
     [response, nil]
   end
 

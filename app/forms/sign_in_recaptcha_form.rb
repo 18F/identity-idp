@@ -28,7 +28,7 @@ class SignInRecaptchaForm
     @recaptcha_token = recaptcha_token
 
     success = valid?
-    FormResponse.new(success:, errors:, serialize_error_details_only: true)
+    FormResponse.new(success:, errors:)
   end
 
   def exempt?
