@@ -8,10 +8,13 @@ module DocAuth
       end
 
       def fetch
-        Faraday.get(IdentityConfig.store.passports_api_health_check_endpoint)
+        response = Faraday.get(IdentityConfig.store.passports_api_health_check_endpoint)
+
         analytics.passport_api_health_check
+
+        HealthCheckResponse.new(response)
       end
-      
+
       private
 
       attr_reader :analytics
