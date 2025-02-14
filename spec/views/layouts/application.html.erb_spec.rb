@@ -167,4 +167,21 @@ RSpec.describe 'layouts/application.html.erb' do
       end
     end
   end
+
+  describe 'loading recaptcha script' do
+    context 'when not on the sign in view' do
+      let(:recaptcha_site_key) { 'site_key' }
+      before do
+        allow(BrowserSupport).to receive(:supported?).and_return(true)
+        allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
+      end
+
+      it 'does not load recaptcha script' do
+        render
+
+        expect(rendered).to_not have_css('script[src$="enterprise.js"]', visible: :all)
+        expect(rendered).to_not have_css('script[src$="api.js"]', visible: :all)
+      end
+    end
+  end
 end

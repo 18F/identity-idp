@@ -1,3 +1,9 @@
+<% content_for :head do %>
+  <% if recaptcha_script_src.present? %>
+    <%= content_tag(:script, '', src: recaptcha_script_src, async: true) %>
+  <% end %>
+<% end %>
+
 <%= content_tag(
       :'lg-captcha-submit-button',
       **tag_options,
@@ -34,4 +40,5 @@
         wide: true,
         **button_options,
       ).with_content(content) %>
+  
 <% end %>
