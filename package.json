@@ -12,7 +12,7 @@
   "scripts": {
     "postinstall": "yarn workspace @18f/identity-analytics run postinstall",
     "typecheck": "tsc",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
     "lint:openapi": "./scripts/lint-openapi-spec.mjs",
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",

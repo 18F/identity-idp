@@ -12,4 +12,5 @@ assert(
   `The OpenAPI spec is not valid.
 
   Found ${JSON.stringify(lintResults, null, 2)}
-  `)
+  `,
+);
