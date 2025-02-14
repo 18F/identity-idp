@@ -31,6 +31,8 @@ Rails.application.configure do
 
   config.action_controller.asset_host = ENV['RAILS_ASSET_HOST'] if ENV.key?('RAILS_ASSET_HOST')
 
+  config.good_job.inline_execution_respects_schedule = true
+
   config.middleware.use RackSessionAccess::Middleware
 
   config.after_initialize do
