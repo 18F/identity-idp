@@ -223,9 +223,9 @@ class User < ApplicationRecord
     pending_profile&.in_person_enrollment&.status
   end
 
-  # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments use
-  # to go to passed status when profiles were marked as in fraud review. Since LG-15216, this will
-  # no longer be the case.
+  # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments
+  # used to go to passed status when profiles were marked as in fraud review. Since LG-15216, this
+  # will no longer be the case.
   def ipp_enrollment_status_not_passed_or_in_fraud_review?
     !in_person_enrollment_status.blank? &&
       [InPersonEnrollment::STATUS_PASSED, InPersonEnrollment::STATUS_IN_FRAUD_REVIEW].exclude?(
