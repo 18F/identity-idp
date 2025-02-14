@@ -5,7 +5,16 @@ module Encryption
     class PiiEncryptor
       include ::NewRelic::Agent::MethodTracer
 
-      Ciphertext = RedactedStruct.new(:encrypted_data, :salt, :cost, allowed_members: [:cost]) do
+      Digest = RedactedStruct.new(
+        :encrypted_data,
+        :aes_encrypted_ciphertext,
+        :user_kms_encryption_context,
+        :kms_client,
+        :salt,
+        :cost,
+        keyword_init: true,
+        allowed_members: [:cost],
+      ) do
         include Encodable
         class << self
           include Encodable
@@ -13,9 +22,18 @@ module Encryption
 
         def self.parse_from_string(ciphertext_string)
           parsed_json = JSON.parse(ciphertext_string)
-          new(extract_encrypted_data(parsed_json), parsed_json['salt'], parsed_json['cost'])
+          new(
+            encrypted_data: extract_encrypted_data(parsed_json),
+            salt: parsed_json['salt'],
+            cost: parsed_json['cost'],
+          )
         rescue JSON::ParserError
           raise EncryptionError, 'ciphertext is not valid JSON'
+        end
+
+        def encrypted_data
+          self[:encrypted_data] ||
+            kms_client.encrypt(aes_encrypted_ciphertext, user_kms_encryption_context)
         end
 
         def to_s
@@ -51,29 +69,29 @@ module Encryption
         cost = IdentityConfig.store.scrypt_cost
         aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
-        single_region_kms_encrypted_ciphertext = single_region_kms_client.encrypt(
-          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+        user_kms_encryption_context = kms_encryption_context(user_uuid: user_uuid)
+        single_region_digest = Digest.new(
+          kms_client: single_region_kms_client,
+          aes_encrypted_ciphertext:,
+          user_kms_encryption_context:,
+          salt:,
+          cost:,
         )
-        single_region_ciphertext = Ciphertext.new(
-          single_region_kms_encrypted_ciphertext, salt, cost
-        ).to_s
 
-        multi_region_kms_encrypted_ciphertext = multi_region_kms_client.encrypt(
-          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+        multi_region_digest = Digest.new(
+          kms_client: multi_region_kms_client,
+          aes_encrypted_ciphertext:,
+          user_kms_encryption_context:,
+          salt:,
+          cost:,
         )
-        multi_region_ciphertext = Ciphertext.new(
-          multi_region_kms_encrypted_ciphertext, salt, cost
-        ).to_s
 
-        RegionalCiphertextPair.new(
-          single_region_ciphertext: single_region_ciphertext,
-          multi_region_ciphertext: multi_region_ciphertext,
-        )
+        RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
       end
 
-      def decrypt(ciphertext_pair, user_uuid: nil)
-        ciphertext_string = ciphertext_pair.multi_or_single_region_ciphertext
-        ciphertext = Ciphertext.parse_from_string(ciphertext_string)
+      def decrypt(digest_pair, user_uuid: nil)
+        ciphertext_string = digest_pair.multi_or_single_region_digest.to_s
+        ciphertext = Digest.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
         )
