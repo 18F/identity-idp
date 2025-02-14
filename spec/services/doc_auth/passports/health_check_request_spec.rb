@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Passports::HealthCheckRequest do
+  include PassportApiHelpers
+
   subject(:health_check_request) { described_class.new(analytics:) }
 
   let(:analytics) { FakeAnalytics.new }
@@ -14,33 +16,20 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
 
     context 'happy path' do
       before do
-        stub_request(:get, health_check_endpoint)
-          .to_return_json(
-            body: {
-              name: 'Passport Match Process API',
-              status: 'Up',
-              environment: 'dev-share',
-              comments: 'Ok',
-            }
-          )
-        result
+        stub_api_up
       end
 
       it 'hits the endpoint' do
+        result
         expect(WebMock).to have_requested(:get, health_check_endpoint)
       end
 
       it 'logs the request' do
+        result
         expect(analytics).to have_logged_event(
           :passport_api_health_check,
           success: true,
-          body:
-          {
-            name: 'Passport Match Process API',
-            status: 'Up',
-            environment: 'dev-share',
-            comments: 'Ok',
-          }.to_json,
+          body: successful_api_health_check_body.to_json
         )
       end
 
@@ -54,15 +43,20 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
     context 'when Faraday raises an error' do
       before do
         stub_request(:get, health_check_endpoint).to_raise(Faraday::Error)
-        result
       end
 
       it 'hits the endpoint' do
+        result
         expect(WebMock).to have_requested(:get, health_check_endpoint)
       end
 
       it 'logs the request' do
-        expect(analytics).to have_logged_event(:passport_api_health_check)
+        result
+        expect(analytics).to have_logged_event(
+          :passport_api_health_check,
+          success: false,
+          error: Faraday::Error.new.inspect,
+        )
       end
 
       describe 'the #fetch result' do
@@ -75,14 +69,15 @@ RSpec.describe DocAuth::Passports::HealthCheckRequest do
     context 'when Faraday returns an HTTP error' do
       before do
         stub_request(:get, health_check_endpoint).to_return(status: 500)
-        result
       end
 
       it 'hits the endpoint' do
+        result
         expect(WebMock).to have_requested(:get, health_check_endpoint)
       end
 
       it 'logs the request' do
+        result
         expect(analytics).to have_logged_event(:passport_api_health_check)
       end
 
