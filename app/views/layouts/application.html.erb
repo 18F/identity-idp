@@ -1,6 +1,5 @@
 <%= content_for(:head) do %>
   <%= javascript_include_tag('init.js', nopush: false, integrity: 'sha256-eMXV2njRJxgQrFbuljRT/UTWePGrhl83bHHDDd+jFPw=') %>
-  <%= render CaptchaScriptComponent.new %>
 <% end %>
 
 <%= extends_layout :base, body_class: local_assigns.fetch(:body_class, 'site tablet:bg-primary-lighter') do %>
