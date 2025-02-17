@@ -251,6 +251,34 @@ RSpec.describe 'devise/sessions/new.html.erb' do
 
     context 'recaptcha at sign in is enabled' do
       let(:sign_in_recaptcha_enabled) { true }
+      let(:recaptcha_site_key) { 'site_key' }
+      let(:recaptcha_script_src) { 'https://www.google.com/recaptcha/api.js' }
+      before do
+        allow(IdentityConfig.store).to receive(:recaptcha_site_key).and_return(recaptcha_site_key)
+        allow(view).to receive(:recaptcha_script_src).and_return(recaptcha_script_src)
+      end
+
+      it 'renders script tag for recaptcha' do
+        src = "https://www.google.com/recaptcha/api.js?render=#{recaptcha_site_key}"
+        render
+        expect(view.content_for(:before_head)).to have_css(
+          "script[src='#{src}']", visible: :all
+        )
+      end
+
+      context 'with recaptcha enterprise' do
+        before do
+          allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+        end
+
+        it 'renders script tag for recaptcha' do
+          src = "https://www.google.com/recaptcha/enterprise.js?render=#{recaptcha_site_key}"
+          render
+          expect(view.content_for(:before_head)).to have_css(
+            "script[src='#{src}']", visible: :all
+          )
+        end
+      end
 
       it 'renders captcha sign-in submit button' do
         expect(rendered).to have_button(t('forms.buttons.submit.default'))
