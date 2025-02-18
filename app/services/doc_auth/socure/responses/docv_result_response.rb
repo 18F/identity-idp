@@ -37,6 +37,11 @@ module DocAuth
           socure_user_id: %w[customerProfile userId],
         }.freeze
 
+        STATE_ID_TYPES_PERMITTED = [
+          'state_id_card',
+          'drivers_license',
+        ].freeze
+
         def initialize(http_response:,
                        biometric_comparison_required: false)
           @http_response = http_response
@@ -44,7 +49,7 @@ module DocAuth
           @pii_from_doc = read_pii
 
           super(
-            success: successful_result?,
+            success: doc_auth_success?,
             errors: error_messages,
             pii_from_doc:,
             extra: extra_attributes,
@@ -62,7 +67,7 @@ module DocAuth
         end
 
         def doc_auth_success?
-          success?
+          successful_result? && id_type_supported?
         end
 
         def selfie_status
@@ -84,7 +89,7 @@ module DocAuth
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
-            doc_auth_success: successful_result?,
+            doc_auth_success: doc_auth_success?,
             vendor: 'Socure', # TODO: Replace with Idp::Constants::Vendors::SOCURE
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -179,6 +184,10 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
+        end
+
+        def id_type_supported?
+          STATE_ID_TYPES_PERMITTED.include? state_id_type
         end
       end
     end
