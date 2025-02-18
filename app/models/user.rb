@@ -3,7 +3,6 @@
 class User < ApplicationRecord
   include NonNullUuid
 
-  include ::NewRelic::Agent::MethodTracer
   include ActionView::Helpers::DateHelper
 
   devise(
@@ -507,8 +506,6 @@ class User < ApplicationRecord
   def send_confirmation_instructions
     # no-op
   end
-
-  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 
   def analytics
     @analytics ||= Analytics.new(user: self, request: nil, session: {}, sp: nil)

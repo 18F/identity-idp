@@ -48,9 +48,4 @@ class MailerSensitiveInformationChecker
       raise exception
     end
   end
-
-  class << self
-    include ::NewRelic::Agent::MethodTracer
-    add_method_tracer :check_for_sensitive_pii!, "Custom/#{name}/check_for_sensitive_pii!"
-  end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SendSignUpEmailConfirmation
-  include ::NewRelic::Agent::MethodTracer
-
   attr_reader :user
 
   def initialize(user)
@@ -65,6 +63,4 @@ class SendSignUpEmailConfirmation
   def handle_multiple_email_address_error
     raise 'sign up user has multiple email address records'
   end
-
-  add_method_tracer :call, "Custom/#{name}/call"
 end
