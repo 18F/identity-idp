@@ -55,7 +55,7 @@ RSpec.describe DocAuth::Passports::Dos::Requests::HealthCheckRequest do
         expect(analytics).to have_logged_event(
           :passport_api_health_check,
           success: false,
-          error: Faraday::Error.new.inspect,
+          error: /Faraday::Error/,
         )
       end
 
@@ -78,8 +78,13 @@ RSpec.describe DocAuth::Passports::Dos::Requests::HealthCheckRequest do
 
       it 'logs the request' do
         result
-        expect(analytics).to have_logged_event(:passport_api_health_check)
+        expect(analytics).to have_logged_event(
+          :passport_api_health_check,
+          success: false,
+          error: /Faraday::ServerError/,
+        )
       end
+
 
       describe 'the #fetch result' do
         it 'does not succeed' do
