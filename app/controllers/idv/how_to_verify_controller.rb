@@ -41,7 +41,9 @@ module Idv
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
           idv_session.skip_doc_auth_from_how_to_verify = true
-          redirect_to idv_document_capture_url(step: :how_to_verify)
+          # redirect_to idv_document_capture_url(step: :how_to_verify)
+          doc_capture_url = vendor_document_capture_url
+          redirect_to doc_capture_url(step: :how_to_verify)
         end
       else
         render :show, locals: { error: result.first_error_message }

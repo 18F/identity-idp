@@ -39,6 +39,17 @@ module Idv
       end
     end
 
+    def vendor_document_capture_url
+      case doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE
+        idv_socure_document_capture_url
+      when Idp::Constants::Vendors::LEXIS_NEXIS
+        idv_document_capture_url
+      else
+        idv_document_capture_url
+      end
+    end
+
     private
 
     def choose_non_socure_bucket

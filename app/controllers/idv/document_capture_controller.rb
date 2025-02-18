@@ -7,6 +7,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
@@ -40,7 +41,8 @@ module Idv
       if result.success?
         redirect_to idv_ssn_url
       else
-        redirect_to idv_document_capture_url
+        # redirect_to idv_document_capture_url
+        redirect_to vendor_document_capture_url
       end
     end
 
@@ -53,7 +55,9 @@ module Idv
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 
-      redirect_to idv_document_capture_url(step: :idv_doc_auth)
+      # redirect_to idv_document_capture_url(step: :idv_doc_auth)
+      doc_capture_url = vendor_document_capture_url
+      redirect_to doc_capture_url(step: :idv_doc_auth)
     end
 
     def self.step_info
