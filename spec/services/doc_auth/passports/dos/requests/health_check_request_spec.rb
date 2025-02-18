@@ -29,7 +29,7 @@ RSpec.describe DocAuth::Passports::Dos::Requests::HealthCheckRequest do
         expect(analytics).to have_logged_event(
           :passport_api_health_check,
           success: true,
-          body: successful_api_health_check_body.to_json
+          body: successful_api_health_check_body.to_json,
         )
       end
 
@@ -84,7 +84,6 @@ RSpec.describe DocAuth::Passports::Dos::Requests::HealthCheckRequest do
           error: /Faraday::ServerError/,
         )
       end
-
 
       describe 'the #fetch result' do
         it 'does not succeed' do

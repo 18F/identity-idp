@@ -6232,14 +6232,17 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks the health of the DoS Passports API
   # @param [Boolean] success Whether the passport api health check succeeded.
   # @param [Hash] body The health check body, if present.
-  def passport_api_health_check(success:, body: nil, error: nil)
+  # @param [String] error Any additional error information we have
+  def passport_api_health_check(success:, body: nil, error: nil, **extra)
     track_event(
       :passport_api_health_check,
       success:,
       body:,
       error:,
+      **extra,
     )
   end
 

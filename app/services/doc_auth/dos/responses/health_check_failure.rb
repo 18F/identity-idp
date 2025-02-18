@@ -16,7 +16,7 @@ module DocAuth
             success: false,
             errors:,
             exception: faraday_error,
-            extra: {error: faraday_error.inspect,}
+            extra: { error: faraday_error.inspect }
           )
         end
       end
