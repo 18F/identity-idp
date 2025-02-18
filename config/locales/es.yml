@@ -836,6 +836,7 @@ event_types.authenticated_at_html: Sesión iniciada en %{service_provider_link_h
 event_types.authenticator_disabled: Aplicación de autenticación eliminada
 event_types.authenticator_enabled: Aplicación de autenticación agregada
 event_types.backup_codes_added: Códigos de recuperación añadidos
+event_types.backup_codes_removed: Se eliminó el códigos de recuperación
 event_types.eastern_timestamp: '%{timestamp} (hora del Este)'
 event_types.email_changed: Dirección de correo electrónico modificada
 event_types.email_deleted: Dirección de correo electrónico eliminada
