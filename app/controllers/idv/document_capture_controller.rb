@@ -56,8 +56,7 @@ module Idv
       analytics.idv_in_person_direct_start(**attributes)
 
       # redirect_to idv_document_capture_url(step: :idv_doc_auth)
-      doc_capture_url = vendor_document_capture_url
-      redirect_to doc_capture_url(step: :idv_doc_auth)
+      redirect_to vendor_document_capture_url(step: :idv_doc_auth)
     end
 
     def self.step_info

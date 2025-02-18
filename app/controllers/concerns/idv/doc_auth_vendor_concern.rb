@@ -39,14 +39,14 @@ module Idv
       end
     end
 
-    def vendor_document_capture_url
+    def vendor_document_capture_url(step: nil)
       case doc_auth_vendor
       when Idp::Constants::Vendors::SOCURE
-        idv_socure_document_capture_url
+        idv_socure_document_capture_url(step: step)
       when Idp::Constants::Vendors::LEXIS_NEXIS
-        idv_document_capture_url
+        idv_document_capture_url(step: step)
       else
-        idv_document_capture_url
+        idv_document_capture_url(step: step)
       end
     end
 
