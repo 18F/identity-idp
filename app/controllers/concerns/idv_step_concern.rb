@@ -72,7 +72,6 @@ module IdvStepConcern
     # available when the user tries to redo document capture.
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
-      # redirect_to idv_document_capture_url
       redirect_to vendor_document_capture_url
     end
   end

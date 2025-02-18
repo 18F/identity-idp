@@ -149,7 +149,6 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      # redirect_to idv_document_capture_url
       redirect_to vendor_document_capture_url
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(

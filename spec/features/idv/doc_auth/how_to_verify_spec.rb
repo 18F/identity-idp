@@ -120,7 +120,7 @@ RSpec.feature 'how to verify step', js: true do
           expect(page).to have_current_path(idv_how_to_verify_path)
         end
 
-        context 'when the user is bucketed for Socure doc_auth', allow_browser_log: true do
+        context 'when the user is bucketed for Socure doc_auth' do
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
             allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
@@ -130,9 +130,7 @@ RSpec.feature 'how to verify step', js: true do
             expect(page).to have_current_path(idv_how_to_verify_path)
             expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
             click_on t('forms.buttons.continue_ipp')
-            expect(page).to have_current_path(
-              idv_socure_document_capture_url(step: :how_to_verify),
-            )
+            expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
             expect_in_person_step_indicator_current_step(
               t('step_indicator.flows.idv.find_a_post_office'),
             )
@@ -143,7 +141,7 @@ RSpec.feature 'how to verify step', js: true do
         end
       end
 
-      context 'when the user is bucketed for Socure doc_auth', allow_browser_log: true do
+      context 'when the user is bucketed for Socure doc_auth' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
           allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
@@ -153,7 +151,7 @@ RSpec.feature 'how to verify step', js: true do
           expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
           click_on t('forms.buttons.continue_ipp')
-          expect(page).to have_current_path(idv_socure_document_capture_url(step: :how_to_verify))
+          expect(page).to have_current_path(idv_document_capture_path(step: :how_to_verify))
           expect_in_person_step_indicator_current_step(
             t('step_indicator.flows.idv.find_a_post_office'),
           )

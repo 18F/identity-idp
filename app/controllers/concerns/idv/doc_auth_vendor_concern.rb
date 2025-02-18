@@ -41,7 +41,8 @@ module Idv
 
     def vendor_document_capture_url(step: nil)
       case doc_auth_vendor
-      when Idp::Constants::Vendors::SOCURE
+      when Idp::Constants::Vendors::SOCURE &&
+        IdentityConfig.store.in_person_proofing_enabled
         idv_socure_document_capture_url(step: step)
       when Idp::Constants::Vendors::LEXIS_NEXIS
         idv_document_capture_url(step: step)

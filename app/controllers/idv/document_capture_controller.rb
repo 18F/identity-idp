@@ -41,7 +41,6 @@ module Idv
       if result.success?
         redirect_to idv_ssn_url
       else
-        # redirect_to idv_document_capture_url
         redirect_to vendor_document_capture_url
       end
     end
@@ -55,7 +54,6 @@ module Idv
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 
-      # redirect_to idv_document_capture_url(step: :idv_doc_auth)
       redirect_to vendor_document_capture_url(step: :idv_doc_auth)
     end
 
