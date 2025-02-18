@@ -10,7 +10,7 @@ class RecaptchaAnnotateJob < ApplicationJob
     key: -> { "#{self.class.name}-#{queue_name}-#{arguments.last[:assessment_id]}" },
   )
 
-  def perform(assessment_id:, reason: nil, annotation: nil)
+  def perform(assessment_id:, reason:, annotation: nil)
     RecaptchaAnnotator.annotate(assessment_id:, reason:, annotation:)
   end
 end
