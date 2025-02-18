@@ -4129,10 +4129,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libphonenumber-js@^1.11.19:
-  version "1.11.19"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.11.19.tgz#de6437b15d23d9e3b16e5b14c6f2d6d65f58c9b7"
-  integrity sha512-bW/Yp/9dod6fmyR+XqSUL1N5JE7QRxQ3KrBIbYS1FTv32e5i3SEtQVX+71CYNv8maWNSOgnlCoNp9X78f/cKiA==
+libphonenumber-js@^1.11.20:
+  version "1.11.20"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.11.20.tgz#ef5c663e80f55d9ea01a6e2952bf240e8a6fff52"
+  integrity sha512-/ipwAMvtSZRdiQBHqW1qxqeYiBMzncOQLVA+62MWYr7N4m7Q2jqpJ0WgT7zlOEOpyLRSqrMXidbJpC0J77AaKA==
 
 lightningcss-darwin-arm64@1.23.0:
   version "1.23.0"
