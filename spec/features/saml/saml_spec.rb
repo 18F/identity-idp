@@ -284,7 +284,7 @@ RSpec.feature 'saml api' do
           expect(page).to have_content(
             t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
           )
-          expect(page).to have_button(t('forms.buttons.submit.default'))
+          expect(page).to have_button('Sign in')
           # visit from SP with force_authn: true
           expect(page).to have_content(
             strip_tags(
@@ -334,7 +334,7 @@ RSpec.feature 'saml api' do
               ),
             ),
           )
-          expect(page).to have_button(t('forms.buttons.submit.default'))
+          expect(page).to have_button('Sign in')
           # Log in with Test SP as the SP session
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
@@ -363,7 +363,7 @@ RSpec.feature 'saml api' do
               ),
             ),
           )
-          expect(page).to have_button(t('forms.buttons.submit.default'))
+          expect(page).to have_button('Sign in')
 
           # log in for second time
           fill_in_credentials_and_submit(user.email, user.password)
@@ -404,7 +404,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button(t('forms.buttons.submit.default'))
+        expect(page).to have_button('Sign in')
         expect(page).to have_content(
           strip_tags(
             t(
@@ -439,7 +439,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button(t('forms.buttons.submit.default'))
+        expect(page).to have_button('Sign in')
         expect(page).to have_content(
           strip_tags(
             t(
@@ -454,7 +454,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button(t('forms.buttons.submit.default'))
+        expect(page).to have_button('Sign in')
         expect(page).to_not have_content(
           strip_tags(
             t(
