@@ -2,25 +2,14 @@
 
 @forward 'usa-button-group/src/styles';
 
-.tab-navigation .usa-button-group {
-  @include u-bg('base-lightest');
-  border-radius: 1.625rem;
-  flex-flow: nowrap;
-
+.tab-navigation .usa-button-group--segmented {
   .usa-button-group__item {
     flex-basis: 50%;
   }
 
+  .usa-button-group__item:last-child > .usa-button,
   .usa-button {
-    @include u-flex('align-center', 'justify-center');
-    @include u-padding(1.5);
-    border-radius: 1.375rem;
     width: 100%;
-  }
-
-  .usa-button--unstyled {
-    @include u-text('bold');
-    text-decoration: none;
   }
 
   .usa-button--big {

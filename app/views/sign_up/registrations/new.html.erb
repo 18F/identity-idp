@@ -42,12 +42,7 @@
         required: true,
       ) %>
 
-  <%= f.submit(
-        t('forms.buttons.submit.default'),
-        full_width: true,
-        wide: false,
-        class: 'display-block margin-y-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
