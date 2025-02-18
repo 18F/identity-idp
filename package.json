@@ -12,8 +12,9 @@
   "scripts": {
     "postinstall": "yarn workspace @18f/identity-analytics run postinstall",
     "typecheck": "tsc",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
+    "lint:openapi": "./scripts/lint-openapi-spec.mjs",
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
@@ -47,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
+    "@redocly/openapi-core": "^1.28.5",
     "@testing-library/dom": "^8.18.1",
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.7.0",
@@ -79,6 +81,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-testing-library": "^6.2.0",
     "jsdom": "^25.0.1",
+    "json-schema-to-ts": "^3.1.1",
     "mocha": "^10.0.0",
     "mq-polyfill": "^1.1.8",
     "msw": "^2.6.5",

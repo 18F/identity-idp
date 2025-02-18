@@ -1,0 +1,78 @@
+post:
+  summary: Request for queued events to be returned.
+  description: |-
+    A Relying Party will POST this endpoint in order to receive Poll-Based Security Event Tokens (SET). These Sets will be the queued identity verification events.
+    
+    The structure of this endpoint is based on the [RISC Specification](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request) for polling 
+  operationId: poll_events
+  security:
+    - BearerAuth: [ ]
+  requestBody:
+    description: |
+      The request is detailed in the RISC spec (https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request):
+      
+      When initiating a poll request, the SET Recipient constructs a JSON document that consists of
+      polling request parameters and SET acknowledgement parameters in the form of JSON objects.
+    required: false
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/PollParameters.yml"
+  responses:
+    200:
+      description: |
+        As detailed in the [RISC Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response):
+        In response to a poll request, the SET Transmitter checks for available SETs and responds with a JSON document containing the list of SETs.
+
+        A decoded SET looks like:
+
+        ```
+        "6454bc0b-00fc-4404-885c-7f07bef243ce": {
+          "aud": "https://serviceprovider.com",
+          "iat": 1657920726,
+          "iss": "https://secure.login.gov",
+          "jti": "6454bc0b-00fc-4404-885c-7f07bef243ce",
+          "events": {
+            "https://schemas.login.gov/secevent/attempts-api/event-type/mfa-enroll-backup-code": {
+            "application_url": "string",
+            "occurred_at": 1657920726,
+            "subject": {
+              "subject_type": "session",
+              "session_id": "12345"
+              },
+            "user_ip_address": "string",
+            "user_uuid": "string",
+            "unique_session_id": "string",
+            "success": true
+          }
+        }
+        ```
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sets:
+                type: object
+                description: The key is the event JTI; the value is an encoded JWT
+                additionalProperties:
+                  type: object
+                  $ref: '../schemas/DecodedJWTPayload.yml'
+    400:
+      description: |
+        The 400 (Bad Request) status code indicates that the server cannot or
+        will not process the request due to something that is perceived to be
+        a client error (e.g., malformed request syntax, invalid request
+        message framing, or deceptive request routing).
+    401:
+      description: |
+        The 401 (Unauthorized) status code indicates that the request has not
+        been applied because it lacks valid authentication credentials for
+        the target resource. Please ensure that the request includes a valid Bearer token.
+    403: 
+      description: |
+        The 403 (Forbidden) status code indicates that the server understood
+        the request but refuses to authorize it. Please reach out to your account manager
+        if you think this is a mistake.
+    '5XX':
+      description: Unexpected error.

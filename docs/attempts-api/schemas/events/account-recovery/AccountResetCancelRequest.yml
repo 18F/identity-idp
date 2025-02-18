@@ -1,0 +1,5 @@
+description: |
+ A user who has requested an account reset has canceled their request.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object

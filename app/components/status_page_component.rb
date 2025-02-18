@@ -5,6 +5,7 @@ class StatusPageComponent < BaseComponent
     info: [:question],
     warning: [nil],
     error: [nil, :lock],
+    delete: [nil],
   }.freeze
 
   renders_one :header, ::PageHeadingComponent
@@ -16,7 +17,7 @@ class StatusPageComponent < BaseComponent
 
   attr_reader :status, :icon
 
-  validates_inclusion_of :status, in: %i[info error warning]
+  validates_inclusion_of :status, in: %i[info error warning delete]
   validate :validate_status_icon
 
   def initialize(status: :error, icon: nil)

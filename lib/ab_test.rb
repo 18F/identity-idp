@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class AbTest
-  include ::NewRelic::Agent::MethodTracer
-
   attr_reader :buckets,
               :experiment_name,
               :default_bucket,
@@ -173,7 +171,4 @@ class AbTest
   def within_100_percent?
     valid_bucket_data_structure? && buckets.values.sum <= 100
   end
-
-  add_method_tracer :bucket, "Custom/#{name}/bucket"
-  add_method_tracer :percent, "Custom/#{name}/percent"
 end

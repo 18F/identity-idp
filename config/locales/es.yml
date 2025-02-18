@@ -856,8 +856,8 @@ event_types.sign_in_notification_timeframe_expired: Venció el tiempo del mensaj
 event_types.sign_in_unsuccessful_2fa: No se pudo autenticar
 event_types.webauthn_key_added: Clave de seguridad de hardware añadida
 event_types.webauthn_key_removed: Clave de seguridad de hardware eliminada
-event_types.webauthn_platform_added: Desbloqueo facial o táctil añadido
-event_types.webauthn_platform_removed: Desbloqueo facial o táctil eliminado
+event_types.webauthn_platform_added: Se agregó el desbloqueo facial o táctil
+event_types.webauthn_platform_removed: Se eliminó el desbloqueo facial o táctil
 forms.backup_code_regenerate.caution: Si vuelve a generar sus códigos de recuperación, recibirá un conjunto nuevo de códigos. Sus códigos de recuperación originales ya no serán válidos.
 forms.backup_code_regenerate.confirm: '¿Está seguro de que desea volver a generar sus códigos de recuperación?'
 forms.backup_code_reminder.body_info: Si no puede acceder a su método de autenticación principal, puede usar códigos de recuperación para acceder a su cuenta.

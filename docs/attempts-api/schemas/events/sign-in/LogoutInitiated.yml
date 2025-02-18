@@ -1,0 +1,4 @@
+description:  The user has logged out of their account.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object

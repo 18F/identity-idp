@@ -4992,6 +4992,8 @@ module AnalyticsEvents
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [String] socure_status Socure's status value for internal errors on their side.
+  # @param [String] socure_msg Socure's status message for interal errors on their side.
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -5014,6 +5016,8 @@ module AnalyticsEvents
     document_type: nil,
     docv_transaction_token: nil,
     flow_path: nil,
+    socure_status: nil,
+    socure_msg: nil,
     **extra
   )
     track_event(
@@ -5038,6 +5042,8 @@ module AnalyticsEvents
       document_type:,
       docv_transaction_token:,
       flow_path:,
+      socure_status:,
+      socure_msg:,
       **extra,
     )
   end
@@ -5121,36 +5127,40 @@ module AnalyticsEvents
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
   # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # @param [String] vendor_status Socure's request status (used for errors)
+  # @param [String] vendor_status_message socure's error message (used for errors)
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
     errors:,
     async:,
-    reference_id:,
-    reason_codes:,
-    document_type:,
-    decision:,
-    state:,
-    state_id_type:,
     submit_attempts:,
-    remaining_submit_attempts:,
-    liveness_checking_required:,
-    issue_year:,
     vendor_request_time_in_ms:,
     doc_type_supported:,
     doc_auth_success:,
     vendor:,
-    address_line2_present:,
-    zip_code:,
-    birth_year:,
-    liveness_enabled:,
-    biometric_comparison_required:,
+    remaining_submit_attempts:,
+    reference_id: nil,
+    reason_codes: nil,
+    document_type: nil,
+    decision: nil,
+    state: nil,
+    state_id_type: nil,
+    liveness_checking_required: nil,
+    issue_year: nil,
+    address_line2_present: nil,
+    zip_code: nil,
+    birth_year: nil,
+    liveness_enabled: nil,
+    biometric_comparison_required: nil,
     customer_profile: nil,
     docv_transaction_token: nil,
     user_id: nil,
     exception: nil,
     flow_path: nil,
     billed: nil,
+    vendor_status: nil,
+    vendor_status_message: nil,
     **extra
   )
     track_event(
@@ -5183,6 +5193,8 @@ module AnalyticsEvents
       issue_year:,
       liveness_enabled:,
       biometric_comparison_required:,
+      vendor_status:,
+      vendor_status_message:,
       **extra,
     )
   end

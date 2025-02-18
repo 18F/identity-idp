@@ -1,0 +1,41 @@
+description: |
+  This event captures the result of the TMX fraud check during Identity Verification.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if user has failed fraud review
+        properties: 
+          tmx_summary_reason_code:
+            type: array
+            description: |
+              An OPTIONAL key that describes rules that failed during the test. Can include multiple elements in the array.
+              * `Identity_Negative_History`: Rules that indicate a negative history for related Identity (such as black listed email address or phone number). 
+              * `IP_Negative_History`:  Rules that indicate a negative history for IP Address (such as block-listed IP/Proxy address).
+              * `Bot`: Rules that examine velocity counts for anomalies and rules that indicate the presence of an aggregator (Online Bots).
+              * `Device_Spoofing`: Rules that indicate device anomalies, rules for OS spoofing, and rules that examine the mobile device for malware, root-cloaking applications and so on.
+              * `Geo_Spoofing`: Rules for anomalies pertaining to geographical location.
+              * `Identity_Spoofing`: Rules that indicate Identity spoofing such as the presence of multiple logins/email addresses/account addresses and high distance traveled.
+              * `IP_Spoofing`: Rules that indicate IP spoofing and rules for VPN detection.
+              * `MITB`: Rules that check the presence of malware tags.
+              * `Level_1_Link_Reject`: Rules that indicate that there is a direct link to historic confirmed fraud.
+              * `Level_1_Link_Accept`: Indicates the user has passed fraud check
+            items:
+              type: string
+              enum:
+                - Bot
+                - Device_Spoofing
+                - Geo_Spoofing
+                - Identity_Negative_History
+                - Identity_Spoofing
+                - IP_Negative_History
+                - Level_1_Link_Accept
+                - Level_1_Link_Reject
+                - MITB
+      success:
+        type: boolean
+        description: |
+          Indicates whether the TMX response status pass.

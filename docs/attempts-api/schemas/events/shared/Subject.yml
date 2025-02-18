@@ -1,0 +1,10 @@
+type: object
+properties: 
+  subject_type:
+    type: string
+    enum: 
+      - session
+  session_id:
+    type: string
+    description: Matches the session ID passed in from the service provider
+    example: '12345'

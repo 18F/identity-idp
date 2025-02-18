@@ -1,0 +1,11 @@
+type: object
+title: Polling Request
+description: |
+  Acceptable body to poll the Attempts API
+properties:
+  acks:
+    type: array
+    items:
+      type: string
+    description: |
+      List of event JTIs that the receiver is acknowledging. The Transmitter can stop keeping track of these.
