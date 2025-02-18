@@ -1,4 +1,4 @@
-<% content_for :before_head do %>
+<% content_for :early_head do %>
   <% if recaptcha_script_src.present? %>
     <%= content_tag(:script, '', src: recaptcha_script_src, async: true) %>
   <% end %>

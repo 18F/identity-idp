@@ -261,7 +261,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       it 'renders script tag for recaptcha' do
         src = "https://www.google.com/recaptcha/api.js?render=#{recaptcha_site_key}"
         render
-        expect(view.content_for(:before_head)).to have_css(
+        expect(view.content_for(:early_head)).to have_css(
           "script[src='#{src}']", visible: :all
         )
       end
@@ -274,7 +274,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         it 'renders script tag for recaptcha' do
           src = "https://www.google.com/recaptcha/enterprise.js?render=#{recaptcha_site_key}"
           render
-          expect(view.content_for(:before_head)).to have_css(
+          expect(view.content_for(:early_head)).to have_css(
             "script[src='#{src}']", visible: :all
           )
         end

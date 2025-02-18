@@ -20,7 +20,7 @@
   <% end %>
   <%= preload_link_tag font_path('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_path('public-sans/PublicSans-Regular.woff2') %>
-  <%= yield(:before_head) if content_for?(:before_head) %>
+  <%= yield(:early_head) if content_for?(:early_head) %>
   <%= stylesheet_link_tag 'application', nopush: false %>
   <%= render_stylesheet_once_tags %>
   <%= stylesheet_link_tag 'utilities', nopush: false %>
