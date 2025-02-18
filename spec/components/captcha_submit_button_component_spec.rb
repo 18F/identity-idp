@@ -7,9 +7,10 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
   let(:content) { 'Button' }
   let(:action) { 'action_name' }
   let(:options) { { form:, action: } }
+  let(:instance) { CaptchaSubmitButtonComponent.new(**options).with_content(content) }
 
   subject(:rendered) do
-    render_inline CaptchaSubmitButtonComponent.new(**options).with_content(content)
+    Nokogiri::HTML.fragment(view_context.render(instance))
   end
 
   it 'renders with action' do
@@ -44,6 +45,26 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
       expect(rendered).to have_css(
         "lg-captcha-submit-button[recaptcha-site-key='#{recaptcha_site_key}']",
       )
+    end
+
+    it 'renders script tag for recaptcha' do
+      rendered
+      early_head = Nokogiri::HTML.fragment(view_context.content_for(:early_head))
+      src = "https://www.google.com/recaptcha/api.js?render=#{recaptcha_site_key}"
+      expect(early_head).to have_css("script[src='#{src}']", visible: :all)
+    end
+
+    context 'with recaptcha enterprise' do
+      before do
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+      end
+
+      it 'renders script tag for recaptcha' do
+        rendered
+        early_head = Nokogiri::HTML.fragment(view_context.content_for(:early_head))
+        src = "https://www.google.com/recaptcha/enterprise.js?render=#{recaptcha_site_key}"
+        expect(early_head).to have_css("script[src='#{src}']", visible: :all)
+      end
     end
   end
 
