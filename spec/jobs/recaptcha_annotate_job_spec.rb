@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe RecaptchaAnnotateJob do
   include ActiveJob::TestHelper
 
-  subject(:instance) { described_class.new }
+  subject(:instance) { described_class.new(assessment_id:, reason:, annotation:) }
   let(:recaptcha_enterprise_api_key) { 'recaptcha_enterprise_api_key' }
   let(:recaptcha_enterprise_project_id) { 'project_id' }
   let(:assessment_id) { "projects/#{recaptcha_enterprise_project_id}/assessments/assessment-id" }
@@ -34,26 +34,32 @@ RSpec.describe RecaptchaAnnotateJob do
     it 'processes in order' do
       ActiveJob::Base.queue_adapter = :good_job
 
-      RecaptchaAnnotateJob.set(wait: 10.minutes).perform_later(assessment_id:, reason:, annotation:)
-      RecaptchaAnnotateJob.set(wait: 5.minutes).perform_later(
-        assessment_id:,
-        reason: RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
-        annotation:,
-      )
-      RecaptchaAnnotateJob.perform_later(
+      initiate_instance = described_class.new(
         assessment_id:,
         reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
         annotation:,
       )
+      initiate_instance.enqueue
+      instance.enqueue
+      GoodJob.perform_inline
 
-      expect(WebMock).not_to have_requested(:post, annotation_url)
-
-      travel_to 11.minutes.from_now do
-        GoodJob.perform_inline
-        expect(WebMock).to have_requested(:post, annotation_url).once
-        expect(WebMock).to have_requested(:post, annotation_url)
-          .with(body: { annotation:, reasons: [reason] }.to_json)
+      requests_enum = WebMock::RequestRegistry.instance.requested_signatures.to_enum.each
+      expect(requests_enum.next).to satisfy do |request, _order|
+        expected_body = {
+          annotation:,
+          reasons: [RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR],
+        }.to_json
+        request.uri == Addressable::URI.parse(annotation_url) &&
+          request.method == :post &&
+          request.body == expected_body
       end
+      expect(requests_enum.next).to satisfy do |request, _order|
+        expected_body = { annotation:, reasons: [reason] }.to_json
+        request.uri == Addressable::URI.parse(annotation_url) &&
+          request.method == :post &&
+          request.body == expected_body
+      end
+      expect { requests_enum.peek }.to raise_error(StopIteration)
     end
 
     context 'with an optional argument omitted' do
