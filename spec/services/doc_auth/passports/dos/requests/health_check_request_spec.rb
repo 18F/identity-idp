@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::Passports::HealthCheckRequest do
+RSpec.describe DocAuth::Passports::Dos::Requests::HealthCheckRequest do
   include PassportApiHelpers
 
   subject(:health_check_request) { described_class.new(analytics:) }
