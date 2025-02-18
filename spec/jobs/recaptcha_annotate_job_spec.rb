@@ -12,7 +12,7 @@ RSpec.describe RecaptchaAnnotateJob do
   let(:annotation_url) do
     format(
       '%{base_endpoint}/%{assessment_id}:annotate?key=%{api_key}',
-      base_endpoint: RecaptchaAnnotateJob::BASE_ENDPOINT,
+      base_endpoint: RecaptchaAnnotator::BASE_ENDPOINT,
       assessment_id:,
       api_key: recaptcha_enterprise_api_key,
     )
@@ -60,33 +60,6 @@ RSpec.describe RecaptchaAnnotateJob do
           request.body == expected_body
       end
       expect { requests_enum.peek }.to raise_error(StopIteration)
-    end
-
-    context 'with an optional argument omitted' do
-      let(:annotation) { nil }
-
-      it 'submits only what is provided' do
-        result
-
-        expect(WebMock).to have_requested(:post, annotation_url)
-          .with(body: { reasons: [reason] }.to_json)
-      end
-    end
-
-    context 'with connection error' do
-      before do
-        stub_request(:post, annotation_url).to_timeout
-      end
-
-      it 'fails gracefully' do
-        result
-      end
-
-      it 'notices the error to NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error).with(Faraday::Error)
-
-        result
-      end
     end
   end
 end
