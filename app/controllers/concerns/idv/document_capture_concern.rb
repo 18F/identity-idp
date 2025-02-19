@@ -34,6 +34,7 @@ module Idv
         message: message || I18n.t('doc_auth.errors.general.network_error'),
         socure: stored_result&.errors&.dig(:socure),
         pii_validation: stored_result&.errors&.dig(:pii_validation),
+        unaccepted_id_type: stored_result&.errors&.dig(:unaccepted_id_type),
       }
     end
 

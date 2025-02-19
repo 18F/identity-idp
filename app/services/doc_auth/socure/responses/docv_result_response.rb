@@ -62,7 +62,7 @@ module DocAuth
         end
 
         def doc_auth_success?
-          successful_result? && id_type_supported?
+          id_type_supported? && successful_result?
         end
 
         def selfie_status
@@ -100,7 +100,9 @@ module DocAuth
         end
 
         def error_messages
-          if !successful_result?
+          if !id_type_supported?
+            { unaccepted_id_type: 'failed' }
+          elsif !successful_result?
             { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
           else
             {}

@@ -144,6 +144,8 @@ class SocureErrorPresenter
       t('doc_auth.headers.general.network_error')
     when :timeout, :url_not_found
       t('idv.errors.technical_difficulties')
+    when :unaccepted_id_type
+      t('doc_auth.headers.unaccepted_id_type')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
       # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
@@ -161,6 +163,8 @@ class SocureErrorPresenter
       t('doc_auth.errors.general.new_network_error')
     when :timeout, :url_not_found
       t('idv.errors.try_again_later')
+    when :unaccepted_id_type
+      t('doc_auth.errors.unaccepted_id_type')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
         I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
