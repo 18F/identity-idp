@@ -15,6 +15,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_idplus_base_url) { 'https://example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
+  let(:document_type_type) { 'Drivers License' }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
@@ -40,7 +41,7 @@ RSpec.describe SocureDocvResultsJob do
           documentVerification: {
             reasonCodes: %w[I831 R810],
             documentType: {
-              type: 'Drivers License',
+              type: document_type_type,
               country: 'USA',
               state: 'NY',
             },
@@ -85,7 +86,7 @@ RSpec.describe SocureDocvResultsJob do
           zip_code: '10001',
           doc_auth_success: true,
           document_type: {
-            type: 'Drivers License',
+            type: document_type_type,
             country: 'USA',
             state: 'NY',
           },
@@ -114,6 +115,20 @@ RSpec.describe SocureDocvResultsJob do
         expect(document_capture_session_result.selfie_status).to eq(:not_processed)
       end
 
+      context 'not accepted document type' do
+        let(:document_type_type) { 'Passport' }
+        it 'doc auth fails' do
+          perform
+
+          document_capture_session.reload
+          document_capture_session_result = document_capture_session.load_result
+          expect(document_capture_session_result.success).to eq(false)
+          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.attention_with_barcode).to eq(false)
+          expect(document_capture_session_result.doc_auth_success).to eq(false)
+          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+        end
+      end
       context 'Socure returns an error' do
         let(:status) { 'Error' }
         let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }

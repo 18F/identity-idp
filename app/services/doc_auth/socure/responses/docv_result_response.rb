@@ -44,7 +44,7 @@ module DocAuth
           @pii_from_doc = read_pii
 
           super(
-            success: successful_result?,
+            success: doc_auth_success?,
             errors: error_messages,
             pii_from_doc:,
             extra: extra_attributes,
@@ -62,7 +62,7 @@ module DocAuth
         end
 
         def doc_auth_success?
-          success?
+          id_type_supported? && successful_result?
         end
 
         def selfie_status
@@ -80,11 +80,11 @@ module DocAuth
             reason_codes: get_data(DATA_PATHS[:reason_codes]),
             document_type: get_data(DATA_PATHS[:document_type]),
             state: state,
-            state_id_type: state_id_type,
+            state_id_type:,
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
-            doc_auth_success: successful_result?,
+            doc_auth_success: doc_auth_success?,
             vendor: 'Socure', # TODO: Replace with Idp::Constants::Vendors::SOCURE
             address_line2_present: address2.present?,
             zip_code: zipcode,
@@ -100,7 +100,9 @@ module DocAuth
         end
 
         def error_messages
-          if !successful_result?
+          if !id_type_supported?
+            { unaccepted_id_type: true }
+          elsif !successful_result?
             { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
           else
             {}
@@ -159,8 +161,11 @@ module DocAuth
         end
 
         def state_id_type
-          type = get_data(DATA_PATHS[:id_type])
-          type&.gsub(/\W/, '')&.underscore
+          document_id_type&.gsub(/\W/, '')&.underscore
+        end
+
+        def document_id_type
+          get_data(DATA_PATHS[:id_type])
         end
 
         def dob
@@ -179,6 +184,10 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
+        end
+
+        def id_type_supported?
+          DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
         end
       end
     end
