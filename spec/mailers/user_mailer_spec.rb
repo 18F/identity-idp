@@ -185,12 +185,34 @@ RSpec.describe UserMailer, type: :mailer do
         expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
       end
 
-      it 'renders the in person warning banner' do
-        expect(mail.html_part.body).to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
-        )
+      context 'when feature_pending_in_person_password_reset_enabled flag is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_pending_in_person_password_reset_enabled)
+            .and_return(true)
+        end
+
+        it 'does not render the in person warning banner' do
+          expect(mail.html_part.body).not_to have_content(
+            strip_tags(
+              t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
+            ),
+          )
+        end
+      end
+
+      context 'when feature_pending_in_person_password_reset_enabled flag is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_pending_in_person_password_reset_enabled)
+            .and_return(false)
+        end
+
+        it 'renders the in person warning banner' do
+          expect(mail.html_part.body).to have_content(
+            strip_tags(
+              t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
+            ),
+          )
+        end
       end
 
       it 'does not render the gpo warning alert' do
