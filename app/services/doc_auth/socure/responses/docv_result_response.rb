@@ -37,11 +37,6 @@ module DocAuth
           socure_user_id: %w[customerProfile userId],
         }.freeze
 
-        STATE_ID_TYPES_PERMITTED = [
-          'state_id_card',
-          'drivers_license',
-        ].freeze
-
         def initialize(http_response:,
                        biometric_comparison_required: false)
           @http_response = http_response
@@ -85,7 +80,7 @@ module DocAuth
             reason_codes: get_data(DATA_PATHS[:reason_codes]),
             document_type: get_data(DATA_PATHS[:document_type]),
             state: state,
-            state_id_type: state_id_type,
+            state_id_type:,
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
@@ -164,8 +159,11 @@ module DocAuth
         end
 
         def state_id_type
-          type = get_data(DATA_PATHS[:id_type])
-          type&.gsub(/\W/, '')&.underscore
+          document_id_type&.gsub(/\W/, '')&.underscore
+        end
+
+        def document_id_type
+          get_data(DATA_PATHS[:id_type])
         end
 
         def dob
@@ -187,7 +185,7 @@ module DocAuth
         end
 
         def id_type_supported?
-          STATE_ID_TYPES_PERMITTED.include? state_id_type
+          DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
         end
       end
     end
