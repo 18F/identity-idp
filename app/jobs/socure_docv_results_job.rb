@@ -26,7 +26,7 @@ class SocureDocvResultsJob < ApplicationJob
 
     # for ipp enrollment to track if user attempted doc auth
     document_capture_session.update!(
-      last_doc_auth_result: docv_result_response.extra_attributes[:decision],
+      last_doc_auth_result: docv_result_response.extra_attributes.dig(:decision, :value),
     )
 
     if docv_result_response.success?
