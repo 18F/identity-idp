@@ -39,31 +39,7 @@ module Api
       end
 
       def valid_auth_token?(token, issuer)
-        begin
-          pub_key = OpenSSL::X509::Certificate.new(
-            config_data(issuer)[:key],
-          ).public_key
-        rescue OpenSSL::X509::CertificateError
-          return false
-        end
-
-        begin
-          token_payload, _headers = JWT.decode(
-            token,
-            pub_key,
-            true,
-            algorithm: 'RS256',
-          )
-        rescue JWT::VerificationError
-          return false
-        end
-
-        payload_matches?(token_payload)
-      end
-
-      def payload_matches?(token_payload)
-        hashed_payload = Digest::SHA256.hexdigest(poll_params.to_json)
-        token_payload == hashed_payload
+        config_data(issuer)[:token] == token
       end
 
       def poll_params

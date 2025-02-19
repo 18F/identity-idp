@@ -21,36 +21,7 @@ RSpec.describe Api::Attempts::EventsController do
       }
     end
 
-    let(:private_key) { OpenSSL::PKey::RSA.new 2048 }
-    let(:public_key) { private_key.public_key }
-
-    let(:public_cert) do
-      return nil if !issuer
-      name = OpenSSL::X509::Name.parse('/CN=signing')
-
-      cert = OpenSSL::X509::Certificate.new
-      cert.version = 2
-      cert.serial = 0
-      cert.not_before = Time.zone.now
-      cert.not_after = Time.zone.now + 3600
-
-      cert.public_key = public_key
-      cert.subject = name
-      cert.issuer = name
-
-      cert.sign private_key, 'SHA256'
-
-      cert.to_pem
-    end
-
-    let(:token) do
-      JWT.encode(
-        Digest::SHA256.hexdigest(payload.to_json),
-        private_key,
-        'RS256',
-      )
-    end
-
+    let(:token) { 'a-shared-secret' }
     let(:auth_header) { "Bearer #{issuer} #{token}" }
 
     before do
@@ -58,7 +29,7 @@ RSpec.describe Api::Attempts::EventsController do
       allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
         [{
           issuer: sp.issuer,
-          key: public_cert,
+          token:,
         }],
       )
     end
@@ -115,8 +86,8 @@ RSpec.describe Api::Attempts::EventsController do
           end
         end
 
-        context 'without a valid public key' do
-          let(:public_cert) { 'not-a-cert' }
+        context 'without a valid token' do
+          let(:auth_header) { "Bearer #{issuer}" }
 
           it 'returns a 401' do
             expect(action.status).to eq 401
@@ -124,7 +95,7 @@ RSpec.describe Api::Attempts::EventsController do
         end
 
         context 'with a valid but not matching public key' do
-          let(:public_key) { OpenSSL::PKey::RSA.new(2048).public_key }
+          let(:auth_header) { "Bearer #{issuer} not-shared-secret" }
 
           it 'returns a 401' do
             expect(action.status).to eq 401
