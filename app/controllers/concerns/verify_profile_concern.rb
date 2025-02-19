@@ -27,7 +27,7 @@ module VerifyProfileConcern
   # bypassing the typical flow of showing the Please Call or Fraud Rejection screens.
   def user_failed_ipp_with_fraud_review_pending?
     IdentityConfig.store.in_person_proofing_enforce_tmx &&
-      current_user.ipp_enrollment_status_not_passed? &&
+      current_user.ipp_enrollment_status_not_passed_or_in_fraud_review? &&
       current_user.fraud_review_pending?
   end
 end

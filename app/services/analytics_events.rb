@@ -3334,6 +3334,7 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_in_fraud_review number of enrollments in fraud review
   # @param [Integer] enrollments_skipped number of enrollments skipped
   # @param [Integer] enrollments_network_error
   # @param [Integer] enrollments_cancelled
@@ -3348,6 +3349,7 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_in_fraud_review:,
     enrollments_skipped:,
     enrollments_network_error:,
     enrollments_cancelled:,
@@ -3365,6 +3367,7 @@ module AnalyticsEvents
       enrollments_failed:,
       enrollments_in_progress:,
       enrollments_passed:,
+      enrollments_in_fraud_review:,
       enrollments_skipped:,
       enrollments_network_error:,
       enrollments_cancelled:,
