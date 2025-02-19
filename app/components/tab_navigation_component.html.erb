@@ -1,29 +1,14 @@
 <%= content_tag(:nav, aria: { label: }, **tag_options, class: [*tag_options[:class], 'tab-navigation']) do %>
-  <ul class="usa-button-group usa-button-group--segmented">
+  <ul class="usa-button-group">
     <% routes.each do |route| %>
-      <% if current_path?(route[:path]) %>
-        <%= render ClickObserverComponent.new(
-              event_name: 'tab_navigation_current_page_clicked',
-              payload: { path: route[:path] },
-              role: 'listitem',
-              class: 'usa-button-group__item display-list-item',
-            ) do %>
-          <%= render ButtonComponent.new(
-                url: route[:path],
-                big: true,
-                outline: !current_path?(route[:path]),
-                aria: { current: current_path?(route[:path]) ? 'page' : nil },
-              ).with_content(route[:text]) %>
-        <% end %>
-      <% else %>
-        <li class="usa-button-group__item">
-          <%= render ButtonComponent.new(
-                url: route[:path],
-                big: true,
-                outline: !current_path?(route[:path]),
-                aria: { current: current_path?(route[:path]) ? 'page' : nil },
-              ).with_content(route[:text]) %>
-        </li>
+      <%= nav_list_item(route) do %>
+        <%= render ButtonComponent.new(
+              url: route[:path],
+              big: true,
+              outline: current_path?(route[:path]),
+              unstyled: !current_path?(route[:path]),
+              aria: { current: current_path?(route[:path]) ? 'page' : nil },
+            ).with_content(route[:text]) %>
       <% end %>
     <% end %>
   </ul>
