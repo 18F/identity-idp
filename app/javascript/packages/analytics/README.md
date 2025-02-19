@@ -40,3 +40,8 @@ The custom element will implement the analytics logging behavior, but all markup
   <button type="button">Click me!</button>
 </lg-click-observer>
 ```
+
+The element supports the following attributes to customize its behavior:
+
+- `event-name`: The name of the analytics event that should be logged when clicked
+- `payload`: (Optional) JSON payload of additional data that should be included in the logged event

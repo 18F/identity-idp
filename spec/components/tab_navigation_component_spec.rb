@@ -11,6 +11,7 @@ RSpec.describe TabNavigationComponent, type: :component do
 
   it 'renders labelled navigation' do
     expect(rendered).to have_css('.tab-navigation[aria-label="Navigation"]')
+    expect(rendered).to have_css('li', count: 2)
     expect(rendered).to have_link('First') { |link| !is_current_link?(link) }
     expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
   end
@@ -41,8 +42,18 @@ RSpec.describe TabNavigationComponent, type: :component do
     end
 
     it 'renders current link as highlighted' do
+      expect(rendered).to have_css('li,[role=listitem]', count: 2)
       expect(rendered).to have_link('First') { |link| is_current_link?(link) }
       expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
+    end
+
+    it 'wraps link in click observer' do
+      expect(rendered).to have_link('First') do |link|
+        expect(link).to have_ancestor('lg-click-observer')
+      end
+      expect(rendered).to have_link('Second') do |link|
+        expect(link).not_to have_ancestor('lg-click-observer')
+      end
     end
 
     context 'with routes defining full URL' do
@@ -112,6 +123,6 @@ RSpec.describe TabNavigationComponent, type: :component do
   end
 
   def is_current_link?(link)
-    link.matches_css?('[aria-current="page"]:not(.usa-button--outline)')
+    link.matches_css?('[aria-current="page"].usa-button--outline')
   end
 end
