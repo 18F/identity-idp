@@ -404,6 +404,7 @@ module IdentityConfig
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:saml_secret_rotation_enabled, type: :boolean)
+    config.add(:screen_reader_frequency, type: :integer)
     config.add(:scrypt_cost, type: :string)
     config.add(:second_mfa_reminder_account_age_in_days, type: :integer)
     config.add(:second_mfa_reminder_sign_in_count, type: :integer)
