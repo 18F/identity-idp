@@ -101,7 +101,7 @@ module DocAuth
 
         def error_messages
           if !id_type_supported?
-            { unaccepted_id_type: 'failed' }
+            { unaccepted_id_type: true }
           elsif !successful_result?
             { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
           else
