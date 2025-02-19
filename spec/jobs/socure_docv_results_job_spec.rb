@@ -116,6 +116,22 @@ RSpec.describe SocureDocvResultsJob do
         expect(document_capture_session.last_doc_auth_result).to eq('accept')
       end
 
+      context 'Identification Card is submitted' do
+        let(:document_type_type) { 'Identification Card' }
+        it 'doc auth succeeds' do
+          perform
+
+          document_capture_session.reload
+          document_capture_session_result = document_capture_session.load_result
+          expect(document_capture_session_result.success).to eq(true)
+          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.attention_with_barcode).to eq(false)
+          expect(document_capture_session_result.doc_auth_success).to eq(true)
+          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session.last_doc_auth_result).to eq('accept')
+        end
+      end
+
       context 'not accepted document type' do
         let(:document_type_type) { 'Passport' }
         it 'doc auth fails' do
@@ -130,6 +146,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
         end
       end
+
       context 'Socure returns an error' do
         let(:status) { 'Error' }
         let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
