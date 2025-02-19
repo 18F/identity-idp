@@ -10,7 +10,6 @@
   <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
         screen_reader_frequency: IdentityConfig.store.screen_reader_frequency.seconds,
-        update_interval: 30.seconds,
         alert_options: { class: 'margin-bottom-4' },
         countdown_options: { expiration: @presenter.otp_expiration },
       ) %>
