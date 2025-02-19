@@ -5,9 +5,14 @@ import './countdown-element';
 describe('CountdownAlertElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
 
-  function createElement({ showAtRemaining, screenReaderFrequency }: { showAtRemaining?: number, screenReaderFrequency?: number } = {}) {
+  function createElement({
+    showAtRemaining,
+    screenReaderFrequency,
+  }: { showAtRemaining?: number; screenReaderFrequency?: number } = {}) {
     document.body.innerHTML = `
-      <lg-countdown-alert ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''} ${screenReaderFrequency? `screen-reader-frequency="${screenReaderFrequency}"` : ''}>
+      <lg-countdown-alert ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''} ${
+        screenReaderFrequency ? `screen-reader-frequency="${screenReaderFrequency}"` : ''
+      }>
         <div class="usa-alert usa-alert--info margin-bottom-4 usa-alert--info-time" role="status">
           <div class="usa-alert__body">
             <p class="usa-alert__text">
