@@ -25,9 +25,11 @@ class SocureDocvResultsJob < ApplicationJob
     )
 
     # for ipp enrollment to track if user attempted doc auth
-    document_capture_session.update!(
-      last_doc_auth_result: docv_result_response.extra_attributes.dig(:decision, :value),
-    )
+    if last_doc_auth_result = docv_result_response.extra_attributes.dig(:decision, :value)
+      document_capture_session.update!(
+        last_doc_auth_result:,
+      )
+    end
 
     if docv_result_response.success?
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
