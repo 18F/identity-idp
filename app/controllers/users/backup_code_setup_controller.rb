@@ -59,7 +59,7 @@ module Users
 
     def delete
       current_user.backup_code_configurations.destroy_all
-      handle_successful_mfa_deletion(event_type: nil)
+      handle_successful_mfa_deletion(event_type: :backup_codes_removed)
       flash[:success] = t('notices.backup_codes_deleted')
       if in_multi_mfa_selection_flow?
         redirect_to authentication_methods_setup_path

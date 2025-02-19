@@ -31,6 +31,7 @@ class Event < ApplicationRecord
     sign_in_notification_timeframe_expired: 24,
     webauthn_platform_added: 25,
     webauthn_platform_removed: 26,
+    backup_codes_removed: 27,
   }
 
   validates :event_type, presence: true
