@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class CountdownAlertComponent < BaseComponent
-  attr_reader :show_at_remaining, :alert_options, :countdown_options, :tag_options
+  attr_reader :show_at_remaining, :screen_reader_frequency, :alert_options, :countdown_options,
+              :tag_options
 
   def initialize(
+    screen_reader_frequency: nil,
     show_at_remaining: nil,
     alert_options: {},
     countdown_options: {},
@@ -13,6 +15,7 @@ class CountdownAlertComponent < BaseComponent
     @alert_options = alert_options
     @countdown_options = countdown_options
     @tag_options = tag_options
+    @screen_reader_frequency = screen_reader_frequency
   end
 
   def call
@@ -22,6 +25,7 @@ class CountdownAlertComponent < BaseComponent
       **tag_options,
       class: css_class,
       'show-at-remaining': show_at_remaining&.in_milliseconds,
+      'screen-reader-frequency': screen_reader_frequency&.in_milliseconds,
     )
   end
 
