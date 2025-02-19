@@ -253,12 +253,10 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       before do
-        DocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_front_image,
-          response: DocAuth::Response.new(
-            success: false,
-            errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-          ),
+        remove_request_stub(@pass_stub)
+        stub_docv_verification_data_fail_with(
+          docv_transaction_token: @docv_transaction_token,
+          errors: ['R827'],
         )
       end
 
@@ -290,7 +288,10 @@ RSpec.describe 'Hybrid Flow' do
           end
 
           visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
 
+          visit idv_hybrid_mobile_socure_document_capture_url
           expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
           expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         end

@@ -11,14 +11,18 @@ module Idv
         include SocureErrorsConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
+        before_action :check_valid_document_capture_session
         before_action :validate_step_not_completed, only: [:show]
-        before_action :check_valid_document_capture_session, except: [:update]
         before_action -> do
           redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
         end, only: :show
         before_action :fetch_test_verification_data, only: [:update]
 
         def show
+          if rate_limiter.limited?
+            redirect_to idv_hybrid_mobile_capture_complete_url
+          end
+
           session[:socure_docv_wait_polling_started_at] = nil
 
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
@@ -74,7 +78,7 @@ module Idv
             **result.to_h.merge(analytics_arguments),
           )
 
-          if result.success?
+          if result.success? || rate_limiter.limited?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
             redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
@@ -82,7 +86,11 @@ module Idv
         end
 
         def errors
-          @presenter = socure_errors_presenter(handle_stored_result)
+          result = handle_stored_result(
+            user: document_capture_user,
+            store_in_session: false,
+          )
+          @presenter = socure_errors_presenter(result)
         end
 
         private
@@ -103,7 +111,8 @@ module Idv
         end
 
         def wait_for_result?
-          return false if stored_result.present?
+          document_capture_session.reload unless document_capture_session.result_id
+          return false if document_capture_session.load_result.present?
 
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
@@ -140,6 +149,13 @@ module Idv
             selfie_check_required: false,
             pii_like_keypaths: [[:pii]],
           }
+        end
+
+        def rate_limiter
+          @rate_limiter ||= RateLimiter.new(
+            user: document_capture_user,
+            rate_limit_type: :idv_doc_auth,
+          )
         end
       end
     end

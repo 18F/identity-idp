@@ -96,5 +96,9 @@ module DocAuth
       # to be implemented by concrete subclass
       :not_processed
     end
+
+    def extra_attributes
+      {}
+    end
   end
 end
