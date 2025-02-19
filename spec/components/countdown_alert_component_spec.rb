@@ -40,6 +40,17 @@ RSpec.describe CountdownAlertComponent, type: :component do
     end
   end
 
+  context 'with screen_reader_frequency' do
+    it 'renders the class' do
+      rendered = render_inline CountdownAlertComponent.new(
+        screen_reader_frequency: 30.seconds,
+        countdown_options: { expiration: },
+      )
+
+      expect(rendered).to have_css('lg-countdown-alert[screen-reader-frequency=30000]')
+    end
+  end
+
   context 'with tag options' do
     it 'renders with attributes' do
       rendered = render_inline CountdownAlertComponent.new(
