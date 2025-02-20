@@ -101,7 +101,9 @@ module Idv
 
     def document_capture_session
       return @document_capture_session if defined?(@document_capture_session)
-      @document_capture_session = DocumentCaptureSession.find_by uuid: idv_session.document_capture_session_uuid
+      @document_capture_session = DocumentCaptureSession.find_by(
+        uuid: idv_session.document_capture_session_uuid,
+      )
     end
   end
 end
