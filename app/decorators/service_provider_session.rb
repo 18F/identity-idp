@@ -56,6 +56,10 @@ class ServiceProviderSession
     (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end
 
+  def successful_handoff
+    sp_session[:successful_handoff]
+  end
+
   def sp_create_link
     view_context.sign_up_email_path(request_id: sp_session[:request_id])
   end
