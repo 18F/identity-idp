@@ -54,7 +54,7 @@ module Idv
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 
-      redirect_to vendor_document_capture_url(step: :idv_doc_auth)
+      redirect_to idv_document_capture_url(step: :idv_doc_auth)
     end
 
     def self.step_info
