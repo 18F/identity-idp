@@ -11,7 +11,7 @@
         form: f,
         forbidden_passwords: @forbidden_passwords,
         field_options: {
-          input_html: { aria: { describedby: 'password-description' } },
+          input_html: { aria: { describedby: 'password-strength password-description' } },
         },
       ) %>
   <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
