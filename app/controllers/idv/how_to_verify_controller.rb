@@ -98,5 +98,10 @@ module Idv
     def mobile_required?
       idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
+
+    def document_capture_session
+      return @document_capture_session if defined?(@document_capture_session)
+      @document_capture_session = DocumentCaptureSession.find_by uuid: idv_session.document_capture_session_uuid
+    end
   end
 end
