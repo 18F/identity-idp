@@ -19,7 +19,7 @@ class UpdatePasswordPresenter
     return {} if required_password_change?
     {
       input_html: {
-        aria: { describedby: 'password-description' },
+        aria: { describedby: 'password-strength password-description' },
       },
     }
   end

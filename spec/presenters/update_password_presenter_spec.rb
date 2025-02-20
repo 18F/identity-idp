@@ -41,7 +41,7 @@ RSpec.describe UpdatePasswordPresenter do
         expect(presenter.aria_described_by_if_eligible).to eq(
           {
             input_html: {
-              aria: { describedby: 'password-description' },
+              aria: { describedby: 'password-strength password-description' },
             },
           },
         )
