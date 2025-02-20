@@ -187,7 +187,6 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] sms_phone does the user have a phone factor configured?
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
@@ -197,7 +196,6 @@ module AnalyticsEvents
   # An account reset has been requested
   def account_reset_request(
     success:,
-    errors:,
     sms_phone:,
     totp:,
     piv_cac:,
@@ -209,7 +207,6 @@ module AnalyticsEvents
     track_event(
       'Account Reset: request',
       success:,
-      errors:,
       sms_phone:,
       totp:,
       piv_cac:,
@@ -604,7 +601,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
@@ -617,7 +613,6 @@ module AnalyticsEvents
   # Tracks disavowed event
   def event_disavowal(
     success:,
-    errors:,
     user_id:,
     error_details: nil,
     event_created_at: nil,
@@ -632,7 +627,6 @@ module AnalyticsEvents
     track_event(
       'Event disavowal visited',
       success:,
-      errors:,
       error_details:,
       event_created_at:,
       disavowed_device_last_used_at:,
@@ -1367,12 +1361,12 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_submitted(
     success:,
-    errors:,
     step:,
     analytics_id:,
     liveness_checking_required:,
     selfie_check_required:,
     flow_path:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     redo_document_capture: nil,
@@ -3340,6 +3334,7 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_in_fraud_review number of enrollments in fraud review
   # @param [Integer] enrollments_skipped number of enrollments skipped
   # @param [Integer] enrollments_network_error
   # @param [Integer] enrollments_cancelled
@@ -3354,6 +3349,7 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_in_fraud_review:,
     enrollments_skipped:,
     enrollments_network_error:,
     enrollments_cancelled:,
@@ -3371,6 +3367,7 @@ module AnalyticsEvents
       enrollments_failed:,
       enrollments_in_progress:,
       enrollments_passed:,
+      enrollments_in_fraud_review:,
       enrollments_skipped:,
       enrollments_network_error:,
       enrollments_cancelled:,
@@ -4254,7 +4251,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
@@ -4276,7 +4272,6 @@ module AnalyticsEvents
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
-    errors:,
     otp_delivery_preference:,
     country_code:,
     area_code:,
@@ -4293,7 +4288,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp resent',
       success:,
-      errors:,
       error_details:,
       otp_delivery_preference:,
       country_code:,
@@ -4310,7 +4304,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
@@ -4332,7 +4325,6 @@ module AnalyticsEvents
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
-    errors:,
     otp_delivery_preference:,
     country_code:,
     area_code:,
@@ -4349,7 +4341,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp sent',
       success:,
-      errors:,
       error_details:,
       otp_delivery_preference:,
       country_code:,
@@ -4366,7 +4357,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
@@ -4389,7 +4379,6 @@ module AnalyticsEvents
   # When a user attempts to confirm possession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
-    errors:,
     code_expired:,
     code_matches:,
     otp_delivery_preference:,
@@ -4407,7 +4396,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp submitted',
       success:,
-      errors:,
       error_details:,
       code_expired:,
       code_matches:,
@@ -6367,7 +6355,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
@@ -6375,7 +6362,6 @@ module AnalyticsEvents
   # Alert user if a personal key was used to sign in
   def personal_key_alert_about_sign_in(
     success:,
-    errors:,
     emails:,
     sms_message_ids:,
     error_details: nil,
@@ -6384,7 +6370,6 @@ module AnalyticsEvents
     track_event(
       'Personal key: Alert user about sign in',
       success:,
-      errors:,
       error_details:,
       emails:,
       sms_message_ids:,
@@ -6621,7 +6606,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
@@ -6630,7 +6614,6 @@ module AnalyticsEvents
   # were sent to phone numbers and email addresses for the user
   def profile_personal_key_create_notifications(
     success:,
-    errors:,
     emails:,
     sms_message_ids:,
     error_details: nil,
@@ -6639,7 +6622,6 @@ module AnalyticsEvents
     track_event(
       'Profile: Created new personal key notifications',
       success:,
-      errors:,
       error_details:,
       emails:,
       sms_message_ids:,
@@ -7086,10 +7068,10 @@ module AnalyticsEvents
   # Tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
-    errors:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    errors: nil,
     error_details: nil,
     **extra
   )

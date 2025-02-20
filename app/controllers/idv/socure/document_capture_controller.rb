@@ -109,7 +109,8 @@ module Idv
       private
 
       def wait_for_result?
-        return false if stored_result.present?
+        document_capture_session.reload unless document_capture_session.result_id
+        return false if document_capture_session.load_result.present?
 
         # If the stored_result is nil, the job fetching the results has not completed.
         analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)

@@ -253,12 +253,10 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       before do
-        DocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_front_image,
-          response: DocAuth::Response.new(
-            success: false,
-            errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-          ),
+        remove_request_stub(@pass_stub)
+        stub_docv_verification_data_fail_with(
+          docv_transaction_token: @docv_transaction_token,
+          errors: ['R827'],
         )
       end
 
@@ -290,7 +288,10 @@ RSpec.describe 'Hybrid Flow' do
           end
 
           visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
 
+          visit idv_hybrid_mobile_socure_document_capture_url
           expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
           expect(page).to have_text(t('doc_auth.instructions.switch_back'))
         end
@@ -452,6 +453,55 @@ RSpec.describe 'Hybrid Flow' do
           perform_in_browser(:desktop) do
             expect(page).to have_current_path(idv_ssn_path, wait: 10)
           end
+        end
+      end
+    end
+
+    context 'invalid ID type' do
+      it 'presents as an unaccepted ID type error', js: true do
+        user = nil
+
+        perform_in_browser(:desktop) do
+          visit_idp_from_sp_with_ial2(sp)
+          user = sign_up_and_2fa_ial1_user
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+          expect(page).to have_content(t('doc_auth.info.you_entered'))
+          expect(page).to have_content('+1 415-555-0199')
+
+          # Confirm that Continue button is not shown when polling is enabled
+          expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+
+          body = JSON.parse(SocureDocvFixtures.pass_json)
+          body['documentVerification']['documentType']['type'] = 'Passport'
+          remove_request_stub(@pass_stub)
+          stub_docv_verification_data(
+            docv_transaction_token: @docv_transaction_token,
+            body: body.to_json,
+          )
+
+          click_idv_continue
+
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_content(t('doc_auth.headers.unaccepted_id_type'))
+          expect(page).to have_content(t('doc_auth.errors.unaccepted_id_type'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_link_sent_path)
         end
       end
     end

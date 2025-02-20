@@ -836,6 +836,7 @@ event_types.authenticated_at_html: 已在 %{service_provider_link_html}登录
 event_types.authenticator_disabled: 身份证实器应用程序已去掉
 event_types.authenticator_enabled: 身份证实器应用程序已添加
 event_types.backup_codes_added: 备用代码已添加
+event_types.backup_codes_removed: 备份代码已删除
 event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除

@@ -53,6 +53,16 @@ FactoryBot.define do
       end
     end
 
+    trait :in_person_fraud_review_pending do
+      idv_level { :in_person }
+      fraud_pending_reason { 'threatmetrix_review' }
+      fraud_review_pending_at { 15.days.ago }
+      proofing_components { { threatmetrix_review_status: 'review' } }
+      in_person_enrollment do
+        association(:in_person_enrollment, :in_fraud_review, profile: instance, user:)
+      end
+    end
+
     trait :fraud_pending_reason do
       fraud_pending_reason { 'threatmetrix_review' }
       proofing_components { { threatmetrix_review_status: 'review' } }

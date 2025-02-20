@@ -151,9 +151,6 @@ RSpec.feature 'document capture step', :js do
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
             )
-            DocumentCaptureSession.find_by(user_id: @user.id).update(
-              last_doc_auth_result: 'Passed',
-            )
 
             visit idv_socure_document_capture_update_path
             expect(page).to have_current_path(idv_ssn_url)
@@ -386,6 +383,27 @@ RSpec.feature 'document capture step', :js do
             complete_verify_step
             expect(page).to have_current_path(idv_phone_url)
           end
+        end
+      end
+
+      context 'not accepted id type' do
+        it 'displays unaccepdted id type error message' do
+          body = JSON.parse(SocureDocvFixtures.pass_json)
+          body['documentVerification']['documentType']['type'] = 'Passport'
+
+          remove_request_stub(@pass_stub)
+          stub_docv_verification_data(
+            docv_transaction_token: @docv_transaction_token,
+            body: body.to_json,
+          )
+
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+
+          expect(page).to have_content(t('doc_auth.headers.unaccepted_id_type'))
+          expect(page).to have_content(t('doc_auth.errors.unaccepted_id_type'))
         end
       end
     end

@@ -825,6 +825,7 @@ event_types.authenticated_at_html: Signed in at %{service_provider_link_html}
 event_types.authenticator_disabled: Authenticator app removed
 event_types.authenticator_enabled: Authenticator app added
 event_types.backup_codes_added: Backup codes added
+event_types.backup_codes_removed: Backup codes removed
 event_types.eastern_timestamp: '%{timestamp} (Eastern)'
 event_types.email_changed: Email address changed
 event_types.email_deleted: Email address deleted

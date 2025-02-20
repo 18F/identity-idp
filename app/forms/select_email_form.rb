@@ -26,7 +26,6 @@ class SelectEmailForm
       success:,
       errors:,
       extra: extra_analytics_attributes,
-      serialize_error_details_only: true,
     )
   end
 

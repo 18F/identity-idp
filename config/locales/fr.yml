@@ -825,6 +825,7 @@ event_types.authenticated_at_html: Connecté à %{service_provider_link_html}
 event_types.authenticator_disabled: Appli d’authentification supprimée
 event_types.authenticator_enabled: Appli d’authentification ajoutée
 event_types.backup_codes_added: Codes de sauvegarde ajoutés
+event_types.backup_codes_removed: Codes de sauvegarde supprimés
 event_types.eastern_timestamp: '%{timestamp} (heure de l’Est)'
 event_types.email_changed: Adresse e-mail modifiée
 event_types.email_deleted: Adresse e-mail supprimée

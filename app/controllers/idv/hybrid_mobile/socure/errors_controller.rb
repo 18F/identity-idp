@@ -10,10 +10,16 @@ module Idv
         include StepIndicatorConcern
         include SocureErrorsConcern
 
+        before_action :check_valid_document_capture_session
+
         def show
           error_code = error_params[:error_code]
           if error_code.nil?
-            error_code = error_code_for(handle_stored_result)
+            result = handle_stored_result(
+              user: document_capture_session.user,
+              store_in_session: false,
+            )
+            error_code = error_code_for(result)
           end
           track_event(error_code: error_code)
           @presenter = socure_errors_presenter(error_code)
@@ -39,7 +45,7 @@ module Idv
         end
 
         def rate_limiter
-          RateLimiter.new(user: document_capture_session&.user, rate_limit_type: :idv_doc_auth)
+          RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
         end
 
         def remaining_submit_attempts
@@ -67,7 +73,7 @@ module Idv
         end
 
         def service_provider
-          @service_provider ||= ServiceProvider.find_by(issuer: document_capture_session&.issuer)
+          @service_provider ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
         end
       end
     end

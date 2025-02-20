@@ -19,7 +19,7 @@ class VerifyPasswordForm
 
     @personal_key = reencrypt_pii if success
 
-    FormResponse.new(success:, errors:, serialize_error_details_only: true)
+    FormResponse.new(success:, errors:)
   end
 
   private

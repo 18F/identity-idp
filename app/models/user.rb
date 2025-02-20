@@ -222,9 +222,14 @@ class User < ApplicationRecord
     pending_profile&.in_person_enrollment&.status
   end
 
-  def ipp_enrollment_status_not_passed?
+  # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments
+  # used to go to passed status when profiles were marked as in fraud review. Since LG-15216, this
+  # will no longer be the case.
+  def ipp_enrollment_status_not_passed_or_in_fraud_review?
     !in_person_enrollment_status.blank? &&
-      in_person_enrollment_status != 'passed'
+      [InPersonEnrollment::STATUS_PASSED, InPersonEnrollment::STATUS_IN_FRAUD_REVIEW].exclude?(
+        in_person_enrollment_status,
+      )
   end
 
   def has_in_person_enrollment?
@@ -530,11 +535,19 @@ class User < ApplicationRecord
     email_addresses.confirmed.last_sign_in
   end
 
+  # Find the user's most recent in-progress enrollment profile.
+  def current_in_progress_in_person_enrollment_profile
+    in_person_enrollments
+      .where(status: InPersonEnrollment::IN_PROGRESS_ENROLLMENT_STATUSES)
+      .order(created_at: :desc)
+      .first&.profile
+  end
+
   private
 
   def find_password_reset_profile
     FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_pending_in_person_or_active_profile :
+      find_in_person_in_progress_or_active_profile :
       find_active_profile
   end
 
@@ -542,9 +555,8 @@ class User < ApplicationRecord
     profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 
-  def find_pending_in_person_or_active_profile
-    pending_in_person_enrollment&.profile ||
-      profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  def find_in_person_in_progress_or_active_profile
+    current_in_progress_in_person_enrollment_profile || find_active_profile
   end
 
   def lockout_period

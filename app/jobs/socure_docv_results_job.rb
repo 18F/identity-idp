@@ -24,6 +24,10 @@ class SocureDocvResultsJob < ApplicationJob
       vendor_request_time_in_ms: timer.results['vendor_request'],
     )
 
+    # for ipp enrollment to track if user attempted doc auth
+    last_doc_auth_result = docv_result_response.extra_attributes.dig(:decision, :value)
+    document_capture_session.update!(last_doc_auth_result:) if last_doc_auth_result
+
     if docv_result_response.success?
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
       log_pii_validation(doc_pii_response:)
