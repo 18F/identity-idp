@@ -35,7 +35,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
   end
 
   # should not happen, because the connection options in
-  # HealthCheckRequest prevent it, but let's stay sane if it does.
+  # GeneralHealthCheckRequest prevent it, but let's stay sane if it does.
   # 403 is an arbitrary choice.
   context 'when initialized from an HTTP error response' do
     context 'with no body' do

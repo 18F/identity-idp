@@ -3,7 +3,7 @@
 module DocAuth
   module Dos
     module Requests
-      class HealthCheckRequest
+      class GeneralHealthCheckRequest
         def fetch(analytics)
           begin
             faraday_response = connection.get
