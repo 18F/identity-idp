@@ -19,7 +19,7 @@ RSpec.describe Idv::ImageUploadsController do
       post :create, params: params
     end
 
-    let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let!(:document_capture_session) { create(:document_capture_session, user:, doc_auth_vendor: 'mock') }
     let(:flow_path) { 'standard' }
     let(:params) do
       {
