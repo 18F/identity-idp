@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::Dos::Responses::HealthCheckFailure do
+RSpec.describe DocAuth::Dos::Responses::GeneralHealthCheckFailure do
   subject(:health_check_result) { described_class.new(faraday_error) }
 
   let(:health_check_endpoint) do

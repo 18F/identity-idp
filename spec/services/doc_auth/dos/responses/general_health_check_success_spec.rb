@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
+RSpec.describe DocAuth::Dos::Responses::GeneralHealthCheckSuccess do
   subject(:health_check_result) { described_class.new(faraday_result) }
 
   let(:faraday_result) do
