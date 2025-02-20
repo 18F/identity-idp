@@ -45,7 +45,7 @@ RSpec.describe 'users/passwords/edit.html.erb' do
   it 'has aria described by' do
     render
 
-    expect(rendered).to have_selector('[aria-describedby="password-description"]')
+    expect(rendered).to have_selector('[aria-describedby="password-strength password-description"]')
   end
 
   context 'required password change' do
@@ -71,7 +71,9 @@ RSpec.describe 'users/passwords/edit.html.erb' do
     it 'aria described by is blank' do
       render
 
-      expect(rendered).to_not have_selector('[aria-describedby="password-description"]')
+      expect(rendered).to_not have_selector(
+        '[aria-describedby="password-strength password-description"]',
+      )
     end
   end
 end
