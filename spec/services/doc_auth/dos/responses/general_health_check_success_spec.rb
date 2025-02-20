@@ -7,8 +7,13 @@ RSpec.describe DocAuth::Dos::Responses::GeneralHealthCheckSuccess do
     Faraday.get(health_check_endpoint)
   end
 
-  let(:health_check_endpoint) do
-    IdentityConfig.store.passports_api_health_check_endpoint
+  let(:health_check_endpoint) { 'https://dos-passport-healthcheck-endpoint.test.org' }
+
+  before do
+    allow(IdentityConfig.store).to(
+      receive(:dos_passport_healthcheck_endpoint)
+        .and_return(health_check_endpoint)
+    )
   end
 
   context 'when initialized from a successful request' do

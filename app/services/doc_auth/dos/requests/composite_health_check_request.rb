@@ -3,7 +3,7 @@
 module DocAuth
   module Dos
     module Requests
-      class GeneralHealthCheckRequest
+      class CompositeHealthCheckRequest
         def fetch(analytics)
           begin
             faraday_response = connection.get
@@ -22,7 +22,7 @@ module DocAuth
 
         def connection
           @connection ||= Faraday::Connection.new(
-            url: IdentityConfig.store.dos_passport_healthcheck_endpoint,
+            url: IdentityConfig.store.dos_passport_composite_healthcheck_endpoint,
           ) do |builder|
             builder.response :raise_error
           end

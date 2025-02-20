@@ -3,7 +3,7 @@
 module DocAuth
   module Dos
     module Responses
-      class HealthCheckFailure < DocAuth::Response
+      class GeneralHealthCheckFailure < DocAuth::Response
         def initialize(faraday_error)
           errors =
             if faraday_error.respond_to?(:status) # some subclasses don't
