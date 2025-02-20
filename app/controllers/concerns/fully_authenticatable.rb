@@ -3,6 +3,7 @@
 module FullyAuthenticatable
   def delete_branded_experience(logout: false)
     ServiceProviderRequestProxy.delete(request_id)
+    session[:sp_successful_handoff] = true
     session[:sp] = {} if logout
     nil
   end
