@@ -19,7 +19,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
       liveness_checking_required: liveness_checking_required,
-      doc_auth_vendor: 'mock',
       acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
@@ -51,7 +50,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     }
   end
   let(:selfie_image_metadata) { nil }
-  let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
+  let!(:document_capture_session) { create(:document_capture_session, doc_auth_vendor: 'mock') }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
