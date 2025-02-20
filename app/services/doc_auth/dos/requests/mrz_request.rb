@@ -42,7 +42,7 @@ module DocAuth
         end
 
         def endpoint
-          raise IdentityConfig.store.dos_passport_mrz_endpoint
+          IdentityConfig.store.dos_passport_mrz_endpoint
         end
 
         def request_headers

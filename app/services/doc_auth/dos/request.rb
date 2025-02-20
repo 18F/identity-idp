@@ -6,6 +6,7 @@ module DocAuth
       def fetch
         # return DocAuth::Respose with DocAuth:Error if workflow invalid
         http_response = send_http_request
+        # log
         return handle_invalid_response(http_response) unless http_response.success?
 
         handle_http_response(http_response)
@@ -14,6 +15,10 @@ module DocAuth
       end
 
       private
+
+      def event_name
+        raise NotImplementedError
+      end
 
       def metric_name
         raise NotImplementedError
@@ -24,6 +29,10 @@ module DocAuth
       end
 
       def endpoint
+        raise NotImplementedError
+      end
+
+      def request_id
         raise NotImplementedError
       end
 
@@ -42,7 +51,7 @@ module DocAuth
         when :get
           send_http_get_request
         else
-          raise NotImplementedError("HTTP method #{http_method} not implemented")
+          raise NotImplementedError.new("HTTP method #{http_method} not implemented")
         end
       end
 
@@ -77,7 +86,7 @@ module DocAuth
             vendor: 'DoS',
             vendor_status_code: status_code,
             vendor_status_message: status_message,
-            reference: @reference,
+            request_id: request_id,
           }.compact,
         )
       end
@@ -106,11 +115,9 @@ module DocAuth
             NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
           end,
         }
-
-        Faraday.new(url: url.to_s, headers: request_headers) do |conn|
+        Faraday.new(url: endpoint, headers: request_headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
-          conn.request :authorization, :basic, username, password unless hmac_auth_enabled?
           conn.adapter :net_http
           conn.options.timeout = timeout
         end
@@ -120,12 +127,8 @@ module DocAuth
         :get
       end
 
-      def url
-        URI.join(endpoint)
-      end
-
       def timeout
-        IdentityConfig.store.dos_passport_timeout
+        60 # IdentityConfig.store.dos_passport_timeout
       end
     end
   end
