@@ -2,7 +2,6 @@
 
 module Idv
   class ImageUploadsController < ApplicationController
-    # include DocAuthVendorConcern
 
     respond_to :json
 
