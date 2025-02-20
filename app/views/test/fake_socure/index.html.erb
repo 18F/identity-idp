@@ -1,0 +1,31 @@
+<% self.title = 'Fake Socure Configuration' %>
+
+<%= content_for(:meta_refresh) { '15' } %>
+
+<h1>Test Socure Configuration</h1>
+
+<%= form_with url: "/test/fake_socure", method: :post do |form| %>
+<fieldset class="usa-fieldset">
+  <legend class="usa-legend">Select a fixture</legend>
+  <div class="usa-radio">
+  <%= form.radio_button :fixture, name: 'disabled', class: :"usa-radio--input" %>
+  <%= form.label "None (Test Socure disabled)", for: 'disabled' %>
+  <% @socure_fixtures.each do |name, fixture| %>
+    <div class="usa-radio">
+      <%= form.radio_button :fixture, name, name: name, class: :"usa-radio--input" %>
+      <%=
+        form.label :"fixture_#{name}",
+          name.gsub('.json','').gsub(/\W+/, ' ').titleize,
+          class: :"usa-radio--label",
+          for: name
+      %>
+    </div>
+  <% end %>
+</fieldset>
+<% end %>
+
+<div>
+  <pre>
+    <%= @socure_fixtures.inspect %>
+  </pre>
+</div>
