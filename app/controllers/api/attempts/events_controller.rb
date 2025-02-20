@@ -39,7 +39,12 @@ module Api
       end
 
       def valid_auth_token?(token, issuer)
-        config_data(issuer)[:token] == token
+        return false if token.blank?
+
+        hashed_token = OpenSSL::Digest::SHA256.hexdigest(token)
+        config_data(issuer)[:tokens].any? do |valid_token|
+          ActiveSupport::SecurityUtils.secure_compare(valid_token, hashed_token)
+        end
       end
 
       def poll_params

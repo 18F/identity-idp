@@ -29,7 +29,7 @@ RSpec.describe Api::Attempts::EventsController do
       allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
         [{
           issuer: sp.issuer,
-          token:,
+          tokens: [OpenSSL::Digest::SHA256.hexdigest(token)],
         }],
       )
     end
