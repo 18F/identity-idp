@@ -23,7 +23,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
     allow(IdentityConfig.store).to receive(:dos_passport_client_secret).and_return(client_secret)
     stub_request(:post, mrz_endpoint)
       .with(
-        body: "{\"mrz\":\"#{mrz}\",\"request_id\":\"#{request_id}\",\"category\":\"book\"}",
+        body: "{\"mrz\":\"#{mrz}\",\"category\":\"book\"}",
         headers: {
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',

@@ -56,7 +56,7 @@ module DocAuth
         def body
           {
             mrz:,
-            request_id:,
+            # request_id:, # optional, and currently implemented as an int
             category:,
           }.to_json
         end
