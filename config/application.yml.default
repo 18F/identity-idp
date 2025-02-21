@@ -285,6 +285,7 @@ outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
+passports_api_health_check_endpoint: 'https://caapinpe.state.gov/api/passport-match-prc-api/v1/html'
 password_max_attempts: 3
 password_pepper:
 personal_key_retired: true
