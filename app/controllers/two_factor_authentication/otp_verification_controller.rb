@@ -273,8 +273,5 @@ module TwoFactorAuthentication
       user_session.delete(:unconfirmed_phone)
       user_session[:context] = 'authentication'
     end
-
-    def modal_presenter
-    end
   end
 end

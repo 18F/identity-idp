@@ -7,20 +7,24 @@
 <% end %>
 
 <% if @presenter.otp_expiration.present? %>
-  <%= render CountdownAlertComponent.new(
+  <%= render ModalComponent.new(class: 'otp-expiration-modal') do |c| %>
+    <p>
+      <%= render CountdownAlertComponent.new(
       show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
       alert_options: { class: 'margin-bottom-4' },
       countdown_options: { expiration: @presenter.otp_expiration },
     ) %>
-
+    </p>
 
     <p class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
       <%= render CountdownComponent.new(
-        expiration: Time.zone.now,
-        update_interval: 30.seconds,
-        start_immediately: true,
-      ) %>
+            expiration: Time.zone.now,
+            update_interval: 30.seconds,
+            start_immediately: true,
+          ) %>
     </p>
+
+  <% end %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
