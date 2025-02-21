@@ -56,8 +56,8 @@ class ServiceProviderSession
     (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end
 
-  def successful_handoff
-    sp_session[:successful_handoff]
+  def successful_handoff?
+    sp_session[:successful_handoff] || false
   end
 
   def sp_create_link
