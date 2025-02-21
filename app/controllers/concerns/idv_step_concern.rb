@@ -77,6 +77,8 @@ module IdvStepConcern
   end
 
   def vendor_document_capture_url
+    return idv_document_capture_url if document_capture_session.nil?
+
     if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
       idv_socure_document_capture_url
     else

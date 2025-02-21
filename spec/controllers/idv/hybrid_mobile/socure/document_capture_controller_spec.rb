@@ -144,8 +144,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth document_capture visited',
           hash_including(
-              step: 'socure_document_capture',
-              flow_path: 'hybrid',
+            step: 'socure_document_capture',
+            flow_path: 'hybrid',
           ),
         )
       end
