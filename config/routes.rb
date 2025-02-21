@@ -391,6 +391,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
+      get '/choose_id_type' => 'choose_id_type#show'
+      put '/choose_id_type' => 'choose_id_type#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
       get '/link_sent/poll' => 'link_sent_poll#show'
