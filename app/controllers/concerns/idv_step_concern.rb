@@ -9,7 +9,6 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
-  include Idv::DocAuthVendorConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -73,6 +72,14 @@ module IdvStepConcern
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
       redirect_to vendor_document_capture_url
+    end
+  end
+
+  def vendor_document_capture_url
+    if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+      idv_socure_document_capture_url
+    else
+      idv_document_capture_url
     end
   end
 

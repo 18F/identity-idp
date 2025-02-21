@@ -39,14 +39,6 @@ module Idv
       end
     end
 
-    def vendor_document_capture_url
-      if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-        idv_socure_document_capture_url
-      else
-        idv_document_capture_url
-      end
-    end
-
     private
 
     def choose_non_socure_bucket

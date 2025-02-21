@@ -7,7 +7,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
