@@ -15,15 +15,6 @@ class UpdatePasswordPresenter
     end.uniq
   end
 
-  def aria_described_by_if_eligible
-    return {} if required_password_change?
-    {
-      input_html: {
-        aria: { describedby: 'password-strength password-description' },
-      },
-    }
-  end
-
   def submit_text
     if required_password_change?
       I18n.t('forms.passwords.edit.buttons.submit')
