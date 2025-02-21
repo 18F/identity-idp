@@ -24,6 +24,9 @@ export class CountdownAlertElement extends HTMLElement {
 
   show() {
     this.classList.remove('display-none');
+    if(this.showAtRemaining) (
+      console.log(this.querySelector('lg-countdown')?.setAttribute("aria-live", "off"))
+    )
   }
 }
 

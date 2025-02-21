@@ -17,7 +17,7 @@
       <%= render CountdownComponent.new(
             expiration: @presenter.otp_expiration,
             update_interval: 30.seconds,
-            start_immediately: false,
+            start_immediately: true,
           ) %>
     </p>
 <% end %>
