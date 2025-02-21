@@ -1332,7 +1332,7 @@ RSpec.describe User do
         encrypted_pii_recovery, encrypted_pii_recovery_multi_region =
           Encryption::Encryptors::PiiEncryptor.new(
             personal_key,
-          ).encrypt('null', user_uuid: user.uuid).single_region_ciphertext
+          ).encrypt('null', user_uuid: user.uuid).single_region_digest.to_s
 
         create(
           :profile,
