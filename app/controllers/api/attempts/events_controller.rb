@@ -41,14 +41,20 @@ module Api
       def valid_auth_token?(token, issuer)
         return false if token.blank?
 
-        hashed_token = OpenSSL::Digest::SHA256.hexdigest(token)
         config_data(issuer)[:tokens].any? do |valid_token|
-          ActiveSupport::SecurityUtils.secure_compare(valid_token, hashed_token)
+          scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(valid_token[:salt])
+          scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
+          hashed_req_token = SCrypt::Password.new(scrypted).digest
+          ActiveSupport::SecurityUtils.secure_compare(valid_token[:value], hashed_req_token)
         end
       end
 
       def poll_params
         params.permit(:maxEvents, acks: [])
+      end
+
+      def cost
+        IdentityConfig.store.scrypt_cost
       end
 
       def config_data(issuer)

@@ -22,6 +22,15 @@ RSpec.describe Api::Attempts::EventsController do
     end
 
     let(:token) { 'a-shared-secret' }
+    let(:salt) { SecureRandom.hex(32) }
+    let(:cost) { IdentityConfig.store.scrypt_cost }
+
+    let(:hashed_token) do
+      scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
+      scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
+      SCrypt::Password.new(scrypted).digest
+    end
+
     let(:auth_header) { "Bearer #{issuer} #{token}" }
 
     before do
@@ -29,7 +38,7 @@ RSpec.describe Api::Attempts::EventsController do
       allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
         [{
           issuer: sp.issuer,
-          tokens: [OpenSSL::Digest::SHA256.hexdigest(token)],
+          tokens: [{ value: hashed_token, salt: }],
         }],
       )
     end
