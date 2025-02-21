@@ -30,6 +30,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns lexis nexis as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+        expect(controller.document_capture_session.doc_auth_vendor)
+          .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
       end
     end
 
@@ -38,6 +40,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns mock as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
+        expect(controller.document_capture_session.doc_auth_vendor)
+          .to eq(Idp::Constants::Vendors::MOCK)
       end
     end
 
@@ -52,6 +56,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
         it 'returns socure as the vendor' do
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
+          expect(controller.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
         end
 
         it 'adds a user to the socure redis set' do
@@ -147,6 +153,22 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns false' do
         expect(controller.doc_auth_vendor_enabled?(vendor)).to eq false
+      end
+
+      context 'session already assigned LexisNexis doc auth vendor' do
+        before do
+          allow(controller).to receive(:document_capture_session)
+            .and_return(create(:document_capture_session, user:))
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default)
+            .and_return(Idp::Constants::Vendors::MOCK)
+          controller.document_capture_session
+            .update!(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
+        end
+        it 'lexis_nexis is still docauth vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+          expect(controller.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+        end
       end
     end
   end
