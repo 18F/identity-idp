@@ -18,7 +18,7 @@
       <%= render CountdownComponent.new(
         expiration: Time.zone.now,
         update_interval: 30.seconds,
-        start_immediately: false,
+        start_immediately: true,
       ) %>
     </p>
 <% end %>
