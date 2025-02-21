@@ -37,6 +37,8 @@ RSpec.describe 'IdvStepConcern' do
       routes.draw do
         get 'show' => 'anonymous#show'
       end
+      allow(controller).to receive(:document_capture_session)
+        .and_return(create(:document_capture_session, user:))
     end
 
     context 'redo specified' do
