@@ -103,7 +103,7 @@ RSpec.describe Api::Attempts::EventsController do
           end
         end
 
-        context 'with a valid but not matching public key' do
+        context 'with a valid but not config token' do
           let(:auth_header) { "Bearer #{issuer} not-shared-secret" }
 
           it 'returns a 401' do

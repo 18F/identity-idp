@@ -26,41 +26,13 @@ module Api
       private
 
       def authenticate_client
-        bearer, issuer, token = request.authorization&.split(' ', 3)
-        if bearer != 'Bearer' ||
-           config_data(issuer).blank? || !valid_auth_token?(token, issuer)
-
+        if AttemptsApi::RequestTokenValidator.new(request.authorization).invalid?
           render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
-        end
-      end
-
-      def service_provider(issuer)
-        !IdentityConfig.store.allowed_attempts_providers.map(&:issuer).include?(issuer)
-      end
-
-      def valid_auth_token?(token, issuer)
-        return false if token.blank?
-
-        config_data(issuer)[:tokens].any? do |valid_token|
-          scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(valid_token[:salt])
-          scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
-          hashed_req_token = SCrypt::Password.new(scrypted).digest
-          ActiveSupport::SecurityUtils.secure_compare(valid_token[:value], hashed_req_token)
         end
       end
 
       def poll_params
         params.permit(:maxEvents, acks: [])
-      end
-
-      def cost
-        IdentityConfig.store.scrypt_cost
-      end
-
-      def config_data(issuer)
-        IdentityConfig.store.allowed_attempts_providers.find do |config|
-          config[:issuer] == issuer
-        end
       end
     end
   end
