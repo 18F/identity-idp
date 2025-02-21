@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::Dos::Responses::GeneralHealthCheckFailure do
-  subject(:health_check_result) { described_class.new(faraday_error) }
+RSpec.describe DocAuth::Dos::Responses::HealthCheckFailure do
+  subject(:health_check_result) { described_class.new(faraday_error:) }
 
   let(:health_check_endpoint) { 'https://dos-passport-healthcheck-endpoint.test.org' }
 

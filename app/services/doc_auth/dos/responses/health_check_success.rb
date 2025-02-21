@@ -3,7 +3,7 @@
 module DocAuth
   module Dos
     module Responses
-      class GeneralHealthCheckSuccess < DocAuth::Response
+      class HealthCheckSuccess < DocAuth::Response
         def initialize(faraday_response)
           extra =
             if faraday_response.body && !faraday_response.body.empty?
