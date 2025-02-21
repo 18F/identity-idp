@@ -7,9 +7,8 @@
 <% end %>
 
 <% if @presenter.otp_expiration.present? %>
-  <%= render CountdownAlertComponent.new(
+    <%= render CountdownAlertComponent.new(
         show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-        screen_reader_frequency: IdentityConfig.store.screen_reader_frequency.seconds,
         alert_options: { class: 'margin-bottom-4' },
         countdown_options: { expiration: @presenter.otp_expiration },
       ) %>

@@ -5,6 +5,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include MfaSetupConcern
     include NewDeviceConcern
+    include SessionTimeoutWarningHelper
 
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
@@ -271,6 +272,9 @@ module TwoFactorAuthentication
     def reset_otp_session_data
       user_session.delete(:unconfirmed_phone)
       user_session[:context] = 'authentication'
+    end
+
+    def modal_presenter
     end
   end
 end
