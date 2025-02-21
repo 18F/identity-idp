@@ -165,6 +165,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
             .update!(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
         end
         it 'lexis_nexis is still docauth vendor' do
+          expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
           expect(controller.document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
