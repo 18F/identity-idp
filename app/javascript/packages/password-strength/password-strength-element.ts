@@ -160,11 +160,14 @@ class PasswordStrengthElement extends HTMLElement {
       const result = zxcvbn(this.input.value, this.forbiddenPasswords);
       const score = this.#getNormalizedScore(result);
       this.setAttribute('score', String(score));
+      this.input.setAttribute('aria-describedby', 'password-strength password-description');
       this.input.setCustomValidity(
         this.#isValid(result) ? '' : t('errors.messages.stronger_password'),
       );
       this.strength.textContent = this.#getStrengthLabel(score);
       this.feedback.textContent = this.#getNormalizedFeedback(result);
+    } else {
+      this.input.setAttribute('aria-describedby', 'password-description');
     }
   }
 }
