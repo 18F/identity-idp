@@ -6236,12 +6236,13 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the passport api health check succeeded.
   # @param [Hash] body The health check body, if present.
   # @param [String] error Any additional error information we have
-  def passport_api_health_check(success:, body: nil, error: nil, **extra)
+  def passport_api_health_check(success:, body: nil, errors: nil, exception: nil, **extra)
     track_event(
       :passport_api_health_check,
       success:,
       body:,
-      error:,
+      errors:,
+      exception:,
       **extra,
     )
   end

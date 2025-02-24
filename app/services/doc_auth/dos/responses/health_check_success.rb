@@ -4,7 +4,7 @@ module DocAuth
   module Dos
     module Responses
       class HealthCheckSuccess < DocAuth::Response
-        def initialize(faraday_response)
+        def initialize(faraday_response:)
           extra =
             if faraday_response.body && !faraday_response.body.empty?
               { body: faraday_response.body }

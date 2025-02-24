@@ -8,18 +8,17 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckFailure do
   before do
     allow(IdentityConfig.store).to(
       receive(:dos_passport_health_check_endpoint)
-        .and_return(health_check_endpoint)
+        .and_return(health_check_endpoint),
     )
   end
 
   def make_faraday_error(status:)
     stub_request(:get, health_check_endpoint).to_return(status:)
-
-    begin
-      Faraday.get(health_check_endpoint)
-    rescue FaradayError => faraday_error
-      faraday_error
-    end
+    Faraday::Connection.new(url: health_check_endpoint) do |config|
+      config.response :raise_error
+    end.get(health_check_endpoint)
+  rescue Faraday::Error => faraday_error
+    faraday_error
   end
 
   [403, 404, 500].each do |http_status|
@@ -35,7 +34,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckFailure do
       end
 
       it 'has the faraday exception' do
-        expect(health_check_result.exception).to eq(faraday_error)
+        expect(health_check_result.exception).to eq(faraday_error.inspect)
       end
     end
   end

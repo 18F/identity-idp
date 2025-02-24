@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
-  subject(:health_check_result) { described_class.new(faraday_result) }
+  subject(:health_check_result) do
+    described_class.new(faraday_response: faraday_result)
+  end
 
   let(:faraday_result) do
     Faraday.get(health_check_endpoint)
@@ -40,7 +42,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
   end
 
   # should not happen, because the connection options in
-  # GeneralHealthCheckRequest prevent it, but let's stay sane if it does.
+  # HealthCheckRequest prevent it, but let's stay sane if it does.
   # 403 is an arbitrary choice.
   context 'when initialized from an HTTP error response' do
     context 'with no body' do

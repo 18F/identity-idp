@@ -5,19 +5,38 @@ module DocAuth
     module Responses
       class HealthCheckFailure < DocAuth::Response
         def initialize(faraday_error: nil)
-          errors =
-            if faraday_error&.respond_to?(:status) # some subclasses don't
-              { network: faraday_error.status }
-            else
-              { network: true }
-            end
+          @faraday_error = faraday_error
 
           super(
             success: false,
             errors:,
-            exception: faraday_error,
-            extra: { error: faraday_error.inspect }
+            exception: faraday_error.inspect,
+            extra: { body: },
           )
+        end
+
+        private
+
+        attr_accessor :faraday_error
+
+        def response
+          faraday_error.respond_to?(:response) && faraday_error.response
+        end
+
+        def errors
+          if response
+            { network: response[:status] }
+          else
+            { network: 'faraday exception' }
+          end
+        end
+
+        def body
+          if response
+            response[:body]
+          else
+            {}
+          end
         end
       end
     end

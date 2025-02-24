@@ -4,6 +4,15 @@ module DocAuth
   module Dos
     module Requests
       class HealthCheckRequest
+        UNUSED_RESPONSE_KEYS = %i[
+          attention_with_barcode
+          doc_type_supported
+          selfie_live
+          selfie_quality_good
+          doc_auth_success
+          selfie_status
+        ].freeze
+
         def initialize(endpoint:)
           @endpoint = endpoint
         end
@@ -11,17 +20,15 @@ module DocAuth
         def fetch(analytics)
           begin
             faraday_response = connection.get
-            response = Responses::HealthCheckSuccess.new(faraday_response)
+            response = Responses::HealthCheckSuccess.new(faraday_response:)
           rescue Faraday::Error => faraday_error
-            response = Responses::HealthCheckFailure.new(faraday_error)
-          rescue StandardError => e
-            response = Responses::HealthCheckFailure.new
-            raise e
+            response = Responses::HealthCheckFailure.new(faraday_error:)
           end
         ensure
           analytics.passport_api_health_check(
-            success: response.success?,
-            **response&.extra,
+            **response.to_h
+                .except(*UNUSED_RESPONSE_KEYS)
+                .merge(response.extra),
           )
         end
 
