@@ -18,20 +18,20 @@ module PassportApiHelpers
 
     def general_health_check_endpoint
       'https://dos-health-check-endpoint.test.org'
-    end    
+    end
 
     def composite_health_check_endpoint
       'https://composite-health-check-endpoint.test.org'
-    end    
+    end
 
     def successful_api_general_health_check_body
       JSON.parse(
         File.read(
           Rails.root.join(
             'spec', 'fixtures', 'dos', 'healthcheck',
-            'general_health_success.json',
-          )
-        )
+            'general_health_success.json'
+          ),
+        ),
       )
     end
 
@@ -40,9 +40,9 @@ module PassportApiHelpers
         File.read(
           Rails.root.join(
             'spec', 'fixtures', 'dos', 'healthcheck',
-            'composite_health_success.json',
-          )
-        )
+            'composite_health_success.json'
+          ),
+        ),
       )
     end
  end

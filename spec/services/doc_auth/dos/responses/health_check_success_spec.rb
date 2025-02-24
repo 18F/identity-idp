@@ -16,13 +16,15 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
     let(:faraday_response) do
       Faraday.get(general_health_check_endpoint)
     end
-    
+
     it 'is successful' do
       expect(health_check_result).to be_success
     end
 
     it 'has the body in the extra event parameters' do
-      expect(health_check_result.extra[:body]).to eq(successful_api_general_health_check_body.to_json)
+      expect(health_check_result.extra[:body]).to eq(
+        successful_api_general_health_check_body.to_json,
+      )
     end
   end
 
@@ -30,13 +32,15 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
     let(:faraday_response) do
       Faraday.get(composite_health_check_endpoint)
     end
-    
+
     it 'is successful' do
       expect(health_check_result).to be_success
     end
 
     it 'has the body in the extra event parameters' do
-      expect(health_check_result.extra[:body]).to eq(successful_api_composite_health_check_body.to_json)
+      expect(health_check_result.extra[:body]).to eq(
+        successful_api_composite_health_check_body.to_json,
+      )
     end
   end
 
