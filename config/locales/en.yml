@@ -2046,8 +2046,8 @@ webauthn_platform_recommended.description_save_time: Save time by using your fac
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
 webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
-webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
-webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
+webauthn_setup_mismatch.description.webauthn_html: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
+webauthn_setup_mismatch.description.webauthn_platform_html: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
 webauthn_setup_mismatch.heading.webauthn: Security key detected
 webauthn_setup_mismatch.heading.webauthn_platform: Face or touch unlock detected
 webauthn_setup_mismatch.undo: Undo
