@@ -33,7 +33,6 @@ module UspsInPersonProofing
     #
     # @param [ActiveModel::Validations] record
     def validate(record)
-      return unless IdentityConfig.store.usps_ipp_transliteration_enabled
       nontransliterable_chars = Set.new
       @fields.each do |field|
         next unless record.respond_to?(field)
