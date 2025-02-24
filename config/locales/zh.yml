@@ -2059,8 +2059,8 @@ webauthn_platform_recommended.description_save_time: Save time by using your fac
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
 webauthn_setup_mismatch.description_undo: 点击“撤消”可删除此选项。
-webauthn_setup_mismatch.description.webauthn_html: <p>我们注意到您正在使用安全密钥而不是人脸或触摸解锁。</p><p>点击“继续”即可从现在开始使用您的安全密钥登录。</p>
-webauthn_setup_mismatch.description.webauthn_platform_html: <p>我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。</p><p>点击“继续”即可从现在开始使用人脸或触摸解锁登录。</p>
+webauthn_setup_mismatch.description.webauthn: 我们注意到您正在使用安全密钥而不是人脸或触摸解锁。点击“继续”即可从现在开始使用您的安全密钥登录。
+webauthn_setup_mismatch.description.webauthn_platform: 我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。点击“继续”即可从现在开始使用人脸或触摸解锁登录。
 webauthn_setup_mismatch.heading.webauthn: 发现安全密钥
 webauthn_setup_mismatch.heading.webauthn_platform: 发现人脸或触摸解锁
 webauthn_setup_mismatch.undo: 撤消
