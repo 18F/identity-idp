@@ -1096,7 +1096,7 @@ idv.failure.sessions.warning: Please check the information you entered and try a
 idv.failure.setup.fail_date_html: Call our contact center by <strong>%{date_html}</strong> to continue verifying your identity.
 idv.failure.setup.fail_html: Call <strong>%{contact_number}</strong> and provide them with the error <br/>code <strong>%{support_code}</strong>.
 idv.failure.setup.heading: Please give us a call
-idv.failure.timeout: We are experiencing higher than usual wait time processing your request. Please try again.
+idv.failure.timeout: We are experiencing a higher than usual wait time processing your request. Please try again.
 idv.failure.verify.exit: Exit %{app_name}
 idv.failure.verify.fail_link_html: Get help at <strong>%{sp_name}</strong>
 idv.failure.verify.fail_text: to access services.
