@@ -128,7 +128,7 @@ module DocAuth
       end
 
       def timeout
-        60 # IdentityConfig.store.dos_passport_timeout
+        IdentityConfig.store.dos_passport_timeout_seconds
       end
     end
   end
