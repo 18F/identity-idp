@@ -48,6 +48,7 @@ module DocAuth
         def request_headers
           {
             'Content-Type': 'application/json',
+            'X-Correlation-ID': request_id,
             client_id: IdentityConfig.store.dos_passport_client_id,
             client_secret: IdentityConfig.store.dos_passport_client_secret,
           }
@@ -56,7 +57,6 @@ module DocAuth
         def body
           {
             mrz:,
-            # request_id:, # optional, and currently implemented as an int
             category:,
           }.to_json
         end
