@@ -160,14 +160,23 @@ class PasswordStrengthElement extends HTMLElement {
       const result = zxcvbn(this.input.value, this.forbiddenPasswords);
       const score = this.#getNormalizedScore(result);
       this.setAttribute('score', String(score));
-      this.input.setAttribute('aria-describedby', 'password-strength password-description');
+      const inputDescribedBy = this.input.getAttribute('aria-describedby');
+      if (!inputDescribedBy?.includes('password-strength')) {
+        this.input.setAttribute(
+          'aria-describedby',
+          ['password-strength', inputDescribedBy].join(' '),
+        );
+      }
       this.input.setCustomValidity(
         this.#isValid(result) ? '' : t('errors.messages.stronger_password'),
       );
       this.strength.textContent = this.#getStrengthLabel(score);
       this.feedback.textContent = this.#getNormalizedFeedback(result);
     } else {
-      this.input.setAttribute('aria-describedby', 'password-description');
+      this.input.setAttribute(
+        'aria-describedby',
+        this.input.getAttribute('aria-describedby')!.replace(/\s*password-strength\s*/, ''),
+      );
     }
   }
 }
