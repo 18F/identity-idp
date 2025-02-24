@@ -5,7 +5,6 @@ module FullyAuthenticatable
     ServiceProviderRequestProxy.delete(request_id)
     if session[:sp]
       session[:sp][:successful_handoff] = true
-
     end
 
     session[:sp] = {} if logout
