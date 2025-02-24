@@ -2046,8 +2046,8 @@ webauthn_platform_recommended.description_save_time: Save time by using your fac
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
 webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
-webauthn_setup_mismatch.description.webauthn_html: <p>Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. </p><p>Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.</p>
-webauthn_setup_mismatch.description.webauthn_platform_html: <p>Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité.</p> <p>Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.</p>
+webauthn_setup_mismatch.description.webauthn_html: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;« Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description.webauthn_platform_html: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;« Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.heading.webauthn: Clé de sécurité détectée
 webauthn_setup_mismatch.heading.webauthn_platform: Déverrouillage facial ou tactile détecté
 webauthn_setup_mismatch.undo: Annuler
