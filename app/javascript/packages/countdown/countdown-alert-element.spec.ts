@@ -5,9 +5,7 @@ import './countdown-element';
 describe('CountdownAlertElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
 
-  function createElement({
-    showAtRemaining,
-  }: { showAtRemaining?: number } = {}) {
+  function createElement({ showAtRemaining }: { showAtRemaining?: number } = {}) {
     document.body.innerHTML = `
       <lg-countdown-alert ${showAtRemaining ? `show-at-remaining="${showAtRemaining}"` : ''}
       }>

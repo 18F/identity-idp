@@ -42,7 +42,7 @@ export class CountdownElement extends HTMLElement {
   }
 
   get delayCountdownAnnouncement(): boolean {
-    return this.getAttribute('data-delay-countdown') === 'false'
+    return this.getAttribute('data-delay-countdown') === 'false';
   }
 
   get #textNode(): Text {
@@ -87,7 +87,7 @@ export class CountdownElement extends HTMLElement {
   }
 
   setDelayCountdownAnnouncement(): void {
-    if(this.delayCountdownAnnouncement) {
+    if (this.delayCountdownAnnouncement) {
       this.querySelector('lg-countdown')?.setAttribute('aria-live', 'off');
     }
   }
