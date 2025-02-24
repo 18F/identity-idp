@@ -37,8 +37,8 @@ module UspsInPersonProofing
         Response::RequestEnrollResponse.new(res)
       end
 
-      def request_facilities(_location, is_enhanced_ipp)
-        if _location['address'] == 'usps waiting'
+      def request_facilities(location, is_enhanced_ipp)
+        if location['address'] == 'usps waiting'
           body = JSON.parse(Fixtures.internal_server_error_response)
           response = { body: body, status: 422 }
           raise Faraday::TimeoutError.new('Timeout error', response)
