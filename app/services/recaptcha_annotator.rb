@@ -22,12 +22,29 @@ class RecaptchaAnnotator
 
       if FeatureManagement.recaptcha_enterprise?
         submit_annotation(assessment_id:, reason:, annotation:)
+        # Future:
+        # assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)
+        # RecaptchaAnnotateJob.perform_later(assessment:)
       end
 
       { assessment_id:, reason:, annotation: }
     end
 
+    def submit_assessment(assessment)
+      submit_annotation(
+        assessment_id: assessment.id,
+        annotation: assessment.annotation_before_type_cast,
+        reason: assessment.annotation_reason_before_type_cast,
+      )
+    end
+
     private
+
+    def create_or_update_assessment!(assessment_id:, reason:, annotation:)
+      assessment = RecaptchaAssessment.find_or_initialize_by(id: assessment_id)
+      assessment.update(annotation_reason: reason&.to_s, annotation: annotation&.to_s)
+      assessment
+    end
 
     def submit_annotation(assessment_id:, reason:, annotation:)
       request_body = { annotation:, reasons: reason && [reason] }.compact
