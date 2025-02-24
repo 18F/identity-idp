@@ -9,7 +9,7 @@ module DocAuth
 
           super(
             success: false,
-            errors:,
+            errors: errors_hash,
             exception: faraday_error.inspect,
             extra: { body: },
           )
@@ -23,9 +23,13 @@ module DocAuth
           faraday_error.respond_to?(:response) && faraday_error.response
         end
 
-        def errors
-          if response
-            { network: response[:status] }
+        def response_status
+          response && response[:status]
+        end
+
+        def errors_hash
+          if response_status
+            { network: response_status }
           else
             { network: 'faraday exception' }
           end

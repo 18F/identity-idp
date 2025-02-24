@@ -14,7 +14,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
     stub_health_check_endpoints
   end
 
-  shared_examples 'a DOS healthcheck endpoint' do |endpoint|
+  shared_examples 'a DOS healthcheck endpoint' do |endpoint, success_body|
     describe '#fetch' do
       let(:result) { health_check_request_for(endpoint).fetch(analytics) }
 
@@ -30,7 +30,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
             :passport_api_health_check,
             success: true,
             errors: {},
-            body: successful_api_health_check_body.to_json,
+            body: success_body.to_json,
           )
         end
 
@@ -125,10 +125,14 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
   end
 
   describe 'the basic health check endpoint' do
-    it_behaves_like 'a DOS healthcheck endpoint', health_check_endpoint
+    it_behaves_like 'a DOS healthcheck endpoint',
+                    general_health_check_endpoint,
+                    successful_api_general_health_check_body
   end
 
   describe 'the composite health check endpoint' do
-    it_behaves_like 'a DOS healthcheck endpoint', composite_health_check_endpoint
+    it_behaves_like 'a DOS healthcheck endpoint',
+                    composite_health_check_endpoint,
+                    successful_api_composite_health_check_body
   end
 end

@@ -1,53 +1,56 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
+  include PassportApiHelpers
+
   subject(:health_check_result) do
-    described_class.new(faraday_response: faraday_result)
+    described_class.new(faraday_response:)
   end
-
-  let(:faraday_result) do
-    Faraday.get(health_check_endpoint)
-  end
-
-  let(:health_check_endpoint) { 'https://dos-passport-healthcheck-endpoint.test.org' }
 
   before do
-    allow(IdentityConfig.store).to(
-      receive(:dos_passport_healthcheck_endpoint)
-        .and_return(health_check_endpoint)
-    )
+    stub_health_check_settings
+    stub_health_check_endpoints
   end
 
-  context 'when initialized from a successful request' do
-    let(:body) do
-      {
-        name: 'Passport Match Process API',
-        status: 'Up',
-        environment: 'dev-share',
-        comments: 'Ok',
-      }.to_json
+  context 'when initialized from a successful general health check response' do
+    let(:faraday_response) do
+      Faraday.get(general_health_check_endpoint)
     end
-
-    before do
-      stub_request(:get, health_check_endpoint).to_return(body:)
-    end
-
+    
     it 'is successful' do
       expect(health_check_result).to be_success
     end
 
     it 'has the body in the extra event parameters' do
-      expect(health_check_result.extra[:body]).to eq(body)
+      expect(health_check_result.extra[:body]).to eq(successful_api_general_health_check_body.to_json)
     end
   end
 
-  # should not happen, because the connection options in
-  # HealthCheckRequest prevent it, but let's stay sane if it does.
-  # 403 is an arbitrary choice.
+  context 'when initialized from a successful composite health check response' do
+    let(:faraday_response) do
+      Faraday.get(composite_health_check_endpoint)
+    end
+    
+    it 'is successful' do
+      expect(health_check_result).to be_success
+    end
+
+    it 'has the body in the extra event parameters' do
+      expect(health_check_result.extra[:body]).to eq(successful_api_composite_health_check_body.to_json)
+    end
+  end
+
+  # should not happen, because the :raise_error middleware set up in
+  # HealthCheckRequest#connection prevent it, but let's stay sane if
+  # it does.  403 is an arbitrary choice.
   context 'when initialized from an HTTP error response' do
+    let(:faraday_response) do
+      Faraday.get(general_health_check_endpoint)
+    end
+
     context 'with no body' do
       before do
-        stub_request(:get, health_check_endpoint).to_return(status: 403)
+        stub_request(:get, general_health_check_endpoint).to_return(status: 403)
       end
 
       it 'is not successful' do
@@ -61,7 +64,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckSuccess do
 
     context 'with a body' do
       before do
-        stub_request(:get, health_check_endpoint).to_return(status: 403, body: 'a 403 body')
+        stub_request(:get, general_health_check_endpoint).to_return(status: 403, body: 'a 403 body')
       end
 
       it 'is not successful' do

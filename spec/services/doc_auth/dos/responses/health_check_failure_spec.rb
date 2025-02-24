@@ -1,22 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Dos::Responses::HealthCheckFailure do
+  include PassportApiHelpers
+
   subject(:health_check_result) { described_class.new(faraday_error:) }
 
-  let(:health_check_endpoint) { 'https://dos-passport-healthcheck-endpoint.test.org' }
-
-  before do
-    allow(IdentityConfig.store).to(
-      receive(:dos_passport_health_check_endpoint)
-        .and_return(health_check_endpoint),
-    )
-  end
-
   def make_faraday_error(status:)
-    stub_request(:get, health_check_endpoint).to_return(status:)
-    Faraday::Connection.new(url: health_check_endpoint) do |config|
+    stub_request(:get, general_health_check_endpoint).to_return(status:)
+
+    Faraday::Connection.new(url: general_health_check_endpoint) do |config|
       config.response :raise_error
-    end.get(health_check_endpoint)
+    end.get
   rescue Faraday::Error => faraday_error
     faraday_error
   end
