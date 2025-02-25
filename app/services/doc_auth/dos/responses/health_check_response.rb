@@ -53,7 +53,7 @@ module DocAuth
         end
 
         def exception
-          if faraday_response.is_a?(Faraday::Error)
+          if faraday_error?
             faraday_response.inspect
           end
         end
