@@ -5,15 +5,15 @@ class RecaptchaAnnotator
 
   # See: https://cloud.google.com/recaptcha-enterprise/docs/reference/rest/v1/projects.assessments/annotate#reason
   module AnnotationReasons
-    INITIATED_TWO_FACTOR = :INITIATED_TWO_FACTOR
-    PASSED_TWO_FACTOR = :PASSED_TWO_FACTOR
-    FAILED_TWO_FACTOR = :FAILED_TWO_FACTOR
+    INITIATED_TWO_FACTOR = 'INITIATED_TWO_FACTOR'
+    PASSED_TWO_FACTOR = 'PASSED_TWO_FACTOR'
+    FAILED_TWO_FACTOR = 'FAILED_TWO_FACTOR'
   end
 
   # See: https://cloud.google.com/recaptcha-enterprise/docs/reference/rest/v1/projects.assessments/annotate#annotation
   module Annotations
-    LEGITIMATE = :LEGITIMATE
-    FRAUDULENT = :FRAUDULENT
+    LEGITIMATE = 'LEGITIMATE'
+    FRAUDULENT = 'FRAUDULENT'
   end
 
   class << self
@@ -42,7 +42,7 @@ class RecaptchaAnnotator
 
     def create_or_update_assessment!(assessment_id:, reason:, annotation:)
       assessment = RecaptchaAssessment.find_or_initialize_by(id: assessment_id)
-      assessment.update(annotation_reason: reason&.to_s, annotation: annotation&.to_s)
+      assessment.update(annotation_reason: reason, annotation:)
       assessment
     end
 
