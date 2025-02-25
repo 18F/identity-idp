@@ -6,7 +6,6 @@ RSpec.describe Idv::HowToVerifyController do
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
-  let(:document_capture_session) { create(:document_capture_session, user:) }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -16,7 +15,6 @@ RSpec.describe Idv::HowToVerifyController do
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
-    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
   end
 
   describe 'before_actions' do

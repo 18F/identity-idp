@@ -45,6 +45,12 @@ module Idv
       end
 
       def validate_document_capture_session_id
+        if document_capture_session_uuid.blank?
+          # If we've already gotten a document capture user id previously, just continue
+          # processing and (eventually) redirect the user where they're supposed to be.
+          return true if document_capture_user_id
+        end
+
         result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
 
         if result.success?
