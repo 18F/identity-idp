@@ -17,6 +17,7 @@
               'account.connected_apps.associated_attributes_html',
               timestamp_html: render(TimeComponent.new(time: identity.created_at)),
             ) %>
+      <br>
       <strong>
         <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
       </strong>
