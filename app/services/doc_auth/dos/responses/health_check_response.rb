@@ -18,7 +18,7 @@ module DocAuth
         end
 
         def success
-          return false if faraday_response.kind_of?(Faraday::Error)
+          return false if faraday_error?
           parsed_body[:status].to_s.downcase == 'up'
         end
 
@@ -37,7 +37,7 @@ module DocAuth
         end
 
         def errors
-          if faraday_response.kind_of?(Faraday::Error)
+          if faraday_error?
             {
               network: faraday_response.response_status,
             }
@@ -50,6 +50,10 @@ module DocAuth
           if faraday_response.is_a?(Faraday::Error)
             faraday_response.inspect
           end
+        end
+
+        def faraday_error?
+          faraday_response.is_a?(Faraday::Error)
         end
       end
     end
