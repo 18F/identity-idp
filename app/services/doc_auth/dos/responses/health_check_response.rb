@@ -19,6 +19,7 @@ module DocAuth
 
         def success
           return false if faraday_error?
+          return false if !parsed_body
           parsed_body[:status].to_s.downcase == 'up'
         end
 
@@ -29,18 +30,23 @@ module DocAuth
         end
 
         def body
-          faraday_response&.respond_to?(:body) && faraday_response.body
+          return faraday_response.response_body if faraday_response.respond_to?(:response_body)
+          return faraday_response.env.response_body if faraday_response.respond_to?(:env)
         end
 
         def parsed_body
-          JSON.parse(body, symbolize_names: true)
+          body && JSON.parse(body, symbolize_names: true)
         end
 
         def errors
           if faraday_error?
-            {
-              network: faraday_response.response_status,
-            }
+            if faraday_response&.response_status
+              {
+                network: faraday_response.response_status,
+              }
+            else
+              { network: 'faraday exception' }
+            end
           else
             {}
           end

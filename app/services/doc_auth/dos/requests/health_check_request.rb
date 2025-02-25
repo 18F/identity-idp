@@ -20,9 +20,9 @@ module DocAuth
         def fetch(analytics)
           begin
             faraday_response = connection.get
-            response = Responses::HealthCheckSuccess.new(faraday_response:)
+            response = Responses::HealthCheckResponse.new(faraday_response:)
           rescue Faraday::Error => faraday_error
-            response = Responses::HealthCheckFailure.new(faraday_error:)
+            response = Responses::HealthCheckResponse.new(faraday_response: faraday_error)
           end
         ensure
           analytics.passport_api_health_check(
