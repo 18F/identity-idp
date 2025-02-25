@@ -19,9 +19,9 @@ class WebauthnSetupMismatchPresenter
 
   def description
     if platform_authenticator?
-      t('webauthn_setup_mismatch.description.webauthn_platform_html')
+      t('webauthn_setup_mismatch.description.webauthn_platform')
     else
-      t('webauthn_setup_mismatch.description.webauthn_html')
+      t('webauthn_setup_mismatch.description.webauthn')
     end
   end
 

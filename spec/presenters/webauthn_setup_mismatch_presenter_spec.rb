@@ -27,13 +27,13 @@ RSpec.describe WebauthnSetupMismatchPresenter do
     context 'with non-platform authenticator' do
       let(:platform_authenticator) { false }
 
-      it { is_expected.to eq(t('webauthn_setup_mismatch.description.webauthn_html')) }
+      it { is_expected.to eq(t('webauthn_setup_mismatch.description.webauthn')) }
     end
 
     context 'with platform authenticator' do
       let(:platform_authenticator) { true }
 
-      it { is_expected.to eq(t('webauthn_setup_mismatch.description.webauthn_platform_html')) }
+      it { is_expected.to eq(t('webauthn_setup_mismatch.description.webauthn_platform')) }
     end
   end
 

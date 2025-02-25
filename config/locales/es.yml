@@ -2058,8 +2058,8 @@ webauthn_platform_recommended.description_save_time: Save time by using your fac
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
 webauthn_setup_mismatch.description_undo: Haga clic en “Deshacer” para quitar esta opción.
-webauthn_setup_mismatch.description.webauthn_html: Sabemos que está usando una clave de seguridad en lugar de desbloqueo facial o táctil. Haga clic en “Continuar” para iniciar sesión con su clave de seguridad de aquí en adelante.
-webauthn_setup_mismatch.description.webauthn_platform_html: Sabemos que está usando desbloqueo facial o táctil en lugar de una clave de seguridad. Haga clic en “Continuar” para iniciar sesión con desbloqueo facial o táctil de aquí en adelante.
+webauthn_setup_mismatch.description.webauthn: Sabemos que está usando una clave de seguridad en lugar de desbloqueo facial o táctil. Haga clic en “Continuar” para iniciar sesión con su clave de seguridad de aquí en adelante.
+webauthn_setup_mismatch.description.webauthn_platform: Sabemos que está usando desbloqueo facial o táctil en lugar de una clave de seguridad. Haga clic en “Continuar” para iniciar sesión con desbloqueo facial o táctil de aquí en adelante.
 webauthn_setup_mismatch.heading.webauthn: Se detectó clave de seguridad
 webauthn_setup_mismatch.heading.webauthn_platform: Se detectó desbloqueo facial o táctil
 webauthn_setup_mismatch.undo: Deshacer
