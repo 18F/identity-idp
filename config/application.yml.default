@@ -440,7 +440,6 @@ usps_ipp_password: ''
 usps_ipp_request_timeout: 10
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
-usps_ipp_transliteration_enabled: false
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_upload_enabled: false
@@ -518,7 +517,6 @@ development:
   use_dashboard_service_providers: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
-  usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: '/gsa_order'
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
