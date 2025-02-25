@@ -26,16 +26,21 @@ module DocAuth
 
         def handle_http_response(response)
           result = JSON.parse(response.body, symbolize_names: true)
+          extra = {
+            vendor: 'DoS',
+            correlation_id: response.headers['X-Correlation-ID'],
+          }.compact
           case result[:response]
           when 'YES'
-            DocAuth::Response.new(success: true, errors: {}, exception: nil)
+            DocAuth::Response.new(success: true, errors: {}, exception: nil, extra:)
           when 'NO'
-            DocAuth::Response.new(success: false, errors: {}, exception: nil)
+            DocAuth::Response.new(success: false, errors: {}, exception: nil, extra:)
           else
             DocAuth::Response.new(
               success: false,
               errors: { message: "Unexpected response: #{result[:response]}" },
               exception: nil,
+              extra:,
             )
           end
         end

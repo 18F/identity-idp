@@ -9,18 +9,25 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
   let(:client_id) { 'client_id' }
   let(:client_secret) { 'client_secret' }
   let(:mrz) { '1234567890' }
-  let(:request_id) { '1234567890' }
+  let(:correlation_id) { '1234567890' }
   let(:subject) do
-    described_class.new(request_id: request_id, mrz: mrz)
+    described_class.new(mrz: mrz)
   end
   let(:mrz_result) { 'YES' }
   let(:response_body) { { response: mrz_result }.to_json }
+  let(:response_headers) do
+    {
+      'Content-Type' => 'application/json',
+      'X-Correlation-ID' => correlation_id,
+    }
+  end
   let(:http_status) { 200 }
 
   before do
     allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint).and_return(mrz_endpoint)
     allow(IdentityConfig.store).to receive(:dos_passport_client_id).and_return(client_id)
     allow(IdentityConfig.store).to receive(:dos_passport_client_secret).and_return(client_secret)
+    allow(SecureRandom).to receive(:uuid).and_return(correlation_id)
     stub_request(:post, mrz_endpoint)
       .with(
         body: "{\"mrz\":\"#{mrz}\",\"category\":\"book\"}",
@@ -30,16 +37,21 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
           'Client-Id' => client_id,
           'Client-Secret' => client_secret,
           'Content-Type' => 'application/json',
-          'X-Correlation-ID' => request_id,
+          'X-Correlation-ID' => correlation_id,
           'User-Agent' => 'Faraday v2.12.2',
         },
       )
-      .to_return(status: http_status, body: response_body, headers: {})
+      .to_return(status: http_status, body: response_body, headers: response_headers)
   end
 
   context 'when the MRZ matches' do
     it 'succeeds' do
-      expect(subject.fetch.success?).to be(true)
+      response = subject.fetch
+      expect(response.success?).to be(true)
+      expect(response.extra).to include(
+        vendor: 'DoS',
+        correlation_id: correlation_id,
+      )
     end
   end
 
@@ -47,7 +59,12 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
     let(:mrz_result) { 'NO' }
 
     it 'fails' do
-      expect(subject.fetch.success?).to be(false)
+      response = subject.fetch
+      expect(response.success?).to be(false)
+      expect(response.extra).to include(
+        vendor: 'DoS',
+        correlation_id: correlation_id,
+      )
     end
   end
 
@@ -55,23 +72,32 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
     let(:mrz_result) { 'MAYBE' }
 
     it 'fails with a message' do
-      expect(subject.fetch.success?).to be(false)
-      expect(subject.fetch.errors).to include(message: "Unexpected response: #{mrz_result}")
+      response = subject.fetch
+      expect(response.success?).to be(false)
+      expect(response.extra).to include(
+        vendor: 'DoS',
+        correlation_id: correlation_id,
+      )
+      expect(response.errors).to include(message: "Unexpected response: #{mrz_result}")
     end
   end
 
   context 'when the request fails' do
     let(:http_status) { 500 }
-    let(:response_body) { { status: { code: 'ERR', message: 'issues @ State' } }.to_json }
+    let(:response_body) do
+      { error: { code: 'ERR', message: 'issues @ State', reason: 'just because' } }.to_json
+    end
 
     it 'fails with a message' do
-      expect(subject.fetch.success?).to be(false)
-      expect(subject.fetch.errors).to include(network: true)
-      expect(subject.fetch.extra).to include(
+      response = subject.fetch
+      expect(response.success?).to be(false)
+      expect(response.errors).to include(network: true)
+      expect(response.extra).to include(
         vendor: 'DoS',
-        vendor_status_code: 'ERR',
-        vendor_status_message: 'issues @ State',
-        request_id: request_id,
+        error_code: 'ERR',
+        error_message: 'issues @ State',
+        error_reason: 'just because',
+        correlation_id: correlation_id,
       )
     end
   end

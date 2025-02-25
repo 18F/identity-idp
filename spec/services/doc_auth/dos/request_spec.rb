@@ -66,12 +66,6 @@ RSpec.describe DocAuth::Dos::Request do
       end
     end
 
-    describe '#request_id' do
-      it 'raises a NotImplementedError' do
-        expect { subject.send(:request_id) }.to raise_error(NotImplementedError)
-      end
-    end
-
     describe '#request_headers' do
       it 'raises a NotImplementedError' do
         expect { subject.send(:request_headers) }.to raise_error(NotImplementedError)

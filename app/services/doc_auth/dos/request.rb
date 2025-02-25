@@ -71,19 +71,26 @@ module DocAuth
           error_code: response_body.dig('error', 'code'),
           error_message: response_body.dig('error', 'message'),
           error_reason: response_body.dig('error', 'reason'),
+          correlation_id: http_response.headers['X-Correlation-ID'],
         )
       end
 
-      def handle_connection_error(exception:, error_code: nil, error_message: nil, error_reason: nil)
+      def handle_connection_error(
+        exception:,
+        error_code: nil,
+        error_message: nil,
+        error_reason: nil,
+        correlation_id: nil
+      )
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
           exception: exception,
           extra: {
             vendor: 'DoS',
-            vendor_error_code: error_code,
-            vendor_error_message: error_message,
-            vendor_error_reason: error_reason,
+            error_code: error_code,
+            error_message: error_message,
+            error_reason: error_reason,
             correlation_id: defined?(correlation_id) && correlation_id,
           }.compact,
         )
