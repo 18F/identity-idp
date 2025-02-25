@@ -32,10 +32,6 @@ module DocAuth
         raise NotImplementedError
       end
 
-      def request_id
-        raise NotImplementedError
-      end
-
       def request_headers
         raise NotImplementedError
       end
@@ -72,21 +68,23 @@ module DocAuth
         handle_connection_error(
           exception: exception,
           # TODO: update for DoS
-          status_code: response_body.dig('status', 'code'),
-          status_message: response_body.dig('status', 'message'),
+          error_code: response_body.dig('error', 'code'),
+          error_message: response_body.dig('error', 'message'),
+          error_reason: response_body.dig('error', 'reason'),
         )
       end
 
-      def handle_connection_error(exception:, status_code: nil, status_message: nil)
+      def handle_connection_error(exception:, error_code: nil, error_message: nil, error_reason: nil)
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
           exception: exception,
           extra: {
             vendor: 'DoS',
-            vendor_status_code: status_code,
-            vendor_status_message: status_message,
-            request_id: request_id,
+            vendor_error_code: error_code,
+            vendor_error_message: error_message,
+            vendor_error_reason: error_reason,
+            correlation_id: defined?(correlation_id) && correlation_id,
           }.compact,
         )
       end

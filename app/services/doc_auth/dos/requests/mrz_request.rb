@@ -4,14 +4,13 @@ module DocAuth
   module Dos
     module Requests
       class MrzRequest < DocAuth::Dos::Request
-        def initialize(request_id:, mrz:)
-          @request_id = request_id
+        def initialize(mrz:)
           @mrz = mrz
         end
 
         private
 
-        attr_reader :request_id, :mrz
+        attr_reader :correlation_id, :mrz
 
         def category
           :book # for now, the only supported option
@@ -46,9 +45,10 @@ module DocAuth
         end
 
         def request_headers
+          correlation_id = SecureRandom.uuid
           {
             'Content-Type': 'application/json',
-            'X-Correlation-ID': request_id,
+            'X-Correlation-ID': correlation_id,
             client_id: IdentityConfig.store.dos_passport_client_id,
             client_secret: IdentityConfig.store.dos_passport_client_secret,
           }
