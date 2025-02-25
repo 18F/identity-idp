@@ -1,0 +1,30 @@
+<% self.title = 'Fake Socure Configuration' %>
+
+<h1>Test Socure Configuration</h1>
+
+<div class="grid-row grid-cap margin-top-2 flex-align-stretch">
+  <div class="tablet:grid-col">
+      <%= form_with url: test_fake_socure_ui_path, method: :post do |form| %>
+        <fieldset class="usa-fieldset">
+          <h4>Select a fixture</h4>
+          <%=
+            form.collection_select(
+              :selected_configuration,
+              @socure_configurations,
+              :name,
+              :pretty_name,
+              include_blank: 'none (fake Socure disabled)',
+              selected: @selected_configuration,
+            )
+          %>
+        </fieldset>
+        <%= submit_tag "Apply" %>
+      <% end %>
+  </div>
+
+  <div class="tablet:grid-col">
+      <% if @selected_configuration_body %>
+        <pre><%= JSON.pretty_generate(@selected_configuration_body) %></pre>
+      <% end %>
+  </div>
+</div>

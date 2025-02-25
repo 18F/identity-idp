@@ -2,25 +2,43 @@
 
 module Test
   class FakeSocureController < ApplicationController
+
+    @configurations =
+      Dir["#{Rails.root.join('spec', 'fixtures', 'socure_docv')}/*.json"].map do |fixture_file|
+      FakeSocureConfig.new(
+        name: File.basename(fixture_file),
+        body: File.read(fixture_file),
+      )
+    end
+
+    def self.selected_configuration=(new_value)
+      configuration_names = @configurations.map(&:name)
+      if new_value.blank?
+        @selected_configuration = new_value
+        @selected_configuration_body = nil
+      elsif configuration_names.include?(new_value)
+        @selected_configuration = new_value
+        body = @configurations.find do |configuration|
+          configuration.name == new_value
+        end.body
+        @selected_configuration_body = JSON.parse(body)
+      end
+    end
+
+    class << self
+      attr_accessor :configurations, :selected_configuration_body
+      attr_reader :selected_configuration
+    end
+
+    # TODO: can we not skip this?
     skip_before_action :verify_authenticity_token
 
-    def index
-      fixture_file_dir = Rails.root.join('spec', 'fixtures', 'socure_docv')
-      Rails.logger.debug { "fixture_file_dir: #{fixture_file_dir.inspect}" }
+    def document_request
+      render_json {}
+    end
 
-      fixture_files = Dir["#{fixture_file_dir}/*.json"]
-      Rails.logger.debug { "fixture_files: #{fixture_files.inspect}" }
-
-      @socure_fixtures = fixture_files.map do |fixture_file|
-        [
-          File.basename(fixture_file),
-          JSON.parse(File.read(fixture_file), symbolize_keys: true),
-        ]
-      end.to_h
-
-      config_json = params[:fake_socure_configuration]
-      config_hash = config_json ? JSON.parse(config_json, symbolize_keys: true) : {}
-      @socure_configuration = Test::FakeSocureConfig.new(**config_hash)
+    def docv_results
+      { placeholder: 'value' }
     end
   end
 end

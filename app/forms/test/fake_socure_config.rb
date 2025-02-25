@@ -3,19 +3,14 @@
 module Test
   class FakeSocureConfig
     include ActiveModel::Model
+    include ActiveModel::Attributes
+    include ActiveModel::AttributeAssignment
 
-    attr_accessor :success, :enabled, :selected_fixture
+    attribute :name, :string
+    attribute :body, :string
 
-    validates :selected_fixture, inclusion: { in: [:pass] }, allow_nil: true
-
-    def initialize(enabled: false, selected_fixture: nil)
-      @enabled = !!enabled
-      @selected_fixture = selected_fixture
+    def pretty_name
+      name.gsub(/\W+/, ' ').titlecase
     end
-
-    # def submit
-    #   @success = valid?
-    #   FormResponse.new(success:, errors:)
-    # end
   end
 end
