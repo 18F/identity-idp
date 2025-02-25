@@ -175,7 +175,7 @@ class PasswordStrengthElement extends HTMLElement {
     } else {
       this.input.setAttribute(
         'aria-describedby',
-        this.input.getAttribute('aria-describedby')!.replace(/\s*password-strength\s*/, ''),
+        this.input.getAttribute('aria-describedby')?.replace(/\s*password-strength\s*/, '')!,
       );
     }
   }

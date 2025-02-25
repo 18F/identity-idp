@@ -88,8 +88,10 @@ describe('PasswordStrengthElement', () => {
     const input: HTMLInputElement = screen.getByRole('textbox');
 
     await userEvent.type(input, 'password');
-
     expect(input.getAttribute('aria-describedby')).to.equal('password-strength ');
+
+    await userEvent.clear(input);
+    expect(input.getAttribute('aria-describedby')).to.equal('');
   });
 
   it('shows concatenated suggestions from zxcvbn if there is no specific warning', async () => {
