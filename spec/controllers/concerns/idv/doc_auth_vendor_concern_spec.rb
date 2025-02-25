@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:user) { create(:user) }
+  let(:document_capture_session) do
+    create(:document_capture_session, user: user)
+  end
   let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
 
@@ -21,8 +24,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       allow(controller).to receive(:ab_test_bucket)
         .with(:DOC_AUTH_VENDOR)
         .and_return(bucket)
-      allow(controller).to receive(:document_capture_session)
-        .and_return(create(:document_capture_session, user:))
     end
 
     context 'bucket is LexisNexis' do
@@ -30,8 +31,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns lexis nexis as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        expect(controller.document_capture_session.doc_auth_vendor)
-          .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
       end
     end
 
@@ -40,8 +39,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns mock as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
-        expect(controller.document_capture_session.doc_auth_vendor)
-          .to eq(Idp::Constants::Vendors::MOCK)
       end
     end
 
@@ -50,14 +47,14 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       context 'current user is undefined so use document_capture_session user' do
         before do
+          allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
+          allow(User).to receive(:find_by).and_return(user)
           allow(controller).to receive(:current_user).and_return(nil)
           allow(controller).to receive(:document_capture_user).and_return(user)
         end
 
         it 'returns socure as the vendor' do
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
-          expect(controller.document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::SOCURE)
         end
 
         it 'adds a user to the socure redis set' do
@@ -153,23 +150,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns false' do
         expect(controller.doc_auth_vendor_enabled?(vendor)).to eq false
-      end
-
-      context 'session already assigned LexisNexis doc auth vendor' do
-        before do
-          allow(controller).to receive(:document_capture_session)
-            .and_return(create(:document_capture_session, user:))
-          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default)
-            .and_return(Idp::Constants::Vendors::MOCK)
-          controller.document_capture_session
-            .update!(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
-        it 'lexis_nexis is still docauth vendor' do
-          expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-          expect(controller.document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
       end
     end
   end

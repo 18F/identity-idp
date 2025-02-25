@@ -40,7 +40,7 @@ module Idv
       if result.success?
         redirect_to idv_ssn_url
       else
-        redirect_to vendor_document_capture_url
+        redirect_to idv_document_capture_url
       end
     end
 

@@ -26,4 +26,26 @@ RSpec.describe UpdatePasswordPresenter do
       expect(presenter.forbidden_passwords).to include(user.email_addresses.first.email)
     end
   end
+
+  describe '#aria_described_by_if_eligible' do
+    context 'required_password_change set to true' do
+      let(:required_password_change) { true }
+
+      it 'returns empty hash' do
+        expect(presenter.aria_described_by_if_eligible).to be_empty
+      end
+    end
+
+    context 'required_password_change set to false' do
+      it 'should return has with aria-described' do
+        expect(presenter.aria_described_by_if_eligible).to eq(
+          {
+            input_html: {
+              aria: { describedby: 'password-description' },
+            },
+          },
+        )
+      end
+    end
+  end
 end
