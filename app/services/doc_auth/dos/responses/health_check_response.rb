@@ -19,7 +19,6 @@ module DocAuth
 
         def success_value
           return false if faraday_response.kind_of?(Faraday::Error)
-          parsed_body = JSON.parse(body)
           parsed_body[:status].to_s.downcase == 'up'
         end
 
@@ -31,6 +30,10 @@ module DocAuth
 
         def body
           faraday_response&.respond_to?(:body) && faraday_response.body
+        end
+
+        def parsed_body
+          JSON.parse(body, symbolize_names: true)
         end
 
         def errors_value
