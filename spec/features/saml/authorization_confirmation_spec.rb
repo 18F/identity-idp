@@ -141,6 +141,9 @@ RSpec.feature 'SAML Authorization Confirmation' do
       expect(page).to have_current_path(new_user_session_path)
     end
 
+    it 'does not show continue to SP on account page if user has already been redirected to SP' do
+    end
+
     it 'does not render the confirmation screen on a return visit to the SP by default' do
       second_email = create(:email_address, user: user1)
       sign_in_user(user1, second_email.email)
