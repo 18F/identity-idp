@@ -142,6 +142,39 @@ RSpec.feature 'SAML Authorization Confirmation' do
     end
 
     it 'does not show continue to SP on account page if user has already been redirected to SP' do
+      sign_in_user(user1)
+
+      visit request_url
+      expect(page).to have_current_path(user_authorization_confirmation_path)
+
+      click_button t('user_authorization_confirmation.sign_in')
+      visit account_path
+
+      identity = user1.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+
+      expect(page).to_not have_content(
+        t(
+          'account.index.continue_to_service_provider',
+          service_provider: identity.display_name,
+        ),
+      )
+    end
+
+    it 'shows continue to SP on account page if user has not been yet redirected to SP' do
+      sign_in_user(user1)
+
+      visit request_url
+      expect(page).to have_current_path(user_authorization_confirmation_path)
+      visit account_path
+
+      identity = user1.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+
+      expect(page).to have_content(
+        t(
+          'account.index.continue_to_service_provider',
+          service_provider: identity.display_name,
+        ),
+      )
     end
 
     it 'does not render the confirmation screen on a return visit to the SP by default' do

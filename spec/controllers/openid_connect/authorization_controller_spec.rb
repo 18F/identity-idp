@@ -97,6 +97,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
 
         it 'stores successful_handoff in sp_session' do
+          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+            .and_return('server_side')
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+          user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
+          action
+
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+          expect(session[:sp][:successful_handoff]).to eq(true)
         end
 
         it 'renders a JS client-side redirect back to the client app with a code if it is enabled' do
@@ -996,9 +1005,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           expect(redirect_params[:code]).to be_present
           expect(redirect_params[:state]).to eq(params[:state])
-        end
-
-        it 'stores successful_handoff in sp_session' do
         end
 
         it 'renders a client-side redirect back to the client app with a code if it is enabled' do
