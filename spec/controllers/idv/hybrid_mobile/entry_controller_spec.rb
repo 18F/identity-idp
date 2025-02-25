@@ -230,5 +230,28 @@ RSpec.describe Idv::HybridMobile::EntryController do
         end
       end
     end
+
+    context 'with a user id in session and no session uuid' do
+      let(:user) { create(:user) }
+
+      before do
+        session[:doc_capture_user_id] = user.id
+        get :show
+      end
+
+      context 'doc auth vendor is socure' do
+        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        end
+      end
+
+      context 'doc auth vendor is lexis nexis' do
+        it 'redirects to the first step' do
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+    end
   end
 end

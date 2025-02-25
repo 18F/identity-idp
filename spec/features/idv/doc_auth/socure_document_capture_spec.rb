@@ -62,18 +62,6 @@ RSpec.feature 'document capture step', :js do
         end
 
         it 'shows the Try Again page and allows user to start IPP', allow_browser_log: true do
-          expect(fake_analytics).to_not have_logged_event(
-            'IdV: doc auth document_capture visited',
-            hash_including(
-              step: 'document_capture',
-            ),
-          )
-          expect(fake_analytics).to have_logged_event(
-            'IdV: doc auth document_capture visited',
-            hash_including(
-              step: 'socure_document_capture',
-            ),
-          )
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           visit idv_socure_document_capture_path
           expect(page).to have_current_path(idv_socure_document_capture_path)

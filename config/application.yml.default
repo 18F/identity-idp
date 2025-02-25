@@ -163,8 +163,8 @@ identity_pki_local_dev: false
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-idv_acuant_sdk_version_alternate: '11.9.3'
-idv_acuant_sdk_version_default: '11.9.3.508'
+idv_acuant_sdk_version_alternate: '11.9.2'
+idv_acuant_sdk_version_default: '11.9.3'
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555

@@ -8,7 +8,7 @@ module Reports
 
     def initialize(report_date = nil, *args, **kwargs)
       @report_date = report_date
-      super(report_date, *args, **kwargs)
+      super(*args, **kwargs)
     end
 
     # @param [DateTime]

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Reports::AbTestsReport do
-  subject(:job) { described_class.new(report_date) }
   let(:report_date) { Date.new(2023, 12, 25) }
   let(:email) { 'email@example.com' }
   let(:tested_percent) { 1 }
@@ -82,7 +81,7 @@ RSpec.describe Reports::AbTestsReport do
         attachment_format: :csv,
       )
 
-      job.perform(report_date)
+      subject.perform(report_date)
     end
 
     context 'when associated report email is nil' do
@@ -91,7 +90,7 @@ RSpec.describe Reports::AbTestsReport do
       it 'does not email the table report' do
         expect(ReportMailer).not_to receive(:tables_report)
 
-        job.perform(report_date)
+        subject.perform(report_date)
       end
     end
 
@@ -101,15 +100,7 @@ RSpec.describe Reports::AbTestsReport do
       it 'does not email the table report' do
         expect(ReportMailer).not_to receive(:tables_report)
 
-        job.perform(report_date)
-      end
-    end
-
-    context 'when called on class' do
-      it 'emails the table report' do
-        expect(ReportMailer).to receive(:tables_report)
-
-        described_class.perform_now(report_date)
+        subject.perform(report_date)
       end
     end
   end

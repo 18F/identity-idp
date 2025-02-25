@@ -140,16 +140,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         get(:show)
       end
 
-      it 'correctly logs idv_doc_auth_document_capture_visited' do
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(
-            step: 'socure_document_capture',
-            flow_path: 'hybrid',
-          ),
-        )
-      end
-
       it 'creates a DocumentRequest' do
         expect(request_class).to have_received(:new)
           .with(
