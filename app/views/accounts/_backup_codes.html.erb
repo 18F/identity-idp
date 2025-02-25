@@ -1,5 +1,5 @@
 <h2 class="margin-top-0 margin-bottom-1">
-  <%= t('forms.backup_code.title') %>
+  <%= t('two_factor_authentication.login_options.backup_code') %>
 </h2>
 <div class="grid-row padding-1 border border-primary-light">
   <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
