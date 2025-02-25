@@ -50,7 +50,8 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       expect(response.success?).to be(true)
       expect(response.extra).to include(
         vendor: 'DoS',
-        correlation_id: correlation_id,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
       )
     end
   end
@@ -63,7 +64,8 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       expect(response.success?).to be(false)
       expect(response.extra).to include(
         vendor: 'DoS',
-        correlation_id: correlation_id,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
       )
     end
   end
@@ -76,7 +78,8 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       expect(response.success?).to be(false)
       expect(response.extra).to include(
         vendor: 'DoS',
-        correlation_id: correlation_id,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
       )
       expect(response.errors).to include(message: "Unexpected response: #{mrz_result}")
     end
@@ -97,7 +100,8 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         error_code: 'ERR',
         error_message: 'issues @ State',
         error_reason: 'just because',
-        correlation_id: correlation_id,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
       )
     end
   end

@@ -3,6 +3,8 @@
 module DocAuth
   module Dos
     class Request
+      attr_accessor :correlation_id
+
       def fetch
         # return DocAuth::Respose with DocAuth:Error if workflow invalid
         http_response = send_http_request
@@ -71,7 +73,7 @@ module DocAuth
           error_code: response_body.dig('error', 'code'),
           error_message: response_body.dig('error', 'message'),
           error_reason: response_body.dig('error', 'reason'),
-          correlation_id: http_response.headers['X-Correlation-ID'],
+          correlation_id_received: http_response.headers['X-Correlation-ID'],
         )
       end
 
@@ -80,7 +82,7 @@ module DocAuth
         error_code: nil,
         error_message: nil,
         error_reason: nil,
-        correlation_id: nil
+        correlation_id_received: nil
       )
         DocAuth::Response.new(
           success: false,
@@ -91,7 +93,8 @@ module DocAuth
             error_code: error_code,
             error_message: error_message,
             error_reason: error_reason,
-            correlation_id: defined?(correlation_id) && correlation_id,
+            correlation_id_sent: correlation_id,
+            correlation_id_received:,
           }.compact,
         )
       end

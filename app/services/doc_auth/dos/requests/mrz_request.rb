@@ -10,7 +10,7 @@ module DocAuth
 
         private
 
-        attr_reader :correlation_id, :mrz
+        attr_reader :mrz
 
         def category
           :book # for now, the only supported option
@@ -28,7 +28,8 @@ module DocAuth
           result = JSON.parse(response.body, symbolize_names: true)
           extra = {
             vendor: 'DoS',
-            correlation_id: response.headers['X-Correlation-ID'],
+            correlation_id_sent: correlation_id,
+            correlation_id_received: response.headers['X-Correlation-ID'],
           }.compact
           case result[:response]
           when 'YES'
@@ -50,7 +51,7 @@ module DocAuth
         end
 
         def request_headers
-          correlation_id = SecureRandom.uuid
+          @correlation_id = SecureRandom.uuid
           {
             'Content-Type': 'application/json',
             'X-Correlation-ID': correlation_id,
