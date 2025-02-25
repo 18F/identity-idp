@@ -22,7 +22,9 @@
         form: f,
         password_label: t('forms.passwords.edit.labels.password'),
         forbidden_passwords: @update_password_presenter.forbidden_passwords,
-        field_options: @update_password_presenter.aria_described_by_if_eligible,
+        field_options: {
+          input_html: { aria: { describedby: 'password-description' } },
+        },
       ) %>
   <%= f.submit @update_password_presenter.submit_text, class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>
