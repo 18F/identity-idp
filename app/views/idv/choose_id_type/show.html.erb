@@ -1,0 +1,53 @@
+<% self.title = t('doc_auth.headings.choose_id_type') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= t('doc_auth.headings.choose_id_type') %>
+<% end %>
+
+<p>
+  <%= t('doc_auth.info.choose_id_type') %>
+</p>
+
+<%= new_tab_link_to(
+      t('doc_auth.info.id_types_learn_more'),
+      help_center_redirect_url(
+        category: 'verify-your-identity',
+        article: 'accepted-identification-documents',
+      )
+    ) 
+%>
+
+<%= simple_form_for(
+  :doc_auth,
+  url: idv_choose_id_type_path,
+  method: :put,
+  ) do |f| %>
+    <div>
+      <%= f.radio_button(
+            :choose_id_type_preference,
+            :drivers_license,
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+          <%= f.label :choose_id_type_preference_drivers_license, t('doc_auth.forms.id_type_preference.drivers_license'), class: 'usa-radio__label text-bold width-full' %>
+    </div>
+    <div>
+      <%= f.radio_button(
+            :choose_id_type_preference,
+            :passport,
+            class: 'usa-radio__input usa-radio__input--bordered',
+          ) %>
+          <%= f.label :choose_id_type_preference_passport, t('doc_auth.forms.id_type_preference.passport'), class: 'usa-radio__label text-bold width-full' %>
+    </div>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'choose_id_type' %>
