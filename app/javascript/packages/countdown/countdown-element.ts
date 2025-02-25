@@ -42,7 +42,7 @@ export class CountdownElement extends HTMLElement {
   }
 
   get delayCountdownAnnouncement(): boolean {
-    return this.getAttribute('data-delay-countdown') === 'false';
+    return this.getAttribute('data-delay-countdown-announcement') === 'false';
   }
 
   get #textNode(): Text {
@@ -84,12 +84,6 @@ export class CountdownElement extends HTMLElement {
     ]
       .filter(Boolean)
       .join(t('datetime.dotiw.two_words_connector'));
-  }
-
-  setDelayCountdownAnnouncement(): void {
-    if (this.delayCountdownAnnouncement) {
-      this.querySelector('lg-countdown')?.setAttribute('aria-live', 'off');
-    }
   }
 }
 
