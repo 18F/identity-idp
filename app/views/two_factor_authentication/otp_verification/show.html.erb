@@ -13,7 +13,7 @@
           countdown_options: { expiration: @presenter.otp_expiration },
         ) %>
 
-    <p class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
+    <p class="usa-sr-only">
       <%= render CountdownComponent.new(
             expiration: @presenter.otp_expiration,
             update_interval: 30.seconds,
