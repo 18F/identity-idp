@@ -23,7 +23,7 @@ account_reset.recovery_options.check_saved_credential: Vérifiez si vous avez de
 account_reset.recovery_options.check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou tactile, vous avez peut-être sauvegardé vos informations d’identification dans un gestionnaire de mots de passe, tel que iCloud Keychain ou Google Password Manager. Essayez d’utiliser le déverrouillage facial ou tactile sur un navigateur utilisant ce gestionnaire de mots de passe.
 account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
 account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
-account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option «&nbsp;mémoriser l’appareil&nbsp;».
+account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
 account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
 account_reset.recovery_options.use_device: Utiliser un autre appareil
 account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le même appareil où vous avez configuré le déverrouillage facial ou tactile.
@@ -52,7 +52,7 @@ account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
 account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos comptes connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
-account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’«&nbsp;oublier tous les navigateurs&nbsp;», nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
+account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
 account.index.auth_app_disabled: non activé
 account.index.auth_app_enabled: activé
@@ -652,7 +652,7 @@ doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
-doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur «&nbsp;Suite&nbsp;» ici pour terminer la vérification de votre identité.
+doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
@@ -747,14 +747,14 @@ errors.invalid_totp: Code non valide. Veuillez réessayer.
 errors.manage_authenticator.internal_error: Une erreur interne s’est produite lors du traitement de votre demande. Veuillez réessayer.
 errors.manage_authenticator.remove_only_method_error: Vous ne pouvez pas supprimer votre seule méthode d’authentification.
 errors.manage_authenticator.unique_name_error: Ce nom est déjà pris. Veuillez utiliser un nom différent.
-errors.max_password_attempts_reached: Vous avez saisi des mots de passe inexacts à trop de reprises. Vous pouvez réinitialiser votre mot de passe en utilisant le lien «&nbsp;Mot de passe oublié ?&nbsp;»
+errors.max_password_attempts_reached: Vous avez saisi des mots de passe inexacts à trop de reprises. Vous pouvez réinitialiser votre mot de passe en utilisant le lien « Mot de passe oublié ? »
 errors.messages.already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
 errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
 errors.messages.confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
-errors.messages.confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur «&nbsp;Renvoyer les instructions de confirmation&nbsp;» pour en obtenir un autre.
+errors.messages.confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Renvoyer les instructions de confirmation » pour en obtenir un autre.
 errors.messages.expired: a expiré, veuillez en demander un nouveau
 errors.messages.format_mismatch: Veuillez vous assurer de respecter le format requis.
 errors.messages.gpo_otp_expired: Votre code de vérification a expiré. Veuillez demander une autre lettre afin d’obtenir un nouveau code.
@@ -902,7 +902,7 @@ forms.piv_cac_login.submit: Insérer la carte PIV/CAC
 forms.piv_cac_mfa.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.nickname: Surnom de la carte PIV/CAC
 forms.piv_cac_setup.no_thanks: Non, merci
-forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur «&nbsp;Ajouter une carte PIV/CAC&nbsp;», votre navigateur vous demandera de saisir le PIN de votre PIV/CAC et de choisir un certificat.
+forms.piv_cac_setup.piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC <strong>chaque fois que vous vous connecterez sur</strong> dans le cadre de l’authentification à deux facteurs.<br><br>Après avoir cliqué sur « Ajouter une carte PIV/CAC », votre navigateur vous demandera de saisir le PIN de votre PIV/CAC et de choisir un certificat.
 forms.piv_cac_setup.submit: Insérer la carte PIV/CAC
 forms.piv_cac_setup.try_again: Réessayer
 forms.registration.labels.email: Saisissez votre adresse e-mail
@@ -935,7 +935,7 @@ forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
 forms.webauthn_setup.step_3: Configurer votre clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur «&nbsp;Configurer une clé de sécurité&nbsp;» ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1161,7 +1161,7 @@ idv.messages.gpo.resend: Envoyez-moi une autre lettre
 idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
 idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
-idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner «&nbsp;Appel téléphonique&nbsp;» ci-dessous.
+idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
@@ -1360,7 +1360,7 @@ in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse fig
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
 in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section «&nbsp;Qu’apporter au bureau de poste&nbsp;».
+in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section « Qu’apporter au bureau de poste ».
 in_person_proofing.process.what_to_do.heading: Faites la queue
 in_person_proofing.process.what_to_do.info: Dites à l’employé que vous venez pour une vérification d’identité. Si la personne ne sait pas comment procéder, demandez qu’un responsable vienne vous aider.
 instructions.account.reactivate.begin: Commençons.
@@ -1399,7 +1399,7 @@ instructions.mfa.wrong_number: Vous avez saisi un mauvais numéro de téléphone
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
 instructions.password.help_text_header: Conseils de sécurité pour votre mot de passe
-instructions.password.info.lead_html: Votre mot de passe doit comporter au moins <strong>%{min_length} caractères</strong>. N’utilisez pas de séquences courantes de caractères ou de caractères répétés, comme «&nbsp;abc&nbsp;» ou «&nbsp;111&nbsp;».
+instructions.password.info.lead_html: Votre mot de passe doit comporter au moins <strong>%{min_length} caractères</strong>. N’utilisez pas de séquences courantes de caractères ou de caractères répétés, comme « abc » ou « 111 ».
 instructions.password.password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour réinitialiser votre mot de passe si vous avez vérifié votre identité avec ce compte. Si vous ne l’avez pas, vous pouvez quand même réinitialiser votre mot de passe, puis reconfirmer votre identité.
 instructions.password.strength.0: Très faible
 instructions.password.strength.1: Faible
@@ -1476,11 +1476,11 @@ notices.signed_up_but_unconfirmed.first_paragraph_end: avec un lien pour confirm
 notices.signed_up_but_unconfirmed.first_paragraph_start: Nous avons envoyé un e-mail à
 notices.signed_up_but_unconfirmed.resend_confirmation_email: Renvoyer le courriel de confirmation
 notices.timeout_warning.partially_signed_in.continue: Continuer la connexion
-notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez «&nbsp;Déconnectez-moi&nbsp;» pour vous déconnecter.
+notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.partially_signed_in.message_html: Pour votre sécurité, nous annulerons votre connexion dans %{time_left_in_session_html}.
 notices.timeout_warning.partially_signed_in.sign_out: Annuler la connexion
 notices.timeout_warning.signed_in.continue: Gardez ma connexion active
-notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez «&nbsp;Déconnectez-moi&nbsp;» pour vous déconnecter.
+notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.signed_in.message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session_html}, sauf en cas d’avis contraire de votre part.
 notices.timeout_warning.signed_in.sign_out: Déconnectez-moi
 notices.totp_configured: Une appli d’authentification a été ajoutée à votre compte.
@@ -1540,7 +1540,7 @@ risc.security_event.errors.subject_type_unsupported: subject_type doit être %{e
 risc.security_event.errors.typ_error: l’en-tête typ doit être %{expected_typ}
 saml_idp.auth.error.title: Erreur
 saml_idp.shared.saml_post_binding.heading: Valider pour continuer
-saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton «&nbsp;Valider&nbsp;» pour poursuivre la connexion ou la déconnexion.
+saml_idp.shared.saml_post_binding.no_js: JavaScript semble être désactivé dans votre navigateur. Normalement, cette étape se produit automatiquement, mais comme vous avez désactivé JavaScript, veuillez cliquer sur le bouton « Valider » pour poursuivre la connexion ou la déconnexion.
 security_check_failed.contact: Contactez l’assistance %{app_name}
 security_check_failed.details: Nous ne reconnaissons pas l’appareil ou le navigateur à partir duquel vous vous connectez.
 security_check_failed.info_p1: 'Utilisez le même appareil et le même navigateur que ceux avec lesquels vous aviez créé votre compte %{app_name}.'
@@ -1729,7 +1729,7 @@ two_factor_authentication.opt_in.opted_out_html: Vous avez choisi de ne pas rece
 two_factor_authentication.opt_in.opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au %{phone_number_html} au cours des 30 derniers jours. Nous ne pouvons inscrire un numéro de téléphone qu’une fois tous les 30 jours.
 two_factor_authentication.opt_in.title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de téléphone
 two_factor_authentication.opt_in.wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code de sécurité à ce numéro de téléphone.
-two_factor_authentication.otp_delivery_preference.instruction: Vous pouvez modifier cela à tout moment. Si vous utilisez un numéro de téléphone fixe, sélectionnez «&nbsp;Appel téléphonique&nbsp;».
+two_factor_authentication.otp_delivery_preference.instruction: Vous pouvez modifier cela à tout moment. Si vous utilisez un numéro de téléphone fixe, sélectionnez « Appel téléphonique ».
 two_factor_authentication.otp_delivery_preference.landline_warning_html: Le numéro de téléphone saisi semble être un <strong>téléphone fixe</strong>. Demandez plutôt un code à usage unique par %{phone_setup_path}.
 two_factor_authentication.otp_delivery_preference.no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de téléphone de %{location}
 two_factor_authentication.otp_delivery_preference.phone_call: appel téléphonique
@@ -1756,7 +1756,7 @@ two_factor_authentication.piv_cac_header_text: Insérer votre carte d’employé
 two_factor_authentication.piv_cac_mismatch.2fa_before_add: Vous devez vous authentifier à l’aide d’une autre méthode avant d’ajouter votre carte PIV/CAC.
 two_factor_authentication.piv_cac_mismatch.cta: S’authentifier et ajouter une carte PIV/CAC
 two_factor_authentication.piv_cac_mismatch.delete_account: Supprimer votre compte
-two_factor_authentication.piv_cac_mismatch.instructions: Cliquez sur «&nbsp;S’authentifier et ajouter une carte PIV/CAC&nbsp;» ci-dessous pour vous authentifier au moyen d’une autre méthode avant d’ajouter cette carte PIV/CAC à votre compte.
+two_factor_authentication.piv_cac_mismatch.instructions: Cliquez sur « S’authentifier et ajouter une carte PIV/CAC » ci-dessous pour vous authentifier au moyen d’une autre méthode avant d’ajouter cette carte PIV/CAC à votre compte.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si l’on vous a à nouveau délivré une carte PIV/CAC, vous devez supprimer votre compte %{app_name} et en créer un nouveau pour l’utiliser.
 two_factor_authentication.piv_cac_mismatch.skip: Sauter l’ajout de carte PIV/CAC
 two_factor_authentication.piv_cac_mismatch.title: Cette carte d’employé fédéral n’est pas associée à votre compte.
@@ -1841,7 +1841,7 @@ user_mailer.account_reset_complete.subject: Compte supprimé
 user_mailer.account_reset_granted.button: Confirmer la suppression du compte
 user_mailer.account_reset_granted.cancel_link_text: veuillez annuler
 user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez «&nbsp;Confirmer la suppression du compte&nbsp;» pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
+user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
@@ -1962,7 +1962,7 @@ user_mailer.please_reset_password.intro: Nous avons détecté une activité inha
 user_mailer.please_reset_password.learn_more_link_text: En savoir plus sur les options qui s’offrent à vous
 user_mailer.please_reset_password.reminder_html: Pour rappel, <strong>%{app_name} ne vous demandera jamais vos identifiants de connexion par téléphone ou par e-mail</strong>. Vous pouvez prendre des mesures supplémentaires pour sécuriser votre compte en activant l’authentification à deux facteurs.
 user_mailer.please_reset_password.step_1: Visitez le site Web %{app_name} et sélectionnez Connexion
-user_mailer.please_reset_password.step_2: Sélectionnez «&nbsp;Mot de passe oublié ?&nbsp;» au bas de la page
+user_mailer.please_reset_password.step_2: Sélectionnez « Mot de passe oublié ? » au bas de la page
 user_mailer.please_reset_password.step_3: Suivez les instructions pour réinitialiser votre mot de passe
 user_mailer.please_reset_password.subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
 user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} heures.
@@ -2045,9 +2045,9 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
-webauthn_setup_mismatch.description_undo: Cliquez sur «&nbsp;Annuler&nbsp;» pour supprimer cette option.
-webauthn_setup_mismatch.description.webauthn_html: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur «&nbsp;Suite&nbsp;» pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
-webauthn_setup_mismatch.description.webauthn_platform_html: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur «&nbsp;Suite&nbsp;» pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
+webauthn_setup_mismatch.description.webauthn_html: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description.webauthn_platform_html: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.heading.webauthn: Clé de sécurité détectée
 webauthn_setup_mismatch.heading.webauthn_platform: Déverrouillage facial ou tactile détecté
 webauthn_setup_mismatch.undo: Annuler
@@ -2065,10 +2065,10 @@ zxcvbn.feedback.dates_are_often_easy_to_guess: Les dates sont souvent faciles à
 zxcvbn.feedback.for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases: Pour créer un mot de passe plus fort, utilisez quelques mots séparés par des espaces, mais évitez les phrases courantes.
 zxcvbn.feedback.names_and_surnames_by_themselves_are_easy_to_guess: Les prénoms et noms de famille seuls sont faciles à deviner.
 zxcvbn.feedback.no_need_for_symbols_digits_or_uppercase_letters: Pas besoin de symboles, de chiffres ou de lettres majuscules.
-zxcvbn.feedback.predictable_substitutions_like__instead_of_a_dont_help_very_much: Les remplacements prévisibles comme «&nbsp;@&nbsp;» au lieu de «&nbsp;a&nbsp;» n’aident pas beaucoup.
+zxcvbn.feedback.predictable_substitutions_like__instead_of_a_dont_help_very_much: Les remplacements prévisibles comme « @ » au lieu de « a » n’aident pas beaucoup.
 zxcvbn.feedback.recent_years_are_easy_to_guess: Les années récentes sont faciles à deviner.
 zxcvbn.feedback.repeats_like_aaa_are_easy_to_guess: Les répétitions comme « aaa » sont faciles à deviner.
-zxcvbn.feedback.repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Les répétitions comme «&nbsp;abcabcabc&nbsp;» sont à peine plus difficiles à deviner que «&nbsp;abc&nbsp;».
+zxcvbn.feedback.repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Les répétitions comme « abcabcabc » sont à peine plus difficiles à deviner que « abc ».
 zxcvbn.feedback.reversed_words_arent_much_harder_to_guess: Les mots à l’envers ne sont guère plus difficiles à deviner.
 zxcvbn.feedback.sequences_like_abc_or_6543_are_easy_to_guess: Les séquences comme abc ou 6543 sont faciles à deviner.
 zxcvbn.feedback.short_keyboard_patterns_are_easy_to_guess: Les séquences courtes de clavier sont faciles à deviner.
