@@ -236,6 +236,18 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.pii_from_doc).to eq(Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT))
       end
 
+      context 'when doc_auth_vendor is not set in the document_capture_session' do
+        let!(:document_capture_session) { create(:document_capture_session) }
+
+        it 'returns the expected response using default doc auth vendor' do
+          expect(document_capture_session.doc_auth_vendor).to be_nil
+          response = form.submit
+
+          expect(response).to be_a_kind_of DocAuth::Response
+          expect(response.success?).to eq(true)
+        end
+      end
+
       context 'when liveness check is required' do
         let(:liveness_checking_required) { true }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
