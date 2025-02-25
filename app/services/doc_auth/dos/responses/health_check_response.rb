@@ -10,19 +10,19 @@ module DocAuth
           @faraday_response = faraday_response
 
           super(
-            success: success_value,
-            extra: extra_value,
-            errors: errors_value,
-            exception: exception_value,
+            success:,
+            extra:,
+            errors:,
+            exception:,
           )
         end
 
-        def success_value
+        def success
           return false if faraday_response.kind_of?(Faraday::Error)
           parsed_body[:status].to_s.downcase == 'up'
         end
 
-        def extra_value
+        def extra
           {
             body: body,
           }
@@ -36,7 +36,7 @@ module DocAuth
           JSON.parse(body, symbolize_names: true)
         end
 
-        def errors_value
+        def errors
           if faraday_response.kind_of?(Faraday::Error)
             {
               network: faraday_response.response_status,
@@ -46,7 +46,7 @@ module DocAuth
           end
         end
 
-        def exception_value
+        def exception
           if faraday_response.is_a?(Faraday::Error)
             faraday_response.inspect
           end
