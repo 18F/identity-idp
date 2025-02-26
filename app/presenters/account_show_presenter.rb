@@ -7,6 +7,7 @@ class AccountShowPresenter
               :pii,
               :sp_session_request_url,
               :authn_context,
+              :sp_handoff_already_occurred,
               :sp_name
 
   delegate :identity_verified_with_facial_match?, to: :user
@@ -17,7 +18,8 @@ class AccountShowPresenter
     authn_context:,
     sp_name:,
     user:,
-    locked_for_session:
+    locked_for_session:,
+    sp_handoff_already_occurred: false
   )
     @decrypted_pii = decrypted_pii
     @user = user
@@ -25,6 +27,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @authn_context = authn_context
     @locked_for_session = locked_for_session
+    @sp_handoff_already_occurred = sp_handoff_already_occurred
     @pii = determine_pii
   end
 
@@ -38,7 +41,7 @@ class AccountShowPresenter
   end
 
   def show_service_provider_continue_partial?
-    sp_name.present? && sp_session_request_url.present?
+    sp_name.present? && sp_session_request_url.present? && !sp_handoff_already_occurred
   end
 
   def showing_alerts?
