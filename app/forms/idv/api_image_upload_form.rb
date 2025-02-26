@@ -326,7 +326,8 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor: document_capture_session.doc_auth_vendor,
+        vendor: document_capture_session.doc_auth_vendor ||
+          IdentityConfig.store.doc_auth_vendor_default,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,
