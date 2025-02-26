@@ -17,11 +17,11 @@ module PassportApiHelpers
     end
 
     def general_health_check_endpoint
-      'https://dos-health-check-endpoint.test.org'
+      'https://dos-health-check-endpoint.test'
     end
 
     def composite_health_check_endpoint
-      'https://composite-health-check-endpoint.test.org'
+      'https://composite-health-check-endpoint.test'
     end
 
     def successful_api_general_health_check_body
