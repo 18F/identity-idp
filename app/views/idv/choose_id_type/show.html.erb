@@ -31,22 +31,20 @@
   url: idv_choose_id_type_path,
   method: :put,
   ) do |f| %>
-    <div>
-      <%= f.radio_button(
-            :choose_id_type_preference,
-            :drivers_license,
-            class: 'usa-radio__input usa-radio__input--bordered',
-          ) %>
-          <%= f.label :choose_id_type_preference_drivers_license, t('doc_auth.forms.id_type_preference.drivers_license'), class: 'usa-radio__label text-bold width-full' %>
-    </div>
-    <div>
-      <%= f.radio_button(
-            :choose_id_type_preference,
-            :passport,
-            class: 'usa-radio__input usa-radio__input--bordered',
-          ) %>
-          <%= f.label :choose_id_type_preference_passport, t('doc_auth.forms.id_type_preference.passport'), class: 'usa-radio__label text-bold width-full' %>
-    </div>
+    <%= render ValidatedFieldComponent.new(
+          as: :radio_buttons,
+          collection: [
+            [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
+            [t('doc_auth.forms.id_type_preference.passport'), :passport],
+          ],
+          form: f,
+          input_html: { class: 'usa-radio__input--bordered' },
+          name: :choose_id_type_preference,
+          required: true,
+          wrapper: :uswds_radio_buttons,
+          wrapper_html: { class: 'text-bold' },
+          error_messages: { valueMissing: t('doc_auth.errors.choose_id_type_check')}
+        ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
 

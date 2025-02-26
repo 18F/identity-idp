@@ -1306,6 +1306,51 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  def idv_doc_auth_choose_id_type_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_choose_id_type_visited,
+      step:,
+      analytics_id:,
+      flow_path:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
+  # @param [Hash] errors
+  def idv_doc_auth_choose_id_type_submitted(
+    success:,
+    step:,
+    analytics_id:,
+    flow_path:,
+    chosen_id_type:,
+    errors: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_choose_id_type_submitted,
+      success:,
+      step:,
+      analytics_id:,
+      flow_path:,
+      chosen_id_type:,
+      errors:,
+      **extra,
+    )
+  end
+
   # User returns from Socure document capture, but is waiting on a result to be fetched
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step Current IdV step

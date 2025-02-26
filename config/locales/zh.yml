@@ -542,6 +542,7 @@ doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
 doc_auth.errors.camera.failed: 相机未开启，请再试一次。
 doc_auth.errors.card_type: 再用你的驾照或州政府颁发的身份证件试一次。
+doc_auth.errors.choose_id_type_check: 选择你具备的身份证件类型
 doc_auth.errors.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
 doc_auth.errors.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
 doc_auth.errors.doc.doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。

@@ -9,6 +9,7 @@ module Idv
     before_action :redirect_if_passport_not_available
 
     def show
+      analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
     end
 
     def update
@@ -17,6 +18,11 @@ module Idv
       @choose_id_type_form = Idv::ChooseIdTypeForm.new
 
       result = @choose_id_type_form.submit(choose_id_type_form_params)
+
+      analytics.idv_doc_auth_choose_id_type_submitted(
+        **analytics_arguments.merge(result.to_h)
+          .merge({ chosen_id_type: chosen_id_type }),
+      )
 
       if result.success?
         set_passport_requested
@@ -36,6 +42,7 @@ module Idv
             idv_session.passport_allowed == true
         },
         undo_step: ->(idv_session:, user:) do
+          idv_session.passport_requested = nil
         end,
       )
     end
@@ -46,8 +53,12 @@ module Idv
       redirect_to idv_hybrid_handoff_url if !idv_session.passport_allowed
     end
 
+    def chosen_id_type
+      choose_id_type_form_params[:choose_id_type_preference]
+    end
+
     def set_passport_requested
-      if choose_id_type_form_params[:choose_id_type_preference] == 'passport'
+      if chosen_id_type == 'passport'
         idv_session.passport_requested = true
       else
         idv_session.passport_requested = false
@@ -65,6 +76,14 @@ module Idv
 
     def choose_id_type_form_params
       params.require(:doc_auth).permit(:choose_id_type_preference)
+    end
+
+    def analytics_arguments
+      {
+        step: 'choose_id_type',
+        analytics_id: 'Doc Auth',
+        flow_path: idv_session.flow_path,
+      }
     end
   end
 end
