@@ -87,7 +87,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             let(:in_person_proofing_enforce_tmx) { true }
             let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
             let!(:enrollment) do
-              create(:in_person_enrollment, :establishing, user: user, profile: profile)
+              create(:in_person_enrollment, :pending, user: user, profile: profile)
             end
 
             it 'does not redirect to please call' do

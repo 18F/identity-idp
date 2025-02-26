@@ -8,6 +8,7 @@ FactoryBot.define do
     sponsor_id { IdentityConfig.store.usps_ipp_sponsor_id }
 
     trait :establishing do
+      profile { nil }
       status { :establishing }
     end
 
