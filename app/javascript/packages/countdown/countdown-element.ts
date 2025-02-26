@@ -85,6 +85,7 @@ export class CountdownElement extends HTMLElement {
       .filter(Boolean)
       .join(t('datetime.dotiw.two_words_connector'));
   }
+
 }
 
 if (!customElements.get('lg-countdown')) {

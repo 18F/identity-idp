@@ -8,14 +8,13 @@ class CountdownComponent < BaseComponent
 
   def initialize(
     expiration:,
-    delay_countdown_announcement: false, update_interval: 1.second,
+    update_interval: 1.second,
     start_immediately: true,
     **tag_options
   )
     @expiration = expiration
     @update_interval = update_interval
     @start_immediately = start_immediately
-    @delay_countdown_announcement = delay_countdown_announcement
     @tag_options = tag_options
   end
 
