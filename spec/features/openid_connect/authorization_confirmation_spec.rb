@@ -177,21 +177,23 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       )
     end
 
-    it 'shows "continue to SP" on account page if user has already been redirected to SP' do
-      sign_in_user(user1)
-      visit_idp_from_ial1_oidc_sp
+    context 'when a user has not yet been redirected to SP' do
+      it 'shows "continue to SP" on account page' do
+        sign_in_user(user1)
+        visit_idp_from_ial1_oidc_sp
 
-      expect(page).to have_current_path(user_authorization_confirmation_path)
-      visit account_path
+        expect(page).to have_current_path(user_authorization_confirmation_path)
+        visit account_path
 
-      identity = user1.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        identity = user1.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
 
-      expect(page).to have_content(
-        t(
-          'account.index.continue_to_service_provider',
-          service_provider: identity.display_name,
-        ),
-      )
+        expect(page).to have_content(
+          t(
+            'account.index.continue_to_service_provider',
+            service_provider: identity.display_name,
+          ),
+        )
+      end
     end
 
     it 'does not render the confirmation screen on a return visit to the SP by default' do
