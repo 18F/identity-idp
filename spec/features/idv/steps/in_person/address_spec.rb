@@ -81,11 +81,6 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
   end
 
   context 'transliterable Validation' do
-    before do
-      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
-        .and_return(true)
-    end
-
     it 'shows validation errors',
        allow_browser_log: true do
       complete_idv_steps_before_address

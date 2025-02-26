@@ -58,6 +58,7 @@ account.index.auth_app_disabled: 未启用
 account.index.auth_app_enabled: 已启用
 account.index.backup_code_confirm_delete: 是的，删除代码
 account.index.backup_code_confirm_regenerate: 是的，重新生成代码
+account.index.backup_codes: 备用代码
 account.index.backup_codes_exist: 生成了
 account.index.backup_codes_no_exist: 未生成
 account.index.continue_to_service_provider: 继续到 %{service_provider}

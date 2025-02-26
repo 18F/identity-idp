@@ -318,11 +318,6 @@ RSpec.describe 'state id controller enabled', :js do
   end
 
   context 'transliterable validation' do
-    before do
-      allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
-        .and_return(true)
-    end
-
     it 'shows validation errors',
        allow_browser_log: true do
       complete_steps_before_state_id_controller

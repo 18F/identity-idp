@@ -23,9 +23,6 @@ paths:
     $ref: './paths/poll.yml'
   /api/attempts/status:
     $ref: './paths/status.yml'
-  /api/attempts/verification:
-    $ref: './paths/verification.yml'
-
 
 components:
   schemas:

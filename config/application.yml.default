@@ -33,6 +33,7 @@ acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 all_redirect_uris_cache_duration_minutes: 2
+allowed_attempts_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 asset_host: ''
@@ -126,6 +127,7 @@ dos_passport_client_secret: ''
 dos_passport_composite_healthcheck_endpoint: ''
 dos_passport_healthcheck_endpoint: ''
 dos_passport_mrz_endpoint: ''
+dos_passport_timeout_seconds: 60
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -163,8 +165,8 @@ identity_pki_local_dev: false
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-idv_acuant_sdk_version_alternate: '11.9.2'
-idv_acuant_sdk_version_default: '11.9.3'
+idv_acuant_sdk_version_alternate: '11.9.3'
+idv_acuant_sdk_version_default: '11.9.3.508'
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
@@ -438,7 +440,6 @@ usps_ipp_password: ''
 usps_ipp_request_timeout: 10
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
-usps_ipp_transliteration_enabled: false
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_upload_enabled: false
@@ -516,7 +517,6 @@ development:
   use_dashboard_service_providers: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
-  usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: '/gsa_order'
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
