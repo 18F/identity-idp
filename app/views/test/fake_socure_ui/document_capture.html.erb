@@ -1,5 +1,13 @@
-<% self.title = 'Fake Socure Configuration' %>
+<% self.title = 'Test Socure Document Capture' %>
+
+<h1 class="text-center">Test Socure Document Capture</h1>
 
 <div>
-  Document Capture
+  <%=
+    button_to(
+      'Continue',
+      @continue_path,
+      class: 'usa-button usa-button--big usa-button--full-width',
+    )
+  %>
 </div>

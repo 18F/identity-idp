@@ -188,9 +188,11 @@ Rails.application.routes.draw do
 
         get '/fake_socure_ui' => 'fake_socure_ui#index'
         post '/fake_socure_ui' => 'fake_socure_ui#update'
-        get '/fake_socure_ui/document_capture' => 'fake_socure_ui#document_capture'
 
-        get '/fake_socure/api/document_request' => 'fake_socure#document_request'
+        get '/fake_socure_ui/document_capture' => 'fake_socure_ui#document_capture'
+        post '/fake_socure_ui/document_capture' => 'fake_socure_ui#document_capture_update'
+
+        post '/fake_socure/api/document_request' => 'fake_socure#document_request'
         get '/fake_socure/api/docv_results' => 'fake_socure#docv_results'
       end
     end
