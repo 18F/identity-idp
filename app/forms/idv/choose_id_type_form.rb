@@ -6,9 +6,7 @@ module Idv
 
     attr_reader :chosen_id_type
 
-    validates :chosen_id_type, inclusion: { in: %w[drivers_license passport]}
-
-    def initialize(chosen_id_type = :drivers_license)
+    def initialize(chosen_id_type = nil)
       @chosen_id_type = chosen_id_type
     end
 

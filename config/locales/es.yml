@@ -542,6 +542,7 @@ doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
 doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
+doc_auth.errors.choose_id_type_check: Seleccione el tipo de documento que tenga
 doc_auth.errors.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
 doc_auth.errors.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
 doc_auth.errors.doc.doc_type_check: Su licencia de conducir o identificación estatal debe ser emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares.

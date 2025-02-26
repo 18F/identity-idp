@@ -531,6 +531,7 @@ doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'
 doc_auth.errors.camera.failed: Camera failed to start, please try again.
 doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
+doc_auth.errors.choose_id_type_check: Select the type of document that you have
 doc_auth.errors.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
 doc_auth.errors.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
 doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
