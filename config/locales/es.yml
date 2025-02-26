@@ -58,6 +58,7 @@ account.index.auth_app_disabled: no habilitada
 account.index.auth_app_enabled: habilitada
 account.index.backup_code_confirm_delete: Sí, eliminar códigos
 account.index.backup_code_confirm_regenerate: Sí, regenerar códigos
+account.index.backup_codes: Códigos de recuperación
 account.index.backup_codes_exist: Generados
 account.index.backup_codes_no_exist: No generados
 account.index.continue_to_service_provider: Continuar con %{service_provider}
