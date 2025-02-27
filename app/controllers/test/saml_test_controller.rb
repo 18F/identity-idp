@@ -8,7 +8,7 @@ module Test
   class SamlTestController < ApplicationController
     include SamlAuthHelper
 
-    skip_before_action :verify_authenticity_token, only: %i[decode_response decode_slo_request]
+    # skip_before_action :verify_authenticity_token, only: %i[decode_response decode_slo_request]
 
     def index
       @start_url = test_saml_url
