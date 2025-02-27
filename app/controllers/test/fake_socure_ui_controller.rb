@@ -9,20 +9,20 @@ module Test
 
     def index
       # TODO: pass these in a more civilized fashion.
-      @socure_fixtures = FakeSocureController.fixtures
-      @selected_fixture = FakeSocureController.selected_fixture
-      @selected_fixture_body = FakeSocureController.selected_fixture_body
-      @enabled = FakeSocureController.enabled
+      @socure_fixtures = MockSocure.fixtures
+      @selected_fixture = MockSocure.selected_fixture
+      @selected_fixture_body = MockSocure.selected_fixture_body
+      @enabled = MockSocure.enabled
     end
 
     def update
-      FakeSocureController.selected_fixture = params[:selected_fixture]
-      FakeSocureController.enabled = params[:enabled] == '1'
+      MockSocure.selected_fixture = params[:selected_fixture]
+      MockSocure.enabled = params[:enabled] == '1'
 
-      @socure_fixtures = FakeSocureController.fixtures
-      @selected_fixture = FakeSocureController.selected_fixture
-      @selected_fixture_body = FakeSocureController.selected_fixture_body
-      @enabled = FakeSocureController.enabled
+      @socure_fixtures = MockSocure.fixtures
+      @selected_fixture = MockSocure.selected_fixture
+      @selected_fixture_body = MockSocure.selected_fixture_body
+      @enabled = MockSocure.enabled
 
       render :index
     end
@@ -32,7 +32,7 @@ module Test
     end
 
     def document_capture_update
-      FakeSocureController.hit_webhooks(
+      MockSocure.hit_webhooks(
         endpoint: api_webhooks_socure_event_url,
       )
       redirect_to idv_socure_document_capture_update_url
