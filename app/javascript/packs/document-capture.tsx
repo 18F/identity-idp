@@ -179,7 +179,7 @@ render(
                       isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
                       isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
                       showHelpInitially: true,
-                      immediatelyBeginCapture: false,
+                      immediatelyBeginCapture: true,
                     }}
                   >
                     <FailedCaptureAttemptsContextProvider
