@@ -17,7 +17,7 @@
       <%= render CountdownAlertComponent.new(
             expiration: @presenter.otp_expiration,
             show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-            countdown_options: { expiration: @presenter.otp_expiration, update_interval: 30.seconds }
+            countdown_options: { expiration: @presenter.otp_expiration, update_interval: 30.seconds },
           ) %>
     </div>
 <% end %>
