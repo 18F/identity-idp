@@ -7,8 +7,10 @@ module Idv
     include StepIndicatorConcern
     include DocAuthVendorConcern
 
+    before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
+    before_action :update_doc_auth_vendor, only: :show
     before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
@@ -20,7 +22,10 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
         .call('welcome', :view, true)
 
-      @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+      @presenter = Idv::WelcomePresenter.new(
+        decorated_sp_session:,
+        passport_allowed: idv_session.passport_allowed,
+      )
     end
 
     def update
@@ -43,6 +48,8 @@ module Idv
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
           idv_session.document_capture_session_uuid = nil
+          idv_session.bucketed_doc_auth_vendor = nil
+          idv_session.passport_allowed = nil
         end,
       )
     end
@@ -56,7 +63,9 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    def create_document_capture_session
+    def create_document_capture_session(reset: true)
+      return if idv_session.document_capture_session_uuid.present? && !reset
+
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -72,12 +81,18 @@ module Idv
       )
     end
 
+    def update_doc_auth_vendor
+      doc_auth_vendor
+    end
+
     def update_passport_allowed
       return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-
       idv_session.passport_allowed ||= begin
-        if dos_passport_api_healthy?(analytics:)
+        if IdentityConfig.store.doc_auth_passports_enabled &&
+           idv_session.bucketed_doc_auth_vendor != Idp::Constants::Vendors::SOCURE &&
+           !idv_session.selfie_check_required &&
+           dos_passport_api_healthy?(analytics:)
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
         end
       end

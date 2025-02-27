@@ -263,7 +263,7 @@ RSpec.describe 'In Person Proofing', js: true do
         visit idv_how_to_verify_url
 
         # choose remote
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
         complete_hybrid_handoff_step
         complete_document_capture_step(with_selfie: false)
 
@@ -292,7 +292,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'allows the user to successfully complete remote identity verification' do
       # choose remote
-      click_on t('forms.buttons.continue_remote')
+      click_on t('forms.buttons.continue_online')
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
@@ -357,7 +357,7 @@ RSpec.describe 'In Person Proofing', js: true do
           complete_doc_auth_steps_before_hybrid_handoff_step
 
           # choose remote
-          click_on t('forms.buttons.continue_remote')
+          click_on t('forms.buttons.continue_online')
           click_send_link
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -374,7 +374,7 @@ RSpec.describe 'In Person Proofing', js: true do
             visit idv_how_to_verify_url
 
             # choose remote
-            click_on t('forms.buttons.continue_remote')
+            click_on t('forms.buttons.continue_online')
             complete_hybrid_handoff_step
             successful_response = instance_double(
               Faraday::Response,
