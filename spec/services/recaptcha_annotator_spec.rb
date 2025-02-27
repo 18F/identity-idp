@@ -126,9 +126,9 @@ RSpec.describe RecaptchaAnnotator do
         .to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
     end
 
-    it 'submits annotation' do
-      result
-
+    it 'submits annotation and destroys the record' do
+      assessment
+      expect { result }.to change { RecaptchaAssessment.count }.by(-1)
       expect(WebMock).to have_requested(:post, annotation_url)
     end
 
