@@ -24,7 +24,7 @@ const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
   isSelfieDesktopTestMode: false,
   showHelpInitially: true,
-  immediatelyBeginCapture: false,
+  immediatelyBeginCapture: true,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';
