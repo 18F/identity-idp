@@ -128,4 +128,65 @@ RSpec.describe RecaptchaAnnotator do
       end
     end
   end
+
+  describe '#submit_assessment' do
+    subject(:result) { RecaptchaAnnotator.submit_assessment(assessment) }
+    let(:reason) { RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR }
+    let(:annotation) { RecaptchaAnnotator::Annotations::LEGITIMATE }
+    let(:assessment) do
+      create(:recaptcha_assessment, id: assessment_id, annotation:, annotation_reason: reason)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      stub_request(:post, annotation_url)
+        .with do |req|
+          parsed_body = JSON.parse(req.body)
+          next if reason && parsed_body['reasons'] != [reason.to_s]
+          next if !reason && parsed_body.key?('reasons')
+          next if annotation && parsed_body['annotation'] != annotation.to_s
+          true
+        end
+        .to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
+    end
+
+    it 'submits annotation' do
+      result
+
+      expect(WebMock).to have_requested(:post, annotation_url)
+    end
+
+    context 'with an optional argument omitted' do
+      let(:annotation) { nil }
+      let(:assessment) do
+        create(:recaptcha_assessment, id: assessment_id, annotation: nil, annotation_reason: reason)
+      end
+
+      it 'submits only what is provided' do
+        result
+
+        expect(WebMock).to have_requested(:post, annotation_url)
+          .with(body: { reasons: [reason] }.to_json)
+      end
+    end
+
+    context 'with connection error' do
+      before do
+        stub_request(:post, annotation_url).to_timeout
+      end
+
+      it 'fails gracefully' do
+        result
+      end
+
+      it 'notices the error to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(Faraday::Error)
+
+        result
+      end
+    end
+  end
 end
