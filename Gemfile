@@ -143,4 +143,5 @@ group :test do
   gem 'tableparser', require: false
   gem 'webmock'
   gem 'zonebie'
+  gem "argon2", "2.3.2"
 end
