@@ -11,11 +11,12 @@ module Idv
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
+      create_document_capture_session(reset: false)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
         .call('welcome', :view, true)
 
-      @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+      @presenter = Idv::WelcomePresenter.new(decorated_sp_session, id_type_policy)
     end
 
     def update
@@ -52,7 +53,9 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    def create_document_capture_session
+    def create_document_capture_session(reset: true)
+      return if idv_session.document_capture_session_uuid.present? && !reset
+
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -65,6 +68,10 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+    end
+
+    def id_type_policy
+      IdTypePolicy.new(user: current_user, session: session, user_session: user_session)
     end
   end
 end

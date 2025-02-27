@@ -689,7 +689,8 @@ doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos o
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
-doc_auth.instructions.bullet1: Have a driver’s license or state ID
+doc_auth.instructions.bullet1a: Have a driver’s license or state ID
+doc_auth.instructions.bullet1b: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
