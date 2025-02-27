@@ -67,6 +67,10 @@ export class CountdownElement extends HTMLElement {
     this.setTimeRemaining();
     this.dispatchEvent(new window.CustomEvent('lg:countdown:tick', { bubbles: true }));
 
+    if (this.delayCountdownAnnouncement) {
+      console.log('DELAYED')
+    }
+
     if (this.timeRemaining <= 0) {
       this.stop();
     }
@@ -86,6 +90,9 @@ export class CountdownElement extends HTMLElement {
       .join(t('datetime.dotiw.two_words_connector'));
   }
 
+  setDelayCountdownAnnouncement(): void {
+    // pretend element does not exist on the page until 2 minutes before OTP code expiration
+  }
 }
 
 if (!customElements.get('lg-countdown')) {
