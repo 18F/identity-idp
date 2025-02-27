@@ -6,22 +6,22 @@ module Test
     before_action :check_enabled
 
     def document_request
-      MockSocure.docv_transaction_token = SecureRandom.uuid
+      DocAuth::Mock::Socure.docv_transaction_token = SecureRandom.uuid
       render json:
              {
                data: {
-                 url: test_fake_socure_ui_document_capture_url,
-                 docvTransactionToken: MockSocure.docv_transaction_token,
+                 url: test_mock_socure_ui_document_capture_url,
+                 docvTransactionToken: DocAuth::Mock::Socure.docv_transaction_token,
                },
              }
     end
 
     def docv_results
-      render json: MockSocure.selected_fixture_body
+      render json: DocAuth::Mock::Socure.selected_fixture_body
     end
 
     def check_enabled
-      return if MockSocure.enabled
+      return if DocAuth::Mock::Socure.enabled
 
       raise ActionController::RoutingError, 'Test Socure is disabled'
     end

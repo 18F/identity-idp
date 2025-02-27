@@ -4,7 +4,7 @@
 
 <div class="grid-row grid-cap margin-top-2 flex-align-stretch">
   <div class="tablet:grid-col">
-      <%= form_with url: test_fake_socure_ui_path, method: :post do |form| %>
+      <%= form_with url: test_mock_socure_ui_path, method: :post do |form| %>
         <fieldset class="usa-fieldset">
           <%= form.check_box :enabled, checked: @enabled %>
           <%= form.label "Enable", for: :enabled %>
