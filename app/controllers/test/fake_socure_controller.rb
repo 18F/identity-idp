@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Test
-  class FakeSocureController < ApplicationController
+  class MockSocureController < ApplicationController
     skip_before_action :verify_authenticity_token # TODO: can we not skip this?
     before_action :check_enabled
 

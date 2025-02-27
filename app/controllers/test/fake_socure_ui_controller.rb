@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Test
-  class FakeSocureUiController < ApplicationController
+  class MockSocureUiController < ApplicationController
     layout 'no_card'
 
     # TODO: can we not skip this?

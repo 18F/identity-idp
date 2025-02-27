@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Test
-  class FakeSocureConfig
+  class MockSocureConfig
     include ActiveModel::Model
     include ActiveModel::Attributes
     include ActiveModel::AttributeAssignment
