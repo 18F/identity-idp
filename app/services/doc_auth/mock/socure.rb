@@ -1,7 +1,7 @@
 class MockSocure
     @fixtures =
       Dir["#{Rails.root.join('spec', 'fixtures', 'socure_docv')}/*.json"].map do |fixture_file|
-        FakeSocureConfig.new(
+        MockSocureConfig.new(
           name: File.basename(fixture_file),
           body: File.read(fixture_file),
         )
