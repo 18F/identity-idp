@@ -21,10 +21,8 @@ class RecaptchaAnnotator
       return if assessment_id.blank?
 
       if FeatureManagement.recaptcha_enterprise?
-        submit_annotation(assessment_id:, reason:, annotation:)
-        # Future:
-        # assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)
-        # RecaptchaAnnotateJob.perform_later(assessment:)
+        assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)
+        RecaptchaAnnotateJob.perform_later(assessment:)
       end
 
       { assessment_id:, reason:, annotation: }
