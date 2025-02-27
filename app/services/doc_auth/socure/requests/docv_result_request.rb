@@ -57,10 +57,14 @@ module DocAuth
         end
 
         def endpoint
-          @endpoint ||= URI.join(
-            IdentityConfig.store.socure_idplus_base_url,
-            '/api/3.0/EmailAuthScore',
-          ).to_s
+          return @endpoint if @endpoint
+
+          # using URI.join doesn't work reliably if
+          # `socure_idplus_base_url` already has a path component, so
+          # do it this way.
+          @endpoint = URI(IdentityConfig.store.socure_idplus_base_url)
+          @endpoint.path += '/api/3.0/EmailAuthScore'
+          @endpoint
         end
 
         def metric_name

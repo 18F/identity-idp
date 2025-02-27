@@ -33,7 +33,6 @@ module Test
 
     def document_capture_update
       FakeSocureController.hit_webhooks(
-        docv_transaction_token: 'docv_transaction_token',
         endpoint: api_webhooks_socure_event_url,
       )
       redirect_to idv_socure_document_capture_update_url

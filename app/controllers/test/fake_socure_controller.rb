@@ -13,8 +13,7 @@ module Test
     @enabled = false
 
     def self.selected_fixture=(new_value)
-      fixture_names = @fixtures.map(&:name)
-      if fixture_names.include?(new_value)
+      if @fixtures.map(&:name).include?(new_value)
         @selected_fixture = new_value
       end
       update_fixture_body(@selected_fixture)
@@ -27,12 +26,26 @@ module Test
         fixture.name == new_fixture_name
       end&.body
 
-      if body
-        @selected_fixture_body = JSON.parse(body, symbolize_names: true)
+      @selected_fixture_body = JSON.parse(body, symbolize_names: true) if body
+    end
+
+    def self.hit_webhook(endpoint:, event_type:)
+      Faraday.post endpoint do |req|
+        req.body = {
+          event: {
+            eventType: event_type,
+            docvTransactionToken: docv_transaction_token,
+          },
+        }.to_json
+        req.headers = {
+          'Content-Type': 'application/json',
+          Authorization: IdentityConfig.store.socure_docv_webhook_secret_key,
+        }
+        req.options.context = { service_name: 'socure-docv-webhook' }
       end
     end
 
-    def self.hit_webhooks(docv_transaction_token:, endpoint:)
+    def self.hit_webhooks(endpoint:)
       %w[
         WAITING_FOR_USER_TO_REDIRECT
         APP_OPENED
@@ -41,38 +54,39 @@ module Test
         DOCUMENTS_UPLOADED
         SESSION_COMPLETE
       ].each do |event_type|
-        puts "webhook: post: #{endpoint}"
-        Faraday.post endpoint do |req|
-          req.body = {
-            event: {
-              eventType: event_type,
-              docvTransactionToken: docv_transaction_token,
-            },
-          }.to_json
-          req.headers = {
-            'Content-Type': 'application/json',
-            Authorization: IdentityConfig.store.socure_docv_webhook_secret_key,
-          }
-          req.options.context = { service_name: 'socure-docv-webhook' }
-        end
-        puts 'webhook: done'
+        hit_webhook(endpoint:, event_type:)
       end
     end
 
     class << self
-      attr_accessor :enabled, :fixtures, :selected_fixture_body
+      attr_accessor :enabled, :fixtures, :selected_fixture_body, :docv_transaction_token
       attr_reader :selected_fixture
     end
 
-    # TODO: can we not skip this?
-    skip_before_action :verify_authenticity_token
+    # The actual instance methods
+
+    skip_before_action :verify_authenticity_token # TODO: can we not skip this?
+    before_action :check_enabled
 
     def document_request
-      render json: { data: { url: test_fake_socure_ui_document_capture_url } }
+      FakeSocureController.docv_transaction_token = SecureRandom.uuid
+      render json:
+             {
+               data: {
+                 url: test_fake_socure_ui_document_capture_url,
+                 docvTransactionToken: FakeSocureController.docv_transaction_token,
+               },
+             }
     end
 
     def docv_results
-      render json: @selected_fixture_body
+      render json: FakeSocureController.selected_fixture_body
+    end
+
+    def check_enabled
+      return if FakeSocureController.enabled
+
+      raise ActionController::RoutingError, 'Test Socure is disabled'
     end
   end
 end
