@@ -35,6 +35,7 @@ describe('document-capture/components/selfie-step', () => {
             isSelfieCaptureEnabled: false,
             isSelfieDesktopTestMode: false,
             showHelpInitially: false,
+            immediatelyBeginCapture: true,
           }}
         >
           <SelfieStep
