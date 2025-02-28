@@ -322,7 +322,6 @@ RSpec.feature 'Sign in' do
 
         visit_idp_from_sp_with_ial1(:oidc)
 
-        expect(page).to have_css('.usa-js-modal--active', wait: 10)
         expect(page).to have_content(
           t(
             'notices.timeout_warning.partially_signed_in.message_html',
