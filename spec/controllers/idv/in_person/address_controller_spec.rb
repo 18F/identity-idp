@@ -11,8 +11,6 @@ RSpec.describe Idv::InPerson::AddressController do
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
 
   before do
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
-      .and_return(true)
     stub_sign_in(user)
     stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)

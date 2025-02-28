@@ -24,6 +24,7 @@ PUNCTUATION_PAIRS = {
   '<' => '>',
   '（' => '）',
   '“' => '”',
+  '«' => '»',
 }.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
@@ -179,6 +180,35 @@ RSpec.describe 'I18n' do
     expect(mismatched_punctuation_pairs).to(
       be_empty,
       "keys with mismatched punctuation pairs: #{mismatched_punctuation_pairs.pretty_inspect}",
+    )
+  end
+
+  it 'does not leave orphaned punctuation characters' do
+    patterns = PUNCTUATION_PAIRS.flat_map do |opening_punctuation, closing_punctuation|
+      [
+        /#{Regexp.escape(opening_punctuation)}\s+/,
+        /\s+#{Regexp.escape(closing_punctuation)}/,
+      ]
+    end
+    pattern = Regexp.union(patterns)
+
+    orphaned_whitespace = []
+    i18n.locales.each do |locale|
+      i18n.data[locale].key_values.each do |key, value|
+        Array(value).each do |value|
+          next if !pattern.match?(value)
+          orphaned_whitespace.push("#{[locale, key].join('.')}: #{value}")
+        end
+      end
+    end
+
+    expect(orphaned_whitespace).to(
+      be_empty,
+      <<~STR,
+        Unexpected orphaned punctuation. Ensure that you use non-breaking whitespace within punctuation characters (` ` unicode character or `&nbsp;` HTML entity).
+
+        #{orphaned_whitespace.join("\n")}"
+      STR
     )
   end
 

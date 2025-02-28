@@ -8,9 +8,8 @@ const warning = Number(warningEl.dataset.warning!) * 1000;
 const sessionsURL = warningEl.dataset.sessionsUrl!;
 const sessionTimeout = Number(warningEl.dataset.sessionTimeoutIn!) * 1000;
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
-const keepaliveEl = document.getElementById('session-keepalive-btn');
+const keepaliveButton = document.getElementById('session-keepalive-btn')!;
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
-const timeoutRefreshPath = warningEl.dataset.timeoutRefreshPath || '';
 
 let sessionExpiration = new Date(Date.now() + sessionTimeout);
 
@@ -22,19 +21,20 @@ function showModal() {
   });
 }
 
-function keepalive() {
+function keepalive(event: MouseEvent) {
   const isExpired = new Date() > sessionExpiration;
   if (isExpired) {
-    document.location.href = timeoutRefreshPath;
-  } else {
-    modal.hide();
-    sessionExpiration = new Date(Date.now() + sessionTimeout);
-
-    setTimeout(showModal, sessionTimeout - warning);
-    countdownEls.forEach((countdownEl) => countdownEl.stop());
-    extendSession(sessionsURL);
+    return;
   }
+
+  event.preventDefault();
+  modal.hide();
+  sessionExpiration = new Date(Date.now() + sessionTimeout);
+
+  setTimeout(showModal, sessionTimeout - warning);
+  countdownEls.forEach((countdownEl) => countdownEl.stop());
+  extendSession(sessionsURL);
 }
 
-keepaliveEl?.addEventListener('click', keepalive, false);
+keepaliveButton.addEventListener('click', keepalive);
 setTimeout(showModal, sessionTimeout - warning);

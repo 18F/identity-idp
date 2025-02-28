@@ -11,6 +11,8 @@ RSpec.describe Idv::HybridHandoffController do
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
   let(:sp_selfie_enabled) { false }
+  let(:document_capture_session) { create(:document_capture_session) }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
 
   before do
     allow(controller).to receive(:current_sp)
@@ -31,6 +33,8 @@ RSpec.describe Idv::HybridHandoffController do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
                                    }
+
+    subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
   end
 
   describe '#step_info' do
@@ -306,12 +310,6 @@ RSpec.describe Idv::HybridHandoffController do
           type: 'mobile',
           doc_auth: { phone: '202-555-5555' },
         }
-      end
-
-      let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
-
-      before do
-        subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
       end
 
       it 'invalidates future steps' do

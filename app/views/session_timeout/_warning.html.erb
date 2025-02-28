@@ -38,7 +38,7 @@
     </p>
   </div>
   <%= render ButtonComponent.new(
-        type: :button,
+        url: new_user_session_url(timeout: :session, request_id: sp_session[:request_id]),
         id: 'session-keepalive-btn',
         big: true,
         full_width: true,

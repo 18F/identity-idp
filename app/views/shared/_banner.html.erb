@@ -49,7 +49,17 @@
             <div class="usa-media-block__body">
               <p>
                 <strong><%= t('shared.banner.secure_heading') %></strong>
-                <br> <%= t('shared.banner.secure_description_html', lock_icon: render('shared/banner-lock-icon')) %>
+                <br>
+                <%= t(
+                      'shared.banner.secure_description_html',
+                      lock_icon: image_tag(
+                        asset_path('lock.svg'),
+                        width: 9,
+                        height: 12,
+                        class: 'usa-banner__lock-image',
+                        alt: t('shared.banner.lock_description'),
+                      ),
+                    ) %>
               </p>
             </div>
           </div>

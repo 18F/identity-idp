@@ -126,6 +126,8 @@ module OpenidConnect
         current_user.uuid,
       )
 
+      sp_session[:successful_handoff] = true
+
       delete_branded_experience
     end
 

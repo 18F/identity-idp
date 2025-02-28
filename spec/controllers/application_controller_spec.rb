@@ -37,7 +37,7 @@ RSpec.describe ApplicationController do
 
         expect(cookies[:sp_issuer]).to eq(sp.issuer)
         expect(cookie_expiration).to be_within(3.seconds).of(
-          IdentityConfig.store.session_timeout_in_minutes.minutes.from_now,
+          IdentityConfig.store.session_timeout_in_seconds.seconds.from_now,
         )
       end
     end
@@ -414,7 +414,7 @@ RSpec.describe ApplicationController do
         expect(flash[:info]).to eq t(
           'notices.session_timedout',
           app_name: APP_NAME,
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end
@@ -447,7 +447,7 @@ RSpec.describe ApplicationController do
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end

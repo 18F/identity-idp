@@ -67,11 +67,5 @@ RSpec.describe 'users/passwords/edit.html.erb' do
       render
       expect(rendered).to_not have_content(t('links.cancel'))
     end
-
-    it 'aria described by is blank' do
-      render
-
-      expect(rendered).to_not have_selector('[aria-describedby="password-description"]')
-    end
   end
 end

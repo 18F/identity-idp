@@ -17,7 +17,6 @@ module Idv
     def initialize(
       params,
       service_provider:,
-      doc_auth_vendor:,
       acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
@@ -25,7 +24,6 @@ module Idv
     )
       @params = params
       @service_provider = service_provider
-      @doc_auth_vendor = doc_auth_vendor
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @readable = {}
@@ -328,7 +326,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor: @doc_auth_vendor,
+        vendor: document_capture_session.doc_auth_vendor,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,

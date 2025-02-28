@@ -99,7 +99,6 @@ RSpec.describe Idv::StateIdForm do
 
     context 'when there is an error with name' do
       it 'returns a single name error when name is wrong' do
-        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
         result = subject.submit(name_error_params)
         expect(subject.errors.empty?).to be(false)
         expect(result).to be_kind_of(FormResponse)
@@ -113,7 +112,6 @@ RSpec.describe Idv::StateIdForm do
         expect(result.errors.empty?).to be(true)
       end
       it 'returns both name and dob error when both fields are invalid' do
-        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
         result = subject.submit(dob_min_age_name_error_params)
         expect(subject.errors.empty?).to be(false)
         expect(result).to be_kind_of(FormResponse)

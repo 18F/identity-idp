@@ -15,7 +15,7 @@ const timeoutURL = warningEl?.dataset.timeoutUrl!;
 const sessionsURL = warningEl?.dataset.sessionsUrl!;
 
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
-const keepaliveEl = document.getElementById('session-keepalive-btn');
+const keepaliveButton = document.getElementById('session-keepalive-btn')!;
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
 
 function success({ isLive, timeout }: SessionStatus) {
@@ -46,11 +46,12 @@ function success({ isLive, timeout }: SessionStatus) {
 
 const ping = () => requestSessionStatus(sessionsURL).then(success);
 
-function keepalive() {
+function keepalive(event: MouseEvent) {
+  event.preventDefault();
   modal.hide();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
   extendSession(sessionsURL);
 }
 
-keepaliveEl?.addEventListener('click', keepalive, false);
+keepaliveButton.addEventListener('click', keepalive);
 setTimeout(ping, start);

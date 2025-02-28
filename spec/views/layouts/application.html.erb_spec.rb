@@ -16,6 +16,7 @@ RSpec.describe 'layouts/application.html.erb' do
     )
     allow(view.request).to receive(:original_fullpath).and_return('/foobar')
     allow(view).to receive(:user_fully_authenticated?).and_return(false)
+    allow(view).to receive(:url_for).and_return('/')
     view.title = title_content if title_content
   end
 

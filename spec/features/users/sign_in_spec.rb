@@ -199,7 +199,10 @@ RSpec.feature 'Sign in' do
 
     scenario 'user sees warning before session times out' do
       minutes_and = [
-        t('datetime.dotiw.minutes', count: IdentityConfig.store.session_timeout_in_minutes - 1),
+        t(
+          'datetime.dotiw.minutes',
+          count: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i - 1,
+        ),
         t('datetime.dotiw.two_words_connector'),
       ].join('')
 
@@ -218,7 +221,7 @@ RSpec.feature 'Sign in' do
 
     scenario 'user can continue browsing with refreshed CSRF token' do
       token = first('[name=authenticity_token]', visible: false).value
-      click_button t('notices.timeout_warning.signed_in.continue')
+      click_on t('notices.timeout_warning.signed_in.continue')
       expect(page).not_to have_css('.usa-js-modal--active')
       expect(page).to have_css(
         "[name=authenticity_token]:not([value='#{token}'])",
@@ -292,7 +295,7 @@ RSpec.feature 'Sign in' do
 
         expect(page).to have_css('.usa-js-modal--active', wait: 10)
 
-        click_button t('notices.timeout_warning.partially_signed_in.continue')
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
 
         expect(page).not_to have_css('.usa-js-modal--active')
         expect(find_field(t('forms.registration.labels.email')).value).not_to be_blank
@@ -309,8 +312,27 @@ RSpec.feature 'Sign in' do
 
         expect(page).to have_css('.usa-js-modal--active', wait: 10)
 
-        click_button t('notices.timeout_warning.partially_signed_in.continue')
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
         expect(find_field(t('account.index.email')).value).not_to be_blank
+      end
+
+      it 'maintains partner request if the user continues after the session expires', js: true do
+        allow(IdentityConfig.store).to receive(:session_timeout_in_seconds).and_return(1)
+        allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
+        allow(Devise).to receive(:timeout_in).and_return(1)
+
+        visit_idp_from_sp_with_ial1(:oidc)
+
+        expect(page).to have_content(
+          t(
+            'notices.timeout_warning.partially_signed_in.message_html',
+            time_left_in_session_html: t('datetime.dotiw.seconds', count: 0),
+          ),
+          wait: 10,
+        )
+
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
+        expect_branded_experience
       end
 
       it 'reloads the sign in page when cancel is clicked', js: true do

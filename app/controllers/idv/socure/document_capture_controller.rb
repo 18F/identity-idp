@@ -22,6 +22,7 @@ module Idv
       before_action :fetch_test_verification_data, only: [:update]
 
       def show
+        analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
         idv_session.socure_docv_wait_polling_started_at = nil
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])

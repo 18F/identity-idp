@@ -15,7 +15,7 @@ end
 
 Ahoy.api = false
 # Period of inactivity before a new visit is created
-Ahoy.visit_duration = IdentityConfig.store.session_timeout_in_minutes.minutes
+Ahoy.visit_duration = IdentityConfig.store.session_timeout_in_seconds.seconds
 Ahoy.server_side_visits = false
 Ahoy.geocode = false
 Ahoy.user_agent_parser = :browser

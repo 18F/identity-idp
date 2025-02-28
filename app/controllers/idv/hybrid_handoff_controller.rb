@@ -149,6 +149,7 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
+
       redirect_to next_step
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
@@ -162,7 +163,7 @@ module Idv
       if idv_session.passport_allowed
         idv_choose_id_type_url
       else
-        idv_document_capture_url
+        vendor_document_capture_url
       end
     end
 

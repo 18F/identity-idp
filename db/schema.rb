@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_07_144037) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_141538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -200,6 +200,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_144037) do
     t.string "last_doc_auth_result", comment: "sensitive=false"
     t.string "socure_docv_transaction_token", comment: "sensitive=false"
     t.string "socure_docv_capture_app_url", comment: "sensitive=false"
+    t.string "doc_auth_vendor", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
@@ -476,6 +477,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_07_144037) do
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
+    t.string "annotation", comment: "sensitive=false"
+    t.string "annotation_reason", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|

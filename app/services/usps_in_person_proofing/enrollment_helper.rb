@@ -9,12 +9,6 @@ module UspsInPersonProofing
 
         enrollment.current_address_matches_id = pii['same_address_as_id']
 
-        if enrollment.sponsor_id.nil?
-          enrollment.sponsor_id = is_enhanced_ipp ?
-            IdentityConfig.store.usps_eipp_sponsor_id :
-            IdentityConfig.store.usps_ipp_sponsor_id
-        end
-
         enrollment.save!
 
         # Send state ID address to USPS
@@ -170,8 +164,6 @@ module UspsInPersonProofing
       end
 
       def transliterate(value)
-        return value unless IdentityConfig.store.usps_ipp_transliteration_enabled
-
         result = transliterator.transliterate(value)
         if result.unsupported_chars.present?
           result.original

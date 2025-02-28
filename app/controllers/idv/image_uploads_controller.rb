@@ -2,8 +2,6 @@
 
 module Idv
   class ImageUploadsController < ApplicationController
-    include DocAuthVendorConcern
-
     respond_to :json
 
     def create
@@ -22,7 +20,6 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
-        doc_auth_vendor:,
         acuant_sdk_upgrade_ab_test_bucket: ab_test_bucket(:ACUANT_SDK),
         service_provider: current_sp,
         analytics: analytics,

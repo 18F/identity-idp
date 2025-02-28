@@ -23,6 +23,7 @@ module Idv
             redirect_to idv_hybrid_mobile_capture_complete_url
           end
 
+          analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
           session[:socure_docv_wait_polling_started_at] = nil
 
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])

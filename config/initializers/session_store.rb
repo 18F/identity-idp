@@ -16,7 +16,7 @@ Rails.application.config.session_store(
     write_private_id: true,
 
     # Redis expires session after N minutes
-    ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,
+    ttl: IdentityConfig.store.session_timeout_in_seconds.seconds,
 
     key_prefix: "#{IdentityConfig.store.domain_name}:session:",
     client_pool: REDIS_POOL,
