@@ -5,6 +5,7 @@ module Encryption
     def self.log(action, key_id:, context: nil, log_context: nil)
       output = {
         kms: {
+          timestamp: Time.zone.now,
           action: action,
           encryption_context: context,
           log_context: log_context,
