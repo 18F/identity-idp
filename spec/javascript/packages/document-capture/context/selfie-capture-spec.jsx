@@ -10,7 +10,6 @@ describe('document-capture/context/selfie-capture', () => {
       'isSelfieCaptureEnabled',
       'isSelfieDesktopTestMode',
       'showHelpInitially',
-      'immediatelyBeginCapture',
     ]);
     expect(result.current.isSelfieCaptureEnabled).to.be.a('boolean');
   });
