@@ -414,7 +414,7 @@ RSpec.describe ApplicationController do
         expect(flash[:info]).to eq t(
           'notices.session_timedout',
           app_name: APP_NAME,
-          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end
@@ -447,7 +447,7 @@ RSpec.describe ApplicationController do
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',
-          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end

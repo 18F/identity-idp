@@ -162,12 +162,12 @@ class ApplicationController < ActionController::Base
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,
-        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes,
+        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
       )
     elsif current_user.blank?
       flash[:info] = t(
         'notices.session_cleared',
-        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes,
+        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
       )
     end
 

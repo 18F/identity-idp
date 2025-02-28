@@ -201,7 +201,7 @@ RSpec.feature 'Sign in' do
       minutes_and = [
         t(
           'datetime.dotiw.minutes',
-          count: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes - 1,
+          count: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i - 1,
         ),
         t('datetime.dotiw.two_words_connector'),
       ].join('')
