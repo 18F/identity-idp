@@ -158,12 +158,8 @@ module Idv
       )
     end
 
-    def passport_verification_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled
-    end
-
     def next_step
-      if passport_verification_enabled?
+      if idv_session.passport_allowed
         idv_choose_id_type_url
       else
         idv_document_capture_url
