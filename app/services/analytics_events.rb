@@ -1306,24 +1306,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] step Current IdV step
-  # @param [String] analytics_id Current IdV flow identifier
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  def idv_doc_auth_choose_id_type_visited(
-    step:,
-    analytics_id:,
-    flow_path:,
-    **extra
-  )
-    track_event(
-      :idv_doc_auth_choose_id_type_visited,
-      step:,
-      analytics_id:,
-      flow_path:,
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
@@ -1347,6 +1329,24 @@ module AnalyticsEvents
       flow_path:,
       chosen_id_type:,
       errors:,
+      **extra,
+    )
+  end
+
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  def idv_doc_auth_choose_id_type_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_choose_id_type_visited,
+      step:,
+      analytics_id:,
+      flow_path:,
       **extra,
     )
   end
