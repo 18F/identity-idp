@@ -581,7 +581,6 @@ test:
   max_mail_events: 2
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
-
   otp_min_attempts_remaining_warning_count: 1
   otps_per_ip_limit: 3
   otps_per_ip_period: 10

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class CountdownAlertComponent < BaseComponent
-  attr_reader :show_at_remaining, :alert_options, :countdown_options,
-              :tag_options
+  attr_reader :show_at_remaining, :alert_options, :countdown_options, :tag_options
 
   def initialize(
     show_at_remaining: nil,
