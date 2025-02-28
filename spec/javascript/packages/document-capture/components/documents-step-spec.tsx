@@ -148,6 +148,7 @@ describe('document-capture/components/documents-step', () => {
           isSelfieCaptureEnabled: true,
           isSelfieDesktopTestMode: false,
           showHelpInitially: true,
+          immediatelyBeginCapture: true,
         }}
       >
         <DocumentsStep
