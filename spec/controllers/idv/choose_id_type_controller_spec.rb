@@ -68,7 +68,7 @@ RSpec.describe Idv::ChooseIdTypeController do
   describe '#update' do
     let(:chosen_id_type) { 'drivers_license' }
     let(:analytics_name) { :idv_doc_auth_choose_id_type_submitted }
-    let (:analytics_args) do
+    let(:analytics_args) do
       {
         success: true,
         step: 'choose_id_type',
