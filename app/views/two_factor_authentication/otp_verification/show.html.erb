@@ -13,7 +13,7 @@
           countdown_options: { expiration: @presenter.otp_expiration },
         ) %>
 
-    <div class="usa-sr-only"role="timer" aria-live="polite" aria-atomic="true">
+    <div class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
       <%= render CountdownAlertComponent.new(
             expiration: @presenter.otp_expiration,
             show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds + 30.seconds,
