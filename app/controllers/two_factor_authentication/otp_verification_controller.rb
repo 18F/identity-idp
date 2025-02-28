@@ -5,7 +5,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include MfaSetupConcern
     include NewDeviceConcern
-    include SessionTimeoutWarningHelper
 
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
