@@ -384,12 +384,13 @@ RSpec.describe DataPull do
       it 'loads profile summary for the user', aggregate_failures: true do
         expect(result.table).to match_array(
           [
-            ['uuid', 'profile_id', 'status', 'activated_timestamp', 'disabled_reason',
+            ['uuid', 'profile_id', 'status', 'idv_level', 'activated_timestamp', 'disabled_reason',
              'gpo_verification_pending_timestamp', 'fraud_review_pending_timestamp',
              'fraud_rejection_timestamp'],
             *user.profiles.sort_by(&:id).map do |p|
               profile_status = p.active ? 'active' : 'inactive'
-              [user.uuid, p.id, profile_status, kind_of(Time), p.deactivation_reason, nil, nil, nil]
+              [user.uuid, p.id, profile_status, p.idv_level, kind_of(Time), p.deactivation_reason,
+               nil, nil, nil]
             end,
             [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil],
             ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil],
