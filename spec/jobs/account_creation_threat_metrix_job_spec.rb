@@ -30,6 +30,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         uuid_prefix: service_provider.app_id,
+        uuid: user.uuid,
       )
     end
 
