@@ -383,7 +383,7 @@ session_check_delay: 30
 session_check_frequency: 30
 session_encryption_key:
 session_encryptor_alert_enabled: false
-session_timeout_in_minutes: 15
+session_timeout_in_seconds: 900
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 short_term_phone_otp_max_attempt_window_in_seconds: 10
