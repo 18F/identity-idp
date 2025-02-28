@@ -492,7 +492,6 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  otp_expiration_update_interval_delay: 30
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
@@ -582,7 +581,7 @@ test:
   max_mail_events: 2
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
-  otp_expiration_update_interval_delay: 30
+
   otp_min_attempts_remaining_warning_count: 1
   otps_per_ip_limit: 3
   otps_per_ip_period: 10
