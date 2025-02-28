@@ -199,7 +199,10 @@ RSpec.feature 'Sign in' do
 
     scenario 'user sees warning before session times out' do
       minutes_and = [
-        t('datetime.dotiw.minutes', count: IdentityConfig.store.session_timeout_in_minutes - 1),
+        t(
+          'datetime.dotiw.minutes',
+          count: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes - 1,
+        ),
         t('datetime.dotiw.two_words_connector'),
       ].join('')
 
