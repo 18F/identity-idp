@@ -17,6 +17,9 @@ module FlowPolicyHelper
       idv_session.skip_doc_auth_from_how_to_verify = false
     when :hybrid_handoff
       idv_session.flow_path = 'standard'
+    when :choose_id_type
+      idv_session.flow_path = 'standard'
+      idv_session.passport_allowed == true
     when :link_sent
       idv_session.flow_path = 'hybrid'
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
@@ -69,6 +72,8 @@ module FlowPolicyHelper
       %i[welcome agreement how_to_verify]
     when :hybrid_handoff
       %i[welcome agreement how_to_verify hybrid_handoff]
+    when :choose_id_type
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type]
     when :link_sent
       %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
