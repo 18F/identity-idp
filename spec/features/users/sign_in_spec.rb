@@ -221,7 +221,7 @@ RSpec.feature 'Sign in' do
 
     scenario 'user can continue browsing with refreshed CSRF token' do
       token = first('[name=authenticity_token]', visible: false).value
-      click_button t('notices.timeout_warning.signed_in.continue')
+      click_on t('notices.timeout_warning.signed_in.continue')
       expect(page).not_to have_css('.usa-js-modal--active')
       expect(page).to have_css(
         "[name=authenticity_token]:not([value='#{token}'])",
