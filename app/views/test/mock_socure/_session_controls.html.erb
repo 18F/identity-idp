@@ -1,0 +1,36 @@
+<div class="grid-row grid-cap margin-top-2 flex-align-stretch">
+  <div class="tablet:grid-col">
+    <%= form_with url: test_mock_socure_path, method: :post do |form| %>
+      <fieldset class="usa-fieldset">
+        <%= form.check_box :enabled, checked: @socure_provider.enabled %>
+        <%= form.label "Enable", for: :enabled %>
+      </fieldset>
+
+      <fieldset class="usa-fieldset" >
+        <h4>Fixture</h4>
+        <%=
+          form.collection_select(
+            :selected_fixture,
+            @socure_provider.fixtures,
+            :name,
+            :pretty_name,
+            selected: @socure_provider.selected_fixture,
+            prompt: 'Select a fixture',
+          )
+        %>
+      </fieldset>
+
+      <%= submit_tag "Apply", class: 'margin-top-2' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="grid-row grid-cap margin-top-2 flex-align-stretch bg-accent-cool-lighter">
+  <% if @socure_provider.selected_fixture_body %>
+    <div class="tablet:grid-col">
+        <% if @socure_provider.selected_fixture_body %>
+          <pre><%= JSON.pretty_generate(@socure_provider.selected_fixture_body) %></pre>
+        <% end %>
+    </div>
+  <% end %>
+</div>

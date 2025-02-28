@@ -3,24 +3,27 @@
 module DocAuth
   module Mock
     class Socure
-      @fixtures =
-        Dir["#{Rails.root.join('spec', 'fixtures', 'socure_docv')}/*.json"].map do |fixture_file|
-          Test::MockSocureConfig.new(
-            name: File.basename(fixture_file),
-            body: File.read(fixture_file),
-          )
-        end
+      def initialize
+        @fixtures =
+          Dir["#{Rails.root.join('spec', 'fixtures', 'socure_docv')}/*.json"].map do |fixture_file|
+            Test::MockSocureConfig.new(
+              name: File.basename(fixture_file),
+              body: File.read(fixture_file),
+            )
+          end
+      end
 
-      @enabled = false
+      attr_accessor :fixtures, :selected_fixture_body, :docv_transaction_token
+      attr_reader :selected_fixture
 
-      def self.selected_fixture=(new_value)
+      def selected_fixture=(new_value)
         if @fixtures.map(&:name).include?(new_value)
           @selected_fixture = new_value
         end
         update_fixture_body(@selected_fixture)
       end
 
-      def self.update_fixture_body(new_fixture_name)
+      def update_fixture_body(new_fixture_name)
         @selected_fixture_body = nil
 
         body = @fixtures.find do |fixture|
@@ -30,7 +33,11 @@ module DocAuth
         @selected_fixture_body = JSON.parse(body, symbolize_names: true) if body
       end
 
-      def self.hit_webhook(endpoint:, event_type:)
+      def enabled
+        IdentityConfig.store.doc_auth_vendor == 'mock_socure'
+      end
+
+      def hit_webhook(endpoint:, event_type:)
         Faraday.post endpoint do |req|
           req.body = {
             event: {
@@ -46,7 +53,7 @@ module DocAuth
         end
       end
 
-      def self.hit_webhooks(endpoint:)
+      def hit_webhooks(endpoint:)
         %w[
           WAITING_FOR_USER_TO_REDIRECT
           APP_OPENED
@@ -59,10 +66,6 @@ module DocAuth
         end
       end
 
-      class << self
-        attr_accessor :enabled, :fixtures, :selected_fixture_body, :docv_transaction_token
-        attr_reader :selected_fixture
-      end
     end
   end
 end
