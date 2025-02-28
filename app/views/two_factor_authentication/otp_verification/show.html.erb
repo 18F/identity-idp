@@ -7,11 +7,19 @@
 <% end %>
 
 <% if @presenter.otp_expiration.present? %>
-  <%= render CountdownAlertComponent.new(
-        show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-        alert_options: { class: 'margin-bottom-4' },
-        countdown_options: { expiration: @presenter.otp_expiration },
-      ) %>
+    <%= render CountdownAlertComponent.new(
+          show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
+          alert_options: { class: 'margin-bottom-4', role: 'presentation' },
+          countdown_options: { expiration: @presenter.otp_expiration },
+        ) %>
+
+    <div class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
+      <%= render CountdownAlertComponent.new(
+            expiration: @presenter.otp_expiration,
+            show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds + 30.seconds,
+            countdown_options: { expiration: @presenter.otp_expiration, update_interval: 30.seconds },
+          ) %>
+    </div>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
