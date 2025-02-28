@@ -15,7 +15,7 @@ module Idv
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
         case doc_auth_vendor
-        when Idp::Constants::Vendors::SOCURE
+        when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
           redirect_to idv_hybrid_mobile_socure_document_capture_url
         when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
           redirect_to idv_hybrid_mobile_document_capture_url
