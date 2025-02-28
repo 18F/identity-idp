@@ -319,6 +319,7 @@ RSpec.feature 'Sign in' do
       it 'maintains partner request if the user continues after the session expires', js: true do
         allow(IdentityConfig.store).to receive(:session_timeout_in_seconds).and_return(1)
         allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
+        allow(Devise).to receive(:timeout_in).and_return(1)
 
         visit_idp_from_sp_with_ial1(:oidc)
 
