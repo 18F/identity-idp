@@ -303,7 +303,7 @@ module IdentityConfig
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
-    config.add(:otp_expiration_update_interval, type: :integer)
+    config.add(:otp_expiration_update_interval_delay, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)
     config.add(:otp_min_attempts_remaining_warning_count, type: :integer)
     config.add(:otp_valid_for, type: :integer)

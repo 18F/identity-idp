@@ -16,7 +16,6 @@ export class CountdownAlertElement extends HTMLElement {
   }
 
   handleShowAtRemainingTick = () => {
-    console.log(this.countdown.timeRemaining, this.showAtRemaining!)
     if (this.countdown.timeRemaining <= this.showAtRemaining!) {
       this.show();
       this.removeEventListener('lg:countdown:tick', this.handleShowAtRemainingTick);
