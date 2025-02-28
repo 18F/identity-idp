@@ -34,6 +34,7 @@ class RecaptchaAnnotator
         annotation: assessment.annotation_before_type_cast,
         reason: assessment.annotation_reason_before_type_cast,
       )
+      assessment.destroy
     end
 
     private
