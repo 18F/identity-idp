@@ -136,6 +136,10 @@ interface AcuantCaptureProps {
    * Determine whether the selfie help text shoule be shown.
    */
   showSelfieHelp: () => void;
+  /**
+   * Whether user is on the failed submission review step
+   */
+  isReviewStep?: boolean;
 }
 
 /**
@@ -313,6 +317,7 @@ function AcuantCapture(
     errorMessage,
     name,
     showSelfieHelp,
+    isReviewStep,
   }: AcuantCaptureProps,
   ref: Ref<HTMLInputElement | null>,
 ) {
@@ -327,7 +332,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { trackEvent } = useContext(AnalyticsContext);
-  const { isSelfieCaptureEnabled, immediatelyBeginCapture } = useContext(SelfieCaptureContext);
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -350,7 +355,7 @@ function AcuantCapture(
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
-    selfieCapture && immediatelyBeginCapture,
+    selfieCapture && !isReviewStep,
   );
 
   const {

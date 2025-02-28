@@ -100,6 +100,7 @@ function DocumentSideAcuantCapture({
       className={className}
       allowUpload={isUploadAllowed}
       showSelfieHelp={showSelfieHelp}
+      isReviewStep={isReviewStep}
     />
   );
 }
