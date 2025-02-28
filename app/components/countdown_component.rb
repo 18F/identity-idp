@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class CountdownComponent < BaseComponent
-  attr_reader :expiration, :update_interval, :start_immediately, :tag_options,
-              :delay_countdown_announcement
+  attr_reader :expiration, :update_interval, :start_immediately, :tag_options
 
   MILLISECONDS_PER_SECOND = 1000
 
