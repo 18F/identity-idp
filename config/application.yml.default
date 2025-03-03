@@ -33,6 +33,7 @@ acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 all_redirect_uris_cache_duration_minutes: 2
+allowed_attempts_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 asset_host: ''
@@ -126,6 +127,7 @@ dos_passport_client_secret: ''
 dos_passport_composite_healthcheck_endpoint: ''
 dos_passport_healthcheck_endpoint: ''
 dos_passport_mrz_endpoint: ''
+dos_passport_timeout_seconds: 60
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -381,14 +383,13 @@ session_check_delay: 30
 session_check_frequency: 30
 session_encryption_key:
 session_encryptor_alert_enabled: false
-session_timeout_in_minutes: 15
+session_timeout_in_seconds: 900
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
-sign_in_recaptcha_annotation_enabled: false
 sign_in_recaptcha_log_failures_only: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
@@ -438,7 +439,6 @@ usps_ipp_password: ''
 usps_ipp_request_timeout: 10
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
-usps_ipp_transliteration_enabled: false
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_upload_enabled: false
@@ -507,7 +507,6 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
-  sign_in_recaptcha_annotation_enabled: true
   sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
@@ -516,7 +515,6 @@ development:
   use_dashboard_service_providers: true
   usps_eipp_sponsor_id: '222222222222222'
   usps_ipp_sponsor_id: '111111111111111'
-  usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: '/gsa_order'
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
@@ -609,7 +607,6 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
-  sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
   socure_docv_webhook_secret_key: 'secret-key'

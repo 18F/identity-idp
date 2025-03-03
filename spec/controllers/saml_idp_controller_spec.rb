@@ -1005,6 +1005,11 @@ RSpec.describe SamlIdpController do
         expect(response).to_not be_redirect
       end
 
+      it 'marks session as a successful_handoff' do
+        saml_get_auth(ialmax_settings)
+        expect(session[:sp][:successful_handoff]).to eq(true)
+      end
+
       it 'contains verified attributes' do
         saml_get_auth(ialmax_settings)
 

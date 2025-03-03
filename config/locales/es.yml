@@ -58,6 +58,7 @@ account.index.auth_app_disabled: no habilitada
 account.index.auth_app_enabled: habilitada
 account.index.backup_code_confirm_delete: Sí, eliminar códigos
 account.index.backup_code_confirm_regenerate: Sí, regenerar códigos
+account.index.backup_codes: Códigos de recuperación
 account.index.backup_codes_exist: Generados
 account.index.backup_codes_no_exist: No generados
 account.index.continue_to_service_provider: Continuar con %{service_provider}
@@ -1572,7 +1573,7 @@ shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
 shared.banner.lock_description: Un candado cerrado
 shared.banner.official_site: Un sitio web oficial del Gobierno de los Estados Unidos
-shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
+shared.banner.secure_description_html: Un <strong>candado</strong> ( %{lock_icon} ) o <strong>https://</strong> significa que se conectó de forma segura a un sitio web .gov. Comunique información confidencial solo en los sitios web oficiales protegidos.
 shared.banner.secure_heading: Los sitios web .gov protegidos usan HTTPS
 shared.footer_lite.gsa: Administración General de Servicios de los EE. UU.
 shared.skip_link: Saltar al contenido principal

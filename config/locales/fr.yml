@@ -23,7 +23,7 @@ account_reset.recovery_options.check_saved_credential: Vérifiez si vous avez de
 account_reset.recovery_options.check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou tactile, vous avez peut-être sauvegardé vos informations d’identification dans un gestionnaire de mots de passe, tel que iCloud Keychain ou Google Password Manager. Essayez d’utiliser le déverrouillage facial ou tactile sur un navigateur utilisant ce gestionnaire de mots de passe.
 account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
 account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
-account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
+account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
 account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
 account_reset.recovery_options.use_device: Utiliser un autre appareil
 account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le même appareil où vous avez configuré le déverrouillage facial ou tactile.
@@ -58,6 +58,7 @@ account.index.auth_app_disabled: non activé
 account.index.auth_app_enabled: activé
 account.index.backup_code_confirm_delete: Oui, supprimer les codes
 account.index.backup_code_confirm_regenerate: Oui, régénérer les codes
+account.index.backup_codes: Codes de sauvegarde
 account.index.backup_codes_exist: Généré
 account.index.backup_codes_no_exist: Non généré
 account.index.continue_to_service_provider: Continuer sur %{service_provider}
@@ -652,7 +653,7 @@ doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
 doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
-doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
+doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
@@ -935,7 +936,7 @@ forms.webauthn_setup.step_2: Insérer votre clé de sécurité
 forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans le côté droit d’un ordinateur portable
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
 forms.webauthn_setup.step_3: Configurer votre clé de sécurité
-forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1161,7 +1162,7 @@ idv.messages.gpo.resend: Envoyez-moi une autre lettre
 idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
 idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
-idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
+idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
@@ -1360,7 +1361,7 @@ in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse fig
 in_person_proofing.process.state_id.heading: Présentez votre permis de conduire ou votre carte d’identité de l’État
 in_person_proofing.process.state_id.heading_eipp: Présenter votre pièce d’identité et les documents complémentaires
 in_person_proofing.process.state_id.info: Ce document ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
-in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section « Qu’apporter au bureau de poste ».
+in_person_proofing.process.state_id.info_eipp: Le préposé numérisera votre pièce d’identité. Ce document ne doit pas être périmé. Selon le type de pièce d’identité que vous présentez, il pourra vous être demandé de produire des documents complémentaires. Vous trouverez les exigences à respecter dans la section « Qu’apporter au bureau de poste ».
 in_person_proofing.process.what_to_do.heading: Faites la queue
 in_person_proofing.process.what_to_do.info: Dites à l’employé que vous venez pour une vérification d’identité. Si la personne ne sait pas comment procéder, demandez qu’un responsable vienne vous aider.
 instructions.account.reactivate.begin: Commençons.
@@ -1399,7 +1400,7 @@ instructions.mfa.wrong_number: Vous avez saisi un mauvais numéro de téléphone
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
 instructions.password.help_text_header: Conseils de sécurité pour votre mot de passe
-instructions.password.info.lead_html: Votre mot de passe doit comporter au moins <strong>%{min_length} caractères</strong>. N’utilisez pas de séquences courantes de caractères ou de caractères répétés, comme « abc » ou « 111 ».
+instructions.password.info.lead_html: Votre mot de passe doit comporter au moins <strong>%{min_length} caractères</strong>. N’utilisez pas de séquences courantes de caractères ou de caractères répétés, comme « abc » ou « 111 ».
 instructions.password.password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour réinitialiser votre mot de passe si vous avez vérifié votre identité avec ce compte. Si vous ne l’avez pas, vous pouvez quand même réinitialiser votre mot de passe, puis reconfirmer votre identité.
 instructions.password.strength.0: Très faible
 instructions.password.strength.1: Faible
@@ -1476,11 +1477,11 @@ notices.signed_up_but_unconfirmed.first_paragraph_end: avec un lien pour confirm
 notices.signed_up_but_unconfirmed.first_paragraph_start: Nous avons envoyé un e-mail à
 notices.signed_up_but_unconfirmed.resend_confirmation_email: Renvoyer le courriel de confirmation
 notices.timeout_warning.partially_signed_in.continue: Continuer la connexion
-notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
+notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.partially_signed_in.message_html: Pour votre sécurité, nous annulerons votre connexion dans %{time_left_in_session_html}.
 notices.timeout_warning.partially_signed_in.sign_out: Annuler la connexion
 notices.timeout_warning.signed_in.continue: Gardez ma connexion active
-notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
+notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.signed_in.message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session_html}, sauf en cas d’avis contraire de votre part.
 notices.timeout_warning.signed_in.sign_out: Déconnectez-moi
 notices.totp_configured: Une appli d’authentification a été ajoutée à votre compte.
@@ -1560,7 +1561,7 @@ shared.banner.how: Voici comment le savoir
 shared.banner.landmark_label: Site Web officiel des autorités
 shared.banner.lock_description: Un cadenas fermé
 shared.banner.official_site: Un site Web officiel de l’administration des États-Unis
-shared.banner.secure_description_html: La présence d’un <strong>cadenas</strong> ( %{lock_icon} ) ou de <strong>https://</strong> signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
+shared.banner.secure_description_html: La présence d’un <strong>cadenas</strong> ( %{lock_icon} ) ou de <strong>https://</strong> signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
 shared.banner.secure_heading: Les sites Web sécurisés .gov utilisent HTTPS
 shared.footer_lite.gsa: Administration des services généraux des États-Unis
 shared.skip_link: Passer au contenu principal
@@ -1729,7 +1730,7 @@ two_factor_authentication.opt_in.opted_out_html: Vous avez choisi de ne pas rece
 two_factor_authentication.opt_in.opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au %{phone_number_html} au cours des 30 derniers jours. Nous ne pouvons inscrire un numéro de téléphone qu’une fois tous les 30 jours.
 two_factor_authentication.opt_in.title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de téléphone
 two_factor_authentication.opt_in.wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code de sécurité à ce numéro de téléphone.
-two_factor_authentication.otp_delivery_preference.instruction: Vous pouvez modifier cela à tout moment. Si vous utilisez un numéro de téléphone fixe, sélectionnez « Appel téléphonique ».
+two_factor_authentication.otp_delivery_preference.instruction: Vous pouvez modifier cela à tout moment. Si vous utilisez un numéro de téléphone fixe, sélectionnez « Appel téléphonique ».
 two_factor_authentication.otp_delivery_preference.landline_warning_html: Le numéro de téléphone saisi semble être un <strong>téléphone fixe</strong>. Demandez plutôt un code à usage unique par %{phone_setup_path}.
 two_factor_authentication.otp_delivery_preference.no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de téléphone de %{location}
 two_factor_authentication.otp_delivery_preference.phone_call: appel téléphonique
@@ -1841,7 +1842,7 @@ user_mailer.account_reset_complete.subject: Compte supprimé
 user_mailer.account_reset_granted.button: Confirmer la suppression du compte
 user_mailer.account_reset_granted.cancel_link_text: veuillez annuler
 user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset_html}.
-user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
+user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
 user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
@@ -2045,9 +2046,9 @@ webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
 webauthn_platform_recommended.skip: Skip
-webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
-webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
-webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
+webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
+webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.heading.webauthn: Clé de sécurité détectée
 webauthn_setup_mismatch.heading.webauthn_platform: Déverrouillage facial ou tactile détecté
 webauthn_setup_mismatch.undo: Annuler

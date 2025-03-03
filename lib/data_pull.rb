@@ -276,6 +276,7 @@ class DataPull
         uuid
         profile_id
         status
+        idv_level
         activated_timestamp
         disabled_reason
         gpo_verification_pending_timestamp
@@ -290,6 +291,7 @@ class DataPull
               user.uuid,
               profile.id,
               profile.active ? 'active' : 'inactive',
+              profile.idv_level,
               profile.activated_at,
               profile.deactivation_reason,
               profile.gpo_verification_pending_at,

@@ -52,21 +52,18 @@ RSpec.describe RecaptchaAnnotator do
           .and_return(recaptcha_enterprise_project_id)
         allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
           .and_return(recaptcha_enterprise_api_key)
-        stub_request(:post, annotation_url)
-          .with do |req|
-            parsed_body = JSON.parse(req.body)
-            next if reason && parsed_body['reasons'] != [reason.to_s]
-            next if !reason && parsed_body.key?('reasons')
-            next if annotation && parsed_body['annotation'] != annotation.to_s
-            true
-          end
-          .to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
+        allow(RecaptchaAnnotateJob).to receive(:perform_later)
       end
 
-      it 'submits annotation' do
-        annotate
+      it 'schedules the annotation to be submitted' do
+        expect(RecaptchaAnnotateJob).to receive(:perform_later) do |assessment:|
+          expect(assessment).to be_kind_of(RecaptchaAssessment)
+          expect(assessment.annotation_before_type_cast).to eq(annotation)
+          expect(assessment.annotation_reason_before_type_cast).to eq(reason)
+          expect(assessment).to be_persisted
+        end
 
-        expect(WebMock).to have_requested(:post, annotation_url)
+        annotate
       end
 
       it 'logs analytics' do
@@ -83,11 +80,15 @@ RSpec.describe RecaptchaAnnotator do
         let(:annotation) { nil }
         subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:) }
 
-        it 'submits only what is provided' do
-          annotate
+        it 'schedules the annotation to be with only what is provided' do
+          expect(RecaptchaAnnotateJob).to receive(:perform_later) do |assessment:|
+            expect(assessment).to be_kind_of(RecaptchaAssessment)
+            expect(assessment.annotation_before_type_cast).to be_nil
+            expect(assessment.annotation_reason_before_type_cast).to eq(reason)
+            expect(assessment).to be_persisted
+          end
 
-          expect(WebMock).to have_requested(:post, annotation_url)
-            .with(body: { reasons: [reason] }.to_json)
+          annotate
         end
 
         it 'returns a hash describing annotation' do
@@ -98,33 +99,66 @@ RSpec.describe RecaptchaAnnotator do
           )
         end
       end
+    end
+  end
 
-      context 'with nil assessment id' do
-        let(:assessment_id) { nil }
+  describe '#submit_assessment' do
+    subject(:result) { RecaptchaAnnotator.submit_assessment(assessment) }
+    let(:reason) { RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR }
+    let(:annotation) { RecaptchaAnnotator::Annotations::LEGITIMATE }
+    let(:assessment) do
+      create(:recaptcha_assessment, id: assessment_id, annotation:, annotation_reason: reason)
+    end
 
-        it 'does not submit annotation' do
-          annotate
-
-          expect(WebMock).not_to have_requested(:post, annotation_url)
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
+        .and_return(recaptcha_enterprise_project_id)
+      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
+        .and_return(recaptcha_enterprise_api_key)
+      stub_request(:post, annotation_url)
+        .with do |req|
+          parsed_body = JSON.parse(req.body)
+          next if reason && parsed_body['reasons'] != [reason.to_s]
+          next if !reason && parsed_body.key?('reasons')
+          next if annotation && parsed_body['annotation'] != annotation.to_s
+          true
         end
+        .to_return(headers: { 'Content-Type': 'application/json' }, body: '{}')
+    end
 
-        it { expect(annotate).to be_nil }
+    it 'submits annotation and destroys the record' do
+      assessment
+      expect { result }.to change { RecaptchaAssessment.count }.by(-1)
+      expect(WebMock).to have_requested(:post, annotation_url)
+    end
+
+    context 'with an optional argument omitted' do
+      let(:annotation) { nil }
+      let(:assessment) do
+        create(:recaptcha_assessment, id: assessment_id, annotation: nil, annotation_reason: reason)
       end
 
-      context 'with connection error' do
-        before do
-          stub_request(:post, annotation_url).to_timeout
-        end
+      it 'submits only what is provided' do
+        result
 
-        it 'fails gracefully' do
-          annotate
-        end
+        expect(WebMock).to have_requested(:post, annotation_url)
+          .with(body: { reasons: [reason] }.to_json)
+      end
+    end
 
-        it 'notices the error to NewRelic' do
-          expect(NewRelic::Agent).to receive(:notice_error).with(Faraday::Error)
+    context 'with connection error' do
+      before do
+        stub_request(:post, annotation_url).to_timeout
+      end
 
-          annotate
-        end
+      it 'fails gracefully' do
+        result
+      end
+
+      it 'notices the error to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(Faraday::Error)
+
+        result
       end
     end
   end

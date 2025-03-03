@@ -31,6 +31,10 @@ class NullServiceProviderSession
 
   def sp_alert(_section); end
 
+  def successful_handoff?
+    false
+  end
+
   def requested_more_recent_verification?
     false
   end

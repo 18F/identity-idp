@@ -58,6 +58,7 @@ account.index.auth_app_disabled: 未启用
 account.index.auth_app_enabled: 已启用
 account.index.backup_code_confirm_delete: 是的，删除代码
 account.index.backup_code_confirm_regenerate: 是的，重新生成代码
+account.index.backup_codes: 备用代码
 account.index.backup_codes_exist: 生成了
 account.index.backup_codes_no_exist: 未生成
 account.index.continue_to_service_provider: 继续到 %{service_provider}
@@ -1573,7 +1574,7 @@ shared.banner.how: 这里告诉你如何知道
 shared.banner.landmark_label: 官方政府网站
 shared.banner.lock_description: 锁上的锁头
 shared.banner.official_site: 美国政府的一个官方网站
-shared.banner.secure_description_html: 一把 <strong>锁</strong>（ %{lock_icon} ）或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
+shared.banner.secure_description_html: 一把 <strong>锁</strong>（ %{lock_icon} ）或者 <strong>https://</strong> 意味着你已安全连接到 .gov 网站。只在官方、安全的网站上分享敏感信息。
 shared.banner.secure_heading: 安全的 .gov 网站使用 HTTPS
 shared.footer_lite.gsa: 美国联邦总务管理局
 shared.skip_link: 跳到主要内容

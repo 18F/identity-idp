@@ -58,6 +58,7 @@ account.index.auth_app_disabled: not enabled
 account.index.auth_app_enabled: enabled
 account.index.backup_code_confirm_delete: Yes, delete codes
 account.index.backup_code_confirm_regenerate: Yes, regenerate codes
+account.index.backup_codes: Backup codes
 account.index.backup_codes_exist: Generated
 account.index.backup_codes_no_exist: Not generated
 account.index.continue_to_service_provider: Continue to %{service_provider}
@@ -1560,7 +1561,7 @@ shared.banner.how: Here’s how you know
 shared.banner.landmark_label: Official government website
 shared.banner.lock_description: A locked padlock
 shared.banner.official_site: An official website of the United States government
-shared.banner.secure_description_html: A <strong>lock</strong> ( %{lock_icon} ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
+shared.banner.secure_description_html: A <strong>lock</strong> ( %{lock_icon} ) or <strong>https://</strong> means you’ve safely connected to the .gov website. Share sensitive information only on official, secure websites.
 shared.banner.secure_heading: Secure .gov websites use HTTPS
 shared.footer_lite.gsa: US General Services Administration
 shared.skip_link: Skip to main content
