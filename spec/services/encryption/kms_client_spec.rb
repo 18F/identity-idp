@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Encryption::KmsClient do
+  around do |example|
+    freeze_time { example.run }
+  end
+
   before do
     stub_const(
       'Encryption::KmsClient::KMS_CLIENT_POOL',
@@ -112,16 +116,14 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      Timecop.freeze(log_timestamp) do
-        expect(Encryption::KmsLogger).to receive(:log).with(
-          action: :encrypt,
-          timestamp: log_timestamp,
-          context: encryption_context,
-          key_id: subject.kms_key_id,
-        )
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        action: :encrypt,
+        timestamp: Time.zone.now,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
 
-        subject.encrypt(plaintext, encryption_context)
-      end
+      subject.encrypt(plaintext, encryption_context)
     end
   end
 
@@ -171,15 +173,13 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      Timecop.freeze(log_timestamp) do
-        expect(Encryption::KmsLogger).to receive(:log).with(
-          action: :decrypt,
-          timestamp: Time.zone.now,
-          context: encryption_context,
-          key_id: subject.kms_key_id,
-        )
-        subject.decrypt(kms_ciphertext, encryption_context)
-      end
+      expect(Encryption::KmsLogger).to receive(:log).with(
+        action: :decrypt,
+        timestamp: Time.zone.now,
+        context: encryption_context,
+        key_id: subject.kms_key_id,
+      )
+      subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
 end

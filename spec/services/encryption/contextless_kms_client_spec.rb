@@ -6,6 +6,10 @@ RSpec.describe Encryption::ContextlessKmsClient do
   let(:local_ciphertext) { 'local ciphertext' }
   let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
 
+  around do |example|
+    freeze_time { example.run }
+  end
+
   before do
     stub_const(
       'Encryption::ContextlessKmsClient::KMS_CLIENT_POOL',
@@ -149,16 +153,14 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the encryption' do
-        Timecop.freeze(log_timestamp) do
-          expect(Encryption::KmsLogger).to receive(:log).with(
-            action: :encrypt,
-            timestamp: log_timestamp,
-            log_context: { context: 'abc' },
-            key_id: IdentityConfig.store.aws_kms_key_id,
-          )
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          action: :encrypt,
+          timestamp: Time.zone.now,
+          log_context: { context: 'abc' },
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
-          subject.encrypt(long_kms_plaintext, log_context: { context: 'abc' })
-        end
+        subject.encrypt(long_kms_plaintext, log_context: { context: 'abc' })
       end
     end
 
@@ -188,16 +190,14 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the decryption' do
-        Timecop.freeze(log_timestamp) do
-          expect(Encryption::KmsLogger).to receive(:log).with(
-            action: :decrypt,
-            timestamp: log_timestamp,
-            log_context: { context: 'abc' },
-            key_id: IdentityConfig.store.aws_kms_key_id,
-          )
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          action: :decrypt,
+          timestamp: Time.zone.now,
+          log_context: { context: 'abc' },
+          key_id: IdentityConfig.store.aws_kms_key_id,
+        )
 
-          subject.decrypt('KMSx' + kms_ciphertext, log_context: { context: 'abc' })
-        end
+        subject.decrypt('KMSx' + kms_ciphertext, log_context: { context: 'abc' })
       end
     end
 

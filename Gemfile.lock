@@ -697,7 +697,6 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     thor (1.3.2)
     thread_safe (0.3.6)
-    timecop (0.9.10)
     timeout (0.4.3)
     tpm-key_attestation (0.11.0)
       bindata (~> 2.4)
@@ -874,7 +873,6 @@ DEPENDENCIES
   strong_migrations (>= 0.4.2)
   tableparser
   terminal-table
-  timecop
   valid_email (>= 0.1.3)!
   view_component (~> 3.0)
   webauthn (~> 2.5.2)
