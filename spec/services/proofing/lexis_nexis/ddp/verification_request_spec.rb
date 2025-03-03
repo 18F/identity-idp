@@ -20,7 +20,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
       email: 'test@example.com',
       request_ip: '127.0.0.1',
       uuid_prefix: 'ABCD',
-      uuid: '1234',
+      uuid: '00000000-0000-0000-0000-000000000000',
     }
   end
 
@@ -67,7 +67,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
           threatmetrix_session_id: 'UNIQUE_SESSION_ID',
           email: 'test@example.com',
           request_ip: '127.0.0.1',
-          uuid: '1234',
+          uuid: '00000000-0000-0000-0000-000000000000',
         }
       end
 
@@ -91,7 +91,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
             email: 'test@example.com',
             request_ip: '127.0.0.1',
             uuid_prefix: 'SPNUM',
-            uuid: '1234',
+            uuid: '00000000-0000-0000-0000-000000000000',
           }
         end
 
