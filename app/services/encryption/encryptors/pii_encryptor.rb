@@ -31,9 +31,10 @@ module Encryption
           raise EncryptionError, 'ciphertext is not valid JSON'
         end
 
-        def encrypted_data
-          self[:encrypted_data] ||
+        def encrypt_data!
+          self[:encrypted_data] =
             kms_client.encrypt(aes_encrypted_ciphertext, user_kms_encryption_context)
+          nil
         end
 
         def to_s
@@ -77,6 +78,7 @@ module Encryption
           salt:,
           cost:,
         )
+        single_region_digest.encrypt_data!
 
         multi_region_digest = Digest.new(
           kms_client: multi_region_kms_client,
@@ -85,6 +87,7 @@ module Encryption
           salt:,
           cost:,
         )
+        multi_region_digest.encrypt_data!
 
         RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
       end
