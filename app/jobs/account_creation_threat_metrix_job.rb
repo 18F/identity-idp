@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class AccountCreationThreatMetrixJob < ApplicationJob
+  # rubocop:disable Lint/UnusedMethodArgument
   def perform(
     user_id: nil,
     threatmetrix_session_id: nil,
@@ -19,6 +20,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     user = User.find_by(id: user_id)
     analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   def analytics(user)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
