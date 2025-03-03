@@ -21,8 +21,8 @@ module Encryption
         raise EncryptionError, 'digest contains invalid json'
       end
 
-      def encrypted_password
-        self[:encrypted_password] ||
+      def encrypt_password!
+        self[:encrypted_password] =
           kms_client.encrypt(scrypted_password, user_kms_encryption_context)
       end
 
@@ -63,6 +63,8 @@ module Encryption
         password_cost: cost,
       )
 
+      single_region_digest.encrypt_password!
+
       multi_region_digest = PasswordDigest.new(
         kms_client: multi_region_kms_client,
         scrypted_password:,
@@ -70,6 +72,7 @@ module Encryption
         password_salt: salt,
         password_cost: cost,
       )
+      multi_region_digest.encrypt_password!
 
       RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
     end
