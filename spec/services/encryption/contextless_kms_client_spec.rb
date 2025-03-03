@@ -4,6 +4,7 @@ RSpec.describe Encryption::ContextlessKmsClient do
   let(:password_pepper) { '1' * 32 }
   let(:local_plaintext) { 'local plaintext' }
   let(:local_ciphertext) { 'local ciphertext' }
+  let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
 
   before do
     stub_const(
@@ -148,13 +149,16 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the encryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(
-          :encrypt,
-          log_context: { context: 'abc' },
-          key_id: IdentityConfig.store.aws_kms_key_id,
-        )
+        Timecop.freeze(log_timestamp) do
+          expect(Encryption::KmsLogger).to receive(:log).with(
+            action: :encrypt,
+            timestamp: log_timestamp,
+            log_context: { context: 'abc' },
+            key_id: IdentityConfig.store.aws_kms_key_id,
+          )
 
-        subject.encrypt(long_kms_plaintext, log_context: { context: 'abc' })
+          subject.encrypt(long_kms_plaintext, log_context: { context: 'abc' })
+        end
       end
     end
 
@@ -184,13 +188,16 @@ RSpec.describe Encryption::ContextlessKmsClient do
       end
 
       it 'logs the decryption' do
-        expect(Encryption::KmsLogger).to receive(:log).with(
-          :decrypt,
-          log_context: { context: 'abc' },
-          key_id: IdentityConfig.store.aws_kms_key_id,
-        )
+        Timecop.freeze(log_timestamp) do
+          expect(Encryption::KmsLogger).to receive(:log).with(
+            action: :decrypt,
+            timestamp: log_timestamp,
+            log_context: { context: 'abc' },
+            key_id: IdentityConfig.store.aws_kms_key_id,
+          )
 
-        subject.decrypt('KMSx' + kms_ciphertext, log_context: { context: 'abc' })
+          subject.decrypt('KMSx' + kms_ciphertext, log_context: { context: 'abc' })
+        end
       end
     end
 

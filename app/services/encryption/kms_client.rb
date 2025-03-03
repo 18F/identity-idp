@@ -32,7 +32,12 @@ module Encryption
     end
 
     def encrypt(plaintext, encryption_context)
-      KmsLogger.log(:encrypt, context: encryption_context, key_id: kms_key_id)
+      KmsLogger.log(
+        action: :encrypt,
+        timestamp: Time.zone.now,
+        context: encryption_context,
+        key_id: kms_key_id,
+      )
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
       encrypt_local(plaintext, encryption_context)
     end
@@ -41,7 +46,12 @@ module Encryption
       if self.class.looks_like_contextless?(ciphertext)
         return decrypt_contextless_kms(ciphertext, encryption_context)
       end
-      KmsLogger.log(:decrypt, context: encryption_context, key_id: kms_key_id)
+      KmsLogger.log(
+        action: :decrypt,
+        timestamp: Time.zone.now,
+        context: encryption_context,
+        key_id: kms_key_id,
+      )
       return decrypt_kms(ciphertext, encryption_context) if use_kms?(ciphertext)
       decrypt_local(ciphertext, encryption_context)
     end

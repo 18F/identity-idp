@@ -40,6 +40,7 @@ RSpec.describe Encryption::KmsClient do
   let(:key_id) { 'key1' }
   let(:plaintext) { 'a' * 3000 + 'b' * 3000 + 'c' * 3000 }
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
+  let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
 
   let(:local_encryption_key) do
     OpenSSL::HMAC.digest(
@@ -111,13 +112,16 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(
-        :encrypt,
-        context: encryption_context,
-        key_id: subject.kms_key_id,
-      )
+      Timecop.freeze(log_timestamp) do
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          action: :encrypt,
+          timestamp: log_timestamp,
+          context: encryption_context,
+          key_id: subject.kms_key_id,
+        )
 
-      subject.encrypt(plaintext, encryption_context)
+        subject.encrypt(plaintext, encryption_context)
+      end
     end
   end
 
@@ -167,12 +171,15 @@ RSpec.describe Encryption::KmsClient do
     end
 
     it 'logs the context' do
-      expect(Encryption::KmsLogger).to receive(:log).with(
-        :decrypt,
-        context: encryption_context,
-        key_id: subject.kms_key_id,
-      )
-      subject.decrypt(kms_ciphertext, encryption_context)
+      Timecop.freeze(log_timestamp) do
+        expect(Encryption::KmsLogger).to receive(:log).with(
+          action: :decrypt,
+          timestamp: Time.zone.now,
+          context: encryption_context,
+          key_id: subject.kms_key_id,
+        )
+        subject.decrypt(kms_ciphertext, encryption_context)
+      end
     end
   end
 end
