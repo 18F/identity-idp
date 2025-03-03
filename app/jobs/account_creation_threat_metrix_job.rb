@@ -6,7 +6,8 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     threatmetrix_session_id: nil,
     request_ip: nil,
     email: nil,
-    uuid_prefix: nil
+    uuid_prefix: nil,
+    uuid: nil
   )
     device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
       request_ip: request_ip,
