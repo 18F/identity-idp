@@ -91,6 +91,11 @@ module MfaSetupConcern
     end
   end
 
+  def in_workflow
+    return 'idv' if resolved_authn_context_result.identity_proofing?
+    return 'auth'
+  end
+
   def threatmetrix_attrs
     {
       user_id: current_user.id,
@@ -98,6 +103,7 @@ module MfaSetupConcern
       threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
       email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
+      workflow: in_workflow,
     }
   end
 

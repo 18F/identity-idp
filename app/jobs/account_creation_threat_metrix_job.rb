@@ -9,12 +9,14 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     email: nil,
     uuid_prefix: nil,
     user_uuid: nil
+    workflow: nil
   )
     device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
       request_ip: request_ip,
       threatmetrix_session_id: threatmetrix_session_id,
       user_email: email,
       uuid_prefix: uuid_prefix,
+      workflow: workflow,
     )
   ensure
     user = User.find_by(id: user_id)

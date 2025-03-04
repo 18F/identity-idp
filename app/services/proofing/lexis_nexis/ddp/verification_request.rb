@@ -25,7 +25,7 @@ module Proofing
             account_drivers_license_number: applicant[:state_id_number]&.gsub(/\W/, '') || '',
             account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
             account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
-            customer_event_type: 'idv',
+            customer_event_type: applicant[:workflow],
             event_type: 'ACCOUNT_CREATION',
             policy: config.ddp_policy,
             service_type: 'all',
