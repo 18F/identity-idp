@@ -7,7 +7,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     request_ip: nil,
     email: nil,
     uuid_prefix: nil,
-    user_uuid: nil
+    user_uuid: nil,
     workflow: nil
   )
     device_profiling_result = AccountCreation::DeviceProfiling.new.proof(
