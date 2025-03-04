@@ -186,11 +186,12 @@ Rails.application.routes.draw do
 
         get '/session_data' => 'session_data#index'
 
-        get '/mock_socure' => 'mock_socure#index'
-        post '/mock_socure' => 'mock_socure#update'
+        # get '/mock_socure' => 'mock_socure#index'
+        # post '/mock_socure' => 'mock_socure#update'
 
-        get '/mock_socure/document_capture' => 'mock_socure#document_capture'
-        post '/mock_socure/document_capture' => 'mock_socure#document_capture_update'
+        get '/mock_socure/document_capture' => 'mock_socure#index'
+        post '/mock_socure/document_capture' => 'mock_socure#update'
+        post '/mock_socure/document_capture/continue' => 'mock_socure#continue'
 
         post '/mock_socure/api/document_request' => 'mock_socure#document_request'
         post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results'

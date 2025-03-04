@@ -10,7 +10,9 @@ module Test
     attribute :body, :string
 
     def pretty_name
-      name.gsub(/\W+/, ' ').titlecase
+      name.gsub(/\W+/, ' ')
+        .gsub(/\.json$/, '')
+        .titlecase
     end
   end
 end
