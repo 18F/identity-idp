@@ -140,6 +140,22 @@ RSpec.describe Idv::WelcomeController do
 
       expect(response).to redirect_to(idv_please_call_url)
     end
+
+    context 'has pending in-person enrollment' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'redirects to ready to verify' do
+        profile = create(:profile, :in_person_verification_pending, user:)
+
+        stub_sign_in(profile.user)
+
+        get :show
+
+        expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+      end
+    end
   end
 
   describe '#update' do
