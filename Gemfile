@@ -105,7 +105,7 @@ group :development, :test do
   gem 'bullet', '~> 8.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
   gem 'erb_lint', '~> 0.7.0', require: false
-  gem 'i18n-tasks', '~> 1.0'
+  gem 'i18n-tasks', '~> 1.0', '>= 1.0.14'
   gem 'knapsack'
   gem 'listen'
   gem 'net-http-persistent', '~> 4.0.2', require: false
