@@ -6,6 +6,7 @@ module DataWarehouse
 
     TABLE_EXCLUSION_LIST = %w[
       agency_identities
+      usps_confirmations
     ].freeze
 
     TIMESTAMP_OVERRIDE = {
