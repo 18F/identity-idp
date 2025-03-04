@@ -69,9 +69,11 @@ module Idv
       return if vendor == expected_doc_auth_vendor
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+      return if vendor == Idp::Constants::Vendors::SOCURE &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::SOCURE_MOCK
 
       correct_path = case expected_doc_auth_vendor
-        when Idp::Constants::Vendors::SOCURE
+        when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
           in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
                            : idv_socure_document_capture_path
         when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
