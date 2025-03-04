@@ -7,7 +7,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
-    before_action :cancel_previous_in_person_enrollments
+    before_action :cancel_previous_in_person_enrollments, only: :show
 
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
