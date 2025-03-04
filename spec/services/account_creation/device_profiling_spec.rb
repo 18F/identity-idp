@@ -12,6 +12,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
       proof: threatmetrix_proofer_result,
     )
   end
+  let(:workflow) { :auth }
 
   subject(:device_profiling) { described_class.new }
 
