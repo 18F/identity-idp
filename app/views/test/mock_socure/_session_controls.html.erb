@@ -5,15 +5,39 @@
         <h4>Fixture</h4>
         <%= form.collection_select(
               :selected_fixture,
-              @socure_provider.fixtures,
+              DocAuth::Mock::Socure.instance.fixtures,
               :name,
               :pretty_name,
-              selected: @socure_provider.selected_fixture,
+              selected: DocAuth::Mock::Socure.instance.selected_fixture,
               prompt: 'Select a fixture',
             )
         %>
+        <br />
+        <h4>Decision</h4>
+        <%= form.collection_radio_buttons(
+              :error_codes,
+              DocAuth::Mock::Socure::VERDICTS,
+              :to_s,
+              :to_s,
+              {},
+              {},
+            )
+        %>
+        <br />
+        <h4>Reason Codes</h4>
+        <%= form.collection_radio_buttons(
+              :reason_codes,
+              DocAuth::Mock::Socure::ERRORS,
+              :to_s,
+              :to_s,
+              {},
+              {},
+            )
+        %>
+        <br />
         <%= form.button 'Apply', class: 'usa-button' %>
       </fieldset>
+      <br />
       <%= form.button 'Continue',
           formaction: test_mock_socure_document_capture_continue_url,
           class: 'usa-button margin-top-4'
@@ -24,10 +48,10 @@
 
 <fieldset class="usa-fieldset">
   <div class="grid-row grid-cap margin-top-2 flex-align-stretch bg-accent-cool-lighter">
-    <% if @socure_provider.selected_fixture_body %>
+    <% if DocAuth::Mock::Socure.instance.selected_fixture_body %>
     <div class="tablet:grid-col">
-      <% if @socure_provider.selected_fixture_body %>
-      <pre><%= JSON.pretty_generate(@socure_provider.selected_fixture_body) %></pre>
+      <% if DocAuth::Mock::Socure.instance.selected_fixture_body %>
+      <pre><%= JSON.pretty_generate(DocAuth::Mock::Socure.instance.selected_fixture_body) %></pre>
       <% end %>
     </div>
     <% end %>

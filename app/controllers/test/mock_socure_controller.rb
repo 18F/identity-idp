@@ -9,12 +9,10 @@ module Test
 
     # Fake Socure UI
     def index
-      @socure_provider = DocAuth::Mock::Socure.instance
     end
 
     def update
       DocAuth::Mock::Socure.instance.selected_fixture = params[:selected_fixture]
-      @socure_provider = DocAuth::Mock::Socure.instance
       render :index
     end
 

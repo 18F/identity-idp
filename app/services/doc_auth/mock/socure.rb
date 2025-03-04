@@ -5,6 +5,9 @@ module DocAuth
     class Socure
       include Singleton
 
+      ERRORS = %w[I810 I817]
+      VERDICTS = %w[Pass Fail]
+
       attr_accessor :fixtures, :selected_fixture_body, :docv_transaction_token
       attr_reader :selected_fixture
 
