@@ -24,7 +24,7 @@ Devise.setup do |config|
   config.skip_session_storage = [:http_auth]
   config.strip_whitespace_keys = []
   config.stretches = Rails.env.test? ? 1 : 12
-  config.timeout_in = IdentityConfig.store.session_timeout_in_minutes.minutes
+  config.timeout_in = IdentityConfig.store.session_timeout_in_seconds.seconds
 
   config.warden do |manager|
     manager.failure_app = CustomDeviseFailureApp

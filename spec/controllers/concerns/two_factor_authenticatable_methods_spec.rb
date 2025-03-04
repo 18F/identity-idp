@@ -168,53 +168,28 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       context 'when there is a sign_in_recaptcha_assessment_id in the session' do
         let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
-        context 'when sign_in_recaptcha_annotation_enabled is true' do
-          before do
-            allow(IdentityConfig.store).to receive(:sign_in_recaptcha_annotation_enabled)
-              .and_return(true)
-          end
+        it 'annotates assessment with PASSED_TWO_FACTOR and clears assessment id from session' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+          }
 
-          it 'annotates assessment with PASSED_TWO_FACTOR and clears assessment id from session' do
-            recaptcha_annotation = {
-              assessment_id:,
-              reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
-            }
+          controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
 
-            controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+          expect(RecaptchaAnnotator).to receive(:annotate)
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
 
-            expect(RecaptchaAnnotator).to receive(:annotate)
-              .with(**recaptcha_annotation)
-              .and_return(recaptcha_annotation)
+          stub_analytics
 
-            stub_analytics
+          expect { result }
+            .to change { controller.session[:sign_in_recaptcha_assessment_id] }
+            .from(assessment_id).to(nil)
 
-            expect { result }
-              .to change { controller.session[:sign_in_recaptcha_assessment_id] }
-              .from(assessment_id).to(nil)
-
-            expect(@analytics).to have_logged_event(
-              'Multi-Factor Authentication',
-              hash_including(recaptcha_annotation:),
-            )
-          end
-        end
-
-        context 'when sign_in_recaptcha_annotation_enabled is false' do
-          before do
-            allow(IdentityConfig.store).to receive(:sign_in_recaptcha_annotation_enabled)
-              .and_return(false)
-          end
-
-          it 'does not annotate the assessment' do
-            controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
-
-            expect(RecaptchaAnnotator).not_to receive(:annotate)
-
-            stub_analytics
-
-            expect { result }
-              .not_to change { controller.session[:sign_in_recaptcha_assessment_id] }
-          end
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(recaptcha_annotation:),
+          )
         end
       end
     end
@@ -253,52 +228,28 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
       context 'when there is a sign_in_recaptcha_assessment_id in the session' do
         let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
 
-        context 'when sign_in_recaptcha_annotation_enabled is true' do
-          before do
-            allow(IdentityConfig.store).to receive(:sign_in_recaptcha_annotation_enabled)
-              .and_return(true)
-          end
+        it 'annotates assessment with FAILED_TWO_FACTOR and clears assessment id from session' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
+          }
 
-          it 'annotates assessment with FAILED_TWO_FACTOR and clears assessment id from session' do
-            recaptcha_annotation = {
-              assessment_id:,
-              reason: RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
-            }
+          controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
 
-            controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+          expect(RecaptchaAnnotator).to receive(:annotate)
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
 
-            expect(RecaptchaAnnotator).to receive(:annotate)
-              .with(**recaptcha_annotation)
-              .and_return(recaptcha_annotation)
+          stub_analytics
 
-            stub_analytics
+          expect { result }
+            .not_to change { controller.session[:sign_in_recaptcha_assessment_id] }
+            .from(assessment_id)
 
-            expect { result }
-              .not_to change { controller.session[:sign_in_recaptcha_assessment_id] }
-              .from(assessment_id)
-
-            expect(@analytics).to have_logged_event(
-              'Multi-Factor Authentication',
-              hash_including(recaptcha_annotation:),
-            )
-          end
-        end
-        context 'when sign_in_recaptcha_annotation_enabled is false' do
-          before do
-            allow(IdentityConfig.store).to receive(:sign_in_recaptcha_annotation_enabled)
-              .and_return(false)
-          end
-
-          it 'does not annotate the assessment' do
-            controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
-
-            expect(RecaptchaAnnotator).not_to receive(:annotate)
-
-            stub_analytics
-
-            expect { result }
-              .not_to change { controller.session[:sign_in_recaptcha_assessment_id] }
-          end
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            hash_including(recaptcha_annotation:),
+          )
         end
       end
     end

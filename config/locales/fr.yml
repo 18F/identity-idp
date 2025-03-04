@@ -1477,11 +1477,11 @@ notices.signed_up_but_unconfirmed.first_paragraph_end: avec un lien pour confirm
 notices.signed_up_but_unconfirmed.first_paragraph_start: Nous avons envoyé un e-mail à
 notices.signed_up_but_unconfirmed.resend_confirmation_email: Renvoyer le courriel de confirmation
 notices.timeout_warning.partially_signed_in.continue: Continuer la connexion
-notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
+notices.timeout_warning.partially_signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.partially_signed_in.message_html: Pour votre sécurité, nous annulerons votre connexion dans %{time_left_in_session_html}.
 notices.timeout_warning.partially_signed_in.sign_out: Annuler la connexion
 notices.timeout_warning.signed_in.continue: Gardez ma connexion active
-notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
+notices.timeout_warning.signed_in.live_region_message_html: Vous serez déconnecté dans %{time_left_in_session_html}. Sélectionnez « Gardez ma connexion active » pour rester connecté. Sélectionnez « Déconnectez-moi » pour vous déconnecter.
 notices.timeout_warning.signed_in.message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session_html}, sauf en cas d’avis contraire de votre part.
 notices.timeout_warning.signed_in.sign_out: Déconnectez-moi
 notices.totp_configured: Une appli d’authentification a été ajoutée à votre compte.
@@ -1561,7 +1561,7 @@ shared.banner.how: Voici comment le savoir
 shared.banner.landmark_label: Site Web officiel des autorités
 shared.banner.lock_description: Un cadenas fermé
 shared.banner.official_site: Un site Web officiel de l’administration des États-Unis
-shared.banner.secure_description_html: La présence d’un <strong>cadenas</strong> ( %{lock_icon} ) ou de <strong>https://</strong> signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
+shared.banner.secure_description_html: La présence d’un <strong>cadenas</strong> ( %{lock_icon} ) ou de <strong>https://</strong> signifie que vous êtes connecté en toute sécurité au site Web .gov. Ne partagez des informations sensibles que sur des sites Web officiels et sécurisés.
 shared.banner.secure_heading: Les sites Web sécurisés .gov utilisent HTTPS
 shared.footer_lite.gsa: Administration des services généraux des États-Unis
 shared.skip_link: Passer au contenu principal
