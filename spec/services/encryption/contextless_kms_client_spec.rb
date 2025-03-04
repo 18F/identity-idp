@@ -4,6 +4,11 @@ RSpec.describe Encryption::ContextlessKmsClient do
   let(:password_pepper) { '1' * 32 }
   let(:local_plaintext) { 'local plaintext' }
   let(:local_ciphertext) { 'local ciphertext' }
+  let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
+
+  around do |example|
+    freeze_time { example.run }
+  end
 
   before do
     stub_const(
@@ -149,7 +154,8 @@ RSpec.describe Encryption::ContextlessKmsClient do
 
       it 'logs the encryption' do
         expect(Encryption::KmsLogger).to receive(:log).with(
-          :encrypt,
+          action: :encrypt,
+          timestamp: Time.zone.now,
           log_context: { context: 'abc' },
           key_id: IdentityConfig.store.aws_kms_key_id,
         )
@@ -185,7 +191,8 @@ RSpec.describe Encryption::ContextlessKmsClient do
 
       it 'logs the decryption' do
         expect(Encryption::KmsLogger).to receive(:log).with(
-          :decrypt,
+          action: :decrypt,
+          timestamp: Time.zone.now,
           log_context: { context: 'abc' },
           key_id: IdentityConfig.store.aws_kms_key_id,
         )

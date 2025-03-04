@@ -2,9 +2,10 @@
 
 module Encryption
   class KmsLogger
-    def self.log(action, key_id:, context: nil, log_context: nil)
+    def self.log(action:, timestamp:, key_id:, context: nil, log_context: nil)
       output = {
         kms: {
+          timestamp: timestamp,
           action: action,
           encryption_context: context,
           log_context: log_context,

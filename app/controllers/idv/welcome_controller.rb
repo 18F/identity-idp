@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
+    before_action :cancel_previous_in_person_enrollments, only: :show
 
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
@@ -23,7 +24,6 @@ module Idv
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
-      cancel_previous_in_person_enrollments
 
       idv_session.welcome_visited = true
 
@@ -61,7 +61,6 @@ module Idv
     end
 
     def cancel_previous_in_person_enrollments
-      return unless IdentityConfig.store.in_person_proofing_enabled
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
