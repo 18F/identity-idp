@@ -6,11 +6,13 @@ module DataWarehouse
 
     TABLE_EXCLUSION_LIST = %w[
       agency_identities
+      usps_confirmations
     ].freeze
 
     TIMESTAMP_OVERRIDE = {
       'sp_return_logs' => 'returned_at',
       'registration_logs' => 'registered_at',
+      'letter_requests_to_usps_ftp_logs' => 'ftp_at',
     }.freeze
 
     def perform(timestamp)
