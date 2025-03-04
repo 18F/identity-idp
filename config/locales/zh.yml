@@ -1340,7 +1340,7 @@ in_person_proofing.headings.po_search.location: 找到一个参与本项目的�
 in_person_proofing.headings.prepare: 亲身去验证身份
 in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份证件上的信息。
 in_person_proofing.headings.switch_back: 切换回你的电脑，来准备亲身去验证身份。
-in_person_proofing.headings.update_address: 更新你当前地址
+in_person_proofing.headings.update_address: 更新你当前的住宅地址
 in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码

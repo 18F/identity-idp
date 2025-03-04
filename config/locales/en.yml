@@ -1327,7 +1327,7 @@ in_person_proofing.headings.po_search.location: Find a participating Post Office
 in_person_proofing.headings.prepare: Verify your identity in person
 in_person_proofing.headings.state_id_milestone_2: Enter the information on your state‑issued ID
 in_person_proofing.headings.switch_back: Switch back to your computer to prepare to verify your identity in person
-in_person_proofing.headings.update_address: Update your current address
+in_person_proofing.headings.update_address: Update your current residential address
 in_person_proofing.headings.update_state_id: Update the information on your ID
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
