@@ -13,6 +13,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
     )
   end
   let(:user) { create(:user) }
+  let(:workflow) { :auth }
 
   subject(:device_profiling) { described_class.new }
 

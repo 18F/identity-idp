@@ -33,7 +33,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
         uuid_prefix: service_provider.app_id,
         user_uuid: user.uuid,
         user_uuid: '00000000-0000-0000-0000-000000000000',
-        workflow: in_workflow,
+        workflow: workflow,
       )
     end
 
