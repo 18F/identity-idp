@@ -28,6 +28,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
         user_email: user.email_addresses.take.email,
         uuid_prefix: service_provider.app_id,
         uuid: user.uuid,
+        workflow: workflow,
       )
     end
 
