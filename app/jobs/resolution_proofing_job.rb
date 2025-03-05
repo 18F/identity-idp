@@ -124,6 +124,7 @@ class ResolutionProofingJob < ApplicationJob
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
       current_sp: current_sp,
+      user_uuid: user.uuid,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
