@@ -353,6 +353,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
         perform_mobile_hybrid_steps
       end
+
       it 'allows the user to successfully complete remote identity verification' do
         perform_in_browser(:desktop) do
           # Change mind and resume remote identity verification
