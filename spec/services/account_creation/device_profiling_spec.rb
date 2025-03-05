@@ -12,6 +12,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
       proof: threatmetrix_proofer_result,
     )
   end
+  let(:workflow) { :auth }
 
   subject(:device_profiling) { described_class.new }
 
@@ -26,6 +27,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
         threatmetrix_session_id: threatmetrix_session_id,
         user_email: Faker::Internet.email,
         uuid_prefix: service_provider.app_id,
+        workflow: workflow,
       )
     end
 
