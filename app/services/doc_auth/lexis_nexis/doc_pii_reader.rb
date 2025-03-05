@@ -28,40 +28,11 @@ module DocAuth
         state_id_type_slug = id_auth_field_data['Fields_DocumentClassName']
         state_id_type = DocAuth::Response::ID_TYPE_SLUGS[state_id_type_slug]
 
-        Pii::StateId.new(
-          first_name: id_auth_field_data['Fields_FirstName'],
-          last_name: id_auth_field_data['Fields_Surname'],
-          middle_name: id_auth_field_data['Fields_MiddleName'],
-          name_suffix: id_auth_field_data['Fields_NameSuffix'],
-          address1: id_auth_field_data['Fields_AddressLine1'],
-          address2: id_auth_field_data['Fields_AddressLine2'],
-          city: id_auth_field_data['Fields_City'],
-          state: id_auth_field_data['Fields_State'],
-          zipcode: id_auth_field_data['Fields_PostalCode'],
-          dob: parse_date(
-            year: id_auth_field_data['Fields_DOB_Year'],
-            month: id_auth_field_data['Fields_DOB_Month'],
-            day: id_auth_field_data['Fields_DOB_Day'],
-          ),
-          sex: parse_sex_value(authentication_result_field_data&.[]('Sex')),
-          height: parse_height_value(id_auth_field_data['Fields_Height']),
-          weight: nil,
-          eye_color: nil,
-          state_id_expiration: parse_date(
-            year: id_auth_field_data['Fields_ExpirationDate_Year'],
-            month: id_auth_field_data['Fields_ExpirationDate_Month'],
-            day: id_auth_field_data['Fields_xpirationDate_Day'], # this is NOT a typo
-          ),
-          state_id_issued: parse_date(
-            year: id_auth_field_data['Fields_IssueDate_Year'],
-            month: id_auth_field_data['Fields_IssueDate_Month'],
-            day: id_auth_field_data['Fields_IssueDate_Day'],
-          ),
-          state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
-          state_id_number: id_auth_field_data['Fields_DocumentNumber'],
-          state_id_type: state_id_type,
-          issuing_country_code: id_auth_field_data['Fields_CountryCode'],
-        )
+        if state_id_type == 'drivers_license' || state_id_type == 'state_id_card'
+          generate_state_id_pii(id_auth_field_data, state_id_type)
+        elsif state_id_type == 'passport'
+          generate_passport_pii(id_auth_field_data, state_id_type)
+        end
       end
 
       def parse_date(year:, month:, day:)
@@ -102,6 +73,75 @@ module DocAuth
         return unless height_match_data
 
         height_match_data[:feet].to_i * 12 + height_match_data[:inches].to_i
+      end
+
+      def generate_state_id_pii(id_auth_field_data, state_id_type)
+        Pii::StateId.new(
+          first_name: id_auth_field_data['Fields_FirstName'],
+          last_name: id_auth_field_data['Fields_Surname'],
+          middle_name: id_auth_field_data['Fields_MiddleName'],
+          name_suffix: id_auth_field_data['Fields_NameSuffix'],
+          address1: id_auth_field_data['Fields_AddressLine1'],
+          address2: id_auth_field_data['Fields_AddressLine2'],
+          city: id_auth_field_data['Fields_City'],
+          state: id_auth_field_data['Fields_State'],
+          zipcode: id_auth_field_data['Fields_PostalCode'],
+          dob: parse_date(
+            year: id_auth_field_data['Fields_DOB_Year'],
+            month: id_auth_field_data['Fields_DOB_Month'],
+            day: id_auth_field_data['Fields_DOB_Day'],
+          ),
+          sex: parse_sex_value(authentication_result_field_data&.[]('Sex')),
+          height: parse_height_value(id_auth_field_data['Fields_Height']),
+          weight: nil,
+          eye_color: nil,
+          state_id_expiration: parse_date(
+            year: id_auth_field_data['Fields_ExpirationDate_Year'],
+            month: id_auth_field_data['Fields_ExpirationDate_Month'],
+            day: id_auth_field_data['Fields_xpirationDate_Day'], # this is NOT a typo
+          ),
+          state_id_issued: parse_date(
+            year: id_auth_field_data['Fields_IssueDate_Year'],
+            month: id_auth_field_data['Fields_IssueDate_Month'],
+            day: id_auth_field_data['Fields_IssueDate_Day'],
+          ),
+          state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
+          state_id_number: id_auth_field_data['Fields_DocumentNumber'],
+          state_id_type: state_id_type,
+          issuing_country_code: id_auth_field_data['Fields_CountryCode'],
+        )
+      end
+
+      def generate_passport_pii(id_auth_field_data, state_id_type)
+        Pii::Passport.new(
+          first_name: id_auth_field_data['Fields_FirstName'],
+          last_name: id_auth_field_data['Fields_Surname'],
+          city: id_auth_field_data['Fields_City'],
+          state: id_auth_field_data['Fields_State'],
+          dob: parse_date(
+            year: id_auth_field_data['Fields_DOB_Year'],
+            month: id_auth_field_data['Fields_DOB_Month'],
+            day: id_auth_field_data['Fields_DOB_Day'],
+          ),
+          birth_place: id_auth_field_data['Fields_BirthPlace'],
+          weight: nil, # TODO: check if needed
+          eye_color: nil, # TODO: check if needed
+          passport_expiration: parse_date(
+            year: id_auth_field_data['Fields_ExpirationDate_Year'],
+            month: id_auth_field_data['Fields_ExpirationDate_Month'],
+            day: id_auth_field_data['Fields_xpirationDate_Day'], # this is NOT a typo
+          ),
+          passport_issued: parse_date(
+            year: id_auth_field_data['Fields_IssueDate_Year'],
+            month: id_auth_field_data['Fields_IssueDate_Month'],
+            day: id_auth_field_data['Fields_IssueDate_Day'],
+          ),
+          state_id_type: state_id_type,
+          issuing_country_code: id_auth_field_data['Fields_CountryCode'],
+          nationality_code: id_auth_field_data['Fields_NationalityCode'],
+          personal_number: id_auth_field_data['Fields_PersonalNumber'],
+          mrz: id_auth_field_data['Fields_MRZ'],
+        )
       end
     end
   end
