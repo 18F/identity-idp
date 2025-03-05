@@ -59,6 +59,9 @@ class SamlRequestValidator
   end
 
   def authorized_authn_context
+    # if there is no service provider, an error has already been added
+    return unless service_provider.present?
+
     if !valid_authn_context? ||
        (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
        (ial_max_requested? && !service_provider.ialmax_allowed?) ||
@@ -74,7 +77,7 @@ class SamlRequestValidator
   end
 
   def registered_cert_exists
-    # if there is no service provider, this error has already been added
+    # if there is no service provider, an error has already been added
     return if service_provider.blank?
     return if service_provider.certs.present?
     return unless service_provider.encrypt_responses?

@@ -96,6 +96,42 @@ RSpec.describe SamlRequestValidator do
           **extra,
         )
       end
+
+      context 'when identity proofing is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IAL_VERIFIED_ACR] }
+
+        it 'returns FormResponse with success: false' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { service_provider: { unauthorized_service_provider: true } },
+            **extra,
+          )
+        end
+      end
+
+      context 'when IALmax is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF] }
+
+        it 'returns FormResponse with success: false' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { service_provider: { unauthorized_service_provider: true } },
+            **extra,
+          )
+        end
+      end
+
+      context 'when facial matching is requested' do
+        let(:authn_context) { [Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR] }
+
+        it 'returns FormResponse with success: false' do
+          expect(response.to_h).to eq(
+            success: false,
+            error_details: { service_provider: { unauthorized_service_provider: true } },
+            **extra,
+          )
+        end
+      end
     end
 
     context 'valid authn context and unauthorized nameid format' do
