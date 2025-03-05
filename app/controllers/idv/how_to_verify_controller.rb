@@ -35,7 +35,7 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
-          idv_session_user.establishing_in_person_enrollment&.cancel
+          abandon_any_ipp_progress
           redirect_to idv_hybrid_handoff_url
         else
           idv_session.opted_in_to_in_person_proofing = true
@@ -71,6 +71,10 @@ module Idv
     end
 
     private
+
+    def abandon_any_ipp_progress
+      idv_session_user.establishing_in_person_enrollment&.cancel
+    end
 
     def analytics_arguments
       {
