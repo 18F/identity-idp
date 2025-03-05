@@ -267,6 +267,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
