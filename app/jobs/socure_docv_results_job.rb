@@ -11,9 +11,6 @@ class SocureDocvResultsJob < ApplicationJob
     @async = async
     @docv_transaction_token_override = docv_transaction_token_override
 
-    Rails.logger.info "results job: document_capture_session_uuid: #{document_capture_session_uuid}"
-    Rails.logger.info "results job: document_capture_session: #{document_capture_session}"
-
     raise "DocumentCaptureSession not found: #{document_capture_session_uuid}" unless
       document_capture_session
 
@@ -21,8 +18,6 @@ class SocureDocvResultsJob < ApplicationJob
     docv_result_response = timer.time('vendor_request') do
       socure_document_verification_result
     end
-
-    Rails.logger.info "docv_result_response: #{docv_result_response.inspect}"
 
     log_verification_request(
       docv_result_response:,

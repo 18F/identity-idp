@@ -57,6 +57,8 @@ module DocAuth
         end
 
         def endpoint
+          return DocAuth::Mock::Socure.instance.results_endpoint if DocAuth::Mock::Socure.instance.enabled?
+
           @endpoint ||= URI.join(
             IdentityConfig.store.socure_idplus_base_url,
             '/api/3.0/EmailAuthScore',
