@@ -177,7 +177,7 @@ RSpec.describe DataPull do
         ]
 
         expect(result.table).to eq(expected_table)
-        expect(result.table.map(&:length)).to eq(expected_table.map(&:length))
+        expect_consistent_row_length(result.table)
         expect(result.subtask).to eq('uuid-lookup')
         expect(result.uuids).to match_array(users.map(&:uuid))
       end
@@ -258,7 +258,7 @@ RSpec.describe DataPull do
           expect(result.table).to eq(expected_table)
 
           expect(result.subtask).to eq('uuid-convert')
-          expect(result.table.map(&:length)).to eq(expected_table.map(&:length))
+          expect_consistent_row_length(result.table)
           expect(result.uuids).to match_array(users.map(&:uuid))
         end
       end
@@ -286,7 +286,7 @@ RSpec.describe DataPull do
         ]
         expect(result.table).to match(expected_table)
         expect(result.subtask).to eq('email-lookup')
-        expect(result.table.map(&:length)).to eq(expected_table.map(&:length))
+        expect_consistent_row_length(result.table)
         expect(result.uuids).to eq([user.uuid])
       end
     end
@@ -403,7 +403,7 @@ RSpec.describe DataPull do
           ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil, nil],
         ]
         expect(result.table).to match_array(expected_result)
-        expect(result.table.map(&:length)).to eq(expected_result.map(&:length))
+        expect_consistent_row_length(result.table)
 
         expect(result.subtask).to eq('profile-summary')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -452,7 +452,7 @@ RSpec.describe DataPull do
           ]
 
           expect(result.table).to match_array(expected_table)
-          expect(result.table.map(&:length)).to eq(expected_table.map(&:length))
+          expect_consistent_row_length(result.table)
           expect(result.subtask).to eq('uuid-export')
           expect(result.uuids).to match_array([user1.uuid, user2.uuid])
         end
@@ -520,9 +520,16 @@ RSpec.describe DataPull do
         ]
         expect(result.table).to match_array(expected_table)
         expect(result.subtask).to eq('events-summary')
-        expect(result.table.map(&:length)).to eq(expected_table.map(&:length))
+        expect_consistent_row_length(result.table)
         expect(result.uuids).to match_array([user.uuid])
       end
     end
+  end
+
+  # Assert that each row has the same length
+  def expect_consistent_row_length(table)
+    first_row_length = table.first.length
+
+    expect(table.all? { |row| row.length == first_row_length }).to eq(true)
   end
 end
