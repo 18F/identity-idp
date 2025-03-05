@@ -4,7 +4,8 @@
           DocAuth::Mock::Socure.instance,
           as: 'fixture',
           url: test_mock_socure_document_capture_url,
-          method: :post) do |form| %>
+          method: :post,
+        ) do |form| %>
       <%= form.button(
             'Continue',
             formaction: test_mock_socure_document_capture_continue_url,
@@ -26,7 +27,7 @@
               },
               {
                 class: 'margin-left-2',
-              }
+              },
             )
         %>
         <br />
@@ -37,14 +38,13 @@
               DocAuth::Mock::Socure::VERDICTS,
               :id,
               :text,
-              selected: DocAuth::Mock::Socure.instance.decision
+              selected: DocAuth::Mock::Socure.instance.decision,
             ) do |button|
         %>
           <div class="display-inline-block">
-            <%=
-              button.label do
-                "#{button.radio_button(class: 'margin-left-2')} #{button.text}".html_safe
-              end
+            <%= button.label do
+                  "#{button.radio_button(class: 'margin-left-2')} #{button.text}".html_safe
+                end
             %>
           </div>
         <% end %>

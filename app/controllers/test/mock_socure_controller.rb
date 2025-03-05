@@ -52,7 +52,8 @@ module Test
         DocAuth::Mock::Socure.instance.selected_fixture = params['fixture']['selected_fixture']
       elsif DocAuth::Mock::Socure.instance.selected_fixture_body
         DocAuth::Mock::Socure.instance.decision = params['fixture']['decision']
-        DocAuth::Mock::Socure.instance.reason_codes = params['fixture']['reason_codes']&.compact_blank
+        DocAuth::Mock::Socure.instance.reason_codes =
+          params['fixture']['reason_codes']&.compact_blank
       end
     end
   end
