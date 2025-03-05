@@ -87,7 +87,7 @@ RSpec.describe SamlRequestValidator do
     end
 
     context 'valid authn context and invalid sp and authorized nameID format' do
-      let(:sp) { ServiceProvider.find_by(issuer: 'foo') }
+      let(:sp) { nil }
 
       it 'returns FormResponse with success: false' do
         expect(response.to_h).to eq(
