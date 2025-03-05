@@ -31,9 +31,9 @@ module UserAccessKeyOverrides
   end
 
   def password_regional_digest_pair
-    Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_password_digest,
-      multi_region_ciphertext: encrypted_password_digest_multi_region,
+    Encryption::RegionalDigestPair.new(
+      single_region_digest: encrypted_password_digest,
+      multi_region_digest: encrypted_password_digest_multi_region,
     )
   end
 
@@ -58,9 +58,9 @@ module UserAccessKeyOverrides
   end
 
   def recovery_code_regional_digest_pair
-    Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_recovery_code_digest,
-      multi_region_ciphertext: encrypted_recovery_code_digest_multi_region,
+    Encryption::RegionalDigestPair.new(
+      single_region_digest: encrypted_recovery_code_digest,
+      multi_region_digest: encrypted_recovery_code_digest_multi_region,
     )
   end
 
