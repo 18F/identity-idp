@@ -390,6 +390,7 @@ short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
+sign_in_recaptcha_annotation_enabled: false
 sign_in_recaptcha_log_failures_only: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
@@ -507,6 +508,7 @@ development:
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   show_unsupported_passkey_platform_authentication_setup: true
+  sign_in_recaptcha_annotation_enabled: true
   sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
@@ -607,6 +609,7 @@ test:
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   short_term_phone_otp_max_attempts: 100
+  sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
   socure_docv_webhook_secret_key: 'secret-key'
