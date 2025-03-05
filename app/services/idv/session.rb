@@ -50,6 +50,7 @@ module Idv
       address_edited
       address_verification_mechanism
       applicant
+      bucketed_doc_auth_vendor
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
