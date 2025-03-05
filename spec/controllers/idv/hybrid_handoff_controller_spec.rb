@@ -359,6 +359,28 @@ RSpec.describe Idv::HybridHandoffController do
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
+
+      context 'passports are not enabled' do
+        before do
+          allow(subject.idv_session).to receive(:passport_allowed).and_return(false)
+        end
+        it 'redirects to choose id type url' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
+      end
+
+      context 'passports are enabled' do
+        before do
+          allow(subject.idv_session).to receive(:passport_allowed).and_return(true)
+        end
+        it 'redirects to choose id type url' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
+      end
     end
   end
 end
