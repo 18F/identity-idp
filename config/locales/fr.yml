@@ -1327,7 +1327,7 @@ in_person_proofing.headings.po_search.location: Trouvez un bureau de poste parti
 in_person_proofing.headings.prepare: Confirmez votre identité en personne
 in_person_proofing.headings.state_id_milestone_2: Saisissez les informations figurant sur votre pièce d’identité délivrée par l’État
 in_person_proofing.headings.switch_back: Revenez à votre ordinateur pour vous préparer à confirmer votre identité en personne
-in_person_proofing.headings.update_address: Mettez à jour votre adresse actuelle
+in_person_proofing.headings.update_address: Mettre à jour votre adresse personnelle
 in_person_proofing.headings.update_state_id: Mettez à jour les informations figurant sur votre document d’identité
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
