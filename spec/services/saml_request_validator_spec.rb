@@ -338,7 +338,6 @@ RSpec.describe SamlRequestValidator do
         expect(response.to_h).to eq(
           success: false,
           error_details: {
-            authn_context: { unauthorized_authn_context: true },
             service_provider: { unauthorized_service_provider: true },
           },
           **extra,
