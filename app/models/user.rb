@@ -546,17 +546,15 @@ class User < ApplicationRecord
   private
 
   def find_password_reset_profile
-    FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_in_person_in_progress_or_active_profile :
-      find_active_profile
-  end
-
-  def find_active_profile
-    profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    find_in_person_in_progress_or_active_profile
   end
 
   def find_in_person_in_progress_or_active_profile
     current_in_progress_in_person_enrollment_profile || find_active_profile
+  end
+
+  def find_active_profile
+    profiles.where.not(activated_at: nil).order(activated_at: :desc).first
   end
 
   def lockout_period
