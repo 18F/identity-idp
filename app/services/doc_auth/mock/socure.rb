@@ -5,8 +5,67 @@ module DocAuth
     class Socure
       include Singleton
 
-      ERRORS = %w[I810 I817]
-      VERDICTS = %w[Pass Fail]
+      SocureError = Struct.new(:id, :text)
+
+      ERRORS = [
+        SocureError.new('I848', 'I848'),
+        SocureError.new('I854', 'I854'),
+        SocureError.new('R810', 'R810'),
+        SocureError.new('R820', 'R820'),
+        SocureError.new('R822', 'R822'),
+        SocureError.new('R823', 'R823'),
+        SocureError.new('R824', 'R824'),
+        SocureError.new('R825', 'R825'),
+        SocureError.new('R826', 'R826'),
+        SocureError.new('R831', 'R831'),
+        SocureError.new('R833', 'R833'),
+        SocureError.new('R838', 'R838'),
+        SocureError.new('R859', 'R859'),
+        SocureError.new('R861', 'R861'),
+        SocureError.new('R863', 'R863'),
+        SocureError.new('I849', 'I849'),
+        SocureError.new('R853', 'R853'),
+        SocureError.new('R827', 'R827'),
+        SocureError.new('I808', 'I808'),
+        SocureError.new('R845', 'R845'),
+        SocureError.new('I856', 'I856'),
+        SocureError.new('R819', 'R819'),
+        SocureError.new('I831', 'I831'),
+      ].freeze
+
+      SocureVerdict = Struct.new(:id, :text)
+
+      VERDICTS = [
+        SocureVerdict.new('accept', 'Accept'),
+        SocureVerdict.new('fail', 'Fail'),
+      ].freeze
+
+      SocureFixture = Struct.new(:name, :body) do
+        def pretty_name
+          name.gsub(/\W+/, ' ')
+            .gsub(/\.json$/, '')
+            .titlecase
+        end
+      end
+
+      WEBHOOKS = %w[
+        WAITING_FOR_USER_TO_REDIRECT
+        APP_OPENED
+        DOCUMENT_FRONT_UPLOADED
+        DOCUMENT_BACK_UPLOADED
+        DOCUMENTS_UPLOADED
+        SESSION_COMPLETE
+      ].freeze
+
+      DATA_PATHS = {
+        decision: %i[documentVerification decision value],
+        reason_codes: %i[documentVerification reasonCodes],
+      }.freeze
+
+      DATA_PATHS.each do |name, path|
+        define_method(name) { body_data(path) }
+        define_method(:"#{name}=") { |new_value| set_body_data(path, new_value) }
+      end
 
       attr_accessor :fixtures, :selected_fixture_body, :docv_transaction_token
       attr_reader :selected_fixture
@@ -18,25 +77,34 @@ module DocAuth
         update_fixture_body(@selected_fixture)
       end
 
-      def enabled
-        IdentityConfig.store.doc_auth_vendor == 'mock_socure'
+      def body_data(path)
+        return unless selected_fixture_body
+
+        selected_fixture_body.dig(*path)
+      end
+
+      def set_body_data(path, new_value)
+        return unless selected_fixture_body
+
+        selected_fixture_body.dig(*path[0..-2])&.store(path[-1], new_value)
       end
 
       def enabled?
         enabled
       end
 
+      def enabled
+        IdentityConfig.store.doc_auth_vendor == 'mock_socure'
+      end
+
       def hit_webhooks
-        %w[
-          WAITING_FOR_USER_TO_REDIRECT
-          APP_OPENED
-          DOCUMENT_FRONT_UPLOADED
-          DOCUMENT_BACK_UPLOADED
-          DOCUMENTS_UPLOADED
-          SESSION_COMPLETE
-        ].each do |event_type|
+        WEBHOOKS.each do |event_type|
           hit_webhook(event_type:)
         end
+      end
+
+      def results_endpoint
+        Rails.application.routes.url_helpers.test_mock_socure_auth_score_url
       end
 
       private
@@ -44,7 +112,7 @@ module DocAuth
       def initialize
         @fixtures =
           Dir["#{Rails.root.join('spec', 'fixtures', 'socure_docv')}/*.json"].map do |fixture_file|
-            Test::MockSocureConfig.new(
+            SocureFixture.new(
               name: File.basename(fixture_file),
               body: File.read(fixture_file),
             )

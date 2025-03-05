@@ -23,15 +23,10 @@ class SocureWebhookController < ApplicationController
   private
 
   def process_webhook_event
-    Rails.logger.info "\n\nprocess_webhook_event(#{event.inspect})\n"
-
     case event[:eventType]
     when 'DOCUMENTS_UPLOADED'
-      Rails.logger.info "\n\nabout to increment rate limiter\n"
       increment_rate_limiter
-      Rails.logger.info "\n\nabout to fetch results\n"
       fetch_results
-      Rails.logger.info "\n\nback from fetching results\n"
     when 'SESSION_EXPIRED', 'SESSION_COMPLETE'
       reset_docv_url
     end
@@ -40,11 +35,7 @@ class SocureWebhookController < ApplicationController
   def fetch_results
     dcs = document_capture_session
 
-    Rails.logger.info "\n\nfetch_results: dcs: #{dcs.inspect}\n"
-
     raise 'DocumentCaptureSession not found' if dcs.blank?
-
-    Rails.logger.info "\n\nfetch_results: ruby_workers_idv_enabled: #{IdentityConfig.store.ruby_workers_idv_enabled}\n"
 
     if IdentityConfig.store.ruby_workers_idv_enabled
       SocureDocvResultsJob.perform_later(document_capture_session_uuid: dcs.uuid)
@@ -115,8 +106,6 @@ class SocureWebhookController < ApplicationController
   end
 
   def document_capture_session
-    Rails.logger.info "document_capture_session: docv_transaction_token: #{docv_transaction_token.inspect}"
-
     @document_capture_session ||= DocumentCaptureSession.find_by(
       socure_docv_transaction_token: docv_transaction_token,
     )

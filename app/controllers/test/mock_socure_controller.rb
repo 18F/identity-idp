@@ -8,16 +8,15 @@ module Test
     before_action :check_enabled
 
     # Fake Socure UI
-    def index
-    end
+    def index; end
 
     def update
-      DocAuth::Mock::Socure.instance.selected_fixture = params[:selected_fixture]
+      update_from_params
       render :index
     end
 
     def continue
-      DocAuth::Mock::Socure.instance.selected_fixture = params[:selected_fixture]
+      update_from_params
       DocAuth::Mock::Socure.instance.hit_webhooks
 
       redirect_to idv_socure_document_capture_update_url
@@ -39,13 +38,23 @@ module Test
         },
       }
 
-      Rails.logger.info "\n\ndocument_request: return_body: #{return_body.inspect}\n"
-
       render json: return_body
     end
 
     def docv_results
       render json: DocAuth::Mock::Socure.instance.selected_fixture_body
+    end
+
+    private
+
+    def update_from_params
+      if params['fixture']['selected_fixture'] != DocAuth::Mock::Socure.instance.selected_fixture
+        DocAuth::Mock::Socure.instance.selected_fixture = params['fixture']['selected_fixture']
+      elsif DocAuth::Mock::Socure.instance.selected_fixture_body
+        DocAuth::Mock::Socure.instance.decision = params['fixture']['decision']
+        DocAuth::Mock::Socure.instance.reason_codes =
+          params['fixture']['reason_codes']&.compact_blank
+      end
     end
   end
 end
