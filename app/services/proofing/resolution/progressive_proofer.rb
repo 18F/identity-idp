@@ -31,6 +31,7 @@ module Proofing
       # @param [String] threatmetrix_session_id identifies the threatmetrix session
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_email email address for applicant
+      # @param [String] user_uuid user uuid for applicant
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
@@ -39,7 +40,8 @@ module Proofing
         timer:,
         user_email:,
         ipp_enrollment_in_progress:,
-        current_sp:
+        current_sp:,
+        user_uuid:
       )
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
@@ -50,6 +52,7 @@ module Proofing
           request_ip:,
           timer:,
           user_email:,
+          user_uuid:,
         )
 
         residential_address_resolution_result = residential_address_plugin.call(
