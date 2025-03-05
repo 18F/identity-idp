@@ -16,7 +16,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   describe '#proof' do
-    let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+    let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
     let(:ipp_enrollment_in_progress) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
@@ -51,7 +51,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     let(:aamva_result) do
       Proofing::StateIdResult.new(
-        success: false,
+        success: true,
         transaction_id: 'aamva-123',
       )
     end
@@ -69,6 +69,19 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       instance_double(
         Proofing::LexisNexis::Ddp::Proofer,
         proof: threatmetrix_result,
+      )
+    end
+
+    let(:phone_finder_result) do
+      Proofing::Resolution::Result.new(
+        success: false, vendor_name: 'NoPhoneNumberAvailable',
+      )
+    end
+
+    let(:phone_finder_proofer) do
+      instance_double(
+        Proofing::LexisNexis::PhoneFinder::Proofer,
+        proof: phone_finder_result,
       )
     end
 
@@ -94,6 +107,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
+      allow(progressive_proofer.phone_finder_plugin).to receive(:proofer)
+        .and_return(phone_finder_proofer)
     end
 
     context 'remote unsupervised proofing' do
@@ -109,7 +124,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
-        )
+        ).and_call_original
         proof
       end
 
@@ -156,6 +171,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
           expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
+          expect(result.phone_finder_result).to eq(phone_finder_result)
           expect(result.residential_resolution_result).to satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
@@ -221,6 +237,19 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
+        it 'calls PhoneFinderPlugin' do
+          expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            residential_address_resolution_result:,
+            state_id_address_resolution_result:,
+            state_id_result: aamva_result,
+            ipp_enrollment_in_progress: true,
+            timer: an_instance_of(JobHelpers::Timer),
+          ).and_call_original
+          proof
+        end
+
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -228,6 +257,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
             expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.phone_finder_result).to satisfy do |phone_finder_result|
+              expect(phone_finder_result.success?).to eq(false)
+              expect(phone_finder_result.vendor_name).to eq('PhoneIgnoredForInPersonProofing')
+            end
             expect(result.residential_resolution_result).to(
               eql(state_id_address_resolution_result),
             )
@@ -278,6 +311,19 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             applicant_pii:,
             current_sp:,
             state_id_address_resolution_result:,
+            ipp_enrollment_in_progress: true,
+            timer: an_instance_of(JobHelpers::Timer),
+          ).and_call_original
+          proof
+        end
+
+        it 'calls PhoneFinderPlugin' do
+          expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            residential_address_resolution_result:,
+            state_id_address_resolution_result:,
+            state_id_result: aamva_result,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
           ).and_call_original

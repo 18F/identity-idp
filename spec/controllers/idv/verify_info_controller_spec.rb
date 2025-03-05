@@ -397,6 +397,12 @@ RSpec.describe Idv::VerifyInfoController do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -449,6 +455,12 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: vendor_name,
             transaction_id: 'abc123',
             verified_attributes: [],
+          ),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
@@ -551,6 +563,12 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -644,6 +662,12 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: :aamva,
             transaction_id: 'abc123',
             verified_attributes: [],
+          ),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,

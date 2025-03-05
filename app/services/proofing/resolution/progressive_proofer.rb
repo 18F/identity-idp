@@ -11,7 +11,8 @@ module Proofing
       class InvalidProofingVendorError; end
 
       attr_reader :aamva_plugin,
-                  :threatmetrix_plugin
+                  :threatmetrix_plugin,
+                  :phone_finder_plugin
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
@@ -22,6 +23,7 @@ module Proofing
       def initialize
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
+        @phone_finder_plugin = Plugins::PhoneFinderPlugin.new
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
@@ -75,6 +77,16 @@ module Proofing
           timer:,
         )
 
+        phone_finder_result = phone_finder_plugin.call(
+          applicant_pii:,
+          current_sp:,
+          residential_address_resolution_result:,
+          state_id_address_resolution_result:,
+          state_id_result:,
+          ipp_enrollment_in_progress:,
+          timer:,
+        )
+
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
@@ -82,6 +94,7 @@ module Proofing
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
           state_id_result: state_id_result,
           residential_resolution_result: residential_address_resolution_result,
+          phone_finder_result: phone_finder_result,
           same_address_as_id: applicant_pii[:same_address_as_id],
           applicant_pii: applicant_pii,
         )

@@ -27,6 +27,14 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       verified_attributes: state_id_verified_attributes,
     )
   end
+  let(:phone_finder_result) do
+    Proofing::AddressResult.new(
+      success: true,
+      errors: {},
+      exception: nil,
+      vendor_name: 'test-phone-vendor',
+    )
+  end
 
   let(:should_proof_state_id) { true }
   let(:ipp_enrollment_in_progress) { true }
@@ -54,6 +62,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
+      phone_finder_result: phone_finder_result,
       same_address_as_id: same_address_as_id,
       applicant_pii: applicant_pii,
     )
