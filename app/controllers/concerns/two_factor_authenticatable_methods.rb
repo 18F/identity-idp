@@ -29,17 +29,23 @@ module TwoFactorAuthenticatableMethods
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
-      session.delete(:sign_in_recaptcha_assessment_id)
+      session.delete(:sign_in_recaptcha_assessment_id) if sign_in_recaptcha_annotation_enabled?
     else
       handle_invalid_verification_for_authentication_context
     end
   end
 
   def annotate_recaptcha(reason)
-    RecaptchaAnnotator.annotate(assessment_id: session[:sign_in_recaptcha_assessment_id], reason:)
+    if sign_in_recaptcha_annotation_enabled?
+      RecaptchaAnnotator.annotate(assessment_id: session[:sign_in_recaptcha_assessment_id], reason:)
+    end
   end
 
   private
+
+  def sign_in_recaptcha_annotation_enabled?
+    IdentityConfig.store.sign_in_recaptcha_annotation_enabled
+  end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
