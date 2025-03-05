@@ -7,6 +7,9 @@ RSpec.describe 'In Person Proofing', js: true do
   include InPersonHelper
   include UspsIppHelper
 
+  let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
+  let(:user) { user_with_2fa }
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
@@ -222,9 +225,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'the user fails remote docauth, starts IPP, then resumes remote with successful images' do
-    let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
-    let(:user) { user_with_2fa }
+  context 'the user fails remote docauth, starts IPP, then resumes remote with successful images',
+          allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
@@ -246,47 +248,18 @@ RSpec.describe 'In Person Proofing', js: true do
       # Change mind and resume remote identity verification
       visit idv_how_to_verify_url
     end
+
     it 'allows the user to successfully complete remote identity verification' do
       # choose remote
       click_on t('forms.buttons.continue_remote')
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
-      # IT BREAKS HERE - IPP flow displays instead of Remote flow on SSN step
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      complete_ssn_step
-
-      # verify step
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      complete_verify_step
-
-      # verify phone
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone'))
-      complete_phone_step(user)
-
-      # re-enter password
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-      complete_enter_password_step(user: user)
-
-      # personal key page
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-      expect(page).to have_current_path(idv_personal_key_url)
-      acknowledge_and_confirm_personal_key
-
-      # sign up completed
-      expect(page).to have_current_path(sign_up_completed_url)
+      complete_remote_idv_from_ssn(user)
     end
   end
 
   context 'the user starts in-person proofing then navigates back to how to verify' do
-    let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
-    let(:user) { user_with_2fa }
-
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
@@ -310,34 +283,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
-      # IT BREAKS HERE - IPP flow displays instead of Remote flow on SSN step
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      complete_ssn_step
-
-      # verify step
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      complete_verify_step
-
-      # verify phone
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone'))
-      complete_phone_step(user)
-
-      # re-enter password
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-      complete_enter_password_step(user: user)
-
-      # personal key page
-      expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-      expect(page).to have_current_path(idv_personal_key_url)
-      acknowledge_and_confirm_personal_key
-
-      # sign up completed
-      expect(page).to have_current_path(sign_up_completed_url)
+      complete_remote_idv_from_ssn(user)
     end
   end
 
@@ -389,16 +335,14 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     context 'when the user changes from IPP to remote verification after returning to desktop' do
-      let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
-      let(:user) { user_with_2fa }
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
         perform_in_browser(:desktop) do
           visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
-          # user = sign_in_and_2fa_user
           sign_in_via_branded_page(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
+
           # choose remote
           click_on t('forms.buttons.continue_remote')
           clear_and_fill_in(:doc_auth_phone, '415-555-0199')
@@ -431,34 +375,7 @@ RSpec.describe 'In Person Proofing', js: true do
           )
           complete_document_capture_step(with_selfie: false)
 
-          # IT BREAKS HERE - IPP flow displays instead of Remote flow on SSN step
-          expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-          complete_ssn_step
-
-          # verify step
-          expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-          complete_verify_step
-
-          # verify phone
-          expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone'))
-          complete_phone_step(user)
-
-          # re-enter password
-          expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-          complete_enter_password_step(user: user)
-
-          # personal key page
-          expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-          expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-          expect(page).to have_current_path(idv_personal_key_url)
-          acknowledge_and_confirm_personal_key
-
-          # sign up completed
-          expect(page).to have_current_path(sign_up_completed_url)
+          complete_remote_idv_from_ssn(user)
         end
       end
     end
