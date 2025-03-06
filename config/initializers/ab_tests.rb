@@ -47,8 +47,8 @@ module AbTests
       lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
     }.compact,
-  ) do |user:, **|
-    user.uuid
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
   end.freeze
 
   ACUANT_SDK = AbTest.new(
