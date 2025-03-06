@@ -170,14 +170,14 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'looks up the UUIDs for the given email addresses', aggregate_failures: true do
-        expect(result.table).to eq(
-          [
-            ['email', 'uuid'],
-            *users.map { |u| [u.email_addresses.first.email, u.uuid] },
-            ['missing@example.com', '[NOT FOUND]'],
-          ],
-        )
+        expected_table = [
+          ['email', 'uuid'],
+          *users.map { |u| [u.email_addresses.first.email, u.uuid] },
+          ['missing@example.com', '[NOT FOUND]'],
+        ]
 
+        expect(result.table).to eq(expected_table)
+        expect_consistent_row_length(result.table)
         expect(result.subtask).to eq('uuid-lookup')
         expect(result.uuids).to match_array(users.map(&:uuid))
       end
@@ -231,34 +231,34 @@ RSpec.describe DataPull do
         end
 
         it 'still includes them and marks them as deleted' do
-          expect(result.table).to eq(
-            [
-              ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
-              external_uuids.first.then do |external_uuid|
-                identity = AgencyIdentity.find_by(uuid: external_uuid)
+          expected_table = [
+            ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
+            external_uuids.first.then do |external_uuid|
+              identity = AgencyIdentity.find_by(uuid: external_uuid)
 
-                [
-                  identity.uuid,
-                  identity.agency.name,
-                  identity.user.uuid,
-                  nil,
-                ]
-              end,
-              external_uuids.last.then do |external_uuid|
-                identity = ServiceProviderIdentity.find_by(uuid: external_uuid)
+              [
+                identity.uuid,
+                identity.agency.name,
+                identity.user.uuid,
+                nil,
+              ]
+            end,
+            external_uuids.last.then do |external_uuid|
+              identity = ServiceProviderIdentity.find_by(uuid: external_uuid)
 
-                [
-                  identity.uuid,
-                  identity.agency.name,
-                  DeletedUser.find_by(user_id: identity.user_id).uuid,
-                  true,
-                ]
-              end,
-              ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
-            ],
-          )
+              [
+                identity.uuid,
+                identity.agency.name,
+                DeletedUser.find_by(user_id: identity.user_id).uuid,
+                true,
+              ]
+            end,
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
+          ]
+          expect(result.table).to eq(expected_table)
 
           expect(result.subtask).to eq('uuid-convert')
+          expect_consistent_row_length(result.table)
           expect(result.uuids).to match_array(users.map(&:uuid))
         end
       end
@@ -277,17 +277,16 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads email addresses for the user', aggregate_failures: true do
-        expect(result.table).to match(
-          [
-            ['uuid', 'email', 'confirmed_at'],
-            *user.email_addresses.sort_by(&:id).map do |e|
-              [e.user.uuid, e.email, kind_of(Time)]
-            end,
-            ['does-not-exist', '[NOT FOUND]', nil],
-          ],
-        )
-
+        expected_table = [
+          ['uuid', 'email', 'confirmed_at'],
+          *user.email_addresses.sort_by(&:id).map do |e|
+            [e.user.uuid, e.email, kind_of(Time)]
+          end,
+          ['does-not-exist', '[NOT FOUND]', nil],
+        ]
+        expect(result.table).to match(expected_table)
         expect(result.subtask).to eq('email-lookup')
+        expect_consistent_row_length(result.table)
         expect(result.uuids).to eq([user.uuid])
       end
     end
@@ -382,29 +381,29 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads profile summary for the user', aggregate_failures: true do
-        expect(result.table).to match_array(
-          [
-            ['uuid', 'profile_id', 'status', 'idv_level', 'activated_timestamp', 'disabled_reason',
-             'gpo_verification_pending_timestamp', 'fraud_review_pending_timestamp',
-             'fraud_rejection_timestamp'],
-            *user.profiles.sort_by(&:id).map do |p|
-              profile_status = p.active ? 'active' : 'inactive'
-              [
-                user.uuid,
-                p.id,
-                profile_status,
-                p.idv_level,
-                kind_of(Time),
-                p.deactivation_reason,
-                nil,
-                nil,
-                nil,
-              ]
-            end,
-            [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil],
-            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil],
-          ],
-        )
+        expected_result = [
+          ['uuid', 'profile_id', 'status', 'idv_level', 'activated_timestamp', 'disabled_reason',
+           'gpo_verification_pending_timestamp', 'fraud_review_pending_timestamp',
+           'fraud_rejection_timestamp'],
+          *user.profiles.sort_by(&:id).map do |p|
+            profile_status = p.active ? 'active' : 'inactive'
+            [
+              user.uuid,
+              p.id,
+              profile_status,
+              p.idv_level,
+              kind_of(Time),
+              p.deactivation_reason,
+              nil,
+              nil,
+              nil,
+            ]
+          end,
+          [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil, nil],
+          ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil, nil],
+        ]
+        expect(result.table).to match_array(expected_result)
+        expect_consistent_row_length(result.table)
 
         expect(result.subtask).to eq('profile-summary')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -453,6 +452,7 @@ RSpec.describe DataPull do
           ]
 
           expect(result.table).to match_array(expected_table)
+          expect_consistent_row_length(result.table)
           expect(result.subtask).to eq('uuid-export')
           expect(result.uuids).to match_array([user1.uuid, user2.uuid])
         end
@@ -512,18 +512,24 @@ RSpec.describe DataPull do
 
     describe '#run' do
       it 'loads events for the users' do
-        expect(result.table).to match_array(
-          [
-            %w[uuid date events_count],
-            [user.uuid, Date.new(2023, 1, 2), 5],
-            [user.uuid, Date.new(2023, 1, 1), 1],
-            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
-          ],
-        )
-
+        expected_table = [
+          %w[uuid date events_count],
+          [user.uuid, Date.new(2023, 1, 2), 5],
+          [user.uuid, Date.new(2023, 1, 1), 1],
+          ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
+        ]
+        expect(result.table).to match_array(expected_table)
         expect(result.subtask).to eq('events-summary')
+        expect_consistent_row_length(result.table)
         expect(result.uuids).to match_array([user.uuid])
       end
     end
+  end
+
+  # Assert that each row has the same length
+  def expect_consistent_row_length(table)
+    first_row_length = table.first.length
+
+    expect(table.all? { |row| row.length == first_row_length }).to eq(true)
   end
 end
