@@ -630,6 +630,43 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
+    context 'Passport MRZ validation fails' do
+      let(:failed_response) do
+        DocAuth::Response.new(
+          success: false,
+          errors: {},
+          extra: {
+            vendor: 'DoS',
+            correlation_id_sent: 'something',
+            correlation_id_received: 'something else',
+          },
+        )
+      end
+
+      before do
+        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:submit)
+          .and_return(failed_response)
+      end
+
+      it 'is not successful' do
+        response = form.submit
+
+        expect(response.success?).to eq(false)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq({})
+      end
+
+      xit 'includes remaining_submit_attempts' do
+        response = form.submit
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
+      end
+
+      xit 'includes mrz errors' do
+        response = form.submit
+        expect(response.errors[:passport]).to eq('invalid MRZ')
+      end
+    end
+
     describe 'image source' do
       let(:source) { nil }
       let(:front_image_metadata) do
