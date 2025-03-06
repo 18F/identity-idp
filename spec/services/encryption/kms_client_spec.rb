@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Encryption::KmsClient do
+  around do |example|
+    freeze_time { example.run }
+  end
+
   before do
     stub_const(
       'Encryption::KmsClient::KMS_CLIENT_POOL',
@@ -40,6 +44,7 @@ RSpec.describe Encryption::KmsClient do
   let(:key_id) { 'key1' }
   let(:plaintext) { 'a' * 3000 + 'b' * 3000 + 'c' * 3000 }
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
+  let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
 
   let(:local_encryption_key) do
     OpenSSL::HMAC.digest(
@@ -112,7 +117,8 @@ RSpec.describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(
-        :encrypt,
+        action: :encrypt,
+        timestamp: Time.zone.now,
         context: encryption_context,
         key_id: subject.kms_key_id,
       )
@@ -168,7 +174,8 @@ RSpec.describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(
-        :decrypt,
+        action: :decrypt,
+        timestamp: Time.zone.now,
         context: encryption_context,
         key_id: subject.kms_key_id,
       )
