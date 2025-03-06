@@ -55,7 +55,7 @@ module Encryption
       scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
       user_kms_encryption_context = kms_encryption_context(user_uuid:)
 
-      single_region_digest = PasswordDigest.new(
+      single_region_encrypted_value = PasswordDigest.new(
         kms_client: single_region_kms_client,
         scrypted_password:,
         user_kms_encryption_context:,
@@ -63,22 +63,22 @@ module Encryption
         password_cost: cost,
       )
 
-      single_region_digest.encrypt_password!
+      single_region_encrypted_value.encrypt_password!
 
-      multi_region_digest = PasswordDigest.new(
+      multi_region_encrypted_value = PasswordDigest.new(
         kms_client: multi_region_kms_client,
         scrypted_password:,
         user_kms_encryption_context:,
         password_salt: salt,
         password_cost: cost,
       )
-      multi_region_digest.encrypt_password!
+      multi_region_encrypted_value.encrypt_password!
 
-      RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
+      RegionalEncryptedValuePair.new(single_region_encrypted_value:, multi_region_encrypted_value:)
     end
 
     def verify(password:, digest_pair:, user_uuid:, log_context:)
-      digest = digest_pair.multi_or_single_region_digest.to_s
+      digest = digest_pair.multi_or_single_region_encrypted_value.to_s
       password_digest = PasswordDigest.parse_from_string(digest)
       if password_digest.uak_password_digest?
         return verify_uak_digest(password, digest, user_uuid, log_context)

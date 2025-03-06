@@ -118,8 +118,8 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         .with('aes_ciphertext', decoded_scrypt_digest)
         .and_return(plaintext)
 
-      digest_pair = Encryption::RegionalDigestPair.new(
-        single_region_digest: double(
+      digest_pair = Encryption::RegionalEncryptedValuePair.new(
+        single_region_encrypted_value: double(
           Encryption::Encryptors::PiiEncryptor::Digest,
           to_s: {
             encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
@@ -127,7 +127,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
             cost: '800$8$1$',
           }.to_json,
         ),
-        multi_region_digest: double(
+        multi_region_encrypted_value: double(
           Encryption::Encryptors::PiiEncryptor::Digest,
           to_s: {
             encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
@@ -143,11 +143,11 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
     end
 
     it 'uses the single region ciphertext if the multi-region ciphertext is nil' do
-      test_digest_pair = Encryption::RegionalDigestPair.new(
-        single_region_digest: subject.encrypt(
+      test_digest_pair = Encryption::RegionalEncryptedValuePair.new(
+        single_region_encrypted_value: subject.encrypt(
           'single-region-text', user_uuid: '123abc'
-        ).single_region_digest,
-        multi_region_digest: nil,
+        ).single_region_encrypted_value,
+        multi_region_encrypted_value: nil,
       )
 
       result = subject.decrypt(test_digest_pair, user_uuid: '123abc')

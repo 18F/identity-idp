@@ -71,29 +71,32 @@ module Encryption
         aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
         user_kms_encryption_context = kms_encryption_context(user_uuid: user_uuid)
-        single_region_digest = Digest.new(
+        single_region_encrypted_value = Digest.new(
           kms_client: single_region_kms_client,
           aes_encrypted_ciphertext:,
           user_kms_encryption_context:,
           salt:,
           cost:,
         )
-        single_region_digest.encrypt_data!
+        single_region_encrypted_value.encrypt_data!
 
-        multi_region_digest = Digest.new(
+        multi_region_encrypted_value = Digest.new(
           kms_client: multi_region_kms_client,
           aes_encrypted_ciphertext:,
           user_kms_encryption_context:,
           salt:,
           cost:,
         )
-        multi_region_digest.encrypt_data!
+        multi_region_encrypted_value.encrypt_data!
 
-        RegionalDigestPair.new(single_region_digest:, multi_region_digest:)
+        RegionalEncryptedValuePair.new(
+          single_region_encrypted_value:,
+          multi_region_encrypted_value:,
+        )
       end
 
       def decrypt(digest_pair, user_uuid: nil)
-        ciphertext_string = digest_pair.multi_or_single_region_digest.to_s
+        ciphertext_string = digest_pair.multi_or_single_region_encrypted_value.to_s
         ciphertext = Digest.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)

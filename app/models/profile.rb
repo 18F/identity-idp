@@ -268,9 +268,9 @@ class Profile < ApplicationRecord
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    encrypted_pii_digest_pair = Encryption::RegionalDigestPair.new(
-      single_region_digest: encrypted_pii,
-      multi_region_digest: encrypted_pii_multi_region,
+    encrypted_pii_digest_pair = Encryption::RegionalEncryptedValuePair.new(
+      single_region_encrypted_value: encrypted_pii,
+      multi_region_encrypted_value: encrypted_pii_multi_region,
     )
 
     decrypted_json = encryptor.decrypt(encrypted_pii_digest_pair, user_uuid: user.uuid)
@@ -281,9 +281,9 @@ class Profile < ApplicationRecord
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
 
-    encrypted_pii_recovery_digest_pair = Encryption::RegionalDigestPair.new(
-      single_region_digest: encrypted_pii_recovery,
-      multi_region_digest: encrypted_pii_recovery_multi_region,
+    encrypted_pii_recovery_digest_pair = Encryption::RegionalEncryptedValuePair.new(
+      single_region_encrypted_value: encrypted_pii_recovery,
+      multi_region_encrypted_value: encrypted_pii_recovery_multi_region,
     )
 
     decrypted_recovery_json = encryptor.decrypt(
