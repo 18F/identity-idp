@@ -6,7 +6,7 @@
 
 <%= button_to 'Clear messages and calls', test_telephony_path, method: :delete, class: 'usa-button' %>
 
-<div class="grid-row grid-cap margin-top-2 flex-align-stretch">
+<div class="grid-row grid-gap margin-top-2 flex-align-stretch">
   <% [['Messages', @messages], ['Calls', @calls]].each do |title, messages| %>
     <div class="tablet:grid-col-6">
       <div class="card height-full">
