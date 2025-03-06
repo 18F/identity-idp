@@ -40,7 +40,8 @@ module Idv
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled
-          redirect_to idv_how_to_verify_url
+          redirect_to idv_how_to_verify_url if !idv_session.skip_hybrid_handoff
+          redirect_to idv_choose_id_type_url if idv_session.skip_hybrid_handoff
         else
           redirect_to idv_hybrid_handoff_url
         end
