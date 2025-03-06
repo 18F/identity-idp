@@ -127,6 +127,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
+  gem 'cuprite'
   gem 'faker'
   gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'

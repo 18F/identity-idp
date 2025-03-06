@@ -173,10 +173,13 @@ RSpec.feature 'User profile' do
         click_idv_continue
         acknowledge_and_confirm_personal_key
 
+        # page.driver.debug(binding)
+        binding.pry
         expect(page).to have_current_path(sign_up_completed_path)
 
         click_agree_and_continue
 
+        # This currently fails to connect, which is fine for selenium, but not for cuprite?
         expect(page).to have_current_path(
           'http://localhost:7654/auth/result',
           url: true,

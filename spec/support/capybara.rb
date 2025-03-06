@@ -2,6 +2,7 @@ require 'capybara/rspec'
 require 'rack_session_access/capybara'
 require 'selenium/webdriver'
 require 'extensions/capybara/node/simple'
+require 'capybara/cuprite'
 
 # temporary fix for local development feature tests
 # remove when we get a new working version of Chromedriver
@@ -13,12 +14,19 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--window-size=1200x700')
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
-  options.add_argument("--proxy-server=127.0.0.1:#{Capybara::Webmock.port_number}")
+  options.add_argument("--proxy-server=localhost:9293")
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
                                  options: options
 end
+Capybara.register_driver(:cuprite) do |app|
+  driver = Capybara::Cuprite::Driver.new(app, window_size: [1200, 700], inspector: true, browser_options: { 'no-sandbox': nil })
+  driver.set_proxy('127.0.0.1', Capybara::Webmock.port_number)
+  # driver.set_proxy('localhost', 9293)
+  driver
+end
+# Capybara.javascript_driver = :cuprite
 Capybara.javascript_driver = :headless_chrome
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
