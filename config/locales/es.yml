@@ -1407,7 +1407,6 @@ instructions.mfa.voice.number_message_html: Hicimos una llamada con un código d
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Puede autenticarse de la misma forma que desbloquea el dispositivo, sea con su rostro o huella dactilar, contraseña u otro método. </p><p>Si usó un administrador de contraseñas para configurar el desbloqueo facial o táctil, puede autenticarse desde cualquier dispositivo que utilice ese administrador de contraseñas. De lo contrario, use el mismo dispositivo con el que configuró el desbloqueo facial o táctil.</p>'
-instructions.mfa.wrong_number: '¿Ingresó el número de teléfono equivocado?'
 instructions.password.forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su dirección de correo electrónico.'
 instructions.password.help_text: Evite usar las mismas contraseñas de sus otras cuentas, como las de su banco, correo electrónico y redes sociales. No incluya palabras de su dirección de correo electrónico.
 instructions.password.help_text_header: Consejos para la seguridad de las contraseñas
