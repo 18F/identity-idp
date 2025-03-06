@@ -203,6 +203,10 @@ class DataPull
       ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
       uuids = args
 
+      if config.depth.nil?
+        raise 'Required argument --depth is missing'
+      end
+
       requesting_issuers =
         config.requesting_issuers.presence || compute_requesting_issuers(uuids)
 
@@ -211,7 +215,7 @@ class DataPull
       end.partition { |u| u.is_a?(User) }
 
       shared_device_users =
-        if config.depth && config.depth > 0
+        if config.depth > 0
           DataRequests::Deployed::LookupSharedDeviceUsers.new(users, config.depth).call
         else
           users
