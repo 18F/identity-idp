@@ -1089,7 +1089,7 @@ idv.failure.phone.warning.heading: Nous n’avons pas pu vous associer à ce num
 idv.failure.phone.warning.learn_more_link: En savoir plus sur quel numéro de téléphone utiliser
 idv.failure.phone.warning.next_steps_html: Essayez <strong>un autre</strong> numéro que vous utilisez souvent et depuis longtemps. Il peut s’agir d’un numéro professionnel ou personnel.
 idv.failure.phone.warning.try_again_button: Essayez un autre numéro
-idv.failure.phone.warning.you_entered: 'Vous avez saisi :'
+idv.failure.phone.warning.you_entered: 'Nous n’avons pas trouvé de données vous associant au numéro suivant :'
 idv.failure.sessions.exception: Une erreur interne s’est produite lors du traitement de votre demande.
 idv.failure.sessions.fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier des renseignements personnels en ligne. <strong>Réessayez dans %{timeout}.</strong>
 idv.failure.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles

@@ -1102,7 +1102,7 @@ idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
 idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
-idv.failure.phone.warning.you_entered: 你输入了：
+idv.failure.phone.warning.you_entered: 我们找不到你使用此号码的记录：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
 idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
