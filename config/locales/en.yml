@@ -1089,7 +1089,7 @@ idv.failure.phone.warning.heading: We couldn’t match you to this number
 idv.failure.phone.warning.learn_more_link: Learn more about what phone number to use
 idv.failure.phone.warning.next_steps_html: Try <strong>another</strong> number that you use often and have used for a long time. This can be a work or home number.
 idv.failure.phone.warning.try_again_button: Try another number
-idv.failure.phone.warning.you_entered: "We couldn't find a record of you using this number:"
+idv.failure.phone.warning.you_entered: 'We couldn’t find a record of you using this number:'
 idv.failure.sessions.exception: There was an internal error processing your request.
 idv.failure.sessions.fail_html: For your security, we limit the number of times you can attempt to verify personal information online. <strong>Try again in %{timeout}.</strong>
 idv.failure.sessions.heading: We couldn’t find records matching your personal information
