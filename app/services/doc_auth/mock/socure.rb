@@ -107,6 +107,10 @@ module DocAuth
         Rails.application.routes.url_helpers.test_mock_socure_auth_score_url
       end
 
+      def start_capture_session
+        self.docv_transaction_token = SecureRandom.uuid
+      end
+
       private
 
       def initialize

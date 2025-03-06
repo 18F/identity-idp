@@ -30,7 +30,7 @@ module Test
 
     # Fake Socure endpoints
     def document_request
-      DocAuth::Mock::Socure.instance.docv_transaction_token = SecureRandom.uuid
+      DocAuth::Mock::Socure.instance.start_capture_session
       return_body = {
         data: {
           url: test_mock_socure_document_capture_url,
