@@ -77,27 +77,18 @@ module DocAuth
         update_fixture_body(@selected_fixture)
       end
 
-      def body_data(path)
-        return unless selected_fixture_body
-
-        selected_fixture_body.dig(*path)
-      end
-
-      def set_body_data(path, new_value)
-        return unless selected_fixture_body
-
-        selected_fixture_body.dig(*path[0..-2])&.store(path[-1], new_value)
-      end
-
       def enabled?
         enabled
       end
 
       def enabled
-        IdentityConfig.store.doc_auth_vendor == 'mock_socure'
+        IdentityConfig.store.doc_auth_vendor == 'mock_socure' &&
+          !Rails.env.production?
       end
 
       def hit_webhooks
+        return if !enabled?
+
         WEBHOOKS.each do |event_type|
           hit_webhook(event_type:)
         end
@@ -131,6 +122,18 @@ module DocAuth
         end&.body
 
         @selected_fixture_body = JSON.parse(body, symbolize_names: true) if body
+      end
+
+      def body_data(path)
+        return unless selected_fixture_body
+
+        selected_fixture_body.dig(*path)
+      end
+
+      def set_body_data(path, new_value)
+        return unless selected_fixture_body
+
+        selected_fixture_body.dig(*path[0..-2])&.store(path[-1], new_value)
       end
 
       def webhook_endpoint
