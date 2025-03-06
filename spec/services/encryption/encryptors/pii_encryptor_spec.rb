@@ -6,7 +6,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
   subject { described_class.new(password) }
 
-  describe Encryption::Encryptors::PiiEncryptor::Digest do
+  describe Encryption::Encryptors::PiiEncryptor::EncryptedValue do
     describe '.parse_from_string' do
       it 'does not blow up with unknown/new keys' do
         blob = described_class.new(encrypted_data: 'encrypted_data').to_s
@@ -120,7 +120,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
       digest_pair = Encryption::RegionalEncryptedValuePair.new(
         single_region_encrypted_value: double(
-          Encryption::Encryptors::PiiEncryptor::Digest,
+          Encryption::Encryptors::PiiEncryptor::EncryptedValue,
           to_s: {
             encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
             salt: salt,
@@ -128,7 +128,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
           }.to_json,
         ),
         multi_region_encrypted_value: double(
-          Encryption::Encryptors::PiiEncryptor::Digest,
+          Encryption::Encryptors::PiiEncryptor::EncryptedValue,
           to_s: {
             encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
             salt: salt,
