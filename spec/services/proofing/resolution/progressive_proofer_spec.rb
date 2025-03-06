@@ -23,6 +23,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:user_email) { Faker::Internet.email }
     let(:current_sp) { build(:service_provider) }
     let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
+    let(:workflow) { :auth }
 
     let(:residential_address_resolution_result) do
       Proofing::Resolution::Result.new(
@@ -96,6 +97,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         user_email:,
         current_sp:,
         user_uuid:,
+        workflow:,
       )
     end
 
@@ -163,6 +165,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           timer: an_instance_of(JobHelpers::Timer),
           user_email:,
           user_uuid:,
+          workflow:,
         )
         proof
       end
@@ -237,6 +240,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             user_uuid:,
+            workflow:,
           )
           proof
         end
@@ -286,6 +290,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             user_uuid:,
+            workflow:,
           )
           proof
         end
