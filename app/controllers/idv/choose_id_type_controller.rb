@@ -50,7 +50,7 @@ module Idv
     private
 
     def redirect_if_passport_not_available
-      redirect_to idv_hybrid_handoff_url if !idv_session.passport_allowed
+      redirect_to idv_how_to_verify_url if !idv_session.passport_allowed
     end
 
     def chosen_id_type
