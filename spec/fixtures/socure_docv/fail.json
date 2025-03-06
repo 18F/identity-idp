@@ -3,8 +3,9 @@
   "previousReferenceId": "e9c170f2-b3e4-423b-a373-5d6e1e9b23f8",
   "documentVerification": {
     "reasonCodes": [
-      "I831",
-      "R810"
+      "I848",
+      "R825",
+      "R838"
     ],
     "documentType": {
       "type": "Drivers License",
@@ -13,7 +14,7 @@
     },
     "decision": {
       "name": "lenient",
-      "value": "accept"
+      "value": "fail"
     },
     "documentData": {
       "firstName": "Dwayne",
