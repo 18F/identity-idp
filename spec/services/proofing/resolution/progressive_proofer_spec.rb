@@ -22,6 +22,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:user_email) { Faker::Internet.email }
     let(:current_sp) { build(:service_provider) }
+    let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
 
     let(:residential_address_resolution_result) do
       Proofing::Resolution::Result.new(
@@ -81,6 +82,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         user_email:,
         current_sp:,
+        user_uuid:,
       )
     end
 
@@ -145,6 +147,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           threatmetrix_session_id:,
           timer: an_instance_of(JobHelpers::Timer),
           user_email:,
+          user_uuid:,
         )
         proof
       end
@@ -217,6 +220,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             threatmetrix_session_id:,
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
+            user_uuid:,
           )
           proof
         end
@@ -248,6 +252,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             threatmetrix_session_id:,
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
+            user_uuid:,
           )
           proof
         end
