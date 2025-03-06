@@ -9,7 +9,7 @@
       <% if @phone %>
         <p>
           <%= t('idv.failure.phone.warning.you_entered') %>
-          <strong><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
+          <strong class='text-no-wrap'><%= PhoneFormatter.format(@phone, country_code: @country_code) %></strong>
         </p>
       <% end %>
 
