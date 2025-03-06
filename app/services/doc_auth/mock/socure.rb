@@ -78,10 +78,6 @@ module DocAuth
       end
 
       def enabled?
-        enabled
-      end
-
-      def enabled
         IdentityConfig.store.doc_auth_vendor == 'mock_socure' &&
           !Rails.env.production?
       end

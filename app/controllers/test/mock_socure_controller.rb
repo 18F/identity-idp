@@ -23,7 +23,7 @@ module Test
     end
 
     def check_enabled
-      return if DocAuth::Mock::Socure.instance.enabled
+      return if DocAuth::Mock::Socure.instance.enabled?
 
       raise ActionController::RoutingError, 'Test Socure is disabled'
     end
