@@ -51,6 +51,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
           threatmetrix_session_id: threatmetrix_session_id,
           email: user_email,
           request_ip: request_ip,
+          uuid: user_uuid,
         )
       end
 
