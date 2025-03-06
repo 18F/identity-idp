@@ -65,7 +65,7 @@ module Idv
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
-      expected_doc_auth_vendor = doc_auth_vendor
+      expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
       return if vendor == expected_doc_auth_vendor
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
