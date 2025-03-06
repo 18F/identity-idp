@@ -34,6 +34,7 @@ module Proofing
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_email email address for applicant
       # @param [String] user_uuid user uuid for applicant
+      # @param [String] workflow user is in idv or auth workflow
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
@@ -43,7 +44,8 @@ module Proofing
         user_email:,
         ipp_enrollment_in_progress:,
         current_sp:,
-        user_uuid:
+        user_uuid:,
+        workflow:
       )
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
@@ -55,6 +57,7 @@ module Proofing
           timer:,
           user_email:,
           user_uuid:,
+          workflow:,
         )
 
         residential_address_resolution_result = residential_address_plugin.call(

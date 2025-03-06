@@ -112,7 +112,8 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id:,
     request_ip:,
     ipp_enrollment_in_progress:,
-    current_sp:
+    current_sp:,
+    workflow:
   )
     result = progressive_proofer.proof(
       applicant_pii: applicant_pii,
@@ -123,6 +124,7 @@ class ResolutionProofingJob < ApplicationJob
       timer: timer,
       current_sp: current_sp,
       user_uuid: user.uuid,
+      workflow: workflow,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
