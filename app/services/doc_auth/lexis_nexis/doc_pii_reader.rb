@@ -29,9 +29,9 @@ module DocAuth
         state_id_type = DocAuth::Response::ID_TYPE_SLUGS[state_id_type_slug]
 
         if state_id_type == 'drivers_license' || state_id_type == 'state_id_card'
-          generate_state_id_pii(id_auth_field_data, state_id_type)
+          return generate_state_id_pii(id_auth_field_data, state_id_type)
         elsif state_id_type == 'passport'
-          generate_passport_pii(id_auth_field_data, state_id_type)
+          return generate_passport_pii(id_auth_field_data, state_id_type)
         end
       end
 
