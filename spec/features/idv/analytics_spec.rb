@@ -94,20 +94,6 @@ RSpec.feature 'Analytics Regression', :js do
       verified_attributes: nil }
   end
 
-  let(:phone_precheck_block) do
-    { attributes_requiring_additional_verification: [],
-      can_pass_with_additional_verification: false,
-      errors: {},
-      exception: nil,
-      reference: '',
-      success: false,
-      timed_out: false,
-      transaction_id: '',
-      vendor_name: 'NoPhoneNumberAvailable',
-      vendor_workflow: nil,
-      verified_attributes: nil }
-  end
-
   let(:base_proofing_results) do
     {
       exception: nil,
@@ -134,7 +120,17 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
-          phone_precheck: phone_precheck_block,
+          phone_precheck: { attributes_requiring_additional_verification: [],
+                            can_pass_with_additional_verification: false,
+                            errors: {},
+                            exception: nil,
+                            reference: '',
+                            success: false,
+                            timed_out: false,
+                            transaction_id: '',
+                            vendor_name: 'NoPhoneNumberAvailable',
+                            vendor_workflow: nil,
+                            verified_attributes: nil },
         },
       },
       biographical_info: {
@@ -179,7 +175,17 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
-          phone_precheck: phone_precheck_block,
+          phone_precheck: { attributes_requiring_additional_verification: [],
+                            can_pass_with_additional_verification: false,
+                            errors: {},
+                            exception: nil,
+                            reference: '',
+                            success: false,
+                            timed_out: false,
+                            transaction_id: '',
+                            vendor_name: 'PhoneIgnoredForInPersonProofing',
+                            vendor_workflow: nil,
+                            verified_attributes: nil },
         },
       },
       biographical_info: {
