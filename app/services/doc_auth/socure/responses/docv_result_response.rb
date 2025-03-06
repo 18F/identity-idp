@@ -140,15 +140,11 @@ module DocAuth
 
         def parsed_response_body
           @parsed_response_body ||=
-            begin
-              Rails.logger.info "\n\nhttp_response.body: #{http_response.body.inspect}\n"
-
-              http_response&.body.present? ? JSON.parse(
-                http_response.body,
-              ).with_indifferent_access : {}
-            rescue JSON::JSONError
-              {}
-            end
+            http_response&.body.present? ? JSON.parse(
+              http_response.body,
+            ).with_indifferent_access : {}
+        rescue JSON::JSONError
+          {}
         end
 
         def state

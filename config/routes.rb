@@ -186,9 +186,6 @@ Rails.application.routes.draw do
 
         get '/session_data' => 'session_data#index'
 
-        # get '/mock_socure' => 'mock_socure#index'
-        # post '/mock_socure' => 'mock_socure#update'
-
         get '/mock_socure/document_capture' => 'mock_socure#index'
         post '/mock_socure/document_capture' => 'mock_socure#update'
         post '/mock_socure/document_capture/continue' => 'mock_socure#continue'

@@ -14,8 +14,6 @@ module DocAuth
           @redirect_url = redirect_url
           @document_type = document_type
           @language = language
-
-          Rails.logger.info "\n\nDocumentRequest#initialize: self: #{self.inspect}\n"
         end
 
         def body

@@ -34,7 +34,6 @@ class SocureWebhookController < ApplicationController
 
   def fetch_results
     dcs = document_capture_session
-
     raise 'DocumentCaptureSession not found' if dcs.blank?
 
     if IdentityConfig.store.ruby_workers_idv_enabled
