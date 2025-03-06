@@ -25,7 +25,10 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil
+    proofing_components: nil,
+    workflow: nil,
+    # DEPRECATED ARGUMENTS
+    should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument,
   )
     timer = JobHelpers::Timer.new
 
@@ -51,6 +54,7 @@ class ResolutionProofingJob < ApplicationJob
       request_ip: request_ip,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       current_sp: current_sp,
+      workflow: workflow,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
