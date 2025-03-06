@@ -28,12 +28,12 @@ RSpec.describe Idv::ChooseIdTypeController do
 
   describe '#show' do
     context 'passport is not available' do
-      it 'redirects to hybrid hybrid handoff' do
+      it 'redirects to how to verify' do
         subject.idv_session.passport_allowed = false
 
         get :show
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_how_to_verify_url)
       end
     end
 
