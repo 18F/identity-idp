@@ -69,9 +69,7 @@ class ResetPasswordForm
   end
 
   def password_reset_profile
-    FeatureManagement.pending_in_person_password_reset_enabled? ?
-      find_in_progress_in_person_or_active_profile :
-      active_profile
+    find_in_progress_in_person_or_active_profile
   end
 
   def find_in_progress_in_person_or_active_profile
@@ -103,12 +101,8 @@ class ResetPasswordForm
   end
 
   def pending_profile_invalidated?
-    if FeatureManagement.pending_in_person_password_reset_enabled?
-      pending_profile.present? &&
-        !pending_profile.in_person_verification_pending? &&
-        !pending_profile.fraud_deactivation_reason?
-    else
-      pending_profile.present?
-    end
+    pending_profile.present? &&
+      !pending_profile.in_person_verification_pending? &&
+      !pending_profile.fraud_deactivation_reason?
   end
 end
