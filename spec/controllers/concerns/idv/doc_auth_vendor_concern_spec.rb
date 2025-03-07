@@ -164,14 +164,24 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
       end
 
-      context 'Lexis Nexis is disabled' do
+      context 'socure previously bucketed' do
         before do
-          allow(IdentityConfig.store)
-            .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+          idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
         end
 
         it 'returns mock vendor' do
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+        end
+      end
+
+      context 'lexis nexis previously bucketed' do
+        before do
+          idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS
+        end
+
+        it 'returns mock vendor' do
+          expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
         end
       end
     end
