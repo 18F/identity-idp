@@ -71,7 +71,7 @@ RSpec.describe Profile do
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
-    it 'encrypts pii and stores the multi region ciphertext' do
+    it 'encrypts pii and stores only the multi region ciphertext' do
       expect(profile.encrypted_pii).to be_nil
       expect(profile.encrypted_pii_recovery).to be_nil
       expect(profile.encrypted_pii_multi_region).to be_nil
@@ -79,13 +79,9 @@ RSpec.describe Profile do
 
       profile.encrypt_pii(pii, user.password)
 
-      expect(profile.encrypted_pii).to be_present
-      expect(profile.encrypted_pii).to_not match 'Jane'
-      expect(profile.encrypted_pii).to_not match(ssn)
+      expect(profile.encrypted_pii).to be_nil
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_recovery).to_not match 'Jane'
-      expect(profile.encrypted_pii_recovery).to_not match(ssn)
+      expect(profile.encrypted_pii_recovery).to be_nil
 
       expect(profile.encrypted_pii_multi_region).to be_present
       expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
@@ -97,14 +93,14 @@ RSpec.describe Profile do
     end
 
     it 'generates new personal key' do
-      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       encrypt_pii
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
     end
 
     it 'updates the personal key digest generation time' do
@@ -162,26 +158,26 @@ RSpec.describe Profile do
 
   describe '#encrypt_recovery_pii' do
     it 'generates new personal key' do
-      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       profile.encrypt_recovery_pii(pii)
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
-      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
+      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest_multi_region
     end
 
     it 'can be passed a personal key' do
-      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
       personal_key = 'ABCD-1234'
       returned_personal_key = profile.encrypt_recovery_pii(pii, personal_key: personal_key)
 
       expect(returned_personal_key).to eql(personal_key)
 
-      expect(profile.encrypted_pii_recovery).to be_present
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
       expect(profile.personal_key).to eq personal_key
     end
   end
@@ -191,15 +187,6 @@ RSpec.describe Profile do
       profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii_multi_region).to_not be_nil
-
-      decrypted_pii = profile.decrypt_pii(user.password)
-
-      expect(decrypted_pii).to eq pii
-    end
-
-    it 'decrypts the PII for users with only a single region ciphertext' do
-      profile.encrypt_pii(pii, user.password)
-      profile.update!(encrypted_pii_multi_region: nil)
 
       decrypted_pii = profile.decrypt_pii(user.password)
 
@@ -223,18 +210,6 @@ RSpec.describe Profile do
       normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
       expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
-
-      decrypted_pii = profile.recover_pii(normalized_personal_key)
-
-      expect(decrypted_pii).to eq pii
-    end
-
-    it 'decrypts recovery PII with personal key for users with only a single region ciphertext' do
-      profile.encrypt_pii(pii, user.password)
-      profile.update!(encrypted_pii_recovery_multi_region: nil)
-      personal_key = profile.personal_key
-
-      normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
       decrypted_pii = profile.recover_pii(normalized_personal_key)
 
