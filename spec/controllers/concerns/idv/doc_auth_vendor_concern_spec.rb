@@ -101,7 +101,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
       end
 
-      describe 'socure user limit not reached' do
+      context 'socure user limit not reached' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
           allow(controller).to receive(:user_session).and_return(user_session)
@@ -109,6 +109,17 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
         it 'returns socure as the vendor' do
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'socure user set is maxed before user added' do
+          before do
+            allow(controller).to receive(:socure_user_set).and_return(socure_user_set)
+            allow(socure_user_set).to receive(:add_user!).and_return(false)
+          end
+
+          it 'returns mock as the vendor' do
+            expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
+          end
         end
       end
     end
