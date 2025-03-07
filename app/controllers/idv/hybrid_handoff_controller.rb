@@ -120,7 +120,7 @@ module Idv
     end
 
     def upload_disabled?
-      (document_capture_sesion.doc_auth_vendor == Idp::Constants::Vendors::SOCURE ||
+      (document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE ||
         idv_session.selfie_check_required) &&
         !idv_session.desktop_selfie_test_mode_enabled?
     end
