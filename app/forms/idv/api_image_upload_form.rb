@@ -67,7 +67,7 @@ module Idv
                 :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def abandon_any_ipp_progress
-      User.find(user_id).establishing_in_person_enrollment&.cancel
+      user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
     end
 
     def increment_rate_limiter!
