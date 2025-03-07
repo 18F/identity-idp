@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
-    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -121,7 +120,8 @@ module Idv
     end
 
     def upload_disabled?
-      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
+      (document_capture_sesion.doc_auth_vendor == Idp::Constants::Vendors::SOCURE ||
+        idv_session.selfie_check_required) &&
         !idv_session.desktop_selfie_test_mode_enabled?
     end
 

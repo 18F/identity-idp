@@ -9,7 +9,6 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
-  include Idv::DocAuthVendorConcern
 
   included do
     before_action :confirm_two_factor_authenticated

@@ -7,7 +7,6 @@ module Idv
     class EntryController < ApplicationController
       include Idv::AvailabilityConcern
       include HybridMobileConcern
-      include DocAuthVendorConcern
 
       def show
         return handle_invalid_document_capture_session if !validate_document_capture_session_id

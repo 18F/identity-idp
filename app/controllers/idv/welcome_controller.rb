@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show

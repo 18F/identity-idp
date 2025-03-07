@@ -4,8 +4,6 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
-    include DocAuthVendorConcern
-
     def handle_stored_result(user: current_user, store_in_session: true)
       if stored_result&.success? && selfie_requirement_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
@@ -42,7 +40,7 @@ module Idv
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
         # See also Idv::InPerson::StateIdController#update
-        idv_session.doc_auth_vendor = doc_auth_vendor
+        idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         if store_in_session
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
