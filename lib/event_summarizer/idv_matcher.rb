@@ -245,7 +245,7 @@ module EventSummarizer
         add_significant_event(
           type: :start_ipp,
           timestamp:,
-          descirption: 'User entered the in-person proofing flow',
+          description: 'User entered the in-person proofing flow',
         )
       end
 
@@ -333,7 +333,7 @@ module EventSummarizer
       verified = tmx_status != 'review' && tmx_status != 'reject'
 
       if verified
-        current_idv_attempt.event << SignificantIdvEvent.new(
+        current_idv_attempt.significant_events << SignificantIdvEvent.new(
           type: :verified,
           timestamp:,
           description: 'User is fully verified',
