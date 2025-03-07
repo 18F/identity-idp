@@ -47,13 +47,13 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
-        document_type:,
+        document_type: nil,
         selfie_image: nil,
         image_source: nil,
         images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
-        liveness_checking_required: false,
+        liveness_checking_required: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
