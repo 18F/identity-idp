@@ -23,6 +23,7 @@ module UserAccessKeyOverrides
   def password=(new_password)
     @password = new_password
     return if @password.blank?
+    self.encrypted_password_digest = nil
     self.encrypted_password_digest_multi_region =
       Encryption::PasswordVerifier.new.create_digest(
         password: @password,
@@ -49,6 +50,7 @@ module UserAccessKeyOverrides
   def personal_key=(new_personal_key)
     @personal_key = new_personal_key
     return if new_personal_key.blank?
+    self.encrypted_recovery_code_digest = nil
     self.encrypted_recovery_code_digest_multi_region =
       Encryption::PasswordVerifier.new.create_digest(
         password: new_personal_key,
@@ -70,6 +72,7 @@ module UserAccessKeyOverrides
   end
 
   def rotate_stale_password_digest
+    return if encrypted_password_digest.blank?
     return unless Encryption::PasswordVerifier.new.stale_digest?(
       encrypted_password_digest,
     )
