@@ -42,7 +42,7 @@
                 last_number: attribute_value[-1],
               ),
             ) %>
-      <% elsif attribute_key == :email && IdentityConfig.store.feature_select_email_to_share_enabled %>
+      <% elsif attribute_key == :email %>
         <div class="display-flex flex-justify">
           <%= attribute_value.to_s %>
           <p class='font-body-2xs text-right'>
