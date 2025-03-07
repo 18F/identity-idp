@@ -225,7 +225,8 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'the user fails remote docauth, starts IPP, then resumes remote with successful images',
+  context 'the user fails remote docauth, starts IPP, then navigates to how to verify and
+   resumes remote with successful images',
           allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
@@ -253,6 +254,36 @@ RSpec.describe 'In Person Proofing', js: true do
       # choose remote
       click_on t('forms.buttons.continue_remote')
       complete_hybrid_handoff_step
+      complete_document_capture_step(with_selfie: false)
+
+      complete_remote_idv_from_ssn(user)
+    end
+  end
+
+  context 'the user fails remote docauth, starts IPP, then navigates back to the submit images page
+  and resumes remote with successful images', allow_browser_log: true do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
+      complete_doc_auth_steps_before_document_capture_step(expect_accessible: true)
+      # Fail docauth
+      complete_document_capture_step_with_yml(
+        'spec/fixtures/ial2_test_credential_multiple_doc_auth_failures_both_sides.yml',
+        expected_path: idv_document_capture_url,
+      )
+      # begin in-person proofing
+      find(:button, t('in_person_proofing.body.cta.button'), wait: 10).click
+
+      complete_prepare_step
+      complete_location_step
+
+      # Click back and resume remote identity verification
+      visit idv_document_capture_url
+    end
+
+    it 'allows the user to successfully complete remote identity verification' do
       complete_document_capture_step(with_selfie: false)
 
       complete_remote_idv_from_ssn(user)

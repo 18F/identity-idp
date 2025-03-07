@@ -225,7 +225,7 @@ RSpec.describe Idv::HowToVerifyController do
       context 'the user has an establishing in-person enrollment' do
         let(:user) { create(:user, :with_establishing_in_person_enrollment) }
 
-        it 'cancels the establishing in-person enrollment' do
+        it 'cancels the in-person enrollment' do
           expect(user.in_person_enrollments.first.status).to eq('establishing')
 
           put :update, params: params
