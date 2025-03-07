@@ -531,6 +531,7 @@ doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
+doc_auth.errors.choose_id_type_check: Sélectionnez le type de document dont vous disposez
 doc_auth.errors.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
 doc_auth.errors.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
 doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
@@ -581,6 +582,8 @@ doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
+doc_auth.forms.id_type_preference.drivers_license: Permis de conduire ou carte d’identité d’un État
+doc_auth.forms.id_type_preference.passport: Passeport américain
 doc_auth.forms.selected_file: Fichier sélectionné
 doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
@@ -594,6 +597,7 @@ doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez %{link_html} de votre carte d’identité délivrée par l’État.
 doc_auth.headings.capture_scan_warning_link: télécharger de nouvelles photos
+doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
@@ -635,6 +639,7 @@ doc_auth.info.capture_status_capturing: Prise de la photo
 doc_auth.info.capture_status_none: Alignez
 doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
+doc_auth.info.choose_id_type: Sélectionnez le type de document dont vous disposez. Vous devrez prendre des photos de votre pièce d’identité pour confirmer votre identité.
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
@@ -644,6 +649,7 @@ doc_auth.info.how_to_verify_mobile: Vous avez la possibilité de confirmer votre
 doc_auth.info.how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de confirmer votre identité?
 doc_auth.info.hybrid_handoff: Nous recueillerons des informations vous concernant en lisant votre pièce d’identité délivrée par un État.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
+doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
 doc_auth.info.image_updated: Image mise à jour
