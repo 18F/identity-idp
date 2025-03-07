@@ -4,7 +4,8 @@ module DocAuth
   module LexisNexis
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
-        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required, :back_image_required
+        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required,
+                    :back_image_required, :document_type
 
         def initialize(
           config:,
@@ -16,7 +17,7 @@ module DocAuth
           image_source: nil,
           images_cropped: false,
           liveness_checking_required: false,
-          document_type: 'DriversLicense',
+          document_type: 'DriversLicense'
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
@@ -44,7 +45,7 @@ module DocAuth
               Front: encode(front_image),
               Back: (encode(back_image) if back_image_required),
               Selfie: (encode(selfie_image) if liveness_checking_required),
-              DocumentType: 'DriversLicense',
+              DocumentType: document_type,
             }.compact,
           }
 
