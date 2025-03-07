@@ -4,9 +4,12 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:user) { create(:user) }
   let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
+  let(:user_session) do
+    {}
+  end
   let(:idv_session) do
     Idv::Session.new(
-      user_session: {},
+      user_session:,
       current_user: user,
       service_provider: nil,
     )
@@ -73,6 +76,39 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
         it 'adds a user to the socure redis set' do
           expect { controller.doc_auth_vendor }.to change { socure_user_set.count }.by(1)
+        end
+      end
+    end
+
+    context 'facial match not required' do
+      let(:bucket) { :socure }
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_vendor_switching_enabled).and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_vendor_socure_percent).and_return(100)
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+      end
+
+      context 'socure user limit reached' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(0)
+        end
+
+        it 'returns mock as the vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
+        end
+      end
+
+      describe 'socure user limit not reached' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
+          allow(controller).to receive(:user_session).and_return(user_session)
+        end
+
+        it 'returns socure as the vendor' do
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
         end
       end
     end
