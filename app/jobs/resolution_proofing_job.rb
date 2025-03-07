@@ -25,9 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil,
-    # DEPRECATED ARGUMENTS
-    should_proof_state_id: false # rubocop:disable Lint/UnusedMethodArgument
+    proofing_components: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -124,6 +122,7 @@ class ResolutionProofingJob < ApplicationJob
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
       current_sp: current_sp,
+      user_uuid: user.uuid,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)

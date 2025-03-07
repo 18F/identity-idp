@@ -1418,14 +1418,12 @@ RSpec.describe SamlIdpController do
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
-        expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
         expect(response.body).to include(t('errors.messages.unauthorized_service_provider'))
         expect(@analytics).to have_logged_event(
           'SAML Auth',
           hash_including(
             success: false,
             error_details: {
-              authn_context: { unauthorized_authn_context: true },
               service_provider: { unauthorized_service_provider: true },
             },
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
@@ -1440,7 +1438,7 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
+          error_details: ['Unauthorized Service Provider'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,

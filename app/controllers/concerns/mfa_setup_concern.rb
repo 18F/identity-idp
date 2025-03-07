@@ -98,6 +98,7 @@ module MfaSetupConcern
       threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
       email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
+      user_uuid: current_user.uuid,
     }
   end
 
