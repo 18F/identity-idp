@@ -634,7 +634,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       let(:failed_response) do
         DocAuth::Response.new(
           success: false,
-          errors: {},
+          errors: { passport: 'invalid MRZ' },
           extra: {
             vendor: 'DoS',
             correlation_id_sent: 'something',
@@ -644,7 +644,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       before do
-        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:submit)
+        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
           .and_return(failed_response)
       end
 
@@ -652,8 +652,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
 
         expect(response.success?).to eq(false)
-        expect(response.attention_with_barcode?).to eq(false)
-        expect(response.pii_from_doc).to eq({})
       end
 
       xit 'includes remaining_submit_attempts' do

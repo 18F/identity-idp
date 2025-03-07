@@ -36,6 +36,7 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
+      passport_mrz_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -46,13 +47,15 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+          passport_mrz_response = validate_mrz(client_response)
         end
       end
 
       response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+        form_response:,
+        client_response:,
+        doc_pii_response:,
+        passport_mrz_response:,
       )
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
@@ -143,6 +146,12 @@ module Idv
       response
     end
 
+    def validate_mrz(client_response)
+      Rails.logger.info "\nvalidate_mrz: client_response: #{client_response.inspect}\n"
+
+      DocAuth::Dos::Requests::MrzRequest.new(mrz: 'foo').fetch
+    end
+
     def doc_side_classification(client_response)
       side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
       side_info.transform_keys(&:downcase).symbolize_keys
@@ -212,12 +221,14 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, passport_mrz_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      return passport_mrz_response if passport_mrz_response.present? && passport_mrz_response.success?
 
       client_response
     end
