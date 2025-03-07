@@ -103,6 +103,7 @@ module Idv
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
+          document_type: 'DriversLicense', # TODO change to check if passport_requested is true
         )
       end
 
