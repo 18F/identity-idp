@@ -52,17 +52,6 @@ RSpec.describe SignUp::SelectEmailController do
       expect(assigns(:can_add_email)).to eq(true)
     end
 
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
-      end
-    end
-
     context 'when users has max number of emails' do
       before do
         allow(user).to receive(:email_address_count).and_return(2)
@@ -126,17 +115,6 @@ RSpec.describe SignUp::SelectEmailController do
           needs_completion_screen_reason: :new_attributes,
           selected_email_id: selected_email_id,
         )
-      end
-    end
-
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
       end
     end
   end

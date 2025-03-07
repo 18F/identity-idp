@@ -41,7 +41,7 @@ module Users
       confirm_and_notify(email_address)
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
-        if params[:request_id] && IdentityConfig.store.feature_select_email_to_share_enabled
+        if params[:request_id]
           redirect_to sign_up_select_email_url
         else
           redirect_to account_url
