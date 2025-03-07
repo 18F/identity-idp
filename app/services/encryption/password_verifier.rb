@@ -88,6 +88,7 @@ module Encryption
     end
 
     def stale_digest?(digest)
+      return false if digest.nil?
       PasswordDigest.parse_from_string(digest).uak_password_digest?
     end
 
