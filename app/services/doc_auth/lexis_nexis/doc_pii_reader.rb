@@ -29,7 +29,11 @@ module DocAuth
         state_id_type = DocAuth::Response::ID_TYPE_SLUGS[state_id_type_slug]
 
         if state_id_type == 'drivers_license' || state_id_type == 'state_id_card'
-          return generate_state_id_pii(id_auth_field_data, state_id_type)
+          return generate_state_id_pii(
+            id_auth_field_data,
+            state_id_type,
+            authentication_result_field_data,
+          )
         elsif state_id_type == 'passport'
           return generate_passport_pii(id_auth_field_data, state_id_type)
         end
@@ -75,7 +79,7 @@ module DocAuth
         height_match_data[:feet].to_i * 12 + height_match_data[:inches].to_i
       end
 
-      def generate_state_id_pii(id_auth_field_data, state_id_type)
+      def generate_state_id_pii(id_auth_field_data, state_id_type, authentication_result_field_data)
         Pii::StateId.new(
           first_name: id_auth_field_data['Fields_FirstName'],
           last_name: id_auth_field_data['Fields_Surname'],
