@@ -13,11 +13,11 @@ module DocAuth
           uuid_prefix:,
           front_image:,
           back_image:,
+          document_type:,
           selfie_image: nil,
           image_source: nil,
           images_cropped: false,
-          liveness_checking_required: false,
-          document_type: 'DriversLicense'
+          liveness_checking_required: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
