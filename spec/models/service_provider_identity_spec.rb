@@ -255,11 +255,6 @@ RSpec.describe ServiceProviderIdentity do
     end
 
     context 'when email sharing feature is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
-      end
-
       context 'when an email address is set' do
         before do
           identity.email_address = shared_email_address
@@ -281,11 +276,6 @@ RSpec.describe ServiceProviderIdentity do
     end
 
     context 'when email sharing feature is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
-      end
-
       it 'returns the last login email' do
         expect(identity.email_address_for_sharing).to eq(last_login_email_address)
       end
@@ -322,10 +312,6 @@ RSpec.describe ServiceProviderIdentity do
           last_sign_in_at: 1.hour.ago,
         )
       end
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
-      end
 
       it 'should save the new email properly on update' do
         identity.update!(email_address_id: new_shared_email_address.id)
@@ -342,10 +328,6 @@ RSpec.describe ServiceProviderIdentity do
           user: user,
           last_sign_in_at: 1.hour.ago,
         )
-      end
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
       end
 
       it 'should make the email address to nil' do

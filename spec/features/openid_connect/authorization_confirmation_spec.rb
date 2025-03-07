@@ -59,11 +59,6 @@ RSpec.feature 'OIDC Authorization Confirmation' do
     end
 
     context 'when email sharing feature is enabled' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:feature_select_email_to_share_enabled).and_return(true)
-      end
-
       it_behaves_like 'signing in with a different email prompts with the shared email'
 
       context 'with client-side javascript redirect' do
@@ -107,24 +102,6 @@ RSpec.feature 'OIDC Authorization Confirmation' do
           identity = user.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
           expect(identity.email_address_id).to eq(nil)
         end
-      end
-    end
-
-    context 'when email sharing feature is disabled' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:feature_select_email_to_share_enabled).and_return(false)
-      end
-
-      it_behaves_like 'signing in with a different email prompts with the signed in email'
-
-      context 'with client-side javascript redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-            .and_return('client_side_js')
-        end
-
-        it_behaves_like 'signing in with a different email prompts with the signed in email'
       end
     end
 

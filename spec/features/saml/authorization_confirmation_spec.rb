@@ -35,11 +35,6 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
     context 'when the user is already signed in with an email different from the one shared' do
       context 'when email sharing feature is enabled' do
-        before do
-          allow(IdentityConfig.store)
-            .to receive(:feature_select_email_to_share_enabled).and_return(true)
-        end
-
         it 'confirms the user wants to continue to SP with the shared email' do
           shared_email = user1.identities.first.email_address.email
           second_email = create(:email_address, user: user1)
@@ -91,25 +86,6 @@ RSpec.feature 'SAML Authorization Confirmation' do
             identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
             expect(identity.email_address_id).to eq(nil)
           end
-        end
-      end
-
-      context 'when email sharing feature is disabled' do
-        before do
-          allow(IdentityConfig.store)
-            .to receive(:feature_select_email_to_share_enabled).and_return(false)
-        end
-
-        it 'confirms the user wants to continue to SP with the signed in email' do
-          second_email = create(:email_address, user: user1)
-          sign_in_user(user1, second_email.email)
-
-          visit request_url
-          expect(current_url).to match(user_authorization_confirmation_path)
-          expect(page).to have_content second_email.email
-
-          continue_as(second_email.email)
-          expect(current_url).to eq(complete_saml_url)
         end
       end
     end

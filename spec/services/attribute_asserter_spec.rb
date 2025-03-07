@@ -757,11 +757,6 @@ RSpec.describe AttributeAsserter do
 
     context 'select email to send to partner feature is disabled' do
       let(:attribute_bundle) { %w[first_name last_name email phone] }
-      before do
-        allow(IdentityConfig.store).to receive(
-          :feature_select_email_to_share_enabled,
-        ).and_return(false)
-      end
 
       context 'with a deleted email' do
         let(:subject) do

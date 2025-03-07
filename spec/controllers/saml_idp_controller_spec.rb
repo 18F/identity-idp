@@ -1568,8 +1568,6 @@ RSpec.describe SamlIdpController do
       let(:service_provider) { build(:service_provider, issuer: saml_settings.issuer) }
 
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
         stub_sign_in(user)
         session[:sign_in_flow] = :sign_in
       end

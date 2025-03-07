@@ -2,12 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'accounts/connected_accounts/show.html.erb' do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
-  let(:feature_select_email_to_share_enabled) { true }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-      .and_return(feature_select_email_to_share_enabled)
     assign(
       :presenter,
       AccountShowPresenter.new(
@@ -52,20 +49,6 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
         t('help_text.requested_attributes.change_email_link'),
         href: edit_connected_account_selected_email_path(identity_id: identity.id),
       )
-    end
-
-    context 'with selected email to share feature disabled' do
-      let(:feature_select_email_to_share_enabled) { false }
-
-      it 'does not render option to change email' do
-        render
-
-        expect(rendered).not_to have_content(t('account.connected_apps.email_not_selected'))
-        expect(rendered).not_to have_link(
-          t('help_text.requested_attributes.change_email_link'),
-          href: edit_connected_account_selected_email_path(identity_id: identity.id),
-        )
-      end
     end
 
     context 'when the partner requests all_emails' do
@@ -115,16 +98,6 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
           t('help_text.requested_attributes.change_email_link'),
           href: edit_connected_account_selected_email_path(identity_id: identity.id),
         )
-      end
-
-      context 'with selected email to share feature disabled' do
-        let(:feature_select_email_to_share_enabled) { false }
-
-        it 'does not render associated email' do
-          render
-
-          expect(rendered).not_to have_content(email_address.email)
-        end
       end
     end
   end
