@@ -48,6 +48,7 @@ module Idv
       address_edited
       address_verification_mechanism
       applicant
+      bucketed_doc_auth_vendor
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -60,6 +61,7 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       opted_in_to_in_person_proofing
+      passport_allowed
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow

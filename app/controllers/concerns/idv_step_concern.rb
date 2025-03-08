@@ -9,7 +9,6 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
-  include Idv::DocAuthVendorConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -77,11 +76,22 @@ module IdvStepConcern
   end
 
   def vendor_document_capture_url
-    if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+    if document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
       idv_socure_document_capture_url
     else
       idv_document_capture_url
     end
+  end
+
+  def dos_passport_api_healthy?(
+    analytics:,
+    endpoint: IdentityConfig.store.dos_passport_composite_healthcheck_endpoint
+  )
+    return true unless Rails.env.production? # if Rails.env.development?
+
+    request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
+    response = request.fetch(analytics)
+    response.success?
   end
 
   private

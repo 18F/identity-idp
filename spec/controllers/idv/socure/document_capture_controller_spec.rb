@@ -25,7 +25,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
 
   before do
-    document_capture_session = create(:document_capture_session, user:, requested_at: Time.zone.now)
+    document_capture_session = create(
+      :document_capture_session,
+      user:,
+      requested_at: Time.zone.now,
+      doc_auth_vendor: idv_vendor,
+    )
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
