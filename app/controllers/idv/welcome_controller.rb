@@ -71,5 +71,13 @@ module Idv
         current_user,
       )
     end
+
+    def passport_allowed?
+      return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+
+      if dos_passport_api_healthy?(analytics:)
+        idv_session.passport_allowed ||= (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
+      end
+    end
   end
 end

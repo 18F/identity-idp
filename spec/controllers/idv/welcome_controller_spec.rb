@@ -168,6 +168,66 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
       end
     end
+
+    context 'passports enabled' do
+      let(:dos_api_status) { nil }
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+          .to_return({ status: 200, body: { status: dos_api_status }.to_json })
+      end
+
+      context 'passport api is down' do
+        let(:dos_api_status) { 'NOT UP' }
+        it 'passport allowed is not bucketed' do
+          get :show
+
+          expect(subject.idv_session.passport_allowed).to be_nil
+          expect(@analytics).to have_logged_event(
+            :passport_api_health_check,
+          )
+        end
+      end
+
+      context 'passport api is up and running' do
+        let(:dos_api_status) { 'UP' }
+        let(:bucket) { nil }
+
+        before do
+          allow(subject).to receive(:ab_test_bucket).and_call_original
+          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT).and_return(bucket)
+        end
+
+        it 'passport allowed is false in idv session' do
+          get :show
+
+          expect(subject.idv_session.passport_allowed).to eq(false)
+        end
+
+        context 'user is AB bucketed to allow passports' do
+          let(:bucket) { :passport_allowed }
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+          end
+
+          it 'passport allowed is true in idv session' do
+            get :show
+
+            expect(subject.idv_session.passport_allowed).to eq(true)
+          end
+        end
+      end
+
+      context 'bucketed vendor is Socure' do
+        let(:bucket) { Idp::Constants::Vendors::SOCURE }
+        it 'passports are not bucketed' do
+          expect(subject.idv_session.passport_allowed).to be_nil
+          expect(@analytics).not_to have_logged_event(
+            :passport_api_health_check,
+          )
+        end
+      end
+    end
   end
 
   describe '#update' do

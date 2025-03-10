@@ -89,7 +89,7 @@ module IdvStepConcern
     analytics:,
     endpoint: IdentityConfig.store.dos_passport_composite_healthcheck_endpoint
   )
-    return true unless Rails.env.production? # if Rails.env.development?
+    return true if endpoint.blank?
 
     request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
     response = request.fetch(analytics)
