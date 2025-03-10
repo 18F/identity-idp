@@ -542,6 +542,7 @@ doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
 doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
+doc_auth.errors.choose_id_type_check: Seleccione el tipo de documento que tenga
 doc_auth.errors.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
 doc_auth.errors.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
 doc_auth.errors.doc.doc_type_check: Su licencia de conducir o identificación estatal debe ser emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
@@ -592,6 +593,8 @@ doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
+doc_auth.forms.id_type_preference.drivers_license: Licencia de conducir de los EE. UU. o identificación estatal
+doc_auth.forms.id_type_preference.passport: Pasaporte estadounidense
 doc_auth.forms.selected_file: Archivo seleccionado
 doc_auth.headers.expired_id: Su identificación puede estar vencida
 doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
@@ -605,6 +608,7 @@ doc_auth.headings.back: Reverso de su licencia de conducir o identificación est
 doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras en su identificación. Si la información que aparece a continuación es incorrecta, %{link_html} de su identificación emitida por el estado.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
+doc_auth.headings.choose_id_type: Elija el tipo de su identificación
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
@@ -646,6 +650,7 @@ doc_auth.info.capture_status_capturing: Capturando
 doc_auth.info.capture_status_none: Alinear
 doc_auth.info.capture_status_small_document: Acercar
 doc_auth.info.capture_status_tap_to_capture: Tocar para capturar
+doc_auth.info.choose_id_type: Seleccione el tipo de documento que tenga. Tendrá que tomar fotografías de su identificación para verificar su identidad.
 doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
@@ -655,6 +660,7 @@ doc_auth.info.how_to_verify_mobile: Tiene la opción de verificar su identidad e
 doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
+doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
 doc_auth.info.image_updated: Imagen actualizada

@@ -542,6 +542,7 @@ doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
 doc_auth.errors.camera.failed: 相机未开启，请再试一次。
 doc_auth.errors.card_type: 再用你的驾照或州政府颁发的身份证件试一次。
+doc_auth.errors.choose_id_type_check: 选择你具备的身份证件类型
 doc_auth.errors.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
 doc_auth.errors.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
 doc_auth.errors.doc.doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
@@ -592,6 +593,8 @@ doc_auth.errors.upload_error: 抱歉，我们这边出错了。
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
+doc_auth.forms.id_type_preference.drivers_license: 美国驾照或州身份证件
+doc_auth.forms.id_type_preference.passport: 美国护照本
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headers.expired_id: 你的身份证件可能已过期
 doc_auth.headers.general.network_error: 我们目前遇到技术困难
@@ -605,6 +608,7 @@ doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
 doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
+doc_auth.headings.choose_id_type: 选择你的身份证件类型
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
@@ -646,6 +650,7 @@ doc_auth.info.capture_status_capturing: 扫描中
 doc_auth.info.capture_status_none: 对齐
 doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
+doc_auth.info.choose_id_type: 选择你具备的身份证件类型你将需要拍你身份证件的照片来验证身份。
 doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
@@ -655,6 +660,7 @@ doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验�
 doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
+doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
 doc_auth.info.image_loaded: 图像已加载
 doc_auth.info.image_loading: 图像加载中
 doc_auth.info.image_updated: 图像已上传
