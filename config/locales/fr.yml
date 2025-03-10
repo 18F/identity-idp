@@ -1402,7 +1402,6 @@ instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un c
 instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>'
-instructions.mfa.wrong_number: Vous avez saisi un mauvais numéro de téléphone ?
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
 instructions.password.help_text_header: Conseils de sécurité pour votre mot de passe
