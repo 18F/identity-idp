@@ -176,11 +176,10 @@ RSpec.describe Encryption::PasswordVerifier do
     it 'returns false if the digest is fresh' do
       digest = subject.create_digest_pair(
         password: password, user_uuid: user_uuid,
-      ).single_region_ciphertext
+      )
 
-      result = subject.stale_digest?(digest)
-
-      expect(result).to eq(false)
+      expect(subject.stale_digest?(digest.multi_region_ciphertext)).to eq false
+      expect(subject.stale_digest?(digest.single_region_ciphertext)).to eq false
     end
   end
 end

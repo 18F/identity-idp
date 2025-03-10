@@ -28,6 +28,7 @@ RSpec.describe PersonalKeyForm do
           error_details: { personal_key: { personal_key_incorrect: true } },
         )
         expect(user.encrypted_recovery_code_digest).to_not be_nil
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_nil
         expect(form.personal_key).to be_nil
       end
     end
