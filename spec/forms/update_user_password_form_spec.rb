@@ -28,7 +28,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         result = nil
         expect do
           result = subject.submit(params).to_h
-        end.to_not(change { user.reload.encrypted_password_digest })
+        end.to_not(change { user.reload.encrypted_password_digest_multi_region })
 
         expect(result).to include(
           success: false,
@@ -53,7 +53,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
         expect do
           subject.submit(params)
-        end.to(change { user.reload.encrypted_password_digest })
+        end.to(change { user.reload.encrypted_password_digest_multi_region })
       end
     end
 
