@@ -126,7 +126,7 @@ RSpec.describe Idv::ChooseIdTypeController do
       it 'redirects to passport document capture' do
         put :update, params: params
 
-        expect(response).to redirect_to(idv_in_person_url)
+        expect(response).to redirect_to(idv_document_capture_url)
       end
     end
   end

@@ -66,12 +66,7 @@ module Idv
     end
 
     def next_step
-      if idv_session.passport_requested
-        # page is not created yet redirect to in person for now
-        idv_in_person_url
-      else
-        idv_document_capture_url
-      end
+      idv_document_capture_url
     end
 
     def choose_id_type_form_params
