@@ -21,7 +21,7 @@ module Idv
 
       analytics.idv_doc_auth_choose_id_type_submitted(
         **analytics_arguments.merge(result.to_h)
-          .merge({ chosen_id_type: chosen_id_type }),
+          .merge({ chosen_id_type: }),
       )
 
       if result.success?
