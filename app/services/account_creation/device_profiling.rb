@@ -7,19 +7,22 @@ module AccountCreation
                 :user_email,
                 :device_profile_result,
                 :uuid_prefix,
-                :uuid
+                :uuid,
+                :workflow
     def proof(
       request_ip:,
       threatmetrix_session_id:,
       user_email:,
       uuid_prefix:,
-      uuid:
+      uuid:,
+      workflow:
     )
       @request_ip = request_ip
       @threatmetrix_session_id = threatmetrix_session_id
       @user_email = user_email
       @uuid_prefix = uuid_prefix
       @uuid = uuid
+      @workflow = workflow
 
       @device_profile_result = device_profile
     end
@@ -35,6 +38,7 @@ module AccountCreation
         request_ip: request_ip,
         uuid_prefix: uuid_prefix,
         uuid: uuid,
+        workflow: workflow,
       )
     end
 
