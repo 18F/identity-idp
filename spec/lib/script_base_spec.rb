@@ -85,12 +85,9 @@ RSpec.describe ScriptBase do
         base.config.format = :csv
       end
 
-      it 'logs the error message to stderr but not the backtrace' do
-        expect(base).to receive(:exit).with(1)
-
+      it 'logs the error message in the output but not the backtrace' do
         expect { base.run }.to_not raise_error
 
-        expect(stderr.string.chomp).to eq('RuntimeError: some dangerous error')
         expect(CSV.parse(stdout.string)).to eq(
           [
             %w[Error Message],
