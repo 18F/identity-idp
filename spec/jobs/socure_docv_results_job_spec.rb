@@ -133,7 +133,7 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'not accepted document type' do
-        let(:document_type_type) { 'Passport' }
+        let(:document_type_type) { 'Non-Document-Type' }
         it 'doc auth fails' do
           perform
 

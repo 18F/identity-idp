@@ -46,18 +46,19 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   shared_examples 'a successful request' do
     it 'uploads the image and returns a successful result' do
       request_stub_liveness = stub_request(:post, full_url).with do |request|
-        JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        JSON.parse(request.body, symbolize_names: true)[:Document][:Back].present? == back_image_required
-        JSON.parse(request.body, symbolize_names: true)[:Document][:DocumentType] == document_type
+        request_json = JSON.parse(request.body, symbolize_names: true)
+        expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+        expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
       request_stub = stub_request(:post, full_url).with do |request|
-        !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-        JSON.parse(request.body, symbolize_names: true)[:Document][:Back].present? == back_image_required
-        JSON.parse(request.body, symbolize_names: true)[:Document][:DocumentType] == document_type
+        request_json = JSON.parse(request.body, symbolize_names: true)
+        expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+        expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        !request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
 
       response = subject.fetch
-
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to be_nil
@@ -73,17 +74,19 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'fails document authentication' do
       it 'fails response with errors' do
         request_stub_liveness = stub_request(:post, full_url).with do |request|
-          JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-          JSON.parse(request.body, symbolize_names: true)[:Document][:Back].present? == back_image_required
-          JSON.parse(request.body, symbolize_names: true)[:Document][:DocumentType] == document_type
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
           status: 201,
         )
         request_stub = stub_request(:post, full_url).with do |request|
-          !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
-          JSON.parse(request.body, symbolize_names: true)[:Document][:Back].present? == back_image_required
-          JSON.parse(request.body, symbolize_names: true)[:Document][:DocumentType] == document_type
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          !request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
           status: 201,
