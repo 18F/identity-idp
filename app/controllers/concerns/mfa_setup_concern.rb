@@ -92,8 +92,7 @@ module MfaSetupConcern
   end
 
   def in_workflow
-    return 'idv' if resolved_authn_context_result.identity_proofing?
-    return 'auth'
+    resolved_authn_context_result.identity_proofing? ? :idv : :auth
   end
 
   def threatmetrix_attrs
