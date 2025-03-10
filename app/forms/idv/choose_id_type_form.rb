@@ -18,7 +18,7 @@ module Idv
     end
 
     def chosen_id_type_valid?
-      valid_types = [:passport, :drivers_license] # Will remove once pasport added to id slugs
+      valid_types = ['passport', 'drivers_license'] # Will remove once pasport added to id slugs
       return true if valid_types.include? @chosen_id_type
       errors.add(
         :chosen_id_type,

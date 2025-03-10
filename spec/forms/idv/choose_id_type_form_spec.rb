@@ -5,7 +5,7 @@ RSpec.describe Idv::ChooseIdTypeForm do
 
   describe '#submit' do
     context 'when the form is valid' do
-      let(:params) { { choose_id_type_preference: :passport } }
+      let(:params) { { choose_id_type_preference: 'passport' } }
 
       it 'returns a successful form response' do
         result = subject.submit(params)
@@ -26,7 +26,7 @@ RSpec.describe Idv::ChooseIdTypeForm do
       end
     end
     context 'when the choose_id_type_preference is not supported type' do
-      let(:params) { { choose_id_type_preference: :unknown_id_type } }
+      let(:params) { { choose_id_type_preference: 'unknown-type' } }
       it 'returns a failed form response when id type is nil' do
         result = subject.submit(params)
 

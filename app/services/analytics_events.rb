@@ -1318,7 +1318,7 @@ module AnalyticsEvents
     analytics_id:,
     flow_path:,
     chosen_id_type:,
-    errors: nil,
+    error_details: nil,
     **extra
   )
     track_event(
@@ -1328,7 +1328,7 @@ module AnalyticsEvents
       analytics_id:,
       flow_path:,
       chosen_id_type:,
-      errors:,
+      error_details:,
       **extra,
     )
   end
