@@ -696,7 +696,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when doc class is identified but not supported' do
-      let(:doc_class_name) { 'Passport' }
+      let(:doc_class_name) { 'Non-Document-Type' }
       it 'identified as un supported doc type ' do
         is_expected.to eq(false)
       end
