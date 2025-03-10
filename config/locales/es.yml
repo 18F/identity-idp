@@ -1987,7 +1987,6 @@ user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
 user_mailer.reset_password_instructions.header: Para terminar de restablecer su contraseña, haga clic en el enlace de abajo o copie y pegue el enlace completo en su navegador.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>Si restablece su contraseña ahora, su código de barras no funcionará en la oficina de correos.</strong> Tendrá que volver a iniciar el proceso de verificación de identidad desde el principio.
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
 user_mailer.reset_password_instructions.subject: Restablezca su contraseña
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.

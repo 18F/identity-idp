@@ -148,14 +148,6 @@ RSpec.describe UserMailer, type: :mailer do
         )
       end
 
-      it 'does not render the in person warning banner' do
-        expect(mail.html_part.body).not_to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
-        )
-      end
-
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
           t('user_mailer.reset_password_instructions.header'),
@@ -183,36 +175,6 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the subject' do
         expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
-      end
-
-      context 'when feature_pending_in_person_password_reset_enabled flag is true' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_pending_in_person_password_reset_enabled)
-            .and_return(true)
-        end
-
-        it 'does not render the in person warning banner' do
-          expect(mail.html_part.body).not_to have_content(
-            strip_tags(
-              t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-            ),
-          )
-        end
-      end
-
-      context 'when feature_pending_in_person_password_reset_enabled flag is false' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_pending_in_person_password_reset_enabled)
-            .and_return(false)
-        end
-
-        it 'renders the in person warning banner' do
-          expect(mail.html_part.body).to have_content(
-            strip_tags(
-              t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-            ),
-          )
-        end
       end
 
       it 'does not render the gpo warning alert' do
@@ -251,14 +213,6 @@ RSpec.describe UserMailer, type: :mailer do
       it 'does not render the gpo warning alert' do
         expect(mail.html_part.body).not_to have_content(
           t('user_mailer.reset_password_instructions.gpo_letter_description'),
-        )
-      end
-
-      it 'does not render the in person warning banner' do
-        expect(mail.html_part.body).not_to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
         )
       end
 

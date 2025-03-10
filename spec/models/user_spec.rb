@@ -1640,171 +1640,101 @@ RSpec.describe User do
   describe '#password_reset_profile' do
     let(:user) { create(:user) }
 
-    context 'when pending in-person password reset is enabled' do
+    context 'with no profiles' do
+      it { expect(user.password_reset_profile).to be_nil }
+    end
+
+    context 'with an active profile' do
+      let(:active_profile) do
+        build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
+      end
+
       before do
-        allow(FeatureManagement).to receive(
-          :pending_in_person_password_reset_enabled?,
-        ).and_return(true)
+        user.profiles << [
+          active_profile,
+          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
+        ]
       end
 
-      context 'with no profiles' do
-        it { expect(user.password_reset_profile).to be_nil }
-      end
+      it { expect(user.password_reset_profile).to be_nil }
 
-      context 'with an active profile' do
-        let(:active_profile) do
-          build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
-        end
+      context 'when the active profile is deactivated due to password reset' do
+        before { active_profile.deactivate(:password_reset) }
 
-        before do
-          user.profiles << [
-            active_profile,
-            build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
-          ]
-        end
+        it { expect(user.password_reset_profile).to eq(active_profile) }
 
-        it { expect(user.password_reset_profile).to be_nil }
-
-        context 'when the active profile is deactivated due to password reset' do
-          before { active_profile.deactivate(:password_reset) }
+        context 'with a previously-cancelled pending profile' do
+          before do
+            user.profiles << build(:profile, :verification_cancelled)
+          end
 
           it { expect(user.password_reset_profile).to eq(active_profile) }
-
-          context 'with a previously-cancelled pending profile' do
-            before do
-              user.profiles << build(:profile, :verification_cancelled)
-            end
-
-            it { expect(user.password_reset_profile).to eq(active_profile) }
-          end
-        end
-      end
-
-      context 'with a pending in person profile' do
-        let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
-        let(:pending_profile) { pending_in_person_enrollment.profile }
-
-        context 'when the pending in person profile has a "password_reset deactivation reason"' do
-          before do
-            pending_profile.update!(deactivation_reason: 'password_reset')
-          end
-
-          it 'returns the pending profile' do
-            expect(user.password_reset_profile).to eq(pending_profile)
-          end
-        end
-
-        context 'when the pending in person profile does not have a deactivation reason' do
-          it 'returns nil' do
-            expect(user.password_reset_profile).to be_nil
-          end
-        end
-      end
-
-      context 'with a fraud review in person profile' do
-        let(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
-        let(:profile) { enrollment.profile }
-
-        context 'when the profile has a "password_reset deactivation reason"' do
-          before do
-            profile.update!(deactivation_reason: 'password_reset')
-          end
-
-          it 'returns the profile' do
-            expect(user.password_reset_profile).to eq(profile)
-          end
-        end
-
-        context 'when the profile does not have a deactivation reason' do
-          it 'returns nil' do
-            expect(user.password_reset_profile).to be_nil
-          end
-        end
-      end
-
-      context 'with a pending in person and an active profile' do
-        let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
-        let(:pending_profile) { pending_in_person_enrollment.profile }
-        let(:active_profile) do
-          create(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
-        end
-
-        context 'when the pending in person profile has a "password_reset deactivation reason"' do
-          before do
-            pending_profile.update!(deactivation_reason: 'password_reset')
-          end
-
-          it 'returns the pending profile' do
-            expect(user.password_reset_profile).to eq(pending_profile)
-          end
-        end
-
-        context 'when the pending in person profile does not have a deactivation reason' do
-          it 'returns nil' do
-            expect(user.password_reset_profile).to be_nil
-          end
         end
       end
     end
 
-    context 'when pending in-person password reset is disabled' do
-      before do
-        allow(FeatureManagement).to receive(
-          :pending_in_person_password_reset_enabled?,
-        ).and_return(false)
-      end
+    context 'with a pending in person profile' do
+      let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let(:pending_profile) { pending_in_person_enrollment.profile }
 
-      context 'with no profiles' do
-        it { expect(user.password_reset_profile).to be_nil }
-      end
-
-      context 'with an active profile' do
-        let(:active_profile) do
-          build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
-        end
-
+      context 'when the pending in person profile has a "password_reset deactivation reason"' do
         before do
-          user.profiles << [
-            active_profile,
-            build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
-          ]
+          pending_profile.update!(deactivation_reason: 'password_reset')
         end
 
-        it { expect(user.password_reset_profile).to be_nil }
-
-        context 'when the active profile is deactivated due to password reset' do
-          before { active_profile.deactivate(:password_reset) }
-
-          it { expect(user.password_reset_profile).to eq(active_profile) }
-
-          context 'with a previously-cancelled pending profile' do
-            before do
-              user.profiles << build(:profile, :verification_cancelled)
-            end
-
-            it { expect(user.password_reset_profile).to eq(active_profile) }
-          end
+        it 'returns the pending profile' do
+          expect(user.password_reset_profile).to eq(pending_profile)
         end
       end
 
-      context 'with a pending in person profile' do
-        let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
-        let(:pending_profile) { pending_in_person_enrollment.profile }
+      context 'when the pending in person profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
 
-        context 'when the pending in person profile has a "password_reset deactivation reason"' do
-          before do
-            pending_profile.update!(deactivation_reason: 'password_reset')
-          end
+    context 'with a fraud review in person profile' do
+      let(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+      let(:profile) { enrollment.profile }
 
-          it 'returns nil' do
-            expect(user.password_reset_profile).to be_nil
-          end
+      context 'when the profile has a "password_reset deactivation reason"' do
+        before do
+          profile.update!(deactivation_reason: 'password_reset')
         end
 
-        context 'when the pending in person profile does not have a deactivation reason' do
-          it 'returns nil' do
-            expect(user.password_reset_profile).to be_nil
-          end
+        it 'returns the profile' do
+          expect(user.password_reset_profile).to eq(profile)
+        end
+      end
+
+      context 'when the profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
+
+    context 'with a pending in person and an active profile' do
+      let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let(:pending_profile) { pending_in_person_enrollment.profile }
+      let(:active_profile) do
+        create(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
+      end
+
+      context 'when the pending in person profile has a "password_reset deactivation reason"' do
+        before do
+          pending_profile.update!(deactivation_reason: 'password_reset')
+        end
+
+        it 'returns the pending profile' do
+          expect(user.password_reset_profile).to eq(pending_profile)
+        end
+      end
+
+      context 'when the pending in person profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
         end
       end
     end
