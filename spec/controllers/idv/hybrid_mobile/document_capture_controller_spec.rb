@@ -1,12 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::DocumentCaptureController do
+  let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
-    DocumentCaptureSession.create!(
-      user: user,
+    create(
+      :document_capture_session,
+      user:,
       requested_at: document_capture_session_requested_at,
+      doc_auth_vendor: idv_vendor,
     )
   end
 
@@ -15,7 +18,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
   let(:document_capture_session_requested_at) { Time.zone.now }
   let(:document_capture_session_result_captured_at) { Time.zone.now + 1.second }
   let(:document_capture_session_result_success) { true }
-  let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
   before do
     stub_analytics
