@@ -21,7 +21,7 @@ RSpec.describe Encryption::PasswordVerifier do
     end
   end
 
-  describe '#create_digest_pair' do
+  describe '#create_digest' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters
       # The newrelic_rpm gem added a call to `SecureRandom.hex(8)` in
@@ -40,36 +40,21 @@ RSpec.describe Encryption::PasswordVerifier do
         .and_return('scrypted')
       expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
 
-      single_region_kms_client = subject.send(:single_region_kms_client)
       multi_region_kms_client = subject.send(:multi_region_kms_client)
 
-      expect(single_region_kms_client.kms_key_id).to eq(
-        IdentityConfig.store.aws_kms_key_id,
-      )
       expect(multi_region_kms_client.kms_key_id).to eq(
         IdentityConfig.store.aws_kms_multi_region_key_id,
       )
-
-      expect(single_region_kms_client).to receive(:encrypt).with(
-        encoded_scrypt_password,
-        { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
-      ).and_return('single_region_kms_ciphertext')
 
       expect(multi_region_kms_client).to receive(:encrypt).with(
         encoded_scrypt_password,
         { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
       ).and_return('multi_region_kms_ciphertext')
 
-      digest_pair = subject.create_digest_pair(
+      digest = subject.create_digest(
         password: password, user_uuid: user_uuid,
       )
-
-      expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to match(
-        password_salt: salt,
-        password_cost: IdentityConfig.store.scrypt_cost,
-        encrypted_password: 'single_region_kms_ciphertext',
-      )
-      expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
+      expect(JSON.parse(digest, symbolize_names: true)).to match(
         password_salt: salt,
         password_cost: IdentityConfig.store.scrypt_cost,
         encrypted_password: 'multi_region_kms_ciphertext',
@@ -79,7 +64,11 @@ RSpec.describe Encryption::PasswordVerifier do
 
   describe '#verify' do
     it 'returns true if the password does match' do
-      digest_pair = subject.create_digest_pair(password: password, user_uuid: user_uuid)
+      digest = subject.create_digest(password: password, user_uuid: user_uuid)
+      digest_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: nil,
+        multi_region_ciphertext: digest,
+      )
 
       result = subject.verify(
         digest_pair: digest_pair, password: password, user_uuid: user_uuid,
@@ -90,7 +79,11 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the password does not match' do
-      digest_pair = subject.create_digest_pair(password: password, user_uuid: user_uuid)
+      digest = subject.create_digest(password: password, user_uuid: user_uuid)
+      digest_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: nil,
+        multi_region_ciphertext: digest,
+      )
 
       result = subject.verify(
         digest_pair: digest_pair, password: 'qwerty', user_uuid: user_uuid,
@@ -140,11 +133,14 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'uses the single region digest if the multi-region digest is nil' do
-      test_digest_pair = subject.create_digest_pair(
+      digest = subject.create_single_region_digest(
         password: password,
         user_uuid: user_uuid,
       )
-      test_digest_pair.multi_region_ciphertext = nil
+      test_digest_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: digest,
+        multi_region_ciphertext: nil,
+      )
 
       correct_password_result = subject.verify(
         password: password,
@@ -174,12 +170,15 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the digest is fresh' do
-      digest = subject.create_digest_pair(
+      multi_region_digest = subject.create_digest(
+        password: password, user_uuid: user_uuid,
+      )
+      single_region_digest = subject.create_single_region_digest(
         password: password, user_uuid: user_uuid,
       )
 
-      expect(subject.stale_digest?(digest.multi_region_ciphertext)).to eq false
-      expect(subject.stale_digest?(digest.single_region_ciphertext)).to eq false
+      expect(subject.stale_digest?(multi_region_digest)).to eq false
+      expect(subject.stale_digest?(single_region_digest)).to eq false
     end
   end
 end

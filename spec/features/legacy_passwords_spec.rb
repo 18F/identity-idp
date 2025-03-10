@@ -38,7 +38,7 @@ RSpec.feature 'legacy passwords' do
     )
   end
 
-  scenario 'signing in with a personal key digested by the uak verifier make a new digest' do
+  scenario 'signing in with a personal key digested by the uak verifier makes a new digest' do
     user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
@@ -55,7 +55,7 @@ RSpec.feature 'legacy passwords' do
     click_submit_default
     user.reload
 
-    expect(user.encrypted_recovery_code_digest).to be_present
+    expect(user.encrypted_recovery_code_digest).to be_nil
     expect(user.encrypted_recovery_code_digest_multi_region).to be_present
   end
 

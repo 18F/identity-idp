@@ -506,22 +506,16 @@ RSpec.describe User do
   end
 
   describe '#password=' do
-    it 'digests and saves a single region and multi region password digests' do
+    it 'digests and saves a multi region password digest' do
       user = build(:user, password: nil)
 
       user.password = 'test password'
 
-      expect(user.encrypted_password_digest).to_not be_blank
+      expect(user.encrypted_password_digest).to be_blank
       expect(user.encrypted_password_digest).to_not match(/test password/)
 
       expect(user.encrypted_password_digest_multi_region).to_not be_blank
       expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
-
-      expect(
-        user.encrypted_password_digest,
-      ).to_not eq(
-        user.encrypted_password_digest_multi_region,
-      )
     end
   end
 
@@ -536,8 +530,12 @@ RSpec.describe User do
     end
 
     it 'validates the password for a user with a only a single-region digest' do
-      user = build(:user, password: 'test password')
+      user = build(:user)
       user.encrypted_password_digest_multi_region = nil
+      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_single_region_digest(
+        password: 'test password',
+        user_uuid: user.uuid,
+      )
 
       expect(user.valid_password?('test password')).to eq(true)
       expect(user.valid_password?('wrong password')).to eq(false)
@@ -554,22 +552,15 @@ RSpec.describe User do
   end
 
   describe '#personal_key=' do
-    it 'digests and saves a single region and multi region personal key digests' do
+    it 'digests and saves only the multi region personal key digest' do
       user = build(:user, personal_key: nil)
 
       user.personal_key = 'test personal key'
 
-      expect(user.encrypted_recovery_code_digest).to_not be_blank
-      expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+      expect(user.encrypted_recovery_code_digest).to be_blank
 
       expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
       expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
-
-      expect(
-        user.encrypted_recovery_code_digest,
-      ).to_not eq(
-        user.encrypted_recovery_code_digest_multi_region,
-      )
     end
   end
 
@@ -584,8 +575,13 @@ RSpec.describe User do
     end
 
     it 'validates the personal key for a user with a only a single-region digest' do
-      user = build(:user, personal_key: 'test personal key')
+      user = build(:user)
       user.encrypted_recovery_code_digest_multi_region = nil
+      user.encrypted_recovery_code_digest =
+        Encryption::PasswordVerifier.new.create_single_region_digest(
+          password: 'test personal key',
+          user_uuid: user.uuid,
+        )
 
       expect(user.valid_personal_key?('test personal key')).to eq(true)
       expect(user.valid_personal_key?('wrong personal key')).to eq(false)
@@ -613,10 +609,10 @@ RSpec.describe User do
     it 'returns the single-region password salt if the multi-region is blank' do
       user = build(:user)
       user.encrypted_password_digest_multi_region = nil
-      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_digest_pair(
+      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_single_region_digest(
         password: 'test password',
         user_uuid: user.uuid,
-      ).single_region_ciphertext
+      )
 
       salt = JSON.parse(user.encrypted_password_digest)['password_salt']
 
