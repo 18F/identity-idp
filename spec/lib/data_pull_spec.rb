@@ -110,7 +110,8 @@ RSpec.describe DataPull do
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
 
       let(:argv) do
-        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer]
+        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer,
+         '--depth', '1']
       end
 
       it 'runs the data requests report and prints it as JSON' do
@@ -130,7 +131,7 @@ RSpec.describe DataPull do
       context 'with a UUID that is not found' do
         let(:uuid) { 'abcdef' }
         let(:argv) do
-          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer]
+          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer, '--depth', '1']
         end
 
         it 'returns an empty hash for that user' do
@@ -327,7 +328,9 @@ RSpec.describe DataPull do
       let(:service_provider) { create(:service_provider) }
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
       let(:args) { [user.uuid] }
-      let(:config) { ScriptBase::Config.new(requesting_issuers: [service_provider.issuer]) }
+      let(:config) do
+        ScriptBase::Config.new(requesting_issuers: [service_provider.issuer], depth: 0)
+      end
 
       subject(:result) { subtask.run(args:, config:) }
 
@@ -348,7 +351,7 @@ RSpec.describe DataPull do
 
       context 'with SP UUID argument and no requesting issuer' do
         let(:args) { [identity.uuid] }
-        let(:config) { ScriptBase::Config.new }
+        let(:config) { ScriptBase::Config.new(depth: 0) }
 
         it 'runs the report with computed requesting issuer', aggregate_failures: true do
           expect(result.table).to be_nil
@@ -363,6 +366,14 @@ RSpec.describe DataPull do
 
           expect(result.subtask).to eq('ig-request')
           expect(result.uuids).to eq([user.uuid])
+        end
+      end
+
+      context 'without a depth argument' do
+        let(:config) { ScriptBase::Config.new }
+
+        it 'raises an error about the argument being required' do
+          expect { result }.to raise_error('Required argument --depth is missing')
         end
       end
     end
