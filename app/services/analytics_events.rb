@@ -1311,7 +1311,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
-  # @param [Hash] errors
+  # @param [Hash] error_details
   def idv_doc_auth_choose_id_type_submitted(
     success:,
     step:,
