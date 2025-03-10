@@ -14,7 +14,7 @@ class GoodJobConnectionPoolSize
     # Cron requires two connections
     connections += 2 if cron_enabled
 
-    connections
+    [2, connections/3].max
   end
 
   # Calculates the number of primary database connections the worker process needs.
@@ -22,7 +22,9 @@ class GoodJobConnectionPoolSize
   # Each worker thread may need a primary database connection. We may not strictly need
   # one connection for each, but we will start there for safety.
   def self.calculate_primary_pool_size(queues:, max_threads:)
-    num_explicit_threads_from_queues(queues: queues, max_threads: max_threads)
+    connections = num_explicit_threads_from_queues(queues: queues, max_threads: max_threads)
+
+    [2, connections/3].max
   end
 
   # The '*' queue will have up to `max_threads` threads. Other queues will use their explicitly
