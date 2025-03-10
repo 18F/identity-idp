@@ -14,7 +14,7 @@
     },
     "decision": {
       "name": "lenient",
-      "value": "fail"
+      "value": "reject"
     },
     "documentData": {
       "firstName": "Dwayne",

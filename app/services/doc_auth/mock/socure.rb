@@ -37,7 +37,7 @@ module DocAuth
 
       VERDICTS = [
         SocureVerdict.new('accept', 'Accept'),
-        SocureVerdict.new('fail', 'Fail'),
+        SocureVerdict.new('reject', 'Reject'),
       ].freeze
 
       SocureFixture = Struct.new(:name, :body) do
