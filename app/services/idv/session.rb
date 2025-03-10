@@ -237,8 +237,13 @@ module Idv
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
-      state_id_data = Pii::StateId.members.index_with { |key| session[:pii_from_doc][key] }
-      Pii::StateId.new(**state_id_data)
+      if session[:passport_requested]
+        passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
+        Pii::Passport.new(**passport_data)
+      else
+        state_id_data = Pii::StateId.members.index_with { |key| session[:pii_from_doc][key] }
+        Pii::StateId.new(**state_id_data)
+      end
     end
 
     def updated_user_address=(updated_user_address)

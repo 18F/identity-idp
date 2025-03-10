@@ -18,12 +18,14 @@ module Idv
     end
 
     def chosen_id_type_valid?
-      valid_types = ['passport', 'drivers_license'] # Will remove once pasport added to id slugs
-      return true if valid_types.include? @chosen_id_type
+      return true if DocAuth::Response::ID_TYPE_SLUGS.value? @chosen_id_type
       errors.add(
         :chosen_id_type,
         :invalid,
-        message: "`choose_id_type` #{@chosen_id_type} is invalid, expected one of #{valid_types}",
+        message: "
+          `choose_id_type` #{@chosen_id_type} is invalid,
+          expected one of #{DocAuth::Response::ID_TYPE_SLUGS.values}
+        ",
       )
       false
     end
