@@ -110,7 +110,8 @@ RSpec.describe DataPull do
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
 
       let(:argv) do
-        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer]
+        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer,
+         '--depth', '1']
       end
 
       it 'runs the data requests report and prints it as JSON' do
@@ -130,7 +131,7 @@ RSpec.describe DataPull do
       context 'with a UUID that is not found' do
         let(:uuid) { 'abcdef' }
         let(:argv) do
-          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer]
+          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer, '--depth', '1']
         end
 
         it 'returns an empty hash for that user' do
