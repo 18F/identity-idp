@@ -100,18 +100,16 @@ RSpec.describe Profile do
       expect(profile.encrypted_pii_recovery).to be_nil
       expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
-      initial_personal_key_multi_region = user.encrypted_recovery_code_digest_multi_region
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       encrypt_pii
 
       expect(profile.encrypted_pii_recovery).to be_present
       expect(profile.encrypted_pii_recovery_multi_region).to be_present
 
-      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-        initial_personal_key_multi_region,
-      )
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
+      user.reload
+      expect(user.encrypted_recovery_code_digest).to_not be_present
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
     end
 
     it 'updates the personal key digest generation time' do
@@ -172,21 +170,16 @@ RSpec.describe Profile do
       expect(profile.encrypted_pii_recovery).to be_nil
       expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
-      initial_personal_key_multi_region = user.encrypted_recovery_code_digest_multi_region
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       profile.encrypt_recovery_pii(pii)
 
       expect(profile.encrypted_pii_recovery).to be_present
       expect(profile.encrypted_pii_recovery_multi_region).to be_present
 
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq(
-        initial_personal_key,
-      )
-      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-        initial_personal_key_multi_region,
-      )
-      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
+      user.reload
+      expect(user.encrypted_recovery_code_digest).to_not be_present
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
       expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest_multi_region
     end
 

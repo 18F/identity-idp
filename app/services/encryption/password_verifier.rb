@@ -41,7 +41,22 @@ module Encryption
       )
     end
 
-    def create_digest_pair(password:, user_uuid:)
+    def create_digest(password:, user_uuid:)
+      salt = SecureRandom.hex(32)
+      cost = IdentityConfig.store.scrypt_cost
+      scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
+
+      multi_region_encrypted_password = multi_region_kms_client.encrypt(
+        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+      )
+      PasswordDigest.new(
+        encrypted_password: multi_region_encrypted_password,
+        password_salt: salt,
+        password_cost: cost,
+      ).to_s
+    end
+
+    def create_single_region_digest(password:, user_uuid:)
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
       scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
@@ -49,25 +64,11 @@ module Encryption
       single_region_encrypted_password = single_region_kms_client.encrypt(
         scrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
-      single_region_digest = PasswordDigest.new(
+      PasswordDigest.new(
         encrypted_password: single_region_encrypted_password,
         password_salt: salt,
         password_cost: cost,
       ).to_s
-
-      multi_region_encrypted_password = multi_region_kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
-      )
-      multi_region_digest = PasswordDigest.new(
-        encrypted_password: multi_region_encrypted_password,
-        password_salt: salt,
-        password_cost: cost,
-      ).to_s
-
-      RegionalCiphertextPair.new(
-        single_region_ciphertext: single_region_digest,
-        multi_region_ciphertext: multi_region_digest,
-      )
     end
 
     def verify(password:, digest_pair:, user_uuid:, log_context:)
@@ -134,7 +135,7 @@ module Encryption
       )
     end
 
-    add_method_tracer :create_digest_pair, "Custom/#{name}/create_digest_pair"
+    add_method_tracer :create_digest, "Custom/#{name}/create_digest"
     add_method_tracer :verify, "Custom/#{name}/verify"
   end
 end

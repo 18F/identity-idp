@@ -41,13 +41,13 @@ RSpec.describe PersonalKeyGenerator do
       expect(generator.generate!).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
 
-    it 'sets the encrypted recovery code digest' do
+    it 'sets only the multi-region encrypted recovery code digest' do
       user = create(:user)
       generator = PersonalKeyGenerator.new(user)
       key = generator.generate!
 
-      expect(user.encrypted_recovery_code_digest).to_not be_empty
-      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_empty
+      expect(user.encrypted_recovery_code_digest).to be_blank
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
       expect(generator.verify(key)).to eq(true)
     end
   end
