@@ -30,8 +30,7 @@ RSpec.describe Idv::ProfileMaker do
 
       expect(profile).to be_a Profile
       expect(profile.id).to_not be_nil
-      expect(profile.encrypted_pii).to_not be_nil
-      expect(profile.encrypted_pii).to_not match('Some')
+      expect(profile.encrypted_pii).to be_nil
       expect(profile.encrypted_pii_multi_region).to_not be_nil
       expect(profile.encrypted_pii_multi_region).to_not match('Some')
       expect(profile.fraud_pending_reason).to be_nil

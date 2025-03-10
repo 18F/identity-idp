@@ -43,34 +43,20 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         .with(plaintext, decoded_scrypt_digest)
         .and_return('aes_ciphertext')
 
-      single_region_kms_client = subject.send(:single_region_kms_client)
       multi_region_kms_client = subject.send(:multi_region_kms_client)
 
-      expect(single_region_kms_client.kms_key_id).to eq(
-        IdentityConfig.store.aws_kms_key_id,
-      )
       expect(multi_region_kms_client.kms_key_id).to eq(
         IdentityConfig.store.aws_kms_multi_region_key_id,
       )
 
-      expect(single_region_kms_client).to receive(:encrypt)
-        .with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
-        .and_return('single_region_kms_ciphertext')
       expect(multi_region_kms_client).to receive(:encrypt)
         .with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' })
         .and_return('multi_region_kms_ciphertext')
 
-      ciphertext_single_region, ciphertext_multi_region = subject.encrypt(
+      ciphertext_multi_region = subject.encrypt(
         plaintext, user_uuid: 'uuid-123-abc'
       )
 
-      expect(ciphertext_single_region).to eq(
-        {
-          encrypted_data: Base64.strict_encode64('single_region_kms_ciphertext'),
-          salt: salt,
-          cost: '800$8$1$',
-        }.to_json,
-      )
       expect(ciphertext_multi_region).to eq(
         {
           encrypted_data: Base64.strict_encode64('multi_region_kms_ciphertext'),
@@ -118,35 +104,15 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         .with('aes_ciphertext', decoded_scrypt_digest)
         .and_return(plaintext)
 
-      ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-        single_region_ciphertext: {
-          encrypted_data: Base64.strict_encode64('kms_ciphertext_sr'),
-          salt: salt,
-          cost: '800$8$1$',
-        }.to_json,
-        multi_region_ciphertext: {
-          encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
-          salt: salt,
-          cost: '800$8$1$',
-        }.to_json,
-      )
+      multi_region_ciphertext = {
+        encrypted_data: Base64.strict_encode64('kms_ciphertext_mr'),
+        salt: salt,
+        cost: '800$8$1$',
+      }.to_json
 
-      result = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
+      result = subject.decrypt(multi_region_ciphertext, user_uuid: 'uuid-123-abc')
 
       expect(result).to eq(plaintext)
-    end
-
-    it 'uses the single region ciphertext if the multi-region ciphertext is nil' do
-      test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-        single_region_ciphertext: subject.encrypt(
-          'single-region-text', user_uuid: '123abc'
-        ).single_region_ciphertext,
-        multi_region_ciphertext: nil,
-      )
-
-      result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
-
-      expect(result).to eq('single-region-text')
     end
   end
 end
