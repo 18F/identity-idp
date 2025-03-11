@@ -121,7 +121,7 @@ module AbTests
     experiment_name: 'Passport allowed',
     should_log: /^idv/i,
     buckets: {
-      passport_enabled: IdentityConfig.store.doc_auth_passports_enabled ?
+      passport_allowed: IdentityConfig.store.doc_auth_passports_enabled ?
         IdentityConfig.store.doc_auth_passports_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|

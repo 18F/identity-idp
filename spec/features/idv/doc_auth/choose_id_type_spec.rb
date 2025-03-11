@@ -2,10 +2,23 @@ require 'rails_helper'
 
 RSpec.feature 'choose id type step error checking' do
   include DocAuthHelper
+  include AbTestsHelper
+
+  before do
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+      .to_return({ status: 200, body: { status: 'UP' }.to_json })
+    reload_ab_tests
+    sign_in_and_2fa_user
+  end
+
+  after do
+    reload_ab_tests
+  end
+
   context 'desktop flow', :js do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-      sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
     end
 
@@ -18,12 +31,11 @@ RSpec.feature 'choose id type step error checking' do
       expect(page).to have_current_path(idv_document_capture_url)
     end
   end
+
   context 'mobile flow', :js, driver: :headless_chrome_mobile do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
-      sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
       complete_agreement_step
     end

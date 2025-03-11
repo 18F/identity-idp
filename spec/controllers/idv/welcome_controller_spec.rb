@@ -100,18 +100,6 @@ RSpec.describe Idv::WelcomeController do
       expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
 
-    context 'passports are enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-      end
-
-      it 'sets passport_allowed in idv session' do
-        get :show
-
-        expect(subject.idv_session.passport_allowed).to eq(true)
-      end
-    end
-
     context 'welcome already visited' do
       before do
         subject.idv_session.welcome_visited = true
@@ -206,9 +194,6 @@ RSpec.describe Idv::WelcomeController do
 
         context 'user is AB bucketed to allow passports' do
           let(:bucket) { :passport_allowed }
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-          end
 
           it 'passport allowed is true in idv session' do
             get :show
