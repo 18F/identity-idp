@@ -427,7 +427,6 @@ module IdentityConfig
     config.add(:sign_in_user_id_per_ip_attempt_window_in_minutes, type: :integer)
     config.add(:sign_in_user_id_per_ip_attempt_window_max_minutes, type: :integer)
     config.add(:sign_in_user_id_per_ip_max_attempts, type: :integer)
-    config.add(:sign_in_recaptcha_annotation_enabled, type: :boolean)
     config.add(:sign_in_recaptcha_log_failures_only, type: :boolean)
     config.add(:sign_in_recaptcha_percent_tested, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
