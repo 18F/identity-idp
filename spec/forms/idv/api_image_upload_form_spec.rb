@@ -20,6 +20,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       analytics: fake_analytics,
       liveness_checking_required: liveness_checking_required,
       acuant_sdk_upgrade_ab_test_bucket:,
+      document_type: document_type,
     )
   end
 
@@ -27,6 +28,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
+  let(:document_type) { 'DriversLicense' }
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }

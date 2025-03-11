@@ -25,6 +25,7 @@ module Idv
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
         liveness_checking_required: resolved_authn_context_result.facial_match?,
+        document_type: idv_session.passport_requested ? 'Passport' : 'DriversLicense',
       )
     end
   end

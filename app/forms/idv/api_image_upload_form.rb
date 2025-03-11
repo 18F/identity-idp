@@ -20,7 +20,8 @@ module Idv
       acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
-      liveness_checking_required: false
+      liveness_checking_required: false,
+      document_type: nil
     )
       @params = params
       @service_provider = service_provider
@@ -29,6 +30,7 @@ module Idv
       @readable = {}
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
+      @document_type = document_type
     end
 
     def submit
@@ -64,7 +66,8 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
+                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket,
+                :document_type
 
     def abandon_any_ipp_progress
       user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
@@ -92,7 +95,6 @@ module Idv
 
     def post_images_to_client
       timer = JobHelpers::Timer.new
-      document_type = 'DriversLicense'
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
