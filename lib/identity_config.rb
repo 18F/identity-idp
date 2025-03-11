@@ -291,7 +291,7 @@ module IdentityConfig
     config.add(
       :openid_connect_redirect,
       type: :string,
-      enum: ['server_side', 'client_side', 'client_side_js'],
+      enum: ['server_side', 'client_side_js'],
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
