@@ -66,14 +66,6 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
       it_behaves_like 'signing in with a different email prompts with the shared email'
 
-      context 'with client-side redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
-        end
-
-        it_behaves_like 'signing in with a different email prompts with the shared email'
-      end
-
       context 'with client-side javascript redirect' do
         before do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -125,14 +117,6 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
 
       it_behaves_like 'signing in with a different email prompts with the signed in email'
-
-      context 'with client-side redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
-        end
-
-        it_behaves_like 'signing in with a different email prompts with the signed in email'
-      end
 
       context 'with client-side javascript redirect' do
         before do

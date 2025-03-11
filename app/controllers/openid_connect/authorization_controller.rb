@@ -242,12 +242,6 @@ module OpenidConnect
 
     def redirect_user(redirect_uri)
       case IdentityConfig.store.openid_connect_redirect
-      when 'client_side'
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
       when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
