@@ -13,6 +13,7 @@ module Pii
     :passport_issued,
     :nationality_code,
     :personal_number,
+    :state_id_type,
   )
 end
 # rubocop:enable Style/MutableConstant

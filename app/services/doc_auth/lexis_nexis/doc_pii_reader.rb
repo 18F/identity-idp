@@ -19,7 +19,7 @@ module DocAuth
 
       private
 
-      # @return [Pii::StateId, nil]
+      # @return [Pii::StateId, Pii::Passport, nil]
       def read_pii(true_id_product)
         id_auth_field_data = true_id_product&.dig(:IDAUTH_FIELD_DATA)
         authentication_result_field_data = true_id_product&.dig(:AUTHENTICATION_RESULT)
@@ -120,16 +120,12 @@ module DocAuth
         Pii::Passport.new(
           first_name: id_auth_field_data['Fields_FirstName'],
           last_name: id_auth_field_data['Fields_Surname'],
-          city: id_auth_field_data['Fields_City'],
-          state: id_auth_field_data['Fields_State'],
           dob: parse_date(
             year: id_auth_field_data['Fields_DOB_Year'],
             month: id_auth_field_data['Fields_DOB_Month'],
             day: id_auth_field_data['Fields_DOB_Day'],
           ),
           birth_place: id_auth_field_data['Fields_BirthPlace'],
-          weight: nil, # TODO: check if needed
-          eye_color: nil, # TODO: check if needed
           passport_expiration: parse_date(
             year: id_auth_field_data['Fields_ExpirationDate_Year'],
             month: id_auth_field_data['Fields_ExpirationDate_Month'],

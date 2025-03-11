@@ -92,7 +92,7 @@ module Idv
 
     def post_images_to_client
       timer = JobHelpers::Timer.new
-
+      document_type = idv_session.passport_requested ? 'Passport' : 'DriversLicense'
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
@@ -103,7 +103,7 @@ module Idv
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
-          document_type: 'DriversLicense', # TODO change to check if passport_requested is true
+          document_type: document_type,
         )
       end
 
