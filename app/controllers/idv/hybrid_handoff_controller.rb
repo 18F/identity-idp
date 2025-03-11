@@ -12,6 +12,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
+      abandon_any_ipp_progress
       @upload_disabled = upload_disabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
@@ -72,6 +73,10 @@ module Idv
     end
 
     private
+
+    def abandon_any_ipp_progress
+      current_user&.establishing_in_person_enrollment&.cancel
+    end
 
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
