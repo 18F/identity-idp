@@ -1,5 +1,0 @@
-description: |
-  When the user exceeds the limit for entering the security code that should have been received in a letter incorrectly during the letter verification process.
-allOf:
-  - $ref: '../shared/EventProperties.yml'
-  - type: object
