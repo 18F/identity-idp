@@ -25,8 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil,
-    workflow: nil
+    proofing_components: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -52,7 +51,6 @@ class ResolutionProofingJob < ApplicationJob
       request_ip: request_ip,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       current_sp: current_sp,
-      workflow: workflow,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
@@ -114,8 +112,7 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id:,
     request_ip:,
     ipp_enrollment_in_progress:,
-    current_sp:,
-    workflow:
+    current_sp:
   )
     result = progressive_proofer.proof(
       applicant_pii: applicant_pii,
@@ -126,7 +123,7 @@ class ResolutionProofingJob < ApplicationJob
       timer: timer,
       current_sp: current_sp,
       user_uuid: user.uuid,
-      workflow: workflow,
+      workflow: :idv,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
