@@ -10,7 +10,8 @@ module Proofing
           request_ip:,
           threatmetrix_session_id:,
           timer:,
-          user_email:
+          user_email:,
+          user_uuid:
         )
           unless FeatureManagement.proofing_device_profiling_collecting_enabled?
             return threatmetrix_disabled_result
@@ -25,6 +26,7 @@ module Proofing
             threatmetrix_session_id: threatmetrix_session_id,
             email: user_email,
             request_ip: request_ip,
+            uuid: user_uuid,
           )
 
           timer.time('threatmetrix') do

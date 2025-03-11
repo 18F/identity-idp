@@ -33,6 +33,7 @@ module Proofing
             national_id_type: applicant[:ssn] ? 'US_SSN' : '',
             input_ip_address: applicant[:request_ip],
             local_attrib_1: applicant[:uuid_prefix] || '',
+            local_attrib_3: applicant[:uuid],
           }.to_json
         end
 

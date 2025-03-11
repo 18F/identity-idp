@@ -108,10 +108,6 @@ class ScriptBase
       format: config.format,
       stdout: stdout,
     )
-
-    stderr.puts "#{err.class.name}: #{err.message}"
-
-    exit 1 # rubocop:disable Rails/Exit
   end
 
   # rubocop:disable Metrics/BlockLength

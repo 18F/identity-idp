@@ -531,6 +531,7 @@ doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'
 doc_auth.errors.camera.failed: Camera failed to start, please try again.
 doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
+doc_auth.errors.choose_id_type_check: Select the type of document that you have
 doc_auth.errors.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
 doc_auth.errors.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
 doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
@@ -581,6 +582,8 @@ doc_auth.errors.upload_error: Sorry, something went wrong on our end.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
+doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
+doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
 doc_auth.headers.general.network_error: We are having technical difficulties
@@ -594,6 +597,7 @@ doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
+doc_auth.headings.choose_id_type: Choose your ID type
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
@@ -635,6 +639,7 @@ doc_auth.info.capture_status_capturing: Capturing
 doc_auth.info.capture_status_none: Align
 doc_auth.info.capture_status_small_document: Move Closer
 doc_auth.info.capture_status_tap_to_capture: Tap to Capture
+doc_auth.info.choose_id_type: Select the type of document that you have. You’ll need to take photos of your ID to verify your identity.
 doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
@@ -644,6 +649,7 @@ doc_auth.info.how_to_verify_mobile: You have the option to verify your identity 
 doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
 doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
+doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
 doc_auth.info.image_updated: Image updated
@@ -1089,7 +1095,7 @@ idv.failure.phone.warning.heading: We couldn’t match you to this number
 idv.failure.phone.warning.learn_more_link: Learn more about what phone number to use
 idv.failure.phone.warning.next_steps_html: Try <strong>another</strong> number that you use often and have used for a long time. This can be a work or home number.
 idv.failure.phone.warning.try_again_button: Try another number
-idv.failure.phone.warning.you_entered: 'You entered:'
+idv.failure.phone.warning.you_entered: 'We couldn’t find a record of you using this number:'
 idv.failure.sessions.exception: There was an internal error processing your request.
 idv.failure.sessions.fail_html: For your security, we limit the number of times you can attempt to verify personal information online. <strong>Try again in %{timeout}.</strong>
 idv.failure.sessions.heading: We couldn’t find records matching your personal information
@@ -1327,7 +1333,7 @@ in_person_proofing.headings.po_search.location: Find a participating Post Office
 in_person_proofing.headings.prepare: Verify your identity in person
 in_person_proofing.headings.state_id_milestone_2: Enter the information on your state‑issued ID
 in_person_proofing.headings.switch_back: Switch back to your computer to prepare to verify your identity in person
-in_person_proofing.headings.update_address: Update your current address
+in_person_proofing.headings.update_address: Update your current residential address
 in_person_proofing.headings.update_state_id: Update the information on your ID
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
@@ -1396,7 +1402,6 @@ instructions.mfa.voice.number_message_html: We made a call with a one-time code 
 instructions.mfa.webauthn_platform.learn_more_help: Learn more about face or touch unlock
 instructions.mfa.webauthn.confirm_webauthn: Present the security key that you associated with your account.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>You can authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password or another method. </p> <p>If you used a password manager to set up face or touch unlock, you can authenticate from any device that uses that password manager. Otherwise, use the same device where you set up face or touch unlock.</p>'
-instructions.mfa.wrong_number: Entered the wrong phone number?
 instructions.password.forgot: Don’t know your password? Reset it after confirming your email address.
 instructions.password.help_text: Avoid reusing passwords from your other accounts, such as your banks, email and social media. Don’t include words from your email address.
 instructions.password.help_text_header: Password safety tips
@@ -1970,7 +1975,6 @@ user_mailer.reset_password_instructions.footer: This link expires in %{expires} 
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
 user_mailer.reset_password_instructions.header: To finish resetting your password, please click the link below or copy and paste the entire link into your browser.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>If you reset your password now, your barcode will not work at the Post Office.</strong> You’ll have to restart the identity verification process from the beginning.
 user_mailer.reset_password_instructions.link_text: Reset your password
 user_mailer.reset_password_instructions.subject: Reset your password
 user_mailer.signup_with_your_email.help_html: If you did not request a new account or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.

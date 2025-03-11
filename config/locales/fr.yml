@@ -531,6 +531,7 @@ doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
 doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
+doc_auth.errors.choose_id_type_check: Sélectionnez le type de document dont vous disposez
 doc_auth.errors.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
 doc_auth.errors.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
 doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
@@ -581,6 +582,8 @@ doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
+doc_auth.forms.id_type_preference.drivers_license: Permis de conduire ou carte d’identité d’un État
+doc_auth.forms.id_type_preference.passport: Passeport américain
 doc_auth.forms.selected_file: Fichier sélectionné
 doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
@@ -594,6 +597,7 @@ doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez %{link_html} de votre carte d’identité délivrée par l’État.
 doc_auth.headings.capture_scan_warning_link: télécharger de nouvelles photos
+doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
@@ -635,6 +639,7 @@ doc_auth.info.capture_status_capturing: Prise de la photo
 doc_auth.info.capture_status_none: Alignez
 doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
+doc_auth.info.choose_id_type: Sélectionnez le type de document dont vous disposez. Vous devrez prendre des photos de votre pièce d’identité pour confirmer votre identité.
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
@@ -644,6 +649,7 @@ doc_auth.info.how_to_verify_mobile: Vous avez la possibilité de confirmer votre
 doc_auth.info.how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de confirmer votre identité?
 doc_auth.info.hybrid_handoff: Nous recueillerons des informations vous concernant en lisant votre pièce d’identité délivrée par un État.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
+doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
 doc_auth.info.image_updated: Image mise à jour
@@ -1089,7 +1095,7 @@ idv.failure.phone.warning.heading: Nous n’avons pas pu vous associer à ce num
 idv.failure.phone.warning.learn_more_link: En savoir plus sur quel numéro de téléphone utiliser
 idv.failure.phone.warning.next_steps_html: Essayez <strong>un autre</strong> numéro que vous utilisez souvent et depuis longtemps. Il peut s’agir d’un numéro professionnel ou personnel.
 idv.failure.phone.warning.try_again_button: Essayez un autre numéro
-idv.failure.phone.warning.you_entered: 'Vous avez saisi :'
+idv.failure.phone.warning.you_entered: 'Nous n’avons pas trouvé de données vous associant au numéro suivant :'
 idv.failure.sessions.exception: Une erreur interne s’est produite lors du traitement de votre demande.
 idv.failure.sessions.fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier des renseignements personnels en ligne. <strong>Réessayez dans %{timeout}.</strong>
 idv.failure.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
@@ -1327,7 +1333,7 @@ in_person_proofing.headings.po_search.location: Trouvez un bureau de poste parti
 in_person_proofing.headings.prepare: Confirmez votre identité en personne
 in_person_proofing.headings.state_id_milestone_2: Saisissez les informations figurant sur votre pièce d’identité délivrée par l’État
 in_person_proofing.headings.switch_back: Revenez à votre ordinateur pour vous préparer à confirmer votre identité en personne
-in_person_proofing.headings.update_address: Mettez à jour votre adresse actuelle
+in_person_proofing.headings.update_address: Mettre à jour votre adresse personnelle
 in_person_proofing.headings.update_state_id: Mettez à jour les informations figurant sur votre document d’identité
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
@@ -1396,7 +1402,6 @@ instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un c
 instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>'
-instructions.mfa.wrong_number: Vous avez saisi un mauvais numéro de téléphone ?
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
 instructions.password.help_text_header: Conseils de sécurité pour votre mot de passe
@@ -1970,7 +1975,6 @@ user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} h
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
 user_mailer.reset_password_instructions.header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>Si vous réinitialisez maintenant votre mot de passe, votre code-barres ne fonctionnera pas au bureau de poste.</strong> Vous devrez recommencer la procédure de vérification d’identité depuis le début.
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
 user_mailer.reset_password_instructions.subject: Réinitialiser votre mot de passe
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.

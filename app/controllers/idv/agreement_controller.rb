@@ -40,7 +40,11 @@ module Idv
 
         if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
            IdentityConfig.store.in_person_proofing_enabled
-          redirect_to idv_how_to_verify_url
+          if params[:skip_hybrid_handoff]
+            redirect_to idv_choose_id_type_url
+          else
+            redirect_to idv_how_to_verify_url
+          end
         else
           redirect_to idv_hybrid_handoff_url
         end
@@ -53,7 +57,7 @@ module Idv
       Idv::StepInfo.new(
         key: :agreement,
         controller: self,
-        next_steps: [:hybrid_handoff, :document_capture, :how_to_verify],
+        next_steps: [:hybrid_handoff, :choose_id_type, :document_capture, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
         undo_step: ->(idv_session:, user:) do
           idv_session.idv_consent_given_at = nil
