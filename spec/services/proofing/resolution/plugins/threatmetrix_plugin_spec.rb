@@ -10,7 +10,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
   let(:threatmetrix_session_id) { 'cool-session-id' }
   let(:user_email) { Faker::Internet.email }
   let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
-  let(:workflow) { :idp }
+  let(:workflow) { :idv }
 
   subject(:plugin) do
     described_class.new
