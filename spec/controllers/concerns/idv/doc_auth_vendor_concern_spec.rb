@@ -4,12 +4,18 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:user) { create(:user) }
   let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
+<<<<<<< HEAD
   let(:user_session) do
     {}
   end
   let(:idv_session) do
     Idv::Session.new(
       user_session:,
+=======
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session: {},
+>>>>>>> 7b139c15f0 (remove document capture session from doc auth vendor spec)
       current_user: user,
       service_provider: nil,
     )
