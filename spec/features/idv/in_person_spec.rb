@@ -225,68 +225,50 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'the user fails remote docauth, starts IPP, then navigates to how to verify and
-   resumes remote with successful images',
-          allow_browser_log: true do
+  context 'the user fails remote docauth and starts IPP', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_document_capture_step(expect_accessible: true)
+
       # Fail docauth
       complete_document_capture_step_with_yml(
         'spec/fixtures/ial2_test_credential_multiple_doc_auth_failures_both_sides.yml',
         expected_path: idv_document_capture_url,
       )
+
       # begin in-person proofing
       find(:button, t('in_person_proofing.body.cta.button'), wait: 10).click
-
       complete_prepare_step
       complete_location_step
-      complete_state_id_controller(user)
-
-      # Change mind and resume remote identity verification
-      visit idv_how_to_verify_url
     end
 
-    it 'allows the user to successfully complete remote identity verification' do
-      # choose remote
-      click_on t('forms.buttons.continue_remote')
-      complete_hybrid_handoff_step
-      complete_document_capture_step(with_selfie: false)
+    context 'then navigates back to the submit images page and resumes remote
+    with successful images' do
+      it 'allows the user to successfully complete remote identity verification' do
+        # Click back and resume remote identity verification
+        visit idv_document_capture_url
+        complete_document_capture_step(with_selfie: false)
 
-      complete_remote_idv_from_ssn(user)
-    end
-  end
-
-  context 'the user fails remote docauth, starts IPP, then navigates back to the submit images page
-  and resumes remote with successful images', allow_browser_log: true do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
-
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
-      sign_in_via_branded_page(user)
-      complete_doc_auth_steps_before_document_capture_step(expect_accessible: true)
-      # Fail docauth
-      complete_document_capture_step_with_yml(
-        'spec/fixtures/ial2_test_credential_multiple_doc_auth_failures_both_sides.yml',
-        expected_path: idv_document_capture_url,
-      )
-      # begin in-person proofing
-      find(:button, t('in_person_proofing.body.cta.button'), wait: 10).click
-
-      complete_prepare_step
-      complete_location_step
-
-      # Click back and resume remote identity verification
-      visit idv_document_capture_url
+        complete_remote_idv_from_ssn(user)
+      end
     end
 
-    it 'allows the user to successfully complete remote identity verification' do
-      complete_document_capture_step(with_selfie: false)
+    context 'then navigates to how to verify and resumes remote with successful images' do
+      it 'allows the user to successfully complete remote identity verification' do
+        complete_state_id_controller(user)
+        # Change mind and resume remote identity verification
+        visit idv_how_to_verify_url
 
-      complete_remote_idv_from_ssn(user)
+        # choose remote
+        click_on t('forms.buttons.continue_remote')
+        complete_hybrid_handoff_step
+        complete_document_capture_step(with_selfie: false)
+
+        complete_remote_idv_from_ssn(user)
+      end
     end
   end
 
@@ -365,8 +347,7 @@ RSpec.describe 'In Person Proofing', js: true do
       perform_desktop_hybrid_steps(user, same_address_as_id: false)
     end
 
-    context 'when the user navigates to the how to verify page and changes from IPP to remote
-    verification after returning to desktop' do
+    context 'when the user fails docauth remote in the hybrid flow and begins IPP' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
@@ -377,7 +358,6 @@ RSpec.describe 'In Person Proofing', js: true do
 
           # choose remote
           click_on t('forms.buttons.continue_remote')
-          clear_and_fill_in(:doc_auth_phone, '415-555-0199')
           click_send_link
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -386,67 +366,51 @@ RSpec.describe 'In Person Proofing', js: true do
         perform_mobile_hybrid_steps
       end
 
-      it 'allows the user to successfully complete remote identity verification' do
-        perform_in_browser(:desktop) do
-          # Change mind and resume remote identity verification
-          visit idv_how_to_verify_url
+      context 'then the user navigates to the how to verify page and changes from IPP to remote
+      verification after returning to desktop' do
+        it 'allows the user to successfully complete remote identity verification' do
+          perform_in_browser(:desktop) do
+            # Change mind and resume remote identity verification
+            visit idv_how_to_verify_url
 
-          # choose remote
-          click_on t('forms.buttons.continue_remote')
-          complete_hybrid_handoff_step
-          successful_response = instance_double(
-            Faraday::Response,
-            status: 200,
-            body: LexisNexisFixtures.true_id_response_success,
-          )
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
-            method: :get_results,
-            response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-              successful_response,
-              DocAuth::LexisNexis::Config.new,
-            ),
-          )
-          complete_document_capture_step(with_selfie: false)
+            # choose remote
+            click_on t('forms.buttons.continue_remote')
+            complete_hybrid_handoff_step
+            successful_response = instance_double(
+              Faraday::Response,
+              status: 200,
+              body: LexisNexisFixtures.true_id_response_success,
+            )
+            DocAuth::Mock::DocAuthMockClient.mock_response!(
+              method: :get_results,
+              response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+                successful_response,
+                DocAuth::LexisNexis::Config.new,
+              ),
+            )
+            complete_document_capture_step(with_selfie: false)
 
-          complete_remote_idv_from_ssn(user)
+            complete_remote_idv_from_ssn(user)
+          end
         end
       end
-    end
 
-    context 'when the user fails docauth remote in the hybrid flow, begins IPP on the desktop,
-    navigates back to the hybrid handoff page, selects remote verification via the hybrid flow' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      context 'then navigates back to the hybrid handoff page and selects remote verification
+      via the hybrid flow' do
+        it 'allows the user to successfully complete remote identity verification',
+           allow_browser_log: true do
+          # click back link while on the state id page
+          perform_in_browser(:desktop) do
+            visit idv_hybrid_handoff_url
+            click_send_link
 
-        perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
-          sign_in_via_branded_page(user)
-          complete_doc_auth_steps_before_hybrid_handoff_step
+            # Test that user stays on the link sent page
+            sleep(5)
+            expect(page).to(have_content(t('doc_auth.headings.text_message')))
 
-          # choose remote
-          click_on t('forms.buttons.continue_remote')
-          # clear_and_fill_in(:doc_auth_phone, '415-555-0199')
-          click_send_link
-
-          expect(page).to have_content(t('doc_auth.headings.text_message'))
-        end
-
-        perform_mobile_hybrid_steps
-      end
-
-      it 'allows the user to successfully complete remote identity verification',
-         allow_browser_log: true do
-        # click back link while on the state id page
-        perform_in_browser(:desktop) do
-          visit idv_hybrid_handoff_url
-          click_send_link
-
-          # Test that user stays on the link sent page
-          sleep(5)
-          expect(page).to(have_content(t('doc_auth.headings.text_message')))
-
-          # Test that user does not automatically get moved forward to the state id page on desktop
-          expect(page).not_to(have_content(t('in_person_proofing.headings.state_id_milestone_2')))
+            # Test that user doesn't automatically get moved forward to the state id page on desktop
+            expect(page).not_to(have_content(t('in_person_proofing.headings.state_id_milestone_2')))
+          end
         end
       end
     end
