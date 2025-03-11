@@ -542,6 +542,7 @@ doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
 doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
+doc_auth.errors.choose_id_type_check: Seleccione el tipo de documento que tenga
 doc_auth.errors.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
 doc_auth.errors.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
 doc_auth.errors.doc.doc_type_check: Su licencia de conducir o identificación estatal debe ser emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
@@ -592,6 +593,8 @@ doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
+doc_auth.forms.id_type_preference.drivers_license: Licencia de conducir de los EE. UU. o identificación estatal
+doc_auth.forms.id_type_preference.passport: Pasaporte estadounidense
 doc_auth.forms.selected_file: Archivo seleccionado
 doc_auth.headers.expired_id: Su identificación puede estar vencida
 doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
@@ -605,6 +608,7 @@ doc_auth.headings.back: Reverso de su licencia de conducir o identificación est
 doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras en su identificación. Si la información que aparece a continuación es incorrecta, %{link_html} de su identificación emitida por el estado.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
+doc_auth.headings.choose_id_type: Elija el tipo de su identificación
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
@@ -646,6 +650,7 @@ doc_auth.info.capture_status_capturing: Capturando
 doc_auth.info.capture_status_none: Alinear
 doc_auth.info.capture_status_small_document: Acercar
 doc_auth.info.capture_status_tap_to_capture: Tocar para capturar
+doc_auth.info.choose_id_type: Seleccione el tipo de documento que tenga. Tendrá que tomar fotografías de su identificación para verificar su identidad.
 doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
@@ -655,6 +660,7 @@ doc_auth.info.how_to_verify_mobile: Tiene la opción de verificar su identidad e
 doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
+doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
 doc_auth.info.image_updated: Imagen actualizada
@@ -1100,7 +1106,7 @@ idv.failure.phone.warning.heading: No pudimos asociarlo a este número
 idv.failure.phone.warning.learn_more_link: Obtenga más información sobre el número de teléfono que debe usar
 idv.failure.phone.warning.next_steps_html: Intente con <strong>otro</strong> número que use a menudo y haya usado por mucho tiempo. Puede ser el número del trabajo o de casa.
 idv.failure.phone.warning.try_again_button: Intentar con otro número
-idv.failure.phone.warning.you_entered: 'Usted ingresó:'
+idv.failure.phone.warning.you_entered: 'No pudimos encontrar su registro con este número:'
 idv.failure.sessions.exception: Hubo un error interno al procesar su solicitud.
 idv.failure.sessions.fail_html: Por su seguridad, limitamos el número de veces que puede intentar verificar la información personal en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
 idv.failure.sessions.heading: No encontramos registros que coincidan con sus datos personales
@@ -1338,7 +1344,7 @@ in_person_proofing.headings.po_search.location: Busque una oficina de correos pa
 in_person_proofing.headings.prepare: Verifique su identidad en persona
 in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su identificación emitida por el estado
 in_person_proofing.headings.switch_back: Vuelva a su computadora para preparar la verificación de su identidad en persona
-in_person_proofing.headings.update_address: Actualice su dirección actual
+in_person_proofing.headings.update_address: Actualice su domicilio actual
 in_person_proofing.headings.update_state_id: Actualice la información de su identificación
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
@@ -1407,7 +1413,6 @@ instructions.mfa.voice.number_message_html: Hicimos una llamada con un código d
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Puede autenticarse de la misma forma que desbloquea el dispositivo, sea con su rostro o huella dactilar, contraseña u otro método. </p><p>Si usó un administrador de contraseñas para configurar el desbloqueo facial o táctil, puede autenticarse desde cualquier dispositivo que utilice ese administrador de contraseñas. De lo contrario, use el mismo dispositivo con el que configuró el desbloqueo facial o táctil.</p>'
-instructions.mfa.wrong_number: '¿Ingresó el número de teléfono equivocado?'
 instructions.password.forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su dirección de correo electrónico.'
 instructions.password.help_text: Evite usar las mismas contraseñas de sus otras cuentas, como las de su banco, correo electrónico y redes sociales. No incluya palabras de su dirección de correo electrónico.
 instructions.password.help_text_header: Consejos para la seguridad de las contraseñas
@@ -1982,7 +1987,6 @@ user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
 user_mailer.reset_password_instructions.header: Para terminar de restablecer su contraseña, haga clic en el enlace de abajo o copie y pegue el enlace completo en su navegador.
-user_mailer.reset_password_instructions.in_person_warning_description_html: <strong>Si restablece su contraseña ahora, su código de barras no funcionará en la oficina de correos.</strong> Tendrá que volver a iniciar el proceso de verificación de identidad desde el principio.
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
 user_mailer.reset_password_instructions.subject: Restablezca su contraseña
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.

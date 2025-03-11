@@ -9,7 +9,6 @@ module IdvStepConcern
   include FraudReviewConcern
   include Idv::AbTestAnalyticsConcern
   include Idv::VerifyByMailConcern
-  include Idv::DocAuthVendorConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -77,7 +76,7 @@ module IdvStepConcern
   end
 
   def vendor_document_capture_url
-    case doc_auth_vendor
+    case document_capture_session.doc_auth_vendor
     when Idp::Constants::Vendors::SOCURE,
          Idp::Constants::Vendors::SOCURE_MOCK
       idv_socure_document_capture_url

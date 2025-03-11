@@ -121,10 +121,7 @@ module OpenidConnect
       track_events
       sp_handoff_bouncer.add_handoff_time!
 
-      redirect_user(
-        @authorize_form.success_redirect_uri,
-        current_user.uuid,
-      )
+      redirect_user(@authorize_form.success_redirect_uri)
 
       sp_session[:successful_handoff] = true
 
@@ -155,10 +152,7 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return if form_action_csp_disabled_and_not_server_side_redirect?(
-        issuer: issuer,
-        user_uuid: current_user&.uuid,
-      )
+      return if form_action_csp_disabled_and_not_server_side_redirect?
 
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
@@ -195,7 +189,7 @@ module OpenidConnect
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri, current_user&.uuid)
+        redirect_user(redirect_uri)
       end
     end
 
@@ -246,14 +240,8 @@ module OpenidConnect
       track_billing_events
     end
 
-    def redirect_user(redirect_uri, user_uuid)
-      case oidc_redirect_method(issuer:, user_uuid: user_uuid)
-      when 'client_side'
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
       when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(

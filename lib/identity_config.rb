@@ -162,7 +162,6 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
-    config.add(:feature_pending_in_person_password_reset_enabled, type: :boolean)
     config.add(:feature_select_email_to_share_enabled, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
@@ -292,15 +291,7 @@ module IdentityConfig
     config.add(
       :openid_connect_redirect,
       type: :string,
-      enum: ['server_side', 'client_side', 'client_side_js'],
-    )
-    config.add(
-      :openid_connect_redirect_uuid_override_map,
-      type: :json,
-    )
-    config.add(
-      :openid_connect_redirect_issuer_override_map,
-      type: :json,
+      enum: ['server_side', 'client_side_js'],
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)

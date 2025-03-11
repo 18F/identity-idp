@@ -174,9 +174,4 @@ class FeatureManagement
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
   end
-
-  # Whether pending in person password reset is enabled.
-  def self.pending_in_person_password_reset_enabled?
-    IdentityConfig.store.feature_pending_in_person_password_reset_enabled
-  end
 end

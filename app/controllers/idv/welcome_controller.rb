@@ -5,12 +5,14 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
 
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
+      idv_session.passport_allowed = IdentityConfig.store.doc_auth_passports_enabled
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
@@ -56,6 +58,7 @@ module Idv
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
+        doc_auth_vendor:,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end

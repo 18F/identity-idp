@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
-    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -58,7 +57,7 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:link_sent, :document_capture, :socure_document_capture],
+        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
         preconditions: ->(idv_session:, user:) {
                          idv_session.idv_consent_given? &&
                            (self.selected_remote(idv_session: idv_session) || # from opt-in screen
@@ -121,7 +120,8 @@ module Idv
     end
 
     def upload_disabled?
-      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
+      (document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE ||
+        idv_session.selfie_check_required) &&
         !idv_session.desktop_selfie_test_mode_enabled?
     end
 
@@ -149,13 +149,21 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      redirect_to vendor_document_capture_url
+      redirect_to next_step
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
       )
+    end
+
+    def next_step
+      if idv_session.passport_allowed
+        idv_choose_id_type_url
+      else
+        idv_document_capture_url
+      end
     end
 
     def extra_view_variables

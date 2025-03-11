@@ -3,4 +3,10 @@
 ENV['LOGIN_TASK_LOG_LEVEL'] ||= 'warn'
 require_relative '../config/environment.rb'
 require 'data_pull'
-DataPull.new(argv: ARGV.dup, stdout: STDOUT, stderr: STDERR).run
+begin
+  DataPull.new(argv: ARGV.dup, stdout: STDOUT, stderr: STDERR).run
+rescue => err
+  STDERR.puts "#{err.class.name}: #{err.message}"
+
+  exit 1
+end

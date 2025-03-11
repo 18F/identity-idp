@@ -144,7 +144,6 @@ event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_pending_in_person_password_reset_enabled: true
 feature_select_email_to_share_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
@@ -273,8 +272,6 @@ new_device_alert_delay_in_minutes: 5
 newrelic_license_key: ''
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
-openid_connect_redirect_issuer_override_map: '{}'
-openid_connect_redirect_uuid_override_map: '{}'
 otp_delivery_blocklist_findtime: 5
 otp_delivery_blocklist_maxretry: 10
 otp_expiration_warning_seconds: 150
@@ -535,7 +532,6 @@ production:
   enable_usps_verification: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
-  feature_pending_in_person_password_reset_enabled: false
   feature_select_email_to_share_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''

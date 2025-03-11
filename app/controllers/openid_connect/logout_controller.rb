@@ -62,14 +62,8 @@ module OpenidConnect
       request.env['devise_session_limited_failure_redirect_url'] = request.url
     end
 
-    def redirect_user(redirect_uri, issuer, user_uuid)
-      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
-      when 'client_side'
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
       when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -86,10 +80,7 @@ module OpenidConnect
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
-      return if form_action_csp_disabled_and_not_server_side_redirect?(
-        issuer: service_provider.issuer,
-        user_uuid: current_user&.id,
-      )
+      return if form_action_csp_disabled_and_not_server_side_redirect?
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,
@@ -137,7 +128,7 @@ module OpenidConnect
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
 
-      redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
+      redirect_user(redirect_uri)
 
       sign_out
     end
