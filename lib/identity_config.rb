@@ -293,14 +293,6 @@ module IdentityConfig
       type: :string,
       enum: ['server_side', 'client_side', 'client_side_js'],
     )
-    config.add(
-      :openid_connect_redirect_uuid_override_map,
-      type: :json,
-    )
-    config.add(
-      :openid_connect_redirect_issuer_override_map,
-      type: :json,
-    )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)

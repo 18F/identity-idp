@@ -91,62 +91,6 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
 
-          it 'redirects back to the client if UUID set to server-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'server_side' })
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'renders client-side redirect if UUID set to to client-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'renders JS client-side redirect if UUID set to JS client-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'respects UUID redirect config when issuer config is also set' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
-              .and_return({ service_provider.issuer => 'client_side' })
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'respects issuer redirect config if UUID config is not set' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
-              .and_return({ service_provider.issuer => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
           it 'tracks events' do
             stub_analytics
 
@@ -656,41 +600,6 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(controller).to receive(:sign_out)
             allow(IdentityConfig.store).to receive(:openid_connect_redirect)
               .and_return('client_side_js')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'destroys the session and redirects to client if UUID set to server-side redirect' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'server_side' })
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'destroys session and renders client-side redirect if UUID is set to client-side' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'destroy session and render JS client-side redirect if UUID set to JS client-side' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')
