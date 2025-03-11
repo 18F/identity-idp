@@ -10,7 +10,6 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
   let(:threatmetrix_response) { LexisNexisFixtures.ddp_success_response_json }
   let(:threatmetrix_stub) { stub_threatmetrix_request(threatmetrix_response) }
   let(:job_analytics) { FakeAnalytics.new }
-  let(:workflow) { :idv }
 
   before do
     allow(IdentityConfig.store).to receive(:account_creation_device_profiling)
@@ -32,7 +31,6 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
         request_ip: request_ip,
         uuid_prefix: service_provider.app_id,
         user_uuid: user.uuid,
-        workflow: workflow,
       )
     end
 
