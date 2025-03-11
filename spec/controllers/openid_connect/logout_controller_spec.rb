@@ -323,10 +323,6 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
         end
 
-          expect(controller).to render_template('openid_connect/shared/redirect')
-          expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-        end
-
         it 'renders JS client-side redirect if JS client-side redirect is enabled' do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect)
             .and_return('client_side_js')
