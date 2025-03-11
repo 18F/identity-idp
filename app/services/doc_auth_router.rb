@@ -210,7 +210,7 @@ module DocAuthRouter
     end
   end
 
-  def self.doc_auth_vendor(
+  def self.doc_auth_vendor( # is this used anywhere?
     request:,
     service_provider:,
     session:,
