@@ -56,11 +56,8 @@ RSpec.describe RecaptchaAnnotator do
       end
 
       it 'schedules the annotation to be submitted' do
-        expect(RecaptchaAnnotateJob).to receive(:perform_later) do |assessment:|
-          expect(assessment).to be_kind_of(RecaptchaAssessment)
-          expect(assessment.annotation_before_type_cast).to eq(annotation)
-          expect(assessment.annotation_reason_before_type_cast).to eq(reason)
-          expect(assessment).to be_persisted
+        expect(RecaptchaAnnotateJob).to receive(:perform_later) do |job_assessment_id|
+          expect(job_assessment_id).to eq({ assessment_id: assessment_id })
         end
 
         annotate
@@ -81,11 +78,8 @@ RSpec.describe RecaptchaAnnotator do
         subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:) }
 
         it 'schedules the annotation to be with only what is provided' do
-          expect(RecaptchaAnnotateJob).to receive(:perform_later) do |assessment:|
-            expect(assessment).to be_kind_of(RecaptchaAssessment)
-            expect(assessment.annotation_before_type_cast).to be_nil
-            expect(assessment.annotation_reason_before_type_cast).to eq(reason)
-            expect(assessment).to be_persisted
+          expect(RecaptchaAnnotateJob).to receive(:perform_later) do |job_assessment_id|
+            expect(job_assessment_id).to eq({ assessment_id: assessment_id })
           end
 
           annotate

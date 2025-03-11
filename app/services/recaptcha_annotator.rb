@@ -22,7 +22,7 @@ class RecaptchaAnnotator
 
       if FeatureManagement.recaptcha_enterprise?
         assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)
-        RecaptchaAnnotateJob.perform_later(assessment:)
+        RecaptchaAnnotateJob.perform_later(assessment_id: assessment.id)
       end
 
       { assessment_id:, reason:, annotation: }
