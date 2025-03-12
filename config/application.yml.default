@@ -108,6 +108,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_passports_enabled: false
+doc_auth_passports_percent: 0
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_socure_max_allowed_users: 10_000
@@ -566,6 +567,7 @@ test:
   doc_auth_selfie_desktop_test_mode: true
   doc_capture_polling_enabled: false
   domain_name: www.example.com
+  dos_passport_composite_healthcheck_endpoint: 'https://dos-passport-api.test/composite-healthcheck/'
   email_registrations_per_ip_limit: 3
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'

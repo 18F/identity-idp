@@ -64,7 +64,6 @@ module Idv
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       passport_allowed
-      passport_requested
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow

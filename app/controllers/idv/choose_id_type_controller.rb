@@ -42,7 +42,10 @@ module Idv
             idv_session.passport_allowed == true
         },
         undo_step: ->(idv_session:, user:) do
-          idv_session.passport_requested = nil
+          if idv_session.document_capture_session_uuid
+            DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+              &.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+          end
         end,
       )
     end
@@ -59,9 +62,9 @@ module Idv
 
     def set_passport_requested
       if chosen_id_type == 'passport'
-        idv_session.passport_requested = true
+        document_capture_session.update!(passport_status: 'requested')
       else
-        idv_session.passport_requested = false
+        document_capture_session.update!(passport_status: 'allowed')
       end
     end
 
