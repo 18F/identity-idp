@@ -42,7 +42,6 @@ module Idv
             idv_session.passport_allowed == true
         },
         undo_step: ->(idv_session:, user:) do
-          idv_session.passport_requested = nil
         end,
       )
     end
@@ -59,13 +58,9 @@ module Idv
 
     def set_passport_requested
       if chosen_id_type == 'passport'
-        idv_session.passport_requested = true # to be removed 50/50
         document_capture_session.update!(passport_status: 'requested')
-      else
-        idv_session.passport_requested = false # to be removed 50/50
-        if document_capture_session.passport_requested?
-          document_capture_session.update!(passport_status: 'allowed')
-        end
+      elsif document_capture_session.passport_requested?
+        document_capture_session.update!(passport_status: 'allowed')
       end
     end
 
