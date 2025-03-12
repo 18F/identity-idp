@@ -42,8 +42,10 @@ module Idv
             idv_session.passport_allowed == true
         },
         undo_step: ->(idv_session:, user:) do
-          DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
-            &.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+          if idv_session.document_capture_session_uuid
+            DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+              &.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+          end
         end,
       )
     end
