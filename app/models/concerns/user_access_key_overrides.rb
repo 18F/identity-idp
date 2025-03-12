@@ -70,6 +70,7 @@ module UserAccessKeyOverrides
   end
 
   def rotate_stale_password_digest
+    return if encrypted_password_digest.blank?
     return unless Encryption::PasswordVerifier.new.stale_digest?(
       encrypted_password_digest,
     )
@@ -80,9 +81,10 @@ module UserAccessKeyOverrides
   # as Devise depends on this for things like building the key to use when
   # storing the user in the session.
   def authenticatable_salt
-    return if encrypted_password_digest.blank?
+    digest = password_regional_digest_pair.multi_or_single_region_ciphertext
+    return if digest.blank?
     Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
-      encrypted_password_digest,
+      digest,
     ).password_salt
   end
 end

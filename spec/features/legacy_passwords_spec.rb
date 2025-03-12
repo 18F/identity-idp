@@ -56,6 +56,7 @@ RSpec.feature 'legacy passwords' do
     user.reload
 
     expect(user.encrypted_recovery_code_digest).to be_present
+    expect(user.encrypted_recovery_code_digest_multi_region).to be_present
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do

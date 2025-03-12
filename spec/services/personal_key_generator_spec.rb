@@ -47,6 +47,7 @@ RSpec.describe PersonalKeyGenerator do
       key = generator.generate!
 
       expect(user.encrypted_recovery_code_digest).to_not be_empty
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_empty
       expect(generator.verify(key)).to eq(true)
     end
   end
