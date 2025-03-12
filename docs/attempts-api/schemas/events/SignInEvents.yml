@@ -3,6 +3,8 @@ properties:
     $ref: './sign-in/LoggedInAccountPurged.yml'
   logged-in-password-change:
     $ref: './sign-in/LoggedInPasswordChange.yml'
+  login-completed:
+    $ref: './sign-in/LoginCompleted.yml'
   login-email-and-password-auth:
     $ref: './sign-in/LoginEmailAndPasswordAuth.yml'
   login-rate-limited:

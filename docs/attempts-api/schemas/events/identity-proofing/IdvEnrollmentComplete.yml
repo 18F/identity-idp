@@ -1,0 +1,5 @@
+description: |
+  When the user is identity verified
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
