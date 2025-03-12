@@ -4,7 +4,6 @@ module Idv
   class ImageUploadsController < ApplicationController
     respond_to :json
 
-    include IdvSessionConcern
     def create
       image_upload_form_response = image_upload_form.submit
 
@@ -26,7 +25,6 @@ module Idv
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
         liveness_checking_required: resolved_authn_context_result.facial_match?,
-        document_type: idv_session&.passport_requested ? 'Passport' : 'DriversLicense',
       )
     end
   end

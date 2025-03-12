@@ -20,8 +20,7 @@ module Idv
       acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
-      liveness_checking_required: false,
-      document_type: nil
+      liveness_checking_required: false
     )
       @params = params
       @service_provider = service_provider
@@ -30,7 +29,6 @@ module Idv
       @readable = {}
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
-      @document_type = document_type
     end
 
     def submit
@@ -66,8 +64,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket,
-                :document_type
+                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
 
     def abandon_any_ipp_progress
       user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
@@ -130,6 +127,10 @@ module Idv
 
     def selfie_image_bytes
       @selfie_image_bytes ||= selfie.read
+    end
+
+    def document_type
+      @document_type ||= document_capture_session.passport_allowed? ? 'Passport' : 'DriversLicense'
     end
 
     def validate_pii_from_doc(client_response)
