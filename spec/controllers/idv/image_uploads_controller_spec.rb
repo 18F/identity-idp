@@ -1078,6 +1078,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
+            document_type: an_instance_of(String),
           ).and_call_original
 
         action
