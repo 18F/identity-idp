@@ -5,7 +5,7 @@ RSpec.describe RecaptchaAnnotateJob do
   let(:assessment) { create(:recaptcha_assessment) }
 
   describe '#perform' do
-    subject(:result) { instance.perform(assessment_id: recaptcha_assessment.id) }
+    subject(:result) { instance.perform(assessment_id: assessment.id) }
 
     it 'submits annotation for assessment' do
       expect(RecaptchaAnnotator).to receive(:submit_assessment).with(assessment)
