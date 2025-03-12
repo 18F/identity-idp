@@ -57,7 +57,7 @@ module Idv
     end
 
     def create_document_capture_session
-      document_capture_session = DocumentCaptureSession.create(
+      document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
         doc_auth_vendor:,

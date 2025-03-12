@@ -259,7 +259,7 @@ RSpec.describe Idv::WelcomeController do
       it 'create document capture session without passport allowed' do
         put :update
 
-        expect(subject.document_capture_session.passport_status).to eq('allowed')
+        expect(subject.document_capture_session.passport_allowed?).to eq(true)
       end
 
       context 'when doc_auth_vendor is Socure' do

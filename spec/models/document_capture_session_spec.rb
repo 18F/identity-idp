@@ -43,6 +43,36 @@ RSpec.describe DocumentCaptureSession do
     allow(doc_auth_response).to receive(:selfie_status).and_return(:success)
   end
 
+  context 'validates passport status' do
+    context 'passport_status is invalid' do
+      it 'throws error' do
+        expect { create(:document_capture_session, passport_status: 'invalid') }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'passport_status is allowed' do
+      it 'does not throws error' do
+        expect { create(:document_capture_session, passport_status: 'allowed') }
+          .not_to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'passport_status is requested' do
+      it 'does not throw error' do
+        expect { create(:document_capture_session, passport_status: 'requested') }
+          .not_to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'passport_status is nil' do
+      it 'does not throws error' do
+        expect { create(:document_capture_session, passport_status: nil) }
+          .not_to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
+
   describe '#store_result_from_response' do
     it 'generates a result ID stores the result encrypted in redis' do
       record = DocumentCaptureSession.new
@@ -213,6 +243,48 @@ RSpec.describe DocumentCaptureSession do
         expect(result.failed_front_image?('fingerprint1')).to eq(true)
         expect(result.failed_back_image?('fingerprint2')).to eq(true)
         expect(result.failed_selfie_image_fingerprints).to be_nil
+      end
+    end
+  end
+
+  describe('#passport_allowed') do
+    it 'returns nil by default' do
+      record = build(:document_capture_session)
+      expect(record.passport_allowed?).to eq(false)
+    end
+
+    context 'when passport_status is allowed' do
+      it 'returns true' do
+        record = build(:document_capture_session, passport_status: 'allowed')
+        expect(record.passport_allowed?).to eq(true)
+      end
+    end
+
+    context 'when passport_status is requested' do
+      it 'returns true' do
+        record = build(:document_capture_session, passport_status: 'requested')
+        expect(record.passport_allowed?).to eq(true)
+      end
+    end
+  end
+
+  describe('#passport_requested') do
+    it 'returns nil by default' do
+      record = build(:document_capture_session)
+      expect(record.passport_allowed?).to eq(false)
+    end
+
+    context 'when passport_status is allowed' do
+      it 'returns false' do
+        record = build(:document_capture_session, passport_status: 'allowed')
+        expect(record.passport_requested?).to eq(false)
+      end
+    end
+
+    context 'when passport_status is requested' do
+      it 'returns false' do
+        record = build(:document_capture_session, passport_status: 'requested')
+        expect(record.passport_requested?).to eq(true)
       end
     end
   end

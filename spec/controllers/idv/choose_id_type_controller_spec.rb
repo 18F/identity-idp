@@ -4,9 +4,13 @@ RSpec.describe Idv::ChooseIdTypeController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:document_capture_session) do
+    create(:document_capture_session, user:, passport_status: 'allowed')
+  end
 
   before do
     stub_sign_in(user)
+    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     stub_analytics
   end
@@ -103,6 +107,7 @@ RSpec.describe Idv::ChooseIdTypeController do
         put :update, params: params
 
         expect(subject.idv_session.passport_requested).to eq(false)
+        expect(subject.document_capture_session.passport_status).to eq('allowed')
       end
 
       it 'redirects to document capture session' do
@@ -119,6 +124,7 @@ RSpec.describe Idv::ChooseIdTypeController do
         put :update, params: params
 
         expect(subject.idv_session.passport_requested).to eq(true)
+        expect(subject.document_capture_session.passport_status).to eq('requested')
       end
 
       # currently we do not have a passport route so it redirects to ipp route
