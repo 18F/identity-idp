@@ -179,12 +179,6 @@ RSpec.describe Idv::WelcomeController do
 
       context 'passport api is up and running' do
         let(:dos_api_status) { 'UP' }
-        let(:bucket) { nil }
-
-        before do
-          allow(subject).to receive(:ab_test_bucket).and_call_original
-          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT).and_return(bucket)
-        end
 
         it 'passport allowed is false in idv session' do
           get :show
@@ -193,7 +187,11 @@ RSpec.describe Idv::WelcomeController do
         end
 
         context 'user is AB bucketed to allow passports' do
-          let(:bucket) { :passport_allowed }
+          before do
+            allow(subject).to receive(:ab_test_bucket).and_call_original
+            allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
+              .and_return(:passport_allowed)
+          end
 
           it 'passport allowed is true in idv session' do
             get :show
@@ -204,8 +202,13 @@ RSpec.describe Idv::WelcomeController do
       end
 
       context 'bucketed vendor is Socure' do
-        let(:bucket) { Idp::Constants::Vendors::SOCURE }
+        before do
+          subject.idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
+        end
+
         it 'passports are not bucketed' do
+          get :show
+
           expect(subject.idv_session.passport_allowed).to be_nil
           expect(@analytics).not_to have_logged_event(
             :passport_api_health_check,
@@ -240,6 +243,36 @@ RSpec.describe Idv::WelcomeController do
     it 'creates a document capture session' do
       expect { put :update }
         .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
+    end
+
+    it 'create document capture session without passport allowed' do
+      put :update
+
+      expect(subject.document_capture_session.passport_status).to be_nil
+    end
+
+    context 'when passport is allowed' do
+      before do
+        subject.idv_session.passport_allowed = true
+      end
+
+      it 'create document capture session without passport allowed' do
+        put :update
+
+        expect(subject.document_capture_session.passport_status).to eq('allowed')
+      end
+
+      context 'when doc_auth_vendor is Socure' do
+        before do
+          subject.idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
+        end
+
+        it 'create document capture session without passport allowed' do
+          put :update
+
+          expect(subject.document_capture_session.passport_status).to be_nil
+        end
+      end
     end
   end
 end

@@ -95,6 +95,14 @@ class DocumentCaptureSession < ApplicationRecord
     update!(ocr_confirmation_pending: false)
   end
 
+  def passport_allowed?
+    passport_status == 'allowed'
+  end
+
+  def requested_requested?
+    pasport_status == 'requested'
+  end
+
   private
 
   def generate_result_id

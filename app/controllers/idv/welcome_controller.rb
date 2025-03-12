@@ -61,6 +61,7 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
         doc_auth_vendor:,
+        passport_status:,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
@@ -72,6 +73,7 @@ module Idv
     end
 
     def passport_allowed?
+      return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
 
       idv_session.passport_allowed ||= begin
@@ -79,6 +81,15 @@ module Idv
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
         end
       end
+    end
+
+    def passport_status
+      if resolved_authn_context_result.facial_match? ||
+         doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+        idv_session.passport_allowed = nil
+      end
+
+      return :allowed if idv_session.passport_allowed
     end
   end
 end
