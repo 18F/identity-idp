@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_24_134110) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_28_141538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -482,6 +482,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_24_134110) do
   create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
     t.string "annotation", comment: "sensitive=false"
     t.string "annotation_reason", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|
