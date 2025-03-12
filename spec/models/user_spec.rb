@@ -364,28 +364,57 @@ RSpec.describe User do
       end
     end
 
-    describe '#in_person_enrollment_status' do
-      let(:new_user) { create(:user, :fully_registered) }
+    describe '#latest_in_person_enrollment_status' do
       let(:proofing_components) { nil }
-      let(:new_pending_profile) do
-        create(
-          :profile,
-          :verify_by_mail_pending,
-          user: new_user,
-          proofing_components: proofing_components,
-        )
-      end
-      let!(:establishing_enrollment) do
-        create(
-          :in_person_enrollment,
-          :passed,
-          profile: new_pending_profile,
-          user: new_user,
-        )
+
+      context 'when the enrollment is pending' do
+        let(:pending_user) { create(:user, :fully_registered) }
+        let!(:profile) do
+          create(
+            :profile,
+            :in_person_verification_pending,
+            user: pending_user,
+            proofing_components: proofing_components,
+          )
+        end
+
+        it 'returns pending' do
+          expect(pending_user.latest_in_person_enrollment_status).to eq('pending')
+        end
       end
 
-      it 'returns the status of the enrollment' do
-        expect(new_user.in_person_enrollment_status).to eq('passed')
+      context 'when the enrollment is establishing' do
+        let!(:establishing_user) do
+          create(:user, :fully_registered, :with_establishing_in_person_enrollment)
+        end
+
+        it 'returns establishing' do
+          expect(establishing_user.latest_in_person_enrollment_status).to eq('establishing')
+        end
+      end
+
+      context 'when the enrollment is cancelled' do
+        let(:cancelled_user) { create(:user, :fully_registered) }
+        let(:cancelled_profile) do
+          create(
+            :profile,
+            :verification_cancelled,
+            user: cancelled_user,
+            proofing_components: proofing_components,
+          )
+        end
+        let!(:cancelled_enrollment) do
+          create(
+            :in_person_enrollment,
+            :cancelled,
+            profile: cancelled_profile,
+            user: cancelled_user,
+          )
+        end
+
+        it 'returns cancelled' do
+          expect(cancelled_user.latest_in_person_enrollment_status).to eq('cancelled')
+        end
       end
     end
   end
