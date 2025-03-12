@@ -9,7 +9,7 @@ module Idv
 
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
-    before_action :passport_allowed?,
+    before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
 
@@ -72,7 +72,7 @@ module Idv
       )
     end
 
-    def passport_allowed?
+    def update_passport_allowed
       return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
 
@@ -89,7 +89,7 @@ module Idv
         idv_session.passport_allowed = nil
       end
 
-      return :allowed if idv_session.passport_allowed
+      :allowed if idv_session.passport_allowed
     end
   end
 end

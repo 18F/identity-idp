@@ -146,4 +146,24 @@ RSpec.describe Idv::ChooseIdTypeController do
       end
     end
   end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::ChooseIdTypeController.step_info).to be_valid
+    end
+
+    describe '#undo_step' do
+      before do
+        subject.document_capture_session.update!(passport_status: 'requested')
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+
+        subject.document_capture_session.reload
+        expect(subject.document_capture_session.passport_requested?).to eq(false)
+        expect(subject.document_capture_session.passport_allowed?).to eq(false)
+      end
+    end
+  end
 end
