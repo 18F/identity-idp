@@ -36,9 +36,7 @@ class AccountShowPresenter
   end
 
   def show_manage_personal_key_partial?
-    (user.encrypted_recovery_code_digest_multi_region.present? ||
-     user.encrypted_recovery_code_digest.present?) &&
-      user.password_reset_profile.blank?
+    user.has_recovery_code? && user.password_reset_profile.blank?
   end
 
   def show_service_provider_continue_partial?
