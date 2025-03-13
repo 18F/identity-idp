@@ -459,35 +459,5 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
       end
     end
-
-    context 'when the user is going through enhanced ipp' do
-      subject(:action) do
-        post(:create, params: { gpo_verify_form: { otp: good_otp } })
-      end
-      let(:is_enhanced_ipp) { true }
-      let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
-      let(:gpo_verify_form) do
-        GpoVerifyForm.new(
-          user: user,
-          pii: {},
-          resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
-          otp: good_otp,
-        )
-      end
-      before do
-        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
-        allow(controller).to(
-          receive(:resolved_authn_context_result).and_return(authn_context_result),
-        )
-        allow(GpoVerifyForm).to receive(:new).and_return(gpo_verify_form)
-        allow(gpo_verify_form).to receive(:submit).and_call_original
-      end
-
-      it 'passes the correct param to the gpo verify form submit method' do
-        action
-
-        expect(gpo_verify_form).to have_received(:submit).with(is_enhanced_ipp)
-      end
-    end
   end
 end

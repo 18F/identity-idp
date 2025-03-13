@@ -52,7 +52,7 @@ module Idv
 
         @gpo_verify_form = build_gpo_verify_form
 
-        result = @gpo_verify_form.submit(resolved_authn_context_result.enhanced_ipp?)
+        result = @gpo_verify_form.submit
         analytics.idv_verify_by_mail_enter_code_submitted(**result)
 
         send_please_call_email_if_necessary(result:)
