@@ -20,9 +20,9 @@ module DocAuth
 
     def get_id_type_errors(classification_info)
       return unless classification_info.present?
-      document_type = classification_info.with_indifferent_access.dig('Front', 'ClassName')
-      error_result = ErrorResult.new(nil, nil, document_type)
+      error_result = ErrorResult.new
       both_side_ok = true
+      document_type = classification_info.with_indifferent_access.dig('Front', 'ClassName')
       is_passport = document_type == 'Passport'
       sides = is_passport ? ['Front'] : ['Front', 'Back']
       sides.each do |side|
@@ -240,13 +240,9 @@ module DocAuth
         message: 'DocAuth failure escaped without useful errors',
         response_info: response_info,
       )
-      document_type = response_info[:classification_info]&.with_indifferent_access&.dig(
-        'Front',
-        'ClassName',
-      )
       error = Errors::GENERAL_ERROR
       side = ErrorGenerator::ID
-      ErrorResult.new(error, side, document_type)
+      ErrorResult.new(error, side)
     end
   end
 

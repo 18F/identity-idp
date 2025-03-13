@@ -410,7 +410,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         document_tampering_detection: { no_side: 'Failed' },
       )
       expect(output[:success]).to eq(false)
-      expect(errors.keys).to contain_exactly(:general, :front, :hints)
+      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
       # we dont have specific error for tampering yet
       expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)

@@ -130,6 +130,8 @@ module Idv
     end
 
     def document_type
+      return nil if document_capture_session.nil?
+
       @document_type ||= document_capture_session.passport_requested? \
         ? 'Passport' : 'DriversLicense'
     end
