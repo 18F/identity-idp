@@ -207,80 +207,48 @@ RSpec.describe User do
   context 'when user has IPP enrollments' do
     let(:user) { create(:user, :fully_registered) }
 
-    let(:failed_enrollment_profile) do
-      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
-    end
-    let(:pending_enrollment_profile) do
-      create(
-        :profile,
-        gpo_verification_pending_at: 1.day.ago,
-        user: user,
-        pii: { first_name: 'Susan' },
-      )
-    end
-
-    let(:establishing_enrollment_profile) do
-      create(
-        :profile,
-        gpo_verification_pending_at: 1.day.ago,
-        user: user,
-        pii: { first_name: 'Susan' },
-      )
-    end
-
     let!(:failed_enrollment) do
       create(:in_person_enrollment, :failed, user: user, profile: failed_enrollment_profile)
     end
-    let!(:pending_enrollment) do
-      create(:in_person_enrollment, :pending, user: user, profile: pending_enrollment_profile)
+    let(:failed_enrollment_profile) do
+      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     end
-    let!(:establishing_enrollment) do
+
+    let!(:pending_enrollment) do
       create(
         :in_person_enrollment,
-        :establishing,
+        :pending,
         user: user,
-        profile: establishing_enrollment_profile,
       )
     end
+    let(:pending_enrollment_profile) { pending_enrollment.profile }
 
     describe '#in_person_enrollments' do
       it 'returns multiple IPP enrollments' do
-        expect(user.in_person_enrollments).to eq [
-          failed_enrollment,
-          pending_enrollment,
-          establishing_enrollment,
-        ]
+        expect(user.in_person_enrollments.count).to eq(2)
+        expect(user.in_person_enrollments).to include(failed_enrollment)
+        expect(user.in_person_enrollments).to include(pending_enrollment)
       end
 
       it 'deletes everything and does not result in an error when'\
       ' the user is deleted before the profile' do
         failed_enrollment_id = failed_enrollment.id
         pending_enrollment_id = pending_enrollment.id
-        establishing_enrollment_id = establishing_enrollment.id
         failed_enrollment_profile_id = failed_enrollment_profile.id
         pending_enrollment_profile_id = pending_enrollment_profile.id
-        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq failed_enrollment_profile
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
-          establishing_enrollment_profile,
-        )
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         user.destroy
         expect(User.find_by(id: user_id)).to eq nil
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq nil
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq nil
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq nil
         failed_enrollment_profile.destroy # Profile is already deleted, but check for no errors
       end
 
@@ -288,10 +256,8 @@ RSpec.describe User do
       ' error when the profile is deleted before the user' do
         failed_enrollment_id = failed_enrollment.id
         pending_enrollment_id = pending_enrollment.id
-        establishing_enrollment_id = establishing_enrollment.id
         failed_enrollment_profile_id = failed_enrollment_profile.id
         pending_enrollment_profile_id = pending_enrollment_profile.id
-        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
@@ -299,21 +265,12 @@ RSpec.describe User do
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         failed_enrollment_profile.destroy
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
-          establishing_enrollment_profile,
-        )
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         user.destroy # Should work even though first profile was deleted after user was loaded
       end
     end
@@ -325,6 +282,23 @@ RSpec.describe User do
     end
 
     describe '#establishing_in_person_enrollment' do
+      let(:establishing_enrollment_profile) do
+        create(
+          :profile,
+          user: user,
+          pii: { first_name: 'Susan' },
+        )
+      end
+
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          user: user,
+          profile: establishing_enrollment_profile,
+        )
+      end
+
       it 'returns the establishing IPP enrollment' do
         expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
@@ -414,6 +388,20 @@ RSpec.describe User do
 
         it 'returns cancelled' do
           expect(cancelled_user.latest_in_person_enrollment_status).to eq('cancelled')
+        end
+      end
+
+      context 'when there is no enrollment' do
+        let(:remote_user) { create(:user, :fully_registered) }
+
+        it 'returns nil' do
+          expect(remote_user.latest_in_person_enrollment_status).to eq(nil)
+        end
+      end
+
+      context 'when there are multiple enrollments' do
+        it "returns the latest enrollment's status" do
+          expect(user.latest_in_person_enrollment_status).to eq('pending')
         end
       end
     end
