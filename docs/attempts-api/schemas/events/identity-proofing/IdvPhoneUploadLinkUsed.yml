@@ -1,6 +1,0 @@
-description: |
-  When the user uses the link sent to their phone to begin mobile document upload. 
-allOf:
-  - $ref: '../shared/EventProperties.yml'
-  - type: object
-  

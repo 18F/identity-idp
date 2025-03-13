@@ -1,0 +1,28 @@
+description: |
+   The user has uploaded documents locally 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      document_front_image_file_id:
+        type: string
+        description: If this image exists, the ID used to retrieve it if needed
+      document_back_image_file_id: 
+        type: string
+        description: If this image exists, the ID used to retrieve it if needed
+      selfie_image_file_id: 
+        type: string
+        description: If this image exists, the ID used to retrieve it if needed
+      document_front_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the front image file if it exists.
+      document_back_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the back image file if it exists.
+      selfie_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
+      success:
+          type: boolean
+          description: |
+            Indicates whether the upload was successful

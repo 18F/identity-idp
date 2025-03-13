@@ -28,6 +28,8 @@ components:
   schemas:
     DecodedJWTPayload:
       $ref: './schemas/DecodedJWTPayload.yml'
+    Events:
+      $ref: './schemas/AllEvents.yml'
   securitySchemes:
     BearerAuth:
       type: http
