@@ -76,7 +76,7 @@ module Reporting
                 sum(name = "User registration: agency handoff visited" and properties.event_properties.ial2) > 0 as agency_handoff,
                 sum(name = "SP redirect initiated" and properties.event_properties.ial == 2) > 0 as sp_redirect,
                 sortsFirst(properties.service_provider) as issuer,
-                sortsFirts(properties.sp_request.app_differentiator) as app_differentiator,
+                sortsFirst(properties.sp_request.app_differentiator) as app_differentiator,
                 toMillis(min(@timestamp)) as first_event
                 by properties.user_id as login_uuid
         | filter workflow_started > 0 or verified_by_mail > 0 or verified_fraud_review > 0
