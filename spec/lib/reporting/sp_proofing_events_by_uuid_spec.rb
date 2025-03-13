@@ -19,16 +19,22 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
         'login_uuid' => deleted_user_uuid,
         'workflow_started' => '1',
         'first_event' => '1.735275676123E12',
+        'issuer' => 'test:app',
+        'app_differentiator' => 'LA',
       },
       {
         'login_uuid' => non_agency_user_uuid,
         'workflow_started' => '1',
         'first_event' => '1.735275676456E12',
+        'issuer' => 'test:app',
+        'app_differentiator' => 'LA',
       },
       {
         'login_uuid' => agency_user_login_uuid,
         'workflow_started' => '1',
         'first_event' => '1.735275676789E12',
+        'issuer' => 'test:app',
+        'app_differentiator' => 'LA',
       },
     ]
   end
@@ -38,6 +44,8 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
       ['Date Range', '2024-12-01 - 2024-12-07'],
       [
         'UUID',
+        'Issuer',
+        'App Differentiator',
         'Workflow Started',
         'Documnet Capture Started',
         'Document Captured',
@@ -58,6 +66,8 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
       ],
       [
         agency_user_agency_uuid,
+        'test:app',
+        'LA',
         true,
         false,
         false,
