@@ -7,6 +7,7 @@ RSpec.feature 'Signing in via one-time use personal key' do
       with: { phone: '+1 (202) 345-6789' }
     )
     raw_key = PersonalKeyGenerator.new(user).generate!
+    old_key_multi_region = user.reload.encrypted_recovery_code_digest_multi_region
     old_key = user.reload.encrypted_recovery_code_digest
 
     sign_in_before_2fa(user)
@@ -14,6 +15,7 @@ RSpec.feature 'Signing in via one-time use personal key' do
     enter_personal_key(personal_key: raw_key)
     click_submit_default
     expect(user.reload.encrypted_recovery_code_digest).to_not eq old_key
+    expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq old_key_multi_region
     expect(page).to have_current_path account_path
 
     last_message = Telephony::Test::Message.messages.last

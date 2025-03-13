@@ -123,6 +123,7 @@ class ResolutionProofingJob < ApplicationJob
       timer: timer,
       current_sp: current_sp,
       user_uuid: user.uuid,
+      workflow: :idv,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)

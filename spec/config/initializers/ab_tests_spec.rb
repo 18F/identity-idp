@@ -115,6 +115,66 @@ RSpec.describe AbTests do
     end
   end
 
+  shared_examples 'an A/B test that uses user_uuid as a discriminator' do
+    subject(:bucket) do
+      AbTests.all[ab_test].bucket(
+        request: nil,
+        service_provider: nil,
+        session:,
+        user:,
+        user_session:,
+      )
+    end
+
+    let(:session) { {} }
+    let(:user) { nil }
+    let(:user_session) { {} }
+
+    context 'when A/B test is enabled' do
+      before do
+        enable_ab_test.call
+        reload_ab_tests
+      end
+
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+
+      it 'does not write :idv key in user_session' do
+        expect { bucket }.not_to change { user_session }
+      end
+
+      context 'and user is logged in' do
+        let(:user) { build(:user) }
+
+        it 'returns a bucket' do
+          expect(bucket).not_to be_nil
+        end
+      end
+    end
+
+    context 'when A/B test is disabled and it would otherwise assign a bucket' do
+      let(:user) { build(:user) }
+
+      let(:user_session) do
+        {
+          idv: {
+            document_capture_session_uuid: 'a-random-uuid',
+          },
+        }
+      end
+
+      before do
+        disable_ab_test.call
+        reload_ab_tests
+      end
+
+      it 'does not assign a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+  end
+
   describe 'DOC_AUTH_VENDOR' do
     let(:ab_test) { :DOC_AUTH_VENDOR }
 
@@ -138,7 +198,7 @@ RSpec.describe AbTests do
       }
     end
 
-    it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
 
   describe 'ACUANT_SDK' do
@@ -350,5 +410,27 @@ RSpec.describe AbTests do
         expect(bucket).not_to be_nil
       end
     end
+  end
+
+  describe 'DOC_AUTH_PASSPORT' do
+    let(:ab_test) { :DOC_AUTH_PASSPORT }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
+          .and_return(50)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
 end

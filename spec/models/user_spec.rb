@@ -603,8 +603,31 @@ RSpec.describe User do
   end
 
   describe '#authenticatable_salt' do
-    it 'returns the password salt' do
+    it 'returns the multi-region password salt if it exists' do
       user = create(:user)
+      salt = JSON.parse(user.encrypted_password_digest_multi_region)['password_salt']
+
+      expect(user.authenticatable_salt).to eq(salt)
+    end
+
+    it 'returns the single-region password salt if the multi-region is blank' do
+      user = build(:user)
+      user.encrypted_password_digest_multi_region = nil
+      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_digest_pair(
+        password: 'test password',
+        user_uuid: user.uuid,
+      ).single_region_ciphertext
+
+      salt = JSON.parse(user.encrypted_password_digest)['password_salt']
+
+      expect(user.authenticatable_salt).to eq(salt)
+    end
+
+    it 'returns the UAK password salt if user has UAK password' do
+      user = build(:user)
+      user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
+      user.encrypted_password_digest_multi_region = nil
+
       salt = JSON.parse(user.encrypted_password_digest)['password_salt']
 
       expect(user.authenticatable_salt).to eq(salt)

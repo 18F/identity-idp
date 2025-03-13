@@ -127,6 +127,7 @@ module IdentityConfig
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_passports_enabled, type: :boolean)
+    config.add(:doc_auth_passports_percent, type: :integer)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_socure_max_allowed_users, type: :integer)
     config.add(:doc_auth_socure_wait_polling_refresh_max_seconds, type: :integer)
@@ -291,15 +292,7 @@ module IdentityConfig
     config.add(
       :openid_connect_redirect,
       type: :string,
-      enum: ['server_side', 'client_side', 'client_side_js'],
-    )
-    config.add(
-      :openid_connect_redirect_uuid_override_map,
-      type: :json,
-    )
-    config.add(
-      :openid_connect_redirect_issuer_override_map,
-      type: :json,
+      enum: ['server_side', 'client_side_js'],
     )
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)

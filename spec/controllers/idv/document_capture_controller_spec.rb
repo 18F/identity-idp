@@ -19,9 +19,11 @@ RSpec.describe Idv::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:document_capture_session) do
-    DocumentCaptureSession.create(
-      user: user,
+    create(
+      :document_capture_session,
+      user:,
       requested_at: document_capture_session_requested_at,
+      doc_auth_vendor: idv_vendor,
     )
   end
 
@@ -207,31 +209,6 @@ RSpec.describe Idv::DocumentCaptureController do
           get :show
 
           expect(response).to_not redirect_to idv_socure_document_capture_url
-        end
-      end
-
-      describe 'facial match not required but socure user limit reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
-          Idv::SocureUserSet.new.add_user!(user_uuid: '001')
-        end
-
-        it 'does not redirect to Socure controller' do
-          get :show
-
-          expect(response).to_not redirect_to idv_socure_document_capture_url
-        end
-      end
-
-      describe 'facial match not required and socure user limit not reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(2)
-          Idv::SocureUserSet.new.add_user!(user_uuid: '001')
-        end
-        it 'does redirect to Socure controller' do
-          get :show
-
-          expect(response).to redirect_to idv_socure_document_capture_url
         end
       end
     end

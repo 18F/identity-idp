@@ -221,6 +221,18 @@ RSpec.describe Idv::HowToVerifyController do
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
+
+      context 'the user has an establishing in-person enrollment' do
+        let(:user) { create(:user, :with_establishing_in_person_enrollment) }
+
+        it 'cancels the in-person enrollment' do
+          expect { put :update, params: params }.to change {
+            user.in_person_enrollments.first.status
+          }
+            .from('establishing')
+            .to('cancelled')
+        end
+      end
     end
 
     context 'ipp' do

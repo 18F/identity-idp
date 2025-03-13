@@ -19,7 +19,7 @@ class NavigationPresenter
           NavItem.new(I18n.t('account.navigation.add_email'), add_email_path),
           NavItem.new(I18n.t('account.navigation.edit_password'), manage_password_path),
           NavItem.new(I18n.t('account.navigation.delete_account'), account_delete_path),
-          user.encrypted_recovery_code_digest.present? && user.active_profile ? NavItem.new(
+          user.has_recovery_code? && user.active_profile ? NavItem.new(
             I18n.t('account.navigation.reset_personal_key'), create_new_personal_key_path
           ) : nil,
         ].compact

@@ -15,6 +15,7 @@
   "account_drivers_license_number": "12345678",
   "account_drivers_license_type": "us_dl",
   "account_drivers_license_issuer" : "LA",
+  "customer_event_type" : "idv",
   "event_type": "ACCOUNT_CREATION",
   "policy": "test-policy",
   "service_type": "all",

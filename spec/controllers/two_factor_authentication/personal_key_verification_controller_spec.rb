@@ -164,12 +164,15 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       user = create(:user)
       raw_key = PersonalKeyGenerator.new(user).generate!
       old_key = user.reload.encrypted_recovery_code_digest
+      old_multi_region_key = user.reload.encrypted_recovery_code_digest_multi_region
       stub_sign_in_before_2fa(user)
       post :create, params: { personal_key_form: { personal_key: raw_key } }
       user.reload
 
       expect(user.encrypted_recovery_code_digest).to be_present
       expect(user.encrypted_recovery_code_digest).to_not eq old_key
+      expect(user.encrypted_recovery_code_digest_multi_region).to be_present
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq old_multi_region_key
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do

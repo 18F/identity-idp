@@ -158,9 +158,11 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:selfie_check_performed?).and_return(false)
         allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
 
-        document_capture_session = DocumentCaptureSession.create!(
-          user: user,
+        document_capture_session = create(
+          :document_capture_session,
+          user:,
           cancelled_at: session_canceled_at,
+          doc_auth_vendor: Idp::Constants::Vendors::MOCK,
         )
         allow(document_capture_session).to receive(:load_result).and_return(load_result)
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)

@@ -14,6 +14,7 @@ module Idp
       LEXIS_NEXIS = 'lexis_nexis'
       SOCURE = 'socure'
       MOCK = 'mock'
+      SOCURE_MOCK = 'mock_socure'
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'

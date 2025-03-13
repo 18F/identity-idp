@@ -64,6 +64,10 @@ module DocAuth
         end
 
         def endpoint
+          if DocAuth::Mock::Socure.instance.enabled?
+            return Rails.application.routes.url_helpers.test_mock_socure_api_document_request_url
+          end
+
           IdentityConfig.store.socure_docv_document_request_endpoint
         end
 

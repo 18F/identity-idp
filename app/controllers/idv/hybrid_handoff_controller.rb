@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
-    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -13,6 +12,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
+      abandon_any_ipp_progress
       @upload_disabled = upload_disabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
@@ -74,6 +74,10 @@ module Idv
 
     private
 
+    def abandon_any_ipp_progress
+      current_user&.establishing_in_person_enrollment&.cancel
+    end
+
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
@@ -121,7 +125,8 @@ module Idv
     end
 
     def upload_disabled?
-      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
+      (document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE ||
+        idv_session.selfie_check_required) &&
         !idv_session.desktop_selfie_test_mode_enabled?
     end
 

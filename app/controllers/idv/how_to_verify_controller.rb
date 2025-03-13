@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
-    include DocAuthVendorConcern
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
@@ -36,6 +35,7 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
+          abandon_any_ipp_progress
           redirect_to idv_hybrid_handoff_url
         else
           idv_session.opted_in_to_in_person_proofing = true
@@ -72,6 +72,10 @@ module Idv
 
     private
 
+    def abandon_any_ipp_progress
+      idv_session_user.establishing_in_person_enrollment&.cancel
+    end
+
     def analytics_arguments
       {
         step: 'how_to_verify',
@@ -96,7 +100,8 @@ module Idv
     end
 
     def mobile_required?
-      idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+      idv_session.selfie_check_required ||
+        document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
 
     def document_capture_session
