@@ -1058,30 +1058,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
     end
-
-    context 'the user has an establishing in-person enrollment' do
-      let(:user) { create(:user, :with_establishing_in_person_enrollment) }
-
-      it 'cancels the in-person enrollment' do
-        expect(user.in_person_enrollments.first.status).to eq('establishing')
-
-        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
-          .to receive(:post_images).with(
-            front_image: an_instance_of(String),
-            back_image: an_instance_of(String),
-            selfie_image: nil,
-            image_source: :unknown,
-            user_uuid: an_instance_of(String),
-            uuid_prefix: nil,
-            liveness_checking_required: false,
-            images_cropped: false,
-          ).and_call_original
-
-        action
-
-        expect(user.in_person_enrollments.first.status).to eq('cancelled')
-      end
-    end
   end
 
   def expect_funnel_update_counts(user, count)

@@ -98,19 +98,12 @@ RSpec.describe Profile do
 
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
-      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
       initial_personal_key = user.encrypted_recovery_code_digest
-      initial_personal_key_multi_region = user.encrypted_recovery_code_digest_multi_region
 
       encrypt_pii
 
       expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_recovery_multi_region).to be_present
-
-      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-        initial_personal_key_multi_region,
-      )
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
 
@@ -170,29 +163,18 @@ RSpec.describe Profile do
   describe '#encrypt_recovery_pii' do
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
-      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
       initial_personal_key = user.encrypted_recovery_code_digest
-      initial_personal_key_multi_region = user.encrypted_recovery_code_digest_multi_region
 
       profile.encrypt_recovery_pii(pii)
 
       expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_recovery_multi_region).to be_present
-
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq(
-        initial_personal_key,
-      )
-      expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-        initial_personal_key_multi_region,
-      )
+      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
       expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
-      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest_multi_region
     end
 
     it 'can be passed a personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
-      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
       personal_key = 'ABCD-1234'
       returned_personal_key = profile.encrypt_recovery_pii(pii, personal_key: personal_key)
@@ -200,7 +182,6 @@ RSpec.describe Profile do
       expect(returned_personal_key).to eql(personal_key)
 
       expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_recovery_multi_region).to be_present
       expect(profile.personal_key).to eq personal_key
     end
   end

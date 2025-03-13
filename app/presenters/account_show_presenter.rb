@@ -36,7 +36,8 @@ class AccountShowPresenter
   end
 
   def show_manage_personal_key_partial?
-    user.has_recovery_code? && user.password_reset_profile.blank?
+    user.encrypted_recovery_code_digest.present? &&
+      user.password_reset_profile.blank?
   end
 
   def show_service_provider_continue_partial?

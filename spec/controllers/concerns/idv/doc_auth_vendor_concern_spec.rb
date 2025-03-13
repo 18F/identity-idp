@@ -4,16 +4,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:user) { create(:user) }
   let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
-  let(:user_session) do
-    {}
-  end
-  let(:idv_session) do
-    Idv::Session.new(
-      user_session:,
-      current_user: user,
-      service_provider: nil,
-    )
-  end
 
   controller ApplicationController do
     include Idv::DocAuthVendorConcern
@@ -31,7 +21,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       allow(controller).to receive(:ab_test_bucket)
         .with(:DOC_AUTH_VENDOR)
         .and_return(bucket)
-      allow(controller).to receive(:idv_session).and_return(idv_session)
+      allow(controller).to receive(:document_capture_session)
+        .and_return(create(:document_capture_session, user:))
     end
 
     context 'bucket is LexisNexis' do
@@ -39,7 +30,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns lexis nexis as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        expect(controller.idv_session.bucketed_doc_auth_vendor)
+        expect(controller.document_capture_session.doc_auth_vendor)
           .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
       end
     end
@@ -49,7 +40,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       it 'returns mock as the vendor' do
         expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
-        expect(idv_session.bucketed_doc_auth_vendor)
+        expect(controller.document_capture_session.doc_auth_vendor)
           .to eq(Idp::Constants::Vendors::MOCK)
       end
     end
@@ -58,9 +49,14 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       let(:bucket) { :socure }
 
       context 'current user is undefined so use document_capture_session user' do
+        before do
+          allow(controller).to receive(:current_user).and_return(nil)
+          allow(controller).to receive(:document_capture_user).and_return(user)
+        end
+
         it 'returns socure as the vendor' do
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
-          expect(controller.idv_session.bucketed_doc_auth_vendor)
+          expect(controller.document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
         end
 
@@ -76,50 +72,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
         it 'adds a user to the socure redis set' do
           expect { controller.doc_auth_vendor }.to change { socure_user_set.count }.by(1)
-        end
-      end
-    end
-
-    context 'facial match not required' do
-      let(:bucket) { :socure }
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_switching_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_socure_percent).and_return(100)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-      end
-
-      context 'socure user limit reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(0)
-        end
-
-        it 'returns mock as the vendor' do
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
-        end
-      end
-
-      context 'socure user limit not reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
-          allow(controller).to receive(:user_session).and_return(user_session)
-        end
-
-        it 'returns socure as the vendor' do
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::SOCURE)
-        end
-
-        context 'socure user set is maxed before user added' do
-          before do
-            allow(controller).to receive(:socure_user_set).and_return(socure_user_set)
-            allow(socure_user_set).to receive(:add_user!).and_return(false)
-          end
-
-          it 'returns mock as the vendor' do
-            expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
-          end
         end
       end
     end
@@ -164,24 +116,14 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
       end
 
-      context 'socure previously bucketed' do
+      context 'Lexis Nexis is disabled' do
         before do
-          idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
+          allow(IdentityConfig.store)
+            .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
         end
 
         it 'returns mock vendor' do
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
-      end
-
-      context 'lexis nexis previously bucketed' do
-        before do
-          idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS
-        end
-
-        it 'returns mock vendor' do
-          expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
-          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+          expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::MOCK)
         end
       end
     end
@@ -189,10 +131,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
   describe '#doc_auth_vendor_enabled?' do
     let(:vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
-    before do
-      allow(controller).to receive(:idv_session).and_return(idv_session)
-    end
 
     context 'doc_auth_vendor_switching is false' do
       before do
@@ -219,13 +157,18 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       context 'session already assigned LexisNexis doc auth vendor' do
         before do
+          allow(controller).to receive(:document_capture_session)
+            .and_return(create(:document_capture_session, user:))
           allow(IdentityConfig.store).to receive(:doc_auth_vendor_default)
             .and_return(Idp::Constants::Vendors::MOCK)
-          controller.idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::LEXIS_NEXIS
+          controller.document_capture_session
+            .update!(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
         end
         it 'lexis_nexis is still docauth vendor' do
           expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
           expect(controller.doc_auth_vendor).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+          expect(controller.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
         end
       end
     end

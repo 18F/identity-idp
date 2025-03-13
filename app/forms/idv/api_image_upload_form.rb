@@ -57,7 +57,6 @@ module Idv
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
-      abandon_any_ipp_progress
       response
     end
 
@@ -65,10 +64,6 @@ module Idv
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
                 :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
-
-    def abandon_any_ipp_progress
-      user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
-    end
 
     def increment_rate_limiter!
       return unless document_capture_session

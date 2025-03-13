@@ -543,10 +543,6 @@ class User < ApplicationRecord
       .first&.profile
   end
 
-  def has_recovery_code?
-    encrypted_recovery_code_digest_multi_region.present? || encrypted_recovery_code_digest.present?
-  end
-
   private
 
   def find_password_reset_profile

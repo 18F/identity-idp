@@ -10,7 +10,6 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
   let(:threatmetrix_session_id) { 'cool-session-id' }
   let(:user_email) { Faker::Internet.email }
   let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
-  let(:workflow) { :idv }
 
   subject(:plugin) do
     described_class.new
@@ -36,7 +35,6 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
         timer: JobHelpers::Timer.new,
         user_email:,
         user_uuid:,
-        workflow:,
       )
     end
 
@@ -54,7 +52,6 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
           email: user_email,
           request_ip: request_ip,
           uuid: user_uuid,
-          workflow: workflow,
         )
       end
 

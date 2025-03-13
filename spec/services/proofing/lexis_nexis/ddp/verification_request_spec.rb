@@ -21,7 +21,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
       request_ip: '127.0.0.1',
       uuid_prefix: 'ABCD',
       uuid: '00000000-0000-0000-0000-000000000000',
-      workflow: 'idv',
     }
   end
 
@@ -69,7 +68,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
           email: 'test@example.com',
           request_ip: '127.0.0.1',
           uuid: '00000000-0000-0000-0000-000000000000',
-          workflow: 'auth',
         }
       end
 
@@ -94,7 +92,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
             request_ip: '127.0.0.1',
             uuid_prefix: 'SPNUM',
             uuid: '00000000-0000-0000-0000-000000000000',
-            workflow: 'auth',
           }
         end
 

@@ -134,35 +134,4 @@ module IdvStepHelper
     fill_out_state_id_form_ok(same_address_as_id: true)
     click_idv_continue
   end
-
-  def complete_remote_idv_from_ssn(user = user_with_2fa)
-    # ssn step
-    expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    complete_ssn_step
-
-    # verify step
-    expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-    complete_verify_step
-
-    # verify phone
-    expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone'))
-    complete_phone_step(user)
-
-    # re-enter password
-    expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-    complete_enter_password_step(user)
-
-    # personal key page
-    expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-    expect(page).to have_current_path(idv_personal_key_url)
-    acknowledge_and_confirm_personal_key
-
-    # sign up completed
-    expect(page).to have_current_path(sign_up_completed_url)
-  end
 end

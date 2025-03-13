@@ -75,12 +75,8 @@ RSpec.describe Users::PasswordsController do
         expect do
           patch :update, params: { update_user_password_form: params }
         end.to(
-          change { user.reload.encrypted_password_digest_multi_region }.and(
-            change { user.reload.encrypted_recovery_code_digest_multi_region }.and(
-              change { user.reload.encrypted_password_digest }.and(
-                change { user.reload.encrypted_recovery_code_digest },
-              ),
-            ),
+          change { user.reload.encrypted_password_digest }.and(
+            change { user.reload.encrypted_recovery_code_digest },
           ),
         )
 

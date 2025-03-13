@@ -6,13 +6,6 @@ class DocumentCaptureSession < ApplicationRecord
 
   belongs_to :user
 
-  PASSPORT_STATUSES = [
-    'allowed',
-    'requested',
-  ].freeze
-
-  validates :passport_status, inclusion: { in: PASSPORT_STATUSES }, allow_nil: true
-
   def load_result
     return nil unless result_id.present?
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
@@ -100,14 +93,6 @@ class DocumentCaptureSession < ApplicationRecord
     return unless self.ocr_confirmation_pending
 
     update!(ocr_confirmation_pending: false)
-  end
-
-  def passport_allowed?
-    PASSPORT_STATUSES.include? passport_status
-  end
-
-  def passport_requested?
-    passport_status == 'requested'
   end
 
   private

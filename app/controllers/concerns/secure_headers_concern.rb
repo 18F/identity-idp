@@ -10,7 +10,10 @@ module SecureHeadersConcern
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
     return unless authorize_form.valid?
 
-    return if form_action_csp_disabled_and_not_server_side_redirect?
+    return if form_action_csp_disabled_and_not_server_side_redirect?(
+      issuer: authorize_form.service_provider.issuer,
+      user_uuid: current_user&.uuid,
+    )
 
     override_form_action_csp(csp_uris)
   end

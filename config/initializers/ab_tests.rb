@@ -48,7 +48,7 @@ module AbTests
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
-    user&.uuid
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 
   ACUANT_SDK = AbTest.new(
@@ -116,15 +116,4 @@ module AbTests
     buckets: { desktop_ft_unlock_option_shown:
         IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
   ).freeze
-
-  DOC_AUTH_PASSPORT = AbTest.new(
-    experiment_name: 'Passport allowed',
-    should_log: /^idv/i,
-    buckets: {
-      passport_allowed: IdentityConfig.store.doc_auth_passports_enabled ?
-        IdentityConfig.store.doc_auth_passports_percent : 0,
-    },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    user&.uuid
-  end.freeze
 end

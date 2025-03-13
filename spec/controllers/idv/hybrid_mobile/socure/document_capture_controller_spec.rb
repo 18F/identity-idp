@@ -4,6 +4,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   include FlowPolicyHelper
 
   let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+  let(:vendor_switching_enabled) { true }
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:stored_result) { nil }
@@ -14,7 +15,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     DocumentCaptureSession.create(
       user: user,
       requested_at: Time.zone.now,
-      doc_auth_vendor: idv_vendor,
     )
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
@@ -30,6 +30,10 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       .and_return(socure_docv_enabled)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
       .and_return(fake_socure_endpoint)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
+      .and_return(vendor_switching_enabled)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -82,6 +86,30 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     context 'when we try to use this controller but we should be using the LN/mock version' do
       context 'when doc_auth_vendor is Lexis Nexis' do
         let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+        it 'redirects to the LN/mock controller' do
+          get :show
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+
+      context 'when facial match is required' do
+        let(:acr_values) do
+          [
+            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ].join(' ')
+        end
+        before do
+          resolved_authn_context = AuthnContextResolver.new(
+            user: user,
+            service_provider: nil,
+            vtr: nil,
+            acr_values: acr_values,
+          ).result
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context)
+        end
 
         it 'redirects to the LN/mock controller' do
           get :show
