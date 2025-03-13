@@ -176,6 +176,7 @@ module Idv
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
       @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
+      @extra_attributes[:document_type] = document_type
       @extra_attributes
     end
 

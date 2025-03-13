@@ -30,6 +30,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:failure_response_tampering) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_tampering)
   end
+  let(:failure_response_passport_tampering) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failure_tampering)
+  end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_with_all_failures)
   end
@@ -396,6 +399,22 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'mark doc type as supported' do
       expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+
+  context 'when the response is a success for passport' do
+    it 'produces appropriate errors with passport tampering' do
+      output = described_class.new(failure_response_passport_tampering, config).to_h
+      errors = output[:errors]
+      expect(output.to_h[:log_alert_results]).to include(
+        document_tampering_detection: { no_side: 'Failed' },
+      )
+      expect(output[:success]).to eq(false)
+      expect(errors.keys).to contain_exactly(:general, :front, :hints)
+      # we dont have specific error for tampering yet
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(errors[:hints]).to eq(true)
     end
   end
 

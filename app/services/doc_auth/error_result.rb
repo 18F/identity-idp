@@ -2,10 +2,11 @@
 
 module DocAuth
   class ErrorResult
-    def initialize(error = nil, side = nil)
+    def initialize(error = nil, side = nil, document_type = nil)
       @error = ''
       @error_display = nil
       @sides = []
+      @document_type = document_type
       set_error(error) unless error.nil?
       add_side(side) unless side.nil?
     end
@@ -21,7 +22,8 @@ module DocAuth
 
     def add_side(side)
       if side == :id
-        @sides.push(:front, :back)
+        @sides.push(:front)
+        @sides.push(:back) if @document_type != 'Passport'
       else
         @sides << side
       end

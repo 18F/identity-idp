@@ -1498,6 +1498,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param ["Passport","DriversLicense"] document_type Document capture user flow
   def idv_doc_auth_failed_image_resubmitted(
     side:,
     remaining_submit_attempts:,
@@ -1507,6 +1508,7 @@ module AnalyticsEvents
     front_image_fingerprint:,
     back_image_fingerprint:,
     selfie_image_fingerprint:,
+    document_type: nil,
     **extra
   )
     track_event(
@@ -1519,6 +1521,7 @@ module AnalyticsEvents
       front_image_fingerprint:,
       back_image_fingerprint:,
       selfie_image_fingerprint:,
+      document_type:,
       **extra,
     )
   end
@@ -1866,6 +1869,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param ["Passport","DriversLicense"] document_type Document capture user flow
   #   SDK upgrades
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
@@ -1880,6 +1884,7 @@ module AnalyticsEvents
     back_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
+    document_type: nil,
     **extra
   )
     track_event(
@@ -1895,6 +1900,7 @@ module AnalyticsEvents
       liveness_checking_required:,
       selfie_image_fingerprint:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      document_type:,
       **extra,
     )
   end
@@ -1961,6 +1967,7 @@ module AnalyticsEvents
   # @option extra [String] 'ClassificationMode'
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
+  # @param ["Passport","DriversLicense"] document_type Document capture user flow
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2008,6 +2015,7 @@ module AnalyticsEvents
     selfie_attempts: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
+    document_type: nil,
     **extra
   )
     track_event(
@@ -2057,6 +2065,7 @@ module AnalyticsEvents
       selfie_attempts:,
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
+      document_type:,
       **extra,
     )
   end
@@ -2075,6 +2084,7 @@ module AnalyticsEvents
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param ["Passport","DriversLicense"] document_type Document capture user flow
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
@@ -2093,6 +2103,7 @@ module AnalyticsEvents
     back_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     classification_info: nil,
+    document_type: nil,
     **extra
   )
     track_event(
@@ -2112,6 +2123,7 @@ module AnalyticsEvents
       selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
+      document_type:,
       **extra,
     )
   end
