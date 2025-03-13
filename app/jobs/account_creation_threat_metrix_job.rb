@@ -15,6 +15,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       user_email: email,
       uuid_prefix: uuid_prefix,
       uuid: user_uuid,
+      workflow: :auth,
     )
   ensure
     user = User.find_by(id: user_id)
