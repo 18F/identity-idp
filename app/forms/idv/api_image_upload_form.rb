@@ -130,7 +130,8 @@ module Idv
     end
 
     def document_type
-      @document_type ||= document_capture_session.passport_allowed? ? 'Passport' : 'DriversLicense'
+      @document_type ||= document_capture_session.passport_requested? \
+        ? 'Passport' : 'DriversLicense'
     end
 
     def validate_pii_from_doc(client_response)

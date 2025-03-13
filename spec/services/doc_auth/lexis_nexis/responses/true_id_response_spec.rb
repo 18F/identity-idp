@@ -307,6 +307,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         dob: '1986-07-01',
+        sex: 'male',
         birth_place: 'MY CITY. U.S.A.',
         passport_expiration: '2099-10-15',
         passport_issued: '2016-10-15',

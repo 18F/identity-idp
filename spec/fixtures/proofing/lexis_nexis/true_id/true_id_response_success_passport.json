@@ -162,6 +162,11 @@
           },
           {
             "Group": "AUTHENTICATION_RESULT",
+            "Name": "Sex",
+            "Values": [{ "Value": "Male" }]
+          },
+          {
+            "Group": "AUTHENTICATION_RESULT",
             "Name": "DOB_Year",
             "Values": [{ "Value": "1985" }]
           },
@@ -289,6 +294,11 @@
             "Group": "AUTHENTICATION_RESULT",
             "Name": "Alert_20_AlertName",
             "Values": [{ "Value": "Series Expired" }]
+          },
+          {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "Alert_21_AlertName",
+            "Values": [{ "Value": "Sex Crosscheck" }]
           },
           {
             "Group": "AUTHENTICATION_RESULT",
@@ -527,6 +537,16 @@
           },
           {
             "Group": "AUTHENTICATION_RESULT",
+            "Name": "Alert_21_AuthenticationResult",
+            "Values": [
+              {
+                "Value": "Passed",
+                "Detail": "Compare the machine-readable sex field to the human-readable sex field."
+              }
+            ]
+          },
+          {
+            "Group": "AUTHENTICATION_RESULT",
             "Name": "Alert_22_AuthenticationResult",
             "Values": [
               {
@@ -672,6 +692,11 @@
             "Group": "AUTHENTICATION_RESULT",
             "Name": "Alert_20_Disposition",
             "Values": [{ "Value": "The series has not expired" }]
+          },
+          {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "Alert_21_Disposition",
+            "Values": [{ "Value": "The sexes match" }]
           },
           {
             "Group": "AUTHENTICATION_RESULT",
@@ -960,6 +985,7 @@
               { "Value": "Photo" },
               { "Value": "Photo Printing" },
               { "Value": "Secondary Photo" },
+              { "Value": "Sex" },
               { "Value": "Signature" },
               { "Value": "USA" },
               { "Value": "Weight" }

@@ -5,7 +5,7 @@ module DocAuth
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
         attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required,
-                    :back_image_required, :document_type
+                    :document_type
 
         def initialize(
           config:,
@@ -28,7 +28,6 @@ module DocAuth
           # when set to required, be sure to pass in selfie_imaged
           @liveness_checking_required = liveness_checking_required
           @document_type = document_type
-          @back_image_required = document_type == 'DriversLicense'
         end
 
         def request_context
@@ -43,7 +42,7 @@ module DocAuth
           document = {
             Document: {
               Front: encode(front_image),
-              Back: (encode(back_image) if back_image_required),
+              Back: (encode(back_image) if back_image_required?),
               Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: document_type,
             }.compact,
@@ -91,6 +90,10 @@ module DocAuth
 
         def acuant_sdk_source?
           @image_source == ImageSources::ACUANT_SDK
+        end
+
+        def back_image_required?
+          document_type == 'DriversLicense'
         end
 
         def encode(image)

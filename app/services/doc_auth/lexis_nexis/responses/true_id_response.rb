@@ -131,8 +131,8 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
-        def pii_is_passport?
-          @pii_is_passport ||= pii_from_doc&.state_id_type == 'passport'
+        def passport_pii?
+          @passport_pii ||= pii_from_doc&.state_id_type == 'passport'
         end
 
         def transaction_status
@@ -182,7 +182,7 @@ module DocAuth
         def create_response_info
           alerts = parsed_alerts
           address_line2_present = false
-          if !pii_is_passport?
+          if !passport_pii?
             address_line2_present = !pii_from_doc&.address2.blank?
           end
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
@@ -249,7 +249,7 @@ module DocAuth
               CountryCode: issuing_country,
             },
           }
-          if !pii_is_passport?
+          if !passport_pii?
             classification_hash[:Back] = {
               ClassName: doc_class,
               IssuerType: doc_issuer_type,

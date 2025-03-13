@@ -6,6 +6,7 @@ module Pii
     :first_name,
     :last_name,
     :dob,
+    :sex,
     :birth_place,
     :passport_expiration,
     :issuing_country_code,
