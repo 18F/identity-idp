@@ -13,13 +13,6 @@ module Idv
 
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
-        # to be removed 50/50 - start
-        unless document_capture_session.doc_auth_vendor
-          document_capture_session
-            .update!(doc_auth_vendor: IdentityConfig.store.doc_auth_vendor_default)
-        end
-        # to be removed 50/50 - end
-
         case document_capture_session.doc_auth_vendor
         when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
           redirect_to idv_hybrid_mobile_socure_document_capture_url
