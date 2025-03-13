@@ -330,6 +330,13 @@ module Idv
     end
 
     def doc_auth_client
+      # to be removed 50/50 - start
+      unless document_capture_session.doc_auth_vendor
+        document_capture_session
+          .update!(doc_auth_vendor: IdentityConfig.store.doc_auth_vendor_default)
+      end
+      # to be removed 50/50 - end
+
       @doc_auth_client ||= DocAuthRouter.client(
         vendor: document_capture_session.doc_auth_vendor,
         warn_notifier: proc do |attrs|
