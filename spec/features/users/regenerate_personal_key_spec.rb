@@ -11,8 +11,7 @@ RSpec.feature 'View personal key' do
     context 'regenerating personal key' do
       scenario 'displays new code and notifies the user' do
         sign_in_and_2fa_user(user)
-        old_digest = user.encrypted_recovery_code_digest
-        old_digest_multi_region = user.encrypted_recovery_code_digest_multi_region
+        old_digest = user.encrypted_recovery_code_digest_multi_region
 
         expect(Telephony).to receive(:send_personal_key_regeneration_notice)
           .with(to: user.phone_configurations.first.phone, country_code: 'US')
@@ -21,10 +20,9 @@ RSpec.feature 'View personal key' do
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
         click_continue
 
-        expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-          old_digest_multi_region,
-        )
-        expect(user.reload.encrypted_recovery_code_digest).to_not eq(old_digest)
+        user.reload
+        expect(user.encrypted_recovery_code_digest).to_not be_present
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not eq old_digest
 
         expect_delivered_email_count(1)
         expect_delivered_email(
@@ -37,8 +35,7 @@ RSpec.feature 'View personal key' do
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code' do
         sign_in_and_2fa_user(user)
-        old_digest = user.encrypted_recovery_code_digest
-        old_digest_multi_region = user.encrypted_recovery_code_digest_multi_region
+        old_digest = user.encrypted_recovery_code_digest_multi_region
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
@@ -61,10 +58,8 @@ RSpec.feature 'View personal key' do
         expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
         acknowledge_and_confirm_personal_key
 
-        expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq(
-          old_digest_multi_region,
-        )
-        expect(user.reload.encrypted_recovery_code_digest).to_not eq(old_digest)
+        expect(user.reload.encrypted_recovery_code_digest).to_not be_present
+        expect(user.reload.encrypted_recovery_code_digest_multi_region).to_not eq old_digest
       end
     end
   end
