@@ -216,19 +216,19 @@ class User < ApplicationRecord
   end
 
   ##
-  # Return the status of the current In Person Proofing Enrollment
+  # Return the status of the latest in person enrollment
   # @return [String] enrollment status
-  def in_person_enrollment_status
-    pending_profile&.in_person_enrollment&.status
+  def latest_in_person_enrollment_status
+    in_person_enrollments.order(created_at: :desc).first&.status
   end
 
   # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments
   # used to go to passed status when profiles were marked as in fraud review. Since LG-15216, this
   # will no longer be the case.
   def ipp_enrollment_status_not_passed_or_in_fraud_review?
-    !in_person_enrollment_status.blank? &&
+    !latest_in_person_enrollment_status.blank? &&
       [InPersonEnrollment::STATUS_PASSED, InPersonEnrollment::STATUS_IN_FRAUD_REVIEW].exclude?(
-        in_person_enrollment_status,
+        latest_in_person_enrollment_status,
       )
   end
 
@@ -239,11 +239,6 @@ class User < ApplicationRecord
   # @return [Boolean] Whether the user has an establishing in person enrollment.
   def has_establishing_in_person_enrollment?
     establishing_in_person_enrollment.present?
-  end
-
-  # Trust `pending_profile` rather than enrollment associations
-  def has_establishing_in_person_enrollment_safe?
-    !!pending_profile&.in_person_enrollment&.establishing?
   end
 
   def personal_key_generated_at

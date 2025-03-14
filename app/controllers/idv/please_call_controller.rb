@@ -41,11 +41,11 @@ module Idv
 
     # we only want to handle enrollments that have passed
     def ipp_enrollment_passed?
-      current_user&.in_person_enrollment_status == 'passed'
+      current_user&.latest_in_person_enrollment_status == 'passed'
     end
 
     def ipp_enrollment_in_fraud_review?
-      current_user&.in_person_enrollment_status == 'in_fraud_review'
+      current_user&.latest_in_person_enrollment_status == 'in_fraud_review'
     end
   end
 end

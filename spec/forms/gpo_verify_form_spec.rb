@@ -24,7 +24,6 @@ RSpec.describe GpoVerifyForm do
     )
   end
   let(:proofing_components) { nil }
-  let(:is_enhanced_ipp) { false }
 
   before do
     next if pending_profile.blank?
@@ -42,7 +41,7 @@ RSpec.describe GpoVerifyForm do
       let(:entered_otp) { nil }
 
       it 'is invalid' do
-        result = subject.submit(is_enhanced_ipp)
+        result = subject.submit
         expect(result.success?).to eq(false)
         expect(result.errors[:otp]).to eq [t('errors.messages.blank')]
       end
@@ -53,7 +52,7 @@ RSpec.describe GpoVerifyForm do
       let(:user) { build_stubbed(:user) }
 
       it 'is invalid' do
-        result = subject.submit(is_enhanced_ipp)
+        result = subject.submit
         expect(result.success?).to eq(false)
         expect(result.errors[:base]).to eq [t('errors.messages.no_pending_profile')]
       end
@@ -65,7 +64,7 @@ RSpec.describe GpoVerifyForm do
         let(:otp) { 'ABCDEF12345' }
 
         it 'is valid' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
           expect(result.success?).to eq(true)
         end
       end
@@ -75,7 +74,7 @@ RSpec.describe GpoVerifyForm do
         let(:otp) { '0000000000' }
 
         it 'is valid' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
           expect(result.success?).to eq(true)
         end
       end
@@ -85,7 +84,7 @@ RSpec.describe GpoVerifyForm do
       let(:entered_otp) { 'wrong' }
 
       it 'is invalid' do
-        result = subject.submit(is_enhanced_ipp)
+        result = subject.submit
         expect(result.success?).to eq(false)
         expect(result.errors[:otp]).to eq [t('errors.messages.confirmation_code_incorrect')]
       end
@@ -104,7 +103,7 @@ RSpec.describe GpoVerifyForm do
       end
 
       it 'is invalid' do
-        result = subject.submit(is_enhanced_ipp)
+        result = subject.submit
         expect(result.success?).to eq(false)
         expect(subject.errors[:otp]).to eq [t('errors.messages.gpo_otp_expired')]
       end
@@ -114,7 +113,7 @@ RSpec.describe GpoVerifyForm do
           allow(subject).to receive(:user_can_request_another_letter?).and_return(false)
         end
         it 'is invalid and uses different messaging' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
           expect(result.success?).to eq(false)
           expect(subject.errors[:otp]).to eq [
             t('errors.messages.gpo_otp_expired_and_cannot_request_another'),
@@ -126,85 +125,6 @@ RSpec.describe GpoVerifyForm do
 
   describe '#submit' do
     context 'correct OTP' do
-      it 'returns true' do
-        result = subject.submit(is_enhanced_ipp)
-        expect(result.success?).to eq true
-      end
-
-      it 'activates the pending profile' do
-        expect(pending_profile).to_not be_active
-
-        subject.submit(is_enhanced_ipp)
-
-        expect(pending_profile.reload).to be_active
-      end
-
-      it 'logs the date the code was sent at' do
-        result = subject.submit(is_enhanced_ipp)
-
-        confirmation_code = pending_profile.gpo_confirmation_codes.last
-        expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
-      end
-
-      context 'establishing in person enrollment' do
-        let!(:establishing_enrollment) do
-          create(
-            :in_person_enrollment,
-            :establishing,
-            profile: pending_profile,
-            user: user,
-          )
-        end
-
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        end
-
-        it 'sets profile to pending in person verification' do
-          subject.submit(is_enhanced_ipp)
-          pending_profile.reload
-
-          expect(pending_profile).not_to be_active
-          expect(pending_profile.in_person_verification_pending?).to eq(true)
-          expect(pending_profile.gpo_verification_pending?).to eq(false)
-        end
-
-        it 'updates establishing in-person enrollment to pending' do
-          subject.submit(is_enhanced_ipp)
-
-          establishing_enrollment.reload
-
-          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
-          expect(establishing_enrollment.user_id).to eq(user.id)
-          expect(establishing_enrollment.enrollment_code).to be_a(String)
-        end
-      end
-
-      context 'pending in person enrollment' do
-        let!(:pending_enrollment) do
-          create(
-            :in_person_enrollment,
-            :pending,
-            profile: pending_profile,
-            user: user,
-          )
-        end
-
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        end
-
-        it 'changes profile from pending to active' do
-          subject.submit(is_enhanced_ipp)
-          pending_profile.reload
-
-          expect(pending_profile).to be_active
-          expect(pending_profile.deactivation_reason).to be_nil
-          expect(pending_profile.in_person_verification_pending_at).to be_nil
-          expect(pending_profile.gpo_verification_pending?).to eq(false)
-        end
-      end
-
       context 'ThreatMetrix rejection' do
         let(:pending_profile) do
           create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user: user)
@@ -215,19 +135,19 @@ RSpec.describe GpoVerifyForm do
         end
 
         it 'returns true' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
           expect(result.success?).to eq true
         end
 
         it 'does not activate the users profile' do
-          subject.submit(is_enhanced_ipp)
+          subject.submit
           profile = user.profiles.first
           expect(profile.active).to eq(false)
           expect(profile.fraud_review_pending?).to eq(true)
         end
 
         it 'notes that threatmetrix failed' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
           expect(result.extra).to include(fraud_check_failed: true)
         end
 
@@ -237,19 +157,19 @@ RSpec.describe GpoVerifyForm do
           end
 
           it 'returns true' do
-            result = subject.submit(is_enhanced_ipp)
+            result = subject.submit
             expect(result.success?).to eq true
           end
 
           it 'does activate the users profile' do
-            subject.submit(is_enhanced_ipp)
+            subject.submit
             profile = user.profiles.first
             expect(profile.active).to eq(true)
             expect(profile.deactivation_reason).to eq(nil)
           end
 
           it 'notes that threatmetrix failed' do
-            result = subject.submit(is_enhanced_ipp)
+            result = subject.submit
             expect(result.extra).to include(fraud_check_failed: true)
           end
         end
@@ -260,7 +180,7 @@ RSpec.describe GpoVerifyForm do
       let(:entered_otp) { 'wrong' }
 
       it 'clears form' do
-        subject.submit(is_enhanced_ipp)
+        subject.submit
 
         expect(subject.otp).to be_nil
       end
@@ -291,7 +211,7 @@ RSpec.describe GpoVerifyForm do
         let(:entered_otp) { first_otp }
 
         it 'logs which letter and letter count' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
 
           expect(result.to_h[:which_letter]).to eq(1)
           expect(result.to_h[:letter_count]).to eq(3)
@@ -302,7 +222,7 @@ RSpec.describe GpoVerifyForm do
         let(:entered_otp) { second_otp }
 
         it 'logs which letter and letter count' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
 
           expect(result.to_h[:which_letter]).to eq(2)
           expect(result.to_h[:letter_count]).to eq(3)
@@ -313,29 +233,11 @@ RSpec.describe GpoVerifyForm do
         let(:entered_code) { third_otp }
 
         it 'logs which letter and letter count' do
-          result = subject.submit(is_enhanced_ipp)
+          result = subject.submit
 
           expect(result.to_h[:which_letter]).to eq(3)
           expect(result.to_h[:letter_count]).to eq(3)
         end
-      end
-    end
-
-    context 'when the user is going through enhanced ipp' do
-      let(:is_enhanced_ipp) { true }
-      let!(:establishing_enrollment) do
-        create(
-          :in_person_enrollment,
-          :establishing,
-          profile: pending_profile,
-          user: user,
-        )
-      end
-      it 'sends the correct information for scheduling an in person enrollment' do
-        expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
-          .with(user: anything, pii: anything, is_enhanced_ipp: is_enhanced_ipp)
-
-        subject.submit(is_enhanced_ipp)
       end
     end
   end
