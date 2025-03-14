@@ -268,12 +268,7 @@ class Profile < ApplicationRecord
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_pii,
-      multi_region_ciphertext: encrypted_pii_multi_region,
-    )
-
-    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
+    decrypted_json = encryptor.decrypt(encrypted_pii_multi_region, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
@@ -281,13 +276,8 @@ class Profile < ApplicationRecord
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
 
-    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_pii_recovery,
-      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
-    )
-
     decrypted_recovery_json = encryptor.decrypt(
-      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+      encrypted_pii_recovery_multi_region, user_uuid: user.uuid
     )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
@@ -298,7 +288,8 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+    self.encrypted_pii = nil
+    self.encrypted_pii_multi_region = encryptor.encrypt(
       pii.to_json, user_uuid: user.uuid
     )
     encrypt_recovery_pii(pii)
@@ -310,7 +301,8 @@ class Profile < ApplicationRecord
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+    self.encrypted_pii_recovery = nil
+    self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
       pii.to_json, user_uuid: user.uuid
     )
     @personal_key = personal_key

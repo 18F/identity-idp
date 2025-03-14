@@ -318,9 +318,14 @@ class User < ApplicationRecord
     last_personal_key_at = self.encrypted_recovery_code_digest_generated_at
 
     if active_profile.present?
+      # This should only apply to encrypted_pii_recovery since encrypted_pii_recovery_multi_region
+      # was created after this time window.
       encrypted_pii_too_short =
-        active_profile.encrypted_pii_recovery.present? &&
-        active_profile.encrypted_pii_recovery.length < MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH
+        (active_profile.encrypted_pii_recovery_multi_region.present? &&
+        active_profile.encrypted_pii_recovery_multi_region.length <
+          MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH) ||
+        (active_profile.encrypted_pii_recovery.present? &&
+        active_profile.encrypted_pii_recovery.length < MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH)
 
       inside_broken_key_window =
         (!last_personal_key_at || last_personal_key_at < window_finish) &&
