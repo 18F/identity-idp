@@ -147,7 +147,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def skip_enrollment(enrollment, profile_deactivation_reason)
-    analytics.idv_in_person_usps_proofing_results_job_enrollment_skipped(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_skipped(
       **enrollment_analytics_attributes(enrollment, complete: false),
       reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
       job_name: self.class.name,
