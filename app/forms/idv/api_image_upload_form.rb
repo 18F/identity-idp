@@ -374,7 +374,7 @@ module Idv
       update_funnel(client_response)
       is_state_id = client_response.pii_from_doc.is_a?(Pii::StateId)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
-      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
+      zip_code = is_state_id ? client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5) : nil
       issue_year = nil
       if is_state_id
         issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
