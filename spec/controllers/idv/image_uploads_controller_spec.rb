@@ -365,6 +365,7 @@ RSpec.describe Idv::ImageUploadsController do
           billed: true,
           doc_auth_result: 'Passed',
           state: 'MT',
+          country: 'US',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
           submit_attempts: 1,

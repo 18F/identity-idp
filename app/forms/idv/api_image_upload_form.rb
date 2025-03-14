@@ -372,10 +372,12 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      is_state_id = client_response.pii_from_doc.is_a?(Pii::StateId)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
-      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
-      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
-      issue_year = client_response.pii_from_doc&.passport_issued&.to_date&.year if issue_year.nil?
+      zip_code = nil
+      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5) if is_state_id
+      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year if is_state_id
+      issue_year = client_response.pii_from_doc&.passport_issued&.to_date&.year if !is_state_id
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
