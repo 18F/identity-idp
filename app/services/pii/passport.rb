@@ -5,6 +5,7 @@ module Pii
   Passport = RedactedData.define(
     :first_name,
     :last_name,
+    :middle_name,
     :dob,
     :sex,
     :birth_place,

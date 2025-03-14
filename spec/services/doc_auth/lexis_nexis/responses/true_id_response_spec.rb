@@ -312,6 +312,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expected_passport_pii = Pii::Passport.new(
         first_name: 'DAVID',
         last_name: 'SAMPLE',
+        middle_name: 'PASSPORT',
         dob: '1986-07-01',
         sex: 'male',
         birth_place: 'MY CITY. U.S.A.',

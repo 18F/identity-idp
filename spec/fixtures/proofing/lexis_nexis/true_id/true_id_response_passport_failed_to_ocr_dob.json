@@ -307,7 +307,7 @@
                    {
              "Group": "IDAUTH_FIELD_DATA",
              "Name": "Fields_FullName",
-             "Values": [{"Value": "Passport SAMPLE"}]
+             "Values": [{"Value": "Passport MIDDLE SAMPLE"}]
           },
                    {
              "Group": "IDAUTH_FIELD_DATA",
@@ -323,6 +323,11 @@
              "Group": "IDAUTH_FIELD_DATA",
              "Name": "Fields_FirstName",
              "Values": [{"Value": "Passport"}]
+          },
+          {
+            "Group": "IDAUTH_FIELD_DATA",
+            "Name": "Fields_MiddleName",
+            "Values": [{ "Value": "MIDDLE" }]
           },
                    {
              "Group": "IDAUTH_FIELD_DATA",

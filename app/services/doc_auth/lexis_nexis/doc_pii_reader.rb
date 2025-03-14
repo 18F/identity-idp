@@ -55,6 +55,10 @@ module DocAuth
         id_auth_field_data['Fields_Surname']
       end
 
+      def middle_name
+        id_auth_field_data['Fields_MiddleName']
+      end
+
       def dob
         parse_date(
           year: id_auth_field_data['Fields_DOB_Year'],
@@ -131,7 +135,7 @@ module DocAuth
         Pii::StateId.new(
           first_name:,
           last_name:,
-          middle_name: id_auth_field_data['Fields_MiddleName'],
+          middle_name:,
           name_suffix: id_auth_field_data['Fields_NameSuffix'],
           address1: id_auth_field_data['Fields_AddressLine1'],
           address2: id_auth_field_data['Fields_AddressLine2'],
@@ -156,6 +160,7 @@ module DocAuth
         Pii::Passport.new(
           first_name:,
           last_name:,
+          middle_name:,
           dob:,
           sex:,
           birth_place: id_auth_field_data['Fields_BirthPlace'],

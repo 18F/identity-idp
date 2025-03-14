@@ -812,7 +812,7 @@
           {
             "Group": "IDAUTH_FIELD_DATA",
             "Name": "Fields_FullName",
-            "Values": [{ "Value": "DAVID LICENSE SAMPLE" }]
+            "Values": [{ "Value": "DAVID PASSPORT SAMPLE" }]
           },
           {
             "Group": "IDAUTH_FIELD_DATA",
@@ -822,12 +822,17 @@
           {
             "Group": "IDAUTH_FIELD_DATA",
             "Name": "Fields_GivenName",
-            "Values": [{ "Value": "DAVID LICENSE" }]
+            "Values": [{ "Value": "DAVID PASSPORT" }]
           },
           {
             "Group": "IDAUTH_FIELD_DATA",
             "Name": "Fields_FirstName",
             "Values": [{ "Value": "DAVID" }]
+          },
+          {
+            "Group": "IDAUTH_FIELD_DATA",
+            "Name": "Fields_MiddleName",
+            "Values": [{ "Value": "PASSPORT" }]
           },
           {
             "Group": "IDAUTH_FIELD_DATA",
