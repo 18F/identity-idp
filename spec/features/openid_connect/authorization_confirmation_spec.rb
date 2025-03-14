@@ -58,7 +58,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
     end
 
-    context 'when email sharing feature is enabled' do
+    context 'sharing email with service provider' do
       it_behaves_like 'signing in with a different email prompts with the shared email'
 
       context 'with client-side javascript redirect' do

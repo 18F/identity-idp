@@ -34,58 +34,56 @@ RSpec.feature 'SAML Authorization Confirmation' do
     end
 
     context 'when the user is already signed in with an email different from the one shared' do
-      context 'when email sharing feature is enabled' do
-        it 'confirms the user wants to continue to SP with the shared email' do
-          shared_email = user1.identities.first.email_address.email
-          second_email = create(:email_address, user: user1)
-          sign_in_user(user1, second_email.email)
+      it 'confirms the user wants to continue to SP with the shared email' do
+        shared_email = user1.identities.first.email_address.email
+        second_email = create(:email_address, user: user1)
+        sign_in_user(user1, second_email.email)
 
+        visit request_url
+        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_content shared_email
+
+        continue_as(shared_email)
+        expect(current_url).to eq(complete_saml_url)
+      end
+
+      context 'with requested attributes contains only email' do
+        it ' creates an identity with proper email_address_id' do
+          user = user_with_2fa
+
+          sign_in_user(user)
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
           visit request_url
-          expect(current_url).to match(user_authorization_confirmation_path)
-          expect(page).to have_content shared_email
-
-          continue_as(shared_email)
-          expect(current_url).to eq(complete_saml_url)
+          click_agree_and_continue
+          click_submit_default
+          visit sign_out_url
+          identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+          email_id = user.email_addresses.first.id
+          expect(identity.email_address_id).to eq(email_id)
         end
+      end
 
-        context 'with requested attributes contains only email' do
-          it ' creates an identity with proper email_address_id' do
-            user = user_with_2fa
-
-            sign_in_user(user)
-            check t('forms.messages.remember_device')
-            fill_in_code_with_last_phone_otp
-            click_submit_default
-            visit request_url
-            click_agree_and_continue
-            click_submit_default
-            visit sign_out_url
-            identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
-            email_id = user.email_addresses.first.id
-            expect(identity.email_address_id).to eq(email_id)
-          end
+      context 'with requested attributes contains is emails and all_emails' do
+        before do
+          allow_any_instance_of(ServiceProviderIdentity).to receive(:verified_attributes)
+            .and_return(%w[email all_emails])
         end
+        it 'creates an identity with no email_address_id saved' do
+          user = user_with_2fa
 
-        context 'with requested attributes contains is emails and all_emails' do
-          before do
-            allow_any_instance_of(ServiceProviderIdentity).to receive(:verified_attributes)
-              .and_return(%w[email all_emails])
-          end
-          it 'creates an identity with no email_address_id saved' do
-            user = user_with_2fa
+          sign_in_user(user)
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          visit request_url
+          click_agree_and_continue
+          click_submit_default
+          visit sign_out_url
 
-            sign_in_user(user)
-            check t('forms.messages.remember_device')
-            fill_in_code_with_last_phone_otp
-            click_submit_default
-            visit request_url
-            click_agree_and_continue
-            click_submit_default
-            visit sign_out_url
-
-            identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
-            expect(identity.email_address_id).to eq(nil)
-          end
+          identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+          expect(identity.email_address_id).to eq(nil)
         end
       end
     end

@@ -145,7 +145,6 @@ event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_pending_in_person_password_reset_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5

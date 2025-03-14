@@ -1563,7 +1563,7 @@ RSpec.describe SamlIdpController do
       end
     end
 
-    context 'with shared email feature turned on' do
+    context 'sharing email with service provider' do
       let(:user) { create(:user, :fully_registered) }
       let(:service_provider) { build(:service_provider, issuer: saml_settings.issuer) }
 
