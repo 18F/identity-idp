@@ -321,7 +321,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         nationality_code: 'USA',
         issuing_country_code: 'USA',
         mrz: mrz,
-        personal_number: '3067F400 3065',
         state_id_type: 'passport',
         document_number: 'Z12345678',
       )

@@ -14,7 +14,6 @@ module Pii
     :mrz,
     :passport_issued,
     :nationality_code,
-    :personal_number,
     :document_number,
     :state_id_type,
   )

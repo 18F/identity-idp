@@ -167,14 +167,13 @@ module DocAuth
           middle_name:,
           dob:,
           sex:,
-          birth_place: id_auth_field_data['Fields_BirthPlace'],
           passport_expiration: expiration_date,
           passport_issued: issue_date,
           state_id_type:,
           issuing_country_code:,
-          nationality_code: id_auth_field_data['Fields_NationalityCode'],
-          personal_number: id_auth_field_data['Fields_PersonalNumber'],
           document_number:,
+          birth_place: id_auth_field_data['Fields_BirthPlace'],
+          nationality_code: id_auth_field_data['Fields_NationalityCode'],
           mrz: id_auth_field_data['Fields_MRZ'],
         )
       end

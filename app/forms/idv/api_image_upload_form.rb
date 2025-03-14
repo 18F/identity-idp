@@ -107,8 +107,10 @@ module Idv
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc.to_h[:state]
-      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
+      pii_hash = response.pii_from_doc.to_h
+      response.extra[:state] = pii_hash[:state]
+      response.extra[:state_id_type] = pii_hash[:state_id_type]
+      response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
         client_response: response,
@@ -373,6 +375,7 @@ module Idv
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
       zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
       issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
+      issue_year = client_response.pii_from_doc&.passport_issued&.to_date&.year if issue_year.nil?
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,

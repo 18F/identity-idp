@@ -13,6 +13,11 @@ module DocAuth
       'Passport' => 'passport',
     }.freeze
 
+    SOCURE_ID_TYPE_SLUGS = {
+      'Identification Card' => 'state_id_card',
+      'Drivers License' => 'drivers_license',
+    }.freeze
+
     def initialize(
       success:,
       errors: {},
