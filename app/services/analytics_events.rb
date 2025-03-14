@@ -1911,6 +1911,7 @@ module AnalyticsEvents
   # @param [Boolean] billed
   # @param [String] doc_auth_result
   # @param [String] state
+  # @param [String] country for passport doc types
   # @param [String] state_id_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
@@ -1973,7 +1974,6 @@ module AnalyticsEvents
     success:,
     errors:,
     exception:,
-    state:,
     state_id_type:,
     async:,
     submit_attempts:,
@@ -1982,6 +1982,8 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     issue_year:,
+    state: nil,
+    country: nil,
     failed_image_fingerprints: nil,
     billed: nil,
     doc_auth_result: nil,
@@ -2026,6 +2028,7 @@ module AnalyticsEvents
       billed:,
       doc_auth_result:,
       state:,
+      country:,
       state_id_type:,
       async:,
       submit_attempts: submit_attempts,
