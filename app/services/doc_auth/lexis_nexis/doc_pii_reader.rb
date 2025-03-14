@@ -87,6 +87,10 @@ module DocAuth
         id_auth_field_data['Fields_CountryCode']
       end
 
+      def document_number
+        id_auth_field_data['Fields_DocumentNumber']
+      end
+
       def parse_date(year:, month:, day:)
         Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
       rescue ArgumentError
@@ -150,7 +154,7 @@ module DocAuth
           state_id_expiration: expiration_date,
           state_id_issued: issue_date,
           state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
-          state_id_number: id_auth_field_data['Fields_DocumentNumber'],
+          state_id_number: document_number,
           state_id_type:,
           issuing_country_code:,
         )
@@ -170,6 +174,7 @@ module DocAuth
           issuing_country_code:,
           nationality_code: id_auth_field_data['Fields_NationalityCode'],
           personal_number: id_auth_field_data['Fields_PersonalNumber'],
+          document_number:,
           mrz: id_auth_field_data['Fields_MRZ'],
         )
       end

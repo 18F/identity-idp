@@ -323,6 +323,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         mrz: mrz,
         personal_number: '3067F400 3065',
         state_id_type: 'passport',
+        document_number: 'Z12345678',
       )
 
       expect(response.pii_from_doc.to_h).to eq(expected_passport_pii.to_h)
