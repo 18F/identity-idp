@@ -75,6 +75,8 @@ module Reporting
                 max(profile_age_in_seconds) as out_of_band_verification_pending_seconds,
                 sum(name = "User registration: agency handoff visited" and properties.event_properties.ial2) > 0 as agency_handoff,
                 sum(name = "SP redirect initiated" and properties.event_properties.ial == 2) > 0 as sp_redirect,
+                sortsFirst(properties.service_provider) as issuer,
+                sortsFirst(properties.sp_request.app_differentiator) as app_differentiator,
                 toMillis(min(@timestamp)) as first_event
                 by properties.user_id as login_uuid
         | filter workflow_started > 0 or verified_by_mail > 0 or verified_fraud_review > 0
@@ -117,6 +119,8 @@ module Reporting
     def csv_header
       [
         'UUID',
+        'Issuer',
+        'App Differentiator',
         'Workflow Started',
         'Documnet Capture Started',
         'Document Captured',
@@ -156,6 +160,8 @@ module Reporting
     def process_result_row(result_row)
       [
         result_row['login_uuid'],
+        result_row['issuer'],
+        result_row['app_differentiator'],
         result_row['workflow_started'] == '1',
         result_row['doc_auth_started'] == '1',
         result_row['document_captured'] == '1',
