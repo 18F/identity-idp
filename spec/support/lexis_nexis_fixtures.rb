@@ -176,6 +176,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_success_3.json')
     end
 
+    def true_id_response_passport
+      read_fixture_file_at_path('true_id/true_id_response_success_passport.json')
+    end
+
     def true_id_response_success_with_liveness
       read_fixture_file_at_path('true_id/true_id_response_success_with_liveness.json')
     end
@@ -222,8 +226,16 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_tampering_failure.json')
     end
 
+    def true_id_response_passport_failure_tampering
+      read_fixture_file_at_path('true_id/true_id_response_passport_tampering_failure.json')
+    end
+
     def true_id_response_failed_to_ocr_dob
       read_fixture_file_at_path('true_id/true_id_response_failed_to_ocr_dob.json')
+    end
+
+    def true_id_response_passport_failed_to_ocr_dob
+      read_fixture_file_at_path('true_id/true_id_response_passport_failed_to_ocr_dob.json')
     end
 
     private

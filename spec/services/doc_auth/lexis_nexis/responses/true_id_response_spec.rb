@@ -9,11 +9,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
   end
+  let(:success_with_passport_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport)
+  end
   let(:doc_auth_success_with_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
   let(:success_with_failed_to_ocr_dob) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failed_to_ocr_dob)
+  end
+  let(:success_with_passport_failed_to_ocr_dob) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failed_to_ocr_dob)
   end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
@@ -26,6 +32,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:failure_response_tampering) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_tampering)
+  end
+  let(:failure_response_passport_tampering) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failure_tampering)
   end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_with_all_failures)
@@ -58,6 +67,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:liveness_checking_enabled) { false }
   let(:workflow) { 'default_workflow' }
+  let(:mrz) do
+    'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02'
+  end
   let(:request_context) do
     {
       workflow: workflow,
@@ -268,6 +280,147 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           expect(pii_from_doc.height).to eq(69)
         end
       end
+    end
+  end
+
+  context 'when the response is a success for passport' do
+    let(:response) do
+      described_class.new(
+        success_with_passport_response,
+        config,
+        liveness_checking_enabled,
+        request_context,
+      )
+    end
+
+    it 'is a successful result' do
+      expect(response.successful_result?).to eq(true)
+      expect(response.to_h[:vendor]).to eq('TrueID')
+    end
+
+    it 'has no error messages' do
+      expect(response.error_messages).to be_empty
+    end
+    it 'has extra attributes' do
+      extra_attributes = response.extra_attributes
+      expect(extra_attributes).not_to be_empty
+      expect(extra_attributes[:classification_info]).to include(:Front)
+      expect(extra_attributes).to have_key(:workflow)
+      expect(extra_attributes).to have_key(:reference)
+    end
+    it 'has PII data' do
+      expected_passport_pii = Pii::Passport.new(
+        first_name: 'DAVID',
+        last_name: 'SAMPLE',
+        middle_name: 'PASSPORT',
+        dob: '1986-07-01',
+        sex: 'male',
+        birth_place: 'MY CITY. U.S.A.',
+        passport_expiration: '2099-10-15',
+        passport_issued: '2016-10-15',
+        nationality_code: 'USA',
+        issuing_country_code: 'USA',
+        mrz: mrz,
+        state_id_type: 'passport',
+        document_number: 'Z12345678',
+      )
+
+      expect(response.pii_from_doc.to_h).to eq(expected_passport_pii.to_h)
+    end
+
+    it 'excludes pii fields from logging' do
+      expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+    end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+    end
+
+    it 'produces expected hash output' do
+      response_hash = response.to_h
+      expect(response_hash).to match(
+        success: true,
+        exception: nil,
+        errors: {},
+        attention_with_barcode: false,
+        conversation_id: a_kind_of(String),
+        request_id: a_kind_of(String),
+        doc_type_supported: true,
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
+        transaction_status: 'passed',
+        transaction_reason_code: 'trueid_pass',
+        product_status: 'pass',
+        decision_product_status: 'pass',
+        processed_alerts: a_hash_including(:failed),
+        address_line2_present: false,
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: nil,
+        image_metrics: a_hash_including(:front),
+        doc_auth_result: 'Passed',
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Passed',
+        'DocClass' => 'Passport',
+        'DocClassCode' => 'Passport',
+        'DocClassName' => 'Passport',
+        'DocumentName' => 'United States (USA) Passport - STAR',
+        'DocIssuerCode' => 'USA',
+        'DocIssuerName' => 'United States',
+        'DocIssue' => '2016',
+        'DocIsGeneric' => 'false',
+        'DocIssuerType' => 'StateProvince',
+        'DocIssueType' => 'Passport - STAR',
+        'OrientationChanged' => 'true',
+        'PresentationChanged' => 'false',
+        'DocAuthTamperResult' => 'Passed',
+        'DocAuthTamperSensitivity' => 'Normal',
+        classification_info: {
+          Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+        },
+        doc_auth_success: true,
+        selfie_status: :not_processed,
+        selfie_live: true,
+        selfie_quality_good: true,
+        liveness_enabled: false,
+        workflow: anything,
+      )
+      passed_alerts = response_hash.dig(:processed_alerts, :passed)
+      passed_alerts.each do |alert|
+        expect(alert).to have_key(:disposition)
+      end
+      alerts_with_mode_etc = passed_alerts.select do |alert|
+        alert[:model].present? && alert[:region].present? && alert[:region_ref].present?
+      end
+      expect(alerts_with_mode_etc).not_to be_empty
+      alerts_with_mode_etc.each do |alert|
+        alert[:region_ref].each do |region_ref|
+          expect(region_ref).to include(:side, :key)
+        end
+      end
+    end
+
+    it 'mark doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+
+  context 'when the response is a failure for passport' do
+    it 'produces appropriate errors with passport tampering' do
+      response = described_class.new(failure_response_passport_tampering, config)
+      output = response.to_h
+      errors = output[:errors]
+      expect(output.to_h[:log_alert_results]).to include(
+        document_tampering_detection: { no_side: 'Failed' },
+      )
+      expect(output[:success]).to eq(false)
+      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+      # we dont have specific error for tampering yet
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(errors[:hints]).to eq(true)
+      expect(response.doc_auth_success?).to eq(false)
     end
   end
 
@@ -587,6 +740,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
+  context 'when the dob is incorrectly parsed in passport' do
+    let(:response) { described_class.new(success_with_passport_failed_to_ocr_dob, config) }
+
+    it 'does not throw an exception when getting pii from doc' do
+      expect(response.pii_from_doc.dob).to be_nil
+    end
+  end
+
   describe '#parse_date' do
     let(:response) { described_class.new(success_response, config) }
 
@@ -696,7 +857,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when doc class is identified but not supported' do
-      let(:doc_class_name) { 'Passport' }
+      let(:doc_class_name) { 'Non-Document-Type' }
       it 'identified as un supported doc type ' do
         is_expected.to eq(false)
       end

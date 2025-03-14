@@ -30,6 +30,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }
+  let(:document_type) { 'DriversLicense' }
   let(:front_image_metadata) do
     {
       width: 40,
@@ -177,6 +178,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: document_type,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -205,6 +207,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           errors: {},
           remaining_submit_attempts: 3,
           state: 'MT',
+          country: 'US',
           state_id_type: 'drivers_license',
           success: true,
           user_id: document_capture_session.user.uuid,
@@ -221,6 +224,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
+          document_type: document_type,
         )
       end
 
@@ -257,6 +261,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
             liveness_checking_required: boolean,
+            document_type: document_type,
           )
 
           expect(fake_analytics).to have_logged_event(
@@ -293,6 +298,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             portrait_match_results: anything,
             remaining_submit_attempts: 3,
             state: 'MT',
+            country: 'US',
             state_id_type: 'drivers_license',
             success: true,
             user_id: document_capture_session.user.uuid,
@@ -310,6 +316,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             zip_code: '59010',
             issue_year: 2019,
             selfie_attempts: a_kind_of(Numeric),
+            document_type: document_type,
           )
         end
 
@@ -396,6 +403,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: document_type,
         )
       end
 
@@ -598,6 +606,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
           side: 'both',
+          document_type: document_type,
         )
       end
 
@@ -625,6 +634,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             liveness_checking_required: boolean,
             side: 'both',
+            document_type: document_type,
           )
         end
       end

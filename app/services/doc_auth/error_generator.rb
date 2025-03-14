@@ -9,7 +9,7 @@ module DocAuth
   end
 
   class IdTypeErrorHandler < ErrorHandler
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
@@ -22,7 +22,10 @@ module DocAuth
       return unless classification_info.present?
       error_result = ErrorResult.new
       both_side_ok = true
-      %w[Front Back].each do |side|
+      document_type = classification_info.with_indifferent_access.dig('Front', 'ClassName')
+      is_passport = document_type == 'Passport'
+      sides = is_passport ? ['Front'] : ['Front', 'Back']
+      sides.each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
         side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
@@ -237,7 +240,6 @@ module DocAuth
         message: 'DocAuth failure escaped without useful errors',
         response_info: response_info,
       )
-
       error = Errors::GENERAL_ERROR
       side = ErrorGenerator::ID
       ErrorResult.new(error, side)
@@ -291,7 +293,7 @@ module DocAuth
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
 
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
 
     def initialize(config)
       @config = config
