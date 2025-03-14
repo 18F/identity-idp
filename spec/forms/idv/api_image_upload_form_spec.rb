@@ -30,6 +30,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }
+  let(:document_type) { 'DriversLicense' }
   let(:front_image_metadata) do
     {
       width: 40,
@@ -177,6 +178,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: document_type,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -221,6 +223,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
+          document_type: document_type,
         )
       end
 
@@ -257,6 +260,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
             liveness_checking_required: boolean,
+            document_type: document_type,
           )
 
           expect(fake_analytics).to have_logged_event(
@@ -310,6 +314,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             zip_code: '59010',
             issue_year: 2019,
             selfie_attempts: a_kind_of(Numeric),
+            document_type: document_type,
           )
         end
 
@@ -396,6 +401,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: document_type,
         )
       end
 
@@ -598,6 +604,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
           side: 'both',
+          document_type: document_type,
         )
       end
 
@@ -625,8 +632,56 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             liveness_checking_required: boolean,
             side: 'both',
+            document_type: document_type,
           )
         end
+      end
+    end
+
+    context 'Passport MRZ validation fails' do
+      let(:passport_pii_response) do
+        DocAuth::Response.new(
+          success: true,
+          errors: {},
+          extra: {},
+          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
+        )
+      end
+
+      let(:failed_passport_mrz_response) do
+        DocAuth::Response.new(
+          success: false,
+          errors: { passport: 'invalid MRZ' },
+          extra: {
+            vendor: 'DoS',
+            correlation_id_sent: 'something',
+            correlation_id_received: 'something else',
+          },
+        )
+      end
+
+      let(:response) { form.submit }
+
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:post_images_to_client)
+          .and_return(passport_pii_response)
+
+        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
+          .to receive(:fetch)
+          .and_return(failed_passport_mrz_response)
+      end
+
+      it 'is not successful' do
+        expect(response.success?).to eq(false)
+      end
+
+      it 'includes remaining_submit_attempts' do
+        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
+      end
+
+      it 'includes mrz errors' do
+        expect(response.errors).to eq({ passport: 'invalid MRZ' })
       end
     end
 

@@ -483,7 +483,7 @@ RSpec.describe 'Hybrid Flow' do
           visit @sms_link
 
           body = JSON.parse(SocureDocvFixtures.pass_json)
-          body['documentVerification']['documentType']['type'] = 'Passport'
+          body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
           remove_request_stub(@pass_stub)
           stub_docv_verification_data(
             docv_transaction_token: @docv_transaction_token,

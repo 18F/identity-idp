@@ -36,6 +36,7 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
+      passport_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -46,13 +47,18 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+
+          if doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
+            passport_response = validate_mrz(client_response)
+          end
         end
       end
 
       response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+        form_response:,
+        client_response:,
+        doc_pii_response:,
+        passport_response:,
       )
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
@@ -92,7 +98,6 @@ module Idv
 
     def post_images_to_client
       timer = JobHelpers::Timer.new
-
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
@@ -103,6 +108,7 @@ module Idv
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
+          document_type: document_type,
         )
       end
 
@@ -129,6 +135,13 @@ module Idv
       @selfie_image_bytes ||= selfie.read
     end
 
+    def document_type
+      return nil if document_capture_session.nil?
+
+      @document_type ||= document_capture_session.passport_requested? \
+        ? 'Passport' : 'DriversLicense'
+    end
+
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(
         pii: client_response.pii_from_doc.to_h,
@@ -144,6 +157,17 @@ module Idv
       if client_response.success? && response.success?
         store_pii(client_response)
       end
+
+      response
+    end
+
+    def validate_mrz(client_response)
+      response = DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz).fetch
+
+      if !response.success?
+        errors.add(:passport, response.errors[:mrz], type: :invalid)
+      end
+      response.extra.merge!(extra_attributes)
 
       response
     end
@@ -171,6 +195,7 @@ module Idv
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
       @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
+      @extra_attributes[:document_type] = document_type
       @extra_attributes
     end
 
@@ -217,12 +242,14 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, passport_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      return passport_response if passport_response.present? && !passport_response.success?
 
       client_response
     end

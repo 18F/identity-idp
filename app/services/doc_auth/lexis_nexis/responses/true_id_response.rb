@@ -131,6 +131,10 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
+        def passport_pii?
+          @passport_pii ||= pii_from_doc&.state_id_type == 'passport'
+        end
+
         def transaction_status
           parsed_response_body.dig(:Status, :TransactionStatus)
         end
@@ -177,6 +181,10 @@ module DocAuth
 
         def create_response_info
           alerts = parsed_alerts
+          address_line2_present = false
+          if !passport_pii?
+            address_line2_present = !pii_from_doc&.address2.blank?
+          end
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
           {
             transaction_status: transaction_status,
@@ -189,7 +197,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
             image_metrics: read_image_metrics(true_id_product),
-            address_line2_present: !pii_from_doc&.address2.blank?,
+            address_line2_present: address_line2_present,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
           }
@@ -234,18 +242,21 @@ module DocAuth
           # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
           issuing_country = pii_from_doc&.issuing_country_code
-          {
+          classification_hash = {
             Front: {
               ClassName: doc_class,
               IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
-            Back: {
+          }
+          if !passport_pii?
+            classification_hash[:Back] = {
               ClassName: doc_class,
               IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
-            },
-          }
+            }
+          end
+          classification_hash
         end
 
         def portrait_match_results
