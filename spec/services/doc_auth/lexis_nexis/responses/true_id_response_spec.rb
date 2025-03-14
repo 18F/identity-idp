@@ -18,6 +18,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_failed_to_ocr_dob) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failed_to_ocr_dob)
   end
+  let(:success_with_passport_failed_to_ocr_dob) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failed_to_ocr_dob)
+  end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -404,7 +407,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the response is a success for passport' do
     it 'produces appropriate errors with passport tampering' do
-      output = described_class.new(failure_response_passport_tampering, config).to_h
+      response = described_class.new(failure_response_passport_tampering, config)
+      output = response.to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to include(
         document_tampering_detection: { no_side: 'Failed' },
@@ -415,6 +419,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:hints]).to eq(true)
+      expect(response.doc_auth_success?).to eq(false)
     end
   end
 
@@ -728,6 +733,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the dob is incorrectly parsed' do
     let(:response) { described_class.new(success_with_failed_to_ocr_dob, config) }
+
+    it 'does not throw an exception when getting pii from doc' do
+      expect(response.pii_from_doc.dob).to be_nil
+    end
+  end
+
+  context 'when the dob is incorrectly parsed in passport' do
+    let(:response) { described_class.new(success_with_passport_failed_to_ocr_dob, config) }
 
     it 'does not throw an exception when getting pii from doc' do
       expect(response.pii_from_doc.dob).to be_nil
