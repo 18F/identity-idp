@@ -405,7 +405,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
-  context 'when the response is a success for passport' do
+  context 'when the response is a failure for passport' do
     it 'produces appropriate errors with passport tampering' do
       response = described_class.new(failure_response_passport_tampering, config)
       output = response.to_h

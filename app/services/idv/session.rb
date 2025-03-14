@@ -237,7 +237,8 @@ module Idv
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
-      if session[:passport_allowed]
+
+      if session[:pii_from_doc][:state_id_type] == 'passport'
         passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
         Pii::Passport.new(**passport_data)
       else
