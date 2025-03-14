@@ -63,17 +63,6 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       end
     end
 
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
-      end
-    end
-
     context 'when the user already has max number of emails' do
       before do
         allow(IdentityConfig.store).to receive(:max_emails_per_account)
@@ -149,17 +138,6 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
       it 'redirects to sign in' do
         expect(response).to redirect_to new_user_session_path
-      end
-    end
-
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
       end
     end
   end

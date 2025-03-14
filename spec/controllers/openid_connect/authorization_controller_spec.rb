@@ -1921,8 +1921,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           )
         end
         before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-            .and_return(true)
           controller.user_session[:selected_email_id_for_linked_identity] = shared_email_address.id
         end
 
@@ -1954,10 +1952,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             email_address_id: shared_email_address.id,
           )
         end
-        before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-            .and_return(true)
-        end
 
         it 'updates identity email_address to be nil' do
           identity = user.identities.find_by(service_provider: service_provider.issuer)
@@ -1986,10 +1980,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             verified_attributes: verified_attributes,
             email_address_id: shared_email_address.id,
           )
-        end
-        before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-            .and_return(true)
         end
 
         it 'updates identity email_address to be nil' do

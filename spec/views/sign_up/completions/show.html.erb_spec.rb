@@ -61,20 +61,6 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     )
   end
 
-  context 'select email to send to partner and select email feature is disabled' do
-    before do
-      allow(IdentityConfig.store).to receive(
-        :feature_select_email_to_share_enabled,
-      ).and_return(false)
-    end
-
-    it 'does not show change link' do
-      render
-
-      expect(rendered).to_not include(t('help_text.requested_attributes.change_email_link'))
-    end
-  end
-
   context 'select email to send to partner' do
     it 'shows email change link' do
       render
