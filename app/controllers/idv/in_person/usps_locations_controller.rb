@@ -98,6 +98,10 @@ module Idv
       end
 
       def handle_error(err)
+        # Due to app-wide level alarms triggering on 5XX error codes, we are
+        # only returning 5XX error codes in the case of an 'unhandled' scenario.
+        # When diving into error logs for this controller trust exception_class
+        # and exception_message over api_status_code as the codes are misleading.
         remapped_error = case err
                          when ActionController::InvalidAuthenticityToken,
                               Faraday::Error,
@@ -107,6 +111,9 @@ module Idv
                            :internal_server_error
                          end
 
+        # Below, the api_status_code is our internally remapped error code,
+        # while response_status_code is the status code returned from the USPS
+        # endpoint itself.
         analytics.idv_in_person_locations_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: err.class,
