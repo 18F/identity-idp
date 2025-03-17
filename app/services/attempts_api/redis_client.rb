@@ -21,6 +21,18 @@ module AttemptsApi
       events
     end
 
+    def delete_events(issuer:, keys:)
+      hourly_keys = REDIS_ATTEMPTS_API_POOL.with do |client|
+        client.keys("attempts-api-events:#{issuer}:*")
+      end
+
+      hourly_keys.each do |hourly_key|
+        REDIS_ATTEMPTS_API_POOL.with do |client|
+          client.hdel(hourly_key, keys)
+        end
+      end
+    end
+
     def key(timestamp, issuer)
       formatted_time = timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
       "attempts-api-events:#{issuer}:#{formatted_time}"
