@@ -73,14 +73,13 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def clear_email_address_id_if_not_supported
-    if !verified_single_email_attribute? &&
-       IdentityConfig.store.feature_select_email_to_share_enabled
+    if !verified_single_email_attribute?
       self.email_address_id = nil
     end
   end
 
   def email_address_for_sharing
-    if IdentityConfig.store.feature_select_email_to_share_enabled && email_address
+    if email_address
       return email_address
     end
     user.last_sign_in_email_address

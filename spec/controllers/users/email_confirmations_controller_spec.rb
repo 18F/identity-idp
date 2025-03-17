@@ -34,26 +34,6 @@ RSpec.describe Users::EmailConfirmationsController do
         )
       end
 
-      context 'when select email feature is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-            .and_return(false)
-        end
-        it 'should render proper flash member' do
-          flash_message = t('devise.confirmations.confirmed')
-          user = create(:user)
-          sign_in user
-          new_email = Faker::Internet.email
-
-          add_email_form = AddUserEmailForm.new
-          add_email_form.submit(user, email: new_email)
-          email_record = add_email_form.email_address_record(new_email)
-
-          get :create, params: { confirmation_token: email_record.reload.confirmation_token }
-          expect(flash[:success]).to eq(flash_message)
-        end
-      end
-
       it 'rejects an otherwise valid token for unconfirmed users' do
         user = create(:user, :unconfirmed, email_addresses: [])
         new_email = Faker::Internet.email
@@ -154,29 +134,6 @@ RSpec.describe Users::EmailConfirmationsController do
             user_id: user.uuid,
           )
           expect(response).to redirect_to(sign_up_select_email_url)
-        end
-
-        context 'when select email feature is disabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-              .and_return(false)
-          end
-
-          it 'redirects to account page with success message' do
-            new_email = Faker::Internet.email
-            add_email_form = AddUserEmailForm.new
-            add_email_form.submit(user, email: new_email, request_id: sp_request_uuid)
-            email_record = add_email_form.email_address_record(new_email)
-
-            get :create, params: {
-              confirmation_token: email_record.reload.confirmation_token,
-              request_id: sp_request_uuid,
-              from_select_email_flow: 'true',
-            }
-
-            expect(response).to redirect_to(account_path)
-            expect(flash[:success]).to eq(t('devise.confirmations.confirmed'))
-          end
         end
       end
     end
