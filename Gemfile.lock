@@ -36,10 +36,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 32e9be98c30bc5d01b4088500e4d518f724aadc5
-  tag: 0.23.6-18f
+  revision: f76c4e093158de5f704e63bcbc09107a717a1c27
+  tag: 0.23.7-18f
   specs:
-    saml_idp (0.23.6.pre.18f)
+    saml_idp (0.23.7.pre.18f)
       activesupport
       builder
       faraday
@@ -589,7 +589,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.3.9)
+    rexml (3.4.1)
     rotp (6.3.0)
     rouge (4.2.0)
     rqrcode (2.1.0)
@@ -646,7 +646,7 @@ GEM
     rubocop-rspec (3.2.0)
       rubocop (~> 1.61)
     ruby-progressbar (1.13.0)
-    ruby-saml (1.17.0)
+    ruby-saml (1.18.0)
       nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.2)
