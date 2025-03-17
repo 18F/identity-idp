@@ -7,7 +7,8 @@ module MfaSetupConcern
   def next_setup_path
     if next_setup_choice
       confirmation_path
-    elsif recommend_webauthn_platform_for_sms_user?(:recommend_for_account_creation)
+    elsif after_sms_only_setup
+      user_session.delete(:mfa_selections)
       webauthn_platform_recommended_path
     elsif suggest_second_mfa?
       auth_method_confirmation_path
@@ -128,5 +129,10 @@ module MfaSetupConcern
       :mfa_selections,
       determine_next_mfa,
     )
+  end
+
+  def after_sms_only_setup
+    mobile? && (user_session[:mfa_selections]&.count == 1 &&
+      user_session[:mfa_selections] == ['phone'])
   end
 end

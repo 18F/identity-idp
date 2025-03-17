@@ -33,10 +33,9 @@ RSpec.describe MfaSetupConcern do
         controller.user_session[:mfa_selections] = ['phone']
       end
 
-      context 'when user is recommended for webauthn platform for sms user' do
-        let(:recommend_webauthn_platform_for_sms_user) { true }
-
+      context 'when a sms user only selects phone for mfa setup' do
         it 'returns webauthn platform recommended path' do
+          allow(controller).to receive(:mobile?).and_return(true)
           expect(next_setup_path).to eq(webauthn_platform_recommended_path)
         end
       end
