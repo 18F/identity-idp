@@ -1,8 +1,6 @@
 properties:
   mfa-enroll-backup-code:
     $ref: './registration/MfaEnrollBackupCode.yml'
-  mfa-enroll-options-selected:
-    $ref: './registration/MfaEnrollOptionsSelected.yml'
   mfa-enroll-phone-otp-sent:
     $ref: './registration/MfaEnrollPhoneOtpSent.yml'
   mfa-enroll-phone-otp-code-rate-limited:
