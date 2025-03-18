@@ -610,6 +610,8 @@ doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devic
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
+doc_auth.headings.passport.address: Enter your current residential address
+doc_auth.headings.passport.note: If your residential address and mailing address are different, you can also try to verify your mailing address.
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face

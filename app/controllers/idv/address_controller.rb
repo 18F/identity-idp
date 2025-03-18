@@ -12,7 +12,8 @@ module Idv
       analytics.idv_address_visit
 
       @address_form = build_address_form
-      @presenter = AddressPresenter.new
+      @is_passport = idv_session.pii_from_doc&.state_id_type == 'passport'
+      @presenter = AddressPresenter.new(is_passport: @is_passport)
     end
 
     def update
@@ -63,7 +64,7 @@ module Idv
     end
 
     def failure
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(is_passport: @is_passport)
       render :new
     end
 

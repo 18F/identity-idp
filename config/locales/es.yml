@@ -621,6 +621,8 @@ doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cam
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
+doc_auth.headings.passport.address: Ingrese su domicilio actual
+doc_auth.headings.passport.note: Si su domicilio y su dirección postal no son iguales, también puede intentar verificar su dirección postal.
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara

@@ -610,6 +610,8 @@ doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pou
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
+doc_auth.headings.passport.address: Saisir votre adresse personnelle actuelle
+doc_auth.headings.passport.note: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage

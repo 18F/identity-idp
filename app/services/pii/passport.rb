@@ -16,6 +16,11 @@ module Pii
     :nationality_code,
     :document_number,
     :state_id_type,
+    :address1,
+    :address2,
+    :city,
+    :state,
+    :zipcode,
   )
 end
 # rubocop:enable Style/MutableConstant

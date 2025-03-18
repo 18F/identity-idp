@@ -175,6 +175,11 @@ module DocAuth
           birth_place: id_auth_field_data['Fields_BirthPlace'],
           nationality_code: id_auth_field_data['Fields_NationalityCode'],
           mrz: id_auth_field_data['Fields_MRZ'],
+          address1: nil,
+          address2: nil,
+          city: nil,
+          state: nil,
+          zipcode: nil,
         )
       end
     end

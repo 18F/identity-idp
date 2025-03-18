@@ -621,6 +621,8 @@ doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.no_ssn: 没有社会保障号码？
+doc_auth.headings.passport.address: 输入你当前的居住地址
+doc_auth.headings.passport.note: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
