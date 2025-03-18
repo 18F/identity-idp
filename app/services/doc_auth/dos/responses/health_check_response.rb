@@ -20,12 +20,23 @@ module DocAuth
         def success
           return false if faraday_error?
           return false if !parsed_body
-          parsed_body[:status].to_s.downcase == 'up'
+
+          healthy?(parsed_body)
+        end
+
+        def healthy?(status_body)
+          return false if status_body[:status].to_s.downcase != 'up'
+
+          status_body[:downstreamHealth]&.each do |h|
+            return false unless healthy?(h)
+          end
+
+          true
         end
 
         def extra
           {
-            body: body,
+            body:,
           }
         end
 
@@ -35,7 +46,7 @@ module DocAuth
         end
 
         def parsed_body
-          body && JSON.parse(body, symbolize_names: true)
+          @parsed_body ||= body && JSON.parse(body, symbolize_names: true)
         end
 
         def errors
