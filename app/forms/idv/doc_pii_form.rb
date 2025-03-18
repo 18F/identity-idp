@@ -9,6 +9,7 @@ module Idv
     validates_presence_of :address1, { message: proc {
                                                   I18n.t('doc_auth.errors.alerts.address_check')
                                                 } }
+    # validate :state_id_or_passport
     validate :zipcode_valid?
     validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
                                                   message: proc {
@@ -106,6 +107,27 @@ module Idv
       if age < IdentityConfig.store.idv_min_age_years
         errors.add(:dob_min_age, dob_min_age_error, type: :dob)
       end
+    end
+
+    def state_id_or_passport
+      if doc_is_passport?
+        passport_validation = DocPiiPassportForm.new(pii_from_doc)
+        passport_validation.valid? || passport_validation.errors
+      elsif doc_is_state_id?
+        state_id_validation = DocPiiStateIdForm.new(pii_from_doc)
+        state_id_validation.valid? || state_id_validation.errors
+      else
+        # look into this error and rewrite possibly
+        errors.add(:no_document, generic_error, type: :no_document)
+      end
+    end
+
+    def doc_is_passport?
+      pii[:passport_issued].present?
+    end
+
+    def doc_ia_state_id?
+      pii[:jurisdiction].present?
     end
 
     def state_id_expired?
