@@ -179,7 +179,7 @@ RSpec.describe GpoReminderSender do
               enhanced_ipp?: is_enhanced_ipp,
             ),
             otp: otp,
-          ).submit(is_enhanced_ipp)
+          ).submit
         end
 
         include_examples 'sends no emails'

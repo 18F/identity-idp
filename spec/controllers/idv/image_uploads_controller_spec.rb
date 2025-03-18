@@ -114,6 +114,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
@@ -228,6 +229,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
@@ -298,6 +300,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
               selfie_image: an_instance_of(String),
+              document_type: an_instance_of(String),
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
@@ -320,6 +323,7 @@ RSpec.describe Idv::ImageUploadsController do
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: nil,
+            document_type: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
@@ -349,6 +353,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -360,6 +365,7 @@ RSpec.describe Idv::ImageUploadsController do
           billed: true,
           doc_auth_result: 'Passed',
           state: 'MT',
+          country: 'US',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
           submit_attempts: 1,
@@ -382,6 +388,7 @@ RSpec.describe Idv::ImageUploadsController do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -398,6 +405,7 @@ RSpec.describe Idv::ImageUploadsController do
           classification_info: a_kind_of(Hash),
           id_issued_status: 'present',
           id_expiration_status: 'present',
+          document_type: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -480,6 +488,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -511,6 +520,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -533,6 +543,7 @@ RSpec.describe Idv::ImageUploadsController do
               ),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              document_type: an_instance_of(String),
             )
           end
         end
@@ -555,6 +566,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -586,6 +598,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -608,6 +621,7 @@ RSpec.describe Idv::ImageUploadsController do
               ),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              document_type: an_instance_of(String),
             )
           end
         end
@@ -630,6 +644,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -661,6 +676,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -680,6 +696,7 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              document_type: an_instance_of(String),
             )
           end
         end
@@ -702,6 +719,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -732,6 +750,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_live: true,
               selfie_quality_good: true,
               zip_code: '12345',
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -751,6 +770,7 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              document_type: an_instance_of(String),
             )
           end
         end
@@ -773,6 +793,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -804,6 +825,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -823,6 +845,7 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              document_type: an_instance_of(String),
             )
           end
         end
@@ -869,6 +892,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -896,6 +920,7 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: true,
           selfie_quality_good: true,
+          document_type: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -935,6 +960,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -960,6 +986,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          document_type: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
@@ -1045,6 +1072,7 @@ RSpec.describe Idv::ImageUploadsController do
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: an_instance_of(String),
+            document_type: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
@@ -1075,6 +1103,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
+            document_type: an_instance_of(String),
           ).and_call_original
 
         action

@@ -25,12 +25,10 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(UserProfilesEncryptor).not_to receive(:new)
         user.save!
 
-        old_digest = user.encrypted_password_digest
-        old_digest_multi_region = user.encrypted_password_digest_multi_region
+        old_digest = user.encrypted_password_digest_multi_region
 
         result = subject.submit(params).to_h
-        expect(old_digest_multi_region).to eq(user.reload.encrypted_password_digest_multi_region)
-        expect(old_digest).to eq(user.reload.encrypted_password_digest)
+        expect(old_digest).to eq(user.reload.encrypted_password_digest_multi_region)
 
         expect(result).to include(
           success: false,
@@ -55,11 +53,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
         expect do
           subject.submit(params)
-        end.to(
-          change { user.reload.encrypted_password_digest_multi_region }.and(
-            change { user.reload.encrypted_password_digest },
-          ),
-        )
+        end.to(change { user.reload.encrypted_password_digest_multi_region })
       end
     end
 

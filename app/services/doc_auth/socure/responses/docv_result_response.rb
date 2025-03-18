@@ -187,7 +187,7 @@ module DocAuth
         end
 
         def id_type_supported?
-          DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
+          DocAuth::Response::SOCURE_ID_TYPE_SLUGS.key?(document_id_type)
         end
       end
     end

@@ -92,7 +92,6 @@ module Idv
 
     def post_images_to_client
       timer = JobHelpers::Timer.new
-
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
@@ -103,12 +102,15 @@ module Idv
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
+          document_type: document_type,
         )
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc.to_h[:state]
-      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
+      pii_hash = response.pii_from_doc.to_h
+      response.extra[:state] = pii_hash[:state]
+      response.extra[:state_id_type] = pii_hash[:state_id_type]
+      response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
         client_response: response,
@@ -127,6 +129,13 @@ module Idv
 
     def selfie_image_bytes
       @selfie_image_bytes ||= selfie.read
+    end
+
+    def document_type
+      return nil if document_capture_session.nil?
+
+      @document_type ||= document_capture_session.passport_requested? \
+        ? 'Passport' : 'DriversLicense'
     end
 
     def validate_pii_from_doc(client_response)
@@ -171,6 +180,7 @@ module Idv
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
       @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
+      @extra_attributes[:document_type] = document_type
       @extra_attributes
     end
 
@@ -330,13 +340,6 @@ module Idv
     end
 
     def doc_auth_client
-      # to be removed 50/50 - start
-      unless document_capture_session.doc_auth_vendor
-        document_capture_session
-          .update!(doc_auth_vendor: IdentityConfig.store.doc_auth_vendor_default)
-      end
-      # to be removed 50/50 - end
-
       @doc_auth_client ||= DocAuthRouter.client(
         vendor: document_capture_session.doc_auth_vendor,
         warn_notifier: proc do |attrs|
@@ -369,9 +372,15 @@ module Idv
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      is_state_id = client_response.pii_from_doc.is_a?(Pii::StateId)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
-      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
-      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
+      zip_code = is_state_id ? client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5) : nil
+      issue_year = nil
+      if is_state_id
+        issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
+      else
+        issue_year = client_response.pii_from_doc&.passport_issued&.to_date&.year
+      end
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,

@@ -18,16 +18,14 @@ class GpoVerifyForm
     @otp = otp
   end
 
-  def submit(is_enhanced_ipp)
+  def submit
     result = valid?
     fraud_check_failed = pending_profile&.fraud_pending_reason.present?
 
     if result
       pending_profile&.remove_gpo_deactivation_reason
 
-      if user.has_establishing_in_person_enrollment_safe?
-        schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
-      elsif fraud_check_failed && threatmetrix_enabled?
+      if fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
         pending_profile&.activate_after_fraud_review_unnecessary

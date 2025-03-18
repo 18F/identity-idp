@@ -401,7 +401,7 @@ RSpec.feature 'document capture step', :js do
       context 'not accepted id type' do
         it 'displays unaccepdted id type error message' do
           body = JSON.parse(SocureDocvFixtures.pass_json)
-          body['documentVerification']['documentType']['type'] = 'Passport'
+          body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
 
           remove_request_stub(@pass_stub)
           stub_docv_verification_data(

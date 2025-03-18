@@ -13,6 +13,7 @@ module DocAuth
       def post_images(
         front_image:,
         back_image:,
+        document_type: nil,
         selfie_image: nil,
         image_source: nil,
         images_cropped: false,
@@ -30,6 +31,7 @@ module DocAuth
           image_source: image_source,
           images_cropped: images_cropped,
           liveness_checking_required: liveness_checking_required,
+          document_type: document_type,
         ).fetch
       end
     end
