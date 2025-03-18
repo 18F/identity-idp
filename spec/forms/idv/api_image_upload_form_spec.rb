@@ -660,6 +660,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             vendor: 'DoS',
             correlation_id_sent: 'something',
             correlation_id_received: 'something else',
+            response: 'NO',
           },
         )
       end
@@ -686,6 +687,74 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'includes mrz errors' do
         expect(response.errors).to eq({ passport: 'invalid MRZ' })
+      end
+
+      it 'logs the check event' do
+        response
+
+        expect(fake_analytics).to have_logged_event(
+          :idv_dos_passport_verification,
+          success: false,
+          response: 'NO',
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
+          user_id: document_capture_session.user.uuid,
+          document_type: document_type,
+        )
+      end
+    end
+
+    context 'Passport MRZ validation succeeds' do
+      let(:passport_pii_response) do
+        DocAuth::Response.new(
+          success: true,
+          errors: {},
+          extra: {},
+          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
+        )
+      end
+
+      let(:successful_passport_mrz_response) do
+        DocAuth::Response.new(
+          success: true,
+          errors: {},
+          extra: {
+            vendor: 'DoS',
+            correlation_id_sent: 'something',
+            correlation_id_received: 'something else',
+            response: 'YES',
+          },
+        )
+      end
+
+      let(:response) { form.submit }
+
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:post_images_to_client)
+          .and_return(passport_pii_response)
+
+        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
+          .to receive(:fetch)
+          .and_return(successful_passport_mrz_response)
+      end
+
+      it 'is successful' do
+        expect(response.success?).to eq(true)
+      end
+
+      it 'logs the check event' do
+        response
+
+        expect(fake_analytics).to have_logged_event(
+          :idv_dos_passport_verification,
+          success: true,
+          response: 'YES',
+          submit_attempts: 1,
+          remaining_submit_attempts: 3,
+          user_id: document_capture_session.user.uuid,
+          document_type: document_type,
+        )
       end
     end
 

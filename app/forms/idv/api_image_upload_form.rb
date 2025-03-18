@@ -48,7 +48,8 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
 
-          if doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
+          if doc_pii_response.success? &&
+             doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
             passport_response = validate_mrz(client_response)
           end
         end
@@ -165,6 +166,15 @@ module Idv
 
     def validate_mrz(client_response)
       response = DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz).fetch
+
+      analytics.idv_dos_passport_verification(
+        document_type:,
+        remaining_submit_attempts:,
+        submit_attempts:,
+        user_id: user_uuid,
+        response: response.extra[:response],
+        success: response.success?,
+      )
 
       if !response.success?
         errors.add(:passport, response.errors[:mrz], type: :invalid)

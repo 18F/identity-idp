@@ -137,7 +137,7 @@ module Idp
     }.freeze
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
-      %i[first_name last_name dob].include?(field)
+      %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
       state_id_type: 'passport',
       mrz:
@@ -147,7 +147,7 @@ module Idp
       issuing_country_code: nil,
       passport_issued: nil,
       nationality_code: nil,
-      personal_number: nil,
+      document_number: nil,
     ).freeze
 
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(

@@ -2363,6 +2363,35 @@ module AnalyticsEvents
     )
   end
 
+  # User's passport information submitted to DoS for validation
+  # @param [Boolean] success Whether the validation succeeded
+  # @param [String] response The raw verdict from DoS
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
+  # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
+  #                  we rate limit them.
+  # @param [String] user_id
+  # @param [String] document_type The document type (should always be 'Passport' here)
+  def idv_dos_passport_verification(
+    success:,
+    response:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    user_id:,
+    document_type:,
+    **extra
+  )
+    track_event(
+      :idv_dos_passport_verification,
+      success:,
+      response:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      user_id:,
+      document_type:,
+      **extra,
+    )
+  end
+
   # User submitted IDV password confirm page
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
