@@ -114,9 +114,26 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
             {
               status: 'up',
               downstreamHealth: nil,
-             },
+            },
             {
-              status: 'down',
+              status: 'up',
+              downstreamHealth: [],
+            },
+            {
+              status: 'up',
+              downstreamHealth: [
+                {
+                  status: 'up',
+                  downstreamHealth: nil,
+                },
+                {
+                  status: 'up',
+                  downstreamHealth: [],
+                },
+                {
+                  status: 'down',
+                },
+              ],
             },
           ],
         }.to_json
