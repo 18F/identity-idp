@@ -34,8 +34,8 @@ add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
-allowed_ialmax_providers: '[]'
 allowed_force_ial2_providers: '[]'
+allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
