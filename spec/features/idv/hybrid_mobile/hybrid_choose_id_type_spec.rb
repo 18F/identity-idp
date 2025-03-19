@@ -4,20 +4,27 @@ RSpec.feature 'mobile hybrid flow choose id type', :js, :allow_net_connect_on_st
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
+  include AbTestsHelper
 
   let(:phone_number) { '415-555-0199' }
   let(:sp) { :oidc }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+      .to_return({ status: 200, body: { status: 'UP' }.to_json })
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
+    reload_ab_tests
+  end
+
+  after do
+    reload_ab_tests
   end
 
   it 'proofs and hands off to mobile', js: true do
