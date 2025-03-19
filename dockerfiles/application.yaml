@@ -542,6 +542,9 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
+            - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
         # Patch PIVCAC Image
         - target:
             kind: Deployment
