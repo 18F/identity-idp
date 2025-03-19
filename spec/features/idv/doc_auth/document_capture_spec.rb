@@ -187,6 +187,53 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  context 'with a valid passport', allow_browser_log: true do
+    before do
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'works' do
+      expect(page).to have_current_path(idv_document_capture_url, wait: 600)
+
+      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+      attach_images(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        ),
+      )
+
+      submit_images
+      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+    end
+  end
+
+  # ToDo: can we remove the allow_browser_log?
+  context 'with an invalid passport', allow_browser_log: true do
+    before do
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'fails' do
+      expect(page).to have_current_path(idv_document_capture_url, wait: 600)
+      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+      attach_images(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_mrz_credential.yml'
+        ),
+      )
+
+      submit_images
+
+      expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+    end
+  end
+
   context 'standard desktop flow' do
     before do
       visit_idp_from_oidc_sp_with_ial2
@@ -296,6 +343,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
   end
+
   context 'selfie check' do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)

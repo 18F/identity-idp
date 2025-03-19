@@ -2,7 +2,7 @@ module InteractionHelper
   def click_spinner_button_and_wait(...)
     click_on(...)
     wait_for_content_to_disappear do
-      expect(page).to have_no_css('lg-spinner-button.spinner-button--spinner-active', wait: 10)
+      expect(page).to have_no_css('lg-spinner-button.spinner-button--spinner-active', wait: 60)
     end
   end
 

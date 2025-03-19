@@ -42,17 +42,29 @@ module Idv
 
     def build_address_form
       Idv::AddressForm.new(
-        idv_session.updated_user_address || address_from_document,
+        idv_session.updated_user_address || address_from_document || null_address,
       )
     end
 
     def address_from_document
+      return if idv_session.pii_from_doc.state_id_type == 'passport'
+
       Pii::Address.new(
         address1: idv_session.pii_from_doc.address1,
         address2: idv_session.pii_from_doc.address2,
         city: idv_session.pii_from_doc.city,
         state: idv_session.pii_from_doc.state,
         zipcode: idv_session.pii_from_doc.zipcode,
+      )
+    end
+
+    def null_address
+      Pii::Address.new(
+        address1: nil,
+        address2: nil,
+        city: nil,
+        state: nil,
+        zipcode: nil,
       )
     end
 

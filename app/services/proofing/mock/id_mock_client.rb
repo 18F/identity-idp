@@ -2,9 +2,9 @@
 
 module Proofing
   module Mock
-    class StateIdMockClient
+    class IdMockClient
       SUPPORTED_STATE_ID_TYPES = %w[
-        drivers_license drivers_permit state_id_card
+        drivers_license drivers_permit passport state_id_card
       ].to_set.freeze
 
       INVALID_STATE_ID_NUMBER = '00000000'
@@ -15,12 +15,14 @@ module Proofing
         return mva_timeout_result if mva_timeout?(applicant[:state_id_number])
 
         errors = {}
-        if state_not_supported?(applicant[:state_id_jurisdiction])
+        if jurisdiction_not_supported?(applicant)
           errors[:state_id_jurisdiction] = ['The jurisdiction could not be verified']
         elsif invalid_state_id_number?(applicant[:state_id_number])
           errors[:state_id_number] = ['The state ID number could not be verified']
         elsif invalid_state_id_type?(applicant[:state_id_type])
           errors[:state_id_type] = ['The state ID type could not be verified']
+        elsif bad_mrz?(applicant)
+          errors[:mrz] = ['The passport MRZ could not be verified']
         end
 
         return unverifiable_result(errors) if errors.any?
@@ -63,7 +65,10 @@ module Proofing
         state_id_number.downcase == TRIGGER_MVA_TIMEOUT
       end
 
-      def state_not_supported?(state_id_jurisdiction)
+      def jurisdiction_not_supported?(applicant)
+        return false if applicant[:state_id_type] == 'passport'
+
+        state_id_jurisdiction = applicant[:state_id_jurisdiction]
         !IdentityConfig.store.aamva_supported_jurisdictions.include? state_id_jurisdiction
       end
 
@@ -74,6 +79,11 @@ module Proofing
       def invalid_state_id_type?(state_id_type)
         !SUPPORTED_STATE_ID_TYPES.include?(state_id_type) &&
           !state_id_type.nil?
+      end
+
+      def bad_mrz?(applicant)
+        applicant[:state_id_type] == 'passport' &&
+          applicant[:mrz] == 'bad mrz'
       end
     end
   end

@@ -6,6 +6,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
   let(:liveness_checking_required) { false }
 
   let(:instance_id) { 'fake-instance-id' }
+
   it 'allows doc auth without any external requests' do
     post_front_image_response = client.post_front_image(
       instance_id: instance_id,
@@ -47,6 +48,72 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         issuing_country_code: 'US',
       ),
     )
+  end
+
+  context 'when given passport yaml' do
+    let(:passport_yaml) { 'needs to be set' }
+
+    let(:post_front_image_response) do
+      client.post_front_image(
+        instance_id: instance_id,
+        image: passport_yaml,
+      )
+    end
+
+    let(:post_back_image_response) do
+      client.post_back_image(
+        instance_id: instance_id,
+        image: passport_yaml,
+      )
+    end
+
+    let(:get_results_response) do
+      client.get_results(
+        instance_id: instance_id,
+      )
+    end
+
+    let(:expected_pii_hash) do
+      Pii::Passport.new(
+        first_name: 'Joe',
+        last_name: 'Dokes',
+        middle_name: 'Q',
+        dob: '1938-10-06',
+        sex: 'Male',
+        birth_place: 'birthplace',
+        passport_expiration: '2030-03-15',
+        issuing_country_code: 'USA',
+        # rubocop:disable Layout/LineLength
+        mrz: 'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+        # rubocop:enable Layout/LineLength
+        passport_issued: '2015-03-15',
+        nationality_code: 'USA',
+        document_number: '000000',
+        state_id_type: 'passport',
+      ).to_h
+    end
+
+    context 'for a valid passport' do
+      let(:passport_yaml) { DocAuthImageFixtures.passport_passed_yaml.read }
+
+      it 'passes' do
+        expect(post_front_image_response.success?).to eq(true)
+        expect(post_back_image_response.success?).to eq(true)
+        expect(get_results_response.success?).to eq(true)
+        expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
+      end
+    end
+
+    context 'when given a passport with a bad MRZ' do
+      let(:passport_yaml) { DocAuthImageFixtures.passport_failed_yaml.read }
+
+      it 'fails' do
+        expect(post_front_image_response.success?).to eq(true)
+        expect(post_back_image_response.success?).to eq(true)
+        expect(get_results_response.success?).to eq(false)
+        expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
+      end
+    end
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do
@@ -191,6 +258,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(errors[:hints]).to eq(true)
     expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
+
   it 'allows responses to be mocked' do
     response = DocAuth::Response.new(
       success: true,

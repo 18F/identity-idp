@@ -539,6 +539,8 @@ module Features
     def sign_in_via_branded_page(user)
       expect(page).to have_current_path new_user_session_path
       fill_in_credentials_and_submit(user.last_sign_in_email_address.email, user.password)
+
+      expect(page).to have_content t('two_factor_authentication.header_text'), wait: 60
       expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       fill_in_code_with_last_phone_otp
       click_submit_default

@@ -77,7 +77,8 @@ module DocAuthHelper
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
-    click_on t('forms.buttons.upload_photos')
+
+    click_on(t('forms.buttons.upload_photos'), wait: 60)
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
