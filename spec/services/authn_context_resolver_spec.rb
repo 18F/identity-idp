@@ -783,4 +783,117 @@ RSpec.describe AuthnContextResolver do
       end
     end
   end
+
+  context 'with SSA forcing IAL2 values' do
+    let(:sp) { build(:service_provider, :idv) }
+
+    subject do
+      AuthnContextResolver.new(
+        user:,
+        service_provider: sp,
+        vtr: nil,
+        acr_values:,
+      )
+    end
+    before do
+      allow(IdentityConfig.store).to receive(:allowed_ssa_force_ial2_providers)
+        .and_return(sp.issuer)
+    end
+
+    context 'base idv requested' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+      context 'there is no existing user' do
+        let(:user) { nil }
+
+        it 'requires ial2' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(true)
+          expect(result.facial_match?).to eq(true)
+        end
+      end
+
+      context 'the user is not proofed' do
+        let(:user) { build(:user) }
+
+        it 'requires ial2' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(true)
+          expect(result.facial_match?).to eq(true)
+        end
+      end
+
+      context 'the user is proofed with base idv' do
+        let(:user) { build(:user, :proofed) }
+
+        it 'requires ial2' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(true)
+          expect(result.facial_match?).to eq(true)
+        end
+      end
+
+      context 'the user is proofed with ial2' do
+        let(:user) { build(:user, :proofed_with_selfie) }
+
+        it 'requires ial2' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(true)
+          expect(result.facial_match?).to eq(true)
+        end
+      end
+    end
+
+    context 'auth-only is requested' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+
+      context 'there is no existing user' do
+        let(:user) { nil }
+
+        it 'requires ial1' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+        end
+      end
+
+      context 'the user is not proofed' do
+        let(:user) { build(:user) }
+
+        it 'requires ial1' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+        end
+      end
+
+      context 'the user is proofed with base idv' do
+        let(:user) { build(:user, :proofed) }
+
+        it 'requires ial1' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+        end
+      end
+
+      context 'the user is proofed with ial2' do
+        let(:user) { build(:user, :proofed_with_selfie) }
+
+        it 'requires ial1' do
+          result = subject.result
+
+          expect(result.identity_proofing?).to eq(false)
+          expect(result.facial_match?).to eq(false)
+        end
+      end
+    end
+  end
 end

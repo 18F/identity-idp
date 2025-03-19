@@ -105,6 +105,25 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#ssa_force_ial2_allowed?' do
+    context 'SP in allowed list' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_ssa_force_ial2_providers)
+          .and_return(['http://localhost:3000'])
+      end
+
+      it 'allows the SP to optionally skip encrypting the SAML response' do
+        expect(service_provider.ssa_force_ial2_allowed?).to be(true)
+      end
+    end
+
+    context 'SP not in allowed list' do
+      it 'does not allow the SP to optionally skip encrypting the SAML response' do
+        expect(service_provider.ssa_force_ial2_allowed?).to be(false)
+      end
+    end
+  end
+
   describe '#ssl_certs' do
     context 'with an empty string plural cert' do
       let(:service_provider) { build(:service_provider, certs: ['']) }

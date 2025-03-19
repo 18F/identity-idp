@@ -87,15 +87,24 @@ class AuthnContextResolver
   end
 
   def acr_result_with_sp_defaults
-    result_with_sp_aal_defaults(
-      result_with_sp_ial_defaults(
-        acr_result_without_sp_defaults,
+    maybe_force_ial2_acr_result(
+      result_with_sp_aal_defaults(
+        result_with_sp_ial_defaults(
+          acr_result_without_sp_defaults,
+        ),
       ),
     )
   end
 
   def acr_result_without_sp_defaults
     @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
+  end
+
+  def maybe_force_ial2_acr_result(result)
+    return result if !service_provider&.ssa_force_ial2_allowed?
+    return result if !result.identity_proofing?
+
+    result.with(facial_match?: true)
   end
 
   def result_with_sp_aal_defaults(result)
@@ -152,7 +161,8 @@ class AuthnContextResolver
   end
 
   def facial_match_is_required?(result)
-    Saml::Idp::Constants::FACIAL_MATCH_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names)
+    Saml::Idp::Constants::FACIAL_MATCH_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names) ||
+      service_provider.ssa_force_ial2_allowed?
   end
 
   def use_semantic_authn_contexts?
