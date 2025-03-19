@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Mock::StateIdMockClient do
+RSpec.describe Proofing::Mock::IdMockClient do
   describe '#proof' do
     let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: '1234-abcd') }
     let(:transaction_id) { 'state-id-mock-transaction-id-456' }

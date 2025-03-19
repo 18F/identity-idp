@@ -30,7 +30,7 @@ RSpec.feature 'SP Costing', :email do
     )
     expect_sp_cost_type(
       5, 2, 'aamva',
-      transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID
+      transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(6, 2, 'lexis_nexis_address')
   end

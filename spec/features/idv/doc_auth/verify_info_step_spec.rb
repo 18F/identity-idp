@@ -254,7 +254,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:proof).with(
+        expect_any_instance_of(Proofing::Mock::IdMockClient).to receive(:proof).with(
           hash_including(
             **Idp::Constants::MOCK_IDV_APPLICANT,
           ),
@@ -271,7 +271,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           IdentityConfig.store.aamva_supported_jurisdictions -
             mock_state_id_jurisdiction,
         )
-        expect_any_instance_of(Proofing::Mock::StateIdMockClient).to_not receive(:proof)
+        expect_any_instance_of(Proofing::Mock::IdMockClient).to_not receive(:proof)
 
         complete_ssn_step
         complete_verify_step

@@ -66,7 +66,7 @@ module Proofing
         def proofer
           @proofer ||=
             if IdentityConfig.store.proofer_mock_fallback
-              Proofing::Mock::StateIdMockClient.new
+              Proofing::Mock::IdMockClient.new
             else
               Proofing::Aamva::Proofer.new(
                 auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
