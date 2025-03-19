@@ -101,7 +101,7 @@ class AuthnContextResolver
   end
 
   def maybe_force_ial2_acr_result(result)
-    return result if !service_provider&.ssa_force_ial2_allowed?
+    return result if !service_provider&.force_ial2_allowed?
     return result if !result.identity_proofing?
 
     result.with(facial_match?: true)
@@ -162,7 +162,7 @@ class AuthnContextResolver
 
   def facial_match_is_required?(result)
     Saml::Idp::Constants::FACIAL_MATCH_REQUIRED_IAL_CONTEXTS.intersect?(result.component_names) ||
-      service_provider.ssa_force_ial2_allowed?
+      service_provider.force_ial2_allowed?
   end
 
   def use_semantic_authn_contexts?

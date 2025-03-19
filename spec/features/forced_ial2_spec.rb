@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'the SSA forced upgrade to IAL2', allowed_extra_analytics: [:*] do
+RSpec.feature 'forced upgrade to IAL2', allowed_extra_analytics: [:*] do
   include SamlAuthHelper
   include IdvHelper
 
@@ -8,7 +8,7 @@ RSpec.feature 'the SSA forced upgrade to IAL2', allowed_extra_analytics: [:*] do
   let(:issuer) { 'saml_sp_ial2' }
   let(:issuer_list) { [issuer] }
   before do
-    allow(IdentityConfig.store).to receive(:allowed_ssa_force_ial2_providers)
+    allow(IdentityConfig.store).to receive(:allowed_force_ial2_providers)
       .and_return(issuer_list)
 
     visit_saml_authn_request_url(
@@ -63,7 +63,7 @@ RSpec.feature 'the SSA forced upgrade to IAL2', allowed_extra_analytics: [:*] do
         expect(page).to have_current_path(idv_welcome_path, ignore_query: true)
       end
 
-      context 'when the issuer is not on the allowed_ssa_force_ial2_providers allowlist' do
+      context 'when the issuer is not on the allowed_force_ial2_providers allowlist' do
         let(:issuer_list) { [] }
 
         it 'redirects to the SP without prompting the user to proof' do

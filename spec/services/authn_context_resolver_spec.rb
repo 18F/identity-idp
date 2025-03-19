@@ -796,7 +796,7 @@ RSpec.describe AuthnContextResolver do
       )
     end
     before do
-      allow(IdentityConfig.store).to receive(:allowed_ssa_force_ial2_providers)
+      allow(IdentityConfig.store).to receive(:allowed_force_ial2_providers)
         .and_return(sp.issuer)
     end
 
