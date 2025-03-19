@@ -13,12 +13,12 @@ module Idv
 
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
-        case document_capture_session.doc_auth_vendor
-        when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
-          redirect_to idv_hybrid_mobile_socure_document_capture_url
-        when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
-          redirect_to idv_hybrid_mobile_document_capture_url
+        if document_capture_session.passport_status == 'allowed'
+          redirect_to idv_hybrid_mobile_choose_id_type_url
+          return
         end
+
+        redirect_to correct_vendor_url
       end
 
       private

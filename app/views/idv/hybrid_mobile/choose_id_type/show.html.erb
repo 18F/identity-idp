@@ -1,0 +1,56 @@
+<% self.title = t('doc_auth.headings.choose_id_type') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+  <%= t('doc_auth.info.login_access_sp', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
+  <%= t('doc_auth.info.add_id_consent_with_phone', app_name: APP_NAME) %>
+<% end %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= t('doc_auth.headings.choose_id_type') %>
+<% end %>
+
+<p>
+  <%= t('doc_auth.info.choose_id_type') %>
+</p>
+
+<%= new_tab_link_to(
+      t('doc_auth.info.id_types_learn_more'),
+      help_center_redirect_url(
+        category: 'verify-your-identity',
+        article: 'accepted-identification-documents',
+      ),
+    ) 
+%>
+
+<%= simple_form_for(
+      :doc_auth,
+      url: idv_hybrid_mobile_choose_id_type_path,
+      method: :put,
+    ) do |f| %>
+      <%= render ValidatedFieldComponent.new(
+            as: :radio_buttons,
+            collection: [
+              [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
+              [t('doc_auth.forms.id_type_preference.passport'), :passport],
+            ],
+            form: f,
+            input_html: { class: 'usa-radio__input--tile' },
+            item_label_class: 'usa-radio__label text-bold width-full margin-y-2',
+            name: :choose_id_type_preference,
+            required: true,
+            wrapper: :uswds_radio_buttons,
+            error_messages: { valueMissing: t('doc_auth.errors.choose_id_type_check') },
+          ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-y-2' %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'choose_id_type' %>
