@@ -7,11 +7,8 @@ RSpec.feature 'mobile hybrid flow choose id type', :js, :allow_net_connect_on_st
   include AbTestsHelper
 
   let(:phone_number) { '415-555-0199' }
-  let(:sp) { :oidc }
 
   before do
-    allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
@@ -21,6 +18,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js, :allow_net_connect_on_st
       impl.call(**config)
     end.at_least(1).times
     reload_ab_tests
+    sign_in_and_2fa_user
   end
 
   after do
@@ -28,11 +26,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js, :allow_net_connect_on_st
   end
 
   it 'proofs and hands off to mobile', js: true do
-    user = nil
-
     perform_in_browser(:desktop) do
-      user = sign_in_and_2fa_user
-
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link

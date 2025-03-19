@@ -7,7 +7,7 @@ module Idv
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
-      # before_action :redirect_if_passport_not_available
+      before_action :redirect_if_passport_not_available
 
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
