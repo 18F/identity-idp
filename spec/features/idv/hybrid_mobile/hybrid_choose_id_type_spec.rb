@@ -31,8 +31,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js, :allow_net_connect_on_st
     user = nil
 
     perform_in_browser(:desktop) do
-      visit_idp_from_sp_with_ial2(sp)
-      user = sign_up_and_2fa_ial1_user
+      user = sign_in_and_2fa_user
 
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
