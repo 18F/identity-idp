@@ -418,8 +418,8 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
-              value: Always
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
         - target:
             kind: Job
             name: migrate-database
@@ -428,8 +428,8 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
-              value: Always
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
         - target:
             kind: Job
             name: seed-database
@@ -438,8 +438,8 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
-              value: Always
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
         # Patch dashboard database setup jobs
         - target:
             kind: Job
@@ -449,7 +449,13 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
+            - op: add
+              path: /spec/template/spec/initContainers/0/imagePullPolicy
               value: Always
         - target:
             kind: Job
@@ -459,7 +465,13 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
+            - op: add
+              path: /spec/template/spec/initContainers/0/imagePullPolicy
               value: Always
         - target:
             kind: Job
@@ -469,7 +481,13 @@ spec:
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
             - op: replace
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-dashboard/review:{{DASHBOARD_CONTAINER_TAG}}
+            - op: replace
               path: /spec/template/spec/containers/0/imagePullPolicy
+              value: Always
+            - op: add
+              path: /spec/template/spec/initContainers/0/imagePullPolicy
               value: Always
         # Patch pivcac database jobs/update crl CronJob
         - target:
@@ -514,8 +532,8 @@ spec:
               path: /spec/template/spec/containers/1/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
             - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
-              value: Always
+              path: /spec/template/spec/initContainers/0/image
+              value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
         # Patch Worker Image
         - target:
             kind: Deployment
@@ -524,9 +542,6 @@ spec:
             - op: replace
               path: /spec/template/spec/containers/0/image
               value: {{ECR_REGISTRY}}/identity-idp/idp:{{IDP_CONTAINER_TAG}}
-            - op: replace
-              path: /spec/template/spec/containers/0/imagePullPolicy
-              value: Always
         # Patch PIVCAC Image
         - target:
             kind: Deployment
