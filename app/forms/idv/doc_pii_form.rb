@@ -6,18 +6,10 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validates_presence_of :address1, { message: proc {
-                                                  I18n.t('doc_auth.errors.alerts.address_check')
-                                                } }
+    validate :address1_valid?
     validate :zipcode_valid?
-    validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
-                                                  message: proc {
-                                                    I18n.t('doc_auth.errors.general.no_liveness')
-                                                  } }
-
-    validates_presence_of :state_id_number, { message: proc {
-      I18n.t('doc_auth.errors.general.no_liveness')
-    } }
+    validate :jurisdiction_valid?
+    validate :state_id_number_valid?
     validate :state_id_expired?
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
@@ -118,8 +110,55 @@ module Idv
       end
     end
 
+    def passport?
+      pii_from_doc[:state_id_type] == 'passport'
+    end
+
+    def address1_valid?
+      return if !address1.blank?
+      return if passport?
+
+      errors.add(
+        :address1,
+        :missing,
+        message: I18n.t('doc_auth.errors.alerts.address_check'),
+      )
+    end
+
+    def state_id_number_valid?
+      return if !state_id_number.blank?
+      return if passport?
+
+      errors.add(
+        :state_id_number,
+        I18n.t('doc_auth.errors.general.no_liveness'),
+        type: :blank,
+      )
+    end
+
+    def jurisdiction_valid?
+      return if passport?
+
+      if !Idp::Constants::STATE_AND_TERRITORY_CODES.include?(state)
+        errors.add(
+          :state,
+          I18n.t('doc_auth.errors.general.no_liveness'),
+          type: :inclusion,
+        )
+      end
+
+      if !Idp::Constants::STATE_AND_TERRITORY_CODES.include?(jurisdiction)
+        errors.add(
+          :jurisdiction,
+          I18n.t('doc_auth.errors.general.no_liveness'),
+          type: :inclusion,
+        )
+      end
+    end
+
     def zipcode_valid?
       return if zipcode.is_a?(String) && zipcode.present?
+      return if passport?
 
       errors.add(:zipcode, generic_error, type: :zipcode)
     end
