@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe X509::Attributes do
-  let(:user_access_key) { UserAccessKey.new(password: 'sekrit', salt: SecureRandom.uuid) }
-
   describe '#new_from_hash' do
     it 'initializes from plain Hash' do
       x509 = described_class.new_from_hash(subject: 'O=US, OU=DoD, CN=John.Doe.1234')

@@ -101,5 +101,56 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
     it 'includes the body in the extras' do
       expect(health_check_response.extra[:body]).to eq(health_check_down_body)
     end
+
+    context 'when composite healthheck down stream system is down' do
+      let(:faraday_response) do
+        Faraday.get(composite_health_check_endpoint)
+      end
+
+      let(:health_check_down_body) do
+        {
+          status: 'uP',
+          downstreamHealth: [
+            {
+              status: 'up',
+              downstreamHealth: nil,
+            },
+            {
+              status: 'up',
+              downstreamHealth: [],
+            },
+            {
+              status: 'up',
+              downstreamHealth: [
+                {
+                  status: 'up',
+                  downstreamHealth: nil,
+                },
+                {
+                  status: 'up',
+                  downstreamHealth: [],
+                },
+                {
+                  status: 'down',
+                },
+              ],
+            },
+          ],
+        }.to_json
+      end
+
+      before do
+        stub_request(:get, composite_health_check_endpoint)
+          .to_return_json(body: health_check_down_body)
+      end
+
+      it 'is not successful' do
+        expect(health_check_response).not_to be_success
+      end
+
+      it 'includes the body in the extras' do
+        expect(health_check_response.extra[:body]).to eq(health_check_down_body)
+      end
+    end
   end
 end
