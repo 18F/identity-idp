@@ -6,23 +6,9 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validates_presence_of :address1, { message: proc {
-                                                  I18n.t('doc_auth.errors.alerts.address_check')
-                                                } }
-    # validate :state_id_or_passport
-    validate :zipcode_valid?
-    validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
-                                                  message: proc {
-                                                    I18n.t('doc_auth.errors.general.no_liveness')
-                                                  } }
+    validate :state_id_or_passport
 
-    validates_presence_of :state_id_number, { message: proc {
-      I18n.t('doc_auth.errors.general.no_liveness')
-    } }
-    validate :state_id_expired?
-
-    attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
-                :jurisdiction, :state_id_number, :state_id_expiration
+    attr_reader :first_name, :last_name, :dob, :attention_with_barcode
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -30,12 +16,6 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @address1 = pii[:address1]
-      @state = pii[:state]
-      @zipcode = pii[:zipcode]
-      @jurisdiction = pii[:state_id_jurisdiction]
-      @state_id_number = pii[:state_id_number]
-      @state_id_expiration = pii[:state_id_expiration]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -111,11 +91,11 @@ module Idv
 
     def state_id_or_passport
       if doc_is_passport?
-        passport_validation = DocPiiPassportForm.new(pii_from_doc)
-        passport_validation.valid? || passport_validation.errors
+        passport_validation = DocPiiPassportForm.new(pii: pii_from_doc)
+        passport_validation.valid? || errors.merge!(passport_validation.errors)
       elsif doc_is_state_id?
-        state_id_validation = DocPiiStateIdForm.new(pii_from_doc)
-        state_id_validation.valid? || state_id_validation.errors
+        state_id_validation = DocPiiStateIdForm.new(pii: pii_from_doc)
+        state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       else
         # look into this error and rewrite possibly
         errors.add(:no_document, generic_error, type: :no_document)
@@ -123,27 +103,13 @@ module Idv
     end
 
     def doc_is_passport?
-      pii[:passport_issued].present?
+      pii_from_doc[:passport_issued].present?
     end
 
-    def doc_ia_state_id?
-      pii[:jurisdiction].present?
-    end
-
-    def state_id_expired?
-      # temporary fix, tracked for removal in LG-15600
-      return if IdentityConfig.store.socure_docv_verification_data_test_mode &&
-                DateParser.parse_legacy(state_id_expiration) == Date.parse('2020-01-01')
-
-      if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
-        errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
-      end
-    end
-
-    def zipcode_valid?
-      return if zipcode.is_a?(String) && zipcode.present?
-
-      errors.add(:zipcode, generic_error, type: :zipcode)
+    def doc_is_state_id?
+      # need a different way to determine state id
+      pii_from_doc[:state_id_jurisdiction].present? ||
+        pii_from_doc[:state_id_number].present?
     end
 
     def generic_error
