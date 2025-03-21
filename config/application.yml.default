@@ -425,6 +425,7 @@ telephony_adapter: test
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
+update_cancel_account_reset_path: false
 use_dashboard_service_providers: false
 use_kms: false
 use_vot_in_sp_requests: true

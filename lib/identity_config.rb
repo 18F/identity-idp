@@ -455,6 +455,7 @@ module IdentityConfig
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
     config.add(:totp_code_interval, type: :integer)
     config.add(:unauthorized_scope_enabled, type: :boolean)
+    config.add(:update_cancel_account_reset_path, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:use_vot_in_sp_requests, type: :boolean)
