@@ -4,12 +4,11 @@ module Test
   class IppController < ApplicationController
     layout 'no_card'
 
-    before_action :render_not_found_in_production
+    before_action :authorize
+    before_action :confirm_two_factor_authenticated
 
     def index
-      @enrollments = InPersonEnrollment
-        .order(created_at: :desc)
-        .limit(10)
+      @enrollments = Rails.env.development? ? all_enrollments : enrollments_for_current_user
 
       @enrollments_with_actions = @enrollments.map do |e|
         case e.status
@@ -21,16 +20,31 @@ module Test
 
     def update
       enrollment_id = params['enrollment'].to_i
-      enrollment = InPersonEnrollment.find(enrollment_id)
+      enrollment = InPersonEnrollment.find_by(id: enrollment_id)
 
       if enrollment.present?
         approve_enrollment(enrollment)
+      else
+        flash[:error] =  "Could not find pending IPP enrollment with ID #{enrollment_id}"
       end
 
       redirect_to test_ipp_url
     end
 
     private
+
+    def enrollments_for_current_user
+      InPersonEnrollment
+        .order(created_at: :desc)
+        .where(user_id: current_user&.id)
+    end
+
+    def all_enrollments
+      InPersonEnrollment
+        .includes(:user)
+        .order(created_at: :desc)
+        .limit(10)
+    end
 
     def approve_enrollment(enrollment)
       return if !enrollment.pending?
@@ -52,8 +66,9 @@ module Test
       job.send(:process_enrollment_response, enrollment, res)
     end
 
-    def render_not_found_in_production
-      return unless Rails.env.production?
+    def authorize
+      return if FeatureManagement.allow_ipp_enrollment_approval?
+
       render_not_found
     end
   end
