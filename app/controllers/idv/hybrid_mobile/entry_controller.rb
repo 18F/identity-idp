@@ -7,6 +7,7 @@ module Idv
     class EntryController < ApplicationController
       include Idv::AvailabilityConcern
       include HybridMobileConcern
+      include DocumentCaptureConcern
 
       def show
         return handle_invalid_document_capture_session if !validate_document_capture_session_id
@@ -18,7 +19,10 @@ module Idv
           return
         end
 
-        redirect_to correct_vendor_url
+        redirect_to correct_vendor_path(
+          document_capture_session.doc_auth_vendor,
+          in_hybrid_mobile: true,
+        )
       end
 
       private

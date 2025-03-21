@@ -36,15 +36,6 @@ module Idv
         return handle_invalid_document_capture_session if document_capture_session.expired?
       end
 
-      def correct_vendor_url
-        case document_capture_session.doc_auth_vendor
-        when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
-          idv_hybrid_mobile_socure_document_capture_url
-        when Idp::Constants::Vendors::MOCK, Idp::Constants::Vendors::LEXIS_NEXIS
-          idv_hybrid_mobile_document_capture_url
-        end
-      end
-
       def document_capture_session
         return @document_capture_session if defined?(@document_capture_session)
         @document_capture_session =

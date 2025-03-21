@@ -10,6 +10,8 @@ module Idv
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
+      render 'idv/shared/choose_id_type',
+             locals: { form_url: idv_choose_id_type_path, is_hybrid: false }
     end
 
     def update
@@ -28,7 +30,8 @@ module Idv
         set_passport_requested
         redirect_to next_step
       else
-        render :show
+        render 'idv/shared/choose_id_type',
+               locals: { form_url: idv_choose_id_type_path, is_hybrid: false }
       end
     end
 

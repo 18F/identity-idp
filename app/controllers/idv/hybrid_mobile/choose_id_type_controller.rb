@@ -5,12 +5,15 @@ module Idv
     class ChooseIdTypeController < ApplicationController
       include Idv::AvailabilityConcern
       include HybridMobileConcern
+      include DocumentCaptureConcern
 
       before_action :check_valid_document_capture_session
       before_action :redirect_if_passport_not_available, only: :show
 
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
+        render 'idv/shared/choose_id_type',
+               locals: { form_url: idv_hybrid_mobile_choose_id_type_path, is_hybrid: true }
       end
 
       def update
@@ -27,14 +30,20 @@ module Idv
           set_passport_requested
           redirect_to next_step
         else
-          render :show
+          render 'idv/shared/choose_id_type',
+                 locals: { form_url: idv_hybrid_mobile_choose_id_type_path, is_hybrid: true }
         end
       end
 
       private
 
       def redirect_if_passport_not_available
-        redirect_to correct_vendor_url if document_capture_session.passport_status.blank?
+        if document_capture_session.passport_status.blank?
+          redirect_to correct_vendor_path(
+            document_capture_session.doc_auth_vendor,
+            in_hybrid_mobile: true,
+          )
+        end
       end
 
       def chosen_id_type
@@ -53,7 +62,10 @@ module Idv
         if document_capture_session.passport_status == 'requested'
           idv_hybrid_mobile_document_capture_url # not using socure for passport
         else
-          correct_vendor_url
+          correct_vendor_path(
+            document_capture_session.doc_auth_vendor,
+            in_hybrid_mobile: true,
+          )
         end
       end
 
