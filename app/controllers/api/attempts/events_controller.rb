@@ -13,7 +13,11 @@ module Api
       before_action :authenticate_client, only: :poll
 
       def poll
-        head :method_not_allowed
+        redis_client.delete_events(
+          issuer: request_token.issuer,
+          keys: poll_params[:acks],
+        )
+        render json: { sets: }
       end
 
       def status
@@ -26,13 +30,28 @@ module Api
       private
 
       def authenticate_client
-        if AttemptsApi::RequestTokenValidator.new(request.authorization).invalid?
+        if request_token.invalid?
           render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
         end
       end
 
       def poll_params
         params.permit(:maxEvents, acks: [])
+      end
+
+      def sets
+        redis_client.read_events(
+          issuer: request_token.issuer,
+          batch_size: poll_params[:maxEvents]&.to_i || 1000,
+        )
+      end
+
+      def redis_client
+        @redis_client ||= AttemptsApi::RedisClient.new
+      end
+
+      def request_token
+        @request_token ||= AttemptsApi::RequestTokenValidator.new(request.authorization)
       end
     end
   end
