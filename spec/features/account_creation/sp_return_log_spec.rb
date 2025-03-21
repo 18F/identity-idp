@@ -13,6 +13,5 @@ RSpec.feature 'SP return logs' do
     sp_return_log = SpReturnLog.first
     expect(SpReturnLog.count).to eq(1)
     expect(sp_return_log.user_id).to eq(user.id)
-    expect(sp_return_log.requested_at).to_not be_nil
   end
 end

@@ -25,7 +25,6 @@ RSpec.describe Reports::TotalMonthlyAuthsReport do
           ial: 1,
           billable: true,
           returned_at: Date.new(2019, 1, 15).to_date,
-          requested_at: Date.new(2019, 1, 15).to_date,
         )
       end
     end
