@@ -28,7 +28,10 @@ module AccountReset
     end
 
     def account_reset_request
-      @account_reset_request ||= AccountResetRequest.find_by(request_token: token)
+      @account_reset_request ||= begin
+        AccountResetRequest.find_by(request_token: token) ||
+          AccountResetRequest.find_by(granted_token: token)
+      end
     end
   end
 end

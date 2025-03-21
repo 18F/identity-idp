@@ -118,6 +118,7 @@ Rails.application.routes.draw do
       post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
+      post '/account_reset/delete_account/cancel' => 'account_reset/delete_account#cancel'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       get '/account_reset/pending' => 'account_reset/pending#show'
