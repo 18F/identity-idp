@@ -82,6 +82,10 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def force_ial2_allowed?
+    IdentityConfig.store.allowed_force_ial2_providers.include?(issuer)
+  end
+
   private
 
   # @return [String,nil]
