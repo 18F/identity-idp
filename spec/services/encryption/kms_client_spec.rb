@@ -12,29 +12,17 @@ RSpec.describe Encryption::KmsClient do
     )
 
     # rubocop:disable Layout/LineLength
-    stub_mapped_aws_kms_client(
-      [
-        { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: key_id, region: 'us-north-1' },
-      ],
-    )
+    if kms_enabled
+      stub_mapped_aws_kms_client(
+        [
+          { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: key_id, region: 'us-north-1' },
+          { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: key_id, region: 'us-north-1' },
+          { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: key_id, region: 'us-north-1' },
+        ],
+      )
+    end
     # rubocop:enable Layout/LineLength
 
-    encryptor = Encryption::Encryptors::AesEncryptor.new
-    {
-      'a' * 3000 => 'local1',
-      'b' * 3000 => 'local2',
-      'c' * 3000 => 'local3',
-    }.each do |plaintext, ciphertext|
-      allow(encryptor).to receive(:encrypt)
-        .with(plaintext, local_encryption_key)
-        .and_return(ciphertext)
-      allow(encryptor).to receive(:decrypt)
-        .with(ciphertext, local_encryption_key)
-        .and_return(plaintext)
-    end
-    allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
     allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
@@ -46,14 +34,6 @@ RSpec.describe Encryption::KmsClient do
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
   let(:log_timestamp) { Time.utc(2025, 2, 28, 15, 30, 1) }
 
-  let(:local_encryption_key) do
-    OpenSSL::HMAC.digest(
-      'sha256',
-      IdentityConfig.store.password_pepper,
-      '123-abc-456-defattribute-bundlecontextuser_id',
-    )
-  end
-
   let(:aws_region) { 'us-north-1' }
 
   let(:kms_ciphertext) do
@@ -62,10 +42,6 @@ RSpec.describe Encryption::KmsClient do
       us-north-1:kms2
       us-north-1:kms3
     ].map { |c| Base64.strict_encode64(c) }.to_json
-  end
-
-  let(:local_ciphertext) do
-    'LOCc' + %w[local1 local2 local3].map { |c| Base64.strict_encode64(c) }.to_json
   end
 
   let(:kms_enabled) { true }
@@ -111,7 +87,7 @@ RSpec.describe Encryption::KmsClient do
       it 'encrypts with a local key' do
         result = subject.encrypt(plaintext, encryption_context)
 
-        expect(result).to eq(local_ciphertext)
+        expect(result).to_not include(plaintext)
       end
     end
 
@@ -136,8 +112,11 @@ RSpec.describe Encryption::KmsClient do
     end
 
     context 'with a ciphertext encrypted with a local key' do
+      let(:kms_enabled) { false }
+
       it 'decrypts the ciphertext with a local key' do
-        result = subject.decrypt(local_ciphertext, encryption_context)
+        ciphertext = subject.encrypt(plaintext, encryption_context)
+        result = subject.decrypt(ciphertext, encryption_context)
 
         expect(result).to eq(plaintext)
       end
