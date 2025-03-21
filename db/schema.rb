@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_11_164618) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_21_141653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -581,7 +581,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_11_164618) do
   end
 
   create_table "sp_return_logs", force: :cascade do |t|
-    t.datetime "requested_at", precision: nil, null: false, comment: "sensitive=false"
+    t.datetime "requested_at", precision: nil, comment: "sensitive=false"
     t.string "request_id", null: false, comment: "sensitive=false"
     t.integer "ial", null: false, comment: "sensitive=false"
     t.string "issuer", null: false, comment: "sensitive=false"
