@@ -1,52 +1,28 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
-require 'selenium/webdriver'
 require 'extensions/capybara/node/simple'
 require 'capybara/cuprite'
+require 'capybara_mock/rspec'
 
-# temporary fix for local development feature tests
-# remove when we get a new working version of Chromedriver
+# To pause and show browser call:
+# page.driver.debug(binding)
+show_browser = !!ENV['SHOW_BROWSER']
 
-Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
-  options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
-  options.add_argument('--window-size=1200x700')
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-dev-shm-usage')
-  options.add_argument("--proxy-server=localhost:9293")
-
-  Capybara::Selenium::Driver.new app,
-                                 browser: :chrome,
-                                 options: options
-end
-Capybara.register_driver(:cuprite) do |app|
-  driver = Capybara::Cuprite::Driver.new(app, window_size: [1200, 700], inspector: true, browser_options: { 'no-sandbox': nil })
-  driver.set_proxy('127.0.0.1', Capybara::Webmock.port_number)
-  # driver.set_proxy('localhost', 9293)
+Capybara.register_driver(:headless_chrome) do |app|
+  driver = Capybara::Cuprite::Driver.new(app, window_size: [1200, 700], inspector: show_browser, browser_options: { 'no-sandbox': nil })
   driver
 end
-# Capybara.javascript_driver = :cuprite
+
 Capybara.javascript_driver = :headless_chrome
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
+  driver = Capybara::Cuprite::Driver.new(app, window_size: [414, 736], inspector: true, browser_options: { 'no-sandbox': nil })
   user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) ' \
                       'AppleWebKit/603.1.23 (KHTML, like Gecko) ' \
                       'HeadlessChrome/88.0.4324.150 Safari/602.1'
 
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('--headless=new') if !ENV['SHOW_BROWSER']
-  options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
-  options.add_argument('--no-sandbox')
-  options.add_argument('--disable-dev-shm-usage')
-  options.add_argument('--window-size=414,736')
-  options.add_argument("--user-agent='#{user_agent_string}'")
-  options.add_argument('--use-fake-device-for-media-stream')
-  options.add_argument("--proxy-server=127.0.0.1:#{Capybara::Webmock.port_number}")
-
-  Capybara::Selenium::Driver.new app,
-                                 browser: :chrome,
-                                 options: options
+  driver.add_headers('User-Agent' => user_agent_string)
+  driver
 end
 
 Capybara.server = :puma, { Silent: true }

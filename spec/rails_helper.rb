@@ -16,7 +16,6 @@ require 'email_spec/rspec'
 require 'factory_bot'
 require 'view_component/test_helpers'
 require 'capybara/rspec'
-require 'capybara/webmock'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -129,9 +128,7 @@ RSpec.configure do |config|
 
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
-    Capybara::Webmock.start
     example.run
-    Capybara::Webmock.stop
     Bullet.enable = false
   end
 
