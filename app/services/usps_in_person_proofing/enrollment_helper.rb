@@ -45,11 +45,14 @@ module UspsInPersonProofing
       end
 
       def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:, decorated_sp_session:)
+        logo_is_png = decorated_sp_session.is_logo_png?
+        sp_logo_url = decorated_sp_session.sp_logo_url
         user.confirmed_email_addresses.each do |email_address|
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enrollment,
             is_enhanced_ipp: is_enhanced_ipp,
-            decorated_sp_session: decorated_sp_session,
+            logo_is_png:,
+            sp_logo_url:,
           ).deliver_now_or_later
         end
       end

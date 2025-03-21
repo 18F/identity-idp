@@ -186,7 +186,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_id_ipp,
       is_enhanced_ipp: false,
-      decorated_sp_session: decorated_sp_session_png,
+      logo_is_png: true,
+      sp_logo_url: sp_logo_url_png,
     )
   end
 
@@ -194,7 +195,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_enhanced_ipp,
       is_enhanced_ipp: true,
-      decorated_sp_session: decorated_sp_session_svg,
+      logo_is_png: false,
+      sp_logo_url: sp_logo_url_svg,
     )
   end
 
@@ -394,6 +396,10 @@ class UserMailerPreview < ActionMailer::Preview
     ).create_session
   end
 
+  def sp_logo_url_png
+    decorated_sp_session_png.sp_logo_url
+  end
+
   def decorated_sp_session_svg
     view_context = ActionController::Base.new.view_context
     sp = ServiceProvider.new(
@@ -408,6 +414,10 @@ class UserMailerPreview < ActionMailer::Preview
       sp_session: { issuer: sp.issuer },
       service_provider_request: ServiceProviderRequestProxy.new,
     ).create_session
+  end
+
+  def sp_logo_url_svg
+    decorated_sp_session_svg.sp_logo_url
   end
 
   # Remove #save and #save! to make sure we can't write these made-up records
