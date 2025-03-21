@@ -27,28 +27,23 @@ RSpec.describe UpdateUserPhoneConfiguration do
     context 'with no phone configured' do
       let(:user) { create(:user) }
       it 'creates a phone configuration' do
-        confirmed_at = 1.day.ago.change(usec: 0)
         attributes = {
           otp_delivery_preference: 'voice',
           phone: '+1 222 333-4444',
-          phone_confirmed_at: confirmed_at,
         }
         updater = UpdateUserPhoneConfiguration.new(user: user, attributes: attributes)
         updater.call
         phone_configuration = user.phone_configurations.reload.first
         expect(phone_configuration.delivery_preference).to eq 'voice'
-        expect(phone_configuration.confirmed_at).to eq confirmed_at
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
       end
 
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver)
           .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-        confirmed_at = 1.day.ago.change(usec: 0)
         attributes = {
           otp_delivery_preference: 'voice',
           phone: '+1 222 333-4444',
-          phone_confirmed_at: confirmed_at,
         }
         updater = UpdateUserPhoneConfiguration.new(user: user, attributes: attributes)
         updater.call
@@ -61,7 +56,6 @@ RSpec.describe UpdateUserPhoneConfiguration do
       let(:attributes) do
         {
           phone: '+1 222 333-4444',
-          phone_confirmed_at: confirmed_at,
           otp_delivery_preference: 'voice',
         }
       end
@@ -102,7 +96,6 @@ RSpec.describe UpdateUserPhoneConfiguration do
         {
           phone_id: phone_configuration.id,
           phone: '+1 222 333-4444',
-          phone_confirmed_at: confirmed_at,
           otp_delivery_preference: 'sms',
         }
       end

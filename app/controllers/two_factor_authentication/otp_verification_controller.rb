@@ -234,7 +234,6 @@ module TwoFactorAuthentication
         user: current_user,
         attributes: { phone_id: user_session[:phone_id],
                       phone: user_session[:unconfirmed_phone],
-                      phone_confirmed_at: Time.zone.now,
                       otp_make_default_number: selected_otp_make_default_number },
       )
     end
