@@ -483,6 +483,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_11_164618) do
   create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
     t.string "annotation", comment: "sensitive=false"
     t.string "annotation_reason", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|
