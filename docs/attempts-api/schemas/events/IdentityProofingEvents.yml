@@ -1,4 +1,6 @@
 properties:
+  idv-address-submitted:
+    $ref: './identity-proofing/IdvAddressSubmitted.yml'
   idv-document-uploaded:
     $ref: './identity-proofing/IdvDocumentUploaded.yml'
   idv-document-upload-submitted:
