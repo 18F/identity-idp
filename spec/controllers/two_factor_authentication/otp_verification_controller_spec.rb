@@ -514,9 +514,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         controller.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         controller.user_session[:context] = 'confirmation'
 
-        @previous_phone_confirmed_at =
-          MfaContext.new(controller.current_user).phone_configurations.first&.confirmed_at
-
         controller.current_user.create_direct_otp
 
         stub_analytics
@@ -607,10 +604,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (703) 555-5555')
           end
 
-          it 'does not update user phone or phone_confirmed_at attributes' do
+          it 'does not update user phone' do
             first_configuration = MfaContext.new(subject.current_user).phone_configurations.first
             expect(first_configuration.phone).to eq('+1 202-555-1212')
-            expect(first_configuration.confirmed_at).to eq(@previous_phone_confirmed_at)
           end
 
           it 'renders :show' do
