@@ -74,6 +74,7 @@ module Idv
         expected_doc_auth_vendor,
         in_hybrid_mobile: in_hybrid_mobile,
       )
+      return if correct_path.nil?
       redirect_to correct_path
     end
 

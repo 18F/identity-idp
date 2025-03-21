@@ -31,7 +31,8 @@ module Idv
           redirect_to next_step
         else
           render 'idv/shared/choose_id_type',
-                 locals: { form_url: idv_hybrid_mobile_choose_id_type_path, is_hybrid: true }
+                 locals: { form_url: idv_hybrid_mobile_choose_id_type_path, is_hybrid: true },
+                 layout: true
         end
       end
 

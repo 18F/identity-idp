@@ -59,10 +59,10 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
         }
       end
 
-      it 'renders the show template' do
+      it 'renders the shared choose_id_type template' do
         get :show
 
-        expect(response).to render_template :show
+        expect(response).to render_template 'idv/shared/choose_id_type'
       end
 
       it 'sends analytics_visited event' do
