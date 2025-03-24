@@ -149,6 +149,7 @@ module IdentityConfig
     config.add(:dos_passport_healthcheck_maxretry, type: :integer)
     config.add(:dos_passport_healthcheck_timeout_seconds, type: :integer)
     config.add(:dos_passport_mrz_endpoint, type: :string)
+    config.add(:dos_passport_mrz_maxretry, type: :integer)
     config.add(:dos_passport_mrz_timeout_seconds, type: :integer)
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
