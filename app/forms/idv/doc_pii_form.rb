@@ -8,7 +8,7 @@ module Idv
     validate :dob_valid?
     validate :state_id_or_passport
 
-    attr_reader :first_name, :last_name, :dob, :attention_with_barcode
+    attr_reader :first_name, :last_name, :dob, :state_id_type, :attention_with_barcode
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -16,6 +16,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
+      @state_id_type = pii[:state_id_type]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -26,6 +27,7 @@ module Idv
         extra: {
           pii_like_keypaths: self.class.pii_like_keypaths,
           attention_with_barcode: attention_with_barcode?,
+          # TODO: look into this with passports
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
           id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
         },
@@ -90,26 +92,16 @@ module Idv
     end
 
     def state_id_or_passport
-      if doc_is_passport?
-        passport_validation = DocPiiPassportForm.new(pii: pii_from_doc)
-        passport_validation.valid? || errors.merge!(passport_validation.errors)
-      elsif doc_is_state_id?
+      case state_id_type
+      when 'drivers_license', 'state_id_card'
         state_id_validation = DocPiiStateIdForm.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
+      when 'passport'
+        passport_validation = DocPiiPassportForm.new(pii: pii_from_doc)
+        passport_validation.valid? || errors.merge!(passport_validation.errors)
       else
-        # look into this error and rewrite possibly
         errors.add(:no_document, generic_error, type: :no_document)
       end
-    end
-
-    def doc_is_passport?
-      pii_from_doc[:passport_issued].present?
-    end
-
-    def doc_is_state_id?
-      # need a different way to determine state id
-      pii_from_doc[:state_id_jurisdiction].present? ||
-        pii_from_doc[:state_id_number].present?
     end
 
     def generic_error
