@@ -344,58 +344,33 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(controller.session[:sign_in_recaptcha_assessment_id]).to be_kind_of(String)
       end
 
-      context 'when configured to log failures only' do
-        before do
-          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
-            .and_return(true)
-        end
+      it 'tracks unsuccessful authentication for failed reCAPTCHA' do
+        user = create(:user, :fully_registered)
 
-        it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
-          user = create(:user, :fully_registered)
+        stub_analytics(user:)
 
-          post :create, params: { user: { email: user.email,
-                                          password: user.password,
-                                          score: 0.1,
-                                          recaptcha_token: 'token' } }
+        post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
 
-          expect(response).to redirect_to user_two_factor_authentication_url
-        end
+        expect(@analytics).to have_logged_event(
+          'Email and Password Authentication',
+          success: false,
+          error_details: { recaptcha_token: { blank: true } },
+          user_locked_out: false,
+          rate_limited: false,
+          valid_captcha_result: false,
+          captcha_validation_performed: true,
+          sign_in_failure_count: 1,
+          remember_device: false,
+          sp_request_url_present: false,
+        )
       end
 
-      context 'when not configured to log failures only' do
-        before do
-          allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
-            .and_return(false)
-        end
+      it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
+        user = create(:user, :fully_registered)
 
-        it 'tracks unsuccessful authentication for failed reCAPTCHA' do
-          user = create(:user, :fully_registered)
+        post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
 
-          stub_analytics(user:)
-
-          post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
-
-          expect(@analytics).to have_logged_event(
-            'Email and Password Authentication',
-            success: false,
-            error_details: { recaptcha_token: { blank: true } },
-            user_locked_out: false,
-            rate_limited: false,
-            valid_captcha_result: false,
-            captcha_validation_performed: true,
-            sign_in_failure_count: 1,
-            remember_device: false,
-            sp_request_url_present: false,
-          )
-        end
-
-        it 'redirects unsuccessful authentication for failed reCAPTCHA to failed page' do
-          user = create(:user, :fully_registered)
-
-          post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
-
-          expect(response).to redirect_to sign_in_security_check_failed_url
-        end
+        expect(response).to redirect_to sign_in_security_check_failed_url
       end
 
       context 'recaptcha lock out' do

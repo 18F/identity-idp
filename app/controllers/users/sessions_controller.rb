@@ -43,7 +43,7 @@ module Users
 
       rate_limit_password_failure = true
 
-      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
+      return process_failed_captcha unless recaptcha_response.success?
 
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
@@ -325,10 +325,6 @@ module Users
     def randomize_check_password?
       SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
         IdentityConfig.store.compromised_password_randomizer_threshold
-    end
-
-    def log_captcha_failures_only?
-      IdentityConfig.store.sign_in_recaptcha_log_failures_only
     end
   end
 
