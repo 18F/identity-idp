@@ -19,7 +19,9 @@ module DocAuth
 
         def fetch(analytics)
           begin
-            faraday_response = connection.get
+            faraday_response = connection.get do |req|
+              req.options.context = { service_name: metric_name }
+            end
             response = Responses::HealthCheckResponse.new(faraday_response:)
           rescue Faraday::Error => faraday_error
             response = Responses::HealthCheckResponse.new(faraday_response: faraday_error)
@@ -55,6 +57,10 @@ module DocAuth
             # raises errors on 4XX or 5XX responses
             conn.response :raise_error
           end
+        end
+
+        def metric_name
+          'dos_doc_auth_passport_healtcheck'
         end
       end
     end
