@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  self.ignored_columns = %w[phone_confirmed_at]
   include NonNullUuid
 
   include ActionView::Helpers::DateHelper
