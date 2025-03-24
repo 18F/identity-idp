@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class PhoneConfiguration < ApplicationRecord
-  self.ignored_columns += ['confirmation_sent_at']
-  self.ignored_columns += ['confirmed_at']
-
   include EncryptableAttribute
 
   belongs_to :user, inverse_of: :phone_configurations
