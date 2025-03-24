@@ -76,7 +76,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
   describe '#update' do
     let(:chosen_id_type) { 'drivers_license' }
     let(:analytics_name) { :idv_doc_auth_choose_id_type_submitted }
-    let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+    let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
     let(:analytics_args) do
       {
         success: true,
@@ -99,7 +99,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       it 'maintains passport_status as allowed and redirects to correct vendor' do
         put :update, params: params
         expect(document_capture_session.passport_status).to eq('allowed')
-        expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
     end
 

@@ -47,14 +47,7 @@ module Idv
       end
 
       def next_step
-        if document_capture_session.passport_status == 'requested'
-          idv_hybrid_mobile_document_capture_url # not using socure for passport
-        else
-          correct_vendor_path(
-            document_capture_session.doc_auth_vendor,
-            in_hybrid_mobile: true,
-          )
-        end
+        idv_hybrid_mobile_document_capture_url
       end
 
       def analytics_arguments
