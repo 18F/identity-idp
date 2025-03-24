@@ -74,7 +74,7 @@ module Idv
         expected_doc_auth_vendor,
         in_hybrid_mobile: in_hybrid_mobile,
       )
-      return if correct_path.nil?
+
       redirect_to correct_path
     end
 
@@ -86,8 +86,6 @@ module Idv
       when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
                          : idv_document_capture_path
-      else
-        return
       end
     end
 

@@ -14,7 +14,7 @@ module Idv
 
         return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
-        if document_capture_session.passport_status == 'allowed'
+        if document_capture_session.passport_allowed?
           redirect_to idv_hybrid_mobile_choose_id_type_url
           return
         end
