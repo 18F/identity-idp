@@ -21,6 +21,17 @@ RSpec.describe 'Idv::FlowPolicy' do
   let(:user_phone_confirmation_session) { nil }
   let(:has_gpo_pending_profile) { nil }
 
+  let(:view_context) { ActionController::Base.new.view_context }
+  let(:sp) { build_stubbed(:service_provider, logo: 'gsa.png') }
+  let(:decorated_sp_session) do
+    ServiceProviderSessionCreator.new(
+      sp: sp,
+      view_context: view_context,
+      sp_session: { issuer: sp.issuer },
+      service_provider_request: ServiceProviderRequestProxy.new,
+    ).create_session
+  end
+
   subject { Idv::FlowPolicy.new(idv_session: idv_session, user: user) }
 
   context '#controller_allowed?' do
@@ -323,7 +334,7 @@ RSpec.describe 'Idv::FlowPolicy' do
           stub_up_to(:request_letter, idv_session: idv_session)
           idv_session.gpo_code_verified = true
           idv_session.create_profile_from_applicant_with_password(
-            'password', is_enhanced_ipp:, proofing_components: {}
+            'password', is_enhanced_ipp:, proofing_components: {}, decorated_sp_session:
           )
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)
@@ -337,7 +348,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
           idv_session.create_profile_from_applicant_with_password(
-            'password', is_enhanced_ipp:, proofing_components: {}
+            'password', is_enhanced_ipp:, proofing_components: {}, decorated_sp_session:
           )
 
           expect(subject.info_for_latest_step.key).to eq(:personal_key)

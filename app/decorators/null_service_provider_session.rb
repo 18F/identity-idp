@@ -31,6 +31,10 @@ class NullServiceProviderSession
 
   def sp_alert(_section); end
 
+  def logo_is_png?
+    false
+  end
+
   def successful_handoff?
     false
   end

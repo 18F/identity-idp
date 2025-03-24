@@ -33,6 +33,10 @@ class ServiceProviderSession
     end
   end
 
+  def logo_is_png?
+    sp_logo_url.end_with?('.png')
+  end
+
   def s3_logo_url(service_provider)
     region = IdentityConfig.store.aws_region
     bucket = IdentityConfig.store.aws_logo_bucket

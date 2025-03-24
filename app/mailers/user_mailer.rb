@@ -295,7 +295,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:)
+  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:, logo_is_png:, sp_logo_url:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -305,12 +305,16 @@ class UserMailer < ActionMailer::Base
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
       @header = is_enhanced_ipp ?
-        t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
+      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
         is_enhanced_ipp: is_enhanced_ipp,
       )
+
+      @logo_is_png = logo_is_png
+      @sp_logo_url = sp_logo_url
+      @sp_name = enrollment.service_provider&.friendly_name
       @is_enhanced_ipp = is_enhanced_ipp
 
       mail(

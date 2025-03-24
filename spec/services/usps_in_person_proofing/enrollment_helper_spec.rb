@@ -24,6 +24,17 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
   let(:is_enhanced_ipp) { false }
   let(:usps_ipp_sponsor_id) { '2718281828' }
+  let(:current_sp) { create(:service_provider) }
+  let(:view_context) { ActionController::Base.new.view_context }
+  let(:sp) { build_stubbed(:service_provider, logo: nil) }
+  let(:decorated_sp_session) do
+    ServiceProviderSessionCreator.new(
+      sp: sp,
+      view_context: view_context,
+      sp_session: { issuer: current_sp.issuer },
+      service_provider_request: ServiceProviderRequestProxy.new,
+    ).create_session
+  end
 
   before(:each) do
     stub_request_token
@@ -46,7 +57,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
       it 'returns without error' do
         expect do
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp: false)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp: false,
+            decorated_sp_session:
+          )
         end.not_to raise_error
       end
     end
@@ -69,7 +83,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         it 'uses a mock proofer' do
           expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_call_original
 
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp:,
+            decorated_sp_session:
+          )
         end
       end
 
@@ -84,7 +101,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         it 'updates the existing enrollment record' do
           expect(user.in_person_enrollments.length).to eq(1)
 
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp:,
+            decorated_sp_session:
+          )
           enrollment.reload
 
           # tests that the value of current_address_matches_id on the enrollment corresponds
@@ -120,14 +140,20 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant, is_enhanced_ipp)
           end
 
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp:,
+            decorated_sp_session:
+          )
         end
 
         it <<~STR.squish do
           sets enrollment status to pending, sponsor_id to usps_ipp_sponsor_id,
           and sets established at date and unique id
         STR
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp:,
+            decorated_sp_session:
+          )
 
           expect(user.in_person_enrollments.first.status).to eq(InPersonEnrollment::STATUS_PENDING)
           expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_ipp_sponsor_id)
@@ -138,7 +164,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         context 'event logging' do
           context 'with no service provider' do
             it 'logs event' do
-              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+              subject.schedule_in_person_enrollment(
+                user:, pii:, is_enhanced_ipp:,
+                decorated_sp_session:
+              )
 
               expect(subject_analytics).to have_logged_event(
                 'USPS IPPaaS enrollment created',
@@ -169,7 +198,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               let(:is_enhanced_ipp) { true }
 
               it 'logs event' do
-                subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+                subject.schedule_in_person_enrollment(
+                  user:, pii:, is_enhanced_ipp:,
+                  decorated_sp_session:
+                )
 
                 expect(subject_analytics).to have_logged_event(
                   'USPS IPPaaS enrollment created',
@@ -184,7 +216,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
             context 'when the enrollment is not enhanced_ipp' do
               it 'logs event' do
-                subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+                subject.schedule_in_person_enrollment(
+                  user:, pii:, is_enhanced_ipp:,
+                  decorated_sp_session:
+                )
 
                 expect(subject_analytics).to have_logged_event(
                   'USPS IPPaaS enrollment created',
@@ -211,7 +246,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             it 'does not log the presence of address line 2 only in residential address' do
               pii['identity_doc_address2'] = nil
 
-              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+              subject.schedule_in_person_enrollment(
+                user:, pii:, is_enhanced_ipp:,
+                decorated_sp_session:
+              )
 
               expect(subject_analytics).to have_logged_event(
                 'USPS IPPaaS enrollment created',
@@ -229,7 +267,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                 pii['same_address_as_id'] = false
                 pii['address2'] = nil
 
-                subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+                subject.schedule_in_person_enrollment(
+                  user:, pii:, is_enhanced_ipp:,
+                  decorated_sp_session:
+                )
 
                 expect(subject_analytics).to have_logged_event(
                   'USPS IPPaaS enrollment created',
@@ -246,7 +287,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             let(:opt_in) { true }
 
             it 'logs user\'s opt-in choice' do
-              subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:, opt_in:)
+              subject.schedule_in_person_enrollment(
+                user:, pii:, is_enhanced_ipp:,
+                decorated_sp_session:, opt_in:
+              )
 
               expect(subject_analytics).to have_logged_event(
                 'USPS IPPaaS enrollment created',
@@ -261,7 +305,10 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         end
 
         it 'sends verification emails' do
-          subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+          subject.schedule_in_person_enrollment(
+            user:, pii:, is_enhanced_ipp:,
+            decorated_sp_session:
+          )
 
           expect_delivered_email_count(1)
           expect_delivered_email(
@@ -318,7 +365,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       end
 
       it 'saves sponsor_id on the enrollment to the usps_eipp_sponsor_id' do
-        subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:)
+        subject.schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:, decorated_sp_session:)
 
         expect(user.in_person_enrollments.first.sponsor_id).to eq(usps_eipp_sponsor_id)
       end

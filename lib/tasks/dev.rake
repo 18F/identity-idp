@@ -102,6 +102,19 @@ namespace :dev do
       InPersonEnrollment::STATUS_FAILED,
       InPersonEnrollment::STATUS_EXPIRED,
     ].include?(raw_enrollment_status)
+    view_context = ActionController::Base.new.view_context
+    sp = ServiceProvider.new(
+      friendly_name: 'Sample App SP',
+      return_to_sp_url: 'https://example.com',
+      issuer: SecureRandom.uuid,
+      logo: 'lol-to-come.png',
+    )
+    decorated_sp_session = ServiceProviderSessionCreator.new(
+      sp: sp,
+      view_context: view_context,
+      sp_session: { issuer: sp.issuer },
+      service_provider_request: ServiceProviderRequestProxy.new,
+    ).create_session
 
     create_in_usps = !!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
 
@@ -155,6 +168,7 @@ namespace :dev do
                     user: user,
                     pii: pii,
                     is_enhanced_ipp: is_enhanced_ipp,
+                    decorated_sp_session: decorated_sp_session,
                   )
                 rescue StandardError => e
                   Rails.logger.error 'Exception raised while enrolling user: ' + e.message

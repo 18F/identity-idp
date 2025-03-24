@@ -171,6 +171,58 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
+  describe '#logo_is_png?' do
+    let(:sp) { build_stubbed(:service_provider, logo: sp_logo) }
+    before do
+      allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
+    end
+
+    context 'service provider has a png logo' do
+      let(:sp_logo) { 'gsa.png' }
+
+      it 'returns true' do
+        subject = ServiceProviderSession.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequestProxy.new,
+        )
+
+        expect(subject.logo_is_png?).to be(true)
+      end
+    end
+
+    context 'service provider has a svg logo' do
+      let(:sp_logo) { '18f.svg' }
+
+      it 'returns false' do
+        subject = ServiceProviderSession.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequestProxy.new,
+        )
+
+        expect(subject.logo_is_png?).to be(false)
+      end
+    end
+
+    context 'service provider has no logo' do
+      let(:sp_logo) { nil }
+
+      it 'returns false' do
+        subject = ServiceProviderSession.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequestProxy.new,
+        )
+
+        expect(subject.logo_is_png?).to be(false)
+      end
+    end
+  end
+
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(

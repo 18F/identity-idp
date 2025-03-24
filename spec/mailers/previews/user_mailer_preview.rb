@@ -186,6 +186,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_id_ipp,
       is_enhanced_ipp: false,
+      logo_is_png: true,
+      sp_logo_url: sp_logo_url_png,
     )
   end
 
@@ -193,6 +195,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_enhanced_ipp,
       is_enhanced_ipp: true,
+      logo_is_png: false,
+      sp_logo_url: sp_logo_url_svg,
     )
   end
 
@@ -374,6 +378,46 @@ class UserMailerPreview < ActionMailer::Preview
         sponsor_id: IdentityConfig.store.usps_eipp_sponsor_id,
       ),
     )
+  end
+
+  def decorated_sp_session_png
+    view_context = ActionController::Base.new.view_context
+    sp = ServiceProvider.new(
+      friendly_name: 'Sample App SP',
+      return_to_sp_url: 'https://example.com',
+      issuer: SecureRandom.uuid,
+      logo: 'gsa.png',
+    )
+    ServiceProviderSessionCreator.new(
+      sp: sp,
+      view_context: view_context,
+      sp_session: { issuer: sp.issuer },
+      service_provider_request: ServiceProviderRequestProxy.new,
+    ).create_session
+  end
+
+  def sp_logo_url_png
+    decorated_sp_session_png.sp_logo_url
+  end
+
+  def decorated_sp_session_svg
+    view_context = ActionController::Base.new.view_context
+    sp = ServiceProvider.new(
+      friendly_name: 'Sample App SP',
+      return_to_sp_url: 'https://example.com',
+      issuer: SecureRandom.uuid,
+      logo: '18f.svg',
+    )
+    ServiceProviderSessionCreator.new(
+      sp: sp,
+      view_context: view_context,
+      sp_session: { issuer: sp.issuer },
+      service_provider_request: ServiceProviderRequestProxy.new,
+    ).create_session
+  end
+
+  def sp_logo_url_svg
+    decorated_sp_session_svg.sp_logo_url
   end
 
   # Remove #save and #save! to make sure we can't write these made-up records
