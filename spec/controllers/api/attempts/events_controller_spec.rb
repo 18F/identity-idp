@@ -113,6 +113,15 @@ RSpec.describe Api::Attempts::EventsController do
             end
           end
 
+          context 'when there are acknowledged events' do
+            let(:payload) { { maxEvents: '1000' } }
+
+            it 'does not attempts to delete events' do
+              expect(redis_client).not_to receive(:delete_events)
+              expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
+            end
+          end
+
           context 'when there are multiple events' do
             let(:events) { {} }
             before do
@@ -156,6 +165,19 @@ RSpec.describe Api::Attempts::EventsController do
 
               it 'returns the oldest events' do
                 expect(JSON.parse(action.body)['sets'].keys).to_not include event_key
+              end
+            end
+
+            context 'when there is no maxEvents parameter' do
+              let(:payload) { { acks: } }
+              it 'uses 1000 as the batch size' do
+                expect(redis_client).to receive(:read_events).with(
+                  issuer:,
+                  batch_size: 1000,
+                ).and_call_original
+
+                sets = events.merge({ event_key => jwe })
+                expect(JSON.parse(action.body)).to eq({ 'sets' => sets })
               end
             end
           end

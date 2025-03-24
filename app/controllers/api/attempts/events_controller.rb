@@ -13,10 +13,12 @@ module Api
       before_action :authenticate_client, only: :poll
 
       def poll
-        redis_client.delete_events(
-          issuer: request_token.issuer,
-          keys: poll_params[:acks],
-        )
+        if poll_params[:acks].present?
+          redis_client.delete_events(
+            issuer: request_token.issuer,
+            keys: poll_params[:acks],
+          )
+        end
         render json: { sets: }
       end
 
