@@ -374,6 +374,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           :document_capture_session,
           :socure,
           user:,
+          doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
           socure_docv_capture_app_url: fake_capture_app_url,
         )
         allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
