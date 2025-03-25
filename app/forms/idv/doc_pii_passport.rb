@@ -26,6 +26,10 @@ module Idv
       @mrz = pii[:mrz]
     end
 
+    def self.pii_like_keypaths
+      %i[birth_place passport_issued issuing_country_code nationality_code mrz]
+    end
+
     private
 
     attr_reader :pii_from_doc

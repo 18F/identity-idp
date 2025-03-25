@@ -34,6 +34,10 @@ module Idv
       @attention_with_barcode = attention_with_barcode
     end
 
+    def self.pii_like_keypaths
+      %i[address1 state zipcode jurisdiction state_id_number]
+    end
+
     private
 
     attr_reader :pii_from_doc
