@@ -101,7 +101,7 @@ module Users
     end
 
     def otp_delivery_method(_id, phone, selected_delivery_method)
-      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: false)
+      capabilities = PhoneNumberCapabilities.new(phone)
       return :sms if capabilities.sms_only?
       return selected_delivery_method if selected_delivery_method.present?
       current_user.otp_delivery_preference

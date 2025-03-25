@@ -123,9 +123,7 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if params[:otp_delivery_preference] == 'sms'
 
-      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
-
-      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_is_confirmed)
+      capabilities = PhoneNumberCapabilities.new(phone)
 
       return if capabilities.supports_voice?
 

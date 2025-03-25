@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PhoneNumberCapabilities do
   let(:phone) { '+1 (703) 555-5000' }
-  let(:phone_confirmed) { false }
-  subject(:capabilities) { PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed) }
+  subject(:capabilities) { PhoneNumberCapabilities.new(phone) }
 
   describe '#supports?' do
     let(:method) { nil }
@@ -106,12 +105,6 @@ RSpec.describe PhoneNumberCapabilities do
       let(:phone) { '+1 (441) 295-9644' }
       it { is_expected.to eq(true) }
     end
-
-    context 'Iraq number that is unconfirmed' do
-      let(:phone_confirmed) { false }
-      let(:phone) { '+964 (703) 555-5000' }
-      it { is_expected.to eq(false) }
-    end
   end
 
   describe '#supports_voice?' do
@@ -126,25 +119,12 @@ RSpec.describe PhoneNumberCapabilities do
       let(:phone) { '+1 (441) 295-9644' }
       it { is_expected.to eq(false) }
     end
-
-    context 'Philippines number that is confirmed' do
-      let(:phone_confirmed) { true }
-      let(:phone) { '+63 (703) 555-5000' }
-      it { is_expected.to eq(true) }
-    end
-
-    context 'Philippines number that is unconfirmed' do
-      let(:phone_confirmed) { false }
-      let(:phone) { '+63 (703) 555-5000' }
-      it { is_expected.to eq(false) }
-    end
   end
 
   describe '#unsupported_location' do
     it 'returns the name of the unsupported country (Bahamas)' do
       locality = PhoneNumberCapabilities.new(
         '+1 (242) 327-0143',
-        phone_confirmed: false,
       ).unsupported_location
 
       expect(locality).to eq('Bahamas')
@@ -153,7 +133,6 @@ RSpec.describe PhoneNumberCapabilities do
     it 'returns the name of the unsupported country (Bermuda)' do
       locality = PhoneNumberCapabilities.new(
         '+1 (441) 295-9644',
-        phone_confirmed: false,
       ).unsupported_location
 
       expect(locality).to eq('Bermuda')
@@ -163,7 +142,6 @@ RSpec.describe PhoneNumberCapabilities do
       it 'returns the default country' do
         locality = PhoneNumberCapabilities.new(
           '703-555-1212',
-          phone_confirmed: false,
         ).unsupported_location
 
         expect(locality).to eq('United States')
