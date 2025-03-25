@@ -1,0 +1,8 @@
+description: |
+  User manually submitted an IdV address 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      address:
+        type: string

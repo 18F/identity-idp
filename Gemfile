@@ -103,7 +103,7 @@ end
 group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 8.0'
-  gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
+  gem 'capybara-webmock', github: '18F/capybara-webmock', branch: 'add-support-for-rack-3'
   gem 'erb_lint', '~> 0.7.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
@@ -136,7 +136,6 @@ group :test do
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
-  gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'simple_xlsx_reader', require: false

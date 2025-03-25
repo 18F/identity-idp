@@ -1,4 +1,17 @@
 GIT
+  remote: https://github.com/18F/capybara-webmock.git
+  revision: d859e8df7280ff5e2e8efc2ce20205162e83ac09
+  branch: add-support-for-rack-3
+  specs:
+    capybara-webmock (0.7.0)
+      capybara (>= 2.4, < 4)
+      rack (>= 1.4)
+      rack-proxy (>= 0.6.0)
+      rexml (>= 3.2)
+      selenium-webdriver (>= 4.0)
+      webrick (>= 1.7)
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 67a19c577b8fa9305350cf9cefa572cef4a80310
   tag: v4.4.1
@@ -56,19 +69,6 @@ GIT
       activemodel
       mail (>= 2.6.1)
       simpleidn
-
-GIT
-  remote: https://github.com/hashrocket/capybara-webmock.git
-  revision: d3f3b7c8edbeca7b575e74b256ad22df80d2b420
-  ref: d3f3b7c
-  specs:
-    capybara-webmock (0.6.0)
-      capybara (>= 2.4, < 4)
-      rack (>= 1.4)
-      rack-proxy (>= 0.6.0)
-      rexml (>= 3.2)
-      selenium-webdriver (>= 4.0)
-      webrick (>= 1.7)
 
 GIT
   remote: https://github.com/rack/rack-attack.git
@@ -405,7 +405,7 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.5)
+    logger (1.6.6)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -461,7 +461,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.4)
-    nokogiri (1.18.3)
+    nokogiri (1.18.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
@@ -512,7 +512,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.0.12)
+    rack (3.0.14)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -522,7 +522,7 @@ GEM
       rack
     rack-session (2.0.0)
       rack (>= 3.0.0)
-    rack-test (2.1.0)
+    rack-test (2.2.0)
       rack (>= 1.3)
     rack-timeout (0.6.3)
     rack_session_access (0.2.0)
@@ -616,8 +616,6 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
-    rspec-retry (0.6.2)
-      rspec-core (> 3.3)
     rspec-support (3.13.2)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -650,7 +648,7 @@ GEM
       nokogiri (>= 1.13.10)
       rexml
     ruby-statistics (3.0.2)
-    rubyzip (2.3.2)
+    rubyzip (2.4.1)
     safe_target_blank (1.0.2)
       rails
     safely_block (0.3.0)
@@ -661,7 +659,7 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
       rake (>= 9, < 14)
     securerandom (0.4.1)
-    selenium-webdriver (4.27.0)
+    selenium-webdriver (4.29.1)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -727,7 +725,7 @@ GEM
       openssl (>= 2.2, < 3.1)
       safety_net_attestation (~> 0.4.0)
       tpm-key_attestation (~> 0.11.0)
-    webmock (3.24.0)
+    webmock (3.25.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -850,7 +848,6 @@ DEPENDENCIES
   rqrcode
   rspec (~> 3.13.0)
   rspec-rails (~> 7.0)
-  rspec-retry
   rspec_junit_formatter
   rubocop (~> 1.70.0)
   rubocop-capybara
