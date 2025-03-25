@@ -397,6 +397,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
       get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#show'
+      put '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#update'
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/choose_id_type' => 'choose_id_type#show'
