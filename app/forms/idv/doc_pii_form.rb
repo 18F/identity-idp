@@ -94,10 +94,10 @@ module Idv
     def state_id_or_passport
       case state_id_type
       when 'drivers_license', 'state_id_card'
-        state_id_validation = DocPiiStateIdForm.new(pii: pii_from_doc)
+        state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       when 'passport'
-        passport_validation = DocPiiPassportForm.new(pii: pii_from_doc)
+        passport_validation = DocPiiPassport.new(pii: pii_from_doc)
         passport_validation.valid? || errors.merge!(passport_validation.errors)
       else
         errors.add(:no_document, generic_error, type: :no_document)

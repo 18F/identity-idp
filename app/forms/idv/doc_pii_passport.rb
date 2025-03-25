@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  class DocPiiPassportForm
+  class DocPiiPassport
     include ActiveModel::Model
 
     validates :birth_place,

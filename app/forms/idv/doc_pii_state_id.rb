@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  class DocPiiStateIdForm
+  class DocPiiStateId
     include ActiveModel::Model
 
     validates_presence_of :address1, { message: proc {
