@@ -47,7 +47,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
             user: user,
             ial: 1,
             service_provider: service_provider,
-            requested_at: partial_month_date,
             returned_at: partial_month_date,
             billable: true,
           )
@@ -59,7 +58,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
           user: user,
           ial: 1,
           service_provider: service_provider,
-          requested_at: partial_month_date,
           returned_at: partial_month_date,
           billable: false,
         )
@@ -71,7 +69,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
             user: user,
             service_provider: service_provider,
             ial: 1,
-            requested_at: full_month_date,
             returned_at: full_month_date,
             billable: true,
           )
