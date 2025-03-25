@@ -43,12 +43,13 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
 
       context 'when Faraday raises an error' do
         before do
-          stub_request(:get, endpoint).to_raise(Faraday::Error)
+          stub_request(:get, endpoint).to_raise(Faraday::TimeoutError)
         end
 
         it 'hits the endpoint' do
           result
           expect(WebMock).to have_requested(:get, endpoint)
+            .times(IdentityConfig.store.dos_passport_healthcheck_maxretry + 1)
         end
 
         it 'logs the request' do
@@ -60,7 +61,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
               errors: hash_including(
                 network: 'faraday exception',
               ),
-              exception: a_string_matching(/Faraday::Error/),
+              exception: a_string_matching(/Faraday::TimeoutError/),
             ),
           )
         end
