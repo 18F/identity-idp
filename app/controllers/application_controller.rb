@@ -407,6 +407,14 @@ class ApplicationController < ActionController::Base
     user_session[:web_locale] = I18n.locale.to_s
   end
 
+  def override_locale_with_web_locale
+    return unless user_signed_in?
+    return if user_session[:web_locale].nil?
+    return if params[:locale].present?
+
+    I18n.locale = LocaleChooser.new(user_session[:web_locale], request).locale
+  end
+
   def pii_requested_but_locked?
     if resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
       current_user.identity_verified? &&
