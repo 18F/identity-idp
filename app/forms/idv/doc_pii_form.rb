@@ -25,7 +25,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: self.class.pii_like_keypaths,
+          pii_like_keypaths: self.class.pii_like_keypaths(document_type: state_id_type),
           attention_with_barcode: attention_with_barcode?,
           # TODO: look into this with passports
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
@@ -36,9 +36,13 @@ module Idv
       response
     end
 
-    def self.pii_like_keypaths
+    def self.pii_like_keypaths(document_type: nil)
       keypaths = [[:pii]]
-      attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction state_id_number]
+      # attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction state_id_number]
+      document_attrs = document_type&.downcase == 'passport' ? DocPiiPassport.pii_like_keypaths : DocPiiStateId.pii_like_keypaths
+
+      attrs = %i[name dob dob_min_age] + document_attrs
+
       attrs.each do |k|
         keypaths << [:errors, k]
         keypaths << [:error_details, k]

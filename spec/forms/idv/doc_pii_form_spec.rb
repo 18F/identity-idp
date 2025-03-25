@@ -306,7 +306,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
         )
@@ -338,7 +338,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
         )
@@ -362,7 +362,7 @@ RSpec.describe Idv::DocPiiForm do
           )
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
         )
@@ -382,7 +382,7 @@ RSpec.describe Idv::DocPiiForm do
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          pii_like_keypaths: pii_like_keypaths,
+          pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
         )
@@ -401,7 +401,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:state_id_expiration]).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'missing',
           )
@@ -421,7 +421,7 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
           )
@@ -439,7 +439,7 @@ RSpec.describe Idv::DocPiiForm do
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
             )
@@ -462,7 +462,7 @@ RSpec.describe Idv::DocPiiForm do
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
-              pii_like_keypaths: pii_like_keypaths,
+              pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
             )
@@ -478,7 +478,7 @@ RSpec.describe Idv::DocPiiForm do
               expect(result.errors).to be_empty
               expect(result.extra).to eq(
                 attention_with_barcode: false,
-                pii_like_keypaths: pii_like_keypaths,
+                pii_like_keypaths: pii_like_keypaths_state_id,
                 id_issued_status: 'present',
                 id_expiration_status: 'present',
               )
@@ -500,7 +500,7 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
           )
@@ -520,7 +520,7 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
           )
@@ -548,7 +548,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
           )
@@ -603,7 +603,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_passport,
             # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -621,6 +621,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:birth_place]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
+          )
         end
       end
 
@@ -633,6 +640,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.success?).to eq(false)
           expect(result.errors[:passport_expiration]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
+          )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
           )
         end
       end
@@ -647,6 +661,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:passport_issued]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
+          )
         end
       end
 
@@ -659,6 +680,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.success?).to eq(false)
           expect(result.errors[:issuing_country_code]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
+          )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
           )
         end
       end
@@ -673,6 +701,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:nationality_code]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
+          )
         end
       end
 
@@ -685,6 +720,13 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.success?).to eq(false)
           expect(result.errors[:mrz]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
+          )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            pii_like_keypaths: pii_like_keypaths_passport,
+            # TODO: Look into this with passports
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
           )
         end
       end
