@@ -12,9 +12,9 @@ module OpenidConnect
     include OpenidConnectRedirectConcern
     include SignInDurationConcern
 
-    before_action :override_locale_with_web_locale
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :set_devise_failure_redirect_for_concurrent_session_logout
+    before_action :override_locale_with_web_locale
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
