@@ -237,7 +237,6 @@ namespace :dev do
     {
       delivery_preference: user.otp_delivery_preference,
       phone: format('+1 (415) 555-%04d', args[:num]),
-      confirmed_at: Time.zone.now,
     }
   end
 end

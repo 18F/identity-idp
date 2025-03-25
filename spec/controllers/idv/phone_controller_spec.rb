@@ -44,7 +44,7 @@ RSpec.describe Idv::PhoneController do
   let(:user) do
     create(
       :user, :with_phone,
-      with: { phone: good_phone, confirmed_at: Time.zone.now }
+      with: { phone: good_phone }
     )
   end
 

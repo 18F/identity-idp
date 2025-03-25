@@ -81,7 +81,7 @@ RSpec.describe RememberDeviceCookie do
 
     context 'when the token does not refer to the current user' do
       it 'returns false' do
-        other_user = create(:user, :with_phone, with: { confirmed_at: 90.days.ago })
+        other_user = create(:user, :with_phone)
         cookie = described_class.new(user_id: user.id, created_at: created_at)
 
         expect(
