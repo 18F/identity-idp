@@ -295,7 +295,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:, logo_is_png:, sp_logo_url:)
+  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -312,8 +312,11 @@ class UserMailer < ActionMailer::Base
         is_enhanced_ipp: is_enhanced_ipp,
       )
 
-      @logo_is_png = logo_is_png
-      @sp_logo_url = sp_logo_url
+      if enrollment&.service_provider&.logo_is_email_compatible?
+        @sp_logo_url = enrollment.service_provider.sp_logo_url
+      else
+        @sp_logo_url = nil
+      end
       @sp_name = enrollment.service_provider&.friendly_name
       @is_enhanced_ipp = is_enhanced_ipp
 

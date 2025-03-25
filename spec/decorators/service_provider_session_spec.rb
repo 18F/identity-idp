@@ -171,7 +171,7 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#logo_is_png?' do
+  describe '#logo_is_email_compatible?' do
     let(:sp) { build_stubbed(:service_provider, logo: sp_logo) }
     before do
       allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
@@ -188,7 +188,7 @@ RSpec.describe ServiceProviderSession do
           service_provider_request: ServiceProviderRequestProxy.new,
         )
 
-        expect(subject.logo_is_png?).to be(true)
+        expect(subject.logo_is_email_compatible?).to be(true)
       end
     end
 
@@ -203,7 +203,7 @@ RSpec.describe ServiceProviderSession do
           service_provider_request: ServiceProviderRequestProxy.new,
         )
 
-        expect(subject.logo_is_png?).to be(false)
+        expect(subject.logo_is_email_compatible?).to be(false)
       end
     end
 
@@ -218,7 +218,7 @@ RSpec.describe ServiceProviderSession do
           service_provider_request: ServiceProviderRequestProxy.new,
         )
 
-        expect(subject.logo_is_png?).to be(false)
+        expect(subject.logo_is_email_compatible?).to be(false)
       end
     end
   end

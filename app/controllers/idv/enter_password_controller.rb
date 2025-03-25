@@ -131,7 +131,6 @@ module Idv
         password,
         is_enhanced_ipp: resolved_authn_context_result.enhanced_ipp?,
         proofing_components: ProofingComponents.new(idv_session:).to_h,
-        decorated_sp_session: decorated_sp_session,
       )
 
       if profile.gpo_verification_pending?

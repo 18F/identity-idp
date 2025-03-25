@@ -23,17 +23,11 @@ class NullServiceProviderSession
 
   def sp_logo; end
 
-  def sp_logo_url; end
-
   def sp_redirect_uris; end
 
   def requested_attributes; end
 
   def sp_alert(_section); end
-
-  def logo_is_png?
-    false
-  end
 
   def successful_handoff?
     false

@@ -113,14 +113,13 @@ module Idv
 
     # @return [Profile]
     def create_profile_from_applicant_with_password(
-      user_password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+      user_password, is_enhanced_ipp:, proofing_components:
     )
       if user_has_unscheduled_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
           pii: Pii::Attributes.new_from_hash(applicant),
           is_enhanced_ipp: is_enhanced_ipp,
-          decorated_sp_session: decorated_sp_session,
           opt_in: opt_in_param,
         )
       end

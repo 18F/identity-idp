@@ -9,19 +9,6 @@ RSpec.describe UserMailer, type: :mailer do
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
   let(:is_enhanced_ipp) { false }
 
-  let(:view_context) { ActionController::Base.new.view_context }
-  let(:sp) { build_stubbed(:service_provider, logo: 'gsa.png') }
-  let(:decorated_sp_session) do
-    ServiceProviderSessionCreator.new(
-      sp: sp,
-      view_context: view_context,
-      sp_session: { issuer: sp.issuer },
-      service_provider_request: ServiceProviderRequestProxy.new,
-    ).create_session
-  end
-  let(:logo_is_png) { decorated_sp_session.logo_is_png? }
-  let(:sp_logo_url) { decorated_sp_session.sp_logo_url }
-
   describe '#validate_user_and_email_address' do
     let(:request_id) { '1234-abcd' }
     let(:mail) do
@@ -871,8 +858,6 @@ RSpec.describe UserMailer, type: :mailer do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
           is_enhanced_ipp:,
-          logo_is_png:,
-          sp_logo_url:,
         )
       end
 
@@ -935,8 +920,6 @@ RSpec.describe UserMailer, type: :mailer do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
               enrollment: enhanced_ipp_enrollment,
               is_enhanced_ipp: is_enhanced_ipp,
-              logo_is_png:,
-              sp_logo_url:,
             )
           end
           it 'renders the change location heading' do
@@ -961,8 +944,6 @@ RSpec.describe UserMailer, type: :mailer do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
               enrollment: enhanced_ipp_enrollment,
               is_enhanced_ipp: is_enhanced_ipp,
-              logo_is_png:,
-              sp_logo_url:,
             )
           end
 
@@ -1055,8 +1036,6 @@ RSpec.describe UserMailer, type: :mailer do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enhanced_ipp_enrollment,
             is_enhanced_ipp:,
-            logo_is_png:,
-            sp_logo_url:,
           )
         end
 

@@ -82,6 +82,32 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def sp_logo_url
+    if FeatureManagement.logo_upload_enabled? && sp.remote_logo_key.present?
+      s3_logo_url(sp)
+    else
+      legacy_logo_url
+    end
+  end
+
+  def logo_is_email_compatible?
+    sp_logo_url.end_with?('.png')
+  end
+
+  def s3_logo_url(service_provider)
+    region = IdentityConfig.store.aws_region
+    bucket = IdentityConfig.store.aws_logo_bucket
+    key = service_provider.remote_logo_key
+
+    "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
+  end
+
+  def legacy_logo_url
+    ActionController::Base.helpers.image_path("sp-logos/#{logo}")
+  rescue Propshaft::MissingAssetError
+    ''
+  end
+
   private
 
   # @return [String,nil]

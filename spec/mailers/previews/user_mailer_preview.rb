@@ -186,7 +186,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_id_ipp,
       is_enhanced_ipp: false,
-      logo_is_png: true,
+      logo_is_email_compatible: true,
       sp_logo_url: sp_logo_url_png,
     )
   end
@@ -195,7 +195,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_enhanced_ipp,
       is_enhanced_ipp: true,
-      logo_is_png: false,
+      logo_is_email_compatible: false,
       sp_logo_url: sp_logo_url_svg,
     )
   end

@@ -57,18 +57,18 @@ RSpec.describe 'layouts/mailer.html.erb' do
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
     let(:enrollment) { create(:in_person_enrollment, :pending, :with_service_provider) }
     let(:sp_name) { 'Friendly Service Provider' }
-    let(:logo_is_png) { true }
+    let(:logo_is_email_compatible) { true }
     let(:sp_logo_url) { '/assets/sp-logos/gsa.png' }
 
     before do
       @mail = UserMailer.with(
         user: user,
         email_address: user.email_addresses.first,
-      ).in_person_ready_to_verify(enrollment:, is_enhanced_ipp: false, logo_is_png:, sp_logo_url:)
+      ).in_person_ready_to_verify(enrollment:, is_enhanced_ipp: false, logo_is_email_compatible:,
+                                  sp_logo_url:)
       allow(view).to receive(:message).and_return(@mail)
       allow(view).to receive(:attachments).and_return(@mail.attachments)
       @sp_name = sp_name
-      @logo_is_png = logo_is_png
       @sp_logo_url = sp_logo_url
 
       render
@@ -81,7 +81,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
     end
 
     context 'when the partner agency logo is a svg' do
-      let(:logo_is_png) { false }
+      let(:logo_is_email_compatible) { false }
       let(:sp_logo_url) { '/assets/sp-logos/generic.svg' }
 
       it 'displays the partner agency name' do
@@ -90,7 +90,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
     end
 
     context 'when there is no partner agency logo' do
-      let(:logo_is_png) { false }
+      let(:logo_is_email_compatible) { false }
       let(:sp_logo_url) { nil }
 
       it 'displays the partner agency name' do

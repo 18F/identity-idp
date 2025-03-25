@@ -25,33 +25,6 @@ class ServiceProviderSession
     sp.logo.presence || DEFAULT_LOGO
   end
 
-  def sp_logo_url
-    if FeatureManagement.logo_upload_enabled? && sp.remote_logo_key.present?
-      s3_logo_url(sp)
-    else
-      legacy_logo_url
-    end
-  end
-
-  def logo_is_png?
-    sp_logo_url.end_with?('.png')
-  end
-
-  def s3_logo_url(service_provider)
-    region = IdentityConfig.store.aws_region
-    bucket = IdentityConfig.store.aws_logo_bucket
-    key = service_provider.remote_logo_key
-
-    "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
-  end
-
-  def legacy_logo_url
-    logo = sp_logo
-    ActionController::Base.helpers.image_path("sp-logos/#{logo}")
-  rescue Propshaft::MissingAssetError
-    ''
-  end
-
   def new_session_heading
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end
