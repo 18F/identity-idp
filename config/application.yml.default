@@ -388,7 +388,6 @@ short_term_phone_otp_max_attempts: 2
 show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 sign_in_recaptcha_annotation_enabled: false
-sign_in_recaptcha_log_failures_only: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
 sign_in_user_id_per_ip_attempt_window_exponential_factor: 1.1
