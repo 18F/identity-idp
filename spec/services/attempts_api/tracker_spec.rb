@@ -65,7 +65,6 @@ RSpec.describe AttemptsApi::Tracker do
         subject.track_event(:test_event, foo: :bar)
 
         events = AttemptsApi::RedisClient.new.read_events(
-          timestamp: Time.zone.now,
           issuer: service_provider.issuer,
         )
 
@@ -78,7 +77,6 @@ RSpec.describe AttemptsApi::Tracker do
         subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
 
         events = AttemptsApi::RedisClient.new.read_events(
-          timestamp: Time.zone.now,
           issuer: service_provider.issuer,
         )
 
@@ -95,7 +93,6 @@ RSpec.describe AttemptsApi::Tracker do
           subject.track_event(:test_event, foo: :bar)
 
           events = AttemptsApi::RedisClient.new.read_events(
-            timestamp: Time.zone.now,
             issuer: service_provider.issuer,
           )
 
@@ -112,7 +109,6 @@ RSpec.describe AttemptsApi::Tracker do
           subject.track_event(:test_event, foo: :bar)
 
           events = AttemptsApi::RedisClient.new.read_events(
-            timestamp: Time.zone.now,
             issuer: service_provider.issuer,
           )
 

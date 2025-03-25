@@ -10,27 +10,34 @@ module AttemptsApi
       end
     end
 
-    def read_events(timestamp:, issuer:, batch_size: 5000)
-      key = key(timestamp, issuer)
+    def read_events(issuer:, batch_size: 1000)
       events = {}
-      REDIS_ATTEMPTS_API_POOL.with do |client|
-        client.hscan_each(key, count: batch_size) do |k, v|
-          events[k] = v
+      hourly_keys(issuer).each do |hourly_key|
+        REDIS_ATTEMPTS_API_POOL.with do |client|
+          client.hscan_each(hourly_key, count: batch_size) do |k, v|
+            break if events.keys.count == batch_size
+
+            events[k] = v
+          end
         end
       end
       events
     end
 
     def delete_events(issuer:, keys:)
-      hourly_keys = REDIS_ATTEMPTS_API_POOL.with do |client|
-        client.keys("attempts-api-events:#{issuer}:*")
-      end
-
-      hourly_keys.each do |hourly_key|
+      hourly_keys(issuer).each do |hourly_key|
         REDIS_ATTEMPTS_API_POOL.with do |client|
           client.hdel(hourly_key, keys)
         end
       end
+    end
+
+    private
+
+    def hourly_keys(issuer)
+      REDIS_ATTEMPTS_API_POOL.with do |client|
+        client.keys("attempts-api-events:#{issuer}:*")
+      end.sort
     end
 
     def key(timestamp, issuer)
