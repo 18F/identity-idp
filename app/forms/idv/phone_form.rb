@@ -57,7 +57,7 @@ module Idv
     def determine_initial_values(international_code: nil, phone: nil)
       if phone.nil? && international_code.nil?
         default_phone = user.default_phone_configuration&.phone || hybrid_handoff_phone_number
-        if valid_phone?(default_phone)
+        if valid_phone?(default_phone, phone_confirmed: true)
           phone = default_phone
           international_code = country_code_for(default_phone)
         end
@@ -85,7 +85,7 @@ module Idv
     def validate_phone_delivery_methods
       return unless valid_phone_for_allowed_countries?(phone)
 
-      capabilities = PhoneNumberCapabilities.new(phone)
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: user_phone?(phone))
       unsupported_methods = unsupported_delivery_methods(capabilities)
       return if unsupported_methods.count != delivery_methods.count
       unsupported_methods.each do |delivery_method|
@@ -124,9 +124,9 @@ module Idv
       @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
     end
 
-    def valid_phone?(phone)
+    def valid_phone?(phone, phone_confirmed:)
       return false if !valid_phone_for_allowed_countries?(phone)
-      capabilities = PhoneNumberCapabilities.new(phone)
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed)
       unsupported_delivery_methods(capabilities).blank?
     end
 

@@ -44,7 +44,7 @@ RSpec.describe Idv::PhoneController do
   let(:user) do
     create(
       :user, :with_phone,
-      with: { phone: good_phone }
+      with: { phone: good_phone, confirmed_at: Time.zone.now }
     )
   end
 
@@ -385,7 +385,7 @@ RSpec.describe Idv::PhoneController do
       end
 
       context 'when different phone from user phone' do
-        it 'redirects to otp page' do
+        it 'redirects to otp page and does not set phone_confirmed_at' do
           put :create, params: phone_params
 
           expect(response).to redirect_to idv_phone_path
@@ -393,6 +393,7 @@ RSpec.describe Idv::PhoneController do
           expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
+          expect(subject.idv_session.user_phone_confirmation).to eq false
         end
 
         context 'with full vendor outage' do

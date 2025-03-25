@@ -37,6 +37,9 @@ module OtpDeliveryPreferenceValidator
   private
 
   def phone_number_capabilities
-    @phone_number_capabilities ||= PhoneNumberCapabilities.new(phone)
+    @phone_number_capabilities ||= PhoneNumberCapabilities.new(
+      phone,
+      phone_confirmed: confirmed_phone?,
+    )
   end
 end

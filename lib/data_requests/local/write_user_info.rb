@@ -95,6 +95,7 @@ module DataRequests
             'Phone configuration',
             phone_config[:phone],
             phone_config[:created_at],
+            phone_config[:confirmed_at],
             phone_config[:id],
           ]
         end

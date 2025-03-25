@@ -52,7 +52,6 @@ RSpec.describe UpdateUserPhoneConfiguration do
 
     context 'when creating a new phone' do
       let(:user) { create(:user) }
-      let(:confirmed_at) { 1.day.ago.change(usec: 0) }
       let(:attributes) do
         {
           phone: '+1 222 333-4444',
@@ -91,7 +90,6 @@ RSpec.describe UpdateUserPhoneConfiguration do
     context 'when updating an existing phone' do
       let(:user) { create(:user) }
       let(:phone_configuration) { create(:phone_configuration, user: user) }
-      let(:confirmed_at) { 1.day.ago.change(usec: 0) }
       let(:attributes) do
         {
           phone_id: phone_configuration.id,

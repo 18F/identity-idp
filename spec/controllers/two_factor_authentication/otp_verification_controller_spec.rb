@@ -514,6 +514,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         controller.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         controller.user_session[:context] = 'confirmation'
 
+        @previous_phone_confirmed_at =
+          MfaContext.new(controller.current_user).phone_configurations.first&.confirmed_at
+
         controller.current_user.create_direct_otp
 
         stub_analytics

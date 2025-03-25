@@ -36,8 +36,9 @@ class PhoneNumberCapabilities
 
   TRANSLATED_INTL_CODES_DATA = generate_translated_international_codes_data.freeze
 
-  def initialize(phone)
+  def initialize(phone, phone_confirmed:)
     @phone = phone
+    @phone_confirmed = phone_confirmed
   end
 
   # @param [Symbol] method

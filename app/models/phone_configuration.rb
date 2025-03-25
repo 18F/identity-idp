@@ -2,6 +2,7 @@
 
 class PhoneConfiguration < ApplicationRecord
   self.ignored_columns += %w[confirmation_sent_at]
+  self.ignored_columns += %w[confirmed_at]
   include EncryptableAttribute
 
   belongs_to :user, inverse_of: :phone_configurations
@@ -36,7 +37,7 @@ class PhoneConfiguration < ApplicationRecord
   end
 
   def capabilities
-    PhoneNumberCapabilities.new(phone)
+    PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
   end
 
   def friendly_name
