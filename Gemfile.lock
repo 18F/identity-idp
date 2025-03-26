@@ -815,6 +815,7 @@ DEPENDENCIES
   lru_redux
   mail
   maxminddb
+  mini_portile2
   msgpack (~> 1.6)
   multiset
   net-http-persistent (~> 4.0.2)
