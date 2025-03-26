@@ -1170,7 +1170,7 @@ idv.messages.gpo.start_over_link_text: start over and verify with your new addre
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
-idv.messages.phone.description: We’ll check your number with records and send you a one-time code to verify your identity.
+idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
@@ -1181,7 +1181,7 @@ idv.messages.phone.rules:
 idv.messages.return_to_profile: '‹ Return to your %{app_name} profile'
 idv.messages.sessions.enter_password_message: When you re-enter your password, %{app_name} will protect the information you’ve given us, so that only you can access it.
 idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
-idv.messages.verify_info: We read your information from your ID. Review it and make any updates before submitting for verification.
+idv.messages.verify_info: We will check records to verify that your address and Social Security number match the information on your ID.
 idv.messages.verifying: Verifying…
 idv.titles.activated: Your identity has already been verified
 idv.titles.come_back_later: Your letter is on the way

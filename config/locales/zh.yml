@@ -1183,7 +1183,7 @@ idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验�
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong>的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
-idv.messages.phone.description: 我们会将你的号码与记录核对并给你发个一次性代码来验证你的身份。
+idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
@@ -1194,7 +1194,7 @@ idv.messages.phone.rules:
 idv.messages.return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
 idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的）- 测试站点
-idv.messages.verify_info: 我们从你的身份证件上读取你的信息。提交进行验证之前请检查一下并做出必要更新。
+idv.messages.verify_info: 我们会检查记录以验证你的地址和社会保障号码是否与你身份证件上的信息相符。
 idv.messages.verifying: 验证中。。。
 idv.titles.activated: 你的身份已验证
 idv.titles.come_back_later: 你的信件已寄出。
