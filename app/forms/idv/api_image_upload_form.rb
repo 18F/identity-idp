@@ -48,7 +48,7 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
 
-          if doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
+          if doc_pii_response.success? && doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
             passport_response = validate_mrz(client_response)
           end
         end
