@@ -15,6 +15,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+      allow(view).to receive(:current_sp).and_return(sp_with_logo)
       render
     end
 
@@ -46,6 +47,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+      allow(view).to receive(:current_sp).and_return(sp_with_s3_logo)
 
       render
     end
@@ -65,6 +67,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+      allow(view).to receive(:current_sp).and_return(sp_without_logo)
       render
     end
 
@@ -83,6 +86,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+      allow(view).to receive(:current_sp).and_return(sp)
     end
 
     it 'does not raise an exception' do

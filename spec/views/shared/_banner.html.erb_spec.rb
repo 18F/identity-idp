@@ -13,6 +13,7 @@ RSpec.describe 'shared/_banner.html.erb' do
       service_provider_request: nil,
     )
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+    allow(view).to receive(:current_sp).and_return(sp_with_logo)
   end
 
   it 'properly HTML escapes the secure notification' do
