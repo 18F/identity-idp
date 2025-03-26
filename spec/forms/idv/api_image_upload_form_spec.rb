@@ -562,6 +562,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             attention_with_barcode: false,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           },
         )
       end
