@@ -309,6 +309,8 @@ RSpec.describe Idv::DocPiiForm do
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
         )
       end
     end
@@ -341,6 +343,8 @@ RSpec.describe Idv::DocPiiForm do
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
         )
       end
     end
@@ -365,6 +369,8 @@ RSpec.describe Idv::DocPiiForm do
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
         )
       end
     end
@@ -385,6 +391,8 @@ RSpec.describe Idv::DocPiiForm do
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'missing',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
         )
       end
     end
@@ -404,6 +412,8 @@ RSpec.describe Idv::DocPiiForm do
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'missing',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           )
         end
       end
@@ -424,6 +434,8 @@ RSpec.describe Idv::DocPiiForm do
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           )
         end
 
@@ -442,6 +454,8 @@ RSpec.describe Idv::DocPiiForm do
               pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
           end
         end
@@ -465,6 +479,8 @@ RSpec.describe Idv::DocPiiForm do
               pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
           end
 
@@ -481,6 +497,8 @@ RSpec.describe Idv::DocPiiForm do
                 pii_like_keypaths: pii_like_keypaths_state_id,
                 id_issued_status: 'present',
                 id_expiration_status: 'present',
+                passport_issued_status: 'missing',
+                passport_expiration_status: 'missing',
               )
             end
           end
@@ -503,6 +521,8 @@ RSpec.describe Idv::DocPiiForm do
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           )
         end
       end
@@ -523,6 +543,8 @@ RSpec.describe Idv::DocPiiForm do
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           )
         end
       end
@@ -551,6 +573,8 @@ RSpec.describe Idv::DocPiiForm do
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'missing',
             id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           )
         end
       end
@@ -604,9 +628,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -624,9 +649,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -644,9 +670,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -664,9 +691,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -684,9 +712,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -704,9 +733,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
@@ -724,9 +754,10 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             pii_like_keypaths: pii_like_keypaths_passport,
-            # TODO: Look into this with passports
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
           )
         end
       end
