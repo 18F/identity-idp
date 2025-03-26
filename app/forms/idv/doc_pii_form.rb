@@ -74,6 +74,7 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
+    STATE_ID_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
 
     attr_reader :pii_from_doc
 
@@ -100,7 +101,7 @@ module Idv
 
     def state_id_or_passport
       case state_id_type
-      when 'drivers_license', 'state_id_card'
+      when *STATE_ID_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       when 'passport'
