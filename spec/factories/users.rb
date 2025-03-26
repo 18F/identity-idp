@@ -121,7 +121,7 @@ FactoryBot.define do
             user_id: -1,
           }.merge(
             evaluator.with.slice(
-              :phone, :confirmed_at, :delivery_preference, :mfa_enabled
+              :phone, :delivery_preference, :mfa_enabled
             ),
           ),
         )
@@ -135,7 +135,7 @@ FactoryBot.define do
             delivery_preference: user.otp_delivery_preference,
           }.merge(
             evaluator.with.slice(
-              :phone, :confirmed_at, :delivery_preference, :mfa_enabled
+              :phone, :delivery_preference, :mfa_enabled
             ),
           ),
         )

@@ -14,10 +14,7 @@ class UpdateUserPhoneConfiguration
 
   def call
     result = user.update!(
-      attributes.except(
-        :phone_id, :phone, :phone_confirmed_at,
-        :otp_make_default_number
-      ),
+      attributes.except(:phone_id, :phone, :otp_make_default_number),
     )
     manage_phone_configuration
     result
@@ -54,7 +51,6 @@ class UpdateUserPhoneConfiguration
   def phone_attributes
     @phone_attributes ||= {
       phone: attributes[:phone],
-      confirmed_at: attributes[:phone_confirmed_at],
       delivery_preference: attribute(:otp_delivery_preference),
       made_default_at: made_default_at_date,
     }.delete_if { |_, value| value.nil? }
