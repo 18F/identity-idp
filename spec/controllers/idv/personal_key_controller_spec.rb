@@ -87,7 +87,6 @@ RSpec.describe Idv::PersonalKeyController do
         password,
         is_enhanced_ipp:,
         proofing_components: {},
-        decorated_sp_session: decorated_sp_session,
       )
     end
   end

@@ -3,8 +3,7 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:,
-                                        opt_in: nil)
+      def schedule_in_person_enrollment(user:, pii:, is_enhanced_ipp:, opt_in: nil)
         enrollment = user.establishing_in_person_enrollment
         return unless enrollment
 
@@ -38,9 +37,7 @@ module UspsInPersonProofing
           enhanced_ipp: enrollment.enhanced_ipp?,
         )
 
-        send_ready_to_verify_email(
-          user, enrollment, is_enhanced_ipp: is_enhanced_ipp
-        )
+        send_ready_to_verify_email(user, enrollment, is_enhanced_ipp: is_enhanced_ipp)
       end
 
       def send_ready_to_verify_email(user, enrollment, is_enhanced_ipp:)

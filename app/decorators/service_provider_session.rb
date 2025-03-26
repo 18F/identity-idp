@@ -4,8 +4,6 @@ class ServiceProviderSession
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  DEFAULT_LOGO = 'generic.svg'
-
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
     @view_context = view_context
@@ -19,10 +17,6 @@ class ServiceProviderSession
 
   def sp_redirect_uris
     @sp.redirect_uris
-  end
-
-  def sp_logo
-    sp.logo.presence || DEFAULT_LOGO
   end
 
   def new_session_heading

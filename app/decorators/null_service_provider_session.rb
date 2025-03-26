@@ -21,8 +21,6 @@ class NullServiceProviderSession
 
   def sp_issuer; end
 
-  def sp_logo; end
-
   def sp_redirect_uris; end
 
   def requested_attributes; end

@@ -51,7 +51,7 @@
                                         ) %>
                                   </th>
                                   <% if @sp_logo_url %>
-                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= image_tag(@sp_logo_url, height: 40, alt: @sp_name) %> </th> 
+                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= image_tag(@sp_logo_url, height: 40, width: 'auto', alt: @sp_name) %> </th> 
                                   <% else %>
                                     <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= @sp_name =%> </th> 
                                   <% end %>

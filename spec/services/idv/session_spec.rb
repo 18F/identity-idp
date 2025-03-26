@@ -127,16 +127,6 @@ RSpec.describe Idv::Session do
     let(:is_enhanced_ipp) { false }
     let(:proofing_components) { { document_check: 'mock' } }
     let(:opt_in_param) { nil }
-    let(:view_context) { ActionController::Base.new.view_context }
-    let(:sp) { build_stubbed(:service_provider, logo: 'gsa.png') }
-    let(:decorated_sp_session) do
-      ServiceProviderSessionCreator.new(
-        sp: sp,
-        view_context: view_context,
-        sp_session: { issuer: sp.issuer },
-        service_provider_request: ServiceProviderRequestProxy.new,
-      ).create_session
-    end
 
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
@@ -155,7 +145,7 @@ RSpec.describe Idv::Session do
 
           subject.user_phone_confirmation = true
           subject.create_profile_from_applicant_with_password(
-            user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+            user.password, is_enhanced_ipp:, proofing_components:
           )
           profile = subject.profile
 
@@ -176,7 +166,7 @@ RSpec.describe Idv::Session do
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
         subject.create_profile_from_applicant_with_password(
-          user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+          user.password, is_enhanced_ipp:, proofing_components:
         )
         profile = subject.profile
 
@@ -212,7 +202,7 @@ RSpec.describe Idv::Session do
 
           it 'creates an USPS enrollment' do
             subject.create_profile_from_applicant_with_password(
-              user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+              user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(UspsInPersonProofing::EnrollmentHelper).to have_received(
               :schedule_in_person_enrollment,
@@ -220,14 +210,13 @@ RSpec.describe Idv::Session do
               user: user,
               pii: Pii::Attributes.new_from_hash(subject.applicant),
               is_enhanced_ipp: is_enhanced_ipp,
-              decorated_sp_session:,
               opt_in: opt_in_param,
             )
           end
 
           it 'creates a profile with in person verification pending' do
             subject.create_profile_from_applicant_with_password(
-              user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+              user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(profile).to have_attributes(
               {
@@ -244,14 +233,14 @@ RSpec.describe Idv::Session do
 
           it 'saves the pii to the session' do
             subject.create_profile_from_applicant_with_password(
-              user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+              user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(Pii::Cacher.new(user, user_session).fetch(profile.id)).to_not be_nil
           end
 
           it 'associates the in person enrollment with the created profile' do
             subject.create_profile_from_applicant_with_password(
-              user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+              user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(enrollment.reload.profile_id).to eq(profile.id)
           end
@@ -266,7 +255,7 @@ RSpec.describe Idv::Session do
 
           it 'does not create a profile' do
             subject.create_profile_from_applicant_with_password(
-              user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+              user.password, is_enhanced_ipp:, proofing_components:
             )
           rescue
             expect(profile).to be_nil
@@ -286,7 +275,7 @@ RSpec.describe Idv::Session do
 
         it 'does not create an USPS enrollment' do
           subject.create_profile_from_applicant_with_password(
-            user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+            user.password, is_enhanced_ipp:, proofing_components:
           )
           expect(UspsInPersonProofing::EnrollmentHelper).to_not have_received(
             :schedule_in_person_enrollment,
@@ -295,7 +284,7 @@ RSpec.describe Idv::Session do
 
         it 'creates a profile' do
           subject.create_profile_from_applicant_with_password(
-            user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+            user.password, is_enhanced_ipp:, proofing_components:
           )
           expect(profile).to have_attributes(
             {
@@ -310,7 +299,7 @@ RSpec.describe Idv::Session do
 
         it 'saves the pii to the session' do
           subject.create_profile_from_applicant_with_password(
-            user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+            user.password, is_enhanced_ipp:, proofing_components:
           )
           expect(Pii::Cacher.new(user, user_session).fetch(profile.id)).to_not be_nil
         end
@@ -325,7 +314,7 @@ RSpec.describe Idv::Session do
 
       it 'sets profile to pending gpo verification' do
         subject.create_profile_from_applicant_with_password(
-          user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+          user.password, is_enhanced_ipp:, proofing_components:
         )
         profile = subject.profile
 
@@ -351,7 +340,7 @@ RSpec.describe Idv::Session do
 
       it 'does not complete the user profile' do
         subject.create_profile_from_applicant_with_password(
-          user.password, is_enhanced_ipp:, proofing_components:, decorated_sp_session:
+          user.password, is_enhanced_ipp:, proofing_components:
         )
         profile = subject.profile
 

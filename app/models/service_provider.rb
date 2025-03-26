@@ -46,6 +46,8 @@ class ServiceProvider < ApplicationRecord
   scope(:internal, -> { where(iaa: IAA_INTERNAL) })
   scope(:external, -> { where.not(iaa: IAA_INTERNAL).or(where(iaa: nil)) })
 
+  DEFAULT_LOGO = 'generic.svg'
+
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
   end
@@ -83,8 +85,8 @@ class ServiceProvider < ApplicationRecord
   end
 
   def sp_logo_url
-    if FeatureManagement.logo_upload_enabled? && sp.remote_logo_key.present?
-      s3_logo_url(sp)
+    if FeatureManagement.logo_upload_enabled? && remote_logo_key.present?
+      s3_logo_url
     else
       legacy_logo_url
     end
@@ -94,21 +96,21 @@ class ServiceProvider < ApplicationRecord
     sp_logo_url.end_with?('.png')
   end
 
-  def s3_logo_url(service_provider)
+  private
+
+  def s3_logo_url
     region = IdentityConfig.store.aws_region
     bucket = IdentityConfig.store.aws_logo_bucket
-    key = service_provider.remote_logo_key
+    key = remote_logo_key
 
     "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
   end
 
   def legacy_logo_url
-    ActionController::Base.helpers.image_path("sp-logos/#{logo}")
+    ActionController::Base.helpers.image_path("sp-logos/#{logo || DEFAULT_LOGO}")
   rescue Propshaft::MissingAssetError
     ''
   end
-
-  private
 
   # @return [String,nil]
   def load_cert(cert)

@@ -146,4 +146,59 @@ RSpec.describe ServiceProvider do
       end
     end
   end
+
+  describe '#logo_is_email_compatible?' do
+    subject { ServiceProvider.new(logo: logo) }
+    before do
+      allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
+    end
+
+    context 'service provider has a png logo' do
+      let(:logo) { 'gsa.png' }
+
+      it 'returns true' do
+        expect(subject.logo_is_email_compatible?).to be(true)
+      end
+    end
+
+    context 'service provider has a svg logo' do
+      let(:logo) { '18f.svg' }
+
+      it 'returns false' do
+        expect(subject.logo_is_email_compatible?).to be(false)
+      end
+    end
+
+    context 'service provider has no logo' do
+      let(:logo) { nil }
+
+      it 'returns false' do
+        expect(subject.logo_is_email_compatible?).to be(false)
+      end
+    end
+  end
+
+  describe '#sp_logo_url' do
+    let(:logo) { '18f.svg' }
+    subject { ServiceProvider.new(logo: logo) }
+    context 'service provider has a logo' do
+      it 'returns the logo' do
+        expect(subject.sp_logo_url).to match(%r{sp-logos/18f-[0-9a-f]+\.svg$})
+      end
+    end
+
+    context 'service provider does not have a logo' do
+      let(:logo) { nil }
+      it 'returns the default logo' do
+        expect(subject.sp_logo_url).to match(%r{/sp-logos/generic-.+\.svg})
+      end
+    end
+
+    context 'service provider has a poorly configured logo' do
+      let(:logo) { 'abc' }
+      it 'does not raise an exception' do
+        expect(subject.sp_logo_url).to be_kind_of(String)
+      end
+    end
+  end
 end

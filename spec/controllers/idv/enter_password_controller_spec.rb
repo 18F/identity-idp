@@ -1062,7 +1062,6 @@ RSpec.describe Idv::EnterPasswordController do
             user: user,
             pii: Pii::Attributes.new_from_hash(applicant),
             is_enhanced_ipp: is_enhanced_ipp,
-            decorated_sp_session: decorated_sp_session,
             opt_in: nil,
           )
 
