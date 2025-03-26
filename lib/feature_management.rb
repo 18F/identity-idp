@@ -181,6 +181,6 @@ class FeatureManagement
   # as opposed to having to wait more than 1 hour, which is not acceptable for
   # testing purposes. See test/ipp_controller.rb
   def self.allow_ipp_enrollment_approval?
-    Identity::Hostdata.env == 'int' || Rails.env.development?
+    IdentityConfig.store.in_person_enrollments_immediate_approval_enabled
   end
 end
