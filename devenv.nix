@@ -28,6 +28,8 @@ in
   # https://devenv.sh/services/
   # services.postgres.enable = true;
 
+  cachix.enable = false;
+  
   # https://devenv.sh/languages/
   languages.nix.enable = true;
 
