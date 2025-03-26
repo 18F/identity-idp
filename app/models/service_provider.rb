@@ -99,7 +99,7 @@ class ServiceProvider < ApplicationRecord
   def attempts_config
     IdentityConfig.store.allowed_attempts_providers.find do |config|
       config['issuer'] == issuer
-    end
+    end || {}
   end
 
   # @return [String,nil]
