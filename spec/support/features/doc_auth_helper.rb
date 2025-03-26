@@ -43,7 +43,12 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_welcome_url unless current_path == idv_welcome_url
-    click_idv_continue if current_path == idv_mail_only_warning_path
+
+    if current_path == idv_mail_only_warning_path
+      click_idv_continue
+    else
+      expect(page).to have_current_path(idv_welcome_path)
+    end
 
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
