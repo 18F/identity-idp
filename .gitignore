@@ -100,3 +100,8 @@ saml_*.key
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+
+# Nix
+.devenv
+.direnv
+.devenv.flake.nix

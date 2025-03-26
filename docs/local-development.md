@@ -36,6 +36,35 @@ If not using macOS:
 
 1. Continue to the [set up local environment section](#set-up-local-environment).
 
+If using Devenv.sh:
+
+1. Install `nix`. We recommend using the Determinate Systems Nix installer, as it works well across multiple operating systems:
+
+    ```
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+    ```
+
+1. If using macOS, install a newer version of `bash`:
+
+   ```
+   nix-env --install --attr bashInteractive -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
+   ```
+  
+1. Install `devenv`:
+
+    ```
+    nix-env --install --attr devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
+    ```
+
+1. Activate your development environment, and launch Postgres and Redis:
+
+    ```
+    devenv shell
+    devenv up -d
+    ```
+    
+1. Continue to the [set up local environment section](#set-up-local-environment).
+
 ### Set up local environment
 
 1. Run the following command to set up your local environment:
