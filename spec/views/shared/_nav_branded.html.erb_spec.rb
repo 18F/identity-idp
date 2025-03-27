@@ -2,18 +2,22 @@ require 'rails_helper'
 
 RSpec.describe 'shared/_nav_branded.html.erb' do
   let(:view_context) { ActionController::Base.new.view_context }
+  let(:sp_with_logo) do
+    build_stubbed(
+      :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'
+    )
+  end
+  let(:decorated_sp_session) do
+    ServiceProviderSession.new(
+      sp: sp_with_logo,
+      view_context: view_context,
+      sp_session: {},
+      service_provider_request: nil,
+    )
+  end
 
   context 'with a SP-logo configured' do
     before do
-      sp_with_logo = build_stubbed(
-        :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'
-      )
-      decorated_sp_session = ServiceProviderSession.new(
-        sp: sp_with_logo,
-        view_context: view_context,
-        sp_session: {},
-        service_provider_request: nil,
-      )
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
       allow(view).to receive(:current_sp).and_return(sp_with_logo)
       render
@@ -36,16 +40,18 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
     let(:bucket) { 'bucket_id' }
     let(:region) { IdentityConfig.store.aws_region }
     let(:img_url) { "https://s3.#{region}.amazonaws.com/#{bucket}/key-to-logo" }
-
-    before do
-      allow(IdentityConfig.store).to receive(:aws_logo_bucket).and_return(bucket)
-      allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
-      decorated_sp_session = ServiceProviderSession.new(
+    let(:decorated_sp_session) do
+      ServiceProviderSession.new(
         sp: sp_with_s3_logo,
         view_context: view_context,
         sp_session: {},
         service_provider_request: nil,
       )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:aws_logo_bucket).and_return(bucket)
+      allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
       allow(view).to receive(:current_sp).and_return(sp_with_s3_logo)
 
@@ -58,14 +64,17 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
   end
 
   context 'without a SP-logo configured' do
-    before do
-      sp_without_logo = build_stubbed(:service_provider, friendly_name: 'No logo no problem')
-      decorated_sp_session = ServiceProviderSession.new(
+    let(:sp_without_logo) { build_stubbed(:service_provider, friendly_name: 'No logo no problem') }
+    let(:decorated_sp_session) do
+      ServiceProviderSession.new(
         sp: sp_without_logo,
         view_context: view_context,
         sp_session: {},
         service_provider_request: nil,
       )
+    end
+
+    before do
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
       allow(view).to receive(:current_sp).and_return(sp_without_logo)
       render
@@ -77,14 +86,16 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
   end
 
   context 'service provider has a poorly configured logo' do
-    before do
-      sp = build_stubbed(:service_provider, logo: 'abc')
-      decorated_sp_session = ServiceProviderSession.new(
+    let(:sp) { build_stubbed(:service_provider, logo: 'abc') }
+    let(:decorated_sp_session) do
+      ServiceProviderSession.new(
         sp:,
         view_context:,
         sp_session: {},
         service_provider_request: nil,
       )
+    end
+    before do
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
       allow(view).to receive(:current_sp).and_return(sp)
     end

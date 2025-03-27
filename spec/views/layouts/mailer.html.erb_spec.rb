@@ -71,14 +71,14 @@ RSpec.describe 'layouts/mailer.html.erb' do
       allow(view).to receive(:message).and_return(@mail)
       allow(view).to receive(:attachments).and_return(@mail.attachments)
       @sp_name = sp_name
-      @sp_logo_url = sp_logo_url
+      @logo_url = logo_url
 
       render
     end
 
     context 'when the partner agency logo is a png' do
       let(:logo) { 'gsa.png' }
-      let(:sp_logo_url) { '/assets/sp-logos/gsa.png' }
+      let(:logo_url) { '/assets/sp-logos/gsa.png' }
 
       it 'displays the partner agency logo' do
         expect(rendered).to have_css("img[src*='gsa.png']")
@@ -87,7 +87,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
 
     context 'when the partner agency logo is a svg' do
       let(:logo) { 'generic.svg' }
-      let(:sp_logo_url) { nil }
+      let(:logo_url) { nil }
 
       it 'displays the partner agency name' do
         expect(rendered).to have_content('Friendly Service Provider')
@@ -96,7 +96,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
 
     context 'when there is no partner agency logo' do
       let(:logo) { nil }
-      let(:sp_logo_url) { nil }
+      let(:logo_url) { nil }
 
       it 'displays the partner agency name' do
         expect(rendered).to have_content('Friendly Service Provider')

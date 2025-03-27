@@ -313,9 +313,9 @@ class UserMailer < ActionMailer::Base
       )
 
       if enrollment&.service_provider&.logo_is_email_compatible?
-        @sp_logo_url = enrollment.service_provider.sp_logo_url
+        @logo_url = enrollment.service_provider.logo_url
       else
-        @sp_logo_url = nil
+        @logo_url = nil
       end
       @sp_name = enrollment.service_provider&.friendly_name
       @is_enhanced_ipp = is_enhanced_ipp

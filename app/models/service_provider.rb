@@ -84,7 +84,7 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
-  def sp_logo_url
+  def logo_url
     if FeatureManagement.logo_upload_enabled? && remote_logo_key.present?
       s3_logo_url
     else
@@ -93,7 +93,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def logo_is_email_compatible?
-    sp_logo_url.end_with?('.png')
+    logo_url.end_with?('.png')
   end
 
   private
@@ -101,9 +101,8 @@ class ServiceProvider < ApplicationRecord
   def s3_logo_url
     region = IdentityConfig.store.aws_region
     bucket = IdentityConfig.store.aws_logo_bucket
-    key = remote_logo_key
 
-    "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
+    "https://s3.#{region}.amazonaws.com/#{bucket}/#{remote_logo_key}"
   end
 
   def legacy_logo_url

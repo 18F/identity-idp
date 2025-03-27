@@ -1032,16 +1032,6 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     context 'user is going through enhanced ipp' do
-      let(:view_context) { ActionController::Base.new.view_context }
-      let(:sp) { build_stubbed(:service_provider, logo: nil) }
-      let(:decorated_sp_session) do
-        ServiceProviderSessionCreator.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: { issuer: sp.issuer },
-          service_provider_request: ServiceProviderRequestProxy.new,
-        ).create_session
-      end
       let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
         create(:in_person_enrollment, :establishing, user: user, profile: nil)
@@ -1050,9 +1040,6 @@ RSpec.describe Idv::EnterPasswordController do
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),
-        )
-        allow(controller).to(
-          receive(:decorated_sp_session).and_return(decorated_sp_session),
         )
       end
 
