@@ -184,7 +184,6 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     User.create!(id: 2, created_at: (timestamp - 1.day))
     SpReturnLog.create!(
       id: 1,
-      requested_at: (timestamp - 1.day),
       returned_at: (timestamp - 1.day),
       request_id: 1, ial: 1, issuer: 'foo'
     )

@@ -11,15 +11,23 @@ RSpec.describe Api::Attempts::EventsController do
   describe '#poll' do
     let(:sp) { create(:service_provider) }
     let(:issuer) { sp.issuer }
+    let(:acks) do
+      [
+        'acknowleded-jti-id-1',
+        'acknowleded-jti-id-2',
+      ]
+    end
+
     let(:payload) do
       {
         maxEvents: '1000',
-        acks: [
-          'acknowleded-jti-id-1',
-          'acknowleded-jti-id-2',
-        ],
+        acks:,
       }
     end
+
+    let(:private_key) { OpenSSL::PKey::RSA.new(2048) }
+    let(:public_key) { private_key.public_key }
+    let(:redis_client) { AttemptsApi::RedisClient.new }
 
     let(:token) { 'a-shared-secret' }
     let(:salt) { SecureRandom.hex(32) }
@@ -37,10 +45,11 @@ RSpec.describe Api::Attempts::EventsController do
       request.headers['Authorization'] = auth_header
       allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
         [{
-          issuer: sp.issuer,
-          tokens: [{ value: hashed_token, salt: }],
+          'issuer' => sp.issuer,
+          'tokens' => [{ 'value' => hashed_token, 'salt' => salt }],
         }],
       )
+      allow(AttemptsApi::RedisClient).to receive(:new).and_return redis_client
     end
 
     let(:action) { post :poll, params: payload }
@@ -55,8 +64,130 @@ RSpec.describe Api::Attempts::EventsController do
       let(:enabled) { true }
 
       context 'with a valid authorization header' do
-        it 'returns 405 method not allowed' do
-          expect(action.status).to eq(405)
+        it 'returns 200 status' do
+          expect(action.status).to eq(200)
+        end
+
+        context 'with events stored in redis' do
+          let(:timestamp) { Time.zone.now }
+          let(:event) do
+            AttemptsApi::AttemptEvent.new(
+              event_type: 'test_event',
+              session_id: 'test-session-id',
+              occurred_at: Time.zone.now,
+              event_metadata: {
+                first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+              },
+            )
+          end
+          let(:event_key) { event.jti }
+          let(:jwe) { event.to_jwe(issuer:, public_key:) }
+
+          before do
+            redis_client.write_event(
+              event_key:,
+              jwe:,
+              timestamp:,
+              issuer:,
+            )
+          end
+
+          it 'returns a json blob including that set' do
+            expect(redis_client).to receive(:delete_events).with(
+              issuer:,
+              keys: [*acks],
+            ).and_call_original
+            expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
+          end
+
+          context 'when an event is acknowledged' do
+            let(:acks) { [event_key] }
+
+            it 'does not return any acknowledged events' do
+              expect(redis_client).to receive(:delete_events).with(
+                issuer:,
+                keys: [event_key],
+              ).and_call_original
+
+              expect(action.body).to eq({ sets: {} }.to_json)
+            end
+          end
+
+          context 'when there are acknowledged events' do
+            let(:payload) { { maxEvents: '1000' } }
+
+            it 'does not attempts to delete events' do
+              expect(redis_client).not_to receive(:delete_events)
+              expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
+            end
+          end
+
+          context 'when there are multiple events' do
+            let(:events) { {} }
+            before do
+              3.times do
+                event = AttemptsApi::AttemptEvent.new(
+                  event_type: 'test_event',
+                  session_id: 'test-session-id',
+                  occurred_at: Time.zone.now,
+                  event_metadata: {
+                    first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+                  },
+                )
+                event_key = event.jti
+                jwe = event.to_jwe(issuer:, public_key:)
+                events[event_key] = jwe
+              end
+              events.each do |event_key, jwe|
+                redis_client.write_event(
+                  event_key:, jwe:, timestamp: Time.zone.now - 2.hours,
+                  issuer:
+                )
+              end
+            end
+
+            it 'returns a json blob including all those events set' do
+              sets = events.merge({ event_key => jwe })
+              expect(JSON.parse(action.body)).to eq({ 'sets' => sets })
+            end
+
+            context 'when the payload includes a maxEvents parameter' do
+              let(:payload) do
+                {
+                  maxEvents: 3,
+                  acks:,
+                }
+              end
+
+              it 'only returns the number of events indicated' do
+                expect(JSON.parse(action.body)['sets'].length).to be 3
+              end
+
+              it 'returns the oldest events' do
+                expect(JSON.parse(action.body)['sets'].keys).to_not include event_key
+              end
+            end
+
+            context 'when there is no maxEvents parameter' do
+              let(:payload) { { acks: } }
+              it 'uses 1000 as the batch size' do
+                expect(redis_client).to receive(:read_events).with(
+                  issuer:,
+                  batch_size: 1000,
+                ).and_call_original
+
+                sets = events.merge({ event_key => jwe })
+                expect(JSON.parse(action.body)).to eq({ 'sets' => sets })
+              end
+            end
+          end
+        end
+
+        context 'with no events in Redis' do
+          it 'returns an empty set' do
+            expect(redis_client).to receive(:delete_events).and_call_original
+            expect(action.body).to eq({ sets: {} }.to_json)
+          end
         end
       end
 

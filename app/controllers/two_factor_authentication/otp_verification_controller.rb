@@ -124,7 +124,6 @@ module TwoFactorAuthentication
       return if params[:otp_delivery_preference] == 'sms'
 
       phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
-
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_is_confirmed)
 
       return if capabilities.supports_voice?
@@ -234,7 +233,6 @@ module TwoFactorAuthentication
         user: current_user,
         attributes: { phone_id: user_session[:phone_id],
                       phone: user_session[:unconfirmed_phone],
-                      phone_confirmed_at: Time.zone.now,
                       otp_make_default_number: selected_otp_make_default_number },
       )
     end

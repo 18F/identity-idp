@@ -167,6 +167,39 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
   end
 
+  describe '#cancel' do
+    let(:user) { create(:user) }
+    before do
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+    end
+    it 'redirects to root' do
+      post :cancel
+
+      expect(response).to redirect_to(root_url)
+      expect(flash[:success]).to eq(
+        t(
+          'two_factor_authentication.account_reset.successful_cancel',
+          app_name: APP_NAME,
+        ),
+      )
+    end
+
+    it 'deletes existing account reset request' do
+      post :cancel
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel',
+        success: true,
+        user_id: user.uuid,
+      )
+      acr = AccountResetRequest.find_by(granted_token: session[:granted_token])
+      expect(response).to redirect_to(root_url)
+      expect(acr).to eq(nil)
+    end
+  end
+
   describe '#show' do
     it 'redirects to root if the token does not match one in the DB' do
       get :show, params: { token: 'FOO' }

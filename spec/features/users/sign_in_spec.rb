@@ -923,8 +923,6 @@ RSpec.feature 'Sign in' do
     before do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
-        .and_return(sign_in_recaptcha_log_failures_only)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
       reload_ab_tests
@@ -934,14 +932,7 @@ RSpec.feature 'Sign in' do
       reload_ab_tests
     end
 
-    context 'when configured to log failures only' do
-      let(:sign_in_recaptcha_log_failures_only) { true }
-      it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
-                      successful_sign_in: true
-    end
-
     context 'when not configured to log failures only' do
-      let(:sign_in_recaptcha_log_failures_only) { false }
       it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
                       successful_sign_in: false
     end

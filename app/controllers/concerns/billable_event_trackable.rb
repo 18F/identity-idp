@@ -24,7 +24,6 @@ module BillableEventTrackable
         current_user.active_profile&.verified_at : nil,
       profile_requested_issuer: ial_context.bill_for_ial_1_or_2 > 1 ?
         current_user.active_profile&.initiating_service_provider_issuer : nil,
-      requested_at: session[:session_started_at],
       returned_at: Time.zone.now,
     )
   rescue ActiveRecord::RecordNotUnique

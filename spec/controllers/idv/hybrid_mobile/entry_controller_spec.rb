@@ -4,6 +4,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
   describe '#show' do
     let(:idv_vendor) { nil }
     let(:user) { create(:user) }
+    let(:passport_status) { nil }
 
     let!(:document_capture_session) do
       create(
@@ -11,6 +12,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         user:,
         requested_at: Time.zone.now,
         doc_auth_vendor: idv_vendor,
+        passport_status:,
       )
     end
 
@@ -95,6 +97,14 @@ RSpec.describe Idv::HybridMobile::EntryController do
 
         it 'redirects to the first step' do
           expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+        end
+      end
+
+      context 'passport allowed' do
+        let(:passport_status) { 'allowed' }
+
+        it 'redirects to choose id type step' do
+          expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
         end
       end
     end

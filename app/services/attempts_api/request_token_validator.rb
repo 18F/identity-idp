@@ -47,11 +47,11 @@ module AttemptsApi
     end
 
     def valid_request_token?
-      return if config_data[:tokens].any? do |valid_token|
-        scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(valid_token[:salt])
+      return if config_data['tokens'].any? do |valid_token|
+        scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(valid_token['salt'])
         scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
         hashed_req_token = SCrypt::Password.new(scrypted).digest
-        ActiveSupport::SecurityUtils.secure_compare(valid_token[:value], hashed_req_token)
+        ActiveSupport::SecurityUtils.secure_compare(valid_token['value'], hashed_req_token)
       end
 
       errors.add(
@@ -63,7 +63,7 @@ module AttemptsApi
 
     def config_data
       @config_data ||= IdentityConfig.store.allowed_attempts_providers.find do |config|
-        config[:issuer] == issuer
+        config['issuer'] == issuer
       end
     end
 
