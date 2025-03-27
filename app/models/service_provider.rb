@@ -87,6 +87,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def attempts_public_key
+    return if attempts_config.nil?
     if attempts_config['keys'].present?
       OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
     else
@@ -99,7 +100,7 @@ class ServiceProvider < ApplicationRecord
   def attempts_config
     IdentityConfig.store.allowed_attempts_providers.find do |config|
       config['issuer'] == issuer
-    end || {}
+    end
   end
 
   # @return [String,nil]
