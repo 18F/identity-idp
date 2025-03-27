@@ -52,17 +52,6 @@ RSpec.describe Idv::PersonalKeyController do
 
   let(:pii_cacher) { Pii::Cacher.new(user, controller.user_session) }
 
-  let(:view_context) { ActionController::Base.new.view_context }
-  let(:sp) { build_stubbed(:service_provider, logo: nil) }
-  let(:decorated_sp_session) do
-    ServiceProviderSessionCreator.new(
-      sp: sp,
-      view_context: view_context,
-      sp_session: { issuer: sp.issuer },
-      service_provider_request: ServiceProviderRequestProxy.new,
-    ).create_session
-  end
-
   before do
     stub_analytics
 
