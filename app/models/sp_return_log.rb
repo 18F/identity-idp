@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SpReturnLog < ApplicationRecord
-  self.ignored_columns = %w[requested_at]
-
   # rubocop:disable Rails/InverseOf
   belongs_to :user
   belongs_to :service_provider,
