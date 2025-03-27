@@ -54,6 +54,7 @@ module IdentityConfig
     config.add(:allowed_attempts_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
+    config.add(:api_transaction_count_report_configs, type: :json)
     config.add(:asset_host, type: :string)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:async_wait_timeout_seconds, type: :integer)

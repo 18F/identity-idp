@@ -277,6 +277,12 @@ else
         cron: s3_cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Previoius week authentication reprot
+      weekly_protocols_report: {
+        class: 'Reports::APITransactionCountReport',
+        cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
