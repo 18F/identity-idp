@@ -209,4 +209,24 @@ RSpec.describe ServiceProviderSession do
       end
     end
   end
+
+  describe '#attempt_api_session_id' do
+    let(:service_provider_request) { ServiceProviderRequest.new(url:) }
+
+    context 'without an an attempts_api_session_id in the request_url_params' do
+      let(:url) { 'https://example.com/auth?param0=p0&param1=p1&param2=p2' }
+
+      it 'returns nil' do
+        expect(subject.attempts_api_session_id).to be nil
+      end
+    end
+
+    context 'with an attempts_api_session_id in the request_url_params' do
+      let(:url) { 'https://example.com/auth?attempts_api_session_id=abc123&param1=p1&param2=p2' }
+
+      it 'returns the value in the attempts_api_session_id param' do
+        expect(subject.attempts_api_session_id).to eq 'abc123'
+      end
+    end
+  end
 end

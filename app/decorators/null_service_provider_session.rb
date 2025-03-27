@@ -43,6 +43,8 @@ class NullServiceProviderSession
     view_context&.current_user
   end
 
+  def attempts_api_session_id; end
+
   private
 
   attr_reader :view_context

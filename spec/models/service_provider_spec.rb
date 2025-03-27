@@ -105,6 +105,97 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#attempts_api_enabled?' do
+    context 'when attempts api is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:attempts_api_enabled)
+          .and_return(true)
+      end
+
+      context 'when the service provider is not on the allowlist for attempts api' do
+        it 'returns false' do
+          expect(service_provider.attempts_api_enabled?).to be(false)
+        end
+      end
+
+      context 'when the service provider is on the allowlist for attempts api' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [{ 'issuer' => service_provider.issuer }],
+          )
+        end
+
+        it 'returns true' do
+          expect(service_provider.attempts_api_enabled?).to be(true)
+        end
+      end
+    end
+
+    context 'when attempts api availability is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:attempts_api_enabled)
+          .and_return(false)
+      end
+
+      context 'when the service provider is on the allowlist for attempts api' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [{ 'issuer' => service_provider.issuer }],
+          )
+        end
+
+        it 'returns false' do
+          expect(service_provider.attempts_api_enabled?).to be(false)
+        end
+      end
+
+      context 'when the service provider is not on the allowlist for attempts api' do
+        it 'returns false' do
+          expect(service_provider.attempts_api_enabled?).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#attempts_public_key' do
+    context 'when the sp is configured to use the attempts api' do
+      context 'when there is no public key set in the configuration' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [{ 'issuer' => service_provider.issuer }],
+          )
+        end
+
+        it "returns the sp's first public key" do
+          expect(service_provider.attempts_public_key.to_pem).to eq(
+            service_provider.ssl_certs.first.public_key.to_pem,
+          )
+        end
+      end
+
+      context 'when the public key is set in the configuration' do
+        let(:private_key) { OpenSSL::PKey::RSA.new(2048) }
+        let(:public_key) { private_key.public_key }
+
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [
+              { 'issuer' => service_provider.issuer,
+                'keys' => [public_key.to_pem] },
+
+            ],
+          )
+        end
+
+        it "returns the sp's first public key" do
+          expect(service_provider.attempts_public_key.to_pem).to eq(
+            public_key.to_pem,
+          )
+        end
+      end
+    end
+  end
+
   describe '#ssl_certs' do
     context 'with an empty string plural cert' do
       let(:service_provider) { build(:service_provider, certs: ['']) }

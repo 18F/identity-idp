@@ -28,14 +28,6 @@ module AttemptsApi
       )
     end
 
-    def issuer_is_authorized
-      errors.add(
-        :issuer,
-        :not_authorized,
-        message: 'Issuer is not authorized to use Attempts API',
-      )
-    end
-
     def service_provider_exists
       return if service_provider.present?
 

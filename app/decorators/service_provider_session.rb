@@ -11,6 +11,10 @@ class ServiceProviderSession
     @service_provider_request = service_provider_request
   end
 
+  def attempts_api_session_id
+    request_url_params['attempts_api_session_id']
+  end
+
   def remember_device_default
     sp_aal < 2
   end

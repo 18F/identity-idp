@@ -84,6 +84,18 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def attempts_api_enabled?
+    IdentityConfig.store.attempts_api_enabled && attempts_config.present?
+  end
+
+  def attempts_public_key
+    if attempts_config.present? && attempts_config['keys'].present?
+      OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
+    else
+      ssl_certs.first.public_key
+    end
+  end
+
   def logo_url
     if FeatureManagement.logo_upload_enabled? && remote_logo_key.present?
       s3_logo_url
@@ -109,6 +121,12 @@ class ServiceProvider < ApplicationRecord
     ActionController::Base.helpers.image_path("sp-logos/#{logo || DEFAULT_LOGO}")
   rescue Propshaft::MissingAssetError
     ''
+  end
+
+  def attempts_config
+    IdentityConfig.store.allowed_attempts_providers.find do |config|
+      config['issuer'] == issuer
+    end
   end
 
   # @return [String,nil]
