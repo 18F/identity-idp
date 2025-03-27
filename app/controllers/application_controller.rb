@@ -77,6 +77,19 @@ class ApplicationController < ActionController::Base
     current_user || AnonymousUser.new
   end
 
+  def attempts_api_tracker
+    @attempts_api_tracker ||= AttemptsApi::Tracker.new(
+      session_id: attempts_api_session_id,
+      request:,
+      user: current_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+      # this only works for oidc
+      sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
+      enabled_for_session: attempts_api_enabled_for_session?,
+    )
+  end
+
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
@@ -126,6 +139,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def attempts_api_enabled_for_session?
+    current_sp&.attempts_api_enabled? && attempts_api_session_id.present?
+  end
+
+  def attempts_api_session_id
+    @attempts_api_session_id ||= decorated_sp_session.attempts_api_session_id
+  end
 
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes

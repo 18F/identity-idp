@@ -3,10 +3,10 @@
 module AttemptsApi
   class Tracker
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri, :analytics
+                :sp_request_uri
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
-                   sp_request_uri:, enabled_for_session:, analytics:)
+                   sp_request_uri:, enabled_for_session:)
       @session_id = session_id
       @request = request
       @user = user
@@ -14,7 +14,6 @@ module AttemptsApi
       @cookie_device_uuid = cookie_device_uuid
       @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
-      @analytics = analytics
     end
     include TrackerEvents
 
@@ -50,7 +49,7 @@ module AttemptsApi
 
       jwe = event.to_jwe(
         issuer: sp.issuer,
-        public_key: sp.ssl_certs.first.public_key,
+        public_key: sp.attempts_public_key,
       )
 
       redis_client.write_event(

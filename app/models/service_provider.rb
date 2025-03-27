@@ -82,7 +82,25 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def attempts_api_enabled?
+    IdentityConfig.store.attempts_api_enabled && attempts_config.present?
+  end
+
+  def attempts_public_key
+    if attempts_config.present? && attempts_config['keys'].present?
+      OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
+    else
+      ssl_certs.first.public_key
+    end
+  end
+
   private
+
+  def attempts_config
+    IdentityConfig.store.allowed_attempts_providers.find do |config|
+      config['issuer'] == issuer
+    end
+  end
 
   # @return [String,nil]
   def load_cert(cert)

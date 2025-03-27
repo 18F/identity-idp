@@ -19,7 +19,6 @@ RSpec.describe AttemptsApi::Tracker do
   let(:cookie_device_uuid) { 'device_id' }
   let(:sp_request_uri) { 'https://example.com/auth_page' }
   let(:user) { create(:user) }
-  let(:analytics) { FakeAnalytics.new }
 
   subject do
     described_class.new(
@@ -30,7 +29,6 @@ RSpec.describe AttemptsApi::Tracker do
       cookie_device_uuid: cookie_device_uuid,
       sp_request_uri: sp_request_uri,
       enabled_for_session: enabled_for_session,
-      analytics: analytics,
     )
   end
 

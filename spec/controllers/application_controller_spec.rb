@@ -593,6 +593,86 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#attempts_api_tracker' do
+    let(:enabled) { true }
+    let(:sp) { create(:service_provider) }
+    let(:user) { create(:user) }
+
+    before do
+      expect(IdentityConfig.store).to receive(:attempts_api_enabled).and_return enabled
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(controller).to receive(:current_sp).and_return(sp)
+    end
+
+    context 'when the attempts api is not enabled' do
+      let(:enabled) { false }
+
+      it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+        expect(AttemptsApi::Tracker).to receive(:new).with(
+          user:, request:, sp:, session_id: nil,
+          cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+        )
+
+        controller.attempts_api_tracker
+      end
+    end
+
+    context 'when attempts api is enabled' do
+      context 'when the service provider is not authorized' do
+        before do
+          expect(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+        end
+
+        it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+          expect(AttemptsApi::Tracker).to receive(:new).with(
+            user:, request:, sp:, session_id: nil,
+            cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+          )
+
+          controller.attempts_api_tracker
+        end
+      end
+
+      context 'when the service provider is authorized' do
+        before do
+          expect(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [
+              {
+                'issuer' => sp.issuer,
+              },
+            ],
+          )
+        end
+
+        context 'when there is no attempts_api_session_id' do
+          it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+            expect(AttemptsApi::Tracker).to receive(:new).with(
+              user:, request:, sp:, session_id: nil,
+              cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+            )
+
+            controller.attempts_api_tracker
+          end
+        end
+
+        context 'when there is an attempts_api_session_id' do
+          before do
+            expect(controller.decorated_sp_session).to receive(:attempts_api_session_id)
+              .and_return('abc123')
+          end
+          it 'calls the AttemptsApi::Tracker class with enabled_for_session set to true' do
+            expect(AttemptsApi::Tracker).to receive(:new).with(
+              user:, request:, sp:, session_id: 'abc123',
+              cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: true
+            )
+
+            controller.attempts_api_tracker
+          end
+        end
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)

@@ -21,6 +21,12 @@ RSpec.describe NullServiceProviderSession do
     end
   end
 
+  describe '#attempts_api_session_id' do
+    it 'returns nil' do
+      expect(subject.attempts_api_session_id).to be_nil
+    end
+  end
+
   describe '#cancel_link_url' do
     it 'returns view_context.root url' do
       view_context = ActionController::Base.new.view_context
