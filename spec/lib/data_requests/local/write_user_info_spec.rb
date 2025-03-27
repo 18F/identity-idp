@@ -30,6 +30,7 @@ RSpec.describe DataRequests::Local::WriteUserInfo do
       expect(email_row['uuid']).to eq(uuid)
       expect(email_row['value']).to eq('test@example.com')
       expect(email_row['created_at']).to be_present
+      expect(email_row['confirmed_at']).to be_present
       expect(email_row['internal_id']).to be_nil
 
       phone_row = parsed.find { |r| r['type'] == 'Phone configuration' }
