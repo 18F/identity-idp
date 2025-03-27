@@ -87,8 +87,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def attempts_public_key
-    return if attempts_config.nil?
-    if attempts_config['keys'].present?
+    if attempts_config.present? && attempts_config['keys'].present?
       OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
     else
       ssl_certs.first.public_key
