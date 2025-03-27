@@ -52,10 +52,10 @@ RSpec.describe Test::IppController do
         allow(FeatureManagement).to receive(:allow_ipp_enrollment_approval?).and_return(true)
 
         stub_sign_in
-        put :update, params: { enrollment: "1" }
+        put :update, params: { enrollment: '1' }
 
         expect(response).to redirect_to test_ipp_url
-        expect(flash[:error]).to eq "Could not find pending IPP enrollment with ID 1"
+        expect(flash[:error]).to eq 'Could not find pending IPP enrollment with ID 1'
       end
     end
 

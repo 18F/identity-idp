@@ -25,7 +25,7 @@ module Test
       if enrollment.present?
         approve_enrollment(enrollment)
       else
-        flash[:error] =  "Could not find pending IPP enrollment with ID #{enrollment_id}"
+        flash[:error] = "Could not find pending IPP enrollment with ID #{enrollment_id}"
       end
 
       redirect_to test_ipp_url

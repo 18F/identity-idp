@@ -538,45 +538,45 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe "allow_ipp_enrollment_approval?" do
-    context "when host is int and Rails env is production" do
-      it "returns true" do
-        allow(Identity::Hostdata).to receive(:env).and_return("int")
+  describe 'allow_ipp_enrollment_approval?' do
+    context 'when host is int and Rails env is production' do
+      it 'returns true' do
+        allow(Identity::Hostdata).to receive(:env).and_return('int')
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq true
       end
     end
 
-    context "when host is dev and Rails env is production" do
-      it "returns false" do
-        allow(Identity::Hostdata).to receive(:env).and_return("dev")
+    context 'when host is dev and Rails env is production' do
+      it 'returns false' do
+        allow(Identity::Hostdata).to receive(:env).and_return('dev')
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq false
       end
     end
 
-    context "when host is staging and Rails env is production" do
-      it "returns false" do
-        allow(Identity::Hostdata).to receive(:env).and_return("staging")
+    context 'when host is staging and Rails env is production' do
+      it 'returns false' do
+        allow(Identity::Hostdata).to receive(:env).and_return('staging')
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq false
       end
     end
 
-    context "when host is prod and Rails env is production" do
-      it "returns false" do
-        allow(Identity::Hostdata).to receive(:env).and_return("prod")
+    context 'when host is prod and Rails env is production' do
+      it 'returns false' do
+        allow(Identity::Hostdata).to receive(:env).and_return('prod')
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq false
       end
     end
 
-    context "when host is local and Rails env is development" do
-      it "returns true" do
+    context 'when host is local and Rails env is development' do
+      it 'returns true' do
         allow(Identity::Hostdata).to receive(:env).and_return(nil)
         allow(Rails.env).to receive(:development?).and_return(true)
 
