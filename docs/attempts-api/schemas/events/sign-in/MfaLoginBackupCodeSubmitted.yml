@@ -1,4 +1,4 @@
-description: During a login attempt, the user uses face or touch unlock for MFA.
+description: During a login attempt, the user has selected a set of backup codes for MFA..
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
