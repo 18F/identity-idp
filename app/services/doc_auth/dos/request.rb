@@ -114,7 +114,7 @@ module DocAuth
 
       def faraday_connection
         retry_options = {
-          max: 2,
+          max: IdentityConfig.store.dos_passport_mrz_maxretry,
           interval: 0.05,
           interval_randomness: 0.5,
           backoff_factor: 2,
@@ -136,7 +136,7 @@ module DocAuth
       end
 
       def timeout
-        IdentityConfig.store.dos_passport_timeout_seconds
+        IdentityConfig.store.dos_passport_mrz_timeout_seconds
       end
     end
   end

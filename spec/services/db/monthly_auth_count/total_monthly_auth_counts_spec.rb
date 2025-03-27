@@ -18,7 +18,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
         issuer: issuer,
         ial: 1,
         user_id: 2,
-        requested_at: Date.new(2019, 1, 15),
         returned_at: Date.new(2019, 1, 15),
         billable: true,
       )
@@ -29,7 +28,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
         issuer: issuer,
         ial: 1,
         user_id: 3,
-        requested_at: Date.new(2019, 1, 15),
         returned_at: Date.new(2019, 1, 15),
         billable: true,
       )
@@ -41,7 +39,6 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
         issuer: issuer,
         ial: 1,
         user_id: 3,
-        requested_at: Date.new(2019, 2, 10),
         returned_at: Date.new(2019, 2, 10),
         billable: true,
       )

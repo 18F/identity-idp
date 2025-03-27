@@ -5,11 +5,15 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include Idv::ChooseIdTypeConcern
 
     before_action :redirect_if_passport_not_available
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
+      render 'idv/shared/choose_id_type',
+             locals: { form_url: idv_choose_id_type_path, is_hybrid: false },
+             layout: true
     end
 
     def update
@@ -28,7 +32,7 @@ module Idv
         set_passport_requested
         redirect_to next_step
       else
-        render :show
+        redirect_to idv_choose_id_type_url
       end
     end
 
@@ -56,24 +60,8 @@ module Idv
       redirect_to idv_how_to_verify_url if !idv_session.passport_allowed
     end
 
-    def chosen_id_type
-      choose_id_type_form_params[:choose_id_type_preference]
-    end
-
-    def set_passport_requested
-      if chosen_id_type == 'passport'
-        document_capture_session.update!(passport_status: 'requested')
-      else
-        document_capture_session.update!(passport_status: 'allowed')
-      end
-    end
-
     def next_step
       idv_document_capture_url
-    end
-
-    def choose_id_type_form_params
-      params.require(:doc_auth).permit(:choose_id_type_preference)
     end
 
     def analytics_arguments

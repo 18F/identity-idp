@@ -17,10 +17,17 @@ RSpec.describe AttemptsApi::RequestTokenValidator do
 
   before do
     allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
-      [{
-        issuer: sp.issuer,
-        tokens: [{ value: hashed_token, salt: }],
-      }],
+      [
+        {
+          'issuer' => sp.issuer,
+          'tokens' => [
+            {
+              'value' => hashed_token,
+              'salt' => salt,
+            },
+          ],
+        },
+      ],
     )
   end
 
