@@ -17,6 +17,8 @@ RSpec.describe 'Add a new phone number' do
 
     expect(page).to have_current_path(account_path)
     expect(user.reload.phone_configurations.count).to eq(2)
+    expect(user.phone_configurations[0].confirmed_at).to be_present
+    expect(user.phone_configurations[1].confirmed_at).to be_present
   end
 
   scenario 'adding a new phone number sends the user an email with a disavowal link' do
