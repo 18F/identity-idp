@@ -603,7 +603,7 @@ doc_auth.headers.low_resolution: 你设备的相机可能不受支持
 doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件
 doc_auth.headers.underage: 不符合年龄规定
 doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
-doc_auth.headings.address: 更新你的邮政地址
+doc_auth.headings.address: 更新你当前的居住地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
 doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
@@ -644,6 +644,7 @@ doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_n
 doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
 doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
+doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
 doc_auth.info.address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
 doc_auth.info.capture_status_big_document: 太近了
 doc_auth.info.capture_status_capturing: 扫描中
@@ -1624,7 +1625,7 @@ titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
-titles.doc_auth.address: 更新你的邮政地址
+titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
 titles.doc_auth.link_sent: 链接已发送
