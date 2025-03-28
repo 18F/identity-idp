@@ -416,6 +416,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
     t.text "encrypted_phone", null: false, comment: "sensitive=true"
     t.integer "delivery_preference", default: 0, null: false, comment: "sensitive=false"
     t.boolean "mfa_enabled", default: true, null: false, comment: "sensitive=false"
+    t.datetime "confirmed_at", precision: nil, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "made_default_at", precision: nil, comment: "sensitive=false"
