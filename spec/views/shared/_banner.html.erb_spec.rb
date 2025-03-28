@@ -1,18 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe 'shared/_banner.html.erb' do
-  before do
-    sp_with_logo = build_stubbed(
+  let(:sp_with_logo) do
+    build_stubbed(
       :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'
     )
-
-    decorated_sp_session = ServiceProviderSession.new(
+  end
+  let(:decorated_sp_session) do
+    ServiceProviderSession.new(
       sp: sp_with_logo,
       view_context: '',
       sp_session: {},
       service_provider_request: nil,
     )
+  end
+
+  before do
     allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
+    allow(view).to receive(:current_sp).and_return(sp_with_logo)
   end
 
   it 'properly HTML escapes the secure notification' do

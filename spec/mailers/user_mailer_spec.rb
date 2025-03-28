@@ -805,6 +805,7 @@ RSpec.describe UserMailer, type: :mailer do
       create(
         :in_person_enrollment,
         :pending,
+        :with_service_provider,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
         current_address_matches_id: current_address_matches_id,
@@ -815,6 +816,7 @@ RSpec.describe UserMailer, type: :mailer do
         :in_person_enrollment,
         :pending,
         :enhanced_ipp,
+        :with_service_provider,
       )
     end
     let(:visited_location_name) { 'ACQUAINTANCESHIP' }
@@ -824,6 +826,7 @@ RSpec.describe UserMailer, type: :mailer do
         create(
           :in_person_enrollment,
           :expired,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
         )
       end
@@ -1205,6 +1208,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
         )
@@ -1236,6 +1240,7 @@ RSpec.describe UserMailer, type: :mailer do
       let!(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
           current_address_matches_id: current_address_matches_id,
@@ -1268,6 +1273,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
         )

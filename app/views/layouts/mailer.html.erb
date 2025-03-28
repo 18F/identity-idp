@@ -37,6 +37,30 @@
                       </table>
                       <table class="row">
                         <tbody>
+                        <% if @sp_name %>
+                          <tr>
+                            <th class="small-12 large-12 columns first last">
+                              <table>
+                                <tr style="display: table">
+                                  <th width="142px" style="padding-right: 20px; vertical-align: middle; display: table-cell">
+                                    <%= image_tag(
+                                          attachments['logo.png'].url,
+                                          size: '142x19',
+                                          style: 'width: 142px; height: 19px;',
+                                          alt: t('mailer.logo', app_name: APP_NAME),
+                                        ) %>
+                                  </th>
+                                  <% if @logo_url %>
+                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= image_tag(@logo_url, height: 40, width: 'auto', alt: @sp_name) %> </th> 
+                                  <% else %>
+                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= @sp_name =%> </th> 
+                                  <% end %>
+                                  <th class="expander"></th>
+                                </tr>
+                              </table>
+                            </th>
+                          </tr>
+                        <% else %>
                           <tr>
                             <th class="small-12 large-12 columns first last">
                               <table>
@@ -54,6 +78,7 @@
                               </table>
                             </th>
                           </tr>
+                        <% end %>
                         </tbody>
                       </table>
                       <table class="row">
