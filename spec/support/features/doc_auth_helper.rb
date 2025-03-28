@@ -80,14 +80,22 @@ module DocAuthHelper
     click_on t('forms.buttons.upload_photos')
   end
 
-  def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false,
+                                                           id_type: 'drivers_license')
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
+
     if IdentityConfig.store.in_person_proofing_opt_in_enabled
       click_on t('forms.buttons.continue_remote')
     end
     complete_hybrid_handoff_step
+    # binding.pry
+    if page.current_path == idv_choose_id_type_url
+      expect(page).to have_current_path(idv_choose_id_type_url)
+      choose(t("doc_auth.forms.id_type_preference.#{id_type}"))
+      click_on t('forms.buttons.continue')
+    end
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 

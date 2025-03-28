@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'doc auth verify step', :js do
   include IdvStepHelper
+  include AbTestsHelper
 
   let(:puerto_rico_address1_hint) do
     "#{t('forms.example')} 150 Calle A Apt 3"
@@ -100,6 +101,24 @@ RSpec.feature 'doc auth verify step', :js do
       complete_doc_auth_steps_before_link_sent_step
       visit(idv_address_url)
       expect(page).to have_current_path(idv_link_sent_path)
+    end
+  end
+
+  context 'with passport ID type', :js do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: 'UP' }.to_json })
+      reload_ab_tests
+      sign_in_and_2fa_user
+    end
+
+    it 'goes to address step after ssn step with passport content' do
+      complete_doc_auth_steps_before_document_capture_step(id_type: 'passport')
+      visit(idv_address_url)
+      expect(page).to have_current_path(idv_document_capture_url)
+      # TODO: continue through ssn step after mock proofer is updated
     end
   end
 end
