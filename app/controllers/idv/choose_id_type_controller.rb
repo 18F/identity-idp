@@ -12,7 +12,9 @@ module Idv
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
       render 'idv/shared/choose_id_type',
-             locals: { form_url: idv_choose_id_type_path, is_hybrid: false },
+             locals: { form_url: idv_choose_id_type_path,
+                       is_hybrid: false,
+                       auto_check_value: auto_check_value },
              layout: true
     end
 

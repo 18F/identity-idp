@@ -10,12 +10,21 @@ module Idv
       if chosen_id_type == 'passport'
         document_capture_session.update!(passport_status: 'requested')
       else
-        document_capture_session.update!(passport_status: 'allowed')
+        document_capture_session.update!(passport_status: 'allowed - not selected')
       end
     end
 
     def choose_id_type_form_params
       params.require(:doc_auth).permit(:choose_id_type_preference)
+    end
+
+    def auto_check_value
+      case document_capture_session.passport_status
+      when 'requested'
+        :passport
+      when 'allowed - not selected'
+        :drivers_license
+      end
     end
   end
 end
