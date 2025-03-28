@@ -152,6 +152,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
       job_name: self.class.name,
     )
+    enrollment.update(status_check_completed_at: Time.zone.now)
     enrollment_outcomes[:enrollments_skipped] += 1
   end
 

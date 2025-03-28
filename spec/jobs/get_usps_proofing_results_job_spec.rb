@@ -1404,6 +1404,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               expect(enrollment.reload).to have_attributes(
                 status_check_attempted_at: current_time,
                 last_batch_claimed_at: current_time,
+                status_check_completed_at: current_time,
               )
             end
 
