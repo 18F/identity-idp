@@ -30,6 +30,7 @@ module DocAuth
             vendor: 'DoS',
             correlation_id_sent: correlation_id,
             correlation_id_received: response.headers['X-Correlation-ID'],
+            response: result[:response],
           }.compact
           case result[:response]
           when 'YES'
