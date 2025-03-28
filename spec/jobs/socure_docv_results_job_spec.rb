@@ -169,7 +169,7 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'Pii validation fails' do
         before do
-          allow_any_instance_of(Idv::DocPiiForm).to receive(:zipcode).and_return(:invalid_junk)
+          allow_any_instance_of(Idv::DocPiiStateId).to receive(:zipcode).and_return(:invalid_junk)
         end
 
         it 'stores a failed result' do

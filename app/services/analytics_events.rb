@@ -2082,6 +2082,8 @@ module AnalyticsEvents
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
   # @param ["present","missing"] id_expiration_status Status of state_id_expiration field presence
+  # @param ["present","missing"] passport_issued_status Status of passport_issued field presence
+  # @param ["present","missing"] passport_expiration_status Status of passport_expiration field
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Integer] submit_attempts Times that user has tried submitting
   # @param [String] front_image_fingerprint Fingerprint of front image data
@@ -2098,6 +2100,8 @@ module AnalyticsEvents
     attention_with_barcode:,
     id_issued_status:,
     id_expiration_status:,
+    passport_issued_status:,
+    passport_expiration_status:,
     submit_attempts:,
     errors: nil,
     error_details: nil,
@@ -2118,6 +2122,8 @@ module AnalyticsEvents
       attention_with_barcode:,
       id_issued_status:,
       id_expiration_status:,
+      passport_issued_status:,
+      passport_expiration_status:,
       submit_attempts:,
       remaining_submit_attempts:,
       flow_path:,
