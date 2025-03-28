@@ -95,4 +95,24 @@ RSpec.describe 'SAML requests', type: :request do
       end
     end
   end
+
+  describe 'GET /api/saml/metadata' do
+    let(:path_year) { SamlAuthHelper::PATH_YEAR }
+
+    it 'is successful' do
+      get api_saml_metadata_url(path_year: path_year)
+
+      expect(response).to be_ok
+    end
+
+    context 'for an unsupported year' do
+      let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
+
+      it '404s' do
+        get api_saml_metadata_url(path_year: path_year)
+
+        expect(response).to be_not_found
+      end
+    end
+  end
 end

@@ -1,11 +1,41 @@
 # frozen_string_literal: true
 
 class SamlEndpoint
-  SAML_YEARS = AppArtifacts.store.members.map(&:to_s).map do |key|
-    regex = /saml_(?<year>\d{4})_(?<key_cert>key|cert)/
-    matches = regex.match(key)
-    matches && matches[:year]
-  end.compact.uniq.freeze
+  SAML_YEARS = IdentityConfig.store.saml_endpoint_configs.map do |config|
+    config.fetch(:suffix).to_s
+  end.uniq.sort.freeze
+
+  SAML_YEAR_CERTS = SAML_YEARS.each_with_object({}) do |year, map|
+    x509_cert =
+      begin
+        AppArtifacts.store["saml_#{year}_cert"]
+      rescue NameError
+        raise "No SAML certificate for suffix #{year}"
+      end
+    map[year] = x509_cert
+  end.freeze
+
+  SAML_YEAR_SECRET_KEYS = SAML_YEARS.each_with_object({}) do |year, map|
+    config = IdentityConfig.store.saml_endpoint_configs.find do |config|
+      config[:suffix] == year
+    end
+
+    key_contents = begin
+      AppArtifacts.store["saml_#{year}_key"]
+    rescue NameError
+      raise "No SAML private key for suffix #{year}"
+    end
+
+    map[year] =
+      begin
+        OpenSSL::PKey::RSA.new(
+          key_contents,
+          config.fetch(:secret_key_passphrase),
+        )
+      rescue OpenSSL::PKey::RSAError
+        raise "SAML key or passphrase for #{year} is invalid"
+      end
+  end.freeze
 
   attr_reader :year
 
@@ -18,29 +48,18 @@ class SamlEndpoint
   end
 
   def self.suffixes
-    endpoint_configs.pluck(:suffix)
-  end
-
-  def self.endpoint_configs
-    IdentityConfig.store.saml_endpoint_configs
+    SAML_YEARS
   end
 
   def secret_key
-    key_contents = begin
-      AppArtifacts.store["saml_#{year}_key"]
-    rescue NameError
-      raise "No SAML private key for suffix #{year}"
-    end
-
-    OpenSSL::PKey::RSA.new(
-      key_contents,
-      endpoint_config[:secret_key_passphrase],
-    )
+    SAML_YEAR_SECRET_KEYS.fetch(year)
+  rescue KeyError
+    raise "No SAML private key for suffix #{year}"
   end
 
   def x509_certificate
-    AppArtifacts.store["saml_#{year}_cert"]
-  rescue NameError
+    SAML_YEAR_CERTS.fetch(year)
+  rescue KeyError
     raise "No SAML certificate for suffix #{year}"
   end
 
@@ -53,13 +72,5 @@ class SamlEndpoint
       x509_certificate,
       secret_key,
     )
-  end
-
-  private
-
-  def endpoint_config
-    @endpoint_config ||= self.class.endpoint_configs.find do |config|
-      config[:suffix] == year
-    end
   end
 end
