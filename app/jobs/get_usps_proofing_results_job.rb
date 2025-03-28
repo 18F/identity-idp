@@ -132,7 +132,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     handle_standard_error(err, enrollment)
   else
     if profile_deactivation_reason == 'password_reset'
-      skip_enrollment(enrollment, profile_deactivation_reason)
+      skip_enrollment(enrollment, profile_deactivation_reason, response)
     else
       process_enrollment_response(enrollment, response)
     end
@@ -146,12 +146,14 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.cancel
   end
 
-  def skip_enrollment(enrollment, profile_deactivation_reason)
+  def skip_enrollment(enrollment, profile_deactivation_reason, response)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_skipped(
       **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(response),
       reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
       job_name: self.class.name,
     )
+    enrollment.update(status_check_completed_at: Time.zone.now)
     enrollment_outcomes[:enrollments_skipped] += 1
   end
 
@@ -679,6 +681,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def response_analytics_attributes(response)
     return { response_present: false } unless response.present?
+    return {} unless response.is_a?(Hash)
 
     {
       fraud_suspected: response['fraudSuspected'],
