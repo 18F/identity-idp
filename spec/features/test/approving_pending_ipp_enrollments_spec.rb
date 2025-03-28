@@ -1,10 +1,10 @@
 require 'rails_helper'
-require 'axe-rspec'
 
 RSpec.describe 'Approving Pending IPP Enrollments' do
-  context 'when Rails env is not development and allow_ipp_enrollment_approval? is true' do
-    it 'only shows pending enrollments for the current user', allow_browser_log: true do
+  context 'when Rails env is not development' do
+    it 'only shows pending enrollments for the current user' do
       allow(FeatureManagement).to receive(:allow_ipp_enrollment_approval?).and_return(true)
+
       first_user = create(
         :user, :with_phone, :with_pending_in_person_enrollment, password: 'p@assword!'
       )
@@ -20,7 +20,7 @@ RSpec.describe 'Approving Pending IPP Enrollments' do
     end
   end
 
-  context 'when Rails env is development and allow_ipp_enrollment_approval? is true' do
+  context 'when Rails env is development' do
     it 'shows all pending enrollments', allow_browser_log: true do
       allow(FeatureManagement).to receive(:allow_ipp_enrollment_approval?).and_return(true)
       allow(Rails.env).to receive(:development?).and_return(true)
