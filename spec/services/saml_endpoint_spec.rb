@@ -9,26 +9,7 @@ RSpec.describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2025 2024])
-    end
-  end
-
-  describe 'endpoint_configs' do
-    it 'should return an array of parsed endpoint config data' do
-      result = described_class.endpoint_configs
-
-      expect(result).to eq(
-        [
-          { suffix: '2025', secret_key_passphrase: 'trust-but-verify' },
-          {
-            # rubocop:disable Layout/LineLength
-            comment: 'this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb',
-            # rubocop:enable Layout/LineLength
-            secret_key_passphrase: 'trust-but-verify',
-            suffix: '2024',
-          },
-        ],
-      )
+      expect(result).to eq(%w[2024 2025])
     end
   end
 
@@ -46,14 +27,6 @@ RSpec.describe SamlEndpoint do
 
     context 'when the key file does not exist' do
       let(:year) { '_dne' }
-
-      before do
-        allow(SamlEndpoint).to receive(:endpoint_configs).and_return(
-          [
-            { suffix: '_dne', secret_key_passphrase: 'asdf1234' },
-          ],
-        )
-      end
 
       it 'raises an error' do
         expect { subject.secret_key }.to raise_error(
