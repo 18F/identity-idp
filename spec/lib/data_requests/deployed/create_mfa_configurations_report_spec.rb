@@ -15,6 +15,9 @@ RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
       expect(phone_data.first[:created_at]).to be_within(1.second).of(
         phone_configuration.created_at,
       )
+      expect(phone_data.first[:confirmed_at]).to be_within(1.second).of(
+        phone_configuration.confirmed_at,
+      )
     end
 
     it 'includes an array for authentication apps' do

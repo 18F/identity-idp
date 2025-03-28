@@ -45,6 +45,7 @@ module DataRequests
             id: phone_configuration.id,
             phone: phone_configuration.phone,
             created_at: phone_configuration.created_at,
+            confirmed_at: phone_configuration.confirmed_at,
           }
         end
       end
