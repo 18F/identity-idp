@@ -26,7 +26,9 @@ RSpec.describe Users::BackupCodeSetupController do
 
     it 'creates backup codes and logs expected events' do
       stub_analytics
+      stub_attempts_tracker
       allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+      expect(@attempts_api_tracker).to receive(:mfa_enroll_backup_code).with(success: true)
 
       Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
       expect(PushNotification::HttpPush).to receive(:deliver)

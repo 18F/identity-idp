@@ -76,6 +76,9 @@ RSpec.describe Users::SessionsController, devise: true do
 
   describe 'POST /' do
     include AccountResetHelper
+    before do
+      stub_attempts_tracker
+    end
 
     context 'successful authentication' do
       let(:user) { create(:user, :fully_registered) }
@@ -86,6 +89,9 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'tracks the successful authentication for existing user' do
         stub_analytics(user:)
+        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          success: true,
+        )
 
         response
 
@@ -159,6 +165,9 @@ RSpec.describe Users::SessionsController, devise: true do
 
         it 'tracks as not being from a new device' do
           stub_analytics(user:)
+          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+            success: true,
+          )
 
           response
 
@@ -221,6 +230,10 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user, :fully_registered)
       stub_analytics(user:)
 
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      ).exactly(9).times
+
       travel_to (3.hours + 1.minute).ago do
         2.times do
           post :create, params: { user: { email: user.email, password: 'incorrect' } }
@@ -264,6 +277,9 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics(user:)
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      )
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
 
@@ -284,6 +300,9 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics(user: kind_of(AnonymousUser))
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      )
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
 
@@ -308,6 +327,9 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      )
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
@@ -348,6 +370,9 @@ RSpec.describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
 
         stub_analytics(user:)
+        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          success: false,
+        )
 
         post :create, params: { user: { email: user.email, password: user.password, score: 0.1 } }
 
@@ -378,6 +403,9 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
         it 'prevents attempt after exceeding maximum rate limit' do
           allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
+          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+            success: false,
+          ).exactly(6).times
 
           user = create(:user, :fully_registered)
           freeze_time do
@@ -412,6 +440,9 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      ).exactly(2).times
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
       post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
@@ -431,6 +462,9 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics(user: kind_of(AnonymousUser))
+      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        success: false,
+      )
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
 
@@ -602,6 +636,9 @@ RSpec.describe Users::SessionsController, devise: true do
         )
 
         stub_analytics(user:)
+        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          success: true,
+        )
 
         post :create, params: { user: { email: user.email, password: user.password } }
 

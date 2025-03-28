@@ -43,6 +43,7 @@ RSpec.configure do |config|
   config.include Capybara::RSpecMatchers, type: :component
   config.include AgreementsHelper
   config.include AnalyticsHelper
+  config.include AttemptsApiTrackingHelper
   config.include AwsCloudwatchHelper
   config.include AwsKmsClientHelper
   config.include DiffHelper
