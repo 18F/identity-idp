@@ -7,9 +7,9 @@
       ) %>
 <% end %>
 
-<% self.title = t('doc_auth.headings.how_to_verify') %>
+<% self.title = @presenter.header_text %>
 
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.how_to_verify')) %>
+<%= render PageHeadingComponent.new.with_content(@presenter.header_text) %>
 
 <% if defined?(error) %>
   <%= render AlertComponent.new(
@@ -21,67 +21,80 @@
   <% end %>
 <% end %>
 
-<p id='how-to-verify-info' class='margin-bottom-1'><%= @presenter.how_to_verify_info %></p>
-  <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
-    <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
-      <%= image_tag(
-            asset_url(@presenter.asset_url),
-            width: 88,
-            height: 88,
-            alt: @presenter.alt_text,
-          ) %>
-    </div>
-    <div class="grid-col-12 tablet:grid-col-fill">
-    <%= simple_form_for(
-          @idv_how_to_verify_form,
-          html: {
-            id: nil,
-            aria: { label: @presenter.submit },
-            class: 'margin-top-3',
-          },
-          method: :put,
-          url: idv_how_to_verify_url,
-        ) do |f|
-    %>
-    <%= f.hidden_field(
-          :selection,
-          value: Idv::HowToVerifyForm::REMOTE,
+<p id='how-to-verify-info' class='hidden'><%= @presenter.how_to_verify_info %></p>
+<div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
+  <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
+    <%= image_tag(
+          asset_url(@presenter.online_asset_url),
+          width: 88,
+          height: 88,
+          alt: @presenter.online_asset_alt_text,
         ) %>
-    <%= f.label(
-          :selection_remote,
-        ) do %>
-            <% if @mobile_required %>
-                <span class='usa-tag usa-tag--informative margin-bottom-2 margin-top-1'>
-                  <%= t('doc_auth.tips.mobile_phone_required') %>
-                </span>
-            <% end %>
-            <h2 class="margin-top-0"><%= @presenter.verify_online_text %></h2>
-            <div>
-              <p><%= @presenter.verify_online_instruction %></p>
-              <p><%= @presenter.verify_online_description %></p>
-            </div>
-        <% end %>
-        <%= f.submit @presenter.submit, class: 'display-block margin-top-3 margin-bottom-5' %>
-    <% end %>
-    </div>
   </div>
-<div role="group" aria-labelledby="how-to-verify-info" class="grid-row">
-<div class="grid-col-12 tablet:grid-col-auto">
-  <%= image_tag(
-        asset_url('idv/in-person.svg'),
-        width: 88,
-        height: 88,
-        class: 'margin-right-1 margin-top-3',
-        alt: t('image_description.post_office'),
+  <div class="grid-col-12 tablet:grid-col-fill">
+  <%= simple_form_for(
+        @idv_how_to_verify_form,
+        html: {
+          id: nil,
+          aria: { label: @presenter.online_submit },
+          class: 'margin-top-3',
+        },
+        method: :put,
+        url: idv_how_to_verify_url,
+      ) do |f|
+  %>
+  <%= f.hidden_field(
+        :selection,
+        value: Idv::HowToVerifyForm::REMOTE,
       ) %>
+  <%= f.label(
+        :selection_remote,
+      ) do %>
+          <% if @mobile_required %>
+              <span class='usa-tag usa-tag--informative margin-bottom-2 margin-top-1'>
+                <%= t('doc_auth.tips.mobile_phone_required') %>
+              </span>
+          <% end %>
+          <h2 class="margin-top-0"><%= @presenter.verify_online_text %></h2>
+          <div>
+            <p><%= @presenter.verify_online_instruction %>
+               <%= @presenter.verify_online_description %></p>
+            <p class="margin-top-2">
+              <%= new_tab_link_to(
+                    t('doc_auth.info.verify_online_link_text'),
+                    help_center_redirect_path(
+                      category: 'verify-your-identity',
+                      article: 'overview',
+                      flow: :idv,
+                      step: :how_to_verify,
+                      location: 'troubleshooting_options',
+                    ),
+                  ) %>
+            </p>
+          </div>
+      <% end %>
+      <%= f.submit @presenter.online_submit, class: 'display-block margin-top-3 margin-bottom-5' %>
+  <% end %>
+  </div>
 </div>
+
+<div role="group" aria-labelledby="how-to-verify-info" class="grid-row">
+  <div class="grid-col-12 tablet:grid-col-auto">
+    <%= image_tag(
+          asset_url(@presenter.post_office_asset_url),
+          width: 88,
+          height: 88,
+          class: 'margin-right-1 margin-top-3',
+          alt: @presenter.post_office_asset_alt_text,
+        ) %>
+  </div>
   <div class="grid-col-12 tablet:grid-col-fill">
     <%= simple_form_for(
           @idv_how_to_verify_form,
           html: {
             id: nil,
             class: 'margin-top-3',
-            aria: { label: t('forms.buttons.continue_ipp') },
+            aria: { label: @presenter.post_office_submit },
           },
           method: :put,
           url: idv_how_to_verify_url,
@@ -94,10 +107,22 @@
       <%= f.label(
             :selection_ipp,
           ) do %>
-            <h3 class="h2 margin-top-0"><%= t('doc_auth.headings.verify_at_post_office') %></h3>
+            <h2 class="margin-top-0"><%= @presenter.verify_at_post_office_text %></h2>
             <div>
-              <p><%= @presenter.post_office_instruction %></p>
-              <p><%= @presenter.post_office_description %></p>
+              <p><%= @presenter.post_office_instruction %>
+                 <%= @presenter.post_office_description %></p>
+              <p class="margin-top-2">
+                <%= new_tab_link_to(
+                      t('doc_auth.info.verify_at_post_office_link_text'),
+                      help_center_redirect_path(
+                        category: 'verify-your-identity',
+                        article: 'verify-your-identity-in-person',
+                        flow: :idv,
+                        step: :how_to_verify,
+                        location: 'troubleshooting_options',
+                      ),
+                    ) %>
+              </p>
             </div>
           <% end %>
       <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-top-3 margin-bottom-5', outline: true %>
@@ -105,33 +130,4 @@
   </div>
 </div>
 
-<%= render(
-      'shared/troubleshooting_options',
-      heading_tag: :h3,
-      heading: t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-      options: [
-        {
-          url: help_center_redirect_path(
-            category: 'verify-your-identity',
-            article: 'overview',
-            flow: :idv,
-            step: :how_to_verify,
-            location: 'troubleshooting_options',
-          ),
-          text: t('doc_auth.info.verify_online_link_text'),
-          new_tab: true,
-        },
-        {
-          url: help_center_redirect_path(
-            category: 'verify-your-identity',
-            article: 'verify-your-identity-in-person',
-            flow: :idv,
-            step: :how_to_verify,
-            location: 'troubleshooting_options',
-          ),
-          text: t('doc_auth.info.verify_at_post_office_link_text'),
-          new_tab: true,
-        },
-      ],
-    ) %>
 <%= render 'idv/doc_auth/cancel', step: 'how_to_verify' %>

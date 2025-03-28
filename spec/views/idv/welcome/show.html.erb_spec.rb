@@ -7,6 +7,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   let(:sp_session) { {} }
   let(:view_context) { ActionController::Base.new.view_context }
   let(:sp) { build(:service_provider) }
+  let(:passport_allowed) { false }
 
   before do
     allow(view_context).to receive(:current_user).and_return(user)
@@ -17,7 +18,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       sp_session: sp_session,
       service_provider_request: nil,
     )
-    presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+    presenter = Idv::WelcomePresenter.new(decorated_sp_session:, passport_allowed:)
     assign(:presenter, presenter)
     assign(:current_user, user)
     render
@@ -40,7 +41,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
           link_html: '',
         ),
       )
-      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1a'))
       expect(rendered).to have_link(
         t('doc_auth.info.getting_started_learn_more'),
         href: help_center_redirect_path(
@@ -51,6 +52,14 @@ RSpec.describe 'idv/welcome/show.html.erb' do
           location: 'intro_paragraph',
         ),
       )
+    end
+  end
+
+  context 'when a user has the passport option' do
+    let(:passport_allowed) { true }
+
+    it 'renders the modified bullet point' do
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1b'))
     end
   end
 

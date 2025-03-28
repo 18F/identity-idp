@@ -620,7 +620,7 @@ doc_auth.headings.ssn_update: Mettre à jour votre numéro de sécurité sociale
 doc_auth.headings.text_message: Nous avons envoyé un message à votre téléphone
 doc_auth.headings.upload_from_computer: Continuer sur cet ordinateur
 doc_auth.headings.upload_from_phone: Utiliser votre téléphone pour prendre des photos
-doc_auth.headings.verify_at_post_office: Confirmer votre identité en personne dans un bureau de poste
+doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.verify_online_mobile: Confirmer votre identité en ligne à l’aide de votre téléphone
@@ -645,9 +645,6 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.how_to_verify: Vous pouvez confirmer votre identité en ligne ou en personne dans un bureau de poste participant.
-doc_auth.info.how_to_verify_mobile: Vous avez la possibilité de confirmer votre identité en ligne avec votre téléphone ou en personne dans un bureau de poste participant.
-doc_auth.info.how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de confirmer votre identité?
 doc_auth.info.hybrid_handoff: Nous recueillerons des informations vous concernant en lisant votre pièce d’identité délivrée par un État.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
@@ -683,20 +680,18 @@ doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité po
 doc_auth.info.tag: Recommandation
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.
 doc_auth.info.upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos. Votre téléphone portable doit être équipé d’un appareil photo et d’un navigateur web.
-doc_auth.info.verify_at_post_office_description: Cette option est préférable si vous n’avez pas de téléphone permettant de prendre des photos de votre pièce d’identité.
-doc_auth.info.verify_at_post_office_description_mobile: Choisissez cette option si vous ne disposez pas d’un téléphone permettant de prendre des photos.
-doc_auth.info.verify_at_post_office_instruction: Vous saisirez vos données d’identification en ligne et confirmerez votre identité en personne dans un bureau de poste participant.
-doc_auth.info.verify_at_post_office_instruction_selfie: Vous saisirez vos données d’identification en ligne et confirmez votre identité en personne dans un bureau de poste participant.
+doc_auth.info.verify_at_post_office_description_passport_html: <strong>Vous pouvez seulement utiliser un permis de conduire ou une carte d’identité d’un État des États-Unis.</strong> Le passeport des États-Unis n’est pas accepté dans ce cas.
+doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en ligne puis confirmez votre identité en personne dans un bureau de poste participant.
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
-doc_auth.info.verify_online_description: Cette option est préférable si vous disposez d’un téléphone permettant de prendre des photos de votre pièce d’identité.
-doc_auth.info.verify_online_description_mobile: Choisissez cette option si vous disposez d’un téléphone permettant de prendre des photos.
-doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne. La plupart des utilisateurs y parviennent en une seule prise.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone. La plupart des utilisateurs effectuent l’ensemble du processus en une seule fois.
-doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone. La plupart des utilisateurs y parviennent en une seule prise.
+doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
+doc_auth.info.verify_online_instruction: Vous téléverserez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone.
+doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.you_entered: 'Vous avez saisi :'
-doc_auth.instructions.bullet1: Présenter votre permis de conduire ou votre carte d’identité d’un État
+doc_auth.instructions.bullet1a: Présenter votre permis de conduire ou votre carte d’identité d’un État
+doc_auth.instructions.bullet1b: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -876,8 +871,8 @@ forms.buttons.cancel: Oui, annuler
 forms.buttons.confirm: Confirmer
 forms.buttons.continue: Suite
 forms.buttons.continue_ipp: Continuer en personne
-forms.buttons.continue_remote: Continuer en ligne
-forms.buttons.continue_remote_mobile: Continuer sur votre téléphone
+forms.buttons.continue_online: Continuer en ligne
+forms.buttons.continue_online_mobile: Continuer sur votre téléphone
 forms.buttons.delete: Supprimer
 forms.buttons.disable: Supprimer
 forms.buttons.edit: Modifier

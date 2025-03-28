@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include RenderConditionConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
@@ -64,9 +65,9 @@ module Idv
           idv_session.service_provider&.in_person_proofing_enabled
         end,
         undo_step: ->(idv_session:, user:) {
-                     idv_session.skip_doc_auth_from_how_to_verify = nil
-                     idv_session.opted_in_to_in_person_proofing = nil
-                   },
+          idv_session.skip_doc_auth_from_how_to_verify = nil
+          idv_session.opted_in_to_in_person_proofing = nil
+        },
       )
     end
 
@@ -96,19 +97,13 @@ module Idv
       @presenter = Idv::HowToVerifyPresenter.new(
         mobile_required: @mobile_required,
         selfie_check_required: @selfie_required,
+        passport_allowed: idv_session.passport_allowed,
       )
     end
 
     def mobile_required?
       idv_session.selfie_check_required ||
         document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-    end
-
-    def document_capture_session
-      return @document_capture_session if defined?(@document_capture_session)
-      @document_capture_session = DocumentCaptureSession.find_by(
-        uuid: idv_session.document_capture_session_uuid,
-      )
     end
   end
 end

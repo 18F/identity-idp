@@ -4,10 +4,12 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
   selection = Idv::HowToVerifyForm::IPP
   let(:mobile_required) { false }
   let(:selfie_check_required) { false }
+  let(:passport_allowed) { false }
   let(:presenter) do
     Idv::HowToVerifyPresenter.new(
       mobile_required: mobile_required,
       selfie_check_required: selfie_check_required,
+      passport_allowed:,
     )
   end
   let(:idv_how_to_verify_form) { Idv::HowToVerifyForm.new(selection: selection) }
@@ -41,14 +43,11 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     it 'renders a button for remote and ipp' do
-      expect(rendered).to have_button(t('forms.buttons.continue_remote'))
+      expect(rendered).to have_button(t('forms.buttons.continue_online'))
       expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
     end
 
-    it 'renders a troubleshooting section' do
-      expect(rendered).to have_content(
-        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-      )
+    it 'renders troubleshooting links' do
       expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
       expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
     end
@@ -58,13 +57,26 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     it 'renders non-selfie specific content' do
-      expect(rendered).to have_content(t('doc_auth.info.how_to_verify'))
       expect(rendered).not_to have_content(t('doc_auth.tips.mobile_phone_required'))
       expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
       expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-      expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
+      expect(rendered).not_to have_content(t('doc_auth.info.verify_online_description_passport'))
       expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
-      expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_description'))
+      expect(rendered).not_to have_content(
+        strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+      )
+    end
+
+    context 'when passport is allowed' do
+      let(:passport_allowed) { true }
+
+      it 'renders passport specific content' do
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
+        expect(rendered).to have_content(
+          strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+        )
+      end
     end
   end
 
@@ -95,14 +107,11 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     end
 
     it 'renders a button for remote and ipp' do
-      expect(rendered).to have_button(t('forms.buttons.continue_remote_mobile'))
+      expect(rendered).to have_button(t('forms.buttons.continue_online_mobile'))
       expect(rendered).to have_button(t('forms.buttons.continue_ipp'))
     end
 
-    it 'renders a troubleshooting section' do
-      expect(rendered).to have_content(
-        t('doc_auth.info.how_to_verify_troubleshooting_options_header'),
-      )
+    it 'renders troubleshooting links' do
       expect(rendered).to have_link(t('doc_auth.info.verify_online_link_text'))
       expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
     end
@@ -117,20 +126,43 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       )
     end
 
+    context 'when passport is allowed' do
+      let(:passport_allowed) { true }
+
+      it 'renders passport specific content' do
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
+        )
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
+        expect(rendered).to have_content(
+          strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+        )
+      end
+    end
+
     context 'when selfie is required' do
       let(:selfie_check_required) { true }
 
       it 'renders selfie specific content' do
-        expect(rendered).to have_content(t('doc_auth.info.how_to_verify_mobile'))
         expect(rendered).to have_content(t('doc_auth.tips.mobile_phone_required'))
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_mobile'))
-        expect(rendered).to have_content(
-          t('doc_auth.info.verify_at_post_office_instruction_selfie'),
+        expect(rendered).not_to have_content(t('doc_auth.info.verify_online_description_passport'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
+        expect(rendered).not_to have_content(
+          strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
         )
-        expect(rendered).to have_content(
-          t('doc_auth.info.verify_at_post_office_description_mobile'),
-        )
+      end
+
+      context 'when passport is allowed' do
+        let(:passport_allowed) { true }
+
+        it 'renders passport specific content' do
+          expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
+          expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
+          expect(rendered).to have_content(
+            strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+          )
+        end
       end
     end
   end
