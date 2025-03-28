@@ -19,8 +19,7 @@ module Test
     end
 
     def update
-      enrollment_id = params['enrollment'].to_i
-      enrollment = InPersonEnrollment.find_by(id: enrollment_id)
+      enrollment = Rails.env.development? ? enrollment_for_id : enrollment_for_current_user
 
       if enrollment.present?
         approve_enrollment(enrollment)
@@ -44,6 +43,18 @@ module Test
         .includes(:user)
         .order(created_at: :desc)
         .limit(10)
+    end
+
+    def enrollment_for_current_user
+      InPersonEnrollment.find_by(id: enrollment_id, user_id: current_user&.id)
+    end
+
+    def enrollment_for_id
+      InPersonEnrollment.find_by(id: enrollment_id)
+    end
+
+    def enrollment_id
+      params['enrollment'].to_i
     end
 
     def approve_enrollment(enrollment)

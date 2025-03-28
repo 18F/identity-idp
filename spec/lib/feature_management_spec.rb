@@ -541,8 +541,8 @@ RSpec.describe 'FeatureManagement' do
   describe 'allow_ipp_enrollment_approval?' do
     context 'when IdentityConfig.store.in_person_enrollments_immediate_approval_enabled is true' do
       it 'returns true' do
-        allow(IdentityConfig.store).to receive(:in_person_enrollments_immediate_approval_enabled).
-          and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_enrollments_immediate_approval_enabled)
+          .and_return(true)
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq true
@@ -551,8 +551,8 @@ RSpec.describe 'FeatureManagement' do
 
     context 'when IdentityConfig.store.in_person_enrollments_immediate_approval_enabled is false' do
       it 'returns false' do
-        allow(IdentityConfig.store).to receive(:in_person_enrollments_immediate_approval_enabled).
-          and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_enrollments_immediate_approval_enabled)
+          .and_return(false)
         allow(Rails.env).to receive(:production?).and_return(true)
 
         expect(FeatureManagement.allow_ipp_enrollment_approval?).to eq false
