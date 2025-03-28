@@ -565,7 +565,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         controller.user_session[:context] = 'confirmation'
 
         @previous_phone_confirmed_at =
-          true
+          MfaContext.new(controller.current_user).phone_configurations.first&.confirmed_at
 
         controller.current_user.create_direct_otp
 

@@ -35,7 +35,7 @@ class PhoneConfiguration < ApplicationRecord
   end
 
   def capabilities
-    PhoneNumberCapabilities.new(phone, phone_confirmed: true)
+    PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
   end
 
   def friendly_name
