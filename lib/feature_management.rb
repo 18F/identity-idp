@@ -175,11 +175,9 @@ class FeatureManagement
       outage_status.phone_finder_outage?
   end
 
-  # int is our sandbox environment that all partners use to test their apps,
-  # and that the Partnerships team uses for testing and live demos for our partners.
-  # This feature allows pending IPP enrollments to be approved immediately in int,
-  # as opposed to having to wait more than 1 hour, which is not acceptable for
-  # testing purposes. See test/ipp_controller.rb
+  # This feature allows pending IPP enrollments to be approved immediately, as
+  # opposed to having to wait close to 2 hours, which is not ideal when testing.
+  # See test/ipp_controller.rb
   def self.allow_ipp_enrollment_approval?
     IdentityConfig.store.in_person_enrollments_immediate_approval_enabled
   end
