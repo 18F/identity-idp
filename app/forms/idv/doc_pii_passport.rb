@@ -6,10 +6,15 @@ module Idv
 
     validates :birth_place,
               :passport_issued,
-              :issuing_country_code,
               :nationality_code,
               :mrz,
               presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+
+    validates :issuing_country_code,
+              :nationality_code,
+              inclusion: {
+                in: 'USA', message: proc { I18n.t('doc_auth.errors.general.no_liveness') }
+              }
 
     validate :passport_expired?
 

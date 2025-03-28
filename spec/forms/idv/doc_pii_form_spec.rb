@@ -250,7 +250,7 @@ RSpec.describe Idv::DocPiiForm do
       mrz: mrz,
     }
   end
-  let(:nil_issuing_country_code_pii) do
+  let(:issuing_country_code_error_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
@@ -259,12 +259,12 @@ RSpec.describe Idv::DocPiiForm do
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
       state_id_type: 'passport',
-      issuing_country_code: nil,
+      issuing_country_code: 'XYZ',
       nationality_code: 'USA',
       mrz: mrz,
     }
   end
-  let(:nil_nationality_code_pii) do
+  let(:nationality_code_error_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
@@ -274,7 +274,7 @@ RSpec.describe Idv::DocPiiForm do
       passport_expiration: '2099-01-01',
       state_id_type: 'passport',
       issuing_country_code: 'USA',
-      nationality_code: nil,
+      nationality_code: 'XYZ',
       mrz: mrz,
     }
   end
@@ -699,8 +699,8 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'issuing country code is nil' do
-        let(:subject) { Idv::DocPiiForm.new(pii: nil_issuing_country_code_pii) }
+      context 'when there is an invalid issuing country code' do
+        let(:subject) { Idv::DocPiiForm.new(pii: issuing_country_code_error_pii) }
 
         it 'responds with an unsuccessful result' do
           result = subject.submit
@@ -720,8 +720,8 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'nationality code is nil' do
-        let(:subject) { Idv::DocPiiForm.new(pii: nil_nationality_code_pii) }
+      context 'when there is an invalid nationality code' do
+        let(:subject) { Idv::DocPiiForm.new(pii: nationality_code_error_pii) }
 
         it 'responds with an unsuccessful result' do
           result = subject.submit

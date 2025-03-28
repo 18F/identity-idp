@@ -38,7 +38,7 @@ module Idv
       response
     end
 
-    def self.pii_like_keypaths(document_type: nil)
+    def self.pii_like_keypaths(document_type:)
       keypaths = [[:pii]]
       document_attrs = document_type&.downcase == 'passport' ?
         DocPiiPassport.pii_like_keypaths :
