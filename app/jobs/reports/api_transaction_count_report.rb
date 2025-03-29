@@ -1,46 +1,47 @@
 # frozen_string_literal: true
 
-require 'identity/hostdata'
-require 'csv'
+require 'reporting/api_transaction_count_report'
 
 module Reports
-  class ApiTransactionCountReportJob < BaseReport
+  class APITransactionCountReportJob < BaseReport
     REPORT_NAME = 'api-transaction-count-report'
 
-    def perform(report_date = Time.zone.today)
-      Rails.logger.info("Starting #{REPORT_NAME} for #{report_date}")
+    attr_accessor :report_date
 
-      # Generate the report
-      report = Reporting::ApiTransactionCountReport.new(report_date)
+    def perform(report_date)
+      return unless IdentityConfig.store.s3_reports_enabled
 
-      # Generate the emailable report
-      emailable_report = report.api_transaction_emailable_report
+      self.report_date = report_date
+      message = "Report: #{REPORT_NAME} #{report_date}"
+      subject = "API Transaction Count Report - #{report_date}"
 
-      # Send the report via email
-      send_report_email(emailable_report, report_date)
+      report_configs.each do |report_hash|
+        reports = api_transaction_emailable_reports(report_hash['issuers'])
 
-      Rails.logger.info("#{REPORT_NAME} completed successfully for #{report_date}")
-    rescue => e
-      Rails.logger.error("#{REPORT_NAME} failed: #{e.message}")
-      raise
+        report_hash['emails'].each do |email|
+          ReportMailer.tables_report(
+            email:,
+            subject:,
+            message:,
+            reports:,
+            attachment_format: :csv,
+          ).deliver_now
+        end
+      end
     end
 
     private
 
-    def send_report_email(emailable_report, report_date)
-      email_addresses = emails.compact_blank
-      if email_addresses.empty?
-        Rails.logger.warn "#{self.class::REPORT_NAME} NOT SENT - No email addresses provided"
-        return false
+    def api_transaction_emailable_reports(issuers)
+      Reporting::APITransactionCountReport.new(
+        time_range: report_date.all_month,
+      ).to_csvs.map do |csv|
+        { title: 'API Transaction Count Report', table: CSV.parse(csv) }
       end
+    end
 
-      ReportMailer.tables_report(
-        email: email_addresses,
-        subject: "#{REPORT_NAME.humanize} - #{report_date}",
-        reports: [emailable_report],
-        message: "Please find attached the #{REPORT_NAME.humanize} for #{report_date}.",
-        attachment_format: :csv,
-      ).deliver_now
+    def report_configs
+      IdentityConfig.store.api_transaction_count_report_config
     end
   end
 end
