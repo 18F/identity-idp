@@ -10,7 +10,7 @@ module Idv
       if chosen_id_type == 'passport'
         document_capture_session.update!(passport_status: 'requested')
       else
-        document_capture_session.update!(passport_status: 'allowed - not selected')
+        document_capture_session.update!(passport_status: 'not_requested')
       end
     end
 
@@ -22,7 +22,7 @@ module Idv
       case document_capture_session.passport_status
       when 'requested'
         :passport
-      when 'allowed - not selected'
+      when 'not_requested'
         :drivers_license
       end
     end

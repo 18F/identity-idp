@@ -8,7 +8,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   PASSPORT_STATUSES = [
     'allowed',
-    'allowed - not selected',
+    'not_requested',
     'requested',
   ].freeze
 
