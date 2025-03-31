@@ -14,6 +14,14 @@
         ) %>
   </p>
 
+  <div class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
+    <%= render CountdownComponent.new(
+          expiration: presenter.user.lockout_time_expiration,
+          update_interval: 30.seconds,
+        )
+    %>
+  </div>
+
   <% c.with_troubleshooting_options do |tc| %>
     <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
     <% tc.with_option(
