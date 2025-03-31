@@ -58,7 +58,7 @@ module TwoFactorAuthentication
 
         handle_valid_otp
       else
-        handle_invalid_otp(type: 'personal_key')
+        handle_invalid_mfa(type: 'personal_key', context:)
       end
     end
 

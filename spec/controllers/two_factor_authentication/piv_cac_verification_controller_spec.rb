@@ -277,31 +277,66 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
     context 'when the user has reached the max number of piv/cac attempts' do
       render_views
 
-      it 'tracks the event' do
+      before do
         user.second_factor_attempts_count =
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
         stub_sign_in_before_2fa(user)
 
         stub_analytics
+        stub_attempts_tracker
+      end
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+      context 'with authentication context' do
+        it 'tracks the event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
-        get :show, params: { token: 'bad-token' }
+          get :show, params: { token: 'bad-token' }
 
-        expect(@analytics).not_to have_logged_event(:multi_factor_auth_enter_piv_cac)
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          errors: { type: 'token.invalid' },
-          context: 'authentication',
-          multi_factor_auth_method: 'piv_cac',
-          enabled_mfa_methods_count: 2,
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).not_to have_logged_event(:multi_factor_auth_enter_piv_cac)
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            errors: { type: 'token.invalid' },
+            context: 'authentication',
+            multi_factor_auth_method: 'piv_cac',
+            enabled_mfa_methods_count: 2,
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+        end
+      end
+
+      context 'with confirmation context' do
+        before do
+          allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+        end
+
+        it 'tracks the max attempts event' do
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+            mfa_device_type: 'piv_cac',
+          )
+
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+          get :show, params: { token: 'bad-token' }
+
+          expect(@analytics).not_to have_logged_event(:multi_factor_auth_enter_piv_cac)
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            errors: { type: 'token.invalid' },
+            context: 'authentication',
+            multi_factor_auth_method: 'piv_cac',
+            enabled_mfa_methods_count: 2,
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+        end
       end
     end
 

@@ -154,31 +154,64 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
     end
 
     context 'when the user has reached the max number of TOTP attempts' do
-      it 'tracks the event' do
-        user = create(
+      let(:user) do
+        create(
           :user,
           :fully_registered,
           second_factor_attempts_count:
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
+      end
+      before do
         sign_in_before_2fa(user)
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
+        stub_attempts_tracker
+      end
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+      context 'with authentication context' do
+        it 'tracks the event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
-        post :create, params: { code: '12345' }
+          post :create, params: { code: '12345' }
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          enabled_mfa_methods_count: 2,
-          multi_factor_auth_method: 'totp',
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            enabled_mfa_methods_count: 2,
+            multi_factor_auth_method: 'totp',
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+        end
+      end
+
+      context 'with confirmation context' do
+        before do
+          allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+        end
+
+        it 'tracks the max attempts event' do
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+            mfa_device_type: 'totp',
+          )
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+          post :create, params: { code: '12345' }
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            enabled_mfa_methods_count: 2,
+            multi_factor_auth_method: 'totp',
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+        end
       end
     end
 

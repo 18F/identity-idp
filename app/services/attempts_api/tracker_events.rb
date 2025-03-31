@@ -29,6 +29,16 @@ module AttemptsApi
       )
     end
 
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_code_rate_limited(mfa_device_type:)
+      track_event(
+        'mfa-enroll-code-rate-limited',
+        mfa_device_type:,
+      )
+    end
+
     # Tracks when user submits registration password
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
