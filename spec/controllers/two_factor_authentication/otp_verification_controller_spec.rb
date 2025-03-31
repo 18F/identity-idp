@@ -269,7 +269,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             in_account_creation_flow: false,
             attempts: 1,
           )
-          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
         end
       end
 
@@ -306,7 +308,9 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             in_account_creation_flow: false,
             attempts: 2,
           )
-          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
         end
       end
     end

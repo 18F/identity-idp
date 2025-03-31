@@ -184,7 +184,9 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             new_device: true,
             attempts: 1,
           )
-          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
         end
       end
 
@@ -210,7 +212,9 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             new_device: true,
             attempts: 1,
           )
-          expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
         end
       end
     end
