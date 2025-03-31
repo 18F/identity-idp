@@ -8,29 +8,33 @@ module Reports
 
     attr_accessor :report_date
 
-    def perform(report_date)
-      return unless IdentityConfig.store.s3_reports_enabled
+    def perform(date = Time.zone.yesterday.end_of_day)
+      @report_date = date
 
-      self.report_date = report_date
-      message = "Report: #{REPORT_NAME} #{report_date}"
-      subject = "API Transaction Count Report - #{report_date}"
-
-      report_configs.each do |report_hash|
-        reports = api_transaction_emailable_reports(report_hash['issuers'])
-
-        report_hash['emails'].each do |email|
-          ReportMailer.tables_report(
-            email:,
-            subject:,
-            message:,
-            reports:,
-            attachment_format: :csv,
-          ).deliver_now
-        end
+      email_addresses = emails.select(&:present?)
+      if email_addresses.empty?
+        Rails.logger.warn 'No email addresses received - Monthly Key Metrics Report NOT SENT'
+        return false
       end
+
+      ReportMailer.tables_report(
+        email: email_addresses,
+        subject: "API Transaction Count Reports - #{date.to_date}",
+        message: "API Transaction Count Report - #{date.to_date}.",
+        reports:,
+        attachment_format: :csv,
+      ).deliver_now
     end
 
     private
+
+    def emails
+      emails = [*IdentityConfig.store.team_daily_reports_emails]
+      if report_date.next_day.day == 1
+        emails += IdentityConfig.store.team_all_login_emails
+      end
+      emails
+    end
 
     def api_transaction_emailable_reports(issuers)
       Reporting::APITransactionCountReport.new(
