@@ -172,7 +172,7 @@ module Idv
         submit_attempts: submit_attempts,
         remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: DocPiiForm.pii_like_keypaths,
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type),
         flow_path: params[:flow_path],
       }
 

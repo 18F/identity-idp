@@ -558,10 +558,12 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: false,
           errors: { doc_pii: 'bad' },
           extra: {
-            pii_like_keypaths: pii_like_keypaths,
+            pii_like_keypaths: pii_like_keypaths_state_id,
             attention_with_barcode: false,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
           },
         )
       end

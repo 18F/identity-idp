@@ -405,6 +405,8 @@ RSpec.describe Idv::ImageUploadsController do
           classification_info: a_kind_of(Hash),
           id_issued_status: 'present',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
           document_type: an_instance_of(String),
         )
 
@@ -543,6 +545,8 @@ RSpec.describe Idv::ImageUploadsController do
               ),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
           end
@@ -621,6 +625,8 @@ RSpec.describe Idv::ImageUploadsController do
               ),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
           end
@@ -696,6 +702,8 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
           end
@@ -770,6 +778,8 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
           end
@@ -845,6 +855,8 @@ RSpec.describe Idv::ImageUploadsController do
               classification_info: hash_including(:Front, :Back),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
           end
