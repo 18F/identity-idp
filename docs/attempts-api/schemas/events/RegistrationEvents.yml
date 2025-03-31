@@ -3,8 +3,8 @@ properties:
     $ref: './registration/MfaEnrollBackupCode.yml'
   mfa-enroll-phone-otp-sent:
     $ref: './registration/MfaEnrollPhoneOtpSent.yml'
-  mfa-enroll-phone-otp-code-rate-limited:
-    $ref: './registration/MfaEnrollPhoneOtpCodeRateLimited.yml'
+  mfa-enroll-code-rate-limited:
+    $ref: './registration/MfaEnrollCodeRateLimited.yml'
   mfa-enroll-phone-otp-sent-rate-limited:
     $ref: './registration/MfaEnrollPhoneOtpSentRateLimited.yml'
   mfa-enroll-phone-otp-submitted:

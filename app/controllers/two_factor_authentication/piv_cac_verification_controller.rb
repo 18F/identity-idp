@@ -64,7 +64,7 @@ module TwoFactorAuthentication
       update_invalid_user
 
       if current_user.locked_out?
-        handle_second_factor_locked_user(type: 'piv_cac')
+        handle_second_factor_locked_user(type: 'piv_cac', context:)
       elsif redirect_for_piv_cac_mismatch_replacement?
         redirect_to login_two_factor_piv_cac_mismatch_url
       else

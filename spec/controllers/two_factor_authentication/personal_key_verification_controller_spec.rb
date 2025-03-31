@@ -209,8 +209,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_sign_in_before_2fa(user)
       end
 
-      it 'calls handle_invalid_otp' do
-        expect(subject).to receive(:handle_invalid_otp).and_call_original
+      it 'calls handle_invalid_mfa' do
+        expect(subject).to receive(:handle_invalid_mfa).and_call_original
 
         post :create, params: payload
 
@@ -225,30 +225,73 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_personal_key')
       end
 
-      it 'tracks the max attempts event' do
-        user.second_factor_attempts_count =
-          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
-        user.save
-        personal_key_generated_at = controller.current_user
-          .encrypted_recovery_code_digest_generated_at
-        stub_analytics
+      context 'when the attempts are rate limited' do
+        let(:personal_key_generated_at) do
+          controller.current_user
+            .encrypted_recovery_code_digest_generated_at
+        end
+        before do
+          user.second_factor_attempts_count =
+            IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+          user.save
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+          stub_analytics
+          stub_attempts_tracker
+        end
 
-        post :create, params: payload
+        context 'with authentication context' do
+          it 'tracks the max attempts event' do
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          error_details: { personal_key: { personal_key_incorrect: true } },
-          enabled_mfa_methods_count: 1,
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { personal_key: { personal_key_incorrect: true } },
+              enabled_mfa_methods_count: 1,
+              multi_factor_auth_method: 'personal-key',
+              multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
+
+        context 'with confirmation context' do
+          before do
+            allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+          end
+
+          it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+              mfa_device_type: 'personal_key',
+            )
+
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { personal_key: { personal_key_incorrect: true } },
+              enabled_mfa_methods_count: 1,
+              multi_factor_auth_method: 'personal-key',
+              multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
       end
 
       it 'records unsuccessful 2fa event' do

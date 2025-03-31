@@ -236,36 +236,82 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         )
       end
 
-      it 'tracks the event' do
+      before do
         sign_in_before_2fa(user)
         controller.user_session[:mfa_selections] = ['sms']
 
         stub_analytics
+        stub_attempts_tracker
+      end
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: controller.current_user))
+      context 'with authentication context' do
+        it 'tracks the event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: controller.current_user))
 
-        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+          post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          error_details: { code: { wrong_length: true, incorrect: true } },
-          confirmation_for_add_phone: false,
-          context: 'authentication',
-          multi_factor_auth_method: 'sms',
-          multi_factor_auth_method_created_at: user.default_phone_configuration.created_at
-            .strftime('%s%L'),
-          new_device: true,
-          phone_configuration_id: user.default_phone_configuration.id,
-          area_code: parsed_phone.area_code,
-          country_code: parsed_phone.country,
-          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
-          enabled_mfa_methods_count: 1,
-          in_account_creation_flow: false,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            error_details: { code: { wrong_length: true, incorrect: true } },
+            confirmation_for_add_phone: false,
+            context: 'authentication',
+            multi_factor_auth_method: 'sms',
+            multi_factor_auth_method_created_at: user.default_phone_configuration.created_at
+              .strftime('%s%L'),
+            new_device: true,
+            phone_configuration_id: user.default_phone_configuration.id,
+            area_code: parsed_phone.area_code,
+            country_code: parsed_phone.country,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            enabled_mfa_methods_count: 1,
+            in_account_creation_flow: false,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
+        end
+      end
+
+      context 'with confirmation context' do
+        before do
+          allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+        end
+
+        it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+            mfa_device_type: 'otp',
+          )
+
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: controller.current_user))
+
+          post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            error_details: { code: { wrong_length: true, incorrect: true } },
+            confirmation_for_add_phone: false,
+            context: 'authentication',
+            multi_factor_auth_method: 'sms',
+            multi_factor_auth_method_created_at: user.default_phone_configuration.created_at
+              .strftime('%s%L'),
+            new_device: true,
+            phone_configuration_id: user.default_phone_configuration.id,
+            area_code: parsed_phone.area_code,
+            country_code: parsed_phone.country,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            enabled_mfa_methods_count: 1,
+            in_account_creation_flow: false,
+            attempts: 2,
+          )
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
+        end
       end
     end
 

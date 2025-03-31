@@ -52,7 +52,7 @@ module TwoFactorAuthentication
         reset_otp_session_data
         user_session.delete(:mfa_attempts)
       else
-        handle_invalid_otp(type: 'otp')
+        handle_invalid_mfa(type: 'otp', context:)
       end
     end
 

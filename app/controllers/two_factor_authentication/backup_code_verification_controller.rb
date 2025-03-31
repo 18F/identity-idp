@@ -54,7 +54,7 @@ module TwoFactorAuthentication
       flash.now[:error] = result.first_error_message
 
       if current_user.locked_out?
-        handle_second_factor_locked_user(type: 'backup_code')
+        handle_second_factor_locked_user(type: 'backup_code', context:)
       else
         render_show_after_invalid
       end
