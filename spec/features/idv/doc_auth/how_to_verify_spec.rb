@@ -25,6 +25,7 @@ RSpec.feature 'how to verify step', js: true do
                  facial_match_required: facial_match_required }
     )
     sign_in_via_branded_page(user)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_doc_auth_steps_before_agreement_step
     complete_agreement_step
   end
