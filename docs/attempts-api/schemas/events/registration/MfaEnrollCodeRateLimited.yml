@@ -7,4 +7,7 @@ allOf:
       mfa_device_type:
         type: string
         enum: 
+          - backup_code
           - otp
+          - personal_key
+          - piv_cac
