@@ -9,7 +9,7 @@
 
 <% self.title = @presenter.header_text %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.header_text) %>
+<%= render PageHeadingComponent.new(id: 'how-to-verify-info').with_content(@presenter.header_text) %>
 
 <% if defined?(error) %>
   <%= render AlertComponent.new(
@@ -21,7 +21,6 @@
   <% end %>
 <% end %>
 
-<p id='how-to-verify-info' class='hidden'><%= @presenter.how_to_verify_info %></p>
 <div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
   <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
     <%= image_tag(
