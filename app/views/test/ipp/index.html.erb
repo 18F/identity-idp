@@ -6,16 +6,16 @@
 
 <div class="grid-row grid-gap margin-top-2 flex-align-stretch">
   <div class="tablet:grid-col-12">
-    <% if @enrollments.count == 0 %>
+    <% if @enrollments.size == 0 %>
       <p>
           There are no recent in-person enrollments.
       </p>
     <% else %>
       <p>
         Listed below 
-        <%= @enrollments.count == 1 ? 'is' : 'are' %> 
-        the <%= @enrollments.count %> most recent 
-        in-person enrollment<%= @enrollments.count == 1 ? '' : 's' %>.
+        <%= @enrollments.size == 1 ? 'is' : 'are' %>
+        the <%= @enrollments.size %> most recent
+        in-person enrollment<%= @enrollments.size == 1 ? '' : 's' %>.
       </p>
 
       <table class="bg-white" border="0" cellpadding="0" cellspacing="0">
