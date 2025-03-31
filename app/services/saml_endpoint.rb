@@ -5,38 +5,6 @@ class SamlEndpoint
     config.fetch(:suffix).to_s
   end.uniq.sort.freeze
 
-  SAML_YEAR_CERTS = SAML_YEARS.each_with_object({}) do |year, map|
-    x509_cert =
-      begin
-        AppArtifacts.store["saml_#{year}_cert"]
-      rescue NameError
-        raise "No SAML certificate for suffix #{year}"
-      end
-    map[year] = x509_cert
-  end.freeze
-
-  SAML_YEAR_SECRET_KEYS = SAML_YEARS.each_with_object({}) do |year, map|
-    config = IdentityConfig.store.saml_endpoint_configs.find do |config|
-      config[:suffix] == year
-    end
-
-    key_contents = begin
-      AppArtifacts.store["saml_#{year}_key"]
-    rescue NameError
-      raise "No SAML private key for suffix #{year}"
-    end
-
-    map[year] =
-      begin
-        OpenSSL::PKey::RSA.new(
-          key_contents,
-          config.fetch(:secret_key_passphrase),
-        )
-      rescue OpenSSL::PKey::RSAError
-        raise "SAML key or passphrase for #{year} is invalid"
-      end
-  end.freeze
-
   attr_reader :year
 
   def initialize(year)
@@ -49,6 +17,47 @@ class SamlEndpoint
 
   def self.suffixes
     SAML_YEARS
+  end
+
+  def self.build_saml_keys_by_year
+    SAML_YEARS.each_with_object({}) do |year, map|
+      config = IdentityConfig.store.saml_endpoint_configs.find do |config|
+        config[:suffix] == year
+      end
+
+      key_contents = begin
+        AppArtifacts.store["saml_#{year}_key"]
+      rescue NameError
+        raise "No SAML private key for suffix #{year}"
+      end
+
+      map[year] =
+        begin
+          OpenSSL::PKey::RSA.new(
+            key_contents,
+            config.fetch(:secret_key_passphrase),
+          )
+        rescue OpenSSL::PKey::RSAError
+          raise "SAML key or passphrase for #{year} is invalid"
+        end
+    end
+  end
+
+  def self.build_saml_certs_by_year
+    SAML_YEARS.each_with_object({}) do |year, map|
+      x509_cert =
+        begin
+          cert_string = AppArtifacts.store["saml_#{year}_cert"]
+          # Validate string value can be parsed to X509, but store string
+          OpenSSL::X509::Certificate.new(cert_string)
+          cert_string
+        rescue NameError
+          raise "No SAML certificate for suffix #{year}"
+        rescue OpenSSL::X509::CertificateError
+          raise "SAML certificate for #{year} is invalid"
+        end
+      map[year] = x509_cert
+    end
   end
 
   def secret_key
@@ -73,4 +82,8 @@ class SamlEndpoint
       secret_key,
     )
   end
+
+  SAML_YEAR_CERTS = self.build_saml_certs_by_year.freeze
+
+  SAML_YEAR_SECRET_KEYS = self.build_saml_keys_by_year.freeze
 end
