@@ -1282,6 +1282,7 @@ in_person_proofing.body.location.location_button: 选择
 in_person_proofing.body.location.po_search.address_label: 地址
 in_person_proofing.body.location.po_search.address_search_label: 输入地址来寻找你附件的邮局。
 in_person_proofing.body.location.po_search.city_label: 城市
+in_person_proofing.body.location.po_search.continue_button: 继续
 in_person_proofing.body.location.po_search.is_searching_message: 正在寻找邮局。。。
 in_person_proofing.body.location.po_search.none_found: 抱歉，%{address}方圆 50 英里没有参与本项目的邮局。
 in_person_proofing.body.location.po_search.none_found_tip: 你可以换个地址搜索，或添加你身份证件照片，再次尝试在网上验证你的身份。
@@ -1291,6 +1292,10 @@ in_person_proofing.body.location.po_search.results_description.other: '%{address
 in_person_proofing.body.location.po_search.results_instructions: 选择下面一个邮局，或者换个地址做搜索。
 in_person_proofing.body.location.po_search.search_button: 搜索
 in_person_proofing.body.location.po_search.state_label: 州
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: 请继续验证你的身份。生成条形码后，你可以使用我们的<a target="_blank" href="%{link_url}"></a>搜索参与本项目的邮局。
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: 抱歉，我们遇到了技术困难，无法搜索参与本项目的邮局。
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: 帮助中心
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: 邮编
 in_person_proofing.body.location.retail_hours_heading: 营业时间
 in_person_proofing.body.location.retail_hours_sat: 周六：
