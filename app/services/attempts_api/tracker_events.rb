@@ -39,9 +39,9 @@ module AttemptsApi
       )
     end
 
-    # Tracks when user submits registration password
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user submits registration password
     def user_registration_password_submitted(
       success:,
       failure_reason: nil
@@ -50,6 +50,24 @@ module AttemptsApi
         'user-registration-password-submitted',
         success:,
         failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
+    def mfa_enroll_webauthn_platform(success:)
+      track_event(
+        'mfa-enroll-webauthn-platform',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    def mfa_enroll_webauthn_roaming(success:)
+      track_event(
+        'mfa-enroll-webauthn-roaming',
+        success:,
       )
     end
   end
