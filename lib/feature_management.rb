@@ -174,4 +174,11 @@ class FeatureManagement
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
   end
+
+  # This feature allows pending IPP enrollments to be approved immediately, as
+  # opposed to having to wait close to 2 hours, which is not ideal when testing.
+  # See test/ipp_controller.rb
+  def self.allow_ipp_enrollment_approval?
+    IdentityConfig.store.in_person_enrollments_immediate_approval_enabled
+  end
 end
