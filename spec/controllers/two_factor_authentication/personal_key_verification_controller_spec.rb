@@ -241,6 +241,10 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         context 'with authentication context' do
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+              mfa_device_type: 'personal_key',
+            )
+
             expect(PushNotification::HttpPush).to receive(:deliver)
               .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

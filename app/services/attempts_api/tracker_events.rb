@@ -49,6 +49,16 @@ module AttemptsApi
       )
     end
 
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during verification
+    # and account has been locked
+    def mfa_submission_code_rate_limited(mfa_device_type:)
+      track_event(
+        'mfa-submission-code-rate-limited',
+        mfa_device_type:,
+      )
+    end
+
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits registration password
