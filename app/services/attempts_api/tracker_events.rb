@@ -31,6 +31,11 @@ module AttemptsApi
       )
     end
 
+    # A user has successfully logged in and is being handed off to integration
+    def login_completed
+      track_event('login-completed')
+    end
+
     # @param [Boolean] success
     # A user has attempted to enroll the Backup Codes MFA method to their account
     def mfa_enroll_backup_code(success:)

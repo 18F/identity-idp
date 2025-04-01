@@ -112,6 +112,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:login_completed)
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -166,6 +169,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:login_completed)
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -261,6 +267,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL2 authentication event' do
               travel_to now + 15.seconds
               stub_analytics
+              stub_attempts_tracker
+
+              expect(@attempts_api_tracker).to receive(:login_completed)
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
               user.identities.last.update!(
@@ -577,6 +586,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL2 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
                 user.identities.last.update!(
@@ -651,6 +663,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL1 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -727,6 +742,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL1 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -860,6 +878,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:login_completed)
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
@@ -911,6 +932,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           it 'tracks IAL1 authentication event' do
             travel_to now + 15.seconds
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:login_completed)
 
             IdentityLinker.new(user, service_provider).link_identity(ial: 1)
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -1007,6 +1031,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL2 authentication event' do
               travel_to now + 15.seconds
               stub_analytics
+              stub_attempts_tracker
+
+              expect(@attempts_api_tracker).to receive(:login_completed)
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
               user.identities.last.update!(
@@ -1363,6 +1390,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL2 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 2)
                 user.identities.last.update!(
@@ -1437,6 +1467,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL1 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
@@ -1513,6 +1546,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
               it 'tracks IAL1 authentication event' do
                 travel_to now + 15.seconds
                 stub_analytics
+                stub_attempts_tracker
+
+                expect(@attempts_api_tracker).to receive(:login_completed)
 
                 IdentityLinker.new(user, service_provider).link_identity(ial: 1)
                 user.identities.last.update!(
