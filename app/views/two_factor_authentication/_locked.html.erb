@@ -15,11 +15,14 @@
   </p>
 
   <div class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
-    <%= render CountdownComponent.new(
-          expiration: presenter.user.lockout_time_expiration,
-          update_interval: 30.seconds,
-        )
-    %>
+    <%= t(
+          'two_factor_authentication.please_try_again_html',
+          countdown: render(
+            CountdownComponent.new(
+              expiration: presenter.user.lockout_time_expiration,
+              update_interval: 30.seconds),
+          ),
+        ) %>
   </div>
 
   <% c.with_troubleshooting_options do |tc| %>
