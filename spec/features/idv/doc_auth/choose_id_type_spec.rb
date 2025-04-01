@@ -30,7 +30,7 @@ RSpec.feature 'choose id type step error checking' do
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_document_capture_url)
       visit idv_choose_id_type_url
-      expect(page).to have_checked_field('doc_auth[choose_id_type_preference]', with: 'passport')
+      expect(page).to have_checked_field('choose_id_type_preference', with: 'passport')
     end
   end
 
@@ -48,10 +48,7 @@ RSpec.feature 'choose id type step error checking' do
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_document_capture_url)
       visit idv_choose_id_type_url
-      expect(page).to have_checked_field(
-        'doc_auth[choose_id_type_preference]',
-        with: 'drivers_license',
-      )
+      expect(page).to have_checked_field('choose_id_type_preference', with: 'drivers_license')
     end
   end
 end
