@@ -11,12 +11,12 @@ class Agreements::IaaOrder < ApplicationRecord
   has_many :integrations, through: :integration_usages
 
   validates :order_number, presence: true,
-                           uniqueness: { scope: :iaa_gtc_id },
                            numericality: { only_integer: true,
                                            greater_than_or_equal_to: 0 }
   validates :mod_number, presence: true,
                          numericality: { only_integer: true,
-                                         greater_than_or_equal_to: 0 }
+                                         greater_than_or_equal_to: 0 },
+                         uniqueness: { scope: [:order_number, :iaa_gtc_id] }
   validates :pricing_model, presence: true,
                             numericality: { only_integer: true,
                                             greater_than_or_equal_to: 0 }
@@ -26,6 +26,7 @@ class Agreements::IaaOrder < ApplicationRecord
   validates :start_date, presence: true
   validates :end_date, presence: true
   validate :end_date_after_start_date
+  validate :no_overlapping_order_dates
 
   def status
     return 'pending_start' if Time.zone.today < start_date
@@ -47,6 +48,19 @@ class Agreements::IaaOrder < ApplicationRecord
     return unless end_date <= start_date
 
     errors.add(:end_date, 'must be after start date', type: :invalid_end_date)
+  end
+
+  def no_overlapping_order_dates
+    return unless self.class
+      .where(order_number: order_number, iaa_gtc_id: iaa_gtc_id)
+      .where.not(id: id)
+      .where('(start_date, end_date) OVERLAPS (?, ?)', start_date, end_date)
+      .exists?
+
+    errors.add(
+      :base, 'Overlapping order dates for the same order number',
+      type: :overlapping_order_dates
+    )
   end
 
   def pop_range

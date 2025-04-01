@@ -5,7 +5,6 @@ RSpec.describe Agreements::IaaOrder, type: :model do
     subject { create(:iaa_order) }
 
     it { is_expected.to validate_presence_of(:order_number) }
-    it { is_expected.to validate_uniqueness_of(:order_number).scoped_to(:iaa_gtc_id) }
     it do
       is_expected.to validate_numericality_of(:order_number)
         .only_integer
@@ -34,6 +33,19 @@ RSpec.describe Agreements::IaaOrder, type: :model do
     it 'validates that the end_date must be after the start_date' do
       subject.end_date = subject.start_date - 1.day
       expect(subject).not_to be_valid
+    end
+
+    it 'validates that order dates do not overlap for the same order number' do
+      overlapping_order = build(
+        :iaa_order, iaa_gtc: subject.iaa_gtc,
+                    order_number: subject.order_number
+      )
+
+      overlapping_order.start_date = subject.end_date - 1.month
+      overlapping_order.end_date = subject.end_date + 3.months
+
+      expect(overlapping_order).not_to be_valid
+      expect(overlapping_order.errors[:base]).to include('Overlapping order dates for the same order number')
     end
 
     it { is_expected.to belong_to(:iaa_gtc) }
