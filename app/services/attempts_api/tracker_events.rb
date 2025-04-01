@@ -20,6 +20,17 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the password was successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if password was not successfully changed
+    # A logged-in user has attempted to change their password
+    def logged_in_password_change(success:, failure_reason: nil)
+      track_event(
+        :logged_in_password_change,
+        success: success,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success
     # A user has attempted to enroll the Backup Codes MFA method to their account
     def mfa_enroll_backup_code(success:)
