@@ -57,7 +57,6 @@ module RememberDeviceConcern
     aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
 
-    return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
     return aal_2_expiration if resolved_authn_context_result&.aal2?
 
@@ -65,10 +64,6 @@ module RememberDeviceConcern
   end
 
   private
-
-  def sp_aal
-    current_sp&.default_aal || 1
-  end
 
   def sp_ial
     current_sp&.ial || 1
