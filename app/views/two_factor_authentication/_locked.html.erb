@@ -20,7 +20,8 @@
           countdown: render(
             CountdownComponent.new(
               expiration: presenter.user.lockout_time_expiration,
-              update_interval: 30.seconds),
+              update_interval: 30.seconds,
+            ),
           ),
         ) %>
   </div>
