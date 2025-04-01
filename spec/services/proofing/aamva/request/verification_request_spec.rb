@@ -36,7 +36,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     Proofing::Aamva::Applicant.from_proofer_applicant(**applicant_data.compact_blank)
   end
 
-  subject do
+  subject(:request) do
     described_class.new(
       applicant: applicant,
       session_id: transaction_id,
@@ -353,6 +353,35 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
       it 'zero-pads the id to 8 digits' do
         expect(rendered_state_id_number).to eq("0#{state_id_number}")
+      end
+    end
+  end
+
+  describe 'compound last names' do
+    let(:applicant_data) { super().merge(last_name: 'McFirst McSecond') }
+
+    subject(:rendered_last_name) do
+      body = REXML::Document.new(request.body)
+      REXML::XPath.first(body, '//nc:PersonSurName')&.text
+    end
+
+    it 'sends the full last name' do
+      expect(rendered_last_name).to eq('McFirst McSecond')
+    end
+
+    context 'in DC' do
+      let(:applicant_data) { super().merge(state: 'DC') }
+
+      it 'only sends the first part of the last name' do
+        expect(rendered_last_name).to eq('McFirst')
+      end
+    end
+
+    context 'in WV' do
+      let(:applicant_data) { super().merge(state: 'WV') }
+
+      it 'only sends the first part of the last name' do
+        expect(rendered_last_name).to eq('McFirst')
       end
     end
   end

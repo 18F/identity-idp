@@ -277,7 +277,7 @@ module Proofing
             state_id_number: state_id_number,
             state_id_jurisdiction: message_destination_id,
             first_name: applicant.first_name,
-            last_name: applicant.last_name,
+            last_name: last_name,
             dob: applicant.dob,
             address1: applicant.address1,
             city: applicant.city,
@@ -292,6 +292,15 @@ module Proofing
               applicant.state_id_data.state_id_number.rjust(8, '0')
             else
               applicant.state_id_data.state_id_number
+          end
+        end
+
+        def last_name
+          case applicant.state_id_data.state_id_jurisdiction
+          when 'DC', 'WV'
+            applicant.state_id_data.last_name.split(' ').first
+          else
+            applicant.state_id_data.last_name
           end
         end
 
