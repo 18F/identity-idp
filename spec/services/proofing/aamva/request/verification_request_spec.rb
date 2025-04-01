@@ -370,7 +370,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     end
 
     context 'in DC' do
-      let(:applicant_data) { super().merge(state: 'DC') }
+      let(:state_id_jurisdiction) { 'DC' }
 
       it 'only sends the first part of the last name' do
         expect(rendered_last_name).to eq('McFirst')
@@ -378,7 +378,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     end
 
     context 'in WV' do
-      let(:applicant_data) { super().merge(state: 'WV') }
+      let(:state_id_jurisdiction) { 'WV' }
 
       it 'only sends the first part of the last name' do
         expect(rendered_last_name).to eq('McFirst')
