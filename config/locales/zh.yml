@@ -603,7 +603,7 @@ doc_auth.headers.low_resolution: 你设备的相机可能不受支持
 doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件
 doc_auth.headers.underage: 不符合年龄规定
 doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
-doc_auth.headings.address: 更新你的邮政地址
+doc_auth.headings.address: 更新你当前的居住地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
 doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
@@ -644,6 +644,7 @@ doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_n
 doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
 doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
+doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
 doc_auth.info.address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
 doc_auth.info.capture_status_big_document: 太近了
 doc_auth.info.capture_status_capturing: 扫描中
@@ -1183,7 +1184,7 @@ idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验�
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong>的信。
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
-idv.messages.phone.description: 我们会将你的号码与记录核对并给你发个一次性代码来验证你的身份。
+idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。
 idv.messages.phone.failed_number.alert_text: 我们无法将你与该号码匹配。
 idv.messages.phone.failed_number.gpo_alert_html: 试试 <strong>另一个</strong>号码或者%{link_html}。
 idv.messages.phone.failed_number.gpo_verify_link: 通过普通邮件验证
@@ -1194,7 +1195,7 @@ idv.messages.phone.rules:
 idv.messages.return_to_profile: '‹ 返回你的 %{app_name} 用户资料'
 idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_name} 会保护你给我们的信息，这样只有你能访问这些信息。
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的）- 测试站点
-idv.messages.verify_info: 我们从你的身份证件上读取你的信息。提交进行验证之前请检查一下并做出必要更新。
+idv.messages.verify_info: 我们会检查记录以验证你的地址和社会保障号码是否与你身份证件上的信息相符。
 idv.messages.verifying: 验证中。。。
 idv.titles.activated: 你的身份已验证
 idv.titles.come_back_later: 你的信件已寄出。
@@ -1624,7 +1625,7 @@ titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
-titles.doc_auth.address: 更新你的邮政地址
+titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
 titles.doc_auth.link_sent: 链接已发送

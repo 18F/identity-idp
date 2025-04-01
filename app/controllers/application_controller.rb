@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_sp_session, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -75,6 +75,19 @@ class ApplicationController < ActionController::Base
 
   def analytics_user
     current_user || AnonymousUser.new
+  end
+
+  def attempts_api_tracker
+    @attempts_api_tracker ||= AttemptsApi::Tracker.new(
+      session_id: attempts_api_session_id,
+      request:,
+      user: current_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+      # this only works for oidc
+      sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
+      enabled_for_session: attempts_api_enabled_for_session?,
+    )
   end
 
   def user_event_creator
@@ -126,6 +139,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def attempts_api_enabled_for_session?
+    current_sp&.attempts_api_enabled? && attempts_api_session_id.present?
+  end
+
+  def attempts_api_session_id
+    @attempts_api_session_id ||= decorated_sp_session.attempts_api_session_id
+  end
 
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes

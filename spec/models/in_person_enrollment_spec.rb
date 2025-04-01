@@ -414,7 +414,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'days_to_due_date returns the number of days left until the due date' do
-      freeze_time do
+      # This test can be flaky when the enrollment due date range runs across a DST time change.
+      # Because of that, a specific time that's less likely to have time changes is used.
+      travel_to(Time.zone.local(2025, 1, 1, 10, 0, 0)) do
         enrollment = create(
           :in_person_enrollment,
           enrollment_established_at: (validity_in_days - 3).days.ago,

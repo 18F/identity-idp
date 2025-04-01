@@ -592,7 +592,7 @@ doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne 
 doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État
 doc_auth.headers.underage: Condition d’âge non remplie
 doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
-doc_auth.headings.address: Mettre à jour votre adresse postale
+doc_auth.headings.address: Mettre à jour votre adresse personnelle
 doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez %{link_html} de votre carte d’identité délivrée par l’État.
@@ -633,6 +633,7 @@ doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre co
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
 doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
+doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
 doc_auth.info.capture_status_capturing: Prise de la photo
@@ -1170,7 +1171,7 @@ idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouve
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
-idv.messages.phone.description: Nous vérifierons votre numéro dans nos données enregistrées et vous enverrons un code à usage unique afin de confirmer votre identité.
+idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.
 idv.messages.phone.failed_number.alert_text: Nous n’avons pas pu vous associer à ce numéro.
 idv.messages.phone.failed_number.gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: vérifiez par courrier
@@ -1181,7 +1182,7 @@ idv.messages.phone.rules:
 idv.messages.return_to_profile: '‹ Revenir à votre profil %{app_name}'
 idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot de passe, %{app_name} protégera les informations que vous nous aurez données pour que vous seul puissiez y accéder.
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
-idv.messages.verify_info: Nous lisons vos informations à partir de votre pièce d’identité. Passez-les en revue et mettez-les à jour avant de les envoyer pour vérification.
+idv.messages.verify_info: Nous vérifierons que votre adresse et votre numéro de sécurité sociale correspondent aux informations figurant sur votre pièce d’identité.
 idv.messages.verifying: Vérification en cours…
 idv.titles.activated: Votre identité a déjà été vérifiée
 idv.titles.come_back_later: Votre lettre est en route
@@ -1611,7 +1612,7 @@ titles.backup_codes: Ne perdez pas vos codes de sauvegarde
 titles.cancel_exit_login: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
 titles.confirmations.delete: Veuillez confirmer
 titles.confirmations.show: Choisir un mot de passe
-titles.doc_auth.address: Mettre à jour votre adresse postale
+titles.doc_auth.address: Mettre à jour votre adresse personnelle
 titles.doc_auth.doc_capture: Ajouter votre pièce d’identité
 titles.doc_auth.hybrid_handoff: Vérifier votre identité
 titles.doc_auth.link_sent: Lien envoyé

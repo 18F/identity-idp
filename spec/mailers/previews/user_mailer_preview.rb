@@ -332,6 +332,7 @@ class UserMailerPreview < ActionMailer::Preview
         service_provider: ServiceProvider.new(
           friendly_name: 'Test Service Provider',
           issuer: SecureRandom.uuid,
+          logo: 'gsa.png',
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
@@ -359,6 +360,7 @@ class UserMailerPreview < ActionMailer::Preview
         service_provider: ServiceProvider.new(
           friendly_name: 'Test Service Provider',
           issuer: SecureRandom.uuid,
+          logo: '18f.svg',
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',

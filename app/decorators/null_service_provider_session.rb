@@ -21,10 +21,6 @@ class NullServiceProviderSession
 
   def sp_issuer; end
 
-  def sp_logo; end
-
-  def sp_logo_url; end
-
   def sp_redirect_uris; end
 
   def requested_attributes; end
@@ -46,6 +42,8 @@ class NullServiceProviderSession
   def current_user
     view_context&.current_user
   end
+
+  def attempts_api_session_id; end
 
   private
 

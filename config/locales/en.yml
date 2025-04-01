@@ -592,7 +592,7 @@ doc_auth.headers.low_resolution: Your device’s camera may not be supported.
 doc_auth.headers.unaccepted_id_type: Use a driver’s license or a state ID
 doc_auth.headers.underage: Age requirement not met
 doc_auth.headers.unreadable_id: We could not read your ID
-doc_auth.headings.address: Update your mailing address
+doc_auth.headings.address: Update your current residential address
 doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
@@ -633,6 +633,7 @@ doc_auth.hybrid_flow_warning.only_add_own_account: You are using your own %{app_
 doc_auth.hybrid_flow_warning.only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: You are trying to access <strong>%{service_provider_name}</strong> services
 doc_auth.info.add_id_consent_with_phone: Only add your ID if you asked %{app_name} to verify your ID using your phone.
+doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.
 doc_auth.info.address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your address to list your urbanization or condominium on address line 2.
 doc_auth.info.capture_status_big_document: Too Close
 doc_auth.info.capture_status_capturing: Capturing
@@ -1170,7 +1171,7 @@ idv.messages.gpo.start_over_link_text: start over and verify with your new addre
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
-idv.messages.phone.description: We’ll check your number with records and send you a one-time code to verify your identity.
+idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
 idv.messages.phone.failed_number.alert_text: We couldn’t match you to this number.
 idv.messages.phone.failed_number.gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
 idv.messages.phone.failed_number.gpo_verify_link: verify by mail
@@ -1181,7 +1182,7 @@ idv.messages.phone.rules:
 idv.messages.return_to_profile: '‹ Return to your %{app_name} profile'
 idv.messages.sessions.enter_password_message: When you re-enter your password, %{app_name} will protect the information you’ve given us, so that only you can access it.
 idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
-idv.messages.verify_info: We read your information from your ID. Review it and make any updates before submitting for verification.
+idv.messages.verify_info: We will check records to verify that your address and Social Security number match the information on your ID.
 idv.messages.verifying: Verifying…
 idv.titles.activated: Your identity has already been verified
 idv.titles.come_back_later: Your letter is on the way
@@ -1611,7 +1612,7 @@ titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
 titles.confirmations.delete: Please confirm
 titles.confirmations.show: Choose a password
-titles.doc_auth.address: Update your mailing address
+titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
 titles.doc_auth.hybrid_handoff: Verify your ID
 titles.doc_auth.link_sent: Link sent

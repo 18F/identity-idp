@@ -1042,6 +1042,7 @@ RSpec.describe Idv::EnterPasswordController do
           receive(:resolved_authn_context_result).and_return(authn_context_result),
         )
       end
+
       it 'passes the correct param to the enrollment helper method' do
         expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
           .with(

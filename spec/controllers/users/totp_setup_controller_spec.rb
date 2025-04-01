@@ -83,13 +83,19 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
   describe '#confirm' do
     let(:name) { SecureRandom.hex }
+    let(:success) { false }
+
+    before do
+      stub_analytics
+      stub_attempts_tracker
+      expect(@attempts_api_tracker).to receive(:mfa_enroll_totp).with(success:)
+    end
 
     context 'user is already signed up' do
       context 'when user presents invalid code' do
         before do
           user = build(:user, personal_key: 'ABCD-DEFG-HIJK-LMNO')
           stub_sign_in(user)
-          stub_analytics
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -113,11 +119,11 @@ RSpec.describe Users::TotpSetupController, devise: true do
       end
 
       context 'when user presents correct code' do
+        let(:success) { true }
         before do
           user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
-          stub_analytics
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
@@ -141,11 +147,11 @@ RSpec.describe Users::TotpSetupController, devise: true do
       end
 
       context 'when user presents correct code after submitting an incorrect code' do
+        let(:success) { false }
         before do
           user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
-          stub_analytics
 
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
@@ -153,6 +159,8 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
           subject.user_session[:new_totp_secret] = secret
 
+          # calls the tracker again with success: true
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_totp).with(success: true)
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
 
@@ -175,7 +183,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
-          stub_analytics
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { name: name }
@@ -203,7 +210,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
-          stub_analytics
           subject.user_session[:new_totp_secret] = secret
 
           patch :confirm, params: { code: generate_totp_code(secret) }
@@ -232,7 +238,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
       context 'when user presents invalid code' do
         before do
           stub_sign_in_before_2fa
-          stub_analytics
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
           patch :confirm, params: { name: name, code: 123 }
@@ -260,7 +265,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
         before do
           secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
-          stub_analytics
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
           subject.user_session[:in_account_creation_flow] = true
@@ -269,6 +273,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
         end
 
         context 'when user selected only one method on account creation' do
+          let(:success) { true }
           it 'redirects to auth method confirmation path with a success message' do
             expect(response).to redirect_to(auth_method_confirmation_path)
             expect(subject.user_session[:new_totp_secret]).to be_nil
@@ -288,6 +293,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
         context 'when user has multiple MFA methods left in user session' do
           let(:mfa_selections) { ['auth_app', 'voice'] }
+          let(:success) { true }
 
           it 'redirects to next mfa path with a success message and still logs analytics' do
             expect(response).to redirect_to(phone_setup_url)
@@ -309,7 +315,6 @@ RSpec.describe Users::TotpSetupController, devise: true do
       context 'when totp secret is no longer in user_session' do
         before do
           stub_sign_in_before_2fa
-          stub_analytics
 
           patch :confirm, params: { name: name, code: 123 }
         end

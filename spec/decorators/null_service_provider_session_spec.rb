@@ -9,15 +9,15 @@ RSpec.describe NullServiceProviderSession do
     end
   end
 
-  describe '#sp_logo' do
-    it 'returns nil' do
-      expect(subject.sp_logo).to be_nil
-    end
-  end
-
   describe '#sp_name' do
     it 'returns nil' do
       expect(subject.sp_name).to be_nil
+    end
+  end
+
+  describe '#attempts_api_session_id' do
+    it 'returns nil' do
+      expect(subject.attempts_api_session_id).to be_nil
     end
   end
 

@@ -43,6 +43,7 @@ RSpec.configure do |config|
   config.include Capybara::RSpecMatchers, type: :component
   config.include AgreementsHelper
   config.include AnalyticsHelper
+  config.include AttemptsApiTrackingHelper
   config.include AwsCloudwatchHelper
   config.include AwsKmsClientHelper
   config.include DiffHelper
@@ -162,7 +163,6 @@ RSpec.configure do |config|
       allow: [
         /localhost/,
         /127\.0\.0\.1/,
-        /codeclimate.com/, # For uploading coverage reports
         /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
       ],
     )

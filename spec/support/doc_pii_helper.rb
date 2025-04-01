@@ -1,5 +1,5 @@
 module DocPiiHelper
-  def pii_like_keypaths
+  def pii_like_keypaths_state_id
     [
       [:pii],
       [:errors, :name],
@@ -26,6 +26,36 @@ module DocPiiHelper
       [:errors, :state_id_number],
       [:error_details, :state_id_number],
       [:error_details, :state_id_number, :state_id_number],
+    ]
+  end
+
+  def pii_like_keypaths_passport
+    [
+      [:pii],
+      [:errors, :name],
+      [:error_details, :name],
+      [:error_details, :name, :name],
+      [:errors, :dob],
+      [:error_details, :dob],
+      [:error_details, :dob, :dob],
+      [:errors, :dob_min_age],
+      [:error_details, :dob_min_age],
+      [:error_details, :dob_min_age, :dob_min_age],
+      [:errors, :birth_place],
+      [:error_details, :birth_place],
+      [:error_details, :birth_place, :birth_place],
+      [:errors, :passport_issued],
+      [:error_details, :passport_issued],
+      [:error_details, :passport_issued, :passport_issued],
+      [:errors, :issuing_country_code],
+      [:error_details, :issuing_country_code],
+      [:error_details, :issuing_country_code, :issuing_country_code],
+      [:errors, :nationality_code],
+      [:error_details, :nationality_code],
+      [:error_details, :nationality_code, :nationality_code],
+      [:errors, :mrz],
+      [:error_details, :mrz],
+      [:error_details, :mrz, :mrz],
     ]
   end
 end
