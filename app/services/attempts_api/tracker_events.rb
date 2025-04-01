@@ -11,6 +11,15 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if account successfully deleted
+    # A User deletes their Login.gov account
+    def logged_in_account_purged(success:)
+      track_event(
+        'logged-in-account-purged',
+        success:,
+      )
+    end
+
     # @param [Boolean] success
     # A user has attempted to enroll the Backup Codes MFA method to their account
     def mfa_enroll_backup_code(success:)
@@ -29,6 +38,7 @@ module AttemptsApi
       )
     end
 
+    # Tracks when user submits registration password
     # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
     # The user has exceeded the rate limit during enrollment
     # and account has been locked
