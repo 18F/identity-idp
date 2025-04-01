@@ -45,6 +45,8 @@ RSpec.describe Users::DeleteController do
       it 'logs a failed submit' do
         user = stub_signed_in_user
         stub_analytics(user:)
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:logged_in_account_purged).with(success: false)
 
         delete
 
@@ -82,6 +84,8 @@ RSpec.describe Users::DeleteController do
     it 'logs a succesful submit' do
       user = stub_signed_in_user
       stub_analytics(user:)
+      stub_attempts_tracker
+      expect(@attempts_api_tracker).to receive(:logged_in_account_purged).with(success: true)
 
       delete
 

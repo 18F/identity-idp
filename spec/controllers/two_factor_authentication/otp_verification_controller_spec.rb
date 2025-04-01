@@ -246,6 +246,10 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'with authentication context' do
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+            mfa_device_type: 'otp',
+          )
+
           expect(PushNotification::HttpPush).to receive(:deliver)
             .with(PushNotification::MfaLimitAccountLockedEvent.new(user: controller.current_user))
 

@@ -119,6 +119,12 @@ RSpec.describe SignUp::PasswordsController do
             password_confirmation: { too_short: true },
           }
         end
+        let(:attempts_failure_reason) do
+          {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          }
+        end
 
         it 'tracks an invalid password event' do
           subject
@@ -135,7 +141,7 @@ RSpec.describe SignUp::PasswordsController do
         it 'creates attempts event' do
           expect(@attempts_api_tracker).to receive(:user_registration_password_submitted).with(
             success: false,
-            failure_reason: error_details,
+            failure_reason: attempts_failure_reason,
           )
           subject
         end
@@ -149,6 +155,8 @@ RSpec.describe SignUp::PasswordsController do
             password_confirmation: { mismatch: true },
           }
         end
+
+        let(:failure_reason) { { password_confirmation: [:mismatch] } }
 
         it 'tracks invalid password_confirmation error' do
           subject
@@ -165,7 +173,7 @@ RSpec.describe SignUp::PasswordsController do
         it 'creates attempts event' do
           expect(@attempts_api_tracker).to receive(:user_registration_password_submitted).with(
             success: false,
-            failure_reason: error_details,
+            failure_reason:,
           )
           subject
         end

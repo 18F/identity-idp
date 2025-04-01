@@ -81,8 +81,12 @@ module TwoFactorAuthenticatableMethods
   def handle_second_factor_locked_user(type:, context: nil)
     analytics.multi_factor_auth_max_attempts
 
-    if context && UserSessionContext.confirmation_context?(context)
-      attempts_api_tracker.mfa_enroll_code_rate_limited(mfa_device_type: type)
+    if context
+      if UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_code_rate_limited(mfa_device_type: type)
+      elsif UserSessionContext.authentication_context?(context)
+        attempts_api_tracker.mfa_submission_code_rate_limited(mfa_device_type: type)
+      end
     end
 
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)

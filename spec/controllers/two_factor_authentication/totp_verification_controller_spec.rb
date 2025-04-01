@@ -171,6 +171,10 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
       context 'with authentication context' do
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+            mfa_device_type: 'totp',
+          )
+
           expect(PushNotification::HttpPush).to receive(:deliver)
             .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

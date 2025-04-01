@@ -197,6 +197,10 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         context 'with authentication context' do
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+              mfa_device_type: 'backup_code',
+            )
+
             expect(PushNotification::HttpPush).to receive(:deliver)
               .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
