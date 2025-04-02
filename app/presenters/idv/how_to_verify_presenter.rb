@@ -14,12 +14,6 @@ class Idv::HowToVerifyPresenter
 
   def how_to_verify_info
     t('doc_auth.headings.how_to_verify')
-
-    # if mobile_required
-    #   t('doc_auth.info.how_to_verify_mobile')
-    # else
-    #   t('doc_auth.info.how_to_verify')
-    # end
   end
 
   def header_text

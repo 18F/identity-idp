@@ -10,7 +10,7 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
-    before_action :update_doc_auth_vendor, only: :show
+    before_action :update_doc_auth_vendor
     before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
@@ -60,12 +60,12 @@ module Idv
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
+        doc_auth_vendor: idv_session.bucketed_doc_auth_vendor,
+        passport_allowed: idv_session.passport_allowed,
       }.merge(ab_test_analytics_buckets)
     end
 
-    def create_document_capture_session(reset: true)
-      return if idv_session.document_capture_session_uuid.present? && !reset
-
+    def create_document_capture_session
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -86,13 +86,11 @@ module Idv
     end
 
     def update_passport_allowed
+      return if !IdentityConfig.store.doc_auth_passports_enabled
       return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
       idv_session.passport_allowed ||= begin
-        if IdentityConfig.store.doc_auth_passports_enabled &&
-           idv_session.bucketed_doc_auth_vendor != Idp::Constants::Vendors::SOCURE &&
-           !idv_session.selfie_check_required &&
-           dos_passport_api_healthy?(analytics:)
+        if dos_passport_api_healthy?(analytics:)
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
         end
       end

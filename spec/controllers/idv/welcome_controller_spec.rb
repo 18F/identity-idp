@@ -74,6 +74,7 @@ RSpec.describe Idv::WelcomeController do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
+        doc_auth_vendor: 'mock',
       }
     end
 
@@ -228,6 +229,7 @@ RSpec.describe Idv::WelcomeController do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
+        doc_auth_vendor: 'mock',
       }
     end
 
