@@ -163,13 +163,13 @@ class GetUspsProofingResultsJob < ApplicationJob
   def cancel_abandoned_password_reset_enrollments(enrollment)
     if enrollment.minutes_since_last_status_update > PASSWORD_RESET_EXPIRATION * MINUTES_PER_DAY
       enrollment.cancel
+      analytics(user: enrollment.user)
+        .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+          **enrollment_analytics_attributes(enrollment, complete: false),
+          reason: 'Enrollment was cancelled after spending more than 90 days in password reset',
+          job_name: self.class.name,
+        )
     end
-    analytics(user: enrollment.user)
-      .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
-        **enrollment_analytics_attributes(enrollment, complete: false),
-        reason: 'Enrollment was cancelled after spending more than 90 days in password reset',
-        job_name: self.class.name,
-      )
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
