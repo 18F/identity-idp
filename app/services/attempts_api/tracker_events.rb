@@ -37,6 +37,15 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
+    # A user has initiated a logout event
+    def logout_initiated(success:)
+      track_event(
+        'logout-initiated',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success
     # A user has attempted to enroll the Backup Codes MFA method to their account
     def mfa_enroll_backup_code(success:)
       track_event(

@@ -84,6 +84,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 
@@ -661,6 +664,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 

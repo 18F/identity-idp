@@ -46,6 +46,9 @@ RSpec.describe SamlIdpController do
 
     it 'tracks the event when idp initiated' do
       stub_analytics
+      stub_attempts_tracker
+
+      expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
       delete :logout, params: { path_year: path_year }
 
@@ -71,6 +74,9 @@ RSpec.describe SamlIdpController do
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
+      stub_attempts_tracker
+
+      expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
 
@@ -84,6 +90,9 @@ RSpec.describe SamlIdpController do
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
+      stub_attempts_tracker
+
+      expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
       delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
 
@@ -147,6 +156,9 @@ RSpec.describe SamlIdpController do
 
       it 'tracks the request' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
         delete :logout, params: UriService.params(
           OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
