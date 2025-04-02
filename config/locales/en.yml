@@ -1233,7 +1233,7 @@ image_description.us_flag: US flag
 image_description.warning: Yellow caution sign
 in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
-in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
+in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}. Complete this step to access %{sp_name}.
 in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your barcode will not work. You will need to restart the process.
 in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'

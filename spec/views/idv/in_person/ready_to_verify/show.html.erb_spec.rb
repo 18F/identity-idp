@@ -52,6 +52,19 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     )
   end
 
+  it 'renders the barcode deadline banner' do
+    render
+
+    expect(rendered).to have_content(
+      t(
+        'in_person_proofing.body.barcode.deadline',
+        deadline: presenter.formatted_due_date,
+        sp_name: presenter.sp_name,
+      ),
+    )
+    expect(rendered).to have_content(t('in_person_proofing.body.barcode.deadline_restart'))
+  end
+
   it 'renders a cancel link' do
     render
 
