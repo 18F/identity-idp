@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
-    before_action :update_doc_auth_vendor, only: :show
     before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
