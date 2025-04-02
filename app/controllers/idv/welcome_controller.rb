@@ -30,10 +30,8 @@ module Idv
 
     def update
       clear_future_steps!
-      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
-
       create_document_capture_session
-
+      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
 
       redirect_to idv_agreement_url
