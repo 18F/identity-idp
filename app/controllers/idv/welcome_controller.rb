@@ -62,8 +62,8 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    def create_document_capture_session(reset: true)
-      return if idv_session.document_capture_session_uuid.present? && !reset
+    def create_document_capture_session # (reset: true)
+      # return if idv_session.document_capture_session_uuid.present? && !reset
 
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
