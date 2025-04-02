@@ -142,11 +142,11 @@ module Idp
       state_id_type: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
-      birth_place: nil,
-      passport_expiration: nil,
-      issuing_country_code: nil,
-      passport_issued: nil,
-      nationality_code: nil,
+      birth_place: 'Birthplace',
+      passport_expiration: (DateTime.now.utc + 10.years).to_s,
+      issuing_country_code: 'USA',
+      passport_issued: (DateTime.new.utc - 1.year).to_s,
+      nationality_code: 'USA',
       document_number: nil,
     ).freeze
 
