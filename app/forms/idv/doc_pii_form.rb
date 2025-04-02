@@ -8,7 +8,8 @@ module Idv
     validate :dob_valid?
     validate :state_id_or_passport
 
-    attr_reader :first_name, :last_name, :dob, :state_id_type, :attention_with_barcode
+    attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
+                :jurisdiction, :state_id_number, :state_id_expiration, :state_id_type
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)

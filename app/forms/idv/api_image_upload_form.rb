@@ -36,6 +36,7 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
+      passport_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -46,13 +47,18 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+
+          if doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
+            passport_response = validate_mrz(client_response)
+          end
         end
       end
 
       response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+        form_response:,
+        client_response:,
+        doc_pii_response:,
+        passport_response:,
       )
 
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
@@ -157,6 +163,17 @@ module Idv
       response
     end
 
+    def validate_mrz(client_response)
+      response = DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz).fetch
+
+      if !response.success?
+        errors.add(:passport, response.errors[:mrz], type: :invalid)
+      end
+      response.extra.merge!(extra_attributes)
+
+      response
+    end
+
     def doc_side_classification(client_response)
       side_info = {}.merge(client_response&.extra&.[](:classification_info) || {})
       side_info.transform_keys(&:downcase).symbolize_keys
@@ -227,12 +244,14 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, passport_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      return passport_response if passport_response.present? && !passport_response.success?
 
       client_response
     end
