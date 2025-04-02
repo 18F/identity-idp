@@ -81,10 +81,6 @@ module Idv
       )
     end
 
-    def update_doc_auth_vendor
-      doc_auth_vendor
-    end
-
     def update_passport_allowed
       return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
