@@ -1075,6 +1075,7 @@ idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
 idv.errors.technical_difficulties: 我们目前遇到技术困难
 idv.errors.try_again_later: 请稍后再试。
+idv.failure.address.warning: 请检查一下你输入的信息，然后再试一下。如果你的邮寄地址与居住地址不同，请尝试输入你目前居住的地址。
 idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
@@ -1219,6 +1220,7 @@ idv.unavailable.idv_explanation.without_sp: 你试图访问的机构需要确保
 idv.unavailable.next_steps_html: '%{status_page_link_html} 或者退出 %{app_name}，稍后再试。'
 idv.unavailable.status_page_link: 在我们的状态页面获得最新信息。
 idv.unavailable.technical_difficulties: 很遗憾，我们这边现在遇到技术困难，目前无法验证你的身份。
+idv.warning.address.heading: 我们找不到与你地址匹配的记录
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。

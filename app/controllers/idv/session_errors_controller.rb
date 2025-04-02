@@ -30,6 +30,18 @@ module Idv
       log_event
     end
 
+    def address_warning
+      rate_limiter = RateLimiter.new(
+        user: idv_session_user,
+        rate_limit_type: :idv_resolution,
+      )
+
+      @step_indicator_steps = step_indicator_steps
+      @address_path = idv_address_url
+      @remaining_submit_attempts = rate_limiter.remaining_count
+      log_event(based_on_limiter: rate_limiter)
+    end
+
     def failure
       rate_limiter = RateLimiter.new(
         user: idv_session_user,

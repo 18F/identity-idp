@@ -1062,6 +1062,7 @@ idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
 idv.errors.technical_difficulties: We are having technical difficulties
 idv.errors.try_again_later: Try again later.
+idv.failure.address.warning: Please check the information you entered and try again. If your mailing address is different than your residential address, try entering the address where you currently live.
 idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then you must wait 6 hours before trying again.
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
@@ -1206,6 +1207,7 @@ idv.unavailable.idv_explanation.without_sp: The agency that you are trying to ac
 idv.unavailable.next_steps_html: '%{status_page_link_html} or exit %{app_name} and try again later.'
 idv.unavailable.status_page_link: Get updates on our status page
 idv.unavailable.technical_difficulties: Unfortunately, we are having technical difficulties and cannot verify your identity at this time.
+idv.warning.address.heading: We couldn’t find records matching your address
 idv.warning.sessions.heading: We couldn’t find records matching your personal information
 idv.warning.state_id.cancel_button: Exit %{app_name}
 idv.warning.state_id.explanation: Unfortunately, we’re experiencing technical difficulties with IDs from your state and are currently unable to verify your information.
