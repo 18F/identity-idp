@@ -298,9 +298,9 @@ module Proofing
         def last_name
           case applicant.state_id_data.state_id_jurisdiction
           when 'DC', 'WV'
-            applicant.state_id_data.last_name.split(' ').first
+            applicant.last_name.split(' ').first
           else
-            applicant.state_id_data.last_name
+            applicant.last_name
           end
         end
 
