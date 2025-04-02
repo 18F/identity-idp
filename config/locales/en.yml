@@ -665,7 +665,7 @@ doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
-doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
 doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
 doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.

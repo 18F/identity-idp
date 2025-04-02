@@ -676,7 +676,7 @@ doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
-doc_auth.info.secure_account: 我们会用你的密码对你的账户加密。加密意味着你的数据得到了保护，而且只有你能够访问或变更你的信息。
+doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
 doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
 doc_auth.info.selfie_capture_help_2: 你的照片被自动拍后，点击绿色勾选标志来接受照片。

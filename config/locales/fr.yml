@@ -665,7 +665,7 @@ doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automa
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
-doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous resaisissez votre mot de passe. Le chiffrement signifie que vos données sont protégées et que vous êtes le seul à pouvoir accéder à vos informations ou les modifier.
+doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
 doc_auth.info.selfie_capture_help_1: Placez votre visage à l’intérieur du cercle vert. Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.selfie_capture_help_2: Une fois la photo prise automatiquement, cochez la case sous la photo pour l’accepter (la case deviendra verte).
