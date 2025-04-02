@@ -870,6 +870,9 @@ RSpec.describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:login_completed)
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
@@ -1027,6 +1030,9 @@ RSpec.describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:login_completed)
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ialmax_settings)
@@ -2734,6 +2740,9 @@ RSpec.describe SamlIdpController do
       it 'tracks the authentication without IdV redirection event' do
         user = create(:user, :fully_registered)
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:login_completed)
         session[:sign_in_flow] = :sign_in
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
 
@@ -2784,6 +2793,9 @@ RSpec.describe SamlIdpController do
       it 'tracks the authentication with finish_profile==true' do
         user = create(:user, :fully_registered)
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:login_completed)
         session[:sign_in_flow] = :sign_in
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         allow(controller).to receive(:user_has_pending_profile?).and_return(true)
