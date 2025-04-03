@@ -176,11 +176,7 @@ module Idv
         success: response.success?,
       )
 
-      if !response.success?
-        errors.add(:passport, response.errors[:mrz], type: :invalid)
-      end
       response.extra.merge!(extra_attributes)
-
       response
     end
 
