@@ -1618,18 +1618,14 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               end
 
               context 'when the enrollment has been in the password_reset state for over 90 days' do
-                let(:current_time) { Time.zone.now }
+                let(:travel_time) { 10.minutes }
+                let(:future_time) { current_time + travel_time }
                 let(:expiration_period) { 90 }
                 let(:seconds_per_day) { 86400 }
                 let(:status_update) { current_time - (expiration_period + 5) * seconds_per_day }
-                # let!(:enrollment) do
-                #   create(
-                #     :in_person_enrollment, :pending, :with_notification_phone_configuration,
-                #     status_updated_at: status_update
-                #   )
-                # end
 
                 before do
+                  travel_to future_time
                   enrollment.update(status_updated_at: status_update)
                   stub_request_passed_proofing_results
                   allow(analytics).to receive(
@@ -1642,11 +1638,15 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
                 it 'logs the enrollment cancelled analytic' do
                   subject.perform(current_time)
+                  # reload enrollment to ensure enrollment_analytics is correct
+                  enrollment.reload
                   expect(analytics).to have_received(
                     :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
                   ).with(
                     **enrollment_analytics,
-                    reason: 'Enrollment was cancelled after spending more than 90 days in password reset',
+                    minutes_to_completion: nil,
+                    minutes_since_last_status_check: 10,
+                    reason: 'Enrollment cancelled after spending over 90 days in password reset',
                     job_name: described_class.name,
                   )
                 end
@@ -2861,7 +2861,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
             end
           end
 
-          context 'when the enrollment has a profile with a deactivation reason "encryption_error"' do
+          context 'when the enrollment has a profile with a deactivation reason encryption_error' do
             let(:deactivation_reason) { 'encryption_error' }
 
             before do
