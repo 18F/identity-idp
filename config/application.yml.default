@@ -205,6 +205,7 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 # are strings in the format 'Month day, year'
 in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_message_enabled: false
+in_person_passports_enabled: false
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
