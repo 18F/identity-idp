@@ -11,6 +11,26 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if account successfully deleted
+    # A User deletes their Login.gov account
+    def logged_in_account_purged(success:)
+      track_event(
+        'logged-in-account-purged',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success True if the password was successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if password was not successfully changed
+    # A logged-in user has attempted to change their password
+    def logged_in_password_change(success:, failure_reason: nil)
+      track_event(
+        :logged_in_password_change,
+        success: success,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success
     # A user has attempted to enroll the Backup Codes MFA method to their account
     def mfa_enroll_backup_code(success:)
@@ -30,8 +50,29 @@ module AttemptsApi
     end
 
     # Tracks when user submits registration password
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_code_rate_limited(mfa_device_type:)
+      track_event(
+        'mfa-enroll-code-rate-limited',
+        mfa_device_type:,
+      )
+    end
+
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during verification
+    # and account has been locked
+    def mfa_submission_code_rate_limited(mfa_device_type:)
+      track_event(
+        'mfa-submission-code-rate-limited',
+        mfa_device_type:,
+      )
+    end
+
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user submits registration password
     def user_registration_password_submitted(
       success:,
       failure_reason: nil
@@ -40,6 +81,24 @@ module AttemptsApi
         'user-registration-password-submitted',
         success:,
         failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
+    def mfa_enroll_webauthn_platform(success:)
+      track_event(
+        'mfa-enroll-webauthn-platform',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    def mfa_enroll_webauthn_roaming(success:)
+      track_event(
+        'mfa-enroll-webauthn-roaming',
+        success:,
       )
     end
   end

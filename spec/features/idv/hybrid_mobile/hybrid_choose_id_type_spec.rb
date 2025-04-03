@@ -42,6 +42,11 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       choose(t('doc_auth.forms.id_type_preference.passport'))
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+      visit idv_hybrid_mobile_choose_id_type_url
+      expect(page).to have_checked_field(
+        'doc_auth_choose_id_type_preference_passport',
+        visible: :all,
+      )
     end
   end
 
@@ -62,6 +67,11 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       choose(t('doc_auth.forms.id_type_preference.drivers_license'))
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+      visit idv_hybrid_mobile_choose_id_type_url
+      expect(page).to have_checked_field(
+        'doc_auth_choose_id_type_preference_drivers_license',
+        visible: :all,
+      )
     end
   end
 end

@@ -45,7 +45,15 @@ RSpec.describe RememberDeviceConcern do
     context 'with an AAL2 sp' do
       let(:sp) { build(:service_provider, default_aal: 2) }
 
-      it { expect(test_controller.mfa_expiration_interval).to eq(expected_aal_2_expiration) }
+      context 'requesting AAL1' do
+        let(:raw_session) { { acr_values: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF } }
+        it { expect(test_controller.mfa_expiration_interval).to eq(expected_aal_1_expiration) }
+      end
+
+      context 'not requesting AAL' do
+        let(:raw_session) { { acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF } }
+        it { expect(test_controller.mfa_expiration_interval).to eq(expected_aal_2_expiration) }
+      end
     end
 
     context 'with an IAL2 sp' do

@@ -185,28 +185,71 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
-      it 'tracks the max attempts event' do
-        user.second_factor_attempts_count =
-          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
-        user.save
+      context 'when the attempts are rate limited' do
+        before do
+          user.second_factor_attempts_count =
+            IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+          user.save
 
-        stub_analytics
+          stub_analytics
+          stub_attempts_tracker
+        end
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+        context 'with authentication context' do
+          it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+              mfa_device_type: 'backup_code',
+            )
 
-        post :create, params: payload
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          error_details: { backup_code: { invalid: true } },
-          multi_factor_auth_method: 'backup_code',
-          enabled_mfa_methods_count: 1,
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { backup_code: { invalid: true } },
+              multi_factor_auth_method: 'backup_code',
+              enabled_mfa_methods_count: 1,
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
+
+        context 'with confirmation context' do
+          before do
+            allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+          end
+
+          it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+              mfa_device_type: 'backup_code',
+            )
+
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { backup_code: { invalid: true } },
+              multi_factor_auth_method: 'backup_code',
+              enabled_mfa_methods_count: 1,
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
       end
 
       it 'records unsuccessful 2fa event' do

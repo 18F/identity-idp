@@ -50,6 +50,7 @@
             name: :choose_id_type_preference,
             required: true,
             wrapper: :uswds_radio_buttons,
+            checked: auto_check_value,
             error_messages: { valueMissing: t('doc_auth.errors.choose_id_type_check') },
           ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-y-2' %>

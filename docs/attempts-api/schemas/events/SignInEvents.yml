@@ -27,5 +27,5 @@ properties:
     $ref: './sign-in/MfaLoginWebauthnPlatformSubmitted.yml'
   mfa-login-webauthn-roaming-submitted:
     $ref: './sign-in/MfaLoginWebauthnRoamingSubmitted.yml'
-  mfa-submitted-rate-limited:
-    $ref: './sign-in/MfaSubmissionRateLimited.yml'
+  mfa-submission-code-rate-limited:
+    $ref: './sign-in/MfaSubmissionCodeRateLimited.yml'

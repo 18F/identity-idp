@@ -15,7 +15,15 @@ module AttemptsApiTrackingHelper
     end
 
     def parse_failure_reason(result)
-      return result.to_h[:error_details] || result.errors.presence
+      errors = result.to_h[:error_details]
+
+      if errors.present?
+        parsed_errors = errors.keys.index_with do |k|
+          errors[k].keys
+        end
+      end
+
+      parsed_errors || result.errors.presence
     end
 
     def track_mfa_submit_event(_attributes)
