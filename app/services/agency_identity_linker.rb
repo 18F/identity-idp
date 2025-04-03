@@ -45,7 +45,7 @@ class AgencyIdentityLinker
 
   def create_agency_identity_for_sp
     return unless agency_id
-    AgencyIdentity.create(
+    AgencyIdentity.find_or_create_by!(
       agency_id: agency_id,
       user_id: @sp_identity.user_id,
       uuid: @sp_identity.uuid,
