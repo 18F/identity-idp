@@ -79,6 +79,14 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           .encrypted_recovery_code_digest_generated_at.strftime('%s%L')
         sign_in_before_2fa(user)
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'personal_key',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY)
@@ -149,6 +157,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         it 'tracks new device value' do
           stub_analytics
           stub_sign_in_before_2fa(user)
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'personal_key',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: payload
 
@@ -241,6 +256,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         context 'with authentication context' do
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'personal_key',
+              success: false,
+              failure_reason: { personal_key: [:personal_key_incorrect] },
+              reauthentication: false,
+            )
             expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
               mfa_device_type: 'personal_key',
             )
@@ -272,6 +293,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           end
 
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'personal_key',
+              success: false,
+              failure_reason: { personal_key: [:personal_key_incorrect] },
+              reauthentication: false,
+            )
+
             expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
               mfa_device_type: 'personal_key',
             )

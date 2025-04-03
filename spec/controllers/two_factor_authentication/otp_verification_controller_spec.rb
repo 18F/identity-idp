@@ -159,9 +159,17 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(controller.current_user.reload.second_factor_attempts_count).to eq 0
 
         stub_analytics
+        stub_attempts_tracker
       end
 
       it 'logs analytics' do
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'otp',
+          success: false,
+          failure_reason: { code: [:wrong_length, :incorrect] },
+          reauthentication: false,
+        )
+
         response
 
         expect(@analytics).to have_logged_event(
@@ -246,6 +254,13 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'with authentication context' do
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'otp',
+            success: false,
+            failure_reason: { code: [:wrong_length, :incorrect] },
+            reauthentication: false,
+          )
+
           expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
             mfa_device_type: 'otp',
           )
@@ -285,6 +300,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         end
 
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'otp',
+            success: false,
+            failure_reason: { code: [:wrong_length, :incorrect] },
+            reauthentication: false,
+          )
           expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
             mfa_device_type: 'otp',
           )
@@ -347,6 +368,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'otp',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::SMS)
@@ -399,6 +428,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         it 'tracks the valid authentication event' do
           stub_analytics
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'otp',
+            success: true,
+            failure_reason: nil,
+            reauthentication: true,
+          )
 
           freeze_time do
             post :create, params: {
@@ -448,6 +485,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         it 'tracks new device value' do
           stub_analytics
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'otp',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: {
             code: subject.current_user.reload.direct_otp,

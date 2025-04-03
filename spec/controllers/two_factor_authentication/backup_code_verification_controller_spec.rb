@@ -54,6 +54,14 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         freeze_time do
           sign_in_before_2fa(user)
           stub_analytics
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'backup_code',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           expect(controller).to receive(:handle_valid_verification_for_authentication_context)
             .with(auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE)
@@ -115,6 +123,14 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         freeze_time do
           stub_sign_in_before_2fa(user)
           stub_analytics
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'backup_code',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: payload
 
@@ -143,6 +159,14 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       it 'tracks new device value' do
         stub_analytics
         stub_sign_in_before_2fa(user)
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'backup_code',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         post :create, params: payload
 
@@ -197,6 +221,12 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         context 'with authentication context' do
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'backup_code',
+              success: false,
+              failure_reason: { backup_code: [:invalid] },
+              reauthentication: false,
+            )
             expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
               mfa_device_type: 'backup_code',
             )
@@ -227,6 +257,13 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           end
 
           it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'backup_code',
+              success: false,
+              failure_reason: { backup_code: [:invalid] },
+              reauthentication: false,
+            )
+
             expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
               mfa_device_type: 'backup_code',
             )
