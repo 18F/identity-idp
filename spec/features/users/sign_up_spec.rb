@@ -467,6 +467,11 @@ RSpec.feature 'Sign Up' do
     freeze_time do
       analytics = FakeAnalytics.new
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(analytics)
+      attempts_api_tracker = AttemptsApiTrackingHelper::FakeAttemptsTracker.new
+      allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+        attempts_api_tracker,
+      )
+      expect(attempts_api_tracker).to receive(:login_completed)
 
       visit_idp_from_sp_with_ial1(:oidc)
       travel_to Time.zone.now + 15.seconds

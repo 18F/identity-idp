@@ -2,3 +2,8 @@ description:  The user has logged out of their account.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the logout was successfully initiated

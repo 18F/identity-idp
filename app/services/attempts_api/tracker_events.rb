@@ -25,9 +25,23 @@ module AttemptsApi
     # A logged-in user has attempted to change their password
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
-        :logged_in_password_change,
+        'logged-in-password-change',
         success: success,
         failure_reason:,
+      )
+    end
+
+    # A user has successfully logged in and is being handed off to integration
+    def login_completed
+      track_event('login-completed')
+    end
+
+    # @param [Boolean] success
+    # A user has initiated a logout event
+    def logout_initiated(success:)
+      track_event(
+        'logout-initiated',
+        success:,
       )
     end
 

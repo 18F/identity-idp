@@ -57,6 +57,7 @@ module Users
         redirect_to root_path
       else
         analytics.logout_initiated(sp_initiated: false, oidc: false)
+        attempts_api_tracker.logout_initiated(success: true)
         super
       end
     end

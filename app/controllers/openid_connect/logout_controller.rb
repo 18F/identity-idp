@@ -23,6 +23,10 @@ module OpenidConnect
         original_method: session[:original_method],
       )
 
+      attempts_api_tracker.logout_initiated(
+        success: result.success?,
+      )
+
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
@@ -46,6 +50,9 @@ module OpenidConnect
       redirect_uri = result.extra[:redirect_uri]
 
       analytics.oidc_logout_submitted(**to_event(result))
+      attempts_api_tracker.logout_initiated(
+        success: result.success?,
+      )
 
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)

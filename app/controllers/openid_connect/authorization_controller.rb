@@ -236,6 +236,8 @@ module OpenidConnect
         acr_values: sp_session[:acr_values],
         sign_in_duration_seconds:,
       )
+
+      attempts_api_tracker.login_completed
       track_billing_events
     end
 
