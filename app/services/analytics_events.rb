@@ -2322,11 +2322,15 @@ module AnalyticsEvents
   # User submits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_submitted(
     step:,
     analytics_id:,
+    doc_auth_vendor:,
+    passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -2335,6 +2339,8 @@ module AnalyticsEvents
       'IdV: doc auth welcome submitted',
       step:,
       analytics_id:,
+      doc_auth_vendor:,
+      passport_allowed:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       **extra,
@@ -2344,11 +2350,15 @@ module AnalyticsEvents
   # User visits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
+    doc_auth_vendor:,
+    passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -2357,6 +2367,8 @@ module AnalyticsEvents
       'IdV: doc auth welcome visited',
       step:,
       analytics_id:,
+      doc_auth_vendor:,
+      passport_allowed:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,

@@ -96,7 +96,7 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_how_to_verify_path)
 
         # Choose remote option
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
         expect(page).to have_current_path(idv_hybrid_handoff_url)
 
         # go back and choose in person option
@@ -198,7 +198,7 @@ RSpec.feature 'how to verify step', js: true do
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
@@ -223,7 +223,7 @@ RSpec.feature 'how to verify step', js: true do
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
       before do
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
       end
 
       it 'should be bounced back to How to Verify' do

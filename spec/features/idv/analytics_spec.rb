@@ -209,10 +209,10 @@ RSpec.feature 'Analytics Regression', :js do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth'
@@ -330,10 +330,10 @@ RSpec.feature 'Analytics Regression', :js do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth'
@@ -455,10 +455,10 @@ RSpec.feature 'Analytics Regression', :js do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth'
@@ -557,10 +557,10 @@ RSpec.feature 'Analytics Regression', :js do
   let(:in_person_path_events) do
     {
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth'
@@ -696,10 +696,10 @@ RSpec.feature 'Analytics Regression', :js do
     {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth welcome submitted' => {
-        step: 'welcome', analytics_id: 'Doc Auth'
+        step: 'welcome', analytics_id: 'Doc Auth', doc_auth_vendor: 'mock'
       },
       'IdV: doc auth agreement visited' => {
         step: 'agreement', analytics_id: 'Doc Auth'

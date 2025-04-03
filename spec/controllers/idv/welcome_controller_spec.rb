@@ -2,10 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Idv::WelcomeController do
   let(:user) { create(:user) }
+  let(:dos_api_status) { nil }
 
   before do
     stub_sign_in(user)
     stub_analytics
+    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+      .to_return({ status: 200, body: { status: dos_api_status }.to_json })
   end
 
   describe '#step_info' do
@@ -71,6 +74,7 @@ RSpec.describe Idv::WelcomeController do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
+        doc_auth_vendor: 'mock',
       }
     end
 
@@ -158,11 +162,8 @@ RSpec.describe Idv::WelcomeController do
     end
 
     context 'passports enabled' do
-      let(:dos_api_status) { nil }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-        stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-          .to_return({ status: 200, body: { status: dos_api_status }.to_json })
       end
 
       context 'passport api is down' do
@@ -179,6 +180,13 @@ RSpec.describe Idv::WelcomeController do
 
       context 'passport api is up and running' do
         let(:dos_api_status) { 'UP' }
+        let(:passport_bucket) { :default }
+
+        before do
+          allow(subject).to receive(:ab_test_bucket).and_call_original
+          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
+            .and_return(passport_bucket)
+        end
 
         it 'passport allowed is false in idv session' do
           get :show
@@ -187,11 +195,7 @@ RSpec.describe Idv::WelcomeController do
         end
 
         context 'user is AB bucketed to allow passports' do
-          before do
-            allow(subject).to receive(:ab_test_bucket).and_call_original
-            allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
-              .and_return(:passport_allowed)
-          end
+          let(:passport_bucket) { :passport_allowed }
 
           it 'passport allowed is true in idv session' do
             get :show
@@ -225,6 +229,7 @@ RSpec.describe Idv::WelcomeController do
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
+        doc_auth_vendor: 'mock',
       }
     end
 

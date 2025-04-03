@@ -631,7 +631,7 @@ doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
 doc_auth.headings.upload_from_computer: Continúe en esta computadora
 doc_auth.headings.upload_from_phone: Utilice su teléfono para tomar fotos
-doc_auth.headings.verify_at_post_office: Verifique su identidad en una oficina de correos
+doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
 doc_auth.headings.verify_online_mobile: Verifique su identidad en línea con su teléfono
@@ -656,9 +656,6 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_mobile: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
@@ -694,20 +691,18 @@ doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a e
 doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
 doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
-doc_auth.info.verify_at_post_office_description: Esta opción es mejor si no tiene un teléfono para tomar fotografías de su identificación.
-doc_auth.info.verify_at_post_office_description_mobile: Elija esta opción si no tiene un teléfono para tomar fotografías.
-doc_auth.info.verify_at_post_office_instruction: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
-doc_auth.info.verify_at_post_office_instruction_selfie: Ingresará la información de su identificación en línea, y verificará su identidad en persona en una oficina de correos participante.
+doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo puede usar una licencia de conducir de los EE. UU. o una identificación estatal.</strong> Para esta opción, no puede usar un pasaporte estadounidense.
+doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
-doc_auth.info.verify_online_description: Esta opción es mejor si tiene un teléfono para tomar fotografías de su identificación.
-doc_auth.info.verify_online_description_mobile: Elija esta opción si tiene un teléfono para tomar fotografías.
-doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
-doc_auth.info.verify_online_instruction_selfie: Tomará con un teléfono fotos de su identificación y una foto de usted. La mayoría de los usuarios logran terminar este proceso en una sola sesión.
+doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_instruction: Agregará fotografías de su identificación y verificará su identidad por completo en línea.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono.
+doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted con un teléfono.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
-doc_auth.instructions.bullet1: Tener una licencia de conducir o una tarjeta de identificación estatal
+doc_auth.instructions.bullet1a: Tener una licencia de conducir o una tarjeta de identificación estatal
+doc_auth.instructions.bullet1b: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
@@ -887,8 +882,8 @@ forms.buttons.cancel: Sí, cancelar
 forms.buttons.confirm: Confirmar
 forms.buttons.continue: Continuar
 forms.buttons.continue_ipp: Continúe en persona
-forms.buttons.continue_remote: Continúe en línea
-forms.buttons.continue_remote_mobile: Continúe en su teléfono
+forms.buttons.continue_online: Continúe en línea
+forms.buttons.continue_online_mobile: Continúe en su teléfono
 forms.buttons.delete: Eliminar
 forms.buttons.disable: Eliminar
 forms.buttons.edit: Editar
