@@ -11,8 +11,6 @@ properties:
     $ref: './sign-in/LoginRateLimited.yml'
   logout-initiated:
     $ref: './sign-in/LogoutInitiated.yml'
-  mfa-login-backup-code-submitted:
-    $ref: './sign-in/MfaLoginBackupCodeSubmitted.yml'
   mfa-login-phone-otp-sent:
     $ref: './sign-in/MfaLoginPhoneOtpSent.yml'
   mfa-login-phone-otp-sent-rate-limited:

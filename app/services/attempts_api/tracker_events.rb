@@ -75,9 +75,11 @@ module AttemptsApi
     end
 
     # Tracks when user submits a verification attempt using their MFA.
-    # @param [String<'backup_code', 'otp', 'personal_key', 'piv_cac', 'remember_device', 'totp',
-    # 'webauthn', 'webauthn_platform'>] mfa_device_type
-
+    # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
+    # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
+    # @param [Boolean] reauthentication
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_auth_submitted(mfa_device_type:, reauthentication:, success:, failure_reason: nil)
       track_event(
         'mfa-login-auth-submitted',
