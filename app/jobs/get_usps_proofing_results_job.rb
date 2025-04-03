@@ -166,7 +166,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       analytics(user: enrollment.user)
         .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
           **enrollment_analytics_attributes(enrollment, complete: false),
-          reason: 'Enrollment was cancelled after spending more than 90 days in password reset',
+          reason: 'Enrollment cancelled after spending over 90 days in password reset',
           job_name: self.class.name,
         )
     end

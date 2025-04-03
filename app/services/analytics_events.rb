@@ -3667,46 +3667,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks enrollments that were cancelled after spending over 90 days in password reset.
-  # @param [String] enrollment_code The in-person enrollment code.
-  # @param [String] enrollment_id The in-person enrollment ID.
-  # # @param [String] reason The reason for cancelling the enrollment.
-  # @param [String] job_name The class name of the job.
-  # @param [Float] minutes_since_established
-  # @param [Float] minutes_since_last_status_check
-  # @param [Float] minutes_since_last_status_check_completed
-  # @param [Float] minutes_since_last_status_update
-  # @param [Float] minutes_to_completion
-  # @param [String] issuer
-  def idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
-    enrollment_code:,
-    enrollment_id:,
-    reason:,
-    job_name:,
-    minutes_since_established:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_to_completion:,
-    issuer:,
-    **extra
-  )
-    track_event(
-      :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
-      enrollment_code:,
-      enrollment_id:,
-      reason:,
-      job_name:,
-      minutes_since_established:,
-      minutes_since_last_status_check:,
-      minutes_since_last_status_check_completed:,
-      minutes_since_last_status_update:,
-      minutes_to_completion:,
-      issuer:,
-      **extra,
-    )
-  end
-
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -3730,7 +3690,7 @@ module AnalyticsEvents
   # @param [String] response_message
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
-  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [String] tmx_status the tmx_status of the enrollment profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # @param [Boolean] response_present
   # @param [String] job_name
@@ -3887,6 +3847,46 @@ module AnalyticsEvents
       response_message:,
       response_status_code:,
       job_name:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks enrollments that were cancelled after spending over 90 days in password reset.
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for cancelling the enrollment.
+  # @param [String] job_name The class name of the job.
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  def idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
       issuer:,
       **extra,
     )
