@@ -97,12 +97,6 @@ module OpenidConnect
       override_form_action_csp(uris)
     end
 
-    def require_logout_confirmation?
-      (logout_params[:id_token_hint].nil? || IdentityConfig.store.reject_id_token_hint_in_logout) &&
-        logout_params[:client_id] &&
-        current_user
-    end
-
     # @return [OpenidConnectLogoutForm]
     def build_logout_form
       OpenidConnectLogoutForm.new(
@@ -115,12 +109,13 @@ module OpenidConnect
     # @param redirect_uri [String] The URL to redirect the user to after logout
     def handle_successful_logout_request(result, redirect_uri)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
-      if require_logout_confirmation?
+      if current_user.present?
         analytics.oidc_logout_visited(**to_event(result))
 
         @params = {
           client_id: logout_params[:client_id],
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
+          id_token_hint: logout_params[:id_token_hint],
         }
         @params[:state] = logout_params[:state] if !logout_params[:state].nil?
         @service_provider_name = @logout_form.service_provider&.friendly_name

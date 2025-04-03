@@ -312,8 +312,9 @@ RSpec.describe 'OpenID Connect' do
     end
 
     context 'when sending id_token_hint' do
-      it 'logout destroys the session' do
-        id_token = sign_in_get_id_token
+      it 'logout destroys the session when confirming logout' do
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
         state = SecureRandom.hex
 
@@ -323,18 +324,37 @@ RSpec.describe 'OpenID Connect' do
           id_token_hint: id_token,
         )
 
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
+
         visit account_path
         expect(page).to_not have_content(t('headings.account.login_info'))
         expect(page).to have_content(t('headings.sign_in_without_sp'))
       end
 
       it 'logout does not require state' do
-        id_token = sign_in_get_id_token
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
         visit openid_connect_logout_path(
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           id_token_hint: id_token,
         )
+
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
         visit account_path
         expect(page).to_not have_content(t('headings.account.login_info'))
@@ -956,7 +976,8 @@ RSpec.describe 'OpenID Connect' do
 
   context 'signing out' do
     it 'redirects back to the client app and destroys the session' do
-      id_token = sign_in_get_id_token
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+      id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
       state = SecureRandom.hex
 
@@ -965,6 +986,15 @@ RSpec.describe 'OpenID Connect' do
         state: state,
         id_token_hint: id_token,
       )
+
+      expect(page).to have_content(
+        t(
+          'openid_connect.logout.heading_with_sp',
+          app_name: APP_NAME,
+          service_provider_name: service_provider.friendly_name,
+        ),
+      )
+      click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
       expect(oidc_redirect_url).to eq(
         UriService.add_params('gov.gsa.openidconnect.test://result/signout', state:),
