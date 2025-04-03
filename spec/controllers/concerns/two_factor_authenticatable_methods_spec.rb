@@ -26,13 +26,21 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
       it 'tracks multi-factor authentication event' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: auth_method,
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         result
 
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
-          multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+          multi_factor_auth_method: auth_method,
           enabled_mfa_methods_count: 0,
           new_device: true,
           attempts: 1,
@@ -187,6 +195,14 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
               .and_return(recaptcha_annotation)
 
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: auth_method,
+              success: true,
+              failure_reason: nil,
+              reauthentication: false,
+            )
 
             expect { result }
               .to change { controller.session[:sign_in_recaptcha_assessment_id] }
@@ -231,6 +247,14 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
       it 'tracks multi-factor authentication event' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'otp',
+          success: false,
+          failure_reason: { code: [:pattern_mismatch] },
+          reauthentication: false,
+        )
 
         result
 
@@ -272,6 +296,14 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
               .and_return(recaptcha_annotation)
 
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'otp',
+              success: false,
+              failure_reason: { code: [:pattern_mismatch] },
+              reauthentication: false,
+            )
 
             expect { result }
               .not_to change { controller.session[:sign_in_recaptcha_assessment_id] }
@@ -316,6 +348,14 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
 
       it 'tracks multi-factor authentication event with the expected number of attempts' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'otp',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         result
 
