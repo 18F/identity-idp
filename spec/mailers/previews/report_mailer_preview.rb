@@ -109,6 +109,20 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def api_transaction_count_report
+    api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(api_transaction_count_report.api_transaction_count_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "API Transaction Count Report - #{Time.zone.now.to_date}",
+      message: api_transaction_count_report.preamble,
+      attachment_format: :csv,
+      reports: api_transaction_count_report.reports,
+    )
+  end
+
   def tables_report
     ReportMailer.tables_report(
       email: 'test@example.com',

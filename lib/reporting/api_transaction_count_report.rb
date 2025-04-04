@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class APITransactionCountReport
+  class ApiTransactionCountReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :time_range
@@ -34,6 +34,17 @@ module Reporting
       tables = queries.map { |query| table_for_query(query) }
       Rails.logger.info('API Transaction Count Report tables generated successfully.')
       tables
+    end
+
+    def as_emailable_report
+      EmailableReport.new(
+        title: 'Proofing Rate Metrics',
+        subtitle: 'Condensed (NEW)',
+        float_as_percent: true,
+        precision: 2,
+        table: as_csv,
+        filename: 'condensed_idv',
+      )
     end
 
     def to_csvs
@@ -225,7 +236,7 @@ if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
 
   # Generate the report and output CSVs
-  Reporting::APITransactionCountReport.new(**options).to_csvs.each do |csv|
+  Reporting::ApiTransactionCountReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end

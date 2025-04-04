@@ -279,7 +279,7 @@ else
       },
       # Previoius week API transaction count reprot
       api_transaction_count_report: {
-        class: 'Reports::APITransactionCountReport',
+        class: 'Reports::ApiTransactionCountReport',
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
