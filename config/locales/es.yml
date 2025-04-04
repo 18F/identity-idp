@@ -612,6 +612,7 @@ doc_auth.headings.choose_id_type: Elija el tipo de su identificación
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
+doc_auth.headings.document_capture_passport: Agregue una foto de su pasaporte
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal

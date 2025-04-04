@@ -12,14 +12,14 @@ import AcuantCapture from './acuant-capture';
 import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentSideAcuantCaptureProps {
-  side: 'front' | 'back' | 'selfie';
+  side: 'front' | 'back' | 'passport' | 'selfie';
   registerField: RegisterFieldCallback;
   value: Blob | string | null | undefined;
   /**
    * Update values, merging with existing values.
    */
   onChange: (nextValues: { [key: string]: Blob | string | null | undefined }) => void;
-  errors: FormStepError<{ front: string; back: string; selfie: string }>[];
+  errors: FormStepError<{ front: string; back: string; passport: string; selfie: string }>[];
   onError: OnErrorCallback;
   className?: string;
   isReviewStep: boolean;
