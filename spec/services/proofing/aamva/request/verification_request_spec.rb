@@ -6,13 +6,14 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   let(:config) { AamvaFixtures.example_config }
   let(:state_id_jurisdiction) { 'CA' }
   let(:state_id_number) { '123456789' }
+  let(:last_name) { 'McTesterson' }
 
   let(:applicant_data) do
     {
       uuid: '1234-abcd-efgh',
       first_name: 'Testy',
       middle_name: nil,
-      last_name: 'McTesterson',
+      last_name:,
       name_suffix: nil,
       dob: '10/29/1942',
       address1: '123 Sunnyside way',
@@ -358,7 +359,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   end
 
   describe 'compound last names' do
-    let(:applicant_data) { super().merge(last_name: 'McFirst McSecond') }
+    let(:last_name) { 'McFirst McSecond' }
 
     subject(:rendered_last_name) do
       body = REXML::Document.new(request.body)
