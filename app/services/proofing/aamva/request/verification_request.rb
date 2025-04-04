@@ -274,10 +274,10 @@ module Proofing
 
         def user_provided_data_map
           {
-            state_id_number: state_id_number,
+            state_id_number:,
             state_id_jurisdiction: message_destination_id,
             first_name: applicant.first_name,
-            last_name: last_name,
+            last_name:,
             dob: applicant.dob,
             address1: applicant.address1,
             city: applicant.city,
@@ -296,8 +296,8 @@ module Proofing
         end
 
         def last_name
-          case applicant.state_id_data.state_id_jurisdiction
-          when 'DC', 'WV'
+          if IdentityConfig.store.idv_aamva_split_last_name_states
+              .include? applicant.state_id_data.state_id_jurisdiction
             applicant.last_name.split(' ').first
           else
             applicant.last_name

@@ -365,20 +365,16 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       REXML::XPath.first(body, '//nc:PersonSurName')&.text
     end
 
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_split_last_name_states)
+        .and_return(['DC'])
+    end
     it 'sends the full last name' do
       expect(rendered_last_name).to eq('McFirst McSecond')
     end
 
-    context 'in DC' do
+    context 'in state configured for last name split' do
       let(:state_id_jurisdiction) { 'DC' }
-
-      it 'only sends the first part of the last name' do
-        expect(rendered_last_name).to eq('McFirst')
-      end
-    end
-
-    context 'in WV' do
-      let(:state_id_jurisdiction) { 'WV' }
 
       it 'only sends the first part of the last name' do
         expect(rendered_last_name).to eq('McFirst')
