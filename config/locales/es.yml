@@ -653,9 +653,6 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.how_to_verify: Tiene la opción de verificar su identidad en línea, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_mobile: Tiene la opción de verificar su identidad en línea con su teléfono, o en persona en una oficina de correos participante.
-doc_auth.info.how_to_verify_troubleshooting_options_header: ¿Desea obtener más información sobre cómo verificar su identidad?
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted al leer su identificación.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar

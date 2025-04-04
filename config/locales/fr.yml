@@ -642,9 +642,6 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.how_to_verify: Vous pouvez confirmer votre identité en ligne ou en personne dans un bureau de poste participant.
-doc_auth.info.how_to_verify_mobile: Vous avez la possibilité de confirmer votre identité en ligne avec votre téléphone ou en personne dans un bureau de poste participant.
-doc_auth.info.how_to_verify_troubleshooting_options_header: Vous voulez en savoir plus sur la façon de confirmer votre identité?
 doc_auth.info.hybrid_handoff: Nous recueillerons les informations vous concernant en lisant votre pièce d’identité.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser

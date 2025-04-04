@@ -642,9 +642,6 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office.
-doc_auth.info.how_to_verify_mobile: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
-doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
 doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
