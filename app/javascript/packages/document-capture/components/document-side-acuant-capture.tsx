@@ -67,10 +67,12 @@ function DocumentSideAcuantCapture({
       ref={registerField(side, { isRequired: true })}
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+      /* i18n-tasks-use t('doc_auth.headings.document_capture_passport') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
       label={t(`doc_auth.headings.document_capture_${side}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
+      /* i18n-tasks-use t('doc_auth.headings.passport') */
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}

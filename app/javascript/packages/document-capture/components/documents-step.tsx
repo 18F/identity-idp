@@ -58,7 +58,7 @@ export default function DocumentsStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
-  const { flowPath, idType } = useContext(UploadContext);
+  const { flowPath } = useContext(UploadContext);
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
