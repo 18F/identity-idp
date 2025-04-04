@@ -113,7 +113,6 @@ module IdentityConfig
     config.add(:desktop_ft_unlock_setup_option_percent_tested, type: :integer)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
-    config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
     config.add(:doc_auth_check_failed_image_resubmission_enabled, type: :boolean)

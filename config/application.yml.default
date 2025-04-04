@@ -95,7 +95,6 @@ deliver_mail_async: false
 desktop_ft_unlock_setup_option_percent_tested: 0
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
-disable_logout_get_request: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_auth_check_failed_image_resubmission_enabled: true
@@ -531,7 +530,6 @@ production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   disable_email_sending: false
-  disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
