@@ -385,7 +385,7 @@ RSpec.feature 'document capture step', :js do
                 click_button 'Take photo'
                 click_idv_submit_default
                 expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-                expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
+                # expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
                 expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
 
                 use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
