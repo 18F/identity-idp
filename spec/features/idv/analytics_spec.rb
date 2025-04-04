@@ -266,7 +266,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -391,7 +391,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, flow_path: 'hybrid', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'hybrid', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -514,7 +514,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },
@@ -632,7 +632,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'In Person Proofing', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'In Person Proofing', step: 'verify',
         proofing_results: in_person_path_proofing_results,
         proofing_components: { document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', source_check: 'StateIdMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass' }
       },
@@ -761,7 +761,7 @@ RSpec.feature 'Analytics Regression', :js do
         end
       ),
       'IdV: doc auth verify proofing results' => {
-        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, analytics_id: 'Doc Auth', step: 'verify',
+        success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
         proofing_components: base_proofing_components
       },

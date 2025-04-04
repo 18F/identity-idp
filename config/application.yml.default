@@ -164,6 +164,7 @@ hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
+idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50

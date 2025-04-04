@@ -209,6 +209,7 @@ module IdentityConfig
     config.add(:idv_socure_shadow_mode_enabled, type: :boolean)
     config.add(:idv_socure_shadow_mode_enabled_for_docv_users, type: :boolean)
     config.add(:idv_sp_required, type: :boolean)
+    config.add(:idv_aamva_split_last_name_states, type: :json)
     config.add(:in_person_completion_survey_delivery_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_doc_auth_button_enabled, type: :boolean)
