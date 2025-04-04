@@ -125,7 +125,7 @@ describe('DocumentCaptureWarning', () => {
           inPersonUrl,
         });
         // error message section
-        validateHeader('doc_auth.errors.doc_type_not_supported_heading', 1, true);
+        validateHeader('doc_auth.errors.rate_limited_heading', 1, true);
         validateHeader('doc_auth.errors.rate_limited_subheading', 2, true);
         expect(getByText(/general error/)).to.be.ok();
         expect(queryByText('idv.failure.attempts_html')).to.be.ok();
@@ -166,7 +166,7 @@ describe('DocumentCaptureWarning', () => {
         });
 
         // error message section
-        validateHeader('doc_auth.errors.doc_type_not_supported_heading', 1, true);
+        validateHeader('doc_auth.errors.rate_limited_heading', 1, true);
         validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(queryByText('idv.failure.attempts_html')).to.be.ok();
@@ -234,7 +234,7 @@ describe('DocumentCaptureWarning', () => {
 
       expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
         location: 'doc_auth_review_issues',
-        heading: 'doc_auth.errors.doc_type_not_supported_heading',
+        heading: 'doc_auth.errors.rate_limited_heading',
         subheading: '',
         error_message_displayed: 'general error',
         remaining_submit_attempts: 2,
@@ -273,7 +273,7 @@ describe('DocumentCaptureWarning', () => {
         });
 
         // error message section
-        validateHeader('doc_auth.errors.doc_type_not_supported_heading', 1, true);
+        validateHeader('doc_auth.errors.rate_limited_heading', 1, true);
         validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(queryByText('idv.failure.attempts_html')).to.be.ok();
@@ -315,7 +315,7 @@ describe('DocumentCaptureWarning', () => {
           inPersonUrl,
         });
         // error message section
-        validateHeader('doc_auth.errors.doc_type_not_supported_heading', 1, true);
+        validateHeader('doc_auth.errors.rate_limited_heading', 1, true);
         validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
         expect(getByText(/general error/)).to.be.ok();
         expect(queryByText('idv.failure.attempts_html')).to.be.ok();

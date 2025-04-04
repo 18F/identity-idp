@@ -211,8 +211,8 @@ RSpec.describe DocAuthRouter do
       )
       response = proxy.post_images(front_image: 'a', back_image: 'b')
       expect(response.errors).to eq(
-        front: [I18n.t('doc_auth.errors.card_type')],
-        back: [I18n.t('doc_auth.errors.card_type')],
+        front: [I18n.t('doc_auth.errors.general.fallback_field_level')],
+        back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
         general: [I18n.t(
           'doc_auth.errors.doc.doc_type_check', attempt: 2
         )],

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
 import { InPersonContext } from '@18f/identity-document-capture/context';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
@@ -9,7 +9,6 @@ import { expect } from 'chai';
 describe('DocumentCaptureReviewIssues', () => {
   const DEFAULT_OPTIONS = {
     registerField: () => undefined,
-    captureHints: true,
     value: {},
     onChange: () => undefined,
     onError: () => undefined,
@@ -45,13 +44,14 @@ describe('DocumentCaptureReviewIssues', () => {
 
   context('with doc error', () => {
     it('renders for non doc type failure', () => {
-      const { getByText, getByLabelText, getByRole, getAllByRole } = render(
+      const { getByText, getByLabelText, getByRole } = render(
         <InPersonContext.Provider
           value={{
             inPersonURL: '/verify/doc_capture',
             locationsURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
+            passportEnabled: false,
             usStatesTerritories: [['Los Angeles', 'NY']],
           }}
         >
@@ -95,16 +95,6 @@ describe('DocumentCaptureReviewIssues', () => {
 
       expect(getByText('You have 2 attempts remaining.')).to.be.ok();
 
-      // tips header
-      expect(getByText('doc_auth.tips.review_issues_id_header_text')).to.be.ok();
-      const lists = getAllByRole('list');
-      const tipList = lists[0];
-      expect(tipList).to.be.ok();
-      const tipListItem = within(tipList).getAllByRole('listitem');
-      tipListItem.forEach((li, idx) => {
-        expect(li.textContent).to.equals(`doc_auth.tips.review_issues_id_text${idx + 1}`);
-      });
-
       // front capture input
       const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');
       expect(frontCapture).to.be.ok();
@@ -124,6 +114,7 @@ describe('DocumentCaptureReviewIssues', () => {
             locationsURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
+            passportEnabled: false,
             usStatesTerritories: [['Los Angeles', 'NY']],
           }}
         >
@@ -153,7 +144,7 @@ describe('DocumentCaptureReviewIssues', () => {
       const h1 = screen.getByRole('heading', { name: 'doc_auth.headings.review_issues', level: 1 });
       expect(h1).to.be.ok();
 
-      expect(getByText('doc_auth.errors.doc.wrong_id_type_html')).to.be.ok();
+      expect(getByText('doc_auth.errors.doc.doc_type_check')).to.be.ok();
 
       // front capture input
       const frontCapture = getByLabelText('doc_auth.headings.document_capture_front');

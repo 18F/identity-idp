@@ -37,7 +37,7 @@ function getHeading({
   t,
 }: GetHeadingArguments) {
   if (isFailedDocType) {
-    return t('doc_auth.errors.doc_type_not_supported_heading');
+    return t('doc_auth.errors.rate_limited_heading');
   }
   if (isResultCodeInvalid) {
     return t('doc_auth.errors.rate_limited_heading');

@@ -677,7 +677,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('doc_auth.errors.card_type');
+      const error = await findByText('doc_auth.errors.general.fallback_field_level');
 
       expect(trackEvent).to.have.been.calledWith(
         'IdV: test image added',
