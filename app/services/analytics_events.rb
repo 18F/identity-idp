@@ -2151,6 +2151,7 @@ module AnalyticsEvents
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
+  # @param last_name_spaced [Boolean] Whether the user's last name includes an empty space
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
   # @param proofing_results [Hash]
