@@ -39,7 +39,12 @@ export function PassportCaptureStep({
 
 export function PassportCaptureSubheaderOne() {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.document_capture_passport')}</h1>;
+  return <h1>{t('doc_auth.headings.passport_capture')}</h1>;
+}
+
+export function PassportCaptureInfo() {
+  const { t } = useI18n();
+  return <p>{t('doc_auth.info.passport_capture')}</p>;
 }
 
 export default function PassportStep({
@@ -63,6 +68,7 @@ export default function PassportStep({
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PassportCaptureSubheaderOne />
+      <PassportCaptureInfo />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}

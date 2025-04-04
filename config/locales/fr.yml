@@ -598,7 +598,7 @@ doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
-doc_auth.headings.document_capture_passport: Ajouter une photo de votre passeport
+doc_auth.headings.document_capture_passport: Votre passeport
 doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
@@ -608,6 +608,8 @@ doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pou
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
+doc_auth.headings.passport: Votre passeport
+doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
@@ -659,6 +661,7 @@ doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur 
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
+doc_auth.info.passport_capture: Prenez une photo de la page d'informations de votre passeport. Cette page comporte votre photo d'identité et vos informations personnelles.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
