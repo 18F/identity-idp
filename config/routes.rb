@@ -100,7 +100,6 @@ Rails.application.routes.draw do
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
-      get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       delete '/logout' => 'users/sessions#destroy'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
