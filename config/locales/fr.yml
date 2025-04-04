@@ -598,6 +598,7 @@ doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
+doc_auth.headings.document_capture_passport: Ajouter une photo de votre passeport
 doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État

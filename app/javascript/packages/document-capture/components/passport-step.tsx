@@ -16,39 +16,33 @@ import {
 } from '../interface/documents-image-selfie-value';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
-export function DocumentsCaptureStep({
+export function PassportCaptureStep({
   defaultSideProps,
-  value,
+  passportValue,
   isReviewStep = false,
 }: {
   defaultSideProps: DefaultSideProps;
-  value: Record<string, ImageValue>;
+  passportValue: ImageValue;
   isReviewStep: boolean;
 }) {
-  type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
   return (
-    <>
-      {documentsSides.map((side) => (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key={side}
-          side={side}
-          value={value[side]}
-          isReviewStep={isReviewStep}
-          showSelfieHelp={() => undefined}
-        />
-      ))}
-    </>
+    <DocumentSideAcuantCapture
+      {...defaultSideProps}
+      key="passport"
+      side="passport"
+      value={passportValue}
+      isReviewStep={isReviewStep}
+      showSelfieHelp={() => undefined}
+    />
   );
 }
 
-export function DocumentCaptureSubheaderOne() {
+export function PassportCaptureSubheaderOne() {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.document_capture')}</h1>;
+  return <h1>{t('doc_auth.headings.document_capture_passport')}</h1>;
 }
 
-export default function DocumentsStep({
+export default function PassportStep({
   value = {},
   onChange = () => {},
   errors = [],
@@ -58,7 +52,7 @@ export default function DocumentsStep({
   const { t } = useI18n();
   const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
-  const { flowPath, idType } = useContext(UploadContext);
+  const { flowPath } = useContext(UploadContext);
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
@@ -68,7 +62,7 @@ export default function DocumentsStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <DocumentCaptureSubheaderOne />
+      <PassportCaptureSubheaderOne />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
@@ -78,9 +72,9 @@ export default function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
       />
-      <DocumentsCaptureStep
+      <PassportCaptureStep
         defaultSideProps={defaultSideProps}
-        value={value}
+        passportValue={value.passport}
         isReviewStep={false}
       />
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}

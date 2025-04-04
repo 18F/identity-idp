@@ -598,6 +598,7 @@ doc_auth.headings.choose_id_type: Choose your ID type
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
+doc_auth.headings.document_capture_passport: Add a photo of your passport
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID

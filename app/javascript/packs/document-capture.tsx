@@ -29,6 +29,7 @@ interface AppRootData {
   useAlternateSdk: string;
   acuantVersion: string;
   flowPath: FlowPath;
+  idType: string;
   cancelUrl: string;
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
@@ -71,6 +72,7 @@ const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
+    idType,
     flowPath,
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
@@ -79,6 +81,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
+    id_type: idType,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
@@ -98,6 +101,7 @@ const {
   maxSubmissionAttemptsBeforeNativeCamera,
   acuantVersion,
   flowPath,
+  idType,
   cancelUrl: cancelURL,
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
@@ -168,6 +172,7 @@ render(
               isMockClient={isMockClient}
               formData={formData}
               flowPath={flowPath}
+              idType={idType}
             >
               <FlowContext.Provider
                 value={{
