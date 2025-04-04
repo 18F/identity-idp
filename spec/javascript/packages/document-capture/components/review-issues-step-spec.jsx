@@ -216,7 +216,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders alternative error messages with in person and doc type is not supported', async () => {
-    const { getByRole, getByText, getByLabelText } = render(
+    const { getByRole, getByText, getByLabelText, queryByRole } = render(
       <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
         <I18nContext.Provider
           value={
@@ -252,6 +252,9 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
     expect(
+      queryByRole('link', { name: 'idv.troubleshooting.options.use_another_id_type' }),
+    ).to.not.exist();
+    expect(
       getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
     ).to.exist();
     expect(
@@ -274,7 +277,7 @@ describe('document-capture/components/review-issues-step', () => {
 
   it('renders alternative error messages with not in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
-      <InPersonContext.Provider value={{ inPersonURL: '' }}>
+      <InPersonContext.Provider value={{ inPersonURL: '', passportEnabled: true }}>
         <I18nContext.Provider
           value={
             new I18n({
@@ -308,6 +311,9 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.use_another_id_type' }),
+    ).to.exist();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
     ).to.exist();
