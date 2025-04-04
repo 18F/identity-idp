@@ -19,6 +19,7 @@ interface FullAddressSearchInputProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   registerField?: RegisterFieldCallback;
   usStatesTerritories: string[][];
+  uspsApiError: Error | null;
 }
 
 export default function FullAddressSearchInput({
@@ -29,6 +30,7 @@ export default function FullAddressSearchInput({
   onLoadingLocations = () => undefined,
   registerField = () => undefined,
   usStatesTerritories,
+  uspsApiError,
 }: FullAddressSearchInputProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -184,7 +186,9 @@ export default function FullAddressSearchInput({
           actionMessage={t('in_person_proofing.body.location.po_search.is_searching_message')}
           longWaitDurationMs={1}
         >
-          {t('in_person_proofing.body.location.po_search.search_button')}
+          {uspsApiError ?
+            t('in_person_proofing.body.location.po_search.continue_button') : t('in_person_proofing.body.location.po_search.search_button')
+          }
         </SpinnerButton>
       </div>
     </>

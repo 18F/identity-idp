@@ -4,6 +4,7 @@ import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import FullAddressSearchInput from './full-address-search-input';
+import UspsFacilitiesApiErrorMessage from './usps-facilities-api-error-message';
 import type { FullAddressSearchProps } from '../types';
 
 function FullAddressSearch({
@@ -26,11 +27,6 @@ function FullAddressSearch({
 
   return (
     <>
-      {apiError && (
-        <Alert type="error" className="margin-bottom-4">
-          {t('idv.failure.exceptions.post_office_search_error')}
-        </Alert>
-      )}
       {handleLocationSelect ? (
         <>
           <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
@@ -54,7 +50,11 @@ function FullAddressSearch({
         onError={setApiError}
         disabled={disabled}
         locationsURL={locationsURL}
+        uspsApiError={apiError}
       />
+      {apiError && (
+        <UspsFacilitiesApiErrorMessage />
+      )}
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}
