@@ -245,7 +245,7 @@ module EventSummarizer
         add_significant_event(
           type: :start_ipp,
           timestamp:,
-          descirption: 'User entered the in-person proofing flow',
+          description: 'User entered the in-person proofing flow',
         )
       end
 
@@ -286,7 +286,7 @@ module EventSummarizer
         add_significant_event(
           type: :gpo_code_failure,
           timestamp:,
-          description: 'The user entered an invalid GPO code',
+          description: 'User entered an invalid GPO code',
         )
         return
       end
@@ -303,7 +303,7 @@ module EventSummarizer
       add_significant_event(
         type: :gpo_code_success,
         timestamp:,
-        description:,
+        description: 'User entered a valid GPO code',
       )
 
       if fully_verified
@@ -333,7 +333,7 @@ module EventSummarizer
       verified = tmx_status != 'review' && tmx_status != 'reject'
 
       if verified
-        current_idv_attempt.event << SignificantIdvEvent.new(
+        current_idv_attempt.significant_events << SignificantIdvEvent.new(
           type: :verified,
           timestamp:,
           description: 'User is fully verified',
@@ -344,17 +344,17 @@ module EventSummarizer
     def handle_profile_encryption_error(event:)
       caveats = [
         # TODO these need to check if GPO/IPP were still pending at time of the event
-        current_idv_attempt.gpo? ? 'The user will not be able to enter a GPO code' : nil,
-        current_idv_attempt.ipp? ? 'the user will not be able to verify in-person' : nil,
+        current_idv_attempt.gpo? ? 'User will not be able to enter a GPO code' : nil,
+        current_idv_attempt.ipp? ? 'User will not be able to verify in-person' : nil,
       ].compact
 
       add_significant_event(
         type: :password_reset,
         timestamp: event['@timestamp'],
         description: [
-          'The user reset their password and did not provide their personal key.',
+          'User reset their password and did not provide their personal key.',
           caveats.length > 0 ?
-            "The user will not be able to #{caveats.join(' or ')}" :
+            "User will not be able to #{caveats.join(' or ')}" :
             nil,
         ].compact.join(' '),
       )
