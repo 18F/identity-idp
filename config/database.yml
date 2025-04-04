@@ -111,5 +111,5 @@ production:
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
     pool: <%= worker_pool %>
     sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
-    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    sslrootcert: '/usr/share/ca-certificates/mozilla/Amazon_Root_CA_1.crt'
     migrations_paths: db/worker_jobs_migrate
