@@ -17,7 +17,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
   ].freeze
-  PASSWORD_RESET_EXPIRATION = 90
   MINUTES_PER_DAY = 1440
 
   queue_as :long_running
@@ -161,7 +160,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def cancel_abandoned_password_reset_enrollments(enrollment)
-    if enrollment.minutes_since_last_status_update > PASSWORD_RESET_EXPIRATION * MINUTES_PER_DAY
+    password_reset_max = IdentityConfig.store.in_person_password_reset_expiration * MINUTES_PER_DAY
+    if enrollment.minutes_since_last_status_update > password_reset_max
       enrollment.cancel
       analytics(user: enrollment.user)
         .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
