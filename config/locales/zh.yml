@@ -612,6 +612,7 @@ doc_auth.headings.choose_id_type: 选择你的身份证件类型
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
+doc_auth.headings.document_capture_passport: 添加一张你护照的照片
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
