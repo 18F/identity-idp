@@ -164,6 +164,7 @@ hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
+idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
@@ -183,7 +184,6 @@ idv_socure_reason_code_download_enabled: false
 idv_socure_shadow_mode_enabled: false
 idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
-idv_aamva_split_last_name_states: '[]'
 in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_doc_auth_button_enabled: true
