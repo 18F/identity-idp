@@ -16,8 +16,8 @@ class UserPivCacVerificationForm
     errors = error_type ? { type: error_type } : {}
 
     FormResponse.new(
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       extra: extra_analytics_attributes,
     )
   end

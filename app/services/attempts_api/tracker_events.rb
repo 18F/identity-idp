@@ -74,7 +74,23 @@ module AttemptsApi
       )
     end
 
-    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # Tracks when user submits a verification attempt using their MFA.
+    # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
+    # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
+    # @param [Boolean] reauthentication
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def mfa_login_auth_submitted(mfa_device_type:, reauthentication:, success:, failure_reason: nil)
+      track_event(
+        'mfa-login-auth-submitted',
+        mfa_device_type:,
+        reauthentication:,
+        success:,
+        failure_reason:,
+      )
+    end
+
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp', 'personal_key'>] mfa_device_type
     # The user has exceeded the rate limit during verification
     # and account has been locked
     def mfa_submission_code_rate_limited(mfa_device_type:)

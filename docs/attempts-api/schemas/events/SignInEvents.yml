@@ -11,21 +11,9 @@ properties:
     $ref: './sign-in/LoginRateLimited.yml'
   logout-initiated:
     $ref: './sign-in/LogoutInitiated.yml'
-  mfa-login-backup-code-submitted:
-    $ref: './sign-in/MfaLoginBackupCodeSubmitted.yml'
   mfa-login-phone-otp-sent:
     $ref: './sign-in/MfaLoginPhoneOtpSent.yml'
   mfa-login-phone-otp-sent-rate-limited:
     $ref: './sign-in/MfaLoginPhoneOtpSentRateLimited.yml'
-  mfa-login-phone-otp-submitted:
-    $ref: './sign-in/MfaLoginPhoneOtpSubmitted.yml'
-  mfa-login-piv-cac-submitted:
-    $ref: './sign-in/MfaLoginPivCacSubmitted.yml'  
-  mfa-login-totp-submitted:
-    $ref: './sign-in/MfaLoginTotpSubmitted.yml'
-  mfa-login-webauthn-platform-submitted:
-    $ref: './sign-in/MfaLoginWebauthnPlatformSubmitted.yml'
-  mfa-login-webauthn-roaming-submitted:
-    $ref: './sign-in/MfaLoginWebauthnRoamingSubmitted.yml'
-  mfa-submission-code-rate-limited:
-    $ref: './sign-in/MfaSubmissionCodeRateLimited.yml'
+  mfa-login-auth-submitted:
+    $ref: './sign-in/MfaLoginAuthSubmitted.yml'

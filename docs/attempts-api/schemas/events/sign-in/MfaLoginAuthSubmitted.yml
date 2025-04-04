@@ -1,21 +1,30 @@
 description: |
-  During a login attempt, the user uses a PIV/CAC card.
+  During a login attempt, the user has submitted a verification attempt using their MFA . 
+  Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
-      subject_dn:
+      mfa_device_type:
         type: string
-        description: |
-          The subject's Distinguished Name (DN)
+        enum:
+          - backup_code
+          - otp
+          - piv_cac
+          - totp
+          - webauthn
+          - webauthn_platform
+      reauthentication:
+        description: an OPTIONAL boolean. For use with the `otp` MFA type
+        type: boolean
       success:
         type: boolean
         description: |
-          Indicates whether the PIV/CAC card was authenticated successfully for MFA.
+          Indicates whether verification was valid.
       failure_reason:
         type: object
         description: |
-          An OPTIONAL object. An associative array of attributes and errors if success is false
+          An OPTIONAL object. An associative array of attributes and errors if success is false.
         properties: 
           piv_cac:
             type: array

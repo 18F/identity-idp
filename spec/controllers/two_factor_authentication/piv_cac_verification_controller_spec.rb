@@ -137,6 +137,14 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       it 'tracks the valid authentication event' do
         stub_analytics
         cfg = controller.current_user.piv_cac_configurations.first
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'piv_cac',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC)
@@ -172,6 +180,13 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         it 'tracks new device value' do
           stub_analytics
           stub_sign_in_before_2fa(user)
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'piv_cac',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           get :show, params: { token: 'good-token' }
 
@@ -289,6 +304,12 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
 
       context 'with authentication context' do
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'piv_cac',
+            success: false,
+            failure_reason: { token: [:invalid] },
+            reauthentication: false,
+          )
           expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
             mfa_device_type: 'piv_cac',
           )
@@ -321,6 +342,13 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         end
 
         it 'tracks the max attempts event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'piv_cac',
+            success: false,
+            failure_reason: { token: [:invalid] },
+            reauthentication: false,
+          )
+
           expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
             mfa_device_type: 'piv_cac',
           )
