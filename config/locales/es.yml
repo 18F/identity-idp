@@ -612,7 +612,7 @@ doc_auth.headings.choose_id_type: Elija el tipo de su identificación
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
-doc_auth.headings.document_capture_passport: Agregue una foto de su pasaporte
+doc_auth.headings.document_capture_passport: Su pasaporte
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
@@ -622,6 +622,8 @@ doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cam
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
+doc_auth.headings.passport: Su pasaporte
+doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
@@ -673,6 +675,7 @@ doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Con
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
 doc_auth.info.login_access_sp: Está usando %{app_name} para acceder a %{sp_name}.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
+doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede modificar su información.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
