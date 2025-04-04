@@ -17,6 +17,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
   ].freeze
+  MINUTES_PER_DAY = 1440
 
   queue_as :long_running
 
@@ -155,6 +156,20 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     enrollment.update(status_check_completed_at: Time.zone.now)
     enrollment_outcomes[:enrollments_skipped] += 1
+    cancel_abandoned_password_reset_enrollments(enrollment)
+  end
+
+  def cancel_abandoned_password_reset_enrollments(enrollment)
+    password_reset_max = IdentityConfig.store.in_person_password_reset_expiration * MINUTES_PER_DAY
+    if enrollment.minutes_since_last_status_update > password_reset_max
+      enrollment.cancel
+      analytics(user: enrollment.user)
+        .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+          **enrollment_analytics_attributes(enrollment, complete: false),
+          reason: 'Enrollment cancelled after spending over 90 days in password reset',
+          job_name: self.class.name,
+        )
+    end
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
