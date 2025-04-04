@@ -230,6 +230,7 @@ module IdentityConfig
     config.add(:in_person_outage_emailed_by_date, type: :string)
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
+    config.add(:in_person_passports_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
     config.add(:in_person_proofing_enforce_tmx, type: :boolean)
     config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
