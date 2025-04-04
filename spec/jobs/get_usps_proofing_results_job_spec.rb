@@ -1617,8 +1617,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                 )
               end
 
-              context 'when the enrollment has been in the password_reset state for over 90 days' do
-                let(:travel_time) { 10.minutes }
+              context 'when enrollment is in password_reset for more than allowed number of days' do
+                let(:pw_reset_max) { IdentityConfig.store.in_person_password_reset_expiration }
+                let(:travel_time) { 10.0.minutes }
                 let(:future_time) { current_time + travel_time }
                 let(:expiration_period) { 90 }
                 let(:seconds_per_day) { 86400 }
@@ -1646,7 +1647,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     **enrollment_analytics,
                     minutes_to_completion: nil,
                     minutes_since_last_status_check: 10,
-                    reason: 'Enrollment cancelled after spending over 90 days in password reset',
+                    reason: "Enrollment cancelled after over #{pw_reset_max} days in password reset", # rubocop:disable Layout/LineLength
                     job_name: described_class.name,
                   )
                 end
