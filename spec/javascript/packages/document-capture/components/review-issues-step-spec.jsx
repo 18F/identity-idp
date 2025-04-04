@@ -247,7 +247,7 @@ describe('document-capture/components/review-issues-step', () => {
         ,
       </InPersonContext.Provider>,
     );
-    expect(getByText('doc type not supported')).to.be.ok();
+    expect(getByText('We couldn’t verify your ID')).to.be.ok();
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
@@ -264,7 +264,9 @@ describe('document-capture/components/review-issues-step', () => {
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
     // now use the alternative error message
     expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
+      getByText(
+        'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
+      ),
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
@@ -302,7 +304,7 @@ describe('document-capture/components/review-issues-step', () => {
         ,
       </InPersonContext.Provider>,
     );
-    expect(getByText('doc type not supported')).to.be.ok();
+    expect(getByText('We couldn’t verify your ID')).to.be.ok();
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -318,7 +320,9 @@ describe('document-capture/components/review-issues-step', () => {
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
     expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
+      getByText(
+        'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
+      ),
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
