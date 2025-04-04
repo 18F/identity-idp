@@ -85,7 +85,7 @@ account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
 account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
-account.index.verification.legacy_verified_html: 你在 <strong>%{date}</strong> 使用州颁发的身份证件在%{app_name} 验证了身份。
+account.index.verification.legacy_verified_html: <strong>%{date}</strong>你使用身份证件在%{app_name}上验证了你的身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
 account.index.verification.reactivate_button: 输入你通过邮局收到的验证码。
@@ -519,7 +519,7 @@ doc_auth.buttons.take_picture: 拍照
 doc_auth.buttons.take_picture_retry: 重新拍照
 doc_auth.buttons.upload_picture: 上传照片
 doc_auth.errors.alerts.address_check: 我们读取不到你身份证件上的地址。尝试重拍。
-doc_auth.errors.alerts.barcode_content_check: 我们读取不到你身份证件背面的条形码可能是条形码有问题，也可能是条形码类型很新，我们还不认识。如果你有州政府颁发的别的身份证件， 请使用那个身份证件。
+doc_auth.errors.alerts.barcode_content_check: 我们读取不到你身份证件背面的条形码。可能是条形码有问题，也可能是条形码类型很新，我们还不认识。如果你有别的身份证件， 请使用。
 doc_auth.errors.alerts.barcode_read_check: 我们读取不到你身份证件背面的条形码尝试重拍一张照片。
 doc_auth.errors.alerts.birth_date_checks: 我们读取不到你身份证件上的生日。尝试重拍。
 doc_auth.errors.alerts.control_number_check: 我们读取不到你身份证件背面的参考数字。尝试重拍一张照片。
@@ -536,18 +536,15 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 尝试再拍一张你自
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
 doc_auth.errors.alerts.visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
-doc_auth.errors.barcode_attention.confirm_info: 如果以下信息不正确，请上传你州政府颁发的身份证件的新照片。
+doc_auth.errors.barcode_attention.confirm_info: 如果以下信息不正确，请添加你身份证件的新照片。
 doc_auth.errors.barcode_attention.heading: 我们读取不到你身份证件上的条形码。
 doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
 doc_auth.errors.camera.failed: 相机未开启，请再试一次。
-doc_auth.errors.card_type: 再用你的驾照或州政府颁发的身份证件试一次。
 doc_auth.errors.choose_id_type_check: 选择你具备的身份证件类型
 doc_auth.errors.consent_form: 在你能继续之前，你必须授予我们你的同意。请在下面的框打勾然后点击继续。
-doc_auth.errors.doc_type_not_supported_heading: 我们只接受驾照或州政府颁发的 ID。
-doc_auth.errors.doc.doc_type_check: 你的驾照或身份证件必须是美国一个州或属地颁发的。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。
+doc_auth.errors.doc.doc_type_check: 你的身份证件必须是美国政府、美国州或领地颁发的。我们不接受军人身份证件。
 doc_auth.errors.doc.resubmit_failed_image: 你已经试过这张图像，该图像不行。请尝试添加一个不同的图像。
-doc_auth.errors.doc.wrong_id_type_html: 我们只接受由美国的一个州或属地颁发的驾照或身份证件。我们不接受任何其他形式的身份证件，比如护照和军队身份证件。<a> 了解更多有关我们接受的身份证件的信息 </a>
 doc_auth.errors.document_capture_canceled: 你已取消了用手机上传身份证件照片。
 doc_auth.errors.dpi.failed_short: 图像太小或模糊，请再试一次。
 doc_auth.errors.dpi.top_msg: 我们无法辨认你的身份证件。你的图像尺寸可能太小，或者照片中你的身份证件太小或太模糊。确保你的身份证件在图框中比较大，然后试着重拍一下。
@@ -606,7 +603,7 @@ doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
 doc_auth.headings.address: 更新你当前的居住地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
 doc_auth.headings.capture_complete: 我们验证了你的身份文件
-doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请将州政府颁发的身份证件%{link_html}。
+doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请把你身份证件的%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.choose_id_type: 选择你的身份证件类型
 doc_auth.headings.document_capture: 添加你身份证件的照片
@@ -656,7 +653,10 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
+doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
+doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
+doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
+doc_auth.info.hybrid_handoff: 我们会通过读取你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
 doc_auth.info.image_loaded: 图像已加载
@@ -667,7 +667,7 @@ doc_auth.info.interstitial_thanks: 感谢你的耐心！
 doc_auth.info.keep_window_open: 请勿关闭此窗口。
 doc_auth.info.learn_more: 对于我们如何保护你的敏感信息获得更多了解
 doc_auth.info.lets_go: 身份验证包括两部分：
-doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你州政府颁发的身份证件的照片。
+doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你身份证件的照片。
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
 doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
@@ -730,11 +730,6 @@ doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
-doc_auth.tips.review_issues_id_header_text: 请仔细查看你州政府颁发身份证件的图像：
-doc_auth.tips.review_issues_id_text1: 你是否使用了暗色背景？
-doc_auth.tips.review_issues_id_text2: 是否在平坦平面上拍的照？
-doc_auth.tips.review_issues_id_text3: 你相机的闪光灯是否关闭？
-doc_auth.tips.review_issues_id_text4: 是否所有细节都清晰可见？
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
@@ -1124,8 +1119,8 @@ idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
 idv.forgot_password.try_again: 请再试一下。
 idv.forgot_password.warnings:
-  - 如果你忘记了密码，则需重设并再次填写表格。
-  - 你得重新输入个人信息，比如姓名、州政府颁发的身份证件等。
+  - 如果你忘记了密码，则需重设密码并再次填写该表格。
+  - 你得重新输入你的个人信息，比如姓名、身份证件信息等。
 idv.form.address1: 地址第 1 行
 idv.form.address2: 地址第 2 行
 idv.form.city: 城市
@@ -1207,6 +1202,7 @@ idv.troubleshooting.options.learn_more_verify_by_phone: 了解有关使用什么
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: 对验证你的电话号码获得更多了解
 idv.troubleshooting.options.learn_more_verify_in_person: 对亲身验证获得更多了解
 idv.troubleshooting.options.supported_documents: 了解有关哪些身份证件可被接受的更多信息
+idv.troubleshooting.options.use_another_id_type: 使用其他类型的身份证件
 idv.troubleshooting.options.verify_by_mail: 使用邮件来验证地址
 idv.unavailable.exit_button: 退出 %{app_name}
 idv.unavailable.idv_explanation.with_sp_html: '<strong>%{sp}</strong>需要确保你是你，而不是别人冒充你。'

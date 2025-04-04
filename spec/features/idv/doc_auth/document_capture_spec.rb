@@ -414,7 +414,7 @@ RSpec.feature 'document capture step', :js do
                 expect_try_taking_new_pictures(false)
                 # eslint-disable-next-line
                 expect_review_issues_body_message(
-                  'doc_auth.errors.doc_type_not_supported_heading',
+                  'doc_auth.errors.rate_limited_heading',
                 )
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
@@ -422,7 +422,7 @@ RSpec.feature 'document capture step', :js do
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
 
-                expect_review_issues_body_message('doc_auth.errors.card_type')
+                expect_review_issues_body_message('doc_auth.errors.general.fallback_field_level')
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple front doc auth errors
