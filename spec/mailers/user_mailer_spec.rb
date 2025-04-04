@@ -938,6 +938,7 @@ RSpec.describe UserMailer, type: :mailer do
             )
           end
         end
+
         context 'when Enhanced IPP is enabled' do
           let(:is_enhanced_ipp) { true }
           let(:mail) do
@@ -966,6 +967,15 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Informed Delivery In-Person Proofing (ID-IPP)' do
+        let(:usps_time_zone) { ActiveSupport::TimeZone['America/New_York'].dup.freeze }
+        let(:formatted_date) do
+          I18n.l(
+            enrollment.due_date.in_time_zone(usps_time_zone),
+            format: :event_date,
+          )
+        end
+        let(:sp_name) { enrollment.service_provider.friendly_name }
+
         context 'template displays modified content' do
           it 'conditionally renders content in the what to expect section applicable to IPP' do
             aggregate_failures do
@@ -980,6 +990,19 @@ RSpec.describe UserMailer, type: :mailer do
               end
             end
           end
+        end
+
+        it 'renders the barcode deadline banner' do
+          expect(mail.html_part.body).to have_content(
+            t(
+              'in_person_proofing.body.barcode.deadline',
+              deadline: formatted_date,
+              sp_name: sp_name,
+            ),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.deadline_restart'),
+          )
         end
 
         it 'renders Questions? and Learn more link only once' do
@@ -1031,6 +1054,14 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
+        let(:usps_time_zone) { ActiveSupport::TimeZone['America/New_York'].dup.freeze }
+        let(:formatted_date) do
+          I18n.l(
+            enhanced_ipp_enrollment.due_date.in_time_zone(usps_time_zone),
+            format: :event_date,
+          )
+        end
+        let(:sp_name) { enhanced_ipp_enrollment.service_provider.friendly_name }
         let(:is_enhanced_ipp) { true }
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
@@ -1054,6 +1085,19 @@ RSpec.describe UserMailer, type: :mailer do
               end
             end
           end
+        end
+
+        it 'renders the barcode deadline banner' do
+          expect(mail.html_part.body).to have_content(
+            t(
+              'in_person_proofing.body.barcode.deadline',
+              deadline: formatted_date,
+              sp_name: sp_name,
+            ),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.deadline_restart'),
+          )
         end
 
         it 'renders Questions? and Learn more link only once' do
