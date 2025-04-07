@@ -1241,7 +1241,7 @@ image_description.us_flag: 美国国旗
 image_description.warning: 黄色警告标志
 in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
-in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
+in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。完成这个步骤以访问%{sp_name}。
 in_person_proofing.body.barcode.deadline_restart: 如果你过了截止日期才去邮局，那你的条形码将无法使用。你将需要重新开始这一流程。
 in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
 in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：

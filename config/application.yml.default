@@ -95,7 +95,6 @@ deliver_mail_async: false
 desktop_ft_unlock_setup_option_percent_tested: 0
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
-disable_logout_get_request: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
 doc_auth_check_failed_image_resubmission_enabled: true
@@ -164,6 +163,7 @@ hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
+idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
@@ -205,6 +205,7 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 # are strings in the format 'Month day, year'
 in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_message_enabled: false
+in_person_passports_enabled: true
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false
@@ -531,7 +532,6 @@ production:
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
   disable_email_sending: false
-  disable_logout_get_request: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
   enable_usps_verification: false
@@ -539,6 +539,7 @@ production:
   facial_match_general_availability_enabled: false
   feature_pending_in_person_password_reset_enabled: false
   idv_sp_required: true
+  in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20

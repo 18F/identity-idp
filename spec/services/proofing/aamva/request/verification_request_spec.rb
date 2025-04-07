@@ -6,13 +6,14 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   let(:config) { AamvaFixtures.example_config }
   let(:state_id_jurisdiction) { 'CA' }
   let(:state_id_number) { '123456789' }
+  let(:last_name) { 'McTesterson' }
 
   let(:applicant_data) do
     {
       uuid: '1234-abcd-efgh',
       first_name: 'Testy',
       middle_name: nil,
-      last_name: 'McTesterson',
+      last_name:,
       name_suffix: nil,
       dob: '10/29/1942',
       address1: '123 Sunnyside way',
@@ -36,7 +37,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     Proofing::Aamva::Applicant.from_proofer_applicant(**applicant_data.compact_blank)
   end
 
-  subject do
+  subject(:request) do
     described_class.new(
       applicant: applicant,
       session_id: transaction_id,
@@ -353,6 +354,31 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
       it 'zero-pads the id to 8 digits' do
         expect(rendered_state_id_number).to eq("0#{state_id_number}")
+      end
+    end
+  end
+
+  describe 'compound last names' do
+    let(:last_name) { 'McFirst McSecond' }
+
+    subject(:rendered_last_name) do
+      body = REXML::Document.new(request.body)
+      REXML::XPath.first(body, '//nc:PersonSurName')&.text
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_split_last_name_states)
+        .and_return(['DC'])
+    end
+    it 'sends the full last name' do
+      expect(rendered_last_name).to eq('McFirst McSecond')
+    end
+
+    context 'in state configured for last name split' do
+      let(:state_id_jurisdiction) { 'DC' }
+
+      it 'only sends the first part of the last name' do
+        expect(rendered_last_name).to eq('McFirst')
       end
     end
   end
