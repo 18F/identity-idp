@@ -1618,7 +1618,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               end
 
               context 'when enrollment is in password_reset for more than allowed number of days' do
-                let(:pw_reset_max) { IdentityConfig.store.in_person_password_reset_expiration }
+                let(:pw_reset_max) { IdentityConfig.store.in_person_password_reset_expiration_days }
                 let(:travel_time) { 10.0.minutes }
                 let(:future_time) { current_time + travel_time }
                 let(:expiration_period) { 90 }

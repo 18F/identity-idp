@@ -134,7 +134,9 @@ class GetUspsProofingResultsJob < ApplicationJob
   else
     if profile_deactivation_reason == 'password_reset'
       skip_enrollment(enrollment, profile_deactivation_reason, response)
-      cancel_abandoned_password_reset_enrollment(enrollment) if password_reset_time_exceeded?(enrollment)
+      if password_reset_time_exceeded?(enrollment)
+        cancel_abandoned_password_reset_enrollment(enrollment)
+      end
     else
       process_enrollment_response(enrollment, response)
     end
@@ -164,14 +166,14 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user)
       .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
         **enrollment_analytics_attributes(enrollment, complete: false),
-        reason: "Enrollment cancelled after over #{IdentityConfig.store.in_person_password_reset_expiration} days in password reset", # rubocop:disable Layout/LineLength
+        reason: "Enrollment cancelled after over #{IdentityConfig.store.in_person_password_reset_expiration_days} days in password reset", # rubocop:disable Layout/LineLength
         job_name: self.class.name,
       )
   end
 
   def password_reset_time_exceeded?(enrollment)
-    password_reset_max = IdentityConfig.store.in_person_password_reset_expiration * MINUTES_PER_DAY
-    return enrollment.minutes_since_last_status_update > password_reset_max
+    password_reset_max = IdentityConfig.store.in_person_password_reset_expiration_days * MINUTES_PER_DAY # rubocop:disable Layout/LineLength
+    enrollment.minutes_since_last_status_update > password_reset_max
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
