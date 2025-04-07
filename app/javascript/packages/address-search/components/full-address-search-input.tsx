@@ -11,6 +11,7 @@ import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 interface FullAddressSearchInputProps {
   disabled?: boolean;
   locationsURL: string;
+  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
   onError?: (error: Error | null) => void;
   onFoundLocations?: (
     address: LocationQuery | null,

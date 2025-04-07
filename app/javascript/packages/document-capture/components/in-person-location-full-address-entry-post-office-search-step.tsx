@@ -59,11 +59,11 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (inProgress) {
         return;
       }
-      const selected = transformKeys(selectedLocation, snakeCase);
+      const selectedLocationData = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
         await request(locationsURL, {
-          json: selected,
+          json: selectedLocationData,
           method: 'PUT',
         });
         // In try block set success of request. If the request is successful, fire remaining code?
