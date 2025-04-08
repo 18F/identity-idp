@@ -35,10 +35,12 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
 
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
-    async (e: any, id: number) => {
-      const selectedLocation = locationResults![id]!;
-      const { streetAddress, formattedCityStateZip } = selectedLocation;
-      let selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
+    async (e: any, id: number | null) => {
+      const selectedLocation =
+        id === null ? null : locationResults![id];
+
+      let selectedLocationAddress =
+          selectedLocation === null ? "Location Skipped" : `${selectedLocation.streetAddress}, ${selectedLocation.formattedCityStateZip}`;
 
       if (flowPath !== 'hybrid') {
         e.preventDefault();
@@ -59,7 +61,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (inProgress) {
         return;
       }
-      const selected = transformKeys(selectedLocation, snakeCase);
+      const selected = selectedLocation ? transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
         await request(locationsURL, {
