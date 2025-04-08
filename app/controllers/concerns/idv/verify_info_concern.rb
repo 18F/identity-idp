@@ -208,6 +208,7 @@ module Idv
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
+          last_name_spaced: pii[:last_name].split(' ').many?,
           previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
             [:errors, :ssn],

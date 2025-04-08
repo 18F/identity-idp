@@ -19,6 +19,7 @@ RSpec.describe 'In Person Proofing', js: true do
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
+    visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
@@ -138,7 +139,13 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_css("img[alt='#{APP_NAME}']")
     expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
-    expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+    expect(page).to have_content(
+      t(
+        'in_person_proofing.body.barcode.deadline',
+        deadline: deadline,
+        sp_name: ipp_service_provider.friendly_name,
+      ),
+    )
     expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content('Sunday: Closed')
 
@@ -263,7 +270,7 @@ RSpec.describe 'In Person Proofing', js: true do
         visit idv_how_to_verify_url
 
         # choose remote
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
         complete_hybrid_handoff_step
         complete_document_capture_step(with_selfie: false)
 
@@ -292,7 +299,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'allows the user to successfully complete remote identity verification' do
       # choose remote
-      click_on t('forms.buttons.continue_remote')
+      click_on t('forms.buttons.continue_online')
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
@@ -357,7 +364,7 @@ RSpec.describe 'In Person Proofing', js: true do
           complete_doc_auth_steps_before_hybrid_handoff_step
 
           # choose remote
-          click_on t('forms.buttons.continue_remote')
+          click_on t('forms.buttons.continue_online')
           click_send_link
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -374,7 +381,7 @@ RSpec.describe 'In Person Proofing', js: true do
             visit idv_how_to_verify_url
 
             # choose remote
-            click_on t('forms.buttons.continue_remote')
+            click_on t('forms.buttons.continue_online')
             complete_hybrid_handoff_step
             successful_response = instance_double(
               Faraday::Response,
@@ -579,6 +586,7 @@ RSpec.describe 'In Person Proofing', js: true do
     let(:user) { user_with_2fa }
 
     it 'allows the user to search by full address', allow_browser_log: true do
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       # prepare page
@@ -664,7 +672,11 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
-        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+        t(
+          'in_person_proofing.body.barcode.deadline',
+          deadline: deadline,
+          sp_name: ipp_service_provider.friendly_name,
+        ),
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content('Sunday: Closed')

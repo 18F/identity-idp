@@ -53,12 +53,9 @@ module Users
     end
 
     def destroy
-      if request.method == 'GET' && IdentityConfig.store.disable_logout_get_request
-        redirect_to root_path
-      else
-        analytics.logout_initiated(sp_initiated: false, oidc: false)
-        super
-      end
+      analytics.logout_initiated(sp_initiated: false, oidc: false)
+      attempts_api_tracker.logout_initiated(success: true)
+      super
     end
 
     def analytics_user

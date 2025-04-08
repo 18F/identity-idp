@@ -2151,6 +2151,7 @@ module AnalyticsEvents
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
+  # @param last_name_spaced [Boolean] Whether the user's last name includes an empty space
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
   # @param proofing_results [Hash]
@@ -2217,6 +2218,7 @@ module AnalyticsEvents
     analytics_id: nil,
     errors: nil,
     flow_path: nil,
+    last_name_spaced: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     opted_in_to_in_person_proofing: nil,
     proofing_results: nil,
@@ -2237,6 +2239,7 @@ module AnalyticsEvents
       errors:,
       flow_path:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      last_name_spaced:,
       opted_in_to_in_person_proofing:,
       proofing_results:,
       skip_hybrid_handoff:,
@@ -2322,11 +2325,15 @@ module AnalyticsEvents
   # User submits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_submitted(
     step:,
     analytics_id:,
+    doc_auth_vendor:,
+    passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -2335,6 +2342,8 @@ module AnalyticsEvents
       'IdV: doc auth welcome submitted',
       step:,
       analytics_id:,
+      doc_auth_vendor:,
+      passport_allowed:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
       **extra,
@@ -2344,11 +2353,15 @@ module AnalyticsEvents
   # User visits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
+  # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
+    doc_auth_vendor:,
+    passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
     **extra
@@ -2357,8 +2370,39 @@ module AnalyticsEvents
       'IdV: doc auth welcome visited',
       step:,
       analytics_id:,
+      doc_auth_vendor:,
+      passport_allowed:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
+
+  # User's passport information submitted to DoS for validation
+  # @param [Boolean] success Whether the validation succeeded
+  # @param [String] response The raw verdict from DoS
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
+  # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
+  #                  we rate limit them.
+  # @param [String] user_id
+  # @param [String] document_type The document type (should always be 'Passport' here)
+  def idv_dos_passport_verification(
+    success:,
+    response:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    user_id:,
+    document_type:,
+    **extra
+  )
+    track_event(
+      :idv_dos_passport_verification,
+      success:,
+      response:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      user_id:,
+      document_type:,
       **extra,
     )
   end

@@ -59,31 +59,13 @@ RSpec.describe OpenidConnect::LogoutController do
         before { stub_sign_in(user) }
 
         context 'with valid params' do
-          it 'destroys the session' do
-            expect(controller).to receive(:sign_out).and_call_original
+          render_views
 
-            action
-          end
-
-          it 'redirects back to the client if server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'renders JS client-side redirect if client-side JS redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side_js')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'tracks events' do
+          it 'renders logout confirmation page' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 
@@ -99,7 +81,7 @@ RSpec.describe OpenidConnect::LogoutController do
               ),
             )
             expect(@analytics).to have_logged_event(
-              'Logout Initiated',
+              'OIDC Logout Page Visited',
               success: true,
               client_id: service_provider.issuer,
               client_id_parameter_present: false,
@@ -107,10 +89,11 @@ RSpec.describe OpenidConnect::LogoutController do
               sp_initiated: true,
               oidc: true,
             )
-
             expect(@analytics).to_not have_logged_event(
               :sp_integration_errors_present,
             )
+            expect(response).to render_template(:confirm_logout)
+            expect(response.body).to include service_provider.friendly_name
           end
         end
 
@@ -661,6 +644,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 

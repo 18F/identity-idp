@@ -49,19 +49,15 @@ RSpec.describe Users::SessionsController, devise: true do
     end
   end
 
-  describe 'GET /logout' do
-    it 'does not log user out and redirects to root' do
-      sign_in_as_user
-      get :destroy
-      expect(controller.current_user).to_not be nil
-      expect(response).to redirect_to root_url
-    end
-  end
-
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
       sign_in_as_user
+      stub_attempts_tracker
+
+      expect(@attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :destroy
 

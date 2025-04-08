@@ -615,7 +615,7 @@ doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
-doc_auth.headings.how_to_verify: 选择你想如何验证身份
+doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
 doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
 doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
@@ -631,7 +631,7 @@ doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
 doc_auth.headings.upload_from_computer: 在这台电脑上继续
 doc_auth.headings.upload_from_phone: 使用手机拍照
-doc_auth.headings.verify_at_post_office: 去邮局验证身份
+doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
@@ -656,9 +656,6 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.how_to_verify: 你可以选择在网上验证身份或者到参与本项目的邮局亲身验证身份。
-doc_auth.info.how_to_verify_mobile: 你可以选择用你的手机在网上验证身份或者到参与本项目的邮局亲身验证身份。
-doc_auth.info.how_to_verify_troubleshooting_options_header: 想对验证身份获得更多了解吗？
 doc_auth.info.hybrid_handoff: 我们将通过读取州政府颁发给你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
@@ -694,20 +691,18 @@ doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。
 doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
 doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
-doc_auth.info.verify_at_post_office_description: 如果你没有手机拍身份证件照片，这一选项更好。
-doc_auth.info.verify_at_post_office_description_mobile: 如果你没有手机可以拍照，请选择该选项
-doc_auth.info.verify_at_post_office_instruction: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
-doc_auth.info.verify_at_post_office_instruction_selfie: 你在网上输入身份证件信息，然后到一个参与本项目的邮局去亲身验证身份。
+doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能使用美国驾照或州身份证件。</strong>就这一选项你不能使用美国护照。
+doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
-doc_auth.info.verify_online_description: 如果你没有移动设备或者无法轻松拍身份证件照片，这一选项更好。
-doc_auth.info.verify_online_description_mobile: 如果你有手机可以拍照，请选择该选项。
-doc_auth.info.verify_online_instruction: 你将拍身份证件的照片来完全在网上验证身份。大多数用户都能轻松完成这样流程。
-doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将使用手机拍摄你的身份证件照片。大多数用户一次就能完成这个流程。
-doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄身份证件和本人的照片。大多数用户都能轻松完成这一流程。
+doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
+doc_auth.info.verify_online_instruction: 你将添加自己身份证件的照片来完全在网上验证身份。
+doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将用手机拍摄你的身份证件照片。
+doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄自己身份证件和你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1: 带上驾照或州身份证件
+doc_auth.instructions.bullet1a: 带上驾照或州身份证件
+doc_auth.instructions.bullet1b: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -887,8 +882,8 @@ forms.buttons.cancel: 是的，取消
 forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
-forms.buttons.continue_remote: 继续在网上验证
-forms.buttons.continue_remote_mobile: 在手机上继续
+forms.buttons.continue_online: 继续在网上验证
+forms.buttons.continue_online_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -1246,7 +1241,7 @@ image_description.us_flag: 美国国旗
 image_description.warning: 黄色警告标志
 in_person_proofing.body.barcode.cancel_link_text: 取消你的条形码
 in_person_proofing.body.barcode.close_window: 你现在可以关闭这一窗口。
-in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。
+in_person_proofing.body.barcode.deadline: 你必须在 %{deadline}之前去任何参与邮局。完成这个步骤以访问%{sp_name}。
 in_person_proofing.body.barcode.deadline_restart: 如果你过了截止日期才去邮局，那你的条形码将无法使用。你将需要重新开始这一流程。
 in_person_proofing.body.barcode.eipp_tag: GSA 增强型试行条形码
 in_person_proofing.body.barcode.eipp_what_to_bring: 取决于您身份证件类型，您也许需要显示支持文件。请仔细阅读以下选项：

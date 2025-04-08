@@ -604,7 +604,7 @@ doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID
-doc_auth.headings.how_to_verify: Choose how you want to verify your identity
+doc_auth.headings.how_to_verify: Choose how to verify your ID
 doc_auth.headings.hybrid_handoff: How would you like to add your ID?
 doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
@@ -620,7 +620,7 @@ doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
 doc_auth.headings.upload_from_computer: Continue on this computer
 doc_auth.headings.upload_from_phone: Use your phone to take photos
-doc_auth.headings.verify_at_post_office: Verify your identity at a Post Office
+doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
@@ -645,9 +645,6 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.how_to_verify: You have the option to verify your identity online, or in person at a participating Post Office.
-doc_auth.info.how_to_verify_mobile: You have the option to verify your identity online with your phone, or in person at a participating Post Office.
-doc_auth.info.how_to_verify_troubleshooting_options_header: Want to learn more about how to verify your identity?
 doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
@@ -683,20 +680,18 @@ doc_auth.info.stepping_up_html: Verify your identity again to access this servic
 doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
 doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
-doc_auth.info.verify_at_post_office_description: This option is better if you don’t have a phone to take photos of your ID.
-doc_auth.info.verify_at_post_office_description_mobile: Choose this option if you don’t have a phone to take pictures.
-doc_auth.info.verify_at_post_office_instruction: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
-doc_auth.info.verify_at_post_office_instruction_selfie: You’ll enter your ID information online, and verify your identity in person at a participating Post Office.
+doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can only use a U.S. driver’s license or state ID.</strong> You cannot use a U.S. passport book for this option.
+doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
-doc_auth.info.verify_online_description: This option is better if you have a phone to take photos of your ID.
-doc_auth.info.verify_online_description_mobile: Choose this option if you have a phone to take pictures.
-doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online. Most users finish this process in one sitting.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone. Most users finish this process in one sitting.
-doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and a photo of yourself using a phone. Most users finish this process in one sitting.
+doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
+doc_auth.info.verify_online_instruction: You’ll add photos of your ID and verify your identity fully online.
+doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone.
+doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself using a phone.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
-doc_auth.instructions.bullet1: Have a driver’s license or state ID
+doc_auth.instructions.bullet1a: Have a driver’s license or state ID
+doc_auth.instructions.bullet1b: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
@@ -876,8 +871,8 @@ forms.buttons.cancel: Yes, cancel
 forms.buttons.confirm: Confirm
 forms.buttons.continue: Continue
 forms.buttons.continue_ipp: Continue in person
-forms.buttons.continue_remote: Continue online
-forms.buttons.continue_remote_mobile: Continue on your phone
+forms.buttons.continue_online: Continue online
+forms.buttons.continue_online_mobile: Continue on your phone
 forms.buttons.delete: Delete
 forms.buttons.disable: Delete
 forms.buttons.edit: Edit
@@ -1233,7 +1228,7 @@ image_description.us_flag: US flag
 image_description.warning: Yellow caution sign
 in_person_proofing.body.barcode.cancel_link_text: Cancel your barcode
 in_person_proofing.body.barcode.close_window: You may now close this window.
-in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}.
+in_person_proofing.body.barcode.deadline: You must visit any participating Post Office by %{deadline}. Complete this step to access %{sp_name}.
 in_person_proofing.body.barcode.deadline_restart: If you go after this deadline, your barcode will not work. You will need to restart the process.
 in_person_proofing.body.barcode.eipp_tag: GSA Enhanced Pilot Barcode
 in_person_proofing.body.barcode.eipp_what_to_bring: 'Depending on your ID, you may need to show supporting documents. Review the following options carefully:'

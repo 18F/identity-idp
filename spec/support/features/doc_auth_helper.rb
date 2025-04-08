@@ -85,7 +85,7 @@ module DocAuthHelper
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
     if IdentityConfig.store.in_person_proofing_opt_in_enabled
-      click_on t('forms.buttons.continue_remote')
+      click_on t('forms.buttons.continue_online')
     end
     complete_hybrid_handoff_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
@@ -98,9 +98,9 @@ module DocAuthHelper
     complete_agreement_step
     if remote
       if facial_match_required
-        click_on t('forms.buttons.continue_remote_mobile')
+        click_on t('forms.buttons.continue_online_mobile')
       else
-        click_on t('forms.buttons.continue_remote')
+        click_on t('forms.buttons.continue_online')
       end
     else
       click_on t('forms.buttons.continue_ipp')
