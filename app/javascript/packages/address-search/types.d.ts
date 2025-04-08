@@ -70,7 +70,7 @@ interface LocationCollectionProps {
 
 interface FullAddressSearchProps {
   disabled: boolean;
-  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  handleLocationSelect: ((e: any, id: number | null) => Promise<void>) | null | undefined;
   locationsURL: string;
   noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;

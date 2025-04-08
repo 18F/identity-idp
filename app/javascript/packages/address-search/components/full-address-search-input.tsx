@@ -11,7 +11,7 @@ import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 interface FullAddressSearchInputProps {
   disabled?: boolean;
   locationsURL: string;
-  handleLocationSelect: ((e: any, id: number | null) => Promise<void>);
+  onContinue: ((e: any, id: number | null) => Promise<void>) | null | undefined;
   onError?: (error: Error | null) => void;
   onFoundLocations?: (
     address: LocationQuery | null,
@@ -26,7 +26,7 @@ interface FullAddressSearchInputProps {
 export default function FullAddressSearchInput({
   disabled = false,
   locationsURL,
-  handleLocationSelect = () => undefined,
+  onContinue = () => undefined,
   onError = () => undefined,
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
@@ -81,7 +81,6 @@ export default function FullAddressSearchInput({
 
   const handleSearch = useCallback(
     (event) => {
-      console.log(event);
       onError(null);
       onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
@@ -92,9 +91,8 @@ export default function FullAddressSearchInput({
     (event) => {
       // Prevent form submission since we are no longer searching
       event.preventDefault();
-      console.log(event);
       // Run LocationSelect with null as the location
-      //handleLocationSelect(event, null);
+      onContinue(event, null);
     },
     [uspsApiError]
   );

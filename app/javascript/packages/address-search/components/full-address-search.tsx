@@ -38,6 +38,7 @@ function FullAddressSearch({
       <FullAddressSearchInput
         usStatesTerritories={usStatesTerritories}
         registerField={registerField}
+        onContinue={handleLocationSelect}
         onFoundLocations={(
           address: LocationQuery | null,
           locations: FormattedLocation[] | null | undefined,

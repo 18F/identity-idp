@@ -40,7 +40,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         id === null ? null : locationResults![id];
 
       let selectedLocationAddress =
-          selectedLocation === null ? "Location Skipped" : `${selectedLocation.streetAddress}, ${selectedLocation.formattedCityStateZip}`;
+          selectedLocation === null ? "Location Selection Skipped" : `${selectedLocation.streetAddress}, ${selectedLocation.formattedCityStateZip}`;
 
       if (flowPath !== 'hybrid') {
         e.preventDefault();
@@ -61,11 +61,13 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (inProgress) {
         return;
       }
-      const selected = selectedLocation ? transformKeys(selectedLocation, snakeCase);
+      const selectedLocationDto = selectedLocation ? transformKeys(selectedLocation, snakeCase) : null;
+      console.log(selectedLocationDto);
+      console.log(locationsURL);
       setInProgress(true);
       try {
         await request(locationsURL, {
-          json: selected,
+          json: selectedLocationDto,
           method: 'PUT',
         });
         // In try block set success of request. If the request is successful, fire remaining code?
