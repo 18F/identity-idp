@@ -525,7 +525,7 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Essayez de prendre une n
 doc_auth.errors.alerts.sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo, ou que la photo soit trop sombre. Essayez de prendre de nouvelles photos avec un meilleur éclairage.
 doc_auth.errors.alerts.visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
-doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez téléverser de nouvelles photos de votre pièce d’identité.
+doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez téléverser de nouvelles photos de votre pièce d’identité
 doc_auth.errors.barcode_attention.heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
 doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'

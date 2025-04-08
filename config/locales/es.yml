@@ -536,7 +536,7 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar de nuevo u
 doc_auth.errors.alerts.sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.visible_color_check: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
 doc_auth.errors.alerts.visible_photo_check: No pudimos verificar la fotografía de su identificación. Intente tomar nuevas fotos.
-doc_auth.errors.barcode_attention.confirm_info: Si la información siguiente es incorrecta, agregue nuevas fotos de su identificación.
+doc_auth.errors.barcode_attention.confirm_info: Si la información siguiente es incorrecta, agregue nuevas fotos de su identificación
 doc_auth.errors.barcode_attention.heading: No pudimos leer el código de barras en su identificación.
 doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'

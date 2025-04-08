@@ -525,7 +525,7 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yo
 doc_auth.errors.alerts.sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
 doc_auth.errors.alerts.visible_color_check: We couldn’t verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
 doc_auth.errors.alerts.visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
-doc_auth.errors.barcode_attention.confirm_info: If the information below is incorrect, please add new photos of your ID.
+doc_auth.errors.barcode_attention.confirm_info: If the information below is incorrect, please add new photos of your ID
 doc_auth.errors.barcode_attention.heading: We couldn’t read the barcode on your ID.
 doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'

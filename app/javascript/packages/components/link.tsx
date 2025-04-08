@@ -48,13 +48,20 @@ function Link({
     .filter(Boolean)
     .join(' ');
 
+  const handleClick = () => {
+    // Clear the onbeforeunload event to prevent the "Leave site?" prompt
+    if (href === 'choose_id_type') {
+      window.onbeforeunload = null;
+    }
+  };
+
   let newTabProps: AnchorHTMLAttributes<HTMLAnchorElement> | undefined;
   if (isNewTab) {
     newTabProps = { target: '_blank', rel: 'noreferrer' };
   }
 
   return (
-    <a href={href} {...newTabProps} {...anchorProps} className={classes}>
+    <a href={href} {...newTabProps} {...anchorProps} className={classes} onClick={handleClick}>
       {children}
       {isNewTab && <span className="usa-sr-only">{t('links.new_tab')}</span>}
     </a>

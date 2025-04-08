@@ -536,7 +536,7 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 尝试再拍一张你自
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
 doc_auth.errors.alerts.visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
-doc_auth.errors.barcode_attention.confirm_info: 如果以下信息不正确，请添加你身份证件的新照片。
+doc_auth.errors.barcode_attention.confirm_info: 如果以下信息不正确，请添加你身份证件的新照片
 doc_auth.errors.barcode_attention.heading: 我们读取不到你身份证件上的条形码。
 doc_auth.errors.camera.blocked: 你的镜头被遮住了。
 doc_auth.errors.camera.blocked_detail_html: '<strong>允许 %{app_name} 进入你的相机来拍照。</strong><span>尝试再次拍照并给予许可。如果还不行，你可能需要检查自己设备的设置来给予许可。</span>'
