@@ -16,62 +16,131 @@ module Reporting
 
     attr_reader :time_range
 
-    QUERY_DEFINITIONS = [
-      { title: 'Singular Vendor', method: :singular_vendor_query },
-      { title: 'True ID', method: :true_id_query },
-      { title: 'Acuant', method: :acuant_query },
-      { title: 'Phone Finder', method: :phone_finder_query },
-      { title: 'Socure', method: :socure_query },
-    ].freeze
-
     # @param [Range<Time>] time_range
     def initialize(time_range:)
       @time_range = time_range
     end
 
-    def as_tables
-      Rails.logger.info('Generating API Transaction Count Report tables...')
-      tables = queries.map { |query| table_for_query(query) }
-      Rails.logger.info('API Transaction Count Report tables generated successfully.')
-      tables
-    end
-
-    def as_emailable_report
-      EmailableReport.new(
-        title: 'Proofing Rate Metrics',
-        subtitle: 'Condensed (NEW)',
-        float_as_percent: true,
-        precision: 2,
-        table: as_csv,
-        filename: 'condensed_idv',
-      )
+    def as_emailable_reports
+      [
+        Reporting::EmailableReport.new(
+          title: 'API Transaction Count Report - Singular Vendor',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: singular_vendor_table,
+          filename: 'singular_vendor_report',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'API Transaction Count Report - True ID',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: true_id_table,
+          filename: 'true_id_report',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'API Transaction Count Report - Acuant',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: acuant_table,
+          filename: 'acuant_report',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'API Transaction Count Report - Phone Finder',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: phone_finder_table,
+          filename: 'phone_finder_report',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'API Transaction Count Report - Socure',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: socure_table,
+          filename: 'socure_report',
+        ),
+      ]
     end
 
     def to_csvs
-      as_tables.map do |table|
+      as_emailable_reports.map do |report|
         CSV.generate do |csv|
-          table.each { |row| csv << row }
+          report.table.each { |row| csv << row }
         end
       end
     end
 
     private
 
-    def queries
-      QUERY_DEFINITIONS.map do |definition|
-        { title: definition[:title], query: send(definition[:method]) }
-      end
-    end
-
-    def table_for_query(query)
-      query_data = fetch_results(query: query[:query])
-      return [[query[:title]], ['No data available']] if query_data.empty?
+    def singular_vendor_table
+      query_data = fetch_results(query: singular_vendor_query)
+      return [['Singular Vendor'], ['No data available']] if query_data.empty?
 
       headers = column_labels(query_data.first)
       rows = query_data.map(&:values)
 
       [
-        [query[:title]], # Add the query title as the first row
+        ['Singular Vendor'],
+        headers,
+        *rows,
+      ]
+    end
+
+    def true_id_table
+      query_data = fetch_results(query: true_id_query)
+      return [['True ID'], ['No data available']] if query_data.empty?
+
+      headers = column_labels(query_data.first)
+      rows = query_data.map(&:values)
+
+      [
+        ['True ID'],
+        headers,
+        *rows,
+      ]
+    end
+
+    def acuant_table
+      query_data = fetch_results(query: acuant_query)
+      return [['Acuant'], ['No data available']] if query_data.empty?
+
+      headers = column_labels(query_data.first)
+      rows = query_data.map(&:values)
+
+      [
+        ['Acuant'],
+        headers,
+        *rows,
+      ]
+    end
+
+    def phone_finder_table
+      query_data = fetch_results(query: phone_finder_query)
+      return [['Phone Finder'], ['No data available']] if query_data.empty?
+
+      headers = column_labels(query_data.first)
+      rows = query_data.map(&:values)
+
+      [
+        ['Phone Finder'],
+        headers,
+        *rows,
+      ]
+    end
+
+    def socure_table
+      query_data = fetch_results(query: socure_query)
+      return [['Socure'], ['No data available']] if query_data.empty?
+
+      headers = column_labels(query_data.first)
+      rows = query_data.map(&:values)
+
+      [
+        ['Socure'],
         headers,
         *rows,
       ]
@@ -95,7 +164,6 @@ module Reporting
       )
     end
 
-    # Query definitions for fetching API transaction counts
     def singular_vendor_query
       <<~QUERY
         #LN Stack
@@ -174,7 +242,7 @@ module Reporting
         properties.event_properties.submit_attempts as submit_attempts,
         properties.event_properties.transaction_status as transaction_status,
         properties.event_properties.vendor as vendor
-        | display uuid, id, timestamp, sp, dol_state, success, 
+        | display uuid, id, timestamp, sp, dol_state, success,
         billed, vendor, product_status, transaction_status, conversation_id, request_id, referenceID, decision_status, submit_attempts, remaining_submit_attempts
       QUERY
     end
@@ -200,15 +268,15 @@ module Reporting
         | fields properties.user_id as uuid, id, @timestamp as timestamp,
         properties.sp_request.app_differentiator as dol_state,
         properties.service_provider as sp,
-        properties.event_properties.vendor.transaction_id as phoneFinder_transactionID, 
-        properties.event_properties.vendor.reference as phoneFinder_referenceID, 
+        properties.event_properties.vendor.transaction_id as phoneFinder_transactionID,
+        properties.event_properties.vendor.reference as phoneFinder_referenceID,
         strcontains(properties.event_properties.errors.base.0,"pass") as phoneFinder_pass,
         properties.event_properties.success as success,
         properties.event_properties.area_code as area_code,
         properties.event_properties.country_code as country_code,
         properties.event_properties.phone_fingerprint as phone_fingerprint
         | parse @message /"Items":\[(?<temp_checks>.*?)\]/
-        | display uuid, id, timestamp, sp, dol_state, success, 
+        | display uuid, id, timestamp, sp, dol_state, success,
           phoneFinder_referenceID, phoneFinder_transactionID, phoneFinder_pass,
           coalesce(temp_checks,"passed_all","") as phoneFinder_checks
       QUERY
@@ -222,7 +290,7 @@ module Reporting
         properties.sp_request.app_differentiator as dol_state, properties.event_properties.success as success,
         properties.service_provider as sp,
         properties.event_properties.decision.value as decision_result,
-        properties.event_properties.docv_transaction_token as docv_transaction_token, 
+        properties.event_properties.docv_transaction_token as docv_transaction_token,
         properties.event_properties.reference_id as reference_id, properties.event_properties.submit_attempts as submit_attempts,
         replace(replace(strcontains(name, "front"),"1","front"),"0","back") as side
         | display uuid, id, timestamp, sp, dol_state, success, decision_result, side, docv_transaction_token, reference_id, submit_attempts
