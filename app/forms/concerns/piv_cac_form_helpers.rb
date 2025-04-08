@@ -21,6 +21,10 @@ module PivCacFormHelpers
     possible_error = @data['error']
     if possible_error
       self.error_type = possible_error
+      errors.add(
+        :token, I18n.t('headings.piv_cac.certificate.invalid'),
+        type: possible_error.match(/\.(.*)/)[1].to_sym
+      )
       false
     else
       self.x509_dn_uuid = @data['uuid']
@@ -35,6 +39,10 @@ module PivCacFormHelpers
       true
     else
       self.error_type = 'token.invalid'
+      errors.add(
+        :token, I18n.t('headings.piv_cac.certificate.invalid'),
+        type: :invalid
+      )
       false
     end
   end
