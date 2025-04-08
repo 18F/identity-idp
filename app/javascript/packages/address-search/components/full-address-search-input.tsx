@@ -19,6 +19,7 @@ interface FullAddressSearchInputProps {
   ) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
   registerField?: RegisterFieldCallback;
+  onContinue: (event: React.MouseEvent) => void;
   usStatesTerritories: string[][];
   uspsApiError: Error | null;
 }
@@ -80,11 +81,18 @@ export default function FullAddressSearchInput({
 
   const handleSearch = useCallback(
     (event) => {
+      console.log(event);
       onError(null);
       onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
+
+  const handleContinue = function(event) {
+    // Prevent form submission since we are no longer searching
+    event.preventDefault();
+    console.log(event);
+  };
 
   const getErroneousAddressChars = () => {
     const addressReStr = validatedAddressFieldRef.current?.pattern;
@@ -182,7 +190,7 @@ export default function FullAddressSearchInput({
           isBig
           ref={spinnerButtonRef}
           type="submit"
-          onClick={handleSearch}
+          onClick={ uspsApiError ? handleContinue : handleSearch}
           spinOnClick={false}
           actionMessage={t('in_person_proofing.body.location.po_search.is_searching_message')}
           longWaitDurationMs={1}
@@ -192,6 +200,6 @@ export default function FullAddressSearchInput({
           }
         </SpinnerButton>
       </div>
-    </>
-  );
+  </>
+);
 }

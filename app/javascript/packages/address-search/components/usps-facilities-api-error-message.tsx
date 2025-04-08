@@ -9,7 +9,7 @@ export default function UspsFacilitiesApiErrorMessage() {
           alt="empty location icon"
           width={65}
           height={65}
-          src={getAssetPath("empty-loc.svg")}
+          src={getAssetPath('empty-loc.svg')}
         />
       </div>
       <div className="usps-facilities-api-error__text">

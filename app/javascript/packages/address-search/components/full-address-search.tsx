@@ -1,4 +1,4 @@
-import { Alert, PageHeading } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { useState } from 'react';
 import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
@@ -38,7 +38,6 @@ function FullAddressSearch({
       <FullAddressSearchInput
         usStatesTerritories={usStatesTerritories}
         registerField={registerField}
-        onContinue={handleLocationSelect}
         onFoundLocations={(
           address: LocationQuery | null,
           locations: FormattedLocation[] | null | undefined,

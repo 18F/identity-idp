@@ -53,7 +53,7 @@ interface InPersonLocationsProps {
 interface LocationCollectionItemProps {
   distance?: string;
   formattedCityStateZip: string;
-  handleSelect?: (event: React.MouseEvent, selection: number) => void;
+  handleSelect?: (event: React.MouseEvent, selection: number | null) => void;
   name?: string;
   saturdayHours: string;
   selectId: number;
