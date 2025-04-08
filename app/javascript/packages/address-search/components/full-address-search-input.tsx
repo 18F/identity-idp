@@ -11,7 +11,7 @@ import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
 interface FullAddressSearchInputProps {
   disabled?: boolean;
   locationsURL: string;
-  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  handleLocationSelect: ((e: any, id: number | null) => Promise<void>);
   onError?: (error: Error | null) => void;
   onFoundLocations?: (
     address: LocationQuery | null,
@@ -19,7 +19,6 @@ interface FullAddressSearchInputProps {
   ) => void;
   onLoadingLocations?: (isLoading: boolean) => void;
   registerField?: RegisterFieldCallback;
-  onContinue: (event: React.MouseEvent) => void;
   usStatesTerritories: string[][];
   uspsApiError: Error | null;
 }
@@ -27,6 +26,7 @@ interface FullAddressSearchInputProps {
 export default function FullAddressSearchInput({
   disabled = false,
   locationsURL,
+  handleLocationSelect = () => undefined,
   onError = () => undefined,
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
@@ -88,11 +88,16 @@ export default function FullAddressSearchInput({
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
 
-  const handleContinue = function(event) {
-    // Prevent form submission since we are no longer searching
-    event.preventDefault();
-    console.log(event);
-  };
+  const handleContinue = useCallback(
+    (event) => {
+      // Prevent form submission since we are no longer searching
+      event.preventDefault();
+      console.log(event);
+      // Run LocationSelect with null as the location
+      //handleLocationSelect(event, null);
+    },
+    [uspsApiError]
+  );
 
   const getErroneousAddressChars = () => {
     const addressReStr = validatedAddressFieldRef.current?.pattern;
