@@ -44,7 +44,6 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
   isFailedSelfie?: boolean;
   isFailedDocType?: boolean;
   isFailedSelfieLivenessOrQuality?: boolean;
-  captureHints?: boolean;
   pii?: PII;
   failedImageFingerprints?: { front: string[] | null; back: string[] | null };
 }
@@ -65,7 +64,6 @@ function ReviewIssuesStep({
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   pii,
-  captureHints = false,
   failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
@@ -148,7 +146,6 @@ function ReviewIssuesStep({
       isFailedDocType={isFailedDocType}
       isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
       remainingSubmitAttempts={remainingSubmitAttempts}
-      captureHints={captureHints}
       value={value}
       unknownFieldErrors={unknownFieldErrors}
       registerField={registerField}

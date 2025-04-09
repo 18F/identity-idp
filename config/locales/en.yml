@@ -85,7 +85,7 @@ account.index.verification.identity_verification: Identity verification
 account.index.verification.in_person_instructions_html: You must visit any participating Post Office by <strong>%{deadline}</strong> to verify your identity.
 account.index.verification.instructions: Enter your verification code to finish verifying your identity.
 account.index.verification.learn_more_link: Learn more about verifying your identity
-account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your state ID.
+account.index.verification.legacy_verified_html: You verified your identity with %{app_name} on <strong>%{date}</strong> using your ID.
 account.index.verification.pending_badge: Pending
 account.index.verification.pending_badge_tooltip: Your identity is pending verification.
 account.index.verification.reactivate_button: Enter the verification code you received via US mail
@@ -508,7 +508,7 @@ doc_auth.buttons.take_picture: Take photo
 doc_auth.buttons.take_picture_retry: Retake photo
 doc_auth.buttons.upload_picture: Upload photo
 doc_auth.errors.alerts.address_check: We couldn’t read the address on your ID. Try taking new pictures.
-doc_auth.errors.alerts.barcode_content_check: We couldn’t read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don’t recognize yet. Use another state‑issued ID if you have one.
+doc_auth.errors.alerts.barcode_content_check: We couldn’t read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don’t recognize yet. Use another ID if you have one.
 doc_auth.errors.alerts.barcode_read_check: We couldn’t read the barcode on the back of your ID. Try taking a new picture.
 doc_auth.errors.alerts.birth_date_checks: We couldn’t read the birth date on your ID. Try taking new pictures.
 doc_auth.errors.alerts.control_number_check: We couldn’t read the reference number on the back of your ID. Try taking a new picture.
@@ -525,18 +525,15 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yo
 doc_auth.errors.alerts.sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
 doc_auth.errors.alerts.visible_color_check: We couldn’t verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
 doc_auth.errors.alerts.visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
-doc_auth.errors.barcode_attention.confirm_info: If the information below is incorrect, please upload new photos of your state‑issued ID.
+doc_auth.errors.barcode_attention.confirm_info: If the information below is incorrect, please add new photos of your ID
 doc_auth.errors.barcode_attention.heading: We couldn’t read the barcode on your ID.
 doc_auth.errors.camera.blocked: Your camera is blocked
 doc_auth.errors.camera.blocked_detail_html: '<strong>Allow access to your camera to take photos for %{app_name}.</strong><span>Try taking photos again and allowing permission. If that doesn’t work, you may need to check your device settings to allow access.</span>'
 doc_auth.errors.camera.failed: Camera failed to start, please try again.
-doc_auth.errors.card_type: Try again with your driver’s license or state ID card.
 doc_auth.errors.choose_id_type_check: Select the type of document that you have
 doc_auth.errors.consent_form: Before you can continue, you must give us permission. Please check the box below and then click continue.
-doc_auth.errors.doc_type_not_supported_heading: We only accept a driver’s license or a state ID
-doc_auth.errors.doc.doc_type_check: Your driver’s license or state ID must be issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs.
+doc_auth.errors.doc.doc_type_check: Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.
 doc_auth.errors.doc.resubmit_failed_image: You already tried this image, and it failed. Please try adding a different image.
-doc_auth.errors.doc.wrong_id_type_html: We only accept a driver’s license or a state ID issued by a U.S. state or territory. We do not accept other forms of ID, like passports or military IDs. <a>Learn more about accepted IDs</a>
 doc_auth.errors.document_capture_canceled: You have canceled uploading photos of your ID on your phone.
 doc_auth.errors.dpi.failed_short: Image is too small or blurry, please try again.
 doc_auth.errors.dpi.top_msg: We couldn’t read your ID. Your image size may be too small, or your ID is too small or blurry in the photo. Make sure your ID is large within the image frame and try taking a new picture.
@@ -595,7 +592,7 @@ doc_auth.headers.unreadable_id: We could not read your ID
 doc_auth.headings.address: Update your current residential address
 doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your identity document
-doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your state‑issued ID.
+doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
 doc_auth.headings.choose_id_type: Choose your ID type
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
@@ -645,7 +642,7 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
+doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
@@ -656,7 +653,7 @@ doc_auth.info.interstitial_thanks: Thanks for your patience!
 doc_auth.info.keep_window_open: Do not close this window.
 doc_auth.info.learn_more: Learn more about how we protect your sensitive information
 doc_auth.info.lets_go: 'Identity verification happens in two parts:'
-doc_auth.info.link_sent: Please check your phone and follow instructions to take a photo of your state‑issued ID.
+doc_auth.info.link_sent: Please check your phone and follow instructions to take a photo of your ID.
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
@@ -719,11 +716,6 @@ doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
 doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
-doc_auth.tips.review_issues_id_header_text: 'Review the images of your state‑issued ID:'
-doc_auth.tips.review_issues_id_text1: Did you use a dark background?
-doc_auth.tips.review_issues_id_text2: Did you take the photo on a flat surface?
-doc_auth.tips.review_issues_id_text3: Is the flash on your camera off?
-doc_auth.tips.review_issues_id_text4: Are all details sharp and clearly visible?
 email_address.not_found: 'Email not found'
 email_addresses.add.duplicate: This email address is already registered to your account.
 email_addresses.add.limit: You’ve added the maximum number of email addresses.
@@ -1112,7 +1104,7 @@ idv.forgot_password.reset_password: Reset password
 idv.forgot_password.try_again: Try again
 idv.forgot_password.warnings:
   - If you forgot your password, you’ll need to reset it and fill out the form again.
-  - You’ll have to re-enter your personal information, like your name, state‑issued ID, etc.
+  - You’ll have to re-enter your personal information, like your name, ID, etc.
 idv.form.address1: Address line 1
 idv.form.address2: Address line 2
 idv.form.city: City
@@ -1194,6 +1186,7 @@ idv.troubleshooting.options.learn_more_verify_by_phone: Learn more about what ph
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: Learn more about verifying your phone number
 idv.troubleshooting.options.learn_more_verify_in_person: Learn more about verifying in person
 idv.troubleshooting.options.supported_documents: Learn more about accepted IDs
+idv.troubleshooting.options.use_another_id_type: Use another type of ID
 idv.troubleshooting.options.verify_by_mail: Verify your address by mail instead
 idv.unavailable.exit_button: Exit %{app_name}
 idv.unavailable.idv_explanation.with_sp_html: '<strong>%{sp}</strong> needs to make sure you are you — not someone pretending to be you.'
