@@ -543,6 +543,64 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
+    context 'when address proofing results in an exception' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+      let(:success) { false }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:vendor_name) { 'instantverify_placeholder' }
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: success,
+            errors: {},
+            exception: exception,
+            vendor_name: 'instant_verify_test',
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(
+            success: success,
+            errors: {},
+            exception: 'fake exception',
+            vendor_name: vendor_name,
+          ),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: 'false',
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      it 'redirects user to address warning' do
+        put :show
+        expect(response).to redirect_to idv_session_errors_address_warning_url
+      end
+
+      it 'logs an event' do
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          :idv_doc_auth_address_warning_visited,
+          step_name: 'verify_info',
+          remaining_submit_attempts: kind_of(Numeric),
+        )
+      end
+    end
+
     context 'when the resolution proofing job fails and there is no exception' do
       before do
         allow(controller).to receive(:load_async_state).and_return(async_state)

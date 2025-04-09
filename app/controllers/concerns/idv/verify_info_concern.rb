@@ -89,6 +89,13 @@ module Idv
         :state_id,
         :mva_exception,
       ).present?
+      is_address_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :residential_address,
+        :exception,
+      ).present?
       is_threatmetrix_exception = result.extra.dig(
         :proofing_results,
         :context,
@@ -113,6 +120,9 @@ module Idv
       elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
+      elsif has_exception && is_address_exception
+        idv_failure_log_address_warning
+        redirect_to address_warning_url
       elsif (has_exception && is_threatmetrix_exception) ||
             (!has_exception && resolution_failed)
         idv_failure_log_warning
@@ -147,6 +157,13 @@ module Idv
       )
     end
 
+    def idv_failure_log_address_warning
+      analytics.idv_doc_auth_address_warning_visited(
+        step_name: STEP_NAME,
+        remaining_submit_attempts: resolution_rate_limiter.remaining_count,
+      )
+    end
+
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
         step_name: STEP_NAME,
@@ -164,6 +181,10 @@ module Idv
 
     def state_id_warning_url
       idv_session_errors_state_id_warning_url(flow: flow_param)
+    end
+
+    def address_warning_url
+      idv_session_errors_address_warning_url(flow: flow_param)
     end
 
     def warning_url
