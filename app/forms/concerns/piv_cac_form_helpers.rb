@@ -23,7 +23,7 @@ module PivCacFormHelpers
       self.error_type = possible_error
       errors.add(
         :token, I18n.t('headings.piv_cac.certificate.invalid'),
-        type: possible_error.match(/\.(.*)/)[1].to_sym
+        type: possible_error.split('.').last.to_sym
       )
       false
     else
