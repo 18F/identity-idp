@@ -81,7 +81,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
           setImmediate(() => {
             e.target.disabled = false;
             if (flowPath !== 'hybrid') {
-              const eventMsg = isNullLocation ? "Idv: location selection skipped" : 'Idv: location submitted';
+              const eventMsg = isNullLocation ? "IdV: location selection skipped" : 'IdV: location submitted';
 
               trackEvent(eventMsg, {
                 selected_location: selectedLocationAddress,
