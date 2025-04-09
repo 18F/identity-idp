@@ -23,6 +23,7 @@ FactoryBot.define do
           :in_person_verification_pending,
           user: user,
           in_person_enrollment: instance,
+          in_person_verification_pending_at: Time.zone.now,
         )
       end
     end

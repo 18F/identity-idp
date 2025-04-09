@@ -83,11 +83,16 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           end
 
           context 'in_person_proofing_enforce_tmx enabled, pending fraud review,
-          enrollment not passed' do
+          enrollment not processed by USPS' do
+            let(:user) { create(:user) }
             let(:in_person_proofing_enforce_tmx) { true }
-            let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
-            let!(:enrollment) do
-              create(:in_person_enrollment, :pending, user: user, profile: profile)
+            let!(:profile) do
+              create(
+                :profile,
+                :in_person_verification_pending,
+                fraud_review_pending_at: 1.day.ago,
+                user: user,
+              )
             end
 
             it 'does not redirect to please call' do
