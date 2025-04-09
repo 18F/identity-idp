@@ -302,7 +302,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: false,
-            errors: { type: 'token.invalid' },
+            error_details: { token: { invalid: true } },
             context: 'authentication',
             multi_factor_auth_method: 'piv_cac',
             enabled_mfa_methods_count: 2,
@@ -334,7 +334,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: false,
-            errors: { type: 'token.invalid' },
+            error_details: { token: { invalid: true } },
             context: 'authentication',
             multi_factor_auth_method: 'piv_cac',
             enabled_mfa_methods_count: 2,
