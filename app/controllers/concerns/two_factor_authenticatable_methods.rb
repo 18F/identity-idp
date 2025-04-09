@@ -30,7 +30,7 @@ module TwoFactorAuthenticatableMethods
     attempts_api_tracker.mfa_login_auth_submitted(
       mfa_device_type: mfa_device_type(auth_method:),
       success: result.success?,
-      failure_reason: format_failures(auth_method:, result:),
+      failure_reason: attempts_api_tracker.parse_failure_reason(result),
       reauthentication: generic_data[:reauthn],
     )
 
@@ -246,17 +246,6 @@ module TwoFactorAuthenticatableMethods
     return 'otp' if auth_method == TwoFactorAuthenticatable::AuthMethod::SMS
 
     auth_method
-  end
-
-  def format_failures(auth_method:, result:)
-    if auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
-      return nil unless result.to_h[:errors].present?
-
-      type, error = result.to_h[:errors][:type].split('.')
-      return { type.to_sym => [error.to_sym] }
-    end
-
-    attempts_api_tracker.parse_failure_reason(result)
   end
 
   def otp_expiration
