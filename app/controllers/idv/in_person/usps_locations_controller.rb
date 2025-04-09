@@ -56,7 +56,7 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
-        location_details = params[:usps_location].as_json[:selectedLocation]
+        location_details = params[:usps_location].as_json['selectedLocation']
 
         enrollment.update!(
           selected_location_details: location_details,
