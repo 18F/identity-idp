@@ -14,6 +14,9 @@ module Idv
     before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
+    before_action :in_person_proofing_passport_check,
+                  only: :show,
+                  if: -> { IdentityConfig.store.in_person_passports_enabled }
 
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
@@ -48,6 +51,7 @@ module Idv
           idv_session.document_capture_session_uuid = nil
           idv_session.bucketed_doc_auth_vendor = nil
           idv_session.passport_allowed = nil
+          idv_session.in_person_passport_allowed = nil
         end,
       )
     end
@@ -60,6 +64,7 @@ module Idv
         analytics_id: 'Doc Auth',
         doc_auth_vendor: idv_session.bucketed_doc_auth_vendor,
         passport_allowed: idv_session.passport_allowed,
+        in_person_passport_allowed: idv_session.in_person_passport_allowed,
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -88,9 +93,19 @@ module Idv
       return if resolved_authn_context_result.facial_match?
       return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
       idv_session.passport_allowed ||= begin
-        if dos_passport_api_healthy?(analytics:)
+        if dos_health_check
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
         end
+      end
+    end
+
+    def dos_health_check
+      @dos_passport_api_healthy ||= dos_passport_api_healthy?(analytics:)
+    end
+
+    def in_person_proofing_passport_check
+      idv_session.in_person_passport_allowed ||= begin
+          dos_health_check
       end
     end
 

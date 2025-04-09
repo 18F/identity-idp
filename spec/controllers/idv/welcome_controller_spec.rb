@@ -8,7 +8,8 @@ RSpec.describe Idv::WelcomeController do
     stub_sign_in(user)
     stub_analytics
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-      .to_return({ status: 200, body: { status: dos_api_status }.to_json })
+     .to_return({ status: 200, body: { status: dos_api_status }.to_json })
+    allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
   end
 
   describe '#step_info' do
@@ -66,6 +67,14 @@ RSpec.describe Idv::WelcomeController do
         expect(user.pending_in_person_enrollment).to be_blank
       end
     end
+
+    context 'with in_person_passports_enabled disabled' do
+      it 'does not perform a dos health check for in person proofing passport' do
+        get :show
+
+        expect(subject.idv_session.in_person_passport_allowed).to be nil
+      end
+    end
   end
 
   describe '#show' do
@@ -81,6 +90,8 @@ RSpec.describe Idv::WelcomeController do
     it 'renders the show template' do
       get :show
 
+      expect(subject.idv_session.passport_allowed).to be_nil
+      expect(subject.idv_session.in_person_passport_allowed).to be_nil
       expect(response).to render_template :show
     end
 
@@ -161,9 +172,10 @@ RSpec.describe Idv::WelcomeController do
       end
     end
 
-    context 'passports enabled' do
+    context 'doc auth passports enabled' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
       end
 
       context 'passport api is down' do
@@ -175,6 +187,7 @@ RSpec.describe Idv::WelcomeController do
           expect(@analytics).to have_logged_event(
             :passport_api_health_check,
           )
+          expect(subject.idv_session.in_person_passport_allowed).to be_nil
         end
       end
 
@@ -192,6 +205,7 @@ RSpec.describe Idv::WelcomeController do
           get :show
 
           expect(subject.idv_session.passport_allowed).to eq(false)
+          expect(subject.idv_session.in_person_passport_allowed).to be_nil
         end
 
         context 'user is AB bucketed to allow passports' do
@@ -201,6 +215,7 @@ RSpec.describe Idv::WelcomeController do
             get :show
 
             expect(subject.idv_session.passport_allowed).to eq(true)
+            expect(subject.idv_session.in_person_passport_allowed).to be_nil
           end
         end
       end
@@ -218,6 +233,65 @@ RSpec.describe Idv::WelcomeController do
             :passport_api_health_check,
           )
         end
+      end
+    end
+
+    context 'in person passports enabled enabled' do
+      let(:passport_bucket) { :default }
+  
+      before do
+        allow(subject).to receive(:ab_test_bucket).and_call_original
+        allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
+          .and_return(passport_bucket)
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+      end
+
+      context 'passport api is down' do
+        let(:dos_api_status) { 'NOT UP' }
+
+        it 'sets session value and logs event ' do
+          get :show
+
+          expect(subject.idv_session.passport_allowed).to be_nil
+          expect(subject.idv_session.in_person_passport_allowed).to eq(false)
+          expect(@analytics).to have_logged_event(
+            :passport_api_health_check,
+          )
+        end
+      end
+
+      context 'passport api is up and running' do
+        let(:dos_api_status) { 'UP' }
+
+        it 'sets session value and logs event ' do
+          get :show
+
+          expect(subject.idv_session.passport_allowed).to be_nil
+          expect(subject.idv_session.in_person_passport_allowed).to eq(true)
+          expect(@analytics).to have_logged_event(
+            :passport_api_health_check,
+          )
+        end
+      end
+    end
+
+    context 'both doc auth passports and in person passports are enabled' do
+      let(:dos_api_status) { 'UP' }
+      let!(:api_healty_stub) do
+        stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: dos_api_status }.to_json })
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+      end
+
+      it 'calls the api healty check only once' do
+        get :show
+
+        expect(api_healty_stub).to have_been_requested.times(1)
       end
     end
   end

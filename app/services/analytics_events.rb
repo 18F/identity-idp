@@ -2326,6 +2326,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] in_person_passport_allowed Whether passport is allowed for in person proofing
   # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -2333,6 +2334,7 @@ module AnalyticsEvents
     step:,
     analytics_id:,
     doc_auth_vendor:,
+    in_person_passport_allowed:,
     passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
@@ -2343,6 +2345,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       doc_auth_vendor:,
+      in_person_passport_allowed:,
       passport_allowed:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
@@ -2354,6 +2357,7 @@ module AnalyticsEvents
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param [String] doc_auth_vendor Vendor used for document capture
+  # @param [Boolean] in_person_passport_allowed Whether passport is allowed for in person proofing
   # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
@@ -2361,6 +2365,7 @@ module AnalyticsEvents
     step:,
     analytics_id:,
     doc_auth_vendor:,
+    in_person_passport_allowed:,
     passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
@@ -2371,6 +2376,7 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       doc_auth_vendor:,
+      in_person_passport_allowed:,
       passport_allowed:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
