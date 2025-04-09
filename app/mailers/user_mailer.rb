@@ -341,10 +341,17 @@ class UserMailer < ActionMailer::Base
         barcode_image_url: attachments['barcode.png'].url,
         is_enhanced_ipp: @is_enhanced_ipp,
       )
+      if enrollment&.service_provider&.logo_is_email_compatible?
+        @logo_url = enrollment.service_provider.logo_url
+      else
+        @logo_url = nil
+      end
+      @sp_name = @presenter.sp_name
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
         count: @presenter.days_remaining,
       )
+
       mail(
         to: email_address.email,
         subject: t(
