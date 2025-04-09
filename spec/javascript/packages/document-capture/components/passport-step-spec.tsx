@@ -6,7 +6,6 @@ import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
 import PassportStep from '@18f/identity-document-capture/components/passport-step';
 import { render } from '../../../support/document-capture';
@@ -14,7 +13,7 @@ import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/passport-step', () => {
   it('renders with only one input for passport by default', () => {
-    const { getByLabelText, queryByLabelText } = render(
+    const { getByLabelText } = render(
       <PassportStep
         value={{}}
         onChange={() => undefined}
