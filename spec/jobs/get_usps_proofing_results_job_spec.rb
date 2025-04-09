@@ -949,7 +949,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
             end
 
             context 'when the exception response message is IPP_SPONSOR_ID_NOT_FOUND' do
-              let(:response_message) { "Sponsor for sponsorID #{enrollment.sponsor_id} not found" }
+              let(:response_message) do
+                "Sponsor for sponsorID #{enrollment.sponsor_id} not found"
+              end
 
               before do
                 stub_request_proofing_results(
@@ -1613,6 +1615,49 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   enrollments_checked: 1,
                   enrollments_skipped: 1,
                 )
+              end
+
+              context 'when enrollment is in password_reset for more than allowed number of days' do
+                let(:pw_reset_max) { IdentityConfig.store.in_person_password_reset_expiration_days }
+                let(:travel_time) { 10.0.minutes }
+                let(:future_time) { current_time + travel_time }
+                let(:expiration_period) { 90 }
+                let(:seconds_per_day) { 86400 }
+                let(:status_update) { current_time - (expiration_period + 5) * seconds_per_day }
+
+                before do
+                  travel_to future_time
+                  enrollment.update(status_updated_at: status_update)
+                  stub_request_passed_proofing_results
+                  allow(analytics).to receive(
+                    :idv_in_person_usps_proofing_results_job_enrollment_skipped,
+                  )
+                  allow(analytics).to receive(
+                    :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
+                  )
+                end
+
+                it 'logs the enrollment cancelled analytic' do
+                  subject.perform(current_time)
+                  # reload enrollment to ensure enrollment_analytics is correct
+                  enrollment.reload
+                  expect(analytics).to have_received(
+                    :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
+                  ).with(
+                    **enrollment_analytics,
+                    minutes_to_completion: nil,
+                    minutes_since_last_status_check: 10,
+                    reason: "Enrollment cancelled after over #{pw_reset_max} days in password reset", # rubocop:disable Layout/LineLength
+                    job_name: described_class.name,
+                  )
+                end
+
+                it 'cancels the enrollment' do
+                  subject.perform(current_time)
+                  expect(enrollment.reload).to have_attributes(
+                    status: 'cancelled',
+                  )
+                end
               end
             end
 
@@ -2816,66 +2861,66 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
               end
             end
           end
-        end
 
-        context 'when the enrollment has a profile with a deactivation reason "encryption_error"' do
-          let(:deactivation_reason) { 'encryption_error' }
+          context 'when the enrollment has a profile with a deactivation reason encryption_error' do
+            let(:deactivation_reason) { 'encryption_error' }
 
-          before do
-            enrollment.profile.update(deactivation_reason: deactivation_reason)
-            allow(analytics).to receive(
-              :idv_in_person_usps_proofing_results_job_enrollment_updated,
-            )
-            subject.perform(current_time)
-          end
+            before do
+              enrollment.profile.update(deactivation_reason: deactivation_reason)
+              allow(analytics).to receive(
+                :idv_in_person_usps_proofing_results_job_enrollment_updated,
+              )
+              subject.perform(current_time)
+            end
 
-          it 'logs the job started analytic' do
-            expect(analytics).to have_received(
-              :idv_in_person_usps_proofing_results_job_started,
-            ).with(
-              enrollments_count: 1,
-              reprocess_delay_minutes: 5,
-              job_name: described_class.name,
-            )
-          end
+            it 'logs the job started analytic' do
+              expect(analytics).to have_received(
+                :idv_in_person_usps_proofing_results_job_started,
+              ).with(
+                enrollments_count: 1,
+                reprocess_delay_minutes: 5,
+                job_name: described_class.name,
+              )
+            end
 
-          it 'logs the job enrollment updated analytic' do
-            expect(analytics).to have_received(
-              :idv_in_person_usps_proofing_results_job_enrollment_updated,
-            ).with(
-              **enrollment_analytics,
-              response_present: false,
-              passed: false,
-              reason: "Profile has a deactivation reason of #{deactivation_reason}",
-              job_name: described_class.name,
-              tmx_status: nil,
-              profile_age_in_seconds: enrollment.profile&.profile_age_in_seconds,
-              enhanced_ipp: false,
-            )
-          end
+            it 'logs the job enrollment updated analytic' do
+              expect(analytics).to have_received(
+                :idv_in_person_usps_proofing_results_job_enrollment_updated,
+              ).with(
+                **enrollment_analytics,
+                response_present: false,
+                passed: false,
+                reason: "Profile has a deactivation reason of #{deactivation_reason}",
+                job_name: described_class.name,
+                tmx_status: nil,
+                profile_age_in_seconds: enrollment.profile&.profile_age_in_seconds,
+                enhanced_ipp: false,
+              )
+            end
 
-          it 'cancels the enrollment' do
-            expect(enrollment.reload).to have_attributes(
-              status: 'cancelled',
-            )
-          end
+            it 'cancels the enrollment' do
+              expect(enrollment.reload).to have_attributes(
+                status: 'cancelled',
+              )
+            end
 
-          it "deactivates the enrollment's profile" do
-            expect(enrollment.reload.profile).to have_attributes(
-              active: false,
-              deactivation_reason: 'encryption_error',
-              in_person_verification_pending_at: nil,
-            )
-          end
+            it "deactivates the enrollment's profile" do
+              expect(enrollment.reload.profile).to have_attributes(
+                active: false,
+                deactivation_reason: 'encryption_error',
+                in_person_verification_pending_at: nil,
+              )
+            end
 
-          it 'logs the job completed analytic' do
-            expect(analytics).to have_received(
-              :idv_in_person_usps_proofing_results_job_completed,
-            ).with(
-              **default_job_completion_analytics,
-              enrollments_checked: 1,
-              enrollments_cancelled: 1,
-            )
+            it 'logs the job completed analytic' do
+              expect(analytics).to have_received(
+                :idv_in_person_usps_proofing_results_job_completed,
+              ).with(
+                **default_job_completion_analytics,
+                enrollments_checked: 1,
+                enrollments_cancelled: 1,
+              )
+            end
           end
         end
 

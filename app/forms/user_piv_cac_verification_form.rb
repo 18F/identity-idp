@@ -13,11 +13,10 @@ class UserPivCacVerificationForm
 
   def submit
     success = valid? && valid_submission?
-    errors = error_type ? { type: error_type } : {}
 
     FormResponse.new(
-      success: success,
-      errors: errors,
+      success:,
+      errors:,
       extra: extra_analytics_attributes,
     )
   end
@@ -40,6 +39,10 @@ class UserPivCacVerificationForm
       true
     else
       self.error_type = 'user.piv_cac_mismatch'
+      errors.add(
+        :user, I18n.t('headings.piv_cac_setup.already_associated'),
+        type: :piv_cac_mismatch
+      )
       false
     end
   end
@@ -49,6 +52,10 @@ class UserPivCacVerificationForm
       true
     else
       self.error_type = 'user.no_piv_cac_associated'
+      errors.add(
+        :user, I18n.t('headings.piv_cac_login.account_not_found'),
+        type: :no_piv_cac_associated
+      )
       false
     end
   end
