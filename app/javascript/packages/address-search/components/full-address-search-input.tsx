@@ -1,32 +1,16 @@
 import { TextInput, SelectInput } from '@18f/identity-components';
-import type { FormattedLocation, LocationQuery } from '@18f/identity-address-search/types';
-import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { SpinnerButtonRefHandle, SpinnerButton } from '@18f/identity-spinner-button';
 import { ValidatedField } from '@18f/identity-validated-field';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
-
-interface FullAddressSearchInputProps {
-  disabled?: boolean;
-  locationsURL: string;
-  onContinue: ((e: any, id: number | null) => Promise<void>) | null | undefined;
-  onError?: (error: Error | null) => void;
-  onFoundLocations?: (
-    address: LocationQuery | null,
-    locations: FormattedLocation[] | null | undefined,
-  ) => void;
-  onLoadingLocations?: (isLoading: boolean) => void;
-  registerField?: RegisterFieldCallback;
-  usStatesTerritories: string[][];
-  uspsApiError: Error | null;
-}
+import type { FullAddressSearchInputProps } from '../types';
 
 export default function FullAddressSearchInput({
   disabled = false,
   locationsURL,
-  onContinue = () => undefined,
+  onContinue,
   onError = () => undefined,
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,

@@ -79,3 +79,18 @@ interface FullAddressSearchProps {
   usStatesTerritories: string[][];
   resultsSectionHeading?: ComponentType;
 }
+
+interface FullAddressSearchInputProps {
+  disabled?: boolean;
+  locationsURL: string;
+  onContinue: ((e: any, id: number | null) => Promise<void>);
+  onError?: (error: Error | null) => void;
+  onFoundLocations?: (
+    address: LocationQuery | null,
+    locations: FormattedLocation[] | null | undefined,
+  ) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
+  registerField?: RegisterFieldCallback;
+  usStatesTerritories: string[][];
+  uspsApiError: Error | null;
+}

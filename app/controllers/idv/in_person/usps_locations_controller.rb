@@ -56,8 +56,10 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
+        location_details = params[:usps_location].as_json[:selectedLocation]
+
         enrollment.update!(
-          selected_location_details: update_params.as_json,
+          selected_location_details: location_details,
           issuer: current_sp&.issuer,
           doc_auth_result: document_capture_session&.last_doc_auth_result,
           sponsor_id: enrollment_sponsor_id,
@@ -153,17 +155,6 @@ module Idv
           :city,
           :state,
           :zip_code,
-        )
-      end
-
-      def update_params
-        params.require(:usps_location).permit(
-          :formatted_city_state_zip,
-          :name,
-          :saturday_hours,
-          :street_address,
-          :sunday_hours,
-          :weekday_hours,
         )
       end
     end

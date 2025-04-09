@@ -36,11 +36,12 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number | null) => {
+      const isNullLocation = id === null;
       const selectedLocation =
-        id === null ? null : locationResults![id];
+        isNullLocation ? null : locationResults![id];
 
       let selectedLocationAddress =
-          selectedLocation === null ? "Location Selection Skipped" : `${selectedLocation.streetAddress}, ${selectedLocation.formattedCityStateZip}`;
+          isNullLocation ? "Location Selection Skipped" : `${selectedLocation?.streetAddress}, ${selectedLocation?.formattedCityStateZip}`;
 
       if (flowPath !== 'hybrid') {
         e.preventDefault();
@@ -49,6 +50,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       }
 
       onChange({ selectedLocationAddress });
+
       if (autoSubmit) {
         setDisabledAddressSearch(true);
         setTimeout(() => {
@@ -61,10 +63,13 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (inProgress) {
         return;
       }
-      const selectedLocationDto = selectedLocation ? transformKeys(selectedLocation, snakeCase) : null;
-      console.log(selectedLocationDto);
-      console.log(locationsURL);
+
+      const selectedLocationDto = {
+        selectedLocation: isNullLocation ? null : transformKeys(selectedLocation!, snakeCase)
+      }
+
       setInProgress(true);
+
       try {
         await request(locationsURL, {
           json: selectedLocationDto,
@@ -76,6 +81,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
           setImmediate(() => {
             e.target.disabled = false;
             if (flowPath !== 'hybrid') {
+              const eventMsg =
               trackEvent('IdV: location submitted', {
                 selected_location: selectedLocationAddress,
               });
