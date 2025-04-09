@@ -67,7 +67,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
       @mail = UserMailer.with(
         user: user,
         email_address: user.email_addresses.first,
-      ).in_person_ready_to_verify(enrollment:, is_enhanced_ipp: false)
+      ).in_person_ready_to_verify(enrollment:)
       allow(view).to receive(:message).and_return(@mail)
       allow(view).to receive(:attachments).and_return(@mail.attachments)
       @sp_name = sp_name
