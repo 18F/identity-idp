@@ -2319,7 +2319,6 @@ module AnalyticsEvents
     )
   end
 
-
   # @param [String] step_name
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # The user was sent to a warning page during the IDV flow
