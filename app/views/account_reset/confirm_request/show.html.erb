@@ -2,10 +2,16 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
-<p><%= t('account_reset.confirm_request.instructions_start') %>
-  <strong><%= email %></strong>
-  <%= t('account_reset.confirm_request.instructions_end') %>
-</p>
+<% if IdentityConfig.store.updated_account_reset_content %>
+  <% t('account_reset.confirm_request.info_html', email: email).each do |info_p| %>
+    <p><%= info_p %></p>
+  <% end %>
+<% else %>
+  <p><%= t('account_reset.confirm_request.instructions_start') %>
+    <strong><%= email %></strong>
+    <%= t('account_reset.confirm_request.instructions_end') %>
+  </p>
+<% end %>
 
 <div class="width-10">
   <hr class="margin-y-4 border-width-05 border-info">

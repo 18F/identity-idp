@@ -8,6 +8,10 @@ account_reset.confirm_delete_account.info_html: The account for <strong>%{email}
 account_reset.confirm_delete_account.link_text: create a new account
 account_reset.confirm_delete_account.title: You have deleted your account
 account_reset.confirm_request.close_window: You can close this window if you’re done.
+account_reset.confirm_request.info_html:
+  - We sent an email to <strong>%{email}</strong> to begin the account deletion process. This first email confirms that you’ve started the account deletion process. <strong>It does not mean your account has been successfully deleted.</strong>
+  - As a security measure, you will receive a second email with the link to continue deleting your account 24 hours after the initial confirmation email arrives.
+  - If you change your mind, you can cancel out of account deletion any time.
 account_reset.confirm_request.instructions_end: to begin the account delete process. Follow the instructions in your email to complete the process.
 account_reset.confirm_request.instructions_start: We sent an email to
 account_reset.confirm_request.security_note: As a security measure, we also sent a text to your registered phone number.
@@ -19,25 +23,40 @@ account_reset.pending.canceled: We have canceled your request to delete your acc
 account_reset.pending.confirm: If you cancel now, you must create a new request and wait another %{interval} to delete your account.
 account_reset.pending.header: You requested to delete your account
 account_reset.pending.wait_html: There is a waiting period of %{waiting_period} to delete your account. In <strong>%{interval}</strong>, you will receive an email with instructions to complete the deletion.
+account_reset.recover_options.yes_delete: Delete my account
+account_reset.recovery_option.cancel_deletion: Cancel deletion
 account_reset.recovery_options.check_saved_credential: See if you have a saved credential
+account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
+account_reset.recovery_options.check_webauthn_platform_help_link: face or touch unlock
 account_reset.recovery_options.check_webauthn_platform_info: If you set up face or touch unlock, you may have saved your credentials to a password manager, like iCloud Keychain or Google Password Manager. Try using face or touch unlock on a browser using that password manager.
+account_reset.recovery_options.check_webauthn_platform_info_2_html: If you set up %{help_link} when you created your account make sure to use the same device you created your %{app_name} account on.
 account_reset.recovery_options.header: Are you sure you want to delete your account?
 account_reset.recovery_options.help_text: If you’re locked out and still need access to %{app_name}, try these steps instead.
+account_reset.recovery_options.still_working: Still not working?
 account_reset.recovery_options.try_another_device: Try another device where you might have selected the “remember device” option.
 account_reset.recovery_options.try_method_again: Try your authentication method again
+account_reset.recovery_options.try_method_description_html: Make sure you have access to the authentication method(s) you set up when you created your account, %{link_html}.
+account_reset.recovery_options.try_method_description_link: try your authentication method again
 account_reset.recovery_options.use_device: Use another device
 account_reset.recovery_options.use_same_device: Otherwise, try using the same device where you set up face or touch unlock.
+account_reset.request.account_delete_link: Learn more about our account deletion process
 account_reset.request.are_you_sure: Are you sure you don’t have access to any of your authentication methods?
+account_reset.request.choose_to_continue: 'If you choose to continue with account deletion, you will receive two emails:'
+account_reset.request.continue_deletion: Did you still want to continue with account deletion?
 account_reset.request.delete_account: Delete your account
 account_reset.request.delete_account_info:
   - Deleting your existing account and creating a new one will allow you to use the same email address and set up new authentication methods. However, deleting will remove any agency applications you have linked to your account and you will need to restore each connection.
   - If you continue, you will first receive an email confirmation. As a security measure, you will receive another email with the link to continue deleting your account %{interval} after the initial confirmation email arrives.
+account_reset.request.delete_email1_html: <strong>Email 1:</strong> You will first receive an email confirmation. This <strong>does not</strong> mean your account has been deleted at this point.
+account_reset.request.delete_email2_html: <strong>Email 2:</strong> After %{interval} of the initial email confirmation, you will receive another email with a link to continue deleting your account. This requires you to confirm you want to delete your account. We cannot undo account deletion after this step.
+account_reset.request.delete_request_details_html: If you can’t sign in using the authentication methods you set up, you can regain access by deleting your account and creating a new one. Deleting your account does not delete any information you have stored with other government agencies. %{account_delete_link}.
 account_reset.request.info:
   - If you can’t access your account using the authentication methods you set up previously, deleting your account and creating a new one is the only option.
   - We can’t undo an account delete, so please verify if you have another authentication method you can use instead.
 account_reset.request.no_cancel: Cancel
+account_reset.request.no_cancel2: No, cancel account deletion
 account_reset.request.title: Account deletion and reset
-account_reset.request.yes_continue: Yes, continue deletion
+account_reset.request.yes_continue: Yes, continue account deletion
 account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
@@ -1669,8 +1688,10 @@ two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_na
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
 two_factor_authentication.account_reset.cancel_link: Cancel your request
 two_factor_authentication.account_reset.link: deleting your account
+two_factor_authentication.account_reset.link_2: delete your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
 two_factor_authentication.account_reset.successful_cancel: Thank you. Your request to delete your %{app_name} account has been canceled.
+two_factor_authentication.account_reset.text_2_html: If you can’t use any of the authentication methods above, you can %{link_html} and make a new one. You will not lose any information you have stored with government agencies if you delete your account.
 two_factor_authentication.account_reset.text_html: If you can’t use any of the authentication methods above, you can reset your preferences by %{link_html}.
 two_factor_authentication.attempt_remaining_warning_html.one: You have <strong>%{count} attempt</strong> remaining.
 two_factor_authentication.attempt_remaining_warning_html.other: You have <strong>%{count} attempts</strong> remaining.
@@ -1847,6 +1868,7 @@ user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_p
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
 user_mailer.account_reset_request.header: Your account will be deleted in %{interval}
+user_mailer.account_reset_request.info_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> <strong>Step 1, %{waiting_period}:</strong> This email confirms that you have started the process of account deletion. There is a %{waiting_period} waiting for account deletion to go through if you have lost access to your authentication methods cannot sign in.<br/><br/> <strong>Step 2, Confirm account deletion:</strong>After your %{waiting_period} waiting period, you will receive a second email that will ask you to confirm the deletion of your %{app_name} account. <strong>Your account will not be deleted until you confirm account deletion from the second email.</strong> You will have another 24 hours to confirm account deletion.'
 user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> Step One: There is a waiting period of %{waiting_period} if you have lost access to your authentication methods and need to delete your account. If you locate your authentication methods, you can sign in to your %{app_name} account to cancel this request.<br><br> Step Two: After the waiting period of %{waiting_period}, you will receive an email that will ask you to confirm the deletion of your %{app_name} account. Your account will not be deleted until you confirm.'
 user_mailer.account_reset_request.subject: How to delete your %{app_name} account
 user_mailer.account_verified.change_password_link: change your password

@@ -8,6 +8,10 @@ account_reset.confirm_delete_account.info_html: La cuenta de <strong>%{email}</s
 account_reset.confirm_delete_account.link_text: crear una cuenta nueva
 account_reset.confirm_delete_account.title: Eliminó su cuenta
 account_reset.confirm_request.close_window: Puede cerrar esta ventana si ya terminó.
+account_reset.confirm_request.info_html:
+  - Enviamos un correo electrónico a <strong>%{email}</strong> para comenzar el proceso de eliminación de cuenta. El primer correo electrónico confirma que usted comenzó el proceso de eliminación de cuenta. <strong>El mensaje no significa que su cuenta fue eliminada.</strong>
+  - Como medida de seguridad, 24 horas después del mensaje inicial de confirmación, recibirá un segundo correo electrónico con el vínculo para seguir eliminando su cuenta.
+  - Si cambia de opinión, puede cancelar la eliminación de la cuenta en cualquier momento.
 account_reset.confirm_request.instructions_end: para comenzar el proceso de eliminación de cuenta. Siga las instrucciones en su correo electrónico para completar el proceso.
 account_reset.confirm_request.instructions_start: Enviamos un correo electrónico a
 account_reset.confirm_request.security_note: Como medida de seguridad, también enviamos un mensaje de texto a su número de teléfono registrado.
@@ -19,23 +23,38 @@ account_reset.pending.canceled: Hemos cancelado su solicitud para eliminar su cu
 account_reset.pending.confirm: Si cancela ahora, debe crear una nueva solicitud y esperar otras %{interval} para eliminar su cuenta.
 account_reset.pending.header: Solicitó la eliminación de su cuenta
 account_reset.pending.wait_html: Hay un período de espera de %{waiting_period} para eliminar su cuenta. En <strong>%{interval}</strong>, recibirá un correo electrónico con instrucciones para completar la eliminación.
+account_reset.recover_options.yes_delete: Eliminar mi cuenta
+account_reset.recovery_option.cancel_deletion: Cancelar la eliminación
 account_reset.recovery_options.check_saved_credential: Verifica si tienes una credencial almacenada
+account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
+account_reset.recovery_options.check_webauthn_platform_help_link: desbloqueo facial o táctil
 account_reset.recovery_options.check_webauthn_platform_info: Si has habilitado el desbloqueo facial o táctil, es probable que hayas guardado tus credenciales en una herramienta de gestión de contraseñas, como iCloud Keychain o Google Password Manager. Intenta realizar el desbloqueo facial o táctil en un navegador que utilice ese gestor de contraseñas.
+account_reset.recovery_options.check_webauthn_platform_info_2_html: Si configuró el %{help_link} cuando creó su cuenta, asegúrese de utilizar el mismo dispositivo en el que creó su cuenta de %{app_name}.
 account_reset.recovery_options.header: '¿Está seguro de que desea eliminar su cuenta?'
 account_reset.recovery_options.help_text: Si su cuenta sigue bloqueada y todavía necesita acceder a %{app_name}, intente seguir estos pasos.
+account_reset.recovery_options.still_working: ¿Sigue sin funcionar?
 account_reset.recovery_options.try_another_device: Pruebe otro dispositivo en el que podría haber seleccionado la opción “Recordar dispositivo”.
 account_reset.recovery_options.try_method_again: Pruebe de nuevo su método de autenticación.
+account_reset.recovery_options.try_method_description_html: Asegúrese de que tiene acceso a los métodos de autenticación que configuró cuando creó su cuenta, y %{link_html}.
+account_reset.recovery_options.try_method_description_link: pruebe de nuevo su método de autenticación
 account_reset.recovery_options.use_device: Utilice otro dispositivo.
 account_reset.recovery_options.use_same_device: De lo contrario, inténtalo con el mismo dispositivo en el que configuraste el desbloqueo facial o táctil.
+account_reset.request.account_delete_link: Obtenga más información acerca de nuestro proceso de eliminación de cuentas.
 account_reset.request.are_you_sure: '¿Está seguro de que no tiene acceso a ninguno de sus métodos de autenticación?'
+account_reset.request.choose_to_continue: 'Si elige continuar con la eliminación de su cuenta, recibirá dos mensajes de correo electrónico:'
+account_reset.request.continue_deletion: ¿Desea aún continuar con la eliminación de la cuenta?
 account_reset.request.delete_account: Elimine su cuenta
 account_reset.request.delete_account_info:
   - Eliminar su cuenta existente y crear una nueva le permite usar la misma dirección de correo electrónico y configurar nuevas opciones de seguridad. Sin embargo, eliminar eliminará cualquier aplicación de agencia que haya vinculado a su cuenta y deberá restaurar cada conexión.
   - Si continúas, tú primero recibirá una confirmación por correo electrónico. Como medida de seguridad, lo hará reciba otro correo electrónico con el enlace para seguir eliminando su cuenta las %{interval} después del correo electrónico de confirmación inicial llega.
+account_reset.request.delete_email1_html: <strong>Correo electrónico 1:</strong> Recibirá primero una confirmación por correo electrónico. Esto <strong>no</strong> significa que su cuenta fue eliminada con esto.
+account_reset.request.delete_email2_html: <strong>Correo electrónico 2:</strong> %{interval} después del mensaje inicial de confirmación, recibirá otro correo electrónico con un vínculo para seguir eliminando su cuenta. Este mensaje le pide que confirme que desea eliminar su cuenta. Después de este paso, no podemos deshacer la eliminación de una cuenta.
+account_reset.request.delete_request_details_html: Si no puede iniciar sesión usando los métodos de autenticación que configuró, puede recuperar el acceso eliminando su cuenta y creando una nueva. Si elimina su cuenta, no perderá la información que tenga almacenada en otras agencias gubernamentales. <br/>%{account_delete_link}.
 account_reset.request.info:
   - Si no puede acceder a su cuenta a través de las opciones de seguridad que configuró anteriormente, eliminar la cuenta y crear una nueva es la única opción.
   - No podemos deshacer la eliminación de una cuenta, así que por favor asegúrese de no tener otra opción de seguridad que puede usar.
 account_reset.request.no_cancel: Cancelar
+account_reset.request.no_cancel2: No, cancelar la eliminación de la cuenta
 account_reset.request.title: Eliminación y restablecimiento de cuenta
 account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
@@ -1681,8 +1700,10 @@ two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_na
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de empleado de gobierno, un método de autenticación de alta seguridad.'
 two_factor_authentication.account_reset.cancel_link: Cancelar su solicitud
 two_factor_authentication.account_reset.link: eliminando su cuenta
+two_factor_authentication.account_reset.link_2: Elimine su cuenta
 two_factor_authentication.account_reset.pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se necesitan %{interval} desde el momento en que realizó la solicitud para completar el proceso. Por favor, vuelva más tarde.
 two_factor_authentication.account_reset.successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
+two_factor_authentication.account_reset.text_2_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede %{link_html} y crear una nueva. Si elimina su cuenta, no perderá la información que tenga almacenada en las agencias gubernamentales.
 two_factor_authentication.account_reset.text_html: Si no puede usar ninguno de los métodos de autenticación anteriores, puede restablecer sus preferencias %{link_html}.
 two_factor_authentication.attempt_remaining_warning_html.one: Le queda <strong>%{count} intento</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Le quedan <strong>%{count} intentos</strong>.
@@ -1859,6 +1880,7 @@ user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting
 user_mailer.account_reset_granted.subject: Elimine su cuenta de %{app_name}
 user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name} para cancelar.'
 user_mailer.account_reset_request.header: Su cuenta será eliminada en %{interval}
+user_mailer.account_reset_request.info_html: 'Como medida de seguridad, %{app_name} usa un proceso de dos pasos para eliminar su cuenta:<br><br> <strong>Paso 1, con un período de espera de %{waiting_period}:</strong> Este correo electrónico confirma que usted comenzó el proceso de eliminación de cuenta. Hay un período de espera de %{waiting_period} para que la eliminación de la cuenta lleve a cabo si perdió el acceso a sus métodos de autenticación y no puede iniciar sesión..<br/><br/> <strong>Paso 2, para confirmar la eliminación de la cuenta:</strong>Después de su período de espera de %{waiting_period}, recibirá un segundo mensaje para pedirle que confirme la eliminación de su cuenta de %{app_name}. <strong>Su cuenta no será eliminada hasta que usted confirme la eliminación en el segundo correo electrónico.</strong> Tendrá otras %{waiting_period} para confirmar la eliminación de la cuenta.'
 user_mailer.account_reset_request.intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos pasos para eliminar su cuenta:<br><br> Paso uno: Hay un período de espera de %{waiting_period} si perdió el acceso a sus métodos de autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de autenticación, puede iniciar sesión en su cuenta %{app_name} para cancelar esta solicitud.<br><br> Paso dos: Tras el período de espera de %{waiting_period}, recibirás un correo electrónico en el que te pediremos que confirmes la eliminación de tu cuenta %{app_name}. Tu cuenta no se eliminará hasta que lo confirmes.'
 user_mailer.account_reset_request.subject: Cómo eliminar su cuenta de %{app_name}
 user_mailer.account_verified.change_password_link: restablecer su contraseña

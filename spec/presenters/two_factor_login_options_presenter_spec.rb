@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
+  include AccountResetHelper
+  include ActionView::Helpers::OutputSafetyHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::DateHelper
   include Rails.application.routes.url_helpers
 
   let(:user) { User.new }
@@ -296,6 +300,70 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         let(:add_piv_cac_after_2fa) { true }
 
         it { should be_nil }
+      end
+    end
+  end
+
+  describe '#account_reset_or_cancel_link' do
+    let(:user) { create(:user, :fully_registered, :with_backup_code) }
+    context 'account link enabled' do
+      it 'returns cancel account reset request text' do
+        create_account_reset_request_for(user)
+        grant_request(user)
+        user.reload
+        current_time = Time.zone.now
+        time_in_hours = distance_of_time_in_words(
+          current_time,
+          current_time + IdentityConfig.store.account_reset_wait_period_days.days,
+          true,
+          accumulate_on: :hours,
+        )
+        expect(presenter.account_reset_or_cancel_link)
+          .to eq(safe_join(
+            [
+              t(
+                'two_factor_authentication.account_reset.pending',
+                interval: time_in_hours,
+              ),
+              view.link_to(
+                t('two_factor_authentication.account_reset.cancel_link'),
+                account_reset_cancel_url(token: user&.account_reset_request&.request_token),
+              ),
+            ],
+            ' ',
+          ))
+      end
+    end
+    context 'account link disabled' do 
+      context 'new account workflow' do
+        before do
+          allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(true)
+        end
+  
+        it 'should return new text content' do
+          t(
+            'two_factor_authentication.account_reset.text_2_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_reset.link_2'),
+              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+            ),
+          )
+        end
+      end
+  
+      context 'old account workflow' do 
+        before do
+          allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(false)
+        end
+  
+        it 'should return old text content' do
+          expect(presenter.account_reset_or_cancel_link).to eq(t(
+            'two_factor_authentication.account_reset.text_html',
+            link_html: view.link_to(
+              t('two_factor_authentication.account_reset.link'),
+              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+            )))
+        end
       end
     end
   end
