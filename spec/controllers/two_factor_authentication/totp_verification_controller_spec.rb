@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::TotpVerificationController do
   before do
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#create' do
@@ -43,6 +44,12 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
       it 'tracks the valid authentication event' do
         cfg = controller.current_user.auth_app_configurations.first
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'totp',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP)
@@ -73,6 +80,13 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
         it 'tracks new device value' do
           stub_analytics
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: { code: generate_totp_code(@secret) }
 
@@ -171,6 +185,13 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
       context 'with authentication context' do
         it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: false,
+            failure_reason: nil,
+            reauthentication: false,
+          )
+
           expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
             mfa_device_type: 'totp',
           )
@@ -200,6 +221,13 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         end
 
         it 'tracks the max attempts event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: false,
+            failure_reason: nil,
+            reauthentication: false,
+          )
+
           expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
             mfa_device_type: 'totp',
           )
