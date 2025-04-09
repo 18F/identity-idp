@@ -115,20 +115,20 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def account_reset_link
     if IdentityConfig.store.updated_account_reset_content
       t(
-      'two_factor_authentication.account_reset.text_2_html',
-      link_html: @view.link_to(
-        t('two_factor_authentication.account_reset.link_2'),
-        account_reset_url(locale: LinkLocaleResolver.locale),
-      ),
-    )
+        'two_factor_authentication.account_reset.text_2_html',
+        link_html: @view.link_to(
+          t('two_factor_authentication.account_reset.link_2'),
+          account_reset_url(locale: LinkLocaleResolver.locale),
+        ),
+      )
     else
       t(
-      'two_factor_authentication.account_reset.text_html',
-      link_html: @view.link_to(
-        t('two_factor_authentication.account_reset.link'),
-        account_reset_url(locale: LinkLocaleResolver.locale),
-      ),
-    )
+        'two_factor_authentication.account_reset.text_html',
+        link_html: @view.link_to(
+          t('two_factor_authentication.account_reset.link'),
+          account_reset_url(locale: LinkLocaleResolver.locale),
+        ),
+      )
     end
   end
 

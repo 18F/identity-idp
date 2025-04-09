@@ -319,27 +319,29 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           accumulate_on: :hours,
         )
         expect(presenter.account_reset_or_cancel_link)
-          .to eq(safe_join(
-            [
-              t(
-                'two_factor_authentication.account_reset.pending',
-                interval: time_in_hours,
-              ),
-              view.link_to(
-                t('two_factor_authentication.account_reset.cancel_link'),
-                account_reset_cancel_url(token: user&.account_reset_request&.request_token),
-              ),
-            ],
-            ' ',
-          ))
+          .to eq(
+            safe_join(
+              [
+                t(
+                  'two_factor_authentication.account_reset.pending',
+                  interval: time_in_hours,
+                ),
+                view.link_to(
+                  t('two_factor_authentication.account_reset.cancel_link'),
+                  account_reset_cancel_url(token: user&.account_reset_request&.request_token),
+                ),
+              ],
+              ' ',
+            ),
+          )
       end
     end
-    context 'account link disabled' do 
+    context 'account link disabled' do
       context 'new account workflow' do
         before do
           allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(true)
         end
-  
+
         it 'should return new text content' do
           t(
             'two_factor_authentication.account_reset.text_2_html',
@@ -350,19 +352,22 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           )
         end
       end
-  
-      context 'old account workflow' do 
+
+      context 'old account workflow' do
         before do
           allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(false)
         end
-  
+
         it 'should return old text content' do
-          expect(presenter.account_reset_or_cancel_link).to eq(t(
-            'two_factor_authentication.account_reset.text_html',
-            link_html: view.link_to(
-              t('two_factor_authentication.account_reset.link'),
-              account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
-            )))
+          expect(presenter.account_reset_or_cancel_link).to eq(
+            t(
+              'two_factor_authentication.account_reset.text_html',
+              link_html: view.link_to(
+                t('two_factor_authentication.account_reset.link'),
+                account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
+              ),
+            ),
+          )
         end
       end
     end

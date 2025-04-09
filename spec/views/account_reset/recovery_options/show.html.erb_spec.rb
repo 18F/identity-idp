@@ -18,7 +18,7 @@ RSpec.describe 'account_reset/recovery_options/show.html.erb' do
     end
 
     it 'renders new account reset options info' do
-      render 
+      render
 
       expect(rendered)
         .to have_content(t('account_reset.recovery_options.check_webauthn_platform_header'))
@@ -31,7 +31,7 @@ RSpec.describe 'account_reset/recovery_options/show.html.erb' do
     end
 
     it 'renders account reset options info' do
-      render 
+      render
 
       expect(rendered)
         .to have_content(t('account_reset.recovery_options.use_device'))

@@ -35,7 +35,7 @@ RSpec.describe 'account_reset/request/show.html.erb' do
       allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(false)
     end
 
-    it 'renders old workflow content' do 
+    it 'renders old workflow content' do
       render
 
       expect(rendered).to have_content(t('account_reset.request.info').first)
