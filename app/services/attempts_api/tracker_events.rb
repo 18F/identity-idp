@@ -2,6 +2,17 @@
 
 module AttemptsApi
   module TrackerEvents
+    # param [Boolean] success True if account successfully deleted
+    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # Account was successfully deleted after the account reset request was completed
+    def account_reset_account_deleted(success:, failure_reason: nil)
+      track_event(
+        'account-reset-account-deleted',
+        success:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
     def email_and_password_auth(success:)
@@ -59,6 +70,17 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the link user clicked on is valid and not expired
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user clicks the email link to reset their password
+    def forgot_password_email_confirmed(success:, failure_reason: nil)
+      track_event(
+        'forgot-password-email-confirmed',
+        success:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] resend False indicates this is the initial request
     # User has requested the Address validation letter
     def idv_verify_by_mail_letter_requested(resend:)
@@ -83,6 +105,17 @@ module AttemptsApi
       track_event(
         'idv-rate-limited',
         limiter_type:,
+      )
+    end
+
+    # @param [Boolean] success True if new password was successfully submitted
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user submits a new password have requesting a password reset
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+      track_event(
+        'forgot-password-new-password-submitted',
+        success:,
+        failure_reason:,
       )
     end
 
