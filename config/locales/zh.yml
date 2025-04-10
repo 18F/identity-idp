@@ -29,7 +29,7 @@ account_reset.recovery_options.check_saved_credential: 查看你是否有已保�
 account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
 account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
 account_reset.recovery_options.check_webauthn_platform_info: 如果你设立了人脸或触摸解锁，凭据可能已存在了一个密码管理器中，比如 iCloud Keychain 或者 Google Password Manager。尝试在用那个密码管理器的浏览器上使用人脸或触摸解锁。
-account_reset.recovery_options.check_webauthn_platform_info_2_html: ​​如果你在创建帐户时设置了%{help_link}，请确保使用你创建 %{app_name} 帐户的同一设备。
+account_reset.recovery_options.check_webauthn_platform_info_2_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
 account_reset.recovery_options.header: 你确定要删除账户吗？
 account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
 account_reset.recovery_options.still_working: 仍然不行？
@@ -47,7 +47,7 @@ account_reset.request.delete_account: 删除你的账户
 account_reset.request.delete_account_info:
   - 删除现有账户并设立一个新账户使你能够使用同一电邮地址并设置新的身份证实方法。但是，删除账户会去掉与你账户连接的所有机构的应用程序，你将需要恢复每个连接。
   - 如果你继续的话，会首先收到一个确认电邮。 作为安全措施，你收到第一个电邮 24 小时后，会收到另外一个电邮，其中有让你继续删除账户的链接。
-account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。这并不意味着你的帐户此时已被删除。
+account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
 account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
 account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
 account_reset.request.info:

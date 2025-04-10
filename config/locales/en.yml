@@ -29,7 +29,7 @@ account_reset.recovery_options.check_saved_credential: See if you have a saved c
 account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
 account_reset.recovery_options.check_webauthn_platform_help_link: face or touch unlock
 account_reset.recovery_options.check_webauthn_platform_info: If you set up face or touch unlock, you may have saved your credentials to a password manager, like iCloud Keychain or Google Password Manager. Try using face or touch unlock on a browser using that password manager.
-account_reset.recovery_options.check_webauthn_platform_info_2_html: If you set up %{help_link} when you created your account make sure to use the same device you created your %{app_name} account on.
+account_reset.recovery_options.check_webauthn_platform_info_2_html: If you set up %{link_html} when you created your account make sure to use the same device you created your %{app_name} account on.
 account_reset.recovery_options.header: Are you sure you want to delete your account?
 account_reset.recovery_options.help_text: If you’re locked out and still need access to %{app_name}, try these steps instead.
 account_reset.recovery_options.still_working: Still not working?

@@ -26,10 +26,10 @@ account_reset.pending.wait_html: Hay un período de espera de %{waiting_period} 
 account_reset.recover_options.yes_delete: Eliminar mi cuenta
 account_reset.recovery_option.cancel_deletion: Cancelar la eliminación
 account_reset.recovery_options.check_saved_credential: Verifica si tienes una credencial almacenada
-account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
+account_reset.recovery_options.check_webauthn_platform_header: Utilice el mismo dispositivo con el que configuró el desbloqueo facial o táctil por primera vez.
 account_reset.recovery_options.check_webauthn_platform_help_link: desbloqueo facial o táctil
 account_reset.recovery_options.check_webauthn_platform_info: Si has habilitado el desbloqueo facial o táctil, es probable que hayas guardado tus credenciales en una herramienta de gestión de contraseñas, como iCloud Keychain o Google Password Manager. Intenta realizar el desbloqueo facial o táctil en un navegador que utilice ese gestor de contraseñas.
-account_reset.recovery_options.check_webauthn_platform_info_2_html: Si configuró el %{help_link} cuando creó su cuenta, asegúrese de utilizar el mismo dispositivo en el que creó su cuenta de %{app_name}.
+account_reset.recovery_options.check_webauthn_platform_info_2_html: Si configuró el %{link_html} cuando creó su cuenta, asegúrese de utilizar el mismo dispositivo en el que creó su cuenta de %{app_name}.
 account_reset.recovery_options.header: '¿Está seguro de que desea eliminar su cuenta?'
 account_reset.recovery_options.help_text: Si su cuenta sigue bloqueada y todavía necesita acceder a %{app_name}, intente seguir estos pasos.
 account_reset.recovery_options.still_working: ¿Sigue sin funcionar?

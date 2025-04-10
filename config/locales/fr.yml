@@ -29,14 +29,14 @@ account_reset.recovery_options.check_saved_credential: Vérifiez si vous avez de
 account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
 account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
 account_reset.recovery_options.check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou tactile, vous avez peut-être sauvegardé vos informations d’identification dans un gestionnaire de mots de passe, tel que iCloud Keychain ou Google Password Manager. Essayez d’utiliser le déverrouillage facial ou tactile sur un navigateur utilisant ce gestionnaire de mots de passe.
-account_reset.recovery_options.check_webauthn_platform_info_2_html: Si vous aviez configuré le %{help_link}lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
+account_reset.recovery_options.check_webauthn_platform_info_2_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
 account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
 account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
 account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
 account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
 account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
-account_reset.recovery_options.try_method_description_html: Make sure you have access to the authentication method(s) you set up when you created your account, %{link_html}.
-account_reset.recovery_options.try_method_description_link: try your authentication method again
+account_reset.recovery_options.try_method_description_html: Assurez-vous d'avoir accès aux méthodes d'authentification que vous aviez configurées lors de la création de votre compte, puis  %{link_html}.
+account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d'authentification
 account_reset.recovery_options.use_device: Utiliser un autre appareil
 account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le même appareil où vous avez configuré le déverrouillage facial ou tactile.
 account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
