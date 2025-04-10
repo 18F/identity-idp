@@ -3,9 +3,9 @@ es:
   telephony:
     account_deleted_notice: Este SMS confirma que ha eliminado su cuenta de %{app_name}.
     account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-    account_reset_notice: |- 
+    account_reset_notice: |-
       Como lo solicitó, su cuenta de %{app_name} se eliminará en %{interval}. Busque un segundo correo electrónico para confirmar la eliminación de la cuenta.
-      
+
       ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar.
     authentication_otp:
       sms: |-
