@@ -5,32 +5,32 @@ module InPersonHelper
   include IdvStepHelper
   include DocAuthHelper
 
-  GOOD_FIRST_NAME = (Idp::Constants::MOCK_IDV_APPLICANT[:first_name]).freeze
-  GOOD_LAST_NAME = (Idp::Constants::MOCK_IDV_APPLICANT[:last_name]).freeze
+  GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name].freeze
+  GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name].freeze
   # the date in the format '1938-10-06'
-  GOOD_DOB = (Idp::Constants::MOCK_IDV_APPLICANT[:dob]).freeze
+  GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob].freeze
   # the date in the format 'October 6, 1938'
   GOOD_DOB_FORMATTED_EVENT = I18n.l(
     Date.parse(GOOD_DOB), format: I18n.t('time.formats.event_date')
   ).freeze
   GOOD_STATE_ID_JURISDICTION = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
-  GOOD_STATE_ID_NUMBER = (Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number]).freeze
+  GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number].freeze
 
-  GOOD_ADDRESS1 = (Idp::Constants::MOCK_IDV_APPLICANT[:address1]).freeze
-  GOOD_ADDRESS2 = (Idp::Constants::MOCK_IDV_APPLICANT[:address2]).freeze
-  GOOD_CITY = (Idp::Constants::MOCK_IDV_APPLICANT[:city]).freeze
-  GOOD_ZIPCODE = (Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]).freeze
+  GOOD_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT[:address1].freeze
+  GOOD_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT[:address2].freeze
+  GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city].freeze
+  GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode].freeze
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
   GOOD_IDENTITY_DOC_ADDRESS1 =
-    (Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]).freeze
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1].freeze
   GOOD_IDENTITY_DOC_ADDRESS2 =
-    (Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]).freeze
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2].freeze
   GOOD_IDENTITY_DOC_ADDRESS_STATE =
     Idp::Constants::MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE
   GOOD_IDENTITY_DOC_CITY =
-    (Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city]).freeze
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city].freeze
   GOOD_IDENTITY_DOC_ZIPCODE =
-    (Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]).freeze
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode].freeze
 
   def fill_out_state_id_form_ok(same_address_as_id: false, first_name: GOOD_FIRST_NAME)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
