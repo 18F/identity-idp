@@ -80,10 +80,10 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
           setAutoSubmit(true);
           setImmediate(() => {
             e.target.disabled = false;
-            if (flowPath !== 'hybrid') {
-              const eventMsg = isNullLocation ? "IdV: location selection skipped" : 'IdV: location submitted';
 
-              trackEvent(eventMsg, {
+            // Skip analytics track event since hybrid has its own logging
+            if (flowPath !== 'hybrid') {
+              trackEvent('IdV: location submitted', {
                 selected_location: selectedLocationAddress,
               });
               forceRedirect(inPersonURL!);
