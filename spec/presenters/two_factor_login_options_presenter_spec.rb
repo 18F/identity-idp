@@ -49,6 +49,10 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   describe '#info' do
     subject { presenter.info }
 
+    before do
+      allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(false)
+    end
+
     context 'default user session context' do
       it { should eq t('two_factor_authentication.login_intro') }
     end
@@ -69,7 +73,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   it 'supplies a cancel link when the token is valid' do
     allow(presenter).to receive(:account_reset_token).and_return('foo')
     allow(presenter).to receive(:account_reset_token_valid?).and_return(true)
-    allow(presenter).to receive(:confirmation_period).and_return('24 hours')
+    allow(IdentityConfig.store).to receive(:account_reset_wait_period_days).and_return(1)
 
     expect(presenter.account_reset_or_cancel_link).to eq(
       t('two_factor_authentication.account_reset.pending', interval: '24 hours') + ' ' +
@@ -354,10 +358,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       end
 
       context 'old account workflow' do
-        before do
-          allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(false)
-        end
-
         it 'should return old text content' do
           expect(presenter.account_reset_or_cancel_link).to eq(
             t(
