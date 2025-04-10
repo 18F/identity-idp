@@ -1270,13 +1270,9 @@ in_person_proofing.body.prepare.verify_step_about: 'Suivez les étapes ci-dessou
 in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent.
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
-in_person_proofing.body.state_id.alert_message: 'Votre pièce d’identité délivrée par un État ne doit pas être périmée. Les pièces d’identité acceptées sont les suivantes :'
-in_person_proofing.body.state_id.id_types:
-  - Permis de conduire national
-  - Carte d’identité nationale de non-conducteur
+in_person_proofing.body.state_id.alert_message: Vous avez besoin d’un permis de conduire ou d’une carte d’identité délivrée par un État.
+in_person_proofing.body.state_id.alert_text: Les passeports ne sont pas acceptés pour la vérification d’identité en personne. Votre permis de conduire ou carte d’identité délivrée par un État doit être en cours de validité.
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
-in_person_proofing.body.state_id.learn_more_link: En savoir plus sur les pièces d’identité acceptées.
-in_person_proofing.body.state_id.questions: Des questions ?
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.address1: Adresse ligne 1
