@@ -55,7 +55,7 @@ RSpec.describe 'layouts/mailer.html.erb' do
     end
   end
 
-  context 'in-person proofing ready to verify emails' do
+  context 'in-person proofing' do
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
     let(:sp_name) { 'Friendly Service Provider' }
     let(:service_provider) do
@@ -63,93 +63,38 @@ RSpec.describe 'layouts/mailer.html.erb' do
     end
     let(:enrollment) { create(:in_person_enrollment, :pending, service_provider: service_provider) }
 
-    before do
-      @mail = UserMailer.with(
-        user: user,
-        email_address: user.email_addresses.first,
-      ).in_person_ready_to_verify(enrollment:)
-      allow(view).to receive(:message).and_return(@mail)
-      allow(view).to receive(:attachments).and_return(@mail.attachments)
-      @sp_name = sp_name
-      @logo_url = logo_url
+    context 'ready to verify emails' do
+      before do
+        @mail = UserMailer.with(
+          user: user,
+          email_address: user.email_addresses.first,
+        ).in_person_ready_to_verify(enrollment:)
+        allow(view).to receive(:message).and_return(@mail)
+        allow(view).to receive(:attachments).and_return(@mail.attachments)
+        @sp_name = sp_name
+        @logo_url = logo_url
 
-      render
-    end
-
-    context 'when the partner agency logo is a png' do
-      let(:logo) { 'gsa.png' }
-      let(:logo_url) { '/assets/sp-logos/gsa.png' }
-
-      it 'displays the partner agency logo' do
-        expect(rendered).to have_css("img[src*='gsa.png']")
+        render
       end
+
+      it_behaves_like 'a barcode email', @sp_name
     end
 
-    context 'when the partner agency logo is a svg' do
-      let(:logo) { 'generic.svg' }
-      let(:logo_url) { nil }
+    context 'ready to verify reminder emails' do
+      before do
+        @mail = UserMailer.with(
+          user: user,
+          email_address: user.email_addresses.first,
+        ).in_person_ready_to_verify_reminder(enrollment:)
+        allow(view).to receive(:message).and_return(@mail)
+        allow(view).to receive(:attachments).and_return(@mail.attachments)
+        @sp_name = sp_name
+        @logo_url = logo_url
 
-      it 'displays the partner agency name' do
-        expect(rendered).to have_content('Friendly Service Provider')
+        render
       end
-    end
 
-    context 'when there is no partner agency logo' do
-      let(:logo) { nil }
-      let(:logo_url) { nil }
-
-      it 'displays the partner agency name' do
-        expect(rendered).to have_content('Friendly Service Provider')
-      end
-    end
-  end
-
-  context 'in-person proofing ready to verify reminder emails' do
-    let(:user) { create(:user, :with_pending_in_person_enrollment) }
-    let(:sp_name) { 'Friendly Service Provider' }
-    let(:service_provider) do
-      create(:service_provider, logo: logo, friendly_name: sp_name)
-    end
-    let(:enrollment) { create(:in_person_enrollment, :pending, service_provider: service_provider) }
-
-    before do
-      @mail = UserMailer.with(
-        user: user,
-        email_address: user.email_addresses.first,
-      ).in_person_ready_to_verify_reminder(enrollment:)
-      allow(view).to receive(:message).and_return(@mail)
-      allow(view).to receive(:attachments).and_return(@mail.attachments)
-      @sp_name = sp_name
-      @logo_url = logo_url
-
-      render
-    end
-
-    context 'when the partner agency logo is a png' do
-      let(:logo) { 'gsa.png' }
-      let(:logo_url) { '/assets/sp-logos/gsa.png' }
-
-      it 'displays the partner agency logo' do
-        expect(rendered).to have_css("img[src*='gsa.png']")
-      end
-    end
-
-    context 'when the partner agency logo is a svg' do
-      let(:logo) { 'generic.svg' }
-      let(:logo_url) { nil }
-
-      it 'displays the partner agency name' do
-        expect(rendered).to have_content('Friendly Service Provider')
-      end
-    end
-
-    context 'when there is no partner agency logo' do
-      let(:logo) { nil }
-      let(:logo_url) { nil }
-
-      it 'displays the partner agency name' do
-        expect(rendered).to have_content('Friendly Service Provider')
-      end
+      it_behaves_like 'a barcode email', @sp_name
     end
   end
 end
