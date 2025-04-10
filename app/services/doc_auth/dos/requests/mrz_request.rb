@@ -57,7 +57,7 @@ module DocAuth
             'Content-Type': 'application/json',
             'X-Correlation-ID': correlation_id,
             client_id: IdentityConfig.store.dos_passport_client_id,
-            client_secret: IdentityConfig.store.dos_passport_client_secret,
+            client_secret:,
           }
         end
 
@@ -66,6 +66,21 @@ module DocAuth
             mrz:,
             category:,
           }.to_json
+        end
+
+        def secrets_client
+          @secrets_client ||= Aws::SecretsManager::Client.new
+        end
+
+        def client_secret
+          @client_secret ||= begin
+            secret_id = IdentityConfig.store.dos_passport_client_secret_key
+            secret_response = secrets_client.get_secret_value(secret_id:)
+            secret_response.secret_string
+          rescue StandardError => error
+            NewRelic::Agent.notice_error(error)
+            nil
+          end
         end
       end
     end
