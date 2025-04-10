@@ -8,19 +8,17 @@ module Idv
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
+    before_action :set_rate_limiter, only: [:warning, :address_warning, :failure]
     before_action :set_try_again_path, only: [:warning, :exception, :state_id_warning]
     before_action :ignore_form_step_wait_requests
+
+    attr_reader :rate_limiter
 
     def exception
       log_event
     end
 
     def warning
-      rate_limiter = RateLimiter.new(
-        user: idv_session_user,
-        rate_limit_type: :idv_resolution,
-      )
-
       @step_indicator_steps = step_indicator_steps
       @remaining_submit_attempts = rate_limiter.remaining_count
       log_event(based_on_limiter: rate_limiter)
@@ -31,11 +29,6 @@ module Idv
     end
 
     def address_warning
-      rate_limiter = RateLimiter.new(
-        user: idv_session_user,
-        rate_limit_type: :idv_resolution,
-      )
-
       @step_indicator_steps = step_indicator_steps
       @address_path = idv_address_url
       @remaining_submit_attempts = rate_limiter.remaining_count
@@ -43,10 +36,6 @@ module Idv
     end
 
     def failure
-      rate_limiter = RateLimiter.new(
-        user: idv_session_user,
-        rate_limit_type: :idv_resolution,
-      )
       @expires_at = rate_limiter.expires_at
       @sp_name = decorated_sp_session.sp_name
       log_event(based_on_limiter: rate_limiter)
@@ -74,6 +63,13 @@ module Idv
     end
 
     private
+
+    def set_rate_limiter
+      @rate_limiter = RateLimiter.new(
+        user: idv_session_user,
+        rate_limit_type: :idv_resolution,
+      )
+    end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
       return if session[:doc_capture_user_id].present?
