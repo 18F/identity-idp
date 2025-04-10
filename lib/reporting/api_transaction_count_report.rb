@@ -18,7 +18,7 @@ module Reporting
 
     # @param [Range<Time>] time_range
     def initialize(time_range:)
-      @time_range = time_range
+      @time_range = time_range || previous_week_range
     end
 
     def as_emailable_reports
@@ -75,6 +75,14 @@ module Reporting
     end
 
     private
+
+    def previous_week_range
+      today = Time.zone.today
+      last_sunday = today.beginning_of_week(:sunday) - 7.days
+      last_saturday = last_sunday + 6.days
+
+      last_sunday.to_date..last_saturday.to_date
+    end
 
     def singular_vendor_table
       query_data = fetch_results(query: singular_vendor_query)
@@ -147,7 +155,17 @@ module Reporting
     end
 
     def fetch_results(query:)
-      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+      Rails.logger.info("Executing query: #{query}")
+      Rails.logger.info("Time range: #{time_range.begin.to_date} to #{time_range.end.to_date}")
+
+      results = cloudwatch_client.fetch(
+        query:,
+        from: time_range.begin.to_date,
+        to: time_range.end.to_date,
+      )
+
+      Rails.logger.info("Results: #{results.inspect}")
+      results
     rescue StandardError => e
       Rails.logger.error("Failed to fetch results for query: #{e.message}")
       []
@@ -257,7 +275,6 @@ module Reporting
         properties.event_properties.success as success, properties.event_properties.acuant_version as acuant_version, properties.event_properties.captureAttempts as captureAttempts,
         replace(replace(strcontains(name, "front"),"1","front"),"0","back") as side
         | display uuid, id, timestamp, sp, dol_state, side, acuant_version, captureAttempts, use_alternate_sdk
-
       QUERY
     end
 
@@ -283,7 +300,8 @@ module Reporting
     end
 
     def socure_query
-      <<~QUERY
+      params = {}
+      format(<<~QUERY, params)
         #socure
         filter name = "idv_socure_verification_data_requested"
         | fields properties.user_id as uuid, id, @timestamp as timestamp,
@@ -302,7 +320,6 @@ end
 if __FILE__ == $PROGRAM_NAME
   # Parse command-line options
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
-
   # Generate the report and output CSVs
   Reporting::ApiTransactionCountReport.new(**options).to_csvs.each do |csv|
     puts csv
