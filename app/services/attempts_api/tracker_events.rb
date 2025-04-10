@@ -87,6 +87,17 @@ module AttemptsApi
       )
     end
 
+    # Tracks when user submits registration password
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_code_rate_limited(mfa_device_type:)
+      track_event(
+        'mfa-enroll-code-rate-limited',
+        mfa_device_type:,
+      )
+    end
+
     # @param [Boolean] success
     # A user has attempted to enroll the TOTP MFA method to their account
     def mfa_enroll_totp(success:)
@@ -96,14 +107,21 @@ module AttemptsApi
       )
     end
 
-    # Tracks when user submits registration password
-    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
-    # The user has exceeded the rate limit during enrollment
-    # and account has been locked
-    def mfa_enroll_code_rate_limited(mfa_device_type:)
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
+    def mfa_enroll_webauthn_platform(success:)
       track_event(
-        'mfa-enroll-code-rate-limited',
-        mfa_device_type:,
+        'mfa-enroll-webauthn-platform',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    def mfa_enroll_webauthn_roaming(success:)
+      track_event(
+        'mfa-enroll-webauthn-roaming',
+        success:,
       )
     end
 
@@ -144,24 +162,6 @@ module AttemptsApi
         'user-registration-password-submitted',
         success:,
         failure_reason:,
-      )
-    end
-
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
-    def mfa_enroll_webauthn_platform(success:)
-      track_event(
-        'mfa-enroll-webauthn-platform',
-        success:,
-      )
-    end
-
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
-    def mfa_enroll_webauthn_roaming(success:)
-      track_event(
-        'mfa-enroll-webauthn-roaming',
-        success:,
       )
     end
   end
