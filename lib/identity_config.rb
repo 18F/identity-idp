@@ -226,6 +226,7 @@ module IdentityConfig
     config.add(:in_person_enrollments_ready_job_visibility_timeout_seconds, type: :integer)
     config.add(:in_person_enrollments_ready_job_wait_time_seconds, type: :integer)
     config.add(:in_person_opt_in_available_completion_survey_url, type: :string)
+    config.add(:in_person_password_reset_expiration_days, type: :integer)
     config.add(:in_person_outage_emailed_by_date, type: :string)
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_message_enabled, type: :boolean)
