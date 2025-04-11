@@ -2043,9 +2043,10 @@ vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
 webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.description_security: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
+webauthn_platform_recommended.heading: Configurar el desbloqueo facial o táctil
+webauthn_platform_recommended.skip: Ignorer
+webauthn_platform_recommended.upsell: La confidentialité de vos informations est assurée car le déverrouillage par reconnaissance faciale ou tactile résiste à l’hameçonnage et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales.
 webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
 webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.
