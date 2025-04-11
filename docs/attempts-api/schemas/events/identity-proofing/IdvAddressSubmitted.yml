@@ -6,3 +6,38 @@ allOf:
     properties:
       address:
         type: string
+      address_edited:
+        type: boolean
+        description: |
+          True if updated address does not match document address
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          state:
+            type: string
+            description: An OPTIONAL key if the code does not match
+            enum:
+              - blank
+          zipcode:
+            type: string
+            enum:
+              - pattern_mismatch
+          city:
+            type: string
+            enum:
+              - blank
+          address1:
+            type: string
+            enum:
+              - blank
+              - too_long
+          address2:
+            type: string
+            enum: 
+              - too_long
+      success:
+        type: boolean
+        description: |
+          Indicates whether the entered code matched the code that was sent confirming the address
