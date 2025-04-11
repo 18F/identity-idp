@@ -35,8 +35,8 @@ account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours
 account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
 account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
 account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
-account_reset.recovery_options.try_method_description_html: Assurez-vous d'avoir accès aux méthodes d'authentification que vous aviez configurées lors de la création de votre compte, puis  %{link_html}.
-account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d'authentification
+account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
+account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
 account_reset.recovery_options.use_device: Utiliser un autre appareil
 account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le même appareil où vous avez configuré le déverrouillage facial ou tactile.
 account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
