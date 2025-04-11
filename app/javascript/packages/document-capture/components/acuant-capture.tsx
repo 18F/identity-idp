@@ -618,7 +618,9 @@ function AcuantCapture(
 
     const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
     const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
+    const isAssessedAsUnsupported = !(
+      cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT
+    );
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
