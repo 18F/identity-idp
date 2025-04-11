@@ -112,27 +112,26 @@ class ReportMailerPreview < ActionMailer::Preview
   def api_transaction_count_report
     api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
 
-    # 1. Define the Data
-    data = [
-      {
-        'uuid' => '123e4567-e89b-12d3-a456-426614174000',
-        'id' => '1',
-        'timestamp' => Time.now.to_s,
-        'sp' => 'SP1',
-        'dol_state' => 'CA',
-        'success' => 'true',
-      },
-      {
-        'uuid' => '456e7890-e12f-45d6-b789-789456123000',
-        'id' => '2',
-        'timestamp' => Time.now.to_s,
-        'sp' => 'SP2',
-        'dol_state' => 'NY',
-        'success' => 'false',
-      },
-    ]
+    data = '1500'
+    # data = [
+    #   {
+    #     'True ID' => '5000',
+    #     'Instant verify' => '1',
+    #     'Phone Finder' => '20000',
+    #     'Acuant' => '4000',
+    #   },
+    #   {
+    #     'uuid' => '456e7890-e12f-45d6-b789-789456123000',
+    #     'id' => '2',
+    #     'timestamp' => Time.now.to_s,
+    #     'sp' => 'SP2',
+    #     'dol_state' => 'NY',
+    #     'success' => 'false',
+    #   },
+    # ]
 
     stub_cloudwatch_client(api_transaction_count_report.api_transaction_count_report, data: data)
+    # stub_cloudwatch_client(api_transaction_count_report.api_transaction_count_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',

@@ -21,47 +21,21 @@ module Reporting
       @time_range = time_range || previous_week_range
     end
 
+    def as_tables
+      [
+        api_transaction_count,
+      ]
+    end
+
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: 'API Transaction Count Report - Singular Vendor',
+          title: 'API Transaction Count Report',
           subtitle: '',
           float_as_percent: true,
           precision: 2,
-          table: singular_vendor_table,
+          table: api_transaction_count,
           filename: 'singular_vendor_report',
-        ),
-        Reporting::EmailableReport.new(
-          title: 'API Transaction Count Report - True ID',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: true_id_table,
-          filename: 'true_id_report',
-        ),
-        Reporting::EmailableReport.new(
-          title: 'API Transaction Count Report - Acuant',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: acuant_table,
-          filename: 'acuant_report',
-        ),
-        Reporting::EmailableReport.new(
-          title: 'API Transaction Count Report - Phone Finder',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: phone_finder_table,
-          filename: 'phone_finder_report',
-        ),
-        Reporting::EmailableReport.new(
-          title: 'API Transaction Count Report - Socure',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: socure_table,
-          filename: 'socure_report',
         ),
       ]
     end
@@ -72,6 +46,27 @@ module Reporting
           report.table.each { |row| csv << row }
         end
       end
+    end
+
+    def api_transaction_count
+      [
+        [
+          'Week',
+          'True ID',
+          'Instant verify',
+          'Phone Finder',
+          'Acuant',
+          'Socure',
+        ],
+        [
+          time_range.begin.to_date.to_s + ' - ' + time_range.end.to_date.to_s,
+          true_id_table,
+          singular_vendor_table,
+          phone_finder_table,
+          acuant_table,
+          socure_table,
+        ],
+      ]
     end
 
     private
@@ -85,73 +80,23 @@ module Reporting
     end
 
     def singular_vendor_table
-      query_data = fetch_results(query: singular_vendor_query)
-      return [['Singular Vendor'], ['No data available']] if query_data.empty?
-
-      headers = column_labels(query_data.first)
-      rows = query_data.map(&:values)
-
-      [
-        ['Singular Vendor'],
-        headers,
-        *rows,
-      ]
+      fetch_results(query: singular_vendor_query)
     end
 
     def true_id_table
-      query_data = fetch_results(query: true_id_query)
-      return [['True ID'], ['No data available']] if query_data.empty?
-
-      headers = column_labels(query_data.first)
-      rows = query_data.map(&:values)
-
-      [
-        ['True ID'],
-        headers,
-        *rows,
-      ]
+      fetch_results(query: true_id_query)
     end
 
     def acuant_table
-      query_data = fetch_results(query: acuant_query)
-      return [['Acuant'], ['No data available']] if query_data.empty?
-
-      headers = column_labels(query_data.first)
-      rows = query_data.map(&:values)
-
-      [
-        ['Acuant'],
-        headers,
-        *rows,
-      ]
+      fetch_results(query: phone_finder_query)
     end
 
     def phone_finder_table
-      query_data = fetch_results(query: phone_finder_query)
-      return [['Phone Finder'], ['No data available']] if query_data.empty?
-
-      headers = column_labels(query_data.first)
-      rows = query_data.map(&:values)
-
-      [
-        ['Phone Finder'],
-        headers,
-        *rows,
-      ]
+      fetch_results(query: phone_finder_query)
     end
 
     def socure_table
-      query_data = fetch_results(query: socure_query)
-      return [['Socure'], ['No data available']] if query_data.empty?
-
-      headers = column_labels(query_data.first)
-      rows = query_data.map(&:values)
-
-      [
-        ['Socure'],
-        headers,
-        *rows,
-      ]
+      fetch_results(query: socure_query)
     end
 
     def fetch_results(query:)
