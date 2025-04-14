@@ -1331,6 +1331,7 @@ in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su 
 in_person_proofing.headings.switch_back: Vuelva a su computadora para preparar la verificación de su identidad en persona
 in_person_proofing.headings.update_address: Actualice su domicilio actual
 in_person_proofing.headings.update_state_id: Actualice la información de su identificación
+in_person_proofing.info.choose_id_type: Select the type of document that you want to use. You’ll need to bring this document to the Post Office.
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
 in_person_proofing.process.barcode.info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.
