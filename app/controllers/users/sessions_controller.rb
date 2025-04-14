@@ -10,6 +10,7 @@ module Users
     include ForcedReauthenticationConcern
     include NewDeviceConcern
     include AbTestingConcern
+    include DuplicateSsnConcern
     include RecaptchaConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
@@ -209,6 +210,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
+      check_if_user_contains_duplicate_ssn
       redirect_to next_url_after_valid_authentication
     end
 
