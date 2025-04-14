@@ -88,10 +88,6 @@ module Idv
 
     private
 
-    def rate_limiter
-      @rate_limiter ||= RateLimiter.new(user: current_user, rate_limit_type: :proof_address)
-    end
-
     def redirect_to_next_step
       if phone_confirmation_required?
         if OutageStatus.new.all_phone_vendor_outage?
@@ -135,10 +131,6 @@ module Idv
 
     def handle_proofing_failure
       redirect_to failure_url(step.failure_reason)
-    end
-
-    def step_name
-      :phone
     end
 
     def step
