@@ -78,7 +78,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       let(:passport_allowed) { true }
 
       context 'when in person passports is disabled' do
-        it 'renders passport specific content' do
+        it 'renders passport specific content to verify your identity online' do
           render
           expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
           expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
@@ -93,7 +93,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
         end
 
-        it 'renders passport specific content' do
+        it 'renders passport specific content to verify your identity online and in person' do
           render
 
           expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
@@ -162,7 +162,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       let(:passport_allowed) { true }
 
       context 'when in person passports is disabled' do
-        it 'renders passport specific content' do
+        it 'renders passport specific content to verify your identity online' do
           render
           expect(rendered).to have_content(
             t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
@@ -179,7 +179,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
         end
 
-        it 'renders passport specific content' do
+        it 'renders passport specific content to verify your identity online and in person' do
           render
           expect(rendered).to have_content(
             t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
@@ -210,7 +210,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
         let(:passport_allowed) { true }
 
         context 'when in person passports is disabled' do
-          it 'renders passport specific content' do
+          it 'renders passport specific content to verify your identity online' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
             expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
@@ -224,7 +224,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           before do
             allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
           end
-          it 'renders passport specific content' do
+          it 'renders passport specific content to verify your identity online and in person' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
             expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
