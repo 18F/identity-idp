@@ -16,6 +16,12 @@
     <% end %>
 <% end %>
 
+<% if dos_passport_api_down %>
+    <%= render AlertComponent.new(type: :error, class: 'margin-bottom-4') do %>
+    <%= t('doc_auth.info.dos_passport_api_down_message') %>
+    <% end %>
+<% end %>
+
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.headings.choose_id_type') %>
 <% end %>
@@ -42,7 +48,7 @@
             as: :radio_buttons,
             collection: [
               [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
-              [t('doc_auth.forms.id_type_preference.passport'), :passport],
+              [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: dos_passport_api_down],
             ],
             form: f,
             input_html: { class: 'usa-radio__input--tile' },
