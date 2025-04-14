@@ -19,6 +19,8 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
   let(:session_uuid) { document_capture_session.uuid }
 
   before do
+    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+      .to_return({ status: 200, body: { status: 'UP' }.to_json })
     stub_analytics
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
