@@ -79,7 +79,7 @@ RSpec.feature 'choose id type step error checking' do
         complete_doc_auth_steps_before_hybrid_handoff_step
       end
 
-      it 'shows choose id type screen and continues after passport option' do
+      it 'shows choose id type screen with passport field disabled' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
           .to_return({ status: 200, body: { status: 'DOWN' }.to_json })
