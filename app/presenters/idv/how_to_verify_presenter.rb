@@ -86,7 +86,7 @@ class Idv::HowToVerifyPresenter
   def post_office_description
     if passport_allowed && IdentityConfig.store.in_person_passports_enabled
       t('doc_auth.info.verify_online_description_passport')
-    elsif  passport_allowed && !IdentityConfig.store.in_person_passports_enabled
+    elsif passport_allowed && !IdentityConfig.store.in_person_passports_enabled
       t('doc_auth.info.verify_at_post_office_description_passport_html')
     else
       ''
