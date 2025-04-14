@@ -191,10 +191,11 @@ RSpec.feature 'document capture step', :js do
     let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
     before do
-      stub_request(:post, fake_dos_api_endpoint).
-        to_return(status: 200, body: '{"response" : "YES"}', headers: {})
+      stub_request(:post, fake_dos_api_endpoint)
+        .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
 
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint). and_return(fake_dos_api_endpoint)
+      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+        .and_return(fake_dos_api_endpoint)
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
@@ -221,11 +222,11 @@ RSpec.feature 'document capture step', :js do
     let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
     before do
-      stub_request(:post, fake_dos_api_endpoint).
-        to_return(status: 200, body: '{}', headers: {})
+      stub_request(:post, fake_dos_api_endpoint)
+        .to_return(status: 200, body: '{}', headers: {})
 
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint).
-        and_return(fake_dos_api_endpoint)
+      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+        .and_return(fake_dos_api_endpoint)
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
