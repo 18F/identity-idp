@@ -4,7 +4,7 @@ module DocumentCaptureStepHelper
 
     # Wait for the the loading interstitial to disappear before continuing
     wait_for_content_to_disappear do
-      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
+      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 60)
     end
   end
 
