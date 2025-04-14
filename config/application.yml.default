@@ -469,6 +469,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 weekly_auth_funnel_report_config: '[]'
+monthly_fraud_metrics_report_config: '[{"emails":["data@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name-1", "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name-2"]}]'
 
 development:
   aamva_private_key: 123abc
