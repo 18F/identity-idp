@@ -14,7 +14,7 @@ module IdvHelper
   end
 
   def fill_out_phone_form_ok(phone = '415-555-0199')
-    fill_in :idv_phone_form_phone, with: phone, wait: 20
+    fill_in :idv_phone_form_phone, with: phone
   end
 
   # Fill out the phone form with a phone that's already been confirmed so the app will skip sending
@@ -40,7 +40,7 @@ module IdvHelper
   end
 
   def click_idv_submit_default
-    click_spinner_button_and_wait t('forms.buttons.submit.default', wait: 10)
+    click_spinner_button_and_wait t('forms.buttons.submit.default')
   end
 
   def click_idv_update

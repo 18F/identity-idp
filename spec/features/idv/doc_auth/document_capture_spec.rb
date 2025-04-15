@@ -202,7 +202,7 @@ RSpec.feature 'document capture step', :js do
     end
 
     it 'works' do
-      expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 60)
+      expect(page).to have_content(t('doc_auth.headings.document_capture'))
       expect(page).to have_current_path(idv_document_capture_url)
 
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
@@ -214,7 +214,7 @@ RSpec.feature 'document capture step', :js do
       )
 
       submit_images
-      expect(page).to have_content(t('doc_auth.headings.capture_complete'), wait: 60)
+      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
   end
 
@@ -233,7 +233,7 @@ RSpec.feature 'document capture step', :js do
     end
 
     it 'fails' do
-      expect(page).to have_current_path(idv_document_capture_url, wait: 600)
+      expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images(
         Rails.root.join(

@@ -98,7 +98,7 @@ module InPersonHelper
     fill_in t('in_person_proofing.body.location.po_search.zipcode_label'),
             with: GOOD_ZIPCODE
     click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
-    expect(page).to have_css('.location-collection-item', wait: 60)
+    expect(page).to have_css('.location-collection-item')
   end
 
   def complete_location_step(_user = nil)

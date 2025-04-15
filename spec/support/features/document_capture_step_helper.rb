@@ -4,7 +4,7 @@ module DocumentCaptureStepHelper
 
     # Wait for the the loading interstitial to disappear before continuing
     wait_for_content_to_disappear do
-      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 60)
+      expect(page).not_to have_content(t('doc_auth.headings.interstitial'), wait: 10)
     end
   end
 
@@ -14,7 +14,7 @@ module DocumentCaptureStepHelper
   end
 
   def attach_images(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
-    attach_file t('doc_auth.headings.document_capture_front'), file, make_visible: true, wait: 60
+    attach_file t('doc_auth.headings.document_capture_front'), file, make_visible: true
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 

@@ -79,7 +79,7 @@ module IdvStepHelper
 
   def complete_enter_password_step(user = user_with_2fa)
     password = user.password || user_password
-    fill_in 'Password', with: password, wait: 60
+    fill_in 'Password', with: password
     click_idv_continue
   end
 
@@ -108,7 +108,7 @@ module IdvStepHelper
   end
 
   def expect_step_indicator_current_step(text)
-    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 10)
+    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
   end
 
   def complete_idv_steps_before_address(user = user_with_2fa)
