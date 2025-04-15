@@ -11,4 +11,5 @@ allOf:
           - otp
           - piv_cac
           - totp
-          - web_authn
+          - webauthn
+          - webauthn_platform

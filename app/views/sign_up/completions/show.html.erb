@@ -43,9 +43,9 @@
               ),
             ) %>
       <% elsif attribute_key == :email %>
-        <div class="display-flex flex-justify">
-          <%= attribute_value.to_s %>
-          <p class='font-body-2xs text-right'>
+        <div class="grid-row display-flex flex-justify flex-wrap flex-row">
+            <%= attribute_value.to_s %>
+          <p class='font-body-2xs text-right margin-bottom-0 margin-top-05'>
             <%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %>
           </p>
         </div>
