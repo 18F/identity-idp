@@ -563,14 +563,14 @@ RSpec.describe Idv::VerifyInfoController do
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: false,
-          residential_resolution_result: Proofing::Resolution::Result.new(
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(
             success: success,
             errors: {},
             exception: 'fake exception',
             vendor_name: vendor_name,
           ),
-          resolution_result: Proofing::Resolution::Result.new(success: true),
-          same_address_as_id: 'false',
+          same_address_as_id: nil,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
         ).adjudicated_result.to_h

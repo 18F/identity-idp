@@ -93,7 +93,7 @@ module Idv
         :proofing_results,
         :context,
         :stages,
-        :residential_address,
+        :resolution,
         :exception,
       ).present?
       is_threatmetrix_exception = result.extra.dig(
