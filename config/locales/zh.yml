@@ -17,7 +17,7 @@ account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
 account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
-account_reset.pending.cancel_request_prompt: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
+account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
 account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
 account_reset.pending.header: 你已提出删除账户的请求。

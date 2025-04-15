@@ -17,7 +17,7 @@ account_reset.delete_account.are_you_sure: '¿Está seguro de que desea eliminar
 account_reset.delete_account.info: Eliminar su cuenta debe ser su último recurso si el acceso a su cuenta está bloqueado. No podrá recuperar ninguna información vinculada a su cuenta. Notificaremos a las agencias a las que accede con %{app_name} que usted ya no tiene una cuenta. Cuando elimine su cuenta, puede crear una nueva usando la misma dirección de correo electrónico.
 account_reset.delete_account.title: Eliminar su cuenta debe ser su último recurso.
 account_reset.pending.cancel_request: Cancelar solicitud
-account_reset.pending.cancel_request_prompt: Si cambió de opinión y desea cancelar la eliminación de la cuenta, haga clic en el siguiente botón “Cancelar la solicitud de eliminación de cuenta”.
+account_reset.pending.cancel_request_prompt_html: Si cambió de opinión y desea cancelar la eliminación de la cuenta, haga clic en el siguiente botón “Cancelar la solicitud de eliminación de cuenta”.
 account_reset.pending.canceled: Hemos cancelado su solicitud para eliminar su cuenta.
 account_reset.pending.canceled_info: Su solicitud para eliminar su cuenta de %{app_name} fue cancelada. Puede seguir usando su cuenta de %{app_name}, o crear una nueva solicitud de eliminación de cuenta.
 account_reset.pending.header: Solicitó la eliminación de su cuenta

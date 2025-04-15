@@ -17,7 +17,7 @@ account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer 
 account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
 account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
 account_reset.pending.cancel_request: Annuler la demande
-account_reset.pending.cancel_request_prompt: "Si vous avez changé d'avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous."
+account_reset.pending.cancel_request_prompt_html: "Si vous avez changé d'avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous."
 account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
 account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
 account_reset.pending.header: Vous avez demandé de supprimer votre compte

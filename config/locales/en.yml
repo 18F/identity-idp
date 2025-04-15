@@ -17,7 +17,7 @@ account_reset.delete_account.are_you_sure: Are you sure you want to delete your 
 account_reset.delete_account.info: Deleting your account should be your last resort if you are locked out of your account. You will not be able to recover any information linked to your account. We will notify the agencies you access with %{app_name} that you no longer have an account. Once your account is deleted, you can create a new one using the same email address.
 account_reset.delete_account.title: Deleting your account should be your last resort
 account_reset.pending.cancel_request: Cancel request
-account_reset.pending.cancel_request_prompt: If you have changed your mind and want to cancel account deletion click the “cancel request” button below.
+account_reset.pending.cancel_request_prompt_html: If you have changed your mind and want to cancel account deletion click the “cancel request” button below.
 account_reset.pending.canceled: We have canceled your request to delete your account.
 account_reset.pending.canceled_info: Your request to delete your %{app_name} has been canceled. You may continue using your %{app_name} account, or create a new account deletion request.
 account_reset.pending.header: You requested to delete your account
