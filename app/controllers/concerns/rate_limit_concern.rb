@@ -44,13 +44,15 @@ module RateLimitConcern
     if idv_attempter_rate_limited?(:proof_address) && gpo_verify_by_mail_policy.rate_limited?
       rate_limit_redirect!(:proof_address)
       return true
+    elsif idv_attempter_rate_limited?(:proof_address) || gpo_verify_by_mail_policy.rate_limited?
+      attempts_api_tracker.idv_rate_limited(limiter_type: :proof_address)
     end
   end
 
   def rate_limit_redirect!(rate_limit_type, step_name: nil)
     if idv_attempter_rate_limited?(rate_limit_type)
       analytics.rate_limit_reached(limiter_type: rate_limit_type, step_name:)
-      attempts_api_tracker.idv_rate_limited
+      attempts_api_tracker.idv_rate_limited(limiter_type: rate_limit_type)
       rate_limited_redirect(rate_limit_type)
       return true
     end

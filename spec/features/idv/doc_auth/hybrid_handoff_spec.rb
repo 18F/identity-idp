@@ -6,6 +6,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   include ActionView::Helpers::DateHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
@@ -118,6 +119,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts)
         .and_return(idv_send_link_max_attempts)
+      expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+        limiter_type: :idv_send_link,
+      )
 
       freeze_time do
         idv_send_link_max_attempts.times do
