@@ -1263,6 +1263,17 @@ in_person_proofing.body.location.retail_hours_sat: 'Sam :'
 in_person_proofing.body.location.retail_hours_sun: 'Dim :'
 in_person_proofing.body.location.retail_hours_weekday: 'Du lundi au vendredi :'
 in_person_proofing.body.location.selection: 'Voici le bureau que vous avez sélectionné :'
+in_person_proofing.body.passport.info_html: We will verify this information against records. Your passport book must not be expired.
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First Name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed  under 'Given names'
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proffing.form.passport.redirect_to_state_id: Use a driver's license or state ID instead
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} est un site Web sécurisé de l’administration. La Poste des États-Unis et nous utilisons vos données pour confirmer votre identité.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: Des questions ?
@@ -1318,6 +1329,7 @@ in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les docum
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
 in_person_proofing.headings.id_address: Adresse sur votre pièce d’identité
+in_person_proofing.headings.passport: Enter the information on your U.S. passport book
 in_person_proofing.headings.po_search.location: Trouvez un bureau de poste participant
 in_person_proofing.headings.prepare: Confirmez votre identité en personne
 in_person_proofing.headings.state_id_milestone_2: Saisissez les informations figurant sur votre pièce d’identité délivrée par l’État

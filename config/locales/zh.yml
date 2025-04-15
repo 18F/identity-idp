@@ -1276,6 +1276,17 @@ in_person_proofing.body.location.retail_hours_sat: 周六：
 in_person_proofing.body.location.retail_hours_sun: 周日：
 in_person_proofing.body.location.retail_hours_weekday: 周一到周五：
 in_person_proofing.body.location.selection: 这是你选择的地点：
+in_person_proofing.body.passport.info_html: We will verify this information against records. Your passport book must not be expired.
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First Name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed  under 'Given names'
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proffing.form.passport.redirect_to_state_id: Use a driver's license or state ID instead
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} 是一个安全的政府网站。我们和美国邮局使用你的数据来验证你的身份。'
 in_person_proofing.body.prepare.privacy_disclaimer_link: 了解有关隐私和安全的更多信息。
 in_person_proofing.body.prepare.privacy_disclaimer_questions: 有问题吗？
@@ -1331,6 +1342,7 @@ in_person_proofing.headings.barcode_eipp: 携带该条形码和支持性文件�
 in_person_proofing.headings.barcode_what_to_bring: 到邮局要带什么
 in_person_proofing.headings.cta: 尝试亲身去验证身份证件
 in_person_proofing.headings.id_address: 你身份证件上的地址
+in_person_proofing.headings.passport: Enter the information on your U.S. passport book
 in_person_proofing.headings.po_search.location: 找到一个参与本项目的邮局
 in_person_proofing.headings.prepare: 亲身去验证身份
 in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份证件上的信息。
