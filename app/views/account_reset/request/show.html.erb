@@ -3,12 +3,12 @@
 
 <%= render PageHeadingComponent.new.with_content(t('account_reset.request.delete_account')) %>
 <p><%= t(
-          'account_reset.request.delete_request_details_html',
-          account_delete_link: new_tab_link_to(
-            t('account_reset.request.account_delete_link'),
-            MarketingSite.help_center_article_url(
-              category: 'manage-your-account',
-              article: 'delete-your-account',
+         'account_reset.request.delete_request_details_html',
+         account_delete_link: new_tab_link_to(
+           t('account_reset.request.account_delete_link'),
+           MarketingSite.help_center_article_url(
+             category: 'manage-your-account',
+             article: 'delete-your-account',
             ),
           ),
         ) %></p>
