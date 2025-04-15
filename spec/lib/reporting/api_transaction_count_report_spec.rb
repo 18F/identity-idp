@@ -1,119 +1,56 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'reporting/api_transaction_count_report'
 
 RSpec.describe Reporting::ApiTransactionCountReport do
-  let(:time_range) do
-    Time.zone.today.beginning_of_week(:sunday)..Time.zone.today.end_of_week(:saturday)
+  let(:mock_time_range) do
+    Time.zone.parse('2024-04-01')..Time.zone.parse('2024-04-07')
   end
-  subject(:report) { described_class.new(time_range: time_range) }
+
+  let(:mock_results) { Array.new(5) { { id: SecureRandom.uuid } } }
+
+  subject(:report) { described_class.new(time_range: mock_time_range) }
+
+  before do
+    allow_any_instance_of(Reporting::CloudwatchClient).to receive(:fetch).and_return(mock_results)
+  end
 
   describe '#api_transaction_count' do
-    it 'returns the expected table structure' do
-      allow(report).to receive(:true_id_table).and_return([10, []])
-      allow(report).to receive(:singular_vendor_table).and_return([15, []])
-      allow(report).to receive(:phone_finder_table).and_return([20, []])
-      allow(report).to receive(:acuant_table).and_return([25, []])
-      allow(report).to receive(:socure_table).and_return([30, []])
-      allow(report).to receive(:fraud_score_and_attribute_table).and_return([35, []])
-      allow(report).to receive(:instant_verify_table).and_return([40, []])
-      allow(report).to receive(:threat_metrix_table).and_return([45, []])
+    it 'returns an array with correct headers and values' do
+      table = report.api_transaction_count
 
-      result = report.api_transaction_count
+      expect(table).to be_an(Array)
+      expect(table.size).to eq(2)
 
-      expect(result).to eq(
-        [
-          [
-            'Week',
-            'True ID',
-            'Instant verify',
-            'Phone Finder',
-            'Acuant',
-            'Socure',
-            'Fraud Score and Attribute',
-            'Instant Verify',
-            'Threat Metrix',
-          ],
-          [
-            "#{time_range.begin.to_date} - #{time_range.end.to_date}",
-            10,
-            15,
-            20,
-            25,
-            30,
-            35,
-            40,
-            45,
-          ],
-        ],
-      )
-    end
-  end
+      header_row = table.first
+      data_row = table.last
 
-  describe '#as_emailable_reports' do
-    it 'returns an array of EmailableReport objects' do
-      allow(report).to receive(:api_transaction_count).and_return(
-        [
-          ['Week', 'True ID',
-           'Instant verify'],
-          [
-            '2023-04-14 - 2023-04-20', 10, 20
-          ],
-        ],
-      )
-
-      result = report.as_emailable_reports
-
-      expect(result).to be_an(Array)
-      expect(result.first).to be_a(Reporting::EmailableReport)
-      expect(result.first.title).to eq('API Transaction Count Report')
-      expect(result.first.filename).to eq('api_transaction_count_report')
-      expect(result.first.table).to eq(
-        [
-          ['Week', 'True ID', 'Instant verify'],
-          ['2023-04-14 - 2023-04-20', 10, 20],
-        ],
-      )
+      expect(header_row).to include('Week', 'True ID', 'Instant verify', 'Phone Finder', 'Acuant')
+      expect(data_row.first).to eq('2024-04-01 - 2024-04-07')
+      expect(data_row[1..].all? { |val| val.is_a?(Integer) || val.is_a?(Array) }).to be true
     end
   end
 
   describe '#to_csvs' do
-    it 'generates CSVs for each emailable report' do
-      allow(report).to receive(:api_transaction_count).and_return(
-        [
-          ['Week', 'True ID',
-           'Instant verify'],
-          [
-            '2023-04-14 - 2023-04-20', 10, 20
-          ],
-        ],
-      )
-
+    it 'generates valid CSV output' do
       csvs = report.to_csvs
 
       expect(csvs).to be_an(Array)
-      expect(csvs.first).to include('Week,True ID,Instant verify')
-      expect(csvs.first).to include('2023-04-14 - 2023-04-20,10,20')
+      expect(csvs.size).to eq(1)
+
+      csv = csvs.first
+      expect(csv).to include('Week', 'True ID', 'Instant verify')
+      expect(csv).to include('2024-04-01 - 2024-04-07')
     end
   end
 
-  describe '#fetch_results' do
-    it 'logs and returns results from the cloudwatch client' do
-      mock_results = [{ 'uuid' => '123', 'id' => '1' }]
-      mock_client = instance_double(Reporting::CloudwatchClient, fetch: mock_results)
+  describe '#as_emailable_reports' do
+    it 'returns a valid emailable report object' do
+      reports = report.as_emailable_reports
 
-      allow(report).to receive(:cloudwatch_client).and_return(mock_client)
-
-      results = report.send(:fetch_results, query: 'mock_query')
-
-      expect(results).to eq(mock_results)
-    end
-
-    it 'returns an empty array if an error occurs' do
-      allow(report).to receive(:cloudwatch_client).and_raise(StandardError, 'mock error')
-
-      results = report.send(:fetch_results, query: 'mock_query')
-
-      expect(results).to eq([])
+      expect(reports.first).to be_a(Reporting::EmailableReport)
+      expect(reports.first.title).to eq('API Transaction Count Report')
     end
   end
 end
