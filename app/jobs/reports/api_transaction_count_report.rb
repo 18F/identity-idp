@@ -76,7 +76,7 @@ module Reports
     end
 
     def emails
-      emails = [*IdentityConfig.store.team_daily_reports_emails]
+      emails = [*IdentityConfig.store.api_transaction_count_report_config]
       if report_date.next_day.day == 1
         emails += IdentityConfig.store.team_all_login_emails
       end
