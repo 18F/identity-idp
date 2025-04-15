@@ -111,6 +111,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url

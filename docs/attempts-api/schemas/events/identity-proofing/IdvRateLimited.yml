@@ -1,0 +1,17 @@
+description: |
+  The user reaches verification submission rate limits when identity proofing. 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      rate_limit_type:
+        type: string
+        description: |
+          Reason for the rate limiting
+        enum: 
+          - idv_doc_auth
+          - idv_resolution
+          - proof_ssn
+          - proof_address
+          - phone_confirmation
+          - idv_send_link

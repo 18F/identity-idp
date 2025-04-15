@@ -43,6 +43,14 @@ module AttemptsApi
       track_event('idv-reproof')
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_rate_limited(limiter_type:)
+      track_event(
+        'idv-rate-limited',
+        limiter_type:,
+      )
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)

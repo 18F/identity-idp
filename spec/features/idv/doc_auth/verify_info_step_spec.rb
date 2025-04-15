@@ -5,6 +5,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
   include DocAuthHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { user_with_2fa }
 
   let(:fake_pii_details) do
@@ -131,6 +132,10 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
     it 'rate limits resolution and continues when it expires' do
+      expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+        limiter_type: :idv_resolution,
+      )
+
       (max_resolution_attempts - 2).times do
         complete_verify_step
         expect(page).to have_current_path(idv_session_errors_warning_path)
@@ -199,6 +204,10 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
 
     it 'rate limits ssn and continues when it expires' do
+      expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+        limiter_type: :proof_ssn,
+      )
+
       complete_verify_step
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(

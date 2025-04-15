@@ -8,6 +8,7 @@ RSpec.feature 'document capture step', :js do
 
   let(:max_attempts) { 3 }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:socure_docv_webhook_secret_key) { 'socure_docv_webhook_secret_key' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
@@ -133,6 +134,10 @@ RSpec.feature 'document capture step', :js do
           end
 
           it 'redirects to the rate limited error page' do
+            expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+              limiter_type: :idv_doc_auth,
+            )
+
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
             visit idv_socure_document_capture_path
             expect(page).to have_current_path(idv_socure_document_capture_path)
