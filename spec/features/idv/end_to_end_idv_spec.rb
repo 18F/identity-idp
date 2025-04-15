@@ -105,7 +105,7 @@ RSpec.describe 'Identity verification', :js do
     test_go_back_from_request_letter
     complete_request_letter
     complete_enter_password_step(user)
-
+    expect(page).to have_current_path(idv_letter_enqueued_path)
     try_to_go_back_from_letter_enqueued
     validate_letter_enqueued_page
     complete_letter_enqueued
@@ -119,6 +119,7 @@ RSpec.describe 'Identity verification', :js do
     sign_in_live_with_2fa(user)
 
     complete_gpo_verification(user)
+    expect(page).to have_current_path idv_personal_key_path
     expect(user.identity_verified?).to be(true)
 
     acknowledge_and_confirm_personal_key
@@ -543,6 +544,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def try_to_go_back_from_letter_enqueued
+    expect(page).to have_current_path(idv_letter_enqueued_path)
     go_back
     expect(page).to have_current_path(idv_letter_enqueued_path)
     visit(idv_welcome_path)

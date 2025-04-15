@@ -29,7 +29,10 @@ module Features
     def select_2fa_option(option, **find_options)
       find("label[for='two_factor_options_form_selection_#{option}']", **find_options).click
       click_on t('forms.buttons.continue')
-      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
+
+      if option == TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE
+        click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
+      end
     end
 
     def select_phone_delivery_option(delivery_option)
@@ -137,7 +140,9 @@ module Features
     end
 
     def sign_up_and_set_password
-      set_password(sign_up)
+      user = set_password(sign_up)
+      expect(page).to have_current_path(authentication_methods_setup_path)
+      user
     end
 
     def sign_in_user(user = create(:user), email = nil)

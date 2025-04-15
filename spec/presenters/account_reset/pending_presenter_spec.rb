@@ -45,6 +45,9 @@ RSpec.describe AccountReset::PendingPresenter do
       context 'when the remaining time is less than 1 day' do
         let(:requested_at) { 10.days.ago - (10.hours + 21.minutes) }
 
+        # This is flaky
+        # 2025-04-15
+        # env ZONEBIE_TZ="Adelaide" ./bin/rspec spec/presenters/account_reset/pending_presenter_spec.rb
         it 'returns its description in hours and minutes' do
           expect(subject.time_remaining_until_granted).to eq '10 hours and 21 minutes'
         end
