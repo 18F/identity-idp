@@ -1,62 +1,32 @@
-<% if IdentityConfig.store.updated_account_reset_content %>
-  <% self.title = t('account_reset.request.delete_account') %>
 
-  <%= render PageHeadingComponent.new.with_content(t('account_reset.request.delete_account')) %>
-  <p><%= t(
-           'account_reset.request.delete_request_details_html',
-           account_delete_link: new_tab_link_to(
-             t('account_reset.request.account_delete_link'),
-             MarketingSite.help_center_article_url(
-               category: 'manage-your-account',
-               article: 'delete-your-account',
-             ),
-           ),
-         ) %></p>
-  
-  <p><%= t('account_reset.request.choose_to_continue') %></p>
+<% self.title = t('account_reset.request.delete_account') %>
 
-  <p><%= t('account_reset.request.delete_email1_html') %></p>
-  <p><%= t('account_reset.request.delete_email2_html', interval: @account_reset_deletion_period_interval) %></p>
+<%= render PageHeadingComponent.new.with_content(t('account_reset.request.delete_account')) %>
+<p><%= t(
+          'account_reset.request.delete_request_details_html',
+          account_delete_link: new_tab_link_to(
+            t('account_reset.request.account_delete_link'),
+            MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'delete-your-account',
+            ),
+          ),
+        ) %></p>
 
-  <p><strong><%= t('account_reset.request.continue_deletion') %></strong></p>
-  <%= button_to(
-        account_reset_request_path,
-        form_class: 'margin-top-4 margin-bottom-2',
-        class: 'usa-button usa-button--big usa-button--wide',
-        method: :post,
-      ) { t('account_reset.request.yes_continue') } %>
-  <%= button_to(
-        root_url,
-        method: :get,
-        class: 'usa-button usa-button--unstyled',
-      ) { t('account_reset.request.no_cancel2') } %>
-  
-<% else %>
-  <% self.title = t('account_reset.request.title') %>
+<p><%= t('account_reset.request.choose_to_continue') %></p>
 
-  <%= render PageHeadingComponent.new.with_content(t('account_reset.request.title')) %>
+<p><%= t('account_reset.request.delete_email1_html') %></p>
+<p><%= t('account_reset.request.delete_email2_html', interval: @account_reset_deletion_period_interval) %></p>
 
-  <% t('account_reset.request.info').each do |info_p| %>
-    <p><%= info_p %></p>
-  <% end %>
-
-  <h2><%= t('account_reset.request.delete_account') %></h2>
-
-  <% t('account_reset.request.delete_account_info', interval: @account_reset_deletion_period_interval).each do |info_p| %>
-    <p><%= info_p %></p>
-  <% end %>
-
-  <p><strong><%= t('account_reset.request.are_you_sure') %></strong></p>
-
-  <%= button_to(
-        root_url,
-        method: :get,
-        form_class: 'margin-top-4 margin-bottom-2',
-        class: 'usa-button usa-button--big usa-button--wide',
-      ) { t('account_reset.request.no_cancel') } %>
-  <%= button_to(
-        account_reset_request_path,
-        class: 'usa-button usa-button--unstyled',
-        method: :post,
-      ) { t('account_reset.request.yes_continue') } %>
-<% end %>
+<p><strong><%= t('account_reset.request.continue_deletion') %></strong></p>
+<%= button_to(
+      account_reset_request_path,
+      form_class: 'margin-top-4 margin-bottom-2',
+      class: 'usa-button usa-button--big usa-button--wide',
+      method: :post,
+    ) { t('account_reset.request.yes_continue') } %>
+<%= button_to(
+      root_url,
+      method: :get,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('account_reset.request.no_cancel2') } %>

@@ -2,7 +2,10 @@
 en:
   telephony:
     account_deleted_notice: This text message confirms you have deleted your %{app_name} account.
-    account_reset_cancellation_notice: Your request to delete your %{app_name} account has been canceled.
+    account_reset_cancellation_notice: |-
+      You have canceled your request to delete your %{app_name} account.
+
+      Sign in to access your account.
     account_reset_notice: |-
       As requested, your %{app_name} account will be deleted in %{interval}. Look for a second email to confirm deletion. 
 

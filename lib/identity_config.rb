@@ -460,7 +460,6 @@ module IdentityConfig
     config.add(:totp_code_interval, type: :integer)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:update_cancel_account_reset_path, type: :boolean)
-    config.add(:updated_account_reset_content, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:use_vot_in_sp_requests, type: :boolean)

@@ -35,15 +35,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 
@@ -105,15 +97,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 
@@ -166,15 +150,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 

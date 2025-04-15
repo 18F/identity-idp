@@ -2,15 +2,8 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
-<% if IdentityConfig.store.updated_account_reset_content %>
-  <% t('account_reset.confirm_request.info_html', email: email, waiting_period: waiting_period).each do |info_p| %>
-    <p><%= info_p %></p>
-  <% end %>
-<% else %>
-  <p><%= t('account_reset.confirm_request.instructions_start') %>
-    <strong><%= email %></strong>
-    <%= t('account_reset.confirm_request.instructions_end') %>
-  </p>
+<% t('account_reset.confirm_request.info_html', email: email, waiting_period: waiting_period).each do |info_p| %>
+  <p><%= info_p %></p>
 <% end %>
 
 <div class="width-10">

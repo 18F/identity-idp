@@ -1,20 +1,11 @@
-<% if IdentityConfig.store.updated_account_reset_content %>
-  <p class="lead">
-    <%= t('user_mailer.account_reset_request.info_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), waiting_period: @account_reset_deletion_period_interval) %>
-  </p>
 
-  <p class="lead">
-    <%= t('user_mailer.account_reset_request.cancel', app_name: APP_NAME) %>
-  </p>
-<% else %>
-  <p class="lead">
-    <%= t('user_mailer.account_reset_request.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), waiting_period: @account_reset_deletion_period_interval) %>
-  </p>
+<p class="lead">
+  <%= t('user_mailer.account_reset_request.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), waiting_period: @account_reset_deletion_period_interval) %>
+</p>
 
-  <p class="lead">
-    <%= t('user_mailer.account_reset_request.cancel', app_name: APP_NAME) %>
-  </p>
-<% end %>
+<p class="lead">
+  <%= t('user_mailer.account_reset_request.cancel', app_name: APP_NAME) %>
+</p>
 
 <table class="spacer">
   <tbody>

@@ -441,29 +441,6 @@ RSpec.describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
-    context 'with new updated account creation workflow' do
-      before do
-        allow(IdentityConfig.store).to receive(:updated_account_reset_content).and_return(true)
-      end
-
-      it 'renders the new header within the body' do
-        expect(mail.html_part.body).to have_content(
-          strip_tags(
-            t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
-          ),
-        )
-      end
-    end
-
-    context 'with current workflow' do
-      it 'does not render the subject in the body' do
-        expect(mail.html_part.body).not_to have_content(
-          strip_tags(
-            t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
-          ),
-        )
-      end
-    end
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -478,18 +455,9 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            interval: interval,
                                                             waiting_period:
                                                               account_reset_deletion_period_hours
           ),
-        ),
-      )
-    end
-
-    it 'renders the header within the body' do
-      expect(mail.html_part.body).to have_content(
-        strip_tags(
-          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end
