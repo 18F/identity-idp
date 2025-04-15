@@ -446,6 +446,7 @@ Rails.application.routes.draw do
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/passport' => 'in_person/passport#show'
       get '/in_person/state_id' => 'in_person/state_id#show'
       put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'

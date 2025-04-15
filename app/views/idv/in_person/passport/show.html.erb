@@ -1,0 +1,127 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
+        current_step: :verify_info,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%# title %>
+<% self.title = t('in_person_proofing.headings.passport')%>
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.passport')) %>
+
+<p>
+  <%= t('in_person_proofing.body.passport.info_html') %>
+</p>
+
+<%= simple_form_for form,
+                    as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
+                    url: url_for,
+                    method: 'put',
+                    html: { class: 'margin-y-5' } do |f| %>
+
+<div class="margin-bottom-4">
+
+        <%= render ValidatedFieldComponent.new(
+            name: :surname,
+            form: f,
+            input_html: { value: '' },
+            label: t('in_person_proofing.form.passport.surname'),
+            label_html: { class: 'usa-label' },
+            maxlength: 255,
+            required: true,
+            ) %>
+
+        <%= render ValidatedFieldComponent.new(
+            name: :first_name,
+            form: f,
+            input_html: { value: '' },
+            hint: t('in_person_proofing.form.passport.first_name_hint'),
+            label: t('in_person_proofing.form.passport.first_name'),
+            label_html: { class: 'usa-label' },
+            maxlength: 255,
+            required: true,
+            ) %>
+
+        <%= render MemorableDateComponent.new(
+                content_tag: 'memorable-date',
+                name: :dob,
+                # day: parsed_dob&.day,
+                # month: parsed_dob&.month,
+                # year: parsed_dob&.year,
+                required: true,
+                min: '1900-01-01',
+                max: Time.zone.today,
+                hint: t('in_person_proofing.form.passport.dob_hint'),
+                label: t('in_person_proofing.form.passport.dob'),
+                form: f,
+                error_messages: {
+                missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
+                range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
+                },
+                range_errors: [
+                    {
+                        max: Time.zone.today - 13.years,
+                        message: t(
+                        'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                        app_name: APP_NAME,
+                        ),
+                    },
+                ],
+        ) %>
+
+        <%= render ValidatedFieldComponent.new(
+            name: :passport_number,
+            form: f,
+            input_html: { value: '' },
+            hint: t('in_person_proofing.form.passport.passport_number_hint'),
+            label: t('in_person_proofing.form.passport.passport_number'),
+            label_html: { class: 'usa-label' },
+            maxlength: 255,
+            required: true,
+            ) %>
+
+        <%= render MemorableDateComponent.new(
+            content_tag: 'memorable-date',
+            name: :passport_expiration,
+            # day: parsed_dob&.day,
+            # month: parsed_dob&.month,
+            # year: parsed_dob&.year,
+            required: true,
+            min: '1900-01-01',
+            max: Time.zone.today,
+            hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+            label: t('in_person_proofing.form.passport.expiration_date'),
+            form: f,
+            error_messages: {
+            missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
+            range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
+            },
+            range_errors: [
+                {
+                    max: Time.zone.today - 13.years,
+                    message: t(
+                    'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                    app_name: APP_NAME,
+                    ),
+                },
+            ],
+        )%>
+    </div>
+
+    <%= f.submit do %>
+        <%= t('forms.buttons.continue') %>
+    <% end %>
+<% end %>
+
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+      <% c.with_option(
+         url: idv_in_person_state_id_url,
+         new_tab: true,
+       ).with_content(t('in_person_proffing.form.passport.redirect_to_state_id')) %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'passport' %>
+<%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>
