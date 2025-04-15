@@ -574,7 +574,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
