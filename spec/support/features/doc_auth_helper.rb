@@ -54,6 +54,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -69,6 +70,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path(idv_agreement_path)
     complete_agreement_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -77,6 +79,7 @@ module DocAuthHelper
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
     click_on t('forms.buttons.upload_photos')
   end
 
@@ -132,6 +135,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path(idv_document_capture_path)
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -192,6 +196,7 @@ module DocAuthHelper
 
   def complete_all_doc_auth_steps_before_password_step(expect_accessible: false, with_selfie: false)
     complete_all_doc_auth_steps(expect_accessible: expect_accessible, with_selfie: with_selfie)
+    expect(page).to have_current_path(idv_phone_path)
     fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp

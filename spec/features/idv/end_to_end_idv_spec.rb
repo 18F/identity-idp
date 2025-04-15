@@ -42,6 +42,7 @@ RSpec.describe 'Identity verification', :js do
 
     validate_enter_password_page
     complete_enter_password_step(user)
+    expect(page).to have_current_path(idv_personal_key_path)
     validate_enter_password_submit(user)
 
     validate_personal_key_page

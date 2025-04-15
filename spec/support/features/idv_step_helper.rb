@@ -159,10 +159,10 @@ module IdvStepHelper
     # personal key page
     expect(page).not_to have_content(t('step_indicator.flows.idv.go_to_the_post_office'))
     expect_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
-    expect(page).to have_current_path(idv_personal_key_url)
+    expect(page).to have_current_path(idv_personal_key_path)
     acknowledge_and_confirm_personal_key
 
     # sign up completed
-    expect(page).to have_current_path(sign_up_completed_url)
+    expect(page).to have_current_path(sign_up_completed_path)
   end
 end
