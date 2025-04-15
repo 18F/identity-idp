@@ -300,19 +300,16 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
-    @is_enhanced_ipp = enrollment.enhanced_ipp?
-
     with_user_locale(user) do
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = @is_enhanced_ipp ?
-      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: @is_enhanced_ipp,
       )
+      @header = @presenter.enhanced_ipp? ?
+      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
 
       if enrollment&.service_provider&.logo_is_email_compatible?
         @logo_url = enrollment.service_provider.logo_url
@@ -333,13 +330,10 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
-    @is_enhanced_ipp = enrollment.enhanced_ipp?
-
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: @is_enhanced_ipp,
       )
       if enrollment&.service_provider&.logo_is_email_compatible?
         @logo_url = enrollment.service_provider.logo_url
