@@ -15,17 +15,18 @@ module DocAuth
         @selfie_required = selfie_required
         super(
           success: success?,
-          errors: errors,
-          pii_from_doc: pii_from_doc,
+          errors:,
+          pii_from_doc:,
           doc_type_supported: id_type_supported?,
           selfie_live: selfie_live?,
           selfie_quality_good: selfie_quality_good?,
           selfie_status: selfie_status,
           extra: {
-            doc_auth_result: doc_auth_result,
-            portrait_match_results: portrait_match_results,
+            doc_auth_result:,
+            passport_check_result:,
+            portrait_match_results:,
             billed: true,
-            classification_info: classification_info,
+            classification_info:,
             workflow: workflow,
             liveness_checking_required: @selfie_required,
             **@response_info.to_h,
@@ -46,6 +47,7 @@ module DocAuth
             passed = file_data.dig('passed_alerts')
             face_match_result = file_data.dig('portrait_match_results', 'FaceMatchResult')
             classification_info = file_data.dig('classification_info')&.symbolize_keys
+            passport_check_result = file_data.dig('passport_check_result', 'PassportCheckResult')
             # Pass and doc type is ok
             has_fields = [
               doc_auth_result,
@@ -54,6 +56,7 @@ module DocAuth
               passed,
               face_match_result,
               classification_info,
+              passport_check_result,
             ].any?(&:present?)
 
             if has_fields
@@ -70,6 +73,10 @@ module DocAuth
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
               mock_args[:liveness_enabled] = face_match_result ? true : false
               mock_args[:classification_info] = classification_info if classification_info.present?
+              if passport_check_result.present?
+                mock_args[:passport_check_result] =
+                  classification_info
+              end
               @response_info = create_response_info(**mock_args)
               ErrorGenerator.new(config).generate_doc_auth_errors(@response_info)
             elsif file_data.include?(:general) # general is the key for errors from parsing
@@ -132,7 +139,15 @@ module DocAuth
       end
 
       def parsed_pii_from_doc
-        if parsed_data_from_uploaded_file.has_key?('document')
+        return if !parsed_data_from_uploaded_file.has_key?('document')
+
+        if parsed_data_from_uploaded_file['document']['state_id_type'] == 'passport'
+          Pii::Passport.new(
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
+              parsed_data_from_uploaded_file['document'].symbolize_keys,
+            ).slice(*Pii::Passport.members),
+          )
+        else
           Pii::StateId.new(
             **Idp::Constants::MOCK_IDV_APPLICANT.merge(
               parsed_data_from_uploaded_file['document'].symbolize_keys,
@@ -157,6 +172,12 @@ module DocAuth
 
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')
+          &.transform_keys! { |key| key.to_s.camelize }
+          &.deep_symbolize_keys
+      end
+
+      def passport_check_result
+        parsed_data_from_uploaded_file.dig('passport_check_result')
           &.transform_keys! { |key| key.to_s.camelize }
           &.deep_symbolize_keys
       end
@@ -214,13 +235,14 @@ module DocAuth
       }.freeze
 
       def create_response_info(
-        doc_auth_result: 'Failed',
-        passed: [],
-        failed: DEFAULT_FAILED_ALERTS,
-        liveness_enabled: false,
-        image_metrics: DEFAULT_IMAGE_METRICS,
-        classification_info: nil
-      )
+            doc_auth_result: 'Failed',
+            passed: [],
+            failed: DEFAULT_FAILED_ALERTS,
+            liveness_enabled: false,
+            image_metrics: DEFAULT_IMAGE_METRICS,
+            classification_info: nil,
+            passport_check_result: nil
+          )
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
           vendor: 'Mock',
@@ -234,6 +256,7 @@ module DocAuth
           liveness_enabled: liveness_enabled,
           classification_info: classification_info,
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
+          passport_check_result:,
         }
       end
     end
