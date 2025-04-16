@@ -14,7 +14,6 @@ module DocumentCaptureStepHelper
   end
 
   def attach_images(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
-    page.has_content? t('doc_auth.headings.document_capture_front')
     attach_file t('doc_auth.headings.document_capture_front'), file, make_visible: true
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
