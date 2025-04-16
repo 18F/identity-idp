@@ -20,6 +20,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
   end
   context 'on a desktop device send link' do
     before do
@@ -132,6 +135,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
           fill_in :doc_auth_phone, with: '415-555-0199'
           click_send_link
 
+          page.has_content? t('forms.buttons.back')
           expect(page).to have_current_path(idv_link_sent_path)
 
           click_doc_auth_back_link
@@ -140,13 +144,14 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(page).to have_content(
           I18n.t(
             'doc_auth.errors.send_link_limited',
             timeout: timeout,
           ),
         )
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+
         expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end

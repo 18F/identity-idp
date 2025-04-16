@@ -30,6 +30,9 @@ RSpec.feature 'document capture step', :js do
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
