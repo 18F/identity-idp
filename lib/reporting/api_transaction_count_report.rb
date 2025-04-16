@@ -55,21 +55,17 @@ module Reporting
           'True ID',
           'Instant verify',
           'Phone Finder',
-          'Acuant',
-          'Socure',
+          'Socure (DocV)',
           'Fraud Score and Attribute',
-          'Instant Verify',
           'Threat Metrix',
         ],
         [
           time_range.begin.to_date.to_s + ' - ' + time_range.end.to_date.to_s,
           true_id_table.first,
-          singular_vendor_table.first,
+          instant_verify_table.first,
           phone_finder_table.first,
-          acuant_table.first,
           socure_table.first,
           fraud_score_and_attribute_table.first,
-          instant_verify_table.first,
           threat_metrix_table.first,
         ],
       ]
@@ -85,22 +81,10 @@ module Reporting
       last_sunday.to_date..last_saturday.to_date
     end
 
-    def singular_vendor_table
-      result = fetch_results(query: singular_vendor_query)
-      singular_vendor_table_count = result.count
-      [singular_vendor_table_count, result]
-    end
-
     def true_id_table
       result = fetch_results(query: true_id_query)
       true_id_table_count = result.count
       [true_id_table_count, result]
-    end
-
-    def acuant_table
-      result = fetch_results(query: phone_finder_query)
-      acuant_table_count = result.count
-      [acuant_table_count, result]
     end
 
     def phone_finder_table
@@ -161,67 +145,6 @@ module Reporting
       )
     end
 
-    def singular_vendor_query
-      <<~QUERY
-        #LN Stack
-        filter name = "IdV: doc auth verify proofing results"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state, properties.service_provider as sp,
-
-        #OVERALL
-        properties.event_properties.proofing_results.timed_out as overall_process_timed_out_flag,
-        properties.event_properties.success as overall_process_success,
-        properties.event_properties.proofing_components.document_check as document_check_vendor,
-        properties.event_properties.proofing_results.context.stages.residential_address.vendor_name as address_vendor_name,
-
-        #instantVerify --> resolution
-        properties.event_properties.proofing_results.context.stages.resolution.reference as resolution_referenceID,
-        properties.event_properties.proofing_results.context.stages.resolution.success as resolution_success,
-        properties.event_properties.proofing_results.context.stages.resolution.timed_out as resolution_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.resolution.transaction_id as resolution_transactionID,
-        properties.event_properties.proofing_results.context.stages.resolution.vendor_name as resolution_vendor_name,
-
-        #aamva --> state_id
-        properties.event_properties.proofing_results.context.stages.state_id.success as state_id_success,
-        properties.event_properties.proofing_results.context.stages.state_id.timed_out as state_id_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.state_id.transaction_id as state_id_transactionID,
-        properties.event_properties.proofing_results.context.stages.state_id.vendor_name as state_id_vendor_name,
-
-        #TMX --> threatmetrix
-        properties.event_properties.proofing_results.context.stages.threatmetrix.review_status as tmx_review_status,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.session_id as tmx_sessionID,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.timed_out as tmx_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.transaction_id as tmx_transactionID
-
-        | display uuid, id, timestamp, sp, dol_state,
-        overall_process_timed_out_flag,
-        overall_process_success,
-        document_check_vendor,
-        address_vendor_name,
-
-        #instantVerify
-        resolution_vendor_name,
-        resolution_referenceID,
-        resolution_transactionID,
-        resolution_success,
-        resolution_timed_out_flag,
-
-        #aamva
-        state_id_vendor_name,
-        state_id_transactionID,
-        state_id_success,
-        state_id_timed_out_flag,
-
-        #TMX
-        tmx_sessionID,
-        tmx_transactionID,
-        tmx_review_status,
-        tmx_success,
-        tmx_timed_out_flag
-      QUERY
-    end
-
     def true_id_query
       <<~QUERY
         #TrueID
@@ -241,19 +164,6 @@ module Reporting
         properties.event_properties.vendor as vendor
         | display uuid, id, timestamp, sp, dol_state, success,
         billed, vendor, product_status, transaction_status, conversation_id, request_id, referenceID, decision_status, submit_attempts, remaining_submit_attempts
-      QUERY
-    end
-
-    def acuant_query
-      <<~QUERY
-        #Acuant
-        filter name in ["Frontend: IdV: front image clicked","Frontend: IdV: back image clicked"]
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state,
-        properties.service_provider as sp, properties.event_properties.use_alternate_sdk as use_alternate_sdk,
-        properties.event_properties.success as success, properties.event_properties.acuant_version as acuant_version, properties.event_properties.captureAttempts as captureAttempts,
-        replace(replace(strcontains(name, "front"),"1","front"),"0","back") as side
-        | display uuid, id, timestamp, sp, dol_state, side, acuant_version, captureAttempts, use_alternate_sdk
       QUERY
     end
 
