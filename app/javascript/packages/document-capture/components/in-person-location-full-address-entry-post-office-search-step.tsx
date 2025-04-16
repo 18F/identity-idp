@@ -91,7 +91,6 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
             }
             // inPersonURL is /verify/in_person
             // This needs to render the switchback page ONLY when flowPath is hybrid
-            forceRedirect("https://google.com");
 
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
