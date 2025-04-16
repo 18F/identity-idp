@@ -81,7 +81,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
         it 'renders passport specific content to verify your identity online' do
           render
           expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).once
+          expect(rendered).to have_content(
+            t('doc_auth.info.verify_online_description_passport'),
+          ).once
           expect(rendered).to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
           )
@@ -97,7 +99,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           render
 
           expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).twice
+          expect(rendered).to have_content(
+            t('doc_auth.info.verify_online_description_passport'),
+          ).twice
           expect(rendered).not_to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
           )
@@ -167,7 +171,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           expect(rendered).to have_content(
             t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
           )
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).once
+          expect(rendered).to have_content(
+            t('doc_auth.info.verify_online_description_passport'),
+          ).once
           expect(rendered).to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
           )
@@ -184,7 +190,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           expect(rendered).to have_content(
             t('doc_auth.info.verify_online_instruction_mobile_no_selfie'),
           )
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).twice
+          expect(rendered).to have_content(
+            t('doc_auth.info.verify_online_description_passport'),
+          ).twice
           expect(rendered).not_to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
           )
@@ -213,7 +221,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           it 'renders passport specific content to verify your identity online' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-            expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).once
+            expect(rendered).to have_content(
+              t('doc_auth.info.verify_online_description_passport'),
+            ).once
             expect(rendered).to have_content(
               strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
             )
@@ -227,7 +237,9 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
           it 'renders passport specific content to verify your identity online and in person' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-            expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport')).twice
+            expect(rendered).to have_content(
+              t('doc_auth.info.verify_online_description_passport'),
+            ).twice
             expect(rendered).not_to have_content(
               strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
             )
