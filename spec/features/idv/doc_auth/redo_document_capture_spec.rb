@@ -12,6 +12,9 @@ RSpec.feature 'document capture step', :js do
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 

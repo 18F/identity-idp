@@ -23,6 +23,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_ssn_step
   end
