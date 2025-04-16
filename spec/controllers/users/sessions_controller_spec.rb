@@ -868,6 +868,22 @@ RSpec.describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    context 'with Duplicate SSN feature check enabled' do 
+      context 'sp eligible not eligible for duplicate ssn check' do
+
+      end
+
+      context 'sp eligible for duplicate SSN check' do
+        context 'user has valid IAL2 Profile' do
+
+        end
+
+        context 'user does not have valid IAL2 Profile' do
+          
+        end
+      end
+    end
   end
 
   describe '#new' do
