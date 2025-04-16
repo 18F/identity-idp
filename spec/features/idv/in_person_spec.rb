@@ -177,10 +177,10 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
 
-    click_link t('links.cancel', wait: 10)
+    click_link t('links.cancel')
     click_on t('idv.cancel.actions.start_over')
 
-    expect(page).to have_current_path(idv_welcome_path, wait: 10)
+    expect(page).to have_current_path(idv_welcome_path)
     begin_in_person_proofing
     complete_all_in_person_proofing_steps
   end

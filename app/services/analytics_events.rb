@@ -1970,6 +1970,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
   # @param [Hash] passport_check_result The results of the Dos API call
+  # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
