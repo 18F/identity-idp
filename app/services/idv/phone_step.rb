@@ -2,10 +2,11 @@
 
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, analytics:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
       @analytics = analytics
+      @attempts_api_tracker = attempts_api_tracker
     end
 
     def submit(step_params)
@@ -122,7 +123,7 @@ module Idv
 
     def rate_limited_result
       @analytics.rate_limit_reached(limiter_type: :proof_address, step_name: :phone)
-      attempts_api_tracker.idv_rate_limited(
+      @attempts_api_tracker.idv_rate_limited(
         limiter_type: :proof_address,
       )
       FormResponse.new(success: false)
