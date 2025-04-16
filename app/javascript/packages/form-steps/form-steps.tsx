@@ -411,9 +411,13 @@ function FormSteps({
 
     onStepSubmit(step?.name);
 
+    console.log("Steps are the following: ", steps);
+
     const nextStepIndex = stepIndex + 1;
+    console.log(`Moving from ${stepIndex} to ${nextStepIndex}...`);
     const isComplete =
       stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
+
     if (isComplete) {
       onComplete(values);
     } else {
