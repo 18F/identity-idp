@@ -14,6 +14,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]

@@ -36,12 +36,14 @@ RSpec.describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
   let(:analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   subject do
     described_class.new(
-      idv_session: idv_session,
-      trace_id: trace_id,
-      analytics: analytics,
+      idv_session:,
+      trace_id:,
+      analytics:,
+      attempts_api_tracker:,
     )
   end
 
@@ -175,6 +177,7 @@ RSpec.describe Idv::PhoneStep do
   describe '#failure_reason' do
     context 'when there are idv attempts remaining' do
       it 'returns :warning' do
+        expect(attempts_api_tracker).not_to receive(:idv_rate_limited)
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
         subject.async_state_done(subject.async_state)
@@ -187,6 +190,9 @@ RSpec.describe Idv::PhoneStep do
       it 'returns :fail' do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :proof_address,
+        )
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)
       end

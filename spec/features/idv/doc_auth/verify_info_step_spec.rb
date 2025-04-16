@@ -137,7 +137,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'rate limits resolution and continues when it expires' do
       expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
         limiter_type: :idv_resolution,
-      )
+      ).twice
 
       (max_resolution_attempts - 2).times do
         complete_verify_step
@@ -209,7 +209,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     it 'rate limits ssn and continues when it expires' do
       expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
         limiter_type: :proof_ssn,
-      )
+      ).twice
 
       complete_verify_step
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
@@ -220,6 +220,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       )
 
       visit idv_verify_info_url
+      # second rate limit event
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
 
       # Manual expiration is needed because Redis timestamp doesn't always match ruby timestamp
