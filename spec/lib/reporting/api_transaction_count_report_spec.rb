@@ -13,7 +13,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
 
   let(:expected_api_transaction_count_table) do
     [
-      ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Acuant', 'Socure',
+      ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
        'Fraud Score and Attribute', 'Instant Verify', 'Threat Metrix'],
       ["#{time_range.begin.to_date} - #{time_range.end.to_date}", 10, 15, 20, 25, 30, 35, 40, 45],
     ]
@@ -35,7 +35,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       header_row = table.first
       data_row = table.last
 
-      expect(header_row).to include('Week', 'True ID', 'Instant verify', 'Phone Finder', 'Acuant')
+      expect(header_row).to include('Week', 'True ID', 'Instant verify', 'Phone Finder')
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
       expect(data_row[1..].all? { |val| val.is_a?(Integer) || val.is_a?(Array) }).to be true
     end
