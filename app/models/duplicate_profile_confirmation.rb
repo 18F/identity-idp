@@ -1,0 +1,2 @@
+class DuplicateProfileConfirmation < ApplicationRecord
+end

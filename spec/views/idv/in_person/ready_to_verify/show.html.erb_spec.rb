@@ -22,11 +22,19 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       user: user
     )
   end
-  let(:is_enhanced_ipp) { false }
+  let(:enhanced_ipp_enrollment) do
+    build(
+      :in_person_enrollment, :pending, :enhanced_ipp,
+      current_address_matches_id: current_address_matches_id,
+      profile: profile,
+      selected_location_details: selected_location_details,
+      service_provider: service_provider,
+      user: user
+    )
+  end
   let(:presenter) do
     Idv::InPerson::ReadyToVerifyPresenter.new(
       enrollment: enrollment,
-      is_enhanced_ipp: is_enhanced_ipp,
     )
   end
   let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP }
@@ -190,12 +198,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'what to expect section' do
-    context 'when Enhanced IPP is not enabled' do
-      let(:is_enhanced_ipp) { false }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
-
+    context 'when the enrollment is ID-IPP' do
       it 'conditionally renders content applicable to ID-IPP' do
         render
 
@@ -213,11 +216,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       end
     end
 
-    context 'when Enhanced IPP is enabled' do
-      let(:is_enhanced_ipp) { true }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
+    context 'when the enrollment is enhanced IPP' do
+      let(:enrollment) { enhanced_ipp_enrollment }
 
       it 'conditionally renders content applicable to EIPP' do
         render
@@ -261,23 +261,16 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'GSA Enhanced Pilot Barcode tag' do
-    context 'when Enhanced IPP is enabled' do
-      let(:is_enhanced_ipp) { true }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
+    context 'when the enrollment is enhanced IPP' do
+      let(:enrollment) { enhanced_ipp_enrollment }
+
       it 'renders GSA Enhanced Pilot Barcode tag' do
         render
 
         expect(rendered).to have_content(t('in_person_proofing.body.barcode.eipp_tag'))
       end
     end
-    context 'when Enhanced IPP is not enabled' do
-      let(:is_enhanced_ipp) { false }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
-
+    context 'when the enrollment is ID-IPP' do
       it 'does not render GSA Enhanced Pilot Barcode tag' do
         render
 
@@ -287,11 +280,8 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'What to bring to the Post Office section' do
-    context 'when Enhanced IPP is enabled' do
-      let(:is_enhanced_ipp) { true }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
+    context 'when the enrollment is enhanced IPP' do
+      let(:enrollment) { enhanced_ipp_enrollment }
 
       it 'displays heading and body' do
         render
@@ -348,12 +338,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       end
     end
 
-    context 'when Enhanced IPP is not enabled' do
-      let(:is_enhanced_ipp) { false }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
-
+    context 'when the enrollment is ID-IPP' do
       it 'template does not display Enhanced In-Person Proofing what to bring content' do
         render
 
@@ -392,12 +377,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   end
 
   context 'Need to Change Location section' do
-    context 'when Enhanced IPP is not enabled' do
-      let(:is_enhanced_ipp) { false }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
-
+    context 'when the enrollment is ID-IPP' do
       it 'renders the change location heading' do
         render
 
@@ -420,10 +400,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
 
     context 'when Enhanced IPP is enabled' do
-      let(:is_enhanced_ipp) { true }
-      before do
-        @is_enhanced_ipp = is_enhanced_ipp
-      end
+      let(:enrollment) { enhanced_ipp_enrollment }
 
       it 'does not render the change location heading' do
         render

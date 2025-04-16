@@ -1281,13 +1281,9 @@ in_person_proofing.body.prepare.verify_step_about: 'Siga los siguientes pasos pa
 in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de teléfono principal o el que use con más frecuencia.
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
-in_person_proofing.body.state_id.alert_message: 'Su identificación emitida por el estado no debe estar vencida. Se aceptan estas formas de identificación:'
-in_person_proofing.body.state_id.id_types:
-  - Licencia para conducir estatal
-  - Identificación estatal que no sea la licencia para conducir
+in_person_proofing.body.state_id.alert_message: Necesita una licencia de conducir o una identificación estatal
+in_person_proofing.body.state_id.alert_text: No se aceptan los pasaportes para la verificación en persona. Su licencia de conducir o identificación estatal no deben estar vencidas.
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
-in_person_proofing.body.state_id.learn_more_link: Obtenga más información sobre las formas de identificación aceptadas.
-in_person_proofing.body.state_id.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.address1: Línea de dirección 1

@@ -21,7 +21,6 @@ module Idv
         analytics.idv_in_person_ready_to_verify_visit(**opt_in_analytics_properties)
         @presenter = ReadyToVerifyPresenter.new(
           enrollment: enrollment,
-          is_enhanced_ipp: @is_enhanced_ipp,
         )
       end
 
