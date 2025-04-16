@@ -50,7 +50,7 @@ RSpec.describe Idv::InPersonController do
 
         context 'with establishing in-person enrollment' do
           before do
-            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+            create(:in_person_enrollment, :establishing, user: user)
           end
 
           it 'initializes the in-person session' do
