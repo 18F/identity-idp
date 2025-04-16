@@ -73,8 +73,6 @@ export default function FullAddressSearchInput({
 
   const handleContinue = useCallback(
     (event) => {
-      // Prevent form submission since we are no longer searching
-      event.preventDefault();
       // Run LocationSelect with null as the location
       onContinue(event, null);
     },

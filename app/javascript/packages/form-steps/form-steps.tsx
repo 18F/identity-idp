@@ -378,16 +378,12 @@ function FormSteps({
 
     // Don't proceed if field errors have yet to be resolved.
     if (hasUnresolvedFieldErrors) {
-    console.log("Unresolved Field Errors:");
-      console.log(activeErrors);
       setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;
     }
 
     const nextActiveErrors = getValidationErrors();
-    console.log("Next Active Errors:");
-    console.log(nextActiveErrors);
     setPreviousStepErrors((prev) => ({
       ...prev,
       [stepName || steps[0].name]: activeErrors,
@@ -415,11 +411,7 @@ function FormSteps({
 
     onStepSubmit(step?.name);
 
-    console.log("Steps are the following: ", steps);
-
     const nextStepIndex = stepIndex + 1;
-    console.log(`Step index before move: ${stepIndex}`);
-    console.log(`Moving from ${stepIndex} to ${nextStepIndex}...`);
     const isComplete =
       stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
 
@@ -427,6 +419,7 @@ function FormSteps({
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
+      // Step is updated here?
       setStepName(nextStepName);
     }
     // unset stepCanComplete so the next step that needs to can set it
