@@ -870,13 +870,54 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     context 'with Duplicate SSN feature check enabled' do 
-      context 'sp eligible not eligible for duplicate ssn check' do
+      let(:user) { create(:user, :proofed_with_selfie) }
 
+      subject(:response) do
+        post :create, params: { user: { email: user.email, password: user.password } }
+      end
+      
+      context 'sp not eligible for duplicate ssn check' do
+        before do
+          allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return(['badSP'])
+        end
+
+        it 'tracks the successful authentication for existing user' do
+          stub_analytics(user:)
+          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+            success: true,
+          )
+  
+          response
+  
+          expect(@analytics).to have_logged_event(
+            'Email and Password Authentication',
+            success: true,
+            user_locked_out: false,
+            rate_limited: false,
+            valid_captcha_result: true,
+            captcha_validation_performed: false,
+            sign_in_failure_count: 0,
+            sp_request_url_present: false,
+            remember_device: false,
+            new_device: true,
+          )
+        end
+  
+
+        it 'does not trigger any methods' do
+
+        end
       end
 
       context 'sp eligible for duplicate SSN check' do
         context 'user has valid IAL2 Profile' do
+          context 'user was found with multiple profiles matching SSN' do
 
+          end
+
+          context 'user profile has unique SSN' do
+
+          end
         end
 
         context 'user does not have valid IAL2 Profile' do

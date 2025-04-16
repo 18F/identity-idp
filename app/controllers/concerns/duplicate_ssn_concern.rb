@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 module DuplicateSsnConcern
-  def check_if_user_contains_duplicate_ssn
-    return unless IdentityConfig.store.duplicate_ssn_auth_check_enabled && sp_eligible_for_one_account?
+  def validate_user_does_not_have_duplicate_ssn
+    return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
     return if user_already_verified?
 
     cacher = Pii::Cacher.new(current_user, user_session)
     pii = cacher.fetch(current_user&.active_profile&.id)
-    if !(DuplicateSsnFinder.new(user: current_user, ssn: pii[:ssn]).ssn_is_unique?)
-      # add record fr duplicate ssn. 
+    if !(Idv::DuplicateSsnFinder.new(user: current_user, ssn: pii[:ssn]).ssn_is_unique?)
+      
     end
   end
 

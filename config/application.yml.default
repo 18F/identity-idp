@@ -132,7 +132,6 @@ dos_passport_mrz_endpoint: ''
 dos_passport_mrz_maxretry: 2
 dos_passport_mrz_timeout_seconds: 60
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
-duplicate_ssn_auth_check_enabled: false
 eligible_one_account_providers: '[]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov

@@ -210,7 +210,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
-      check_if_user_contains_duplicate_ssn
+      validate_user_does_not_have_duplicate_ssn
       redirect_to next_url_after_valid_authentication
     end
 
