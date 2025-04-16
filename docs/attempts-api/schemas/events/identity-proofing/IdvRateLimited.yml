@@ -15,3 +15,7 @@ allOf:
           - proof_address
           - phone_confirmation
           - idv_send_link
+      phone:
+        type: string
+        description: |
+          OPTIONAL, the provided phone number (in the event of a phone-related rate limiting)

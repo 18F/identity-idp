@@ -5,8 +5,6 @@ properties:
     $ref: './identity-proofing/IdvDocumentUploaded.yml'
   idv-document-upload-submitted:
     $ref: './identity-proofing/IdvDocumentUploadSubmitted.yml'
-  idv-document-upload-rate-limited:
-    $ref: './identity-proofing/IdvDocumentUploadRateLimited.yml'
   idv-enrollment-complete:
     $ref: './identity-proofing/IdvEnrollmentComplete.yml'
   idv-ipp-ready-to-verify-visit:
@@ -15,14 +13,10 @@ properties:
     $ref: './identity-proofing/IdvPhoneOtpSent.yml'
   idv-phone-otp-submitted:
     $ref: './identity-proofing/IdvPhoneOtpSubmitted.yml'
-  idv-phone-otp-submitted-rate-limited:
-    $ref: './identity-proofing/IdvPhoneOtpSubmittedRateLimited.yml'
-  idv-phone-otp-sent-rate-limited:
-    $ref: './identity-proofing/IdvPhoneOtpSentRateLimited.yml'
-  idv-phone-send-link-rate-limited:
-    $ref: './identity-proofing/IdvPhoneSendLinkRateLimited.yml'
   idv-phone-submitted:
     $ref: './identity-proofing/IdvPhoneSubmitted.yml'
+  idv-rate-limited:
+    $ref: './identity-proofing/IdvRateLimited.yml'
   idv-reproof:
     $ref: './identity-proofing/IdvReproof.yml'
   idv-ssn-submitted:

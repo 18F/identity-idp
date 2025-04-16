@@ -215,6 +215,7 @@ module Idv
       analytics.rate_limit_reached(
         limiter_type: :idv_send_link,
       )
+      # TODO: Attempts API PII Add phone_number: formatted_destination_phone,
       attempts_api_tracker.idv_rate_limited(
         limiter_type: :idv_send_link,
       )
