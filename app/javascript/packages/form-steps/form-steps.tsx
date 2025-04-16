@@ -414,12 +414,10 @@ function FormSteps({
     const nextStepIndex = stepIndex + 1;
     const isComplete =
       stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
-
     if (isComplete) {
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
-      // Step is updated here?
       setStepName(nextStepName);
     }
     // unset stepCanComplete so the next step that needs to can set it
