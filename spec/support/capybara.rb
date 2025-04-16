@@ -43,7 +43,7 @@ end
 
 Capybara.server = :puma, { Silent: true }
 
-Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || 0).to_f
+Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || 0.5).to_f
 Capybara.asset_host = ENV['RAILS_ASSET_HOST'] || 'http://localhost:3000'
 Capybara.automatic_label_click = true # USWDS styles native checkbox/radio as offscreen
 Capybara.enable_aria_label = true
