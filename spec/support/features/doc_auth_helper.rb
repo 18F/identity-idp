@@ -50,8 +50,6 @@ module DocAuthHelper
   end
 
   def complete_welcome_step
-    page.has_content? t('doc_auth.buttons.continue')
-
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -80,8 +78,6 @@ module DocAuthHelper
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
-    page.has_button? '#form-to-submit-photos-through-desktop'
-
     click_on t('forms.buttons.upload_photos')
   end
 
