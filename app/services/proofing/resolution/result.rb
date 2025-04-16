@@ -47,11 +47,16 @@ module Proofing
         exception.is_a?(Proofing::TimeoutError)
       end
 
+      def address_exception?
+        attributes_requiring_additional_verification == 'address'
+      end
+
       def to_h
         {
           success: success?,
           errors: errors,
           exception: exception,
+          address_exception: address_exception?,
           timed_out: timed_out?,
           transaction_id: transaction_id,
           reference: reference,
