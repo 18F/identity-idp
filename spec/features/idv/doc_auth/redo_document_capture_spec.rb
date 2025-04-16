@@ -8,9 +8,13 @@ RSpec.feature 'document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
   end
 
@@ -58,6 +62,10 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'logs the rate limited analytics event for doc_auth' do
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
+
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
@@ -214,6 +222,10 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'logs the rate limited analytics event for doc_auth' do
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
+
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
