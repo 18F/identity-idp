@@ -122,6 +122,9 @@ module Idv
 
     def rate_limited_result
       @analytics.rate_limit_reached(limiter_type: :proof_address, step_name: :phone)
+      attempts_api_tracker.idv_rate_limited(
+        limiter_type: :proof_address,
+      )
       FormResponse.new(success: false)
     end
 
