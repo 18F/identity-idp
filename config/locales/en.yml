@@ -1270,13 +1270,9 @@ in_person_proofing.body.prepare.verify_step_about: 'Complete the steps below to 
 in_person_proofing.body.prepare.verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
 in_person_proofing.body.prepare.verify_step_enter_pii: Enter your name, date of birth, state‑issued ID number, address and Social Security number.
 in_person_proofing.body.prepare.verify_step_post_office: Find a participating Post Office near you.
-in_person_proofing.body.state_id.alert_message: 'Your state‑issued ID must not be expired. Accepted forms of ID are:'
-in_person_proofing.body.state_id.id_types:
-  - State Driver’s License
-  - State Non-Driver’s Identification Card
+in_person_proofing.body.state_id.alert_message: You need a driver’s license or state ID
+in_person_proofing.body.state_id.alert_text: Passports are not accepted in person. Your driver’s license or state ID must not be expired.
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
-in_person_proofing.body.state_id.learn_more_link: Learn more about accepted forms of ID.
-in_person_proofing.body.state_id.questions: Questions?
 in_person_proofing.form.address.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using substitutes for those characters.'
 in_person_proofing.form.address.state_prompt: '- Select -'
 in_person_proofing.form.state_id.address1: Address line 1
