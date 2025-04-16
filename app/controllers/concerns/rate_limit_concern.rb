@@ -20,6 +20,7 @@ module RateLimitConcern
   end
 
   def confirm_not_rate_limited_for_phone_address_verification
+    # TODO: Attempts API PII add phone number
     if idv_attempter_rate_limited?(:proof_address)
       rate_limit_redirect!(:proof_address)
       return true

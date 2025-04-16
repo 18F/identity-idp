@@ -1,5 +1,0 @@
-description: |
-  A user exceeds the failure limit for document capture during identity proofing. 
-allOf:
-  - $ref: '../shared/EventProperties.yml'
-  - type: object

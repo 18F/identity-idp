@@ -27,11 +27,19 @@ module Idv
 
     def handle_too_many_otp_sends
       analytics.idv_phone_confirmation_otp_rate_limit_sends
+      # TODO: Attempts API PII phone_number: current_user.phone
+      attempts_api_tracker.idv_rate_limited(
+        limiter_type: :phone_otp,
+      )
       handle_max_attempts('otp_requests')
     end
 
     def handle_too_many_otp_attempts
       analytics.idv_phone_confirmation_otp_rate_limit_attempts
+      # TODO: Attempts API PII phone_number: current_user.phone
+      attempts_api_tracker.idv_rate_limited(
+        limiter_type: :phone_otp,
+      )
       handle_max_attempts('otp_login_attempts')
     end
 
