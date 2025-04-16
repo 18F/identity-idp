@@ -509,6 +509,7 @@ devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
+doc_auth.alt.passport_help: 护照本打开到带有照片的那一页。护照的数据页框是在深色背景上的四条白色引导线内。
 doc_auth.alt.selfie_help_1: 人脸在绿色椭圆中。
 doc_auth.alt.selfie_help_2: 手指点击面孔下的勾选标记来确认照片。
 doc_auth.buttons.add_new_photos: 添加新照片
@@ -624,6 +625,7 @@ doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
+doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
@@ -676,6 +678,8 @@ doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。
+doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
+doc_auth.info.passport_capture_help_2:  拿稳相机，等待工具拍照。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。

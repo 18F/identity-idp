@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import {
   FormStepComponentProps,
@@ -6,6 +6,7 @@ import {
   FormStepsContext,
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import TipList from './tip-list';
 import { DeviceContext, UploadContext } from '../context';
@@ -15,25 +16,33 @@ import {
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
+import AcuantPassportInstructions from './acuant-passport-instructions';
 
 export function PassportCaptureStep({
   defaultSideProps,
   passportValue,
+  showHelp,
   isReviewStep = false,
 }: {
   defaultSideProps: DefaultSideProps;
   passportValue: ImageValue;
+  showHelp: boolean;
   isReviewStep: boolean;
 }) {
   return (
-    <DocumentSideAcuantCapture
-      {...defaultSideProps}
-      key="passport"
-      side="passport"
-      value={passportValue}
-      isReviewStep={isReviewStep}
-      showSelfieHelp={() => undefined}
-    />
+    <>
+      {showHelp && <AcuantPassportInstructions />}
+      {!showHelp && (
+        <DocumentSideAcuantCapture
+          {...defaultSideProps}
+          key="passport"
+          side="passport"
+          value={passportValue}
+          isReviewStep={isReviewStep}
+          showSelfieHelp={() => undefined}
+        />
+      )}
+    </>
   );
 }
 
@@ -58,12 +67,33 @@ export default function PassportStep({
   const { isLastStep } = useContext(FormStepsContext);
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
+  const [showHelp, setShowHelp] = useState(isMobile);
+
   const defaultSideProps: DefaultSideProps = {
     registerField,
     onChange,
     errors,
     onError,
   };
+
+  function TakePassportButton() {
+    return (
+      <div className="margin-y-5 ">
+        <SpinnerButton
+          spinOnClick={false}
+          onClick={() => {
+            setShowHelp(false);
+          }}
+          type="button"
+          isBig
+          isWide
+        >
+          {t('doc_auth.buttons.take_picture')}
+        </SpinnerButton>
+      </div>
+    );
+  }
+
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
@@ -81,9 +111,11 @@ export default function PassportStep({
       <PassportCaptureStep
         defaultSideProps={defaultSideProps}
         passportValue={value.passport}
+        showHelp={isMobile}
         isReviewStep={false}
       />
-      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+      {isMobile && <TakePassportButton />}
+      {!isMobile && (isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />)}
       <Cancel />
     </>
   );

@@ -498,6 +498,7 @@ devise.sessions.signed_out: You are now signed out.
 doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture
 doc_auth.accessible_labels.camera_video_capture_label: Viewfinder with frame to center your ID
 doc_auth.accessible_labels.document_capture_dialog: Document capture
+doc_auth.alt.passport_help: A passport book opened to the page with a photo. The data page of the passport is inside four white guide lines on a dark background.
 doc_auth.alt.selfie_help_1: A person with their face in a green oval.
 doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: Add new photos
@@ -613,6 +614,7 @@ doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
+doc_auth.headings.passport_instructions.howto: How to take your photo
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
@@ -665,6 +667,8 @@ doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
+doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
+doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
