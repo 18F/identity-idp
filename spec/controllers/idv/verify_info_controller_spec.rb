@@ -569,7 +569,7 @@ RSpec.describe Idv::VerifyInfoController do
             errors: {},
             exception: 'fake exception',
             vendor_name: vendor_name,
-            attributes_requiring_additional_verification: 'address',
+            attributes_requiring_additional_verification: ['address'],
           ),
           same_address_as_id: nil,
           should_proof_state_id: true,

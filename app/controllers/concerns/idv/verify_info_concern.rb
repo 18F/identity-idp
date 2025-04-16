@@ -79,6 +79,23 @@ module Idv
       )
     end
 
+    def is_address_exception?(result)
+      result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :exception,
+      ).present? &&
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :resolution,
+          :attributes_requiring_additional_verification,
+        ).include?('address')
+    end
+
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
       has_exception = proofing_results_exception.present?
@@ -89,13 +106,7 @@ module Idv
         :state_id,
         :mva_exception,
       ).present?
-      is_address_exception = result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :resolution,
-        :address_exception,
-      ).present?
+      is_address_exception = is_address_exception?(result)
       is_threatmetrix_exception = result.extra.dig(
         :proofing_results,
         :context,
