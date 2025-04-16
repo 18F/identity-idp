@@ -79,7 +79,7 @@ module Idv
       )
     end
 
-    def is_address_exception?(result)
+    def address_exception?(result)
       result.extra.dig(
         :proofing_results,
         :context,
@@ -106,7 +106,7 @@ module Idv
         :state_id,
         :mva_exception,
       ).present?
-      is_address_exception = is_address_exception?(result)
+      is_address_exception = address_exception?(result)
       is_threatmetrix_exception = result.extra.dig(
         :proofing_results,
         :context,
