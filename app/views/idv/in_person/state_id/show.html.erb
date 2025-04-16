@@ -24,25 +24,8 @@
       text_tag: 'div',
     ) do %>
   <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
-  <ul class="margin-bottom-0">
-    <% t('in_person_proofing.body.state_id.id_types').each do | id_type | %>
-      <li>
-        <%= id_type %>
-      </li>
-    <% end %>
-  </ul>
-  <p>
-  <%= t('in_person_proofing.body.state_id.questions') %>
-  <%= link_to(
-        help_center_redirect_url(
-          category: 'verify-your-identity',
-          article: 'accepted-identification-documents',
-        ),
-        class: 'display-inline',
-      ) do %>
-    <%= t('in_person_proofing.body.state_id.learn_more_link') %>
-  <% end %>
-</p>
+  <br/>
+  <%= t('in_person_proofing.body.state_id.alert_text') %>
 <% end %>
 <%= simple_form_for form,
                     as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
