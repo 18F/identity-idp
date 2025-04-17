@@ -42,7 +42,6 @@ module DataRequests
       def phone_configurations_report
         user.phone_configurations.map do |phone_configuration|
           {
-            id: phone_configuration.id,
             phone: phone_configuration.phone,
             created_at: phone_configuration.created_at,
             confirmed_at: phone_configuration.confirmed_at,
