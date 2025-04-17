@@ -60,12 +60,16 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
+    text = t('doc_auth.instructions.consent', app_name: APP_NAME)
     find(
       'label',
-      text: t('doc_auth.instructions.consent', app_name: APP_NAME),
+      text:,
       wait: 5,
     ).click
     click_on t('doc_auth.buttons.continue')
+
+    # Wait until we leave the page
+    expect(page).not_to have_content(text, wait: 60)
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
