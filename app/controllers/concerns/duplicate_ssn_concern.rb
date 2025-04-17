@@ -5,11 +5,18 @@ module DuplicateSsnConcern
     return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
     return if user_already_verified?
-
+    
     cacher = Pii::Cacher.new(current_user, user_session)
-    pii = cacher.fetch(current_user&.active_profile&.id)
-    if !(Idv::DuplicateSsnFinder.new(user: current_user, ssn: pii[:ssn]).ssn_is_unique?)
-      
+    profile_id = current_user&.active_profile&.id
+    pii = cacher.fetch(profile_id)
+    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user: current_user, ssn: pii[:ssn])
+    if !(duplicate_ssn_finder.ssn_is_unique?)
+      DuplicateProfileConfirmation.create(
+        profile_id: profile_id,
+        confirmed_at: Time.zone.now,
+        duplicate_profiles: duplicate_ssn_finder.associated_profiles_with_matching_ssn,
+        confirmed_all: false,
+      )
     end
   end
 
@@ -19,7 +26,7 @@ module DuplicateSsnConcern
 
   def sp_eligible_for_one_account?
     return false unless sp_session.present?
-    IdentityConfig.store.eligible_one_account_providers == sp_from_sp_session&.friendly_name
+    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.friendly_name)
   end
 
 

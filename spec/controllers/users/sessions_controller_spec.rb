@@ -904,7 +904,7 @@ RSpec.describe Users::SessionsController, devise: true do
         end
   
 
-        it 'does not trigger any methods' do
+        it 'does not create a duplicate profile confirmation' do
 
         end
       end
