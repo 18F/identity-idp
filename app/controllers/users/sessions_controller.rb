@@ -10,7 +10,6 @@ module Users
     include ForcedReauthenticationConcern
     include NewDeviceConcern
     include AbTestingConcern
-    include DuplicateSsnConcern
     include RecaptchaConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
@@ -210,7 +209,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
-      validate_user_does_not_have_duplicate_ssn
+      validate_user_does_not_have_duplicate_profile
       redirect_to next_url_after_valid_authentication
     end
 
@@ -311,6 +310,13 @@ module Users
       session[:redirect_to_change_password] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
+    end
+
+
+    def validate_user_does_not_have_duplicate_profile
+      dupe_profile_checker = DuplicateProfileChecker.new(user: current_user, user_session: user_session, sp: sp_from_sp_session)
+
+      dupe_profile_checker.validate_user_does_not_have_duplicate_profile
     end
 
     def eligible_for_password_lookup?
