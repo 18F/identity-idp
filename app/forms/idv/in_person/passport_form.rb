@@ -12,6 +12,10 @@ module Idv
       def self.model_name
         ActiveModel::Name.new(self, nil, 'InPersonPassport')
       end
+
+      # def initialize(pii)
+      #   @pii = pii
+      # end
     end
   end
 end

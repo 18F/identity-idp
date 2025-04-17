@@ -24,89 +24,50 @@
 <div class="margin-bottom-4">
 
         <%= render ValidatedFieldComponent.new(
-            name: :surname,
             form: f,
-            input_html: { value: '' },
+            input_html: { value: pii[:passport_surname] },
+            label_html: { class: 'usa-label' },
             label: t('in_person_proofing.form.passport.surname'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
+            name: :passport_surname,
             required: true,
             ) %>
 
         <%= render ValidatedFieldComponent.new(
-            name: :first_name,
             form: f,
-            input_html: { value: '' },
             hint: t('in_person_proofing.form.passport.first_name_hint'),
+            input_html: { value: pii[:passport_first_name] },
+            label_html: { lass: 'usa-label' },
             label: t('in_person_proofing.form.passport.first_name'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
-            required: true,
-            ) %>
-
-        <%= render MemorableDateComponent.new(
-                content_tag: 'memorable-date',
-                name: :dob,
-                # day: parsed_dob&.day,
-                # month: parsed_dob&.month,
-                # year: parsed_dob&.year,
-                required: true,
-                min: '1900-01-01',
-                max: Time.zone.today,
-                hint: t('in_person_proofing.form.passport.dob_hint'),
-                label: t('in_person_proofing.form.passport.dob'),
-                form: f,
-                error_messages: {
-                missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
-                range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
-                },
-                range_errors: [
-                    {
-                        max: Time.zone.today - 13.years,
-                        message: t(
-                        'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-                        app_name: APP_NAME,
-                        ),
-                    },
-                ],
-        ) %>
-
-        <%= render ValidatedFieldComponent.new(
-            name: :passport_number,
-            form: f,
-            input_html: { value: '' },
-            hint: t('in_person_proofing.form.passport.passport_number_hint'),
-            label: t('in_person_proofing.form.passport.passport_number'),
-            label_html: { class: 'usa-label' },
-            maxlength: 255,
+            name: :passport_first_name,
             required: true,
             ) %>
 
         <%= render MemorableDateComponent.new(
             content_tag: 'memorable-date',
-            name: :passport_expiration,
-            # day: parsed_dob&.day,
-            # month: parsed_dob&.month,
-            # year: parsed_dob&.year,
+            form: f,
+            hint: t('in_person_proofing.form.passport.dob_hint'),
+            label: t('in_person_proofing.form.passport.dob'),
+            name: :passport_dob,
             required: true,
-            min: '1900-01-01',
-            max: Time.zone.today,
+            ) %>
+
+        <%= render ValidatedFieldComponent.new(
+            form: f,
+            hint: t('in_person_proofing.form.passport.passport_number_hint'),
+            input_html: { value: pii[:passport_number] },
+            label_html: { class: 'usa-label' },
+            label: t('in_person_proofing.form.passport.passport_number'),
+            name: :passport_number,
+            required: true,
+            ) %>
+
+        <%= render MemorableDateComponent.new(
+            content_tag: 'memorable-date',
+            form: f,
             hint: t('in_person_proofing.form.passport.expiration_date_hint'),
             label: t('in_person_proofing.form.passport.expiration_date'),
-            form: f,
-            error_messages: {
-            missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
-            range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
-            },
-            range_errors: [
-                {
-                    max: Time.zone.today - 13.years,
-                    message: t(
-                    'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-                    app_name: APP_NAME,
-                    ),
-                },
-            ],
+            name: :passport_expiration,
+            required: true,
         )%>
     </div>
 

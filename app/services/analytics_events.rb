@@ -3169,6 +3169,24 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  def idv_in_person_proofing_passport_visited(
+    step: nil,
+    analytics_id: nil,
+    opted_in_to_in_person_proofing: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing passport visited',
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
