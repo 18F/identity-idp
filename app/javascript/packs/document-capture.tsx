@@ -190,8 +190,7 @@ render(
                       showHelpInitially: true,
                     }}
                   >
-                    <PassportCaptureContext.Provider
-                      value={{showHelpInitially: true,}}>
+                    <PassportCaptureContext.Provider value={{ showHelpInitially: true }}>
                       <FailedCaptureAttemptsContextProvider
                         maxCaptureAttemptsBeforeNativeCamera={Number(
                           maxCaptureAttemptsBeforeNativeCamera,

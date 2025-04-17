@@ -68,7 +68,7 @@ export default function PassportStep({
   const { isMobile } = useContext(DeviceContext);
   const { flowPath } = useContext(UploadContext);
   const { showHelpInitially } = useContext(PassportCaptureContext);
-  const [showHelp, setShowHelp] = useState(showHelpInitially)
+  const [showHelp, setShowHelp] = useState(showHelpInitially && isMobile);
 
   const defaultSideProps: DefaultSideProps = {
     registerField,
@@ -115,8 +115,8 @@ export default function PassportStep({
         showHelp={showHelp}
         isReviewStep={false}
       />
-      {isMobile && <TakePassportButton />}
-      {!isMobile && (isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />)}
+      {showHelp && <TakePassportButton />}
+      {!showHelp && (isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />)}
       <Cancel />
     </>
   );

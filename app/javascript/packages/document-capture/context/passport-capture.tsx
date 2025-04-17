@@ -8,7 +8,7 @@ interface PassportCaptureProps {
   showHelpInitially: boolean;
 }
 
-const PassportCaptureContext = createContext<SelfieCaptureProps>({
+const PassportCaptureContext = createContext<PassportCaptureProps>({
   showHelpInitially: true,
 });
 
