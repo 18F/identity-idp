@@ -445,6 +445,8 @@ function AcuantCapture(
   function withLoggedClick(clickSource: string, metadata: { isDrop: boolean } = { isDrop: false }) {
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
+        console.log(`withLoggedclick(${clickSource})`);
+
         if (!isSuppressingClickLogging.current) {
           trackEvent(
             name === 'selfie' ? 'idv_selfie_image_clicked' : `IdV: ${name} image clicked`,
