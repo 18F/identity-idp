@@ -6,13 +6,9 @@ RSpec.describe MfaSetupConcern do
   end
 
   let(:user) { create(:user, :fully_registered) }
-  let(:recommend_webauthn_platform_for_sms_user) { false }
 
   before do
     stub_sign_in(user)
-    allow(controller).to receive(:recommend_webauthn_platform_for_sms_user?)
-      .with(:recommend_for_account_creation)
-      .and_return(recommend_webauthn_platform_for_sms_user)
   end
 
   describe '#next_setup_path' do
@@ -33,31 +29,43 @@ RSpec.describe MfaSetupConcern do
         controller.user_session[:mfa_selections] = ['phone']
       end
 
-      context 'when user is recommended for webauthn platform for sms user' do
-        let(:recommend_webauthn_platform_for_sms_user) { true }
+      context 'user has not been recommended for setup' do
+        let(:user) { create(:user, :fully_registered) }
 
-        it 'returns webauthn platform recommended path' do
-          expect(next_setup_path).to eq(webauthn_platform_recommended_path)
+        context 'user is in account creation flow' do
+          let(:in_account_creation_flow) { true }
+
+          context 'user set up methods not including phone' do
+            let(:user) { create(:user, :fully_registered, :with_authentication_app) }
+
+            before do
+              user.phone_configurations.destroy_all
+            end
+
+            it 'redirects to auth method confirmation path' do
+              expect(next_setup_path).to eq(auth_method_confirmation_path)
+            end
+          end
+
+          context 'user set up phone as an mfa method' do
+            let(:user) { create(:user, :fully_registered) }
+
+            context 'user set up phone using voice delivery preference' do
+              before do
+                user.phone_configurations.update_all(delivery_preference: :voice)
+              end
+
+              it 'redirects to auth method confirmation path' do
+                expect(next_setup_path).to eq(auth_method_confirmation_path)
+              end
+            end
+          end
         end
       end
 
       context 'when user only set up a single mfa method' do
         it 'returns second mfa recommended path' do
           expect(next_setup_path).to eq(auth_method_confirmation_path)
-        end
-
-        context 'when user was already recommended for webauthn platform' do
-          let(:user) do
-            create(
-              :user,
-              :fully_registered,
-              webauthn_platform_recommended_dismissed_at: 2.minutes.ago,
-            )
-          end
-
-          it 'returns signup completed path' do
-            expect(next_setup_path).to eq(sign_up_completed_path)
-          end
         end
       end
 

@@ -2,7 +2,6 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
-  include RecommendWebauthnPlatformConcern
 
   def next_setup_path
     if next_setup_choice
@@ -128,5 +127,19 @@ module MfaSetupConcern
       :mfa_selections,
       determine_next_mfa,
     )
+  end
+
+  def recommend_webauthn_platform_for_sms_user?
+    device_supports_platform_authenticator_setup? &&
+      user_set_up_with_phone? && user_set_up_with_phone?
+  end
+
+  def device_supports_platform_authenticator_setup?
+    user_session[:platform_authenticator_available] == true
+  end
+
+  def user_set_up_with_phone?
+    user_session[:in_account_creation_flow] == true &&
+      MfaContext.new(current_user).enabled_mfa_methods_count == 1
   end
 end
