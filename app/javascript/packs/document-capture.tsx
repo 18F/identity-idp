@@ -10,6 +10,7 @@ import {
   MarketingSiteContextProvider,
   InPersonContext,
   SelfieCaptureContext,
+  PassportCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -186,17 +187,20 @@ render(
                       showHelpInitially: true,
                     }}
                   >
-                    <FailedCaptureAttemptsContextProvider
-                      maxCaptureAttemptsBeforeNativeCamera={Number(
-                        maxCaptureAttemptsBeforeNativeCamera,
-                      )}
-                      maxSubmissionAttemptsBeforeNativeCamera={Number(
-                        maxSubmissionAttemptsBeforeNativeCamera,
-                      )}
-                      failedFingerprints={{ front: [], back: [] }}
-                    >
-                      <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
-                    </FailedCaptureAttemptsContextProvider>
+                    <PassportCaptureContext.Provider
+                      value={{showHelpInitially: true,}}>
+                      <FailedCaptureAttemptsContextProvider
+                        maxCaptureAttemptsBeforeNativeCamera={Number(
+                          maxCaptureAttemptsBeforeNativeCamera,
+                        )}
+                        maxSubmissionAttemptsBeforeNativeCamera={Number(
+                          maxSubmissionAttemptsBeforeNativeCamera,
+                        )}
+                        failedFingerprints={{ front: [], back: [] }}
+                      >
+                        <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
+                      </FailedCaptureAttemptsContextProvider>
+                    </PassportCaptureContext.Provider>
                   </SelfieCaptureContext.Provider>
                 </ServiceProviderContextProvider>
               </FlowContext.Provider>
