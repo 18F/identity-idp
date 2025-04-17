@@ -209,12 +209,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_181519) do
   end
 
   create_table "duplicate_profile_confirmations", force: :cascade do |t|
-    t.bigint "profile_id", null: false
-    t.datetime "confirmed_at", precision: nil, null: false
-    t.json "duplicate_profiles", null: false
-    t.boolean "confirmed_all", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.bigint "profile_id", null: false, comment: "sensitive=false"
+    t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
+    t.json "duplicate_profiles", null: false, comment: "sensitive=false"
+    t.boolean "confirmed_all", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["profile_id"], name: "index_duplicate_profile_confirmations_on_profile_id"
   end
 
@@ -492,6 +492,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_181519) do
   create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
     t.string "annotation", comment: "sensitive=false"
     t.string "annotation_reason", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|
