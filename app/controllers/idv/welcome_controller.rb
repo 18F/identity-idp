@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include DocAuthVendorConcern
+    include Idv::ChooseIdTypeConcern
 
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited

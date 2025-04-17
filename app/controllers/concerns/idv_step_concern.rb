@@ -85,17 +85,6 @@ module IdvStepConcern
     end
   end
 
-  def dos_passport_api_healthy?(
-    analytics:,
-    endpoint: IdentityConfig.store.dos_passport_composite_healthcheck_endpoint
-  )
-    return true if endpoint.blank?
-
-    request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
-    response = request.fetch(analytics)
-    response.success?
-  end
-
   private
 
   def extra_analytics_properties

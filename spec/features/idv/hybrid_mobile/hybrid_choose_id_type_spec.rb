@@ -74,4 +74,28 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       )
     end
   end
+
+  it 'choose id type has disabled passport field if api health check fails after welcome step',
+     js: true do
+    perform_in_browser(:desktop) do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: 'DOWN' }.to_json })
+      click_send_link
+    end
+
+    expect(@sms_link).to be_present
+
+    perform_in_browser(:mobile) do
+      visit @sms_link
+      expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+      expect(page).to have_field(
+        'doc_auth_choose_id_type_preference_passport',
+        visible: :all,
+        disabled: true,
+      )
+    end
+  end
 end
