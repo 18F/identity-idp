@@ -46,6 +46,7 @@ function FullAddressSearch({
           setFoundAddress(address);
           setLocationResults(locations);
           onFoundLocations(locations);
+          setApiError(null);
         }}
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
