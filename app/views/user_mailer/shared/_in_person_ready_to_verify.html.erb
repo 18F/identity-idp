@@ -15,7 +15,7 @@
 <% end %>
 
 <%# Tag for GSA Enhanced Pilot Barcode %>
-<% if @is_enhanced_ipp %>
+<% if @presenter.enhanced_ipp? %>
   <div class="text-center margin-y-4">
     <span class="usa-tag usa-tag--informative">
       <%= t('in_person_proofing.body.barcode.eipp_tag') %>
@@ -48,7 +48,7 @@
 </table>
 
 <%# Enhanced IPP Only - What to bring to the Post Office %>
-<% if @is_enhanced_ipp %>
+<% if @presenter.enhanced_ipp? %>
   <section class="border-1px radius-lg border-primary-light padding-4 margin-bottom-4">
     <%# What to bring to the Post Office %>
     <h2 class="margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
@@ -237,7 +237,7 @@
     </tr>
   </table>
 
-  <% if !@is_enhanced_ipp %>
+  <% if !@presenter.enhanced_ipp? %>
     <p class="margin-bottom-0 padding-bottom-4">
       <%= t('in_person_proofing.body.barcode.questions') %>
       <%= link_to(
@@ -275,7 +275,7 @@
   </div>
 <% end %>
 
-<% if !@is_enhanced_ipp %>
+<% if !@presenter.enhanced_ipp? %>
   <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
   <p class="margin-bottom-4">
     <%= t(

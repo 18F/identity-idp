@@ -1283,13 +1283,9 @@ in_person_proofing.body.prepare.verify_step_about: 完成以下步骤来生成�
 in_person_proofing.body.prepare.verify_step_enter_phone: 输入你的主要电话号码或者你最常使用的号码。
 in_person_proofing.body.prepare.verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
 in_person_proofing.body.prepare.verify_step_post_office: 找到你附件的参与邮局。
-in_person_proofing.body.state_id.alert_message: 州政府颁发给你的身份证件必须尚未过期。系统接受的身份证件包括：
-in_person_proofing.body.state_id.id_types:
-  - 州驾照
-  - 州非驾照身份卡
+in_person_proofing.body.state_id.alert_message: 你需要驾照或州身份证件。
+in_person_proofing.body.state_id.alert_text: 亲身验证时不能用护照。你的驾照或州身份证件不得过期。
 in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
-in_person_proofing.body.state_id.learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
-in_person_proofing.body.state_id.questions: 有问题吗？
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
 in_person_proofing.form.state_id.address1: 地址第 1 行
