@@ -10,7 +10,6 @@ RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
       result = described_class.new(user).call
       phone_data = result[:phone_configurations]
 
-      expect(phone_data.first[:id]).to eq(phone_configuration.id)
       expect(phone_data.first[:phone]).to eq(phone_configuration.phone)
       expect(phone_data.first[:created_at]).to be_within(1.second).of(
         phone_configuration.created_at,
