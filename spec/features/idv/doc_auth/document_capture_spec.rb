@@ -187,72 +187,69 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with a valid passport', allow_browser_log: true do
-    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-
-    before do
-      stub_request(:post, fake_dos_api_endpoint)
-        .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
-
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-        .and_return(fake_dos_api_endpoint)
-      visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
-      complete_doc_auth_steps_before_document_capture_step
-    end
-
-    it 'works' do
-      expect(page).to have_content(t('doc_auth.headings.document_capture'))
-      expect(page).to have_current_path(idv_document_capture_url)
-
-      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_images(
-        Rails.root.join(
-          'spec', 'fixtures',
-          'passport_credential.yml'
-        ),
-      )
-
-      submit_images
-      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
-    end
-  end
-
-  context 'with an invalid passport', allow_browser_log: true do
-    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-
-    before do
-      stub_request(:post, fake_dos_api_endpoint)
-        .to_return(status: 200, body: '{}', headers: {})
-
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-        .and_return(fake_dos_api_endpoint)
-      visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
-      complete_doc_auth_steps_before_document_capture_step
-    end
-
-    it 'fails' do
-      expect(page).to have_current_path(idv_document_capture_url)
-      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_images(
-        Rails.root.join(
-          'spec', 'fixtures',
-          'passport_bad_mrz_credential.yml'
-        ),
-      )
-
-      submit_images
-
-      expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-    end
-  end
-
   context 'standard desktop flow' do
     before do
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
+    end
+
+    context 'with a valid passport', allow_browser_log: true do
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
+
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+                                         .and_return(fake_dos_api_endpoint)
+      end
+
+      it 'works' do
+        expect(page).to have_content(t('doc_auth.headings.document_capture'))
+        expect(page).to have_current_path(idv_document_capture_url)
+
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_images(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_credential.yml'
+          ),
+        )
+
+        submit_images
+        expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+      end
+    end
+
+    context 'with an invalid passport', allow_browser_log: true do
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return(status: 200, body: '{}', headers: {})
+
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+                                         .and_return(fake_dos_api_endpoint)
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(@user)
+        complete_doc_auth_steps_before_document_capture_step
+      end
+
+      it 'fails' do
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_images(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_mrz_credential.yml'
+          ),
+        )
+
+        submit_images
+
+        expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+      end
     end
 
     context 'rate limits calls to backend docauth vendor', allow_browser_log: true do
