@@ -1,19 +1,35 @@
 require 'rails_helper'
-require 'reporting/fraud_metrics_lg99_report'
+require 'reporting/fraud_metrics_lg99_report_v2'
 
-RSpec.describe Reporting::FraudMetricsLg99Report do
+RSpec.describe Reporting::FraudMetricsLg99ReportV2 do
+  let(:issuer) {'my:example:issuer'}
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
-  let(:expected_lg99_metrics_table) do
+  let(:expected_definitions_table) do
+    [
+      ['Metric', 'Unit', 'Definition'],
+      ['Fraud Rules Catch Rate', 'Count', 'The count of unique accounts flagged for fraud review.'],
+      ['Fraudulent credentials disabled', 'Count', 'The count of unique accounts suspended due to suspected fraudulent activity within the reporting month.'],
+      ['Fraudulent credentials reinstated', 'Count', 'The count of unique suspended accounts that are reinstated within the reporting month.'],
+    ]
+  end
+  let(:expected_overview_table) do
+    [
+      ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+      ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+      ['Issuer', issuer],
+    ]
+  end
+  let(:expected_fraud_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Unique users seeing LG-99', '5', time_range.begin.to_s,
+      ['Fraud Rules Catch Rate', '5', time_range.begin.to_s,
        time_range.end.to_s],
     ]
   end
   let(:expected_suspended_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Unique users suspended', '2', time_range.begin.to_s, time_range.end.to_s],
+      ['Fraudulent credentials disabled', '2', time_range.begin.to_s, time_range.end.to_s],
       ['Average Days Creation to Suspension', '1.5', time_range.begin.to_s, time_range.end.to_s],
       ['Average Days Proofed to Suspension', '2.0', time_range.begin.to_s, time_range.end.to_s],
     ]
@@ -21,12 +37,12 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   let(:expected_reinstated_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Unique users reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
+      ['Fraudulent credentials reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
       ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
-  subject(:report) { Reporting::FraudMetricsLg99Report.new(time_range:) }
+  subject(:report) { Reporting::FraudMetricsLg99ReportV2.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day
@@ -64,10 +80,30 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
   end
   let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
-  describe '#lg99_metrics_table' do
-    it 'renders a lg99 metrics table' do
+  describe '#definitions_table' do
+    it 'renders a definitions table' do
       aggregate_failures do
-        report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
+        report.definitions_table.zip(expected_definitions_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
+  
+  describe '#overview_table' do
+    it 'renders an overview table' do
+      aggregate_failures do
+        report.overview_table.zip(expected_overview_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
+  
+  describe '#fraud_metrics_table' do
+    it 'renders a fraud metrics table' do
+      aggregate_failures do
+        report.fraud_metrics_table.zip(expected_fraud_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -151,17 +187,25 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     let(:expected_reports) do
       [
         Reporting::EmailableReport.new(
-          title: 'Monthly LG-99 Metrics Jan-2022',
-          filename: 'lg99_metrics',
-          table: expected_lg99_metrics_table,
+          title: 'Definitions',
+          table: expected_definitions_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'Monthly Suspended User Metrics Jan-2022',
+          title: 'Overview',
+          table: expected_overview_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Fraud Metrics',
+          filename: 'fraud_metrics',
+          table: expected_fraud_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Suspended User Metrics',
           filename: 'suspended_metrics',
           table: expected_suspended_metrics_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'Monthly Reinstated User Metrics Jan-2022',
+          title: 'Reinstated User Metrics',
           filename: 'reinstated_metrics',
           table: expected_reinstated_metrics_table,
         ),
@@ -174,7 +218,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(time_range:, **opts) }
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 1,

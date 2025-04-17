@@ -11,10 +11,10 @@ rescue LoadError => e
 end
 
 module Reporting
-  class FraudMetricsLg99Report
+  class FraudMetricsLg99ReportV2
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :time_range
+    attr_reader :time_range, :issuers
 
     module Events
       IDV_FINAL_RESOLUTION = 'IdV: Final Resolution'
@@ -26,14 +26,17 @@ module Reporting
       end
     end
 
+    # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
     def initialize(
+      issuers: nil,
       time_range:,
       verbose: false,
       progress: false,
       slice: 6.hours,
       threads: 1
     )
+      @issuers = Array(issuers).presence # always an Array or nil
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -48,31 +51,57 @@ module Reporting
     def progress?
       @progress
     end
-
+    
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: "Monthly LG-99 Metrics #{stats_month}",
-          table: lg99_metrics_table,
-          filename: 'lg99_metrics',
+          title: 'Definitions',
+          table: definitions_table,
         ),
         Reporting::EmailableReport.new(
-          title: "Monthly Suspended User Metrics #{stats_month}",
+          title: 'Overview',
+          table: overview_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: "Fraud Metrics",
+          table: fraud_metrics_table,
+          filename: 'fraud_metrics',
+        ),
+        Reporting::EmailableReport.new(
+          title: "Suspended User Metrics",
           table: suspended_metrics_table,
           filename: 'suspended_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "Monthly Reinstated User Metrics #{stats_month}",
+          title: "Reinstated User Metrics",
           table: reinstated_metrics_table,
           filename: 'reinstated_metrics',
         ),
       ]
     end
 
-    def lg99_metrics_table
+    def definitions_table
+      [
+        ['Metric', 'Unit', 'Definition'],
+        ['Fraud Rules Catch Rate', 'Count', 'The count of unique accounts flagged for fraud review.'],
+        ['Fraudulent credentials disabled', 'Count', 'The count of unique accounts suspended due to suspected fraudulent activity within the reporting month.'],
+        ['Fraudulent credentials reinstated', 'Count', 'The count of unique suspended accounts that are reinstated within the reporting month.'],
+      ]
+    end
+
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        # This needs to be Date.today so it works when run on the command line
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Issuer', issuers.present? ? issuers.join(', ') : 'All Issuers'],
+      ]
+    end
+
+    def fraud_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Unique users seeing LG-99', lg99_unique_users_count.to_s, time_range.begin.to_s,
+        ['Fraud Rules Catch Rate', lg99_unique_users_count.to_s, time_range.begin.to_s,
          time_range.end.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
@@ -86,7 +115,7 @@ module Reporting
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Unique users suspended',
+          'Fraudulent credentials disabled',
           unique_suspended_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
@@ -110,7 +139,7 @@ module Reporting
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Unique users reinstated',
+          'Fraudulent credentials reinstated',
           unique_reinstated_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
@@ -122,10 +151,6 @@ module Reporting
           time_range.end.to_s,
         ],
       ]
-    end
-
-    def stats_month
-      time_range.begin.strftime('%b-%Y')
     end
 
     # event name => set(user ids)
@@ -150,6 +175,7 @@ module Reporting
 
     def query
       params = {
+        issuers: quote(issuers),
         event_names: quote(Events.all_events),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
@@ -158,6 +184,7 @@ module Reporting
         fields
             name
           , properties.user_id as user_id
+        | filter properties.service_provider IN %{issuers}
         | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
                  or (name != %{idv_final_resolution})
         | filter name in %{event_names}
