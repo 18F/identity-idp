@@ -2042,7 +2042,7 @@ vendor_outage.blocked.phone.default: Nous ne sommes pas actuellement en mesure d
 vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
-webauthn_platform_recommended.cta: Set up face or touch unlock
+webauthn_platform_recommended.cta: Configurer le déverrouillage facial ou tactile
 webauthn_platform_recommended.description_security: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
 webauthn_platform_recommended.heading: Configurar el desbloqueo facial o táctil
 webauthn_platform_recommended.skip: Ignorer
