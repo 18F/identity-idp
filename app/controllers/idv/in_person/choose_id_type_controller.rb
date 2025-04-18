@@ -10,8 +10,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
     analytics.idv_in_person_proofing_choose_id_type_visited(**analytics_arguments)
     render 'idv/shared/choose_id_type',
            locals: {
-             form_url: idv_in_person_choose_id_type_path,
-             is_hybrid: false,
+             presenter: Idv::InPerson::ChooseIdTypePresenter.new,
              auto_check_value: '',
            },
            layout: true
