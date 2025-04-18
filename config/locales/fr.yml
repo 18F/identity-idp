@@ -498,7 +498,7 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
-doc_auth.alt.passport_help: Un passeport ouvert à la page de la photo. La page d'informations du passeport est placée sur un fond sombre à l’intérieur des quatre lignes formant un cadre.
+doc_auth.alt.passport_help: Un passeport ouvert à la page de la photo. La page d’informations du passeport est placée sur un fond sombre à l’intérieur des quatre lignes formant un cadre.
 doc_auth.alt.selfie_help_1: Le visage d’une personne dans un ovale vert.
 doc_auth.alt.selfie_help_2: Un doigt coche une case sous le visage pour valider la photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
@@ -664,7 +664,7 @@ doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automa
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
-doc_auth.info.passport_capture_help_1: Placez la page d'informations du passeport à l’intérieur des lignes définissant le cadre.
+doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
 doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
