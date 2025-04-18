@@ -9,13 +9,12 @@ module Idv
 
       attr_reader :barcode_image_url
 
-      delegate :selected_location_details, :enrollment_code, to: :enrollment
+      delegate :selected_location_details, :enrollment_code, :enhanced_ipp?, to: :enrollment
 
-      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil, is_enhanced_ipp: false)
+      def initialize(enrollment:, barcode_image_url: nil, sp_name: nil)
         @enrollment = enrollment
         @barcode_image_url = barcode_image_url
         @sp_name = sp_name
-        @is_enhanced_ipp = is_enhanced_ipp
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
@@ -70,7 +69,7 @@ module Idv
       end
 
       def barcode_heading_text
-        if @is_enhanced_ipp
+        if enhanced_ipp?
           t('in_person_proofing.headings.barcode_eipp')
         else
           t('in_person_proofing.headings.barcode')
@@ -78,7 +77,7 @@ module Idv
       end
 
       def state_id_heading_text
-        if @is_enhanced_ipp
+        if enhanced_ipp?
           t('in_person_proofing.process.state_id.heading_eipp')
         else
           t('in_person_proofing.process.state_id.heading')
@@ -86,7 +85,7 @@ module Idv
       end
 
       def state_id_info
-        if @is_enhanced_ipp
+        if enhanced_ipp?
           t('in_person_proofing.process.state_id.info_eipp')
         else
           t('in_person_proofing.process.state_id.info')

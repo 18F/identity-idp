@@ -219,6 +219,14 @@ RSpec.describe ServiceProviderSession do
       it 'returns nil' do
         expect(subject.attempts_api_session_id).to be nil
       end
+
+      context 'with a tid in the request_url_params' do
+        let(:url) { 'https://example.com/auth?param0=p0&param1=p1&tid=abc123' }
+
+        it 'returns the value in the tid param' do
+          expect(subject.attempts_api_session_id).to eq 'abc123'
+        end
+      end
     end
 
     context 'with an attempts_api_session_id in the request_url_params' do
@@ -226,6 +234,14 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns the value in the attempts_api_session_id param' do
         expect(subject.attempts_api_session_id).to eq 'abc123'
+      end
+
+      context 'with a tid in the request_url_params' do
+        let(:url) { 'https://example.com/auth?param0=p0&tid=abc123&attempts_api_session_id=not-tid' }
+
+        it 'returns the value in attempts_api_session_id param' do
+          expect(subject.attempts_api_session_id).to eq 'not-tid'
+        end
       end
     end
   end

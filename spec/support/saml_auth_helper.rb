@@ -199,7 +199,7 @@ module SamlAuthHelper
       user,
       build(:service_provider, issuer: settings.issuer),
     ).link_identity(
-      ial: ial2_requested?(settings) ? true : nil,
+      ial: ial2_requested?(settings) || nil,
       verified_attributes: ['email'],
     )
   end

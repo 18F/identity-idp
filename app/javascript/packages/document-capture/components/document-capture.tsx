@@ -77,7 +77,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             isFailedSelfie: submissionError.isFailedSelfie,
             isFailedSelfieLivenessOrQuality:
               submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
-            captureHints: submissionError.hints,
             pii: submissionError.pii,
             failedImageFingerprints: submissionError.failed_image_fingerprints,
           })(ReviewIssuesStep)

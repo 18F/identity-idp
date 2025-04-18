@@ -92,7 +92,7 @@ account.index.verification.identity_verification: Vérification de l’identité
 account.index.verification.in_person_instructions_html: Vous devez vous rendre à un bureau de poste participant d’ici le <strong>%{deadline}</strong> pour terminer la procédure de vérification de votre identité.
 account.index.verification.instructions: Saisissez votre code de vérification pour terminer la procédure de vérification d’identité.
 account.index.verification.learn_more_link: En savoir plus sur la vérification de votre identité
-account.index.verification.legacy_verified_html: Vous avez confirmé votre identité sur %{app_name} le <strong>%{date}</strong> avec votre pièce d’identité d’État.
+account.index.verification.legacy_verified_html: Vous avez confirmé votre identité avec %{app_name} le <strong>%{date}</strong> à l’aide de votre pièce d’identité.
 account.index.verification.pending_badge: En cours
 account.index.verification.pending_badge_tooltip: Votre identité est en cours de vérification.
 account.index.verification.reactivate_button: Saisissez le code de vérification que vous avez reçu par la poste.
@@ -515,7 +515,7 @@ doc_auth.buttons.take_picture: Prendre une photo
 doc_auth.buttons.take_picture_retry: Reprendre la photo
 doc_auth.buttons.upload_picture: Télécharger une photo
 doc_auth.errors.alerts.address_check: Nous n’avons pas pu lire l’adresse sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
-doc_auth.errors.alerts.barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre carte d’identité. Cela pourrait être dû à un problème avec le code-barres, ou le code-barres est d’un type nouveau que nous ne reconnaissons pas encore. Utilisez une autre carte d’identité délivrée par l’État si vous en avez une.
+doc_auth.errors.alerts.barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre pièce d’identité. Cela pourrait être dû à un problème avec le code-barres, ou le code-barres est d’un type nouveau que nous ne reconnaissons pas encore. Utilisez une autre pièce d’identité si vous en avez une.
 doc_auth.errors.alerts.barcode_read_check: Nous n’avons pas pu lire le code-barres au verso de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.alerts.birth_date_checks: Nous n’avons pas pu lire la date de naissance sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.control_number_check: Nous n’avons pas pu lire le numéro de référence au verso de votre carte d’identité. Essayez de prendre une nouvelle photo.
@@ -532,18 +532,15 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Essayez de prendre une n
 doc_auth.errors.alerts.sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo, ou que la photo soit trop sombre. Essayez de prendre de nouvelles photos avec un meilleur éclairage.
 doc_auth.errors.alerts.visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
-doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez télécharger de nouvelles photos de votre pièce d’identité délivrée par l’État.
+doc_auth.errors.barcode_attention.confirm_info: Si les informations ci-dessous sont incorrectes, veuillez téléverser de nouvelles photos de votre pièce d’identité
 doc_auth.errors.barcode_attention.heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
 doc_auth.errors.camera.blocked: Votre appareil photo est bloqué
 doc_auth.errors.camera.blocked_detail_html: '<strong>Autorisez l’accès à votre caméra pour prendre des photos pour %{app_name}.</strong><span>Essayez à nouveau de prendre des photos en autorisant %{app_name} à accéder à votre appareil. Si cela ne marche pas, pensez à vérifier les paramètres de votre appareil en matière d’autorisations d’accès.</span>'
 doc_auth.errors.camera.failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
-doc_auth.errors.card_type: Réessayez avec votre permis de conduire ou carte d’identité d’un État.
 doc_auth.errors.choose_id_type_check: Sélectionnez le type de document dont vous disposez
 doc_auth.errors.consent_form: Avant de pouvoir continuer, vous devez nous donner la permission. Veuillez cocher la case ci-dessous, puis cliquez sur Suite.
-doc_auth.errors.doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou les cartes d’identité délivrées par un État
-doc_auth.errors.doc.doc_type_check: Votre permis de conduire ou votre carte d’identité doit être délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires.
+doc_auth.errors.doc.doc_type_check: Votre pièce d’identité doit avoir été délivrée par un État ou un territoire des États-Unis. Nous n’acceptons pas les cartes d’identité militaires.
 doc_auth.errors.doc.resubmit_failed_image: Vous avez déjà essayé cette image et elle a échoué. Veuillez essayer d’ajouter une image différente.
-doc_auth.errors.doc.wrong_id_type_html: Nous n’acceptons qu’un permis de conduire ou une carte d’identité délivré par un État ou un territoire des États-Unis. Nous n’acceptons pas d’autres pièces d’identité, comme les passeports ou les cartes d’identité militaires. <a>En savoir plus sur les pièces d’identité acceptées</a>
 doc_auth.errors.document_capture_canceled: Vous avez annulé le téléchargement de vos photos d’identité sur votre téléphone.
 doc_auth.errors.dpi.failed_short: Image trop petite ou floue, veuillez réessayer.
 doc_auth.errors.dpi.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre image soit de trop petite taille ou que votre pièce d’identité soit trop petite ou floue sur la photo. Assurez-vous que votre pièce d’identité remplisse le cadre de l’image, puis essayez de prendre une nouvelle photo.
@@ -602,7 +599,7 @@ doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’iden
 doc_auth.headings.address: Mettre à jour votre adresse personnelle
 doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
-doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous ne sont pas correctes, veuillez %{link_html} de votre carte d’identité délivrée par l’État.
+doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous sont incorrectes, veuillez %{link_html} de votre pièce d’identité.
 doc_auth.headings.capture_scan_warning_link: télécharger de nouvelles photos
 doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
@@ -652,7 +649,7 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.hybrid_handoff: Nous recueillerons des informations vous concernant en lisant votre pièce d’identité délivrée par un État.
+doc_auth.info.hybrid_handoff: Nous recueillerons les informations vous concernant en lisant votre pièce d’identité.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
@@ -663,7 +660,7 @@ doc_auth.info.interstitial_thanks: Merci de votre patience !
 doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
-doc_auth.info.link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité délivrée par l’État.
+doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
@@ -726,11 +723,6 @@ doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit 
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 doc_auth.tips.mobile_phone_required: Téléphone mobile nécessaire
-doc_auth.tips.review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État :'
-doc_auth.tips.review_issues_id_text1: Avez-vous utilisé un arrière-plan de couleur sombre ?
-doc_auth.tips.review_issues_id_text2: Avez-vous pris la photo sur une surface plane ?
-doc_auth.tips.review_issues_id_text3: Le flash de votre appareil photo est-il éteint ?
-doc_auth.tips.review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles ?
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
@@ -1119,7 +1111,7 @@ idv.forgot_password.reset_password: Réinitialiser le mot de passe
 idv.forgot_password.try_again: Réessayer
 idv.forgot_password.warnings:
   - Si vous avez oublié votre mot de passe, vous devrez le réinitialiser et remplir à nouveau le formulaire.
-  - Vous devrez ressaisir vos informations personnelles, comme votre nom, pièce d’identité officielle, etc.
+  - Vous devrez saisir à nouveau vos renseignements personnels, comme votre nom, pièce d’identité, etc.
 idv.form.address1: Adresse ligne 1
 idv.form.address2: Adresse ligne 2
 idv.form.city: Ville
@@ -1201,6 +1193,7 @@ idv.troubleshooting.options.learn_more_verify_by_phone: En savoir plus sur quel 
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
 idv.troubleshooting.options.learn_more_verify_in_person: En savoir plus sur la vérification en personne
 idv.troubleshooting.options.supported_documents: En savoir plus sur les pièces d’identité acceptées
+idv.troubleshooting.options.use_another_id_type: Utiliser un autre type de pièce d’identité
 idv.troubleshooting.options.verify_by_mail: Vérifier plutôt votre adresse par courrier
 idv.unavailable.exit_button: Quitter %{app_name}
 idv.unavailable.idv_explanation.with_sp_html: '<strong>%{sp}</strong> doit s’assurer qu’il s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.'
@@ -1284,13 +1277,9 @@ in_person_proofing.body.prepare.verify_step_about: 'Suivez les étapes ci-dessou
 in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent.
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
-in_person_proofing.body.state_id.alert_message: 'Votre pièce d’identité délivrée par un État ne doit pas être périmée. Les pièces d’identité acceptées sont les suivantes :'
-in_person_proofing.body.state_id.id_types:
-  - Permis de conduire national
-  - Carte d’identité nationale de non-conducteur
+in_person_proofing.body.state_id.alert_message: Vous avez besoin d’un permis de conduire ou d’une carte d’identité délivrée par un État.
+in_person_proofing.body.state_id.alert_text: Les passeports ne sont pas acceptés pour la vérification d’identité en personne. Votre permis de conduire ou carte d’identité délivrée par un État doit être en cours de validité.
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
-in_person_proofing.body.state_id.learn_more_link: En savoir plus sur les pièces d’identité acceptées.
-in_person_proofing.body.state_id.questions: Des questions ?
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.address1: Adresse ligne 1

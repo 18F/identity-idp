@@ -629,7 +629,7 @@ function AcuantCapture(
       setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
     } else if (isAssessedAsUnsupported) {
-      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      setOwnErrorMessage(t('doc_auth.errors.general.fallback_field_level'));
       assessment = 'unsupported';
     } else {
       assessment = 'success';

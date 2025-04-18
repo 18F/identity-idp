@@ -1969,6 +1969,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2018,6 +2019,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
     document_type: nil,
+    passport_check_result: nil,
     **extra
   )
     track_event(
@@ -2069,6 +2071,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
       document_type:,
+      passport_check_result:,
       **extra,
     )
   end
@@ -2374,6 +2377,35 @@ module AnalyticsEvents
       passport_allowed:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
+      **extra,
+    )
+  end
+
+  # User's passport information submitted to DoS for validation
+  # @param [Boolean] success Whether the validation succeeded
+  # @param [String] response The raw verdict from DoS
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
+  # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
+  #                  we rate limit them.
+  # @param [String] user_id
+  # @param [String] document_type The document type (should always be 'Passport' here)
+  def idv_dos_passport_verification(
+    success:,
+    response:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    user_id:,
+    document_type:,
+    **extra
+  )
+    track_event(
+      :idv_dos_passport_verification,
+      success:,
+      response:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      user_id:,
+      document_type:,
       **extra,
     )
   end
@@ -3557,7 +3589,6 @@ module AnalyticsEvents
   end
 
   # Tracks skipped enrollments during the execution of the GetUspsProofingResultsJob
-  #
   # @param [String] enrollment_code The in-person enrollment code.
   # @param [String] enrollment_id The in-person enrollment ID.
   # @param [String] reason The reason for skipping the enrollment.
@@ -3662,7 +3693,7 @@ module AnalyticsEvents
   # @param [String] response_message
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
-  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [String] tmx_status the tmx_status of the enrollment profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # @param [Boolean] response_present
   # @param [String] job_name
@@ -3819,6 +3850,46 @@ module AnalyticsEvents
       response_message:,
       response_status_code:,
       job_name:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks enrollments that were cancelled after spending over 90 days in password reset.
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for cancelling the enrollment.
+  # @param [String] job_name The class name of the job.
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  def idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
       issuer:,
       **extra,
     )
@@ -6624,17 +6695,17 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # Tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
+  def piv_cac_login(success:, key_id:, new_device:, error_details: nil, **extra)
     track_event(
       :piv_cac_login,
       success:,
-      errors:,
       key_id:,
       new_device:,
+      error_details:,
       **extra,
     )
   end

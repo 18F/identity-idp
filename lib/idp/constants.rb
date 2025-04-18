@@ -136,6 +136,20 @@ module Idp
       same_address_as_id: 'true',
     }.freeze
 
+    MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
+      %i[first_name middle_name last_name dob sex].include?(field)
+    end.merge(
+      state_id_type: 'passport',
+      mrz:
+      'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+      birth_place: 'Birthplace',
+      passport_expiration: (DateTime.now.utc + 10.years).to_s,
+      issuing_country_code: 'USA',
+      passport_issued: (DateTime.new.utc - 1.year).to_s,
+      nationality_code: 'USA',
+      document_number: nil,
+    ).freeze
+
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
       same_address_as_id: 'false',
     ).freeze

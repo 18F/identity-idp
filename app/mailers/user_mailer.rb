@@ -292,7 +292,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:)
+  def in_person_ready_to_verify(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -301,21 +301,19 @@ class UserMailer < ActionMailer::Base
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = is_enhanced_ipp ?
-      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: is_enhanced_ipp,
       )
+      @header = @presenter.enhanced_ipp? ?
+      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
 
       if enrollment&.service_provider&.logo_is_email_compatible?
         @logo_url = enrollment.service_provider.logo_url
       else
         @logo_url = nil
       end
-      @sp_name = enrollment.service_provider&.friendly_name
-      @is_enhanced_ipp = is_enhanced_ipp
+      @sp_name = @presenter.sp_name
 
       mail(
         to: email_address.email,
@@ -329,18 +327,22 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
-    @is_enhanced_ipp = enrollment.enhanced_ipp?
-
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: @is_enhanced_ipp,
       )
+      if enrollment&.service_provider&.logo_is_email_compatible?
+        @logo_url = enrollment.service_provider.logo_url
+      else
+        @logo_url = nil
+      end
+      @sp_name = @presenter.sp_name
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
         count: @presenter.days_remaining,
       )
+
       mail(
         to: email_address.email,
         subject: t(

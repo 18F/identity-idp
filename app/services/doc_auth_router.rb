@@ -13,7 +13,7 @@ module DocAuthRouter
     DocAuth::Errors::BIRTH_DATE_CHECKS =>
       'doc_auth.errors.alerts.birth_date_checks',
     DocAuth::Errors::CARD_TYPE =>
-      'doc_auth.errors.card_type',
+      'doc_auth.errors.general.fallback_field_level',
     # i18n-tasks-use t('doc_auth.errors.alerts.control_number_check')
     DocAuth::Errors::CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.control_number_check',

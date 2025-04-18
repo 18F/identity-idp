@@ -26,6 +26,14 @@ module TwoFactorAuthenticatableMethods
       attempts: mfa_attempts_count,
       recaptcha_annotation:,
     )
+
+    attempts_api_tracker.mfa_login_auth_submitted(
+      mfa_device_type: mfa_device_type(auth_method:),
+      success: result.success?,
+      failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      reauthentication: generic_data[:reauthn],
+    )
+
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
@@ -232,6 +240,12 @@ module TwoFactorAuthenticatableMethods
     analytics.user_marked_authed(
       authentication_type: authentication_type,
     )
+  end
+
+  def mfa_device_type(auth_method:)
+    return 'otp' if auth_method == TwoFactorAuthenticatable::AuthMethod::SMS
+
+    auth_method
   end
 
   def otp_expiration

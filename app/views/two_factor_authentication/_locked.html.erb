@@ -5,11 +5,14 @@
 
   <p><%= presenter.locked_reason %></p>
 
-  <p>
+  <p role="timer" aria-live="polite" aria-atomic="true">
     <%= t(
           'two_factor_authentication.please_try_again_html',
           countdown: render(
-            CountdownComponent.new(expiration: presenter.user.lockout_time_expiration),
+            CountdownComponent.new(
+              expiration: presenter.user.lockout_time_expiration,
+              update_interval: 30.seconds,
+            ),
           ),
         ) %>
   </p>

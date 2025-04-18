@@ -39,6 +39,7 @@ interface AppRootData {
   howToVerifyURL: string;
   socureErrorsTimeoutURL: string;
   previousStepUrl: string;
+  docAuthPassportsEnabled: string;
   docAuthSelfieDesktopTestMode: string;
   accountUrl: string;
   locationsUrl: string;
@@ -111,6 +112,7 @@ const {
   howToVerifyUrl,
   socureErrorsTimeoutUrl,
   previousStepUrl,
+  docAuthPassportsEnabled,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
@@ -140,6 +142,7 @@ render(
           skipDocAuthFromSocure: skipDocAuthFromSocure === 'true',
           howToVerifyURL: howToVerifyUrl,
           socureErrorsTimeoutURL: socureErrorsTimeoutUrl,
+          passportEnabled: String(docAuthPassportsEnabled) === 'true',
           previousStepURL: previousStepUrl,
         }}
       >
