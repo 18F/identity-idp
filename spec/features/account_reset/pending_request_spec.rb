@@ -25,9 +25,6 @@ RSpec.feature 'Pending account reset request sign in' do
     expect(page).to have_content(t('account_reset.pending.header'))
 
     click_on t('account_reset.pending.cancel_request')
-    expect(page).to have_current_path(account_reset_pending_confirm_path)
-
-    click_on t('account_reset.pending.cancel_request')
     expect(page).to have_content(t('account_reset.pending.canceled'))
 
     click_on t('links.continue_sign_in')

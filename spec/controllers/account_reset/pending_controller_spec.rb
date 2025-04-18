@@ -28,7 +28,7 @@ RSpec.describe AccountReset::PendingController do
       expect(account_reset_request.reload.cancelled_at).to_not be_nil
       expect_delivered_email(
         to: [user.email_addresses.first.email],
-        subject: t('user_mailer.account_reset_cancel.subject'),
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
       )
     end
 
