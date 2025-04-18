@@ -1226,6 +1226,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step_name
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_address_warning_visited(step_name:, remaining_submit_attempts:, **extra)
+    track_event(
+      :idv_doc_auth_address_warning_visited,
+      step_name: step_name,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful

@@ -1049,6 +1049,7 @@ idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
 idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
 idv.errors.try_again_later: Veuillez réessayer ultérieurement.
+idv.failure.address.warning: Veuillez vérifier les informations que vous avez saisies et réessayer. Si votre adresse postale est différente de votre adresse personnelle, veuillez saisir l’adresse où vous résidez actuellement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
@@ -1194,6 +1195,7 @@ idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d�
 idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
+idv.warning.address.heading: Nous n’avons pas trouvé d’informations correspondant à votre adresse
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
