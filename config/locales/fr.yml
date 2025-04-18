@@ -717,6 +717,9 @@ doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé
 doc_auth.tips.document_capture_id_text3: Évitez les reflets ou les ombres
 doc_auth.tips.document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo.
+doc_auth.tips.document_capture_passport_header: Comment vous préparer pour prendre la photo de vous-même
+doc_auth.tips.document_capture_passport_tip1: Prenez une photo dans un endroit bien éclairé sans ombre ou reflet.
+doc_auth.tips.document_capture_passport_tip2: Posez votre pièce d’identité sur une surface plane et sombre.
 doc_auth.tips.document_capture_selfie_id_header_text: Comment prendre des photos nettes
 doc_auth.tips.document_capture_selfie_selfie_text: Comment vous préparer pour prendre la photo de vous-même
 doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre visage (lunettes, couvre-chef, etc.)

@@ -728,6 +728,9 @@ doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color osc
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
 doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras
 doc_auth.tips.document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB.
+doc_auth.tips.document_capture_passport_header: Cómo prepararse para tomar su foto
+doc_auth.tips.document_capture_passport_tip1: Busque un lugar bien iluminado, sin sombras ni reflejos, para tomar una foto.
+doc_auth.tips.document_capture_passport_tip2: Coloque su identificación en una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_selfie_id_header_text: Cómo tomar fotos nítidas de su identificación
 doc_auth.tips.document_capture_selfie_selfie_text: Cómo prepararse para tomar su foto
 doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara, como anteojos o un sombrero.

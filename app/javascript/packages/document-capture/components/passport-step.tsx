@@ -100,15 +100,28 @@ export default function PassportStep({
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PassportCaptureSubheaderOne />
       <PassportCaptureInfo />
-      <TipList
-        titleClassName="margin-bottom-0 text-bold"
-        title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
-        items={[
-          t('doc_auth.tips.document_capture_id_text1'),
-          t('doc_auth.tips.document_capture_id_text2'),
-          t('doc_auth.tips.document_capture_id_text3'),
-        ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
-      />
+      {isMobile && (
+        <TipList
+          titleClassName="margin-bottom-0 text-bold"
+          title={t('doc_auth.tips.document_capture_passport_header')}
+          items={[
+            t('doc_auth.tips.document_capture_passport_tip1'),
+            t('doc_auth.tips.document_capture_passport_tip2'),
+          ]}
+        />
+      )}
+      {!isMobile && (
+        <TipList
+          titleClassName="margin-bottom-0 text-bold"
+          title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
+          items={[
+            t('doc_auth.tips.document_capture_id_text1'),
+            t('doc_auth.tips.document_capture_id_text2'),
+            t('doc_auth.tips.document_capture_id_text3'),
+            t('doc_auth.tips.document_capture_id_text4'),
+          ]}
+        />
+      )}
       <PassportCaptureStep
         defaultSideProps={defaultSideProps}
         passportValue={value.passport}

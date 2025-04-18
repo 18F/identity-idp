@@ -717,6 +717,9 @@ doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
 doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
 doc_auth.tips.document_capture_id_text3: Avoid glare or shadows
 doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
+doc_auth.tips.document_capture_passport_header: How to prepare for your photo
+doc_auth.tips.document_capture_passport_tip1: Find a well-lit place without glare or shadows to take a photo.
+doc_auth.tips.document_capture_passport_tip2: Place your ID on a dark, flat surface.
 doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos
 doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
 doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face, like glasses or a hat

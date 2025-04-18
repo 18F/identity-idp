@@ -350,14 +350,14 @@ function AcuantCapture(
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
   const selfieCapture = name === 'selfie';
-  const passportCapture = name === 'passport';
+  const startPassportCapture = isMobile && name === 'passport';
   // When it's the back of the ID we want to log information about the camera
   // This hook does that.
   const isBackOfId = name === 'back';
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
   // When isCapturingEnvironment is set to true, automagically loads the Acuant camera
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
-    (selfieCapture || passportCapture) && !isReviewStep,
+    (selfieCapture || startPassportCapture) && !isReviewStep,
   );
 
   const {

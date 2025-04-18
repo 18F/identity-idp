@@ -728,6 +728,9 @@ doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
+doc_auth.tips.document_capture_passport_header: 如何准备拍照
+doc_auth.tips.document_capture_passport_tip1: 找一个光线充足、没有眩光或阴影的地方拍照。
+doc_auth.tips.document_capture_passport_tip2: 把你身份证件放在一个暗色、平坦的表面
 doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
 doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
