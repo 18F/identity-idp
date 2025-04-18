@@ -151,6 +151,7 @@ module IdentityConfig
     config.add(:dos_passport_mrz_endpoint, type: :string)
     config.add(:dos_passport_mrz_maxretry, type: :integer)
     config.add(:dos_passport_mrz_timeout_seconds, type: :integer)
+    config.add(:eligible_one_account_providers, type: :json)
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
     config.add(:email_registrations_per_ip_limit, type: :integer)
