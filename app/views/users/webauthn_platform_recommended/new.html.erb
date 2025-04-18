@@ -3,7 +3,8 @@
 <%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
   <% c.with_header { t('webauthn_platform_recommended.heading') } %>
 
-  <p><%= t('webauthn_platform_recommended.description_save_time') %></p>
+  <p><%= t('webauthn_platform_recommended.description_security') %></p>
+  <p><%= t('webauthn_platform_recommended.upsell') %></p>
 
   <div class="grid-row margin-top-5">
     <div class="tablet:grid-col-9">

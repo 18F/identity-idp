@@ -6,13 +6,9 @@ RSpec.describe MfaSetupConcern do
   end
 
   let(:user) { create(:user, :fully_registered) }
-  let(:recommend_webauthn_platform_for_sms_user) { false }
 
   before do
     stub_sign_in(user)
-    allow(controller).to receive(:recommend_webauthn_platform_for_sms_user?)
-      .with(:recommend_for_account_creation)
-      .and_return(recommend_webauthn_platform_for_sms_user)
   end
 
   describe '#next_setup_path' do
