@@ -3,7 +3,10 @@ fr:
   telephony:
     account_deleted_notice: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
     account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
-    account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
+    account_reset_notice: |-
+      Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Attendez l’arrivée du deuxième e-mail qui vous permettra de confirmer la suppression du compte. 
+
+      Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
         %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.

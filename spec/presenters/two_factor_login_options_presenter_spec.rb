@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
+  include AccountResetHelper
+  include ActionView::Helpers::OutputSafetyHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::DateHelper
   include Rails.application.routes.url_helpers
 
   let(:user) { User.new }
@@ -65,7 +69,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   it 'supplies a cancel link when the token is valid' do
     allow(presenter).to receive(:account_reset_token).and_return('foo')
     allow(presenter).to receive(:account_reset_token_valid?).and_return(true)
-    allow(presenter).to receive(:confirmation_period).and_return('24 hours')
+    allow(IdentityConfig.store).to receive(:account_reset_wait_period_days).and_return(1)
 
     expect(presenter.account_reset_or_cancel_link).to eq(
       t('two_factor_authentication.account_reset.pending', interval: '24 hours') + ' ' +

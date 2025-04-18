@@ -104,11 +104,11 @@ RSpec.describe AccountReset::PendingRequestForUser do
       expect_delivered_email_count(2)
       expect_delivered_email(
         to: [email_address1.email],
-        subject: t('user_mailer.account_reset_cancel.subject'),
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
       )
       expect_delivered_email(
         to: [email_address2.email],
-        subject: t('user_mailer.account_reset_cancel.subject'),
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
       )
     end
 

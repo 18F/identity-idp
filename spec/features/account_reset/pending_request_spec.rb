@@ -12,7 +12,7 @@ RSpec.feature 'Pending account reset request sign in' do
       .to have_content strip_tags(
         t('account_reset.recovery_options.try_method_again'),
       )
-    click_link t('account_reset.request.yes_continue')
+    click_link t('account_reset.recover_options.yes_delete')
     expect(page)
       .to have_content strip_tags(
         t('account_reset.request.delete_account'),
@@ -24,13 +24,6 @@ RSpec.feature 'Pending account reset request sign in' do
     sign_in_user(user)
     expect(page).to have_content(t('account_reset.pending.header'))
 
-    click_on t('account_reset.pending.cancel_request')
-    expect(page).to have_current_path(account_reset_pending_confirm_path)
-
-    click_on t('links.go_back')
-    expect(page).to have_content(t('account_reset.pending.header'))
-
-    click_on t('account_reset.pending.cancel_request')
     click_on t('account_reset.pending.cancel_request')
     expect(page).to have_content(t('account_reset.pending.canceled'))
 

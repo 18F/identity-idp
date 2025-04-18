@@ -455,29 +455,9 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            interval: interval,
                                                             waiting_period:
                                                               account_reset_deletion_period_hours
           ),
-        ),
-      )
-    end
-
-    it 'renders the footer' do
-    end
-
-    it 'does not render the subject in the body' do
-      expect(mail.html_part.body).not_to have_content(
-        strip_tags(
-          t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
-        ),
-      )
-    end
-
-    it 'renders the header within the body' do
-      expect(mail.html_part.body).to have_content(
-        strip_tags(
-          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end
@@ -594,7 +574,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
