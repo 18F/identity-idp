@@ -122,7 +122,7 @@ RSpec.describe DuplicateProfileChecker do
           )
           dupe_profile_checker.validate_user_does_not_have_duplicate_profile
 
-          expect(DuplicateProfileConfirmation.where(profile_id: profile.id)).to be_empty
+          expect(DuplicateProfileConfirmation.where(profile_id: user.active_profile.id)).to be_empty
         end
       end
 
