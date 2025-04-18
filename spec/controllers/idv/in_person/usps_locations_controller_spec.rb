@@ -374,7 +374,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         let(:selected_location) do
           {
             usps_location: {
-              selectedLocation: {
+              selected_location: {
                 formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
                   name: 'BALTIMORE',
                   saturday_hours: '8:30 AM - 5:00 PM',
@@ -388,7 +388,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         it 'updates enrollment with location data' do
           response
           expect(enrollment.selected_location_details).to eq(
-            selected_location[:usps_location].as_json[:selectedLocation],
+            selected_location[:usps_location].as_json[:selected_location],
           )
         end
       end
@@ -397,7 +397,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         let(:selected_location) do
           {
             usps_location: {
-              selectedLocation: nil
+              selected_location: nil
             }
           }
         end
@@ -425,7 +425,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         let(:selected_location) do
           {
             usps_location: {
-              selectedLocation: nil
+              selected_location: nil
             }
           }
         end
@@ -466,7 +466,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         let(:selected_location) do
           {
             usps_location: {
-              selectedLocation: nil
+              selected_location: nil
             }
           }
         end
@@ -526,7 +526,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         let(:selected_location) do
           {
             usps_location: {
-              selectedLocation: nil
+              selected_location: nil
             }
           }
         end

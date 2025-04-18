@@ -65,7 +65,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       }
 
       const selectedLocationDto = {
-        selectedLocation: isNullLocation ? null : transformKeys(selectedLocation!, snakeCase)
+        selected_location: isNullLocation ? null : transformKeys(selectedLocation!, snakeCase)
       }
 
       setInProgress(true);

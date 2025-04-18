@@ -269,6 +269,10 @@ describe('FullAddressSearch', () => {
     });
   });
 
+  context('when address search error', () => {
+
+  });
+
   context('when an address is found', () => {
     let server: SetupServer;
     before(() => {

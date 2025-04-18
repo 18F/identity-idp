@@ -149,7 +149,7 @@ module Idv
 
       # Handles selecting proper update_location method based on 50/50 state
       def update_location
-        legacy_update_location_request? ? legacy_update_location : updated_update_location[:selectedLocation]
+        legacy_update_location_request? ? legacy_update_location : updated_update_location[:selected_location]
       end
 
       def legacy_update_location
@@ -165,7 +165,7 @@ module Idv
 
       def updated_update_location
         params.require(:usps_location).permit(
-          selectedLocation:
+          selected_location:
             [
              :formatted_city_state_zip,
              :name,:saturday_hours,
@@ -173,11 +173,11 @@ module Idv
              :sunday_hours,
              :weekday_hours
             ]
-        ).with_defaults(selectedLocation: nil).as_json
+        ).with_defaults(selected_location: nil).as_json
       end
 
       def legacy_update_location_request?
-        params.require(:usps_location).exclude?(:selectedLocation)
+        params.require(:usps_location).exclude?(:selected_location)
       end
 
       def search_params
