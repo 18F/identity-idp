@@ -112,7 +112,6 @@ class ReportMailerPreview < ActionMailer::Preview
   def api_transaction_count_report
     api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
 
-    # data = '1500'
     data = [
       ['UUID', 'trans', 'vendor'],
       [1111, 'b', 'instantVeryfy'],
