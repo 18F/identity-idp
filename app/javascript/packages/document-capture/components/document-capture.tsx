@@ -9,6 +9,7 @@ import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
+import PassportStep from './passport-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
@@ -35,7 +36,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, idType } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify, skipDocAuthFromSocure } =
@@ -55,6 +56,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: DocumentsStep,
     title: t('doc_auth.headings.document_capture'),
   };
+  const passportFormStep: FormStep = {
+    name: 'passport',
+    form: PassportStep,
+    title: t('doc_auth.headings.document_capture_passport'),
+  };
+  const idFormStep: FormStep = idType === 'passport' ? passportFormStep : documentFormStep;
   const selfieFormStep: FormStep = {
     name: 'selfie',
     form: SelfieStep,
@@ -62,8 +69,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   };
   const documentsFormSteps: FormStep[] =
     isSelfieCaptureEnabled && submissionError === undefined
-      ? [documentFormStep, selfieFormStep]
-      : [documentFormStep];
+      ? [idFormStep, selfieFormStep]
+      : [idFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:

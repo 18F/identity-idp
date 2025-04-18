@@ -1,4 +1,8 @@
-import { DeviceContext, SelfieCaptureContext } from '@18f/identity-document-capture';
+import {
+  DeviceContext,
+  SelfieCaptureContext,
+  UploadContextProvider,
+} from '@18f/identity-document-capture';
 import DocumentSideAcuantCapture from '@18f/identity-document-capture/components/document-side-acuant-capture';
 import { expect } from 'chai';
 import { render } from '../../../support/document-capture';
@@ -66,6 +70,29 @@ describe('DocumentSideAcuantCapture', () => {
     });
 
     context('and using desktop', () => {
+      context('and idType is passport', () => {
+        it('shows a file pick area for only the passport field', () => {
+          const endpoint = '/upload';
+          const { queryAllByText } = render(
+            <DeviceContext.Provider value={{ isMobile: false }}>
+              <UploadContextProvider endpoint={endpoint} flowPath="standard" idType="passport">
+                <SelfieCaptureContext.Provider
+                  value={{
+                    isSelfieCaptureEnabled: false,
+                    isSelfieDesktopTestMode: false,
+                    showHelpInitially: false,
+                  }}
+                >
+                  <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="passport" />
+                </SelfieCaptureContext.Provider>
+              </UploadContextProvider>
+            </DeviceContext.Provider>,
+          );
+
+          const uploadPictureText = queryAllByText('doc_auth.forms.choose_file_html');
+          expect(uploadPictureText).to.have.lengthOf(1);
+        });
+      });
       context('and doc_auth_selfie_desktop_test_mode is false', () => {
         it('shows a file pick area for each field', () => {
           const { queryAllByText } = render(

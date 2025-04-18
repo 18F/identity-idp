@@ -7,6 +7,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
+  let(:id_type) { 'state_id' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuer) { nil }
@@ -48,6 +49,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       document_capture_session_uuid: document_capture_session_uuid,
       sp_name: sp_name,
       flow_path: flow_path,
+      id_type: id_type,
       failure_to_proof_url: failure_to_proof_url,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,

@@ -498,6 +498,7 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
+doc_auth.alt.passport_help: Un passeport ouvert à la page de la photo. La page d’informations du passeport est placée sur un fond sombre à l’intérieur des quatre lignes formant un cadre.
 doc_auth.alt.selfie_help_1: Le visage d’une personne dans un ovale vert.
 doc_auth.alt.selfie_help_2: Un doigt coche une case sous le visage pour valider la photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
@@ -598,6 +599,7 @@ doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
+doc_auth.headings.document_capture_passport: Votre passeport
 doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
@@ -607,6 +609,9 @@ doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pou
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
+doc_auth.headings.passport: Votre passeport
+doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
+doc_auth.headings.passport_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
@@ -658,6 +663,9 @@ doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur 
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
+doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
+doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
+doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
@@ -709,6 +717,9 @@ doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé
 doc_auth.tips.document_capture_id_text3: Évitez les reflets ou les ombres
 doc_auth.tips.document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo.
+doc_auth.tips.document_capture_passport_header: Comment vous préparer pour prendre la photo de vous-même
+doc_auth.tips.document_capture_passport_tip1: Prenez une photo dans un endroit bien éclairé sans ombre ou reflet.
+doc_auth.tips.document_capture_passport_tip2: Posez votre pièce d’identité sur une surface plane et sombre.
 doc_auth.tips.document_capture_selfie_id_header_text: Comment prendre des photos nettes
 doc_auth.tips.document_capture_selfie_selfie_text: Comment vous préparer pour prendre la photo de vous-même
 doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre visage (lunettes, couvre-chef, etc.)
