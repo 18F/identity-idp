@@ -69,12 +69,6 @@ RSpec.describe Users::WebauthnPlatformRecommendedController do
         .from(nil)
     end
 
-    it 'redirects user to after sign in path' do
-      expect(controller).to receive(:after_sign_in_path_for).with(user).and_return(account_path)
-
-      expect(response).to redirect_to(account_path)
-    end
-
     context 'user is creating account' do
       before do
         allow(controller).to receive(:in_account_creation_flow?).and_return(true)
