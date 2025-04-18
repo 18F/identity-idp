@@ -60,7 +60,7 @@ module Reporting
           'Threat Metrix',
         ],
         [
-          time_range.begin.to_date.to_s + ' - ' + time_range.end.to_date.to_s,
+         "#{ time_range.begin.to_date.to_s}  -  #{time_range.end.to_date.to_s}",
           true_id_table.first,
           instant_verify_table.first,
           phone_finder_table.first,
