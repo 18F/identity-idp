@@ -48,7 +48,7 @@ RSpec.describe DuplicateAccountsReport do
           user1 = create_user_with_ssn_signature('hashedssnsignaturekeyone')
           user2 = create_user_with_ssn_signature('hashedssnsignaturekeyone')
 
-          create_service_provider_identity(user2, Date.zone.today)
+          create_service_provider_identity(user2, Time.zone.today)
           create_service_provider_identity(user1, Date.yesterday.middle_of_day)
 
           results = DuplicateAccountsReport.call(issuer)
