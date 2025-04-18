@@ -21,27 +21,31 @@ namespace :duplicate_accounts do
   end
 
   def results_to_csv(results)
-    puts 'result to csv'
-    output_dir = './tmp/duplicate_accounts/'
-    FileUtils.mkdir_p(output_dir)
-    accounts_csv = CSV.open(File.join(output_dir, 'duplicate_accounts.csv'), 'w')
+    if results.count > 0
+      puts 'result to csv'
+      output_dir = './tmp/duplicate_accounts/'
+      FileUtils.mkdir_p(output_dir)
+      accounts_csv = CSV.open(File.join(output_dir, 'duplicate_accounts.csv'), 'w')
 
-    accounts_csv << %w[
-      user_uuid
-      service_provider
-      agency
-      latest_activity
-      profile_activated
-    ]
-
-    results.each do |result|
-      accounts_csv << [
-        result['uuid'],
-        result['service_provider'],
-        result['friendly_name'],
-        result['updated_at'],
-        result['activated_at'],
+      accounts_csv << %w[
+        user_uuid
+        service_provider
+        agency
+        latest_activity
+        profile_activated
       ]
+
+      results.each do |result|
+        accounts_csv << [
+          result['uuid'],
+          result['service_provider'],
+          result['friendly_name'],
+          result['updated_at'],
+          result['activated_at'],
+        ]
+      end
+    else
+      puts 'no results found'
     end
   end
 end
