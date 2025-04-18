@@ -5,47 +5,45 @@ require 'csv'
 namespace :duplicate_accounts do
   task :report, %i[service_provider] => [:environment] do |_task, args|
     ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
-    puts 'User uuid, Service Provider, Agency, Latest Activity, Profile Activated'
 
     results = DuplicateAccountsReport.call(args[:service_provider])
 
-    results_to_csv(results)
+    if results.count > 0
+      results_to_csv(results)
+    else
+      puts 'no results found'
+    end
+  end
+
+  def results_to_csv(results)
+    puts 'result to csv'
+    puts 'User uuid, Service Provider, Agency, Latest Activity, Profile Activated'
+    output_dir = './tmp/duplicate_accounts/'
+    FileUtils.mkdir_p(output_dir)
+    accounts_csv = CSV.open(File.join(output_dir, 'duplicate_accounts.csv'), 'w')
+
+    accounts_csv << %w[
+      user_uuid
+      service_provider
+      agency
+      latest_activity
+      profile_activated
+    ]
+
     results.each do |result|
+      accounts_csv << [
+        result['uuid'],
+        result['service_provider'],
+        result['friendly_name'],
+        result['updated_at'],
+        result['activated_at'],
+      ]
       result_str = "#{result['uuid']}, "\
                 "#{result['service_provider']}, "\
                 "#{result['friendly_name']}, "\
                 "#{result['updated_at']}, "\
                 "#{result['activated_at']}"
       puts result_str
-    end
-  end
-
-  def results_to_csv(results)
-    if results.count > 0
-      puts 'result to csv'
-      output_dir = './tmp/duplicate_accounts/'
-      FileUtils.mkdir_p(output_dir)
-      accounts_csv = CSV.open(File.join(output_dir, 'duplicate_accounts.csv'), 'w')
-
-      accounts_csv << %w[
-        user_uuid
-        service_provider
-        agency
-        latest_activity
-        profile_activated
-      ]
-
-      results.each do |result|
-        accounts_csv << [
-          result['uuid'],
-          result['service_provider'],
-          result['friendly_name'],
-          result['updated_at'],
-          result['activated_at'],
-        ]
-      end
-    else
-      puts 'no results found'
     end
   end
 end
