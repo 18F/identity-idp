@@ -70,7 +70,6 @@ module Reports
 
     def api_transaction_count_report
       @api_transaction_count_report ||= Reporting::ApiTransactionCountReport.new(
-        # time_range: report_date.all_month,
         time_range: previous_week_range,
       )
     end
