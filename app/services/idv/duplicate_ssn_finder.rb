@@ -12,7 +12,7 @@ module Idv
     def ssn_is_unique?
       associated_profiles_with_matching_ssn.empty?
     end
-    
+
     def associated_profiles_with_matching_ssn
       Profile.where.not(user_id: user.id).where(ssn_signature: ssn_signatures)
     end

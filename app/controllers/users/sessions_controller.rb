@@ -312,9 +312,11 @@ module Users
       update_user_password_compromised_checked_at
     end
 
-
     def validate_user_does_not_have_duplicate_profile
-      dupe_profile_checker = DuplicateProfileChecker.new(user: current_user, user_session: user_session, sp: sp_from_sp_session)
+      dupe_profile_checker = DuplicateProfileChecker.new(
+        user: current_user,
+        user_session: user_session, sp: sp_from_sp_session
+      )
 
       dupe_profile_checker.validate_user_does_not_have_duplicate_profile
     end
