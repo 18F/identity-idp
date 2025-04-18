@@ -11,6 +11,17 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the entered code matched the sent code
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if code did not match
+    # A user that requested to verify their address by mail entered the code contained in the letter
+    def idv_verify_by_mail_enter_code_submitted(success:, failure_reason: nil)
+      track_event(
+        'idv-verify-by-mail-enter-code-submitted',
+        success:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)
@@ -26,7 +37,7 @@ module AttemptsApi
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
         'logged-in-password-change',
-        success: success,
+        success:,
         failure_reason:,
       )
     end
