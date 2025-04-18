@@ -3,7 +3,6 @@
 module Users
   class WebauthnPlatformRecommendedController < ApplicationController
     include SecureHeadersConcern
-    include MfaSetupConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :apply_secure_headers_override
@@ -29,10 +28,8 @@ module Users
     def dismiss_redirect_path
       if opted_to_add?
         webauthn_setup_path(platform: true)
-      elsif in_account_creation_flow?
-        next_setup_path || after_mfa_setup_path
       else
-        after_sign_in_path_for(current_user)
+        after_mfa_setup_path
       end
     end
   end
