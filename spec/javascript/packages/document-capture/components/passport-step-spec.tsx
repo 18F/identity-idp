@@ -62,8 +62,8 @@ describe('document-capture/components/passport-step', () => {
     });
   });
 
-  it('renders device-specific instructions', () => {
-    let { getByText } = render(
+  it('renders mobile-specific instructions on mobile', () => {
+    const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <PassportStep
           value={{}}
@@ -78,20 +78,26 @@ describe('document-capture/components/passport-step', () => {
     );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).to.throw();
+    expect(() => getByText('doc_auth.tips.document_capture_passport_tip1')).not.to.throw();
+  });
 
-    getByText = render(
-      <PassportStep
-        value={{}}
-        onChange={() => undefined}
-        errors={[]}
-        onError={() => undefined}
-        registerField={() => undefined}
-        unknownFieldErrors={[]}
-        toPreviousStep={() => undefined}
-      />,
-    ).getByText;
+  it('does not render mobile-specific instructions on desktop', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: false }}>
+        <PassportStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />
+      </DeviceContext.Provider>,
+    );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
+    expect(() => getByText('doc_auth.tips.document_capture_passport_tip1')).to.throw();
   });
 
   it('renders the hybrid flow warning if the flow is hybrid', () => {
