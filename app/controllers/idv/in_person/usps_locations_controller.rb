@@ -56,10 +56,8 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
-        location_details = params[:usps_location].as_json['selectedLocation']
-
         enrollment.update!(
-          selected_location_details: location_details,
+          selected_location_details: update_location,
           issuer: current_sp&.issuer,
           doc_auth_result: document_capture_session&.last_doc_auth_result,
           sponsor_id: enrollment_sponsor_id,
@@ -147,6 +145,39 @@ module Idv
 
       def authn_context_enhanced_ipp?
         resolved_authn_context_result.enhanced_ipp?
+      end
+
+      # Handles selecting proper update_location method based on 50/50 state
+      def update_location
+        legacy_update_location_request? ? legacy_update_location : updated_update_location[:selectedLocation]
+      end
+
+      def legacy_update_location
+        params.require(:usps_location).permit(
+          :formatted_city_state_zip,
+          :name,
+          :saturday_hours,
+          :street_address,
+          :sunday_hours,
+          :weekday_hours,
+        ).as_json
+      end
+
+      def updated_update_location
+        params.require(:usps_location).permit(
+          selectedLocation:
+            [
+             :formatted_city_state_zip,
+             :name,:saturday_hours,
+             :street_address,
+             :sunday_hours,
+             :weekday_hours
+            ]
+        ).with_defaults(selectedLocation: nil).as_json
+      end
+
+      def legacy_update_location_request?
+        params.require(:usps_location).exclude?(:selectedLocation)
       end
 
       def search_params

@@ -75,6 +75,9 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
           json: selectedLocationDto,
           method: 'PUT',
         });
+
+        console.log(selectedLocationDto);
+
         // In try block set success of request. If the request is successful, fire remaining code?
         if (mountedRef.current) {
           setAutoSubmit(true);
