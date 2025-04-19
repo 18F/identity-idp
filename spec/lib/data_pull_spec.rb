@@ -320,6 +320,44 @@ RSpec.describe DataPull do
     end
   end
 
+  describe DataPull::SsnSignatureReport do
+    subject(:subtask) { DataPull::SsnSignatureReport.new }
+
+    describe '#run' do
+      let(:ssn) { '900111111' }
+      let(:profile) { create(:profile, :active, pii: { ssn: ssn }) }
+      let(:args) { [ssn] }
+      let(:config) { ScriptBase::Config.new }
+
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'runs the SSN signature report', aggregate_failures: true do
+        expected_result = [
+          ['uuid', 'profile_id', 'status', 'ssn_signature', 'idv_level', 'activated_timestamp',
+           'disabled_reason', 'gpo_verification_pending_timestamp',
+           'fraud_review_pending_timestamp', 'fraud_rejection_timestamp'],
+          [
+            profile.user.uuid,
+            profile.id,
+            'active',
+            profile.ssn_signature,
+            profile.idv_level,
+            kind_of(Time),
+            profile.deactivation_reason,
+            nil,
+            nil,
+            nil,
+          ],
+        ]
+        expect(result.table).to match_array(expected_result)
+        expect_consistent_row_length(result.table)
+
+        expect(result.subtask).to eq('ssn-signature-report')
+        expect(result.uuids).to match_array([profile.user.uuid])
+      end
+    end
+  end
+
   describe DataPull::InspectorGeneralRequest do
     subject(:subtask) { DataPull::InspectorGeneralRequest.new }
 

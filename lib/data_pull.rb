@@ -41,6 +41,8 @@ class DataPull
 
         * #{basename} mfa-report uuid1 uuid2
 
+        * #{basename} ssn-signature-report ssn1
+
         * #{basename} profile-summary uuid1 uuid2
 
         * #{basename} uuid-convert partner-uuid1 partner-uuid2
@@ -62,6 +64,7 @@ class DataPull
       'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
       'mfa-report' => MfaReport,
+      'ssn-signature-report' => SsnSignatureReport,
       'profile-summary' => ProfileSummary,
       'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
@@ -193,6 +196,61 @@ class DataPull
         subtask: 'mfa-report',
         uuids: uuids,
         json: output,
+      )
+    end
+  end
+
+  class SsnSignatureReport
+    def run(args:, config:)
+      require 'data_requests/deployed'
+      ssns = args
+
+      normalized_ssns = ssns.map { |ssn| SsnFormatter.normalize(ssn) }
+      ssn_signatures = normalized_ssns.flat_map do |ssn|
+        ssn_signature = Pii::Fingerprinter.fingerprint(ssn)
+        Pii::Fingerprinter.previous_fingerprints(ssn) << ssn_signature
+      end
+
+      profiles = Profile.where(ssn_signature: ssn_signatures).includes(:user)
+
+      table = []
+      table << %w[
+        uuid
+        profile_id
+        status
+        ssn_signature
+        idv_level
+        activated_timestamp
+        disabled_reason
+        gpo_verification_pending_timestamp
+        fraud_review_pending_timestamp
+        fraud_rejection_timestamp
+      ]
+
+      if profiles.any?
+        profiles.each do |profile|
+          table << [
+            profile.user.uuid,
+            profile.id,
+            profile.active ? 'active' : 'inactive',
+            profile.ssn_signature,
+            profile.idv_level,
+            profile.activated_at,
+            profile.deactivation_reason,
+            profile.gpo_verification_pending_at,
+            profile.fraud_review_pending_at,
+            profile.fraud_rejection_at,
+          ]
+        end
+      else
+        config.include_missing?
+        table << ['[NO PROFILES]', nil, nil, nil, nil, nil, nil, nil, nil, nil]
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'ssn-signature-report',
+        uuids: profiles.map(&:user).map(&:uuid).uniq,
+        table:,
       )
     end
   end
