@@ -145,10 +145,19 @@ RSpec.describe Idv::InPerson::SsnController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
-      it 'adds ssn to idv_session' do
+      it 'adds the ssn to idv_session' do
         put :update, params: params
 
         expect(subject.idv_session.ssn).to eq(ssn)
+      end
+
+      context 'when the submitted ssn includes dashes' do
+        let(:ssn) { '123-45-6789' }
+        it 'adds the normalized ssn to idv_session' do
+          put :update, params: params
+
+          expect(subject.idv_session.ssn).to eq('123456789')
+        end
       end
 
       it 'invalidates steps after ssn' do
@@ -177,10 +186,10 @@ RSpec.describe Idv::InPerson::SsnController do
         end
 
         it 'updates idv_session.ssn' do
-          subject.idv_session.ssn = '900-95-7890'
+          subject.idv_session.ssn = '900957890'
 
           expect { put :update, params: params }.to change { subject.idv_session.ssn }
-            .from('900-95-7890').to(ssn)
+            .from('900957890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end
