@@ -154,7 +154,7 @@ module Idp
       same_address_as_id: 'false',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900661234').freeze
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(

@@ -427,7 +427,7 @@ RSpec.describe SocureShadowModeProofingJob do
         state: 'MT',
         zipcode: '59010-1234',
         dob: '1938-10-06',
-        ssn: '900-66-1234',
+        ssn: '900661234',
         email: user.email,
       }
     end

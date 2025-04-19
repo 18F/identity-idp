@@ -30,7 +30,7 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
         dob: '1938-10-06',
 
         phone: '12025551212',
-        ssn: '900-66-1234',
+        ssn: '900661234',
         email: user.email,
 
         consent_given_at: '2024-09-01T00:00:00Z',

@@ -607,7 +607,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                     height: 72,
                     weight: nil,
                     eye_color: nil,
-                    ssn: '900-66-1234',
+                    ssn: '900661234',
                     state_id_jurisdiction: 'ND',
                     state_id_expiration: '2099-12-31',
                     state_id_issued: '2019-12-31',

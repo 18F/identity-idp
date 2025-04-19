@@ -422,7 +422,7 @@ RSpec.describe Idv::VerifyInfoController do
       it 'logs the edit distance between SSNs' do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 

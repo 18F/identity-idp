@@ -9,6 +9,7 @@ module DocAuthHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn].freeze
   GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  GOOD_SSN_FORMATTED = SsnFormatter.format(GOOD_SSN).freeze
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
