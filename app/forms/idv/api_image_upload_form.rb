@@ -5,8 +5,9 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    validates_presence_of :front
-    validates_presence_of :back
+    validates_presence_of :front, unless: :passport_submitted
+    validates_presence_of :back, unless: :passport_submitted
+    validates_presence_of :passport, if: :passport_submitted
     validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
 
@@ -20,7 +21,8 @@ module Idv
       acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
       uuid_prefix: nil,
-      liveness_checking_required: false
+      liveness_checking_required: false,
+      passport_submittal: false
     )
       @params = params
       @service_provider = service_provider
@@ -29,6 +31,7 @@ module Idv
       @readable = {}
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
+      @passport_submittal = passport_submittal
     end
 
     def submit
@@ -71,7 +74,7 @@ module Idv
     private
 
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
+                :liveness_checking_required, :passport_submittal, :acuant_sdk_upgrade_ab_test_bucket
 
     def abandon_any_ipp_progress
       user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
@@ -101,8 +104,9 @@ module Idv
       timer = JobHelpers::Timer.new
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
-          front_image: front_image_bytes,
-          back_image: back_image_bytes,
+          # TrueID front_image required whether driver's license or passport
+          front_image: passport_submittal ? passport_image_bytes : front_image_bytes,
+          back_image: passport_submittal ? nil : back_image_bytes,
           selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
           image_source: image_source,
           images_cropped: acuant_sdk_autocaptured_id?,
@@ -278,6 +282,10 @@ module Idv
       as_readable(:back)
     end
 
+    def passport
+      as_readable(:passport)
+    end
+
     def selfie
       as_readable(:selfie)
     end
@@ -289,17 +297,26 @@ module Idv
     end
 
     def validate_images
-      if front.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :front, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if back.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
+      if passport_submittal
+        if passport.is_a? DataUrlImage::InvalidUrlFormatError
+          errors.add(
+            :passport, t('doc_auth.errors.not_a_file'),
+            type: :not_a_file
+          )
+        end
+      else
+        if front.is_a? DataUrlImage::InvalidUrlFormatError
+          errors.add(
+            :front, t('doc_auth.errors.not_a_file'),
+            type: :not_a_file
+          )
+        end
+        if back.is_a? DataUrlImage::InvalidUrlFormatError
+          errors.add(
+            :back, t('doc_auth.errors.not_a_file'),
+            type: :not_a_file
+          )
+        end
       end
       if selfie.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
@@ -321,18 +338,27 @@ module Idv
       capture_result = document_capture_session&.load_result
       return unless capture_result
       error_sides = []
-      if capture_result&.failed_front_image?(front_image_fingerprint)
-        errors.add(
-          :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        error_sides << 'front'
-      end
+      if passport_submittal
+        if capture_result&.failed_passport_image?(passport_image_fingerprint)
+          errors.add(
+            :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+          )
+          error_sides << 'passport'
+        end
+      else
+        if capture_result&.failed_front_image?(front_image_fingerprint)
+          errors.add(
+            :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+          )
+          error_sides << 'front'
+        end
 
-      if capture_result&.failed_back_image?(back_image_fingerprint)
-        errors.add(
-          :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        error_sides << 'back'
+        if capture_result&.failed_back_image?(back_image_fingerprint)
+          errors.add(
+            :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+          )
+          error_sides << 'back'
+        end
       end
       unless error_sides.empty?
         analytics.idv_doc_auth_failed_image_resubmitted(
