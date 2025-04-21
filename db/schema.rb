@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_181519) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -492,8 +492,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
   create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
     t.string "annotation", comment: "sensitive=false"
     t.string "annotation_reason", comment: "sensitive=false"
-    t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "updated_at", null: false, comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|
@@ -692,6 +690,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
   end
 
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
