@@ -211,7 +211,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_181519) do
   create_table "duplicate_profile_confirmations", force: :cascade do |t|
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
-    t.json "duplicate_profiles", null: false, comment: "sensitive=false"
+    t.json "duplicate_profile_ids", null: false, comment: "sensitive=false"
     t.boolean "confirmed_all", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
