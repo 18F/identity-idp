@@ -271,7 +271,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     check t('forms.ssn.show')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_FORMATTED)
   end
 
   def validate_verify_info_submit
