@@ -208,6 +208,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
 
+  create_table "duplicate_profile_confirmations", force: :cascade do |t|
+    t.bigint "profile_id", null: false, comment: "sensitive=false"
+    t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
+    t.json "duplicate_profile_ids", null: false, comment: "sensitive=false"
+    t.boolean "confirmed_all", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["profile_id"], name: "index_duplicate_profile_confirmations_on_profile_id"
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id", comment: "sensitive=false"
     t.string "confirmation_token", limit: 255, comment: "sensitive=true"
