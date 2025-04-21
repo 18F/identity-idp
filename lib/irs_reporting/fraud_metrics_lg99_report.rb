@@ -93,7 +93,7 @@ module IrsReporting
       [
         ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
         # This needs to be Date.today so it works when run on the command line
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.present? ? issuers.join(', ') : 'All Issuers'],
       ]
     end
