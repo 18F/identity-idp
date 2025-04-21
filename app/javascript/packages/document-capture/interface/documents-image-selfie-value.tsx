@@ -8,6 +8,7 @@ export interface DocumentsAndSelfieStepValue {
   selfie: ImageValue;
   front_image_metadata?: string;
   back_image_metadata?: string;
+  passport_image_metadata?: string;
 }
 export type DefaultSideProps = Pick<
   FormStepComponentProps<DocumentsAndSelfieStepValue>,
