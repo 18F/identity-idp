@@ -543,13 +543,14 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when address proofing results in an exception' do
+    context 'when instant verify address proofing results in an exception' do
       let(:document_capture_session) do
         DocumentCaptureSession.create(user:)
       end
       let(:success) { false }
       let(:errors) { {} }
       let(:exception) { nil }
+      let(:error_attributes) { nil }
       let(:vendor_name) { 'instantverify_placeholder' }
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -569,7 +570,7 @@ RSpec.describe Idv::VerifyInfoController do
             errors: {},
             exception: 'fake exception',
             vendor_name: vendor_name,
-            attributes_requiring_additional_verification: ['address'],
+            attributes_requiring_additional_verification: error_attributes,
           ),
           same_address_as_id: nil,
           should_proof_state_id: true,
@@ -586,19 +587,32 @@ RSpec.describe Idv::VerifyInfoController do
         allow(controller).to receive(:load_async_state).and_return(async_state)
       end
 
-      it 'redirects user to address warning' do
-        put :show
-        expect(response).to redirect_to idv_session_errors_address_warning_url
+      context 'address is the only exception' do
+        let(:error_attributes) { ['address'] }
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_address_warning_url
+        end
+
+        it 'logs an event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_doc_auth_address_warning_visited,
+            step_name: 'verify_info',
+            remaining_submit_attempts: kind_of(Numeric),
+          )
+        end
       end
 
-      it 'logs an event' do
-        get :show
+      context 'there are more instant verify exceptions' do
+        let(:error_attributes) { ['address', 'dob', 'ssn']}
 
-        expect(@analytics).to have_logged_event(
-          :idv_doc_auth_address_warning_visited,
-          step_name: 'verify_info',
-          remaining_submit_attempts: kind_of(Numeric),
-        )
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_exception_url
+        end
       end
     end
 

@@ -93,7 +93,7 @@ module Idv
           :stages,
           :resolution,
           :attributes_requiring_additional_verification,
-        ).include?('address')
+        ) == ['address']
     end
 
     def idv_failure(result)
