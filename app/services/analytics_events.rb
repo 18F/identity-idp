@@ -3179,7 +3179,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person proofing passport visited',
+      :idv_in_person_proofing_passport_visited,
       step:,
       analytics_id:,
       opted_in_to_in_person_proofing:,

@@ -7,7 +7,7 @@
       ) %>
 <% end %>
 
-<% self.title = t('in_person_proofing.headings.passport')%>
+<% self.title = t('in_person_proofing.headings.passport') %>
 <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.passport')) %>
 
 <p>
@@ -15,61 +15,61 @@
 </p>
 
 <%= simple_form_for(
-    @idv_in_person_passport_form,
-    data: {},
-    html: { class: 'margin-y-5' },
-    method: 'put',
-    url: idv_in_person_passport_url,
-   ) do |f| %>
+      @idv_in_person_passport_form,
+      data: {},
+      html: { class: 'margin-y-5' },
+      method: 'put',
+      url: idv_in_person_passport_url,
+    ) do |f| %>
 
     <div class="margin-bottom-4">
 
         <%= render ValidatedFieldComponent.new(
-            form: f,
-            input_html: { value: 'update' },
-            label_html: { class: 'usa-label' },
-            label: t('in_person_proofing.form.passport.surname'),
-            name: :passport_surname,
-            required: true,
+              form: f,
+              input_html: { value: 'update' },
+              label_html: { class: 'usa-label' },
+              label: t('in_person_proofing.form.passport.surname'),
+              name: :passport_surname,
+              required: true,
             ) %>
 
         <%= render ValidatedFieldComponent.new(
-            form: f,
-            hint: t('in_person_proofing.form.passport.first_name_hint'),
-            input_html: { value: 'update' },
-            label_html: { lass: 'usa-label' },
-            label: t('in_person_proofing.form.passport.first_name'),
-            name: :passport_first_name,
-            required: true,
+              form: f,
+              hint: t('in_person_proofing.form.passport.first_name_hint'),
+              input_html: { value: 'update' },
+              label_html: { lass: 'usa-label' },
+              label: t('in_person_proofing.form.passport.first_name'),
+              name: :passport_first_name,
+              required: true,
             ) %>
 
         <%= render MemorableDateComponent.new(
-            content_tag: 'memorable-date',
-            form: f,
-            hint: t('in_person_proofing.form.passport.dob_hint'),
-            label: t('in_person_proofing.form.passport.dob'),
-            name: :passport_dob,
-            required: true,
+              content_tag: 'memorable-date',
+              form: f,
+              hint: t('in_person_proofing.form.passport.dob_hint'),
+              label: t('in_person_proofing.form.passport.dob'),
+              name: :passport_dob,
+              required: true,
             ) %>
 
         <%= render ValidatedFieldComponent.new(
-            form: f,
-            hint: t('in_person_proofing.form.passport.passport_number_hint'),
-            input_html: { value: 'update' },
-            label_html: { class: 'usa-label' },
-            label: t('in_person_proofing.form.passport.passport_number'),
-            name: :passport_number,
-            required: true,
+              form: f,
+              hint: t('in_person_proofing.form.passport.passport_number_hint'),
+              input_html: { value: 'update' },
+              label_html: { class: 'usa-label' },
+              label: t('in_person_proofing.form.passport.passport_number'),
+              name: :passport_number,
+              required: true,
             ) %>
 
         <%= render MemorableDateComponent.new(
-            content_tag: 'memorable-date',
-            form: f,
-            hint: t('in_person_proofing.form.passport.expiration_date_hint'),
-            label: t('in_person_proofing.form.passport.expiration_date'),
-            name: :passport_expiration,
-            required: true,
-        )%>
+              content_tag: 'memorable-date',
+              form: f,
+              hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+              label: t('in_person_proofing.form.passport.expiration_date'),
+              name: :passport_expiration,
+              required: true,
+            ) %>
     </div>
 
     <%= f.submit do %>
@@ -80,9 +80,9 @@
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
       <% c.with_option(
-         url: idv_in_person_state_id_url,
-         new_tab: true,
-       ).with_content(t('in_person_proofing.form.passport.redirect_to_state_id')) %>
+           url: idv_in_person_state_id_url,
+           new_tab: true,
+         ).with_content(t('in_person_proofing.form.passport.redirect_to_state_id')) %>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'passport' %>

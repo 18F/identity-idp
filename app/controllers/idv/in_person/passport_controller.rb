@@ -13,14 +13,14 @@ module Idv
       def show
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
 
-        @idv_in_person_passport_form = Idv::InPerson::PassportForm.new()
+        @idv_in_person_passport_form = Idv::InPerson::PassportForm.new
       end
 
       def extra_view_variables
         {
           form:,
           pii:,
-          updating_passport: updating_passport?
+          updating_passport: updating_passport?,
         }
       end
 
@@ -32,10 +32,6 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
           .merge(extra_analytics_properties)
-      end
-
-      def form
-        @form ||= Idv::InPerson::PassportForm.new()
       end
 
       def initialize_pii_from_user

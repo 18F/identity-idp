@@ -13,7 +13,7 @@ module Idv
         ActiveModel::Name.new(self, nil, 'InPersonPassport')
       end
 
-      def initialize()
+      def initialize
       end
     end
   end

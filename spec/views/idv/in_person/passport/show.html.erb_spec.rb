@@ -8,11 +8,11 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
   before do
     allow(view).to receive(:user_signing_up?).and_return(false)
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
-    @idv_in_person_passport_form = Idv::InPerson::PassportForm.new()
+    @idv_in_person_passport_form = Idv::InPerson::PassportForm.new
   end
 
   subject(:rendered) { render template: 'idv/in_person/passport/show' }
-  
+
   context 'show' do
     it 'renders title with passport info' do
       expect(rendered).to have_content(t('in_person_proofing.headings.passport'))

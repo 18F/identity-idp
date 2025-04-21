@@ -1275,16 +1275,6 @@ in_person_proofing.body.location.retail_hours_sun: 'Domingo:'
 in_person_proofing.body.location.retail_hours_weekday: 'De lunes a viernes:'
 in_person_proofing.body.location.selection: 'Esta es la oficina que seleccionó:'
 in_person_proofing.body.passport.info_html: We will verify this information against records. Your passport book must not be expired.
-in_person_proofing.form.passport.dob: Date of birth
-in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
-in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
-in_person_proofing.form.passport.first_name: First name
-in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed  under 'Given names'
-in_person_proofing.form.passport.passport_number: Passport number
-in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
-in_person_proofing.form.passport.redirect_to_state_id: Use a driver's license or state ID instead
-in_person_proofing.form.passport.surname: Surname
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y el Servicio Postal de los EE. UU. utilizamos sus datos para verificar su identidad.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: Obtenga más información sobre la privacidad y la seguridad.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: '¿Tiene alguna pregunta?'
@@ -1301,6 +1291,16 @@ in_person_proofing.body.state_id.learn_more_link: Obtenga más información sobr
 in_person_proofing.body.state_id.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proofing.form.passport.redirect_to_state_id: Use a driver’s license or state ID instead
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.form.state_id.address1: Línea de dirección 1
 in_person_proofing.form.state_id.address1_hint: 'Ejemplo: 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Línea de dirección 2
