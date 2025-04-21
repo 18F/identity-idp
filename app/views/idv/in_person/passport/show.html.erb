@@ -7,7 +7,6 @@
       ) %>
 <% end %>
 
-<%# title %>
 <% self.title = t('in_person_proofing.headings.passport')%>
 <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.passport')) %>
 
@@ -15,17 +14,19 @@
   <%= t('in_person_proofing.body.passport.info_html') %>
 </p>
 
-<%= simple_form_for form,
-                    as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
-                    url: url_for,
-                    method: 'put',
-                    html: { class: 'margin-y-5' } do |f| %>
+<%= simple_form_for(
+    @idv_in_person_passport_form,
+    data: {},
+    html: { class: 'margin-y-5' },
+    method: 'put',
+    url: idv_in_person_passport_url,
+   ) do |f| %>
 
-<div class="margin-bottom-4">
+    <div class="margin-bottom-4">
 
         <%= render ValidatedFieldComponent.new(
             form: f,
-            input_html: { value: pii[:passport_surname] },
+            input_html: { value: 'update' },
             label_html: { class: 'usa-label' },
             label: t('in_person_proofing.form.passport.surname'),
             name: :passport_surname,
@@ -35,7 +36,7 @@
         <%= render ValidatedFieldComponent.new(
             form: f,
             hint: t('in_person_proofing.form.passport.first_name_hint'),
-            input_html: { value: pii[:passport_first_name] },
+            input_html: { value: 'update' },
             label_html: { lass: 'usa-label' },
             label: t('in_person_proofing.form.passport.first_name'),
             name: :passport_first_name,
@@ -54,7 +55,7 @@
         <%= render ValidatedFieldComponent.new(
             form: f,
             hint: t('in_person_proofing.form.passport.passport_number_hint'),
-            input_html: { value: pii[:passport_number] },
+            input_html: { value: 'update' },
             label_html: { class: 'usa-label' },
             label: t('in_person_proofing.form.passport.passport_number'),
             name: :passport_number,
@@ -81,7 +82,7 @@
       <% c.with_option(
          url: idv_in_person_state_id_url,
          new_tab: true,
-       ).with_content(t('in_person_proffing.form.passport.redirect_to_state_id')) %>
+       ).with_content(t('in_person_proofing.form.passport.redirect_to_state_id')) %>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'passport' %>

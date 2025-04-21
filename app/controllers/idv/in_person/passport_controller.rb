@@ -13,15 +13,13 @@ module Idv
       def show
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
 
-        render :show, locals: extra_view_variables
+        @idv_in_person_passport_form = Idv::InPerson::PassportForm.new()
       end
-
 
       def extra_view_variables
         {
           form:,
           pii:,
-        #   parsed_dob:,
           updating_passport: updating_passport?
         }
       end
