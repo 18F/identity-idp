@@ -4,7 +4,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 8.0.0'
-
+gem 'activerecord-redshift-adapter'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-cloudwatchlogs', require: false
