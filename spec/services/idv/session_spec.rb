@@ -443,4 +443,58 @@ RSpec.describe Idv::Session do
       expect(subject.address_mechanism_chosen?).to eq(false)
     end
   end
+
+  describe '#in_person_passports_allowed?' do
+    context 'when passports are allowed' do
+      before do
+        subject.passport_allowed = true
+      end
+
+      context 'when in person passports are enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(subject.in_person_passports_allowed?).to be(true)
+        end
+      end
+
+      context 'when in person passports are disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(subject.in_person_passports_allowed?).to be(false)
+        end
+      end
+    end
+
+    context 'when passports are not allowed' do
+      before do
+        subject.passport_allowed = false
+      end
+
+      context 'when in person passports are enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+        end
+
+        it 'returns false' do
+          expect(subject.in_person_passports_allowed?).to be(false)
+        end
+      end
+
+      context 'when in person passports are disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(subject.in_person_passports_allowed?).to be(false)
+        end
+      end
+    end
+  end
 end

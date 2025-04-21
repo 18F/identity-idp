@@ -247,6 +247,21 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for ipp_choose_id_type are present' do
+      before do
+        allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+      end
+
+      it 'returns ipp_choose_id_type' do
+        expect(
+          subject.controller_allowed?(
+            controller: Idv::InPerson::ChooseIdTypeController,
+          ),
+        ).to be
+      end
+    end
+
     context 'preconditions for in_person verify_info are present' do
       it 'returns ipp_verify_info' do
         stub_up_to(:ipp_ssn, idv_session: idv_session)
