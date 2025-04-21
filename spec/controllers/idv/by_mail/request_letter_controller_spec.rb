@@ -70,6 +70,8 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
   describe '#create' do
     before do
+      stub_attempts_tracker
+
       stub_verify_steps_one_and_two(user)
     end
 
@@ -90,6 +92,9 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
     it 'logs USPS address letter requested analytics event with phone step attempts' do
       RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+      expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_letter_requested)
+        .with(resend: false)
+
       put :create
 
       expect(@analytics).to have_logged_event(
