@@ -4,8 +4,8 @@ module DocAuth
   module LexisNexis
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
-        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_required,
-                    :document_type
+        attr_reader :front_image, :back_image, :passport_image, :selfie_image,
+                    :liveness_checking_required, :document_type
 
         def initialize(
           config:,
@@ -13,6 +13,7 @@ module DocAuth
           uuid_prefix:,
           front_image:,
           back_image:,
+          passport_image:,
           document_type:,
           selfie_image: nil,
           image_source: nil,
@@ -22,6 +23,7 @@ module DocAuth
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
           @back_image = back_image
+          @passport_image = passport_image
           @selfie_image = selfie_image
           @image_source = image_source
           @images_cropped = images_cropped
@@ -33,6 +35,7 @@ module DocAuth
         def request_context
           {
             workflow: workflow,
+            document_type: document_type,
           }
         end
 
@@ -41,7 +44,7 @@ module DocAuth
         def body
           document = {
             Document: {
-              Front: encode(front_image),
+              Front: encode(id_front_image),
               Back: (encode(back_image) if back_image_required?),
               Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: document_type,
@@ -49,6 +52,15 @@ module DocAuth
           }
 
           settings.merge(document).to_json
+        end
+
+        def id_front_image
+          case document_type
+          when 'Passport'
+            passport_image
+          else
+            front_image
+          end
         end
 
         def handle_http_response(http_response)
