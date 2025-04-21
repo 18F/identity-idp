@@ -123,6 +123,9 @@ GEM
       activemodel (= 8.0.2.1)
       activesupport (= 8.0.2.1)
       timeout (>= 0.4.0)
+    activerecord-redshift-adapter (8.0.0)
+      activerecord (>= 7.0, < 9.0)
+      pg (~> 1.0)
     activestorage (8.0.2.1)
       actionpack (= 8.0.2.1)
       activejob (= 8.0.2.1)
@@ -834,6 +837,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activerecord-redshift-adapter
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)

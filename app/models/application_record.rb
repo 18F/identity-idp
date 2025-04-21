@@ -14,4 +14,10 @@ class ApplicationRecord < ActiveRecord::Base
       reading: :read_replica,
     },
   }
+
+  def self.table_name_prefix
+    if connection.current_database == 'analytics'
+      'idp.'
+    end
+  end
 end
