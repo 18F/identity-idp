@@ -58,10 +58,13 @@ RSpec.describe Idv::ByMail::ResendLetterController do
 
   describe '#new' do
     before do
+      stub_attempts_tracker
       create(:profile, :verify_by_mail_pending, :with_pii, user: user)
     end
 
     it 'uses the GPO confirmation maker to send another letter and redirects', :freeze_time do
+      expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_letter_requested)
+        .with(resend: true)
       expect_to_resend_letter_and_redirect
 
       expect(@analytics).to have_logged_event(
@@ -85,6 +88,8 @@ RSpec.describe Idv::ByMail::ResendLetterController do
 
     context 'when using vtr values' do
       it 'uses the GPO confirmation maker to send another letter and redirects', :freeze_time do
+        expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_letter_requested)
+          .with(resend: true)
         expect_to_resend_letter_and_redirect(vtr: true)
 
         expect(@analytics).to have_logged_event(

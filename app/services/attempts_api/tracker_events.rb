@@ -125,6 +125,16 @@ module AttemptsApi
       )
     end
 
+    # IdvVerifyByMailLetterRequested.yml
+    # @param [String] boolean False indicates this is the initial request
+    # The Address validation letter has been requested by user
+    def idv_verify_by_mail_letter_requested(resend:)
+      track_event(
+        :idv_letter_requested,
+        resend:,
+      )
+    end
+
     # @param [Boolean] success
     # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
     def mfa_enroll_webauthn_platform(success:)
