@@ -1,4 +1,5 @@
 require 'rails_helper'
+require_relative '/Users/jabariamyles/identity-idp/app/jobs/reports/irs_combined_invoice_supplement_report_v2.rb'
 
 RSpec.describe Reports::IRSCombinedInvoiceSupplementReportV2 do
   subject(:report) { Reports::IRSCombinedInvoiceSupplementReportV2.new }

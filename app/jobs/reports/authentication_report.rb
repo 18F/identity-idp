@@ -8,23 +8,24 @@ module Reports
 
     attr_accessor :report_date
 
-    def perform(report_date)
+    def perform(_date)
       return unless IdentityConfig.store.s3_reports_enabled
-
-      self.report_date = report_date
-      message = "Report: #{REPORT_NAME} #{report_date}"
-      subject = "Weekly Authentication Report - #{report_date}"
-
+    
+      iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
+      csv = build_csv(iaas, IaaReportingHelper.partner_accounts)
+      file_path = save_report(REPORT_NAME, csv, extension: 'csv')
+    
+      message = "Report: #{REPORT_NAME}"
+      subject = "IRS Combined Invoice Supplement Report"
+    
       report_configs.each do |report_hash|
-        reports = weekly_authentication_emailable_reports(report_hash['issuers'])
-
         report_hash['emails'].each do |email|
-          ReportMailer.tables_report(
+          ReportMailer.file_report(
             email:,
             subject:,
             message:,
-            reports:,
-            attachment_format: :csv,
+            file_path:,
+            filename: "#{REPORT_NAME}.csv",
           ).deliver_now
         end
       end
