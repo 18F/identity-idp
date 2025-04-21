@@ -10,6 +10,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
     stub_sign_in(user)
 
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
@@ -194,6 +195,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       end
 
       it 'redirects to the sign_up/completions page' do
+        expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+          .with(success: true, failure_reason: nil)
+
         action
 
         expect(@analytics).to have_logged_event(
@@ -239,6 +243,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         end
 
         it 'redirects to personal key page' do
+          expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+            .with(success: true, failure_reason: nil)
           action
 
           expect(@analytics).to have_logged_event(
@@ -268,6 +274,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'redirects to the sign_up/completions page' do
+            expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+              .with(success: true, failure_reason: nil)
             action
 
             expect(@analytics).to have_logged_event(
@@ -305,6 +313,9 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_rejection) }
 
           it 'is reflected in analytics' do
+            expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+              .with(success: true, failure_reason: nil)
+
             action
 
             expect(@analytics).to have_logged_event(
@@ -347,6 +358,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
           let(:user) { create(:user, :gpo_pending_with_fraud_review) }
 
           it 'is reflected in analytics' do
+            expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+              .with(success: true, failure_reason: nil)
             action
 
             expect(@analytics).to have_logged_event(
@@ -376,6 +389,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       let(:user) { create(:user, :with_pending_gpo_profile, created_at: 2.days.ago) }
 
       it 'renders to the index page to show errors' do
+        expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+          .with(success: false, failure_reason: { otp: [:confirmation_code_incorrect] })
         action
 
         expect(@analytics).to have_logged_event(
@@ -421,6 +436,8 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             profile_age_in_seconds: instance_of(Integer),
             error_details: { otp: { confirmation_code_incorrect: true } },
           }
+          expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_enter_code_submitted)
+            .with(success: false, failure_reason: { otp: [:confirmation_code_incorrect] })
           post(:create, params: { gpo_verify_form: { otp: bad_otp } })
 
           expect(@analytics).to have_logged_event(
