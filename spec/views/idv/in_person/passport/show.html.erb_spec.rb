@@ -16,7 +16,7 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
   context 'show' do
     it 'renders title with passport info' do
       expect(rendered).to have_content(t('in_person_proofing.headings.passport'))
-      expect(rendered).to have_content(t('in_person_proofing.body.passport.info_html'))
+      expect(rendered).to have_content(t('in_person_proofing.body.passport.info'))
     end
 
     it 'renders passport fields' do

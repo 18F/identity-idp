@@ -1276,7 +1276,7 @@ in_person_proofing.body.location.retail_hours_sat: 周六：
 in_person_proofing.body.location.retail_hours_sun: 周日：
 in_person_proofing.body.location.retail_hours_weekday: 周一到周五：
 in_person_proofing.body.location.selection: 这是你选择的地点：
-in_person_proofing.body.passport.info_html: We will verify this information against records. Your passport book must not be expired.
+in_person_proofing.body.passport.info: We will verify this information against records. Your passport book must not be expired.
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} 是一个安全的政府网站。我们和美国邮局使用你的数据来验证你的身份。'
 in_person_proofing.body.prepare.privacy_disclaimer_link: 了解有关隐私和安全的更多信息。
 in_person_proofing.body.prepare.privacy_disclaimer_questions: 有问题吗？

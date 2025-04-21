@@ -73,6 +73,18 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.dob_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.expiration_date' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.expiration_date_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.first_name' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.first_name_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.passport_number' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.passport_number_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.redirect_to_state_id' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.surname' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.headings.passport' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
