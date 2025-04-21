@@ -8,11 +8,8 @@ module Idv
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
-    before_action :set_resolution_rate_limiter, only: [:warning, :address_warning, :failure]
     before_action :set_try_again_path, only: [:warning, :exception, :state_id_warning]
     before_action :ignore_form_step_wait_requests
-
-    attr_reader :resolution_rate_limiter
 
     def exception
       log_event
@@ -64,8 +61,8 @@ module Idv
 
     private
 
-    def set_resolution_rate_limiter
-      @resolution_rate_limiter = RateLimiter.new(
+    def resolution_rate_limiter
+      @resolution_rate_limiter ||= RateLimiter.new(
         user: idv_session_user,
         rate_limit_type: :idv_resolution,
       )
