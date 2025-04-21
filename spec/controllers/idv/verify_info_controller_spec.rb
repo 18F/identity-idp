@@ -607,7 +607,7 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       context 'there are more instant verify exceptions' do
-        let(:error_attributes) { ['address', 'dob', 'ssn']}
+        let(:error_attributes) { ['address', 'dob', 'ssn'] }
 
         it 'redirects user to address warning' do
           put :show
