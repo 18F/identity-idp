@@ -22,7 +22,7 @@ module AttemptsApi
       )
     end
 
-    # @param [String] boolean False indicates this is the initial request
+    # @param [Boolean] resend False indicates this is the initial request
     # User has requested the Address validation letter
     def idv_verify_by_mail_letter_requested(resend:)
       track_event(
