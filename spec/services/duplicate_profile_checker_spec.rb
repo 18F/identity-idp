@@ -50,7 +50,7 @@ RSpec.describe DuplicateProfileChecker do
             DuplicateProfileConfirmation.create(
               profile_id: profile.id,
               confirmed_at: Time.zone.now,
-              duplicate_profiles: [profile2.id],
+              duplicate_profile_ids: [profile2.id],
             )
           end
           it 'does not create a new duplicate profile confirmation' do

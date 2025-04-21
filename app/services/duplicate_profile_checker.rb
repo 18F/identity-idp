@@ -22,7 +22,7 @@ class DuplicateProfileChecker
       DuplicateProfileConfirmation.create(
         profile_id: profile_id,
         confirmed_at: Time.zone.now,
-        duplicate_profiles: duplicate_ssn_finder.associated_profiles_with_matching_ssn.map(&:id),
+        duplicate_profile_ids: duplicate_ssn_finder.associated_profiles_with_matching_ssn.map(&:id),
       )
     end
   end
