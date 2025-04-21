@@ -11,6 +11,11 @@ module AttemptsApi
       )
     end
 
+    # A user is transferred to the in-person proofing workflow
+    def idv_ipp_ready_to_verify_visit
+      track_event('idv-ipp-ready-to-verify-visit')
+    end
+
     # @param [Boolean] success True if the entered code matched the sent code
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason if code did not match
     # A user that requested to verify their address by mail entered the code contained in the letter
