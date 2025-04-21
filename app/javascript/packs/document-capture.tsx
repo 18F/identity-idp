@@ -198,7 +198,7 @@ render(
                         maxSubmissionAttemptsBeforeNativeCamera={Number(
                           maxSubmissionAttemptsBeforeNativeCamera,
                         )}
-                        failedFingerprints={{ front: [], back: [] }}
+                        failedFingerprints={{ front: [], back: [], passport: [] }}
                       >
                         <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
                       </FailedCaptureAttemptsContextProvider>

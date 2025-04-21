@@ -36,7 +36,7 @@ describe('document-capture/components/passport-step', () => {
       <FailedCaptureAttemptsContextProvider
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
-        failedFingerprints={{ front: [], back: [] }}
+        failedFingerprints={{ front: [], back: [], passport: [] }}
       >
         <PassportStep
           value={{}}
