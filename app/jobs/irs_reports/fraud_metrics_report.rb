@@ -17,7 +17,7 @@ module IrsReports
     def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
 
-      report_configs.each do |config|
+      IdentityConfig.store.monthly_fraud_metrics_report_config.each do |config|
         run_report(config)
       end
     end
