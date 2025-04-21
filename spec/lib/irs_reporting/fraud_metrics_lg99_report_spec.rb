@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/fraud_metrics_lg99_report_v2'
+require 'irs_reporting/fraud_metrics_lg99_report'
 
-RSpec.describe Reporting::FraudMetricsLg99ReportV2 do
+RSpec.describe IrsReporting::FraudMetricsLg99Report do
   let(:issuer) {'my:example:issuer'}
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_definitions_table) do
@@ -42,7 +42,7 @@ RSpec.describe Reporting::FraudMetricsLg99ReportV2 do
     ]
   end
 
-  subject(:report) { Reporting::FraudMetricsLg99ReportV2.new(issuers: [issuer], time_range:) }
+  subject(:report) { IrsReporting::FraudMetricsLg99Report.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day

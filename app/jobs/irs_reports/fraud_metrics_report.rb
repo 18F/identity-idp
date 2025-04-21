@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'json'
-require 'reporting/fraud_metrics_lg99_report_v2'
+require 'irs_reporting/fraud_metrics_lg99_report'
 
-module Reports
-  class FraudMetricsReportV2 < BaseReport
-    REPORT_NAME = 'fraud-metrics-report-v2'
+module IrsReports
+  class FraudMetricsReport < Reports::BaseReport
+    REPORT_NAME = 'fraud-metrics-report'
 
     attr_reader :report_date
 
@@ -47,18 +46,7 @@ module Reports
     end
 
     def report_configs
-      
-      case IdentityConfig.store.monthly_fraud_metrics_report_config
-      when String
-        JSON.parse(IdentityConfig.store.monthly_fraud_metrics_report_config)
-      when Array
-        IdentityConfig.store.monthly_fraud_metrics_report_config
-      else
-        []
-      end
-    rescue JSON::ParserError => e
-      Rails.logger.error("Bad config JSON - #{e.message}")
-      []
+      IdentityConfig.store.monthly_fraud_metrics_report_config
     end
 
     def run_report(config)
@@ -72,7 +60,7 @@ module Reports
         return
       end
 
-      reports = Reporting::FraudMetricsLg99ReportV2.new(
+      reports = IrsReporting::FraudMetricsLg99Report.new(
         time_range: date_anchor.all_month,
         issuers: issuers,
       )

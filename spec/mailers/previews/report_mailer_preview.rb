@@ -109,18 +109,18 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def fraud_metrics_report_v2
-    fraud_metrics_report_v2 = Reports::FraudMetricsReportV2.new(Time.zone.yesterday)
+  def irs_fraud_metrics_report
+    irs_fraud_metrics_report = IrsReports::FraudMetricsReport.new(Time.zone.yesterday)
     test_config = [{"emails":["data@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name-1", "urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name-2"]}].to_json
-    stub_cloudwatch_client(fraud_metrics_report_v2.run_report(test_config))
+    stub_cloudwatch_client(irs_fraud_metrics_report.run_report(test_config))
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example Fraud Metrics V2 Report - #{Time.zone.now.to_date}",
+      subject: "Example Fraud Metrics Report - #{Time.zone.now.to_date}",
       issuers: test_config['issuers'],
-      message: fraud_metrics_report_v2.preamble,
+      message: irs_fraud_metrics_report.preamble,
       attachment_format: :xlsx,
-      reports: fraud_metrics_report_v2.run_report(test_config),
+      reports: irs_fraud_metrics_report.run_report(test_config),
     )
   end
 

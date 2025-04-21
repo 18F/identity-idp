@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Reports::FraudMetricsReportV2 do
+RSpec.describe IrsReports::FraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  subject(:report) { Reports::FraudMetricsReportV2.new(report_date) }
+  subject(:report) { IrsReports::FraudMetricsReport.new(report_date) }
 
-  let(:name) { 'fraud-metrics-report-v2' }
+  let(:name) { 'fraud-metrics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/fraud-metrics-report-v2/2021/2021-03-02.fraud-metrics-report-v2'
+    'int/fraud-metrics-report/2021/2021-03-02.fraud-metrics-report'
   end
 
   let(:expected_s3_paths) do
@@ -92,10 +92,10 @@ RSpec.describe Reports::FraudMetricsReportV2 do
     }
 
     allow(IdentityConfig.store).to receive(:monthly_fraud_metrics_report_config)
-      .and_return([{ 'emails' => mock_emails, 'issuers' => [issuer] }].to_json)
+      .and_return([{ 'emails' => mock_emails, 'issuers' => [issuer] }])
 
     mock_fraud_metrics = instance_double(
-      Reporting::FraudMetricsLg99ReportV2,
+      IrsReporting::FraudMetricsLg99Report,
       as_emailable_reports: [
         Reporting::EmailableReport.new(title: 'Definitions', filename: 'definitions', table: mock_definitions_table),
         Reporting::EmailableReport.new(title: 'Overview', filename: 'overview', table: mock_overview_table),
@@ -105,13 +105,13 @@ RSpec.describe Reports::FraudMetricsReportV2 do
       ],
     )
     
-    allow(Reporting::FraudMetricsLg99ReportV2).to receive(:new).and_return(mock_fraud_metrics)
+    allow(IrsReporting::FraudMetricsLg99Report).to receive(:new).and_return(mock_fraud_metrics)
 
     # ensures uploads actually occur
     allow(report).to receive(:bucket_name).and_return('reports-bucket.1234-us-west-1')
   end
 
-  it 'sends out a report to just to team agnes' do
+  it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       hash_including(
         email: match_array(mock_emails),
@@ -125,11 +125,11 @@ RSpec.describe Reports::FraudMetricsReportV2 do
   context 'when the config entry has no e-mail addresses' do
     before do
       allow(IdentityConfig.store).to receive(:monthly_fraud_metrics_report_config)
-        .and_return([{ 'emails' => [], 'issuers' => [issuer] }].to_json)
+        .and_return([{ 'emails' => [], 'issuers' => [issuer] }])
     end
     
     it 'does not attempt to build or send a report' do
-      expect(Reporting::FraudMetricsLg99ReportV2).not_to receive(:new)
+      expect(IrsReporting::FraudMetricsLg99Report).not_to receive(:new)
       expect(ReportMailer).not_to receive(:tables_report)
 
       report.perform(report_date)

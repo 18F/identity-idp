@@ -248,9 +248,9 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send monthly fraud metrics reports to partners
-      fraud_metrics_report_v2: {
-        class: 'Reports::FraudMetricsReportV2',
+      # Send monthly fraud metrics reports to irs
+      irs_fraud_metrics_report: {
+        class: 'IrsReports::FraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
