@@ -8,7 +8,7 @@ import {
 import { Cancel } from '@18f/identity-verify-flow';
 import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import TipList from './tip-list';
-import { DeviceContext, UploadContext, InPersonContext } from '../context';
+import { DeviceContext, UploadContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
@@ -24,11 +24,14 @@ export function DocumentsCaptureStep({
   defaultSideProps: DefaultSideProps;
   value: Record<string, ImageValue>;
   isReviewStep: boolean;
-  }) {
-  
-  const { passportEnabled } = useContext(InPersonContext);
+}) {
+  const { selectedIdType } = useContext(UploadContext);
+  const idIsPassport = selectedIdType === 'passport';
+
   type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = passportEnabled ? ['front'] : ['front', 'back'];
+  const documentsSides: DocumentSide[] =
+    idIsPassport && isReviewStep ? ['front'] : ['front', 'back'];
+
   return (
     <>
       {documentsSides.map((side) => (
