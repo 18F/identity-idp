@@ -45,10 +45,6 @@ module IrsReports
       ERB
     end
 
-    def report_configs
-      IdentityConfig.store.monthly_fraud_metrics_report_config
-    end
-
     def run_report(config)
       date_anchor = report_date.is_a?(Date) ? report_date.in_time_zone.end_of_day : report_date # Ensures CloudWatchClient always receives time arguments to avoid the ArgumentError associated with Date objects
       
