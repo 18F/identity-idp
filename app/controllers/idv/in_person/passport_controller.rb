@@ -50,7 +50,6 @@ module Idv
       def render_404_if_controller_not_enabled
         render_not_found unless
           IdentityConfig.store.doc_auth_passports_enabled &&
-          idv_session.passport_allowed &&
           IdentityConfig.store.in_person_passports_enabled
       end
 
