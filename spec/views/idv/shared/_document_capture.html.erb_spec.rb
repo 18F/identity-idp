@@ -16,6 +16,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:selfie_capture_enabled) { true }
 
   let(:acuant_version) { '1.3.3.7' }
+  let(:selected_id_type) { 'drivers_license' }
   let(:skip_doc_auth_from_how_to_verify) { false }
   let(:skip_doc_auth_from_handoff) { false }
   let(:skip_doc_auth_from_socure) { false }
@@ -55,6 +56,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
+      selected_id_type: selected_id_type,
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       skip_doc_auth_from_socure: skip_doc_auth_from_socure,
