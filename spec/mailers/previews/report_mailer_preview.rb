@@ -121,6 +121,8 @@ class ReportMailerPreview < ActionMailer::Preview
       message: irs_fraud_metrics_report.preamble,
       attachment_format: :xlsx,
       reports: irs_fraud_metrics_report.run_report(test_config),
+    )
+  end
 
   def api_transaction_count_report
     api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
