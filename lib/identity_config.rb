@@ -524,7 +524,7 @@ module IdentityConfig
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
 
-    "redshift/#{Identity::Hostdata.env || 'local'}-analytics-superuser"
+    "redshift/#{Identity::Hostdata.env || 'local'}-analytics-idp-connector"
       .then do |redshift_secrets_manager_key|
         config.add(
           :redshift_password,
@@ -536,7 +536,6 @@ module IdentityConfig
           secrets_manager_name: redshift_secrets_manager_key,
           type: :string,
         ) { |raw| JSON.parse(raw).fetch('username') }
-        config.add(:secret_key_base, type: :string)
       end
   end.freeze
   # rubocop:enable Layout/LineLength
