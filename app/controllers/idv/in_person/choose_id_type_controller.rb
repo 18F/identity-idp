@@ -3,16 +3,19 @@
 class Idv::InPerson::ChooseIdTypeController < ApplicationController
   include Idv::AvailabilityConcern
   include IdvStepConcern
+  include Idv::ChooseIdTypeConcern
 
   before_action :confirm_step_allowed
 
   def show
     analytics.idv_in_person_proofing_choose_id_type_visited(**analytics_arguments)
+    dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
+    auto_check_value = dos_passport_api_down ? :drivers_license : ''
     render 'idv/shared/choose_id_type',
            locals: {
              presenter: Idv::InPerson::ChooseIdTypePresenter.new,
-             auto_check_value: '',
-             dos_passport_api_down: false,
+             auto_check_value: auto_check_value,
+             dos_passport_api_down:,
            },
            layout: true
   end
