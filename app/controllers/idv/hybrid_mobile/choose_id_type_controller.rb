@@ -14,6 +14,7 @@ module Idv
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
         dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
+        auto_check_value = dos_passport_api_down ? :drivers_license : selected_id_type
         render 'idv/shared/choose_id_type',
                locals: { presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
                          form_url: idv_hybrid_mobile_choose_id_type_path,

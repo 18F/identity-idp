@@ -18,7 +18,7 @@ module Idv
       params.require(:doc_auth).permit(:choose_id_type_preference)
     end
 
-    def auto_check_value
+    def selected_id_type
       case document_capture_session.passport_status
       when 'requested'
         :passport
