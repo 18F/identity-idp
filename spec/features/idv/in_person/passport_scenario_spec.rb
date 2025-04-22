@@ -33,36 +33,85 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
       end
 
-      it 'allows the user to accesss in person passport content' do
-        reload_ab_tests
-        visit_idp_from_sp_with_ial2(service_provider)
-        sign_in_live_with_2fa(user)
+      context 'when the user chooses the state_id path during enrollment creation' do
+        it 'creates a state_id enrollment' do
+          reload_ab_tests
+          visit_idp_from_sp_with_ial2(service_provider)
+          sign_in_live_with_2fa(user)
 
-        expect(page).to have_current_path(idv_welcome_path)
-        expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1b')
+          expect(page).to have_current_path(idv_welcome_path)
+          expect(page).to have_content t(
+            'doc_auth.headings.welcome',
+            sp_name: service_provider_name,
+          )
+          expect(page).to have_content t('doc_auth.instructions.bullet1b')
 
-        complete_welcome_step
+          complete_welcome_step
 
-        expect(page).to have_current_path(idv_agreement_path)
-        complete_agreement_step
+          expect(page).to have_current_path(idv_agreement_path)
+          complete_agreement_step
 
-        expect(page).to have_current_path(idv_how_to_verify_path)
-        expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
+          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
-        click_on t('forms.buttons.continue_ipp')
+          click_on t('forms.buttons.continue_ipp')
 
-        expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
 
-        click_on t('forms.buttons.continue')
-        complete_location_step(user)
+          click_on t('forms.buttons.continue')
+          complete_location_step(user)
 
-        expect(page).to have_current_path(idv_in_person_choose_id_type_path)
+          expect(page).to have_current_path(idv_in_person_choose_id_type_path)
 
-        expect(page).to have_content t('doc_auth.headings.choose_id_type')
-        expect(page).to have_content t('in_person_proofing.info.choose_id_type')
-        expect(page).to have_content t('doc_auth.forms.id_type_preference.drivers_license')
-        expect(page).to have_content t('doc_auth.forms.id_type_preference.passport')
+          expect(page).to have_content t('doc_auth.headings.choose_id_type')
+          expect(page).to have_content t('in_person_proofing.info.choose_id_type')
+          expect(page).to have_content t('doc_auth.forms.id_type_preference.drivers_license')
+          expect(page).to have_content t('doc_auth.forms.id_type_preference.passport')
+
+          choose t('doc_auth.forms.id_type_preference.drivers_license')
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_in_person_state_id_path)
+        end
+      end
+
+      context 'when the user chooses the passport path during enrollment creation' do
+        it 'creates a passport enrollment' do
+          reload_ab_tests
+          visit_idp_from_sp_with_ial2(service_provider)
+          sign_in_live_with_2fa(user)
+
+          expect(page).to have_current_path(idv_welcome_path)
+          expect(page).to have_content t(
+            'doc_auth.headings.welcome',
+            sp_name: service_provider_name,
+          )
+          expect(page).to have_content t('doc_auth.instructions.bullet1b')
+
+          complete_welcome_step
+
+          expect(page).to have_current_path(idv_agreement_path)
+          complete_agreement_step
+
+          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
+
+          click_on t('forms.buttons.continue_ipp')
+
+          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+
+          click_on t('forms.buttons.continue')
+          complete_location_step(user)
+
+          expect(page).to have_current_path(idv_in_person_choose_id_type_path)
+
+          expect(page).to have_content t('doc_auth.headings.choose_id_type')
+          expect(page).to have_content t('in_person_proofing.info.choose_id_type')
+          expect(page).to have_content t('doc_auth.forms.id_type_preference.drivers_license')
+          expect(page).to have_content t('doc_auth.forms.id_type_preference.passport')
+
+          choose t('doc_auth.forms.id_type_preference.passport')
+        end
       end
     end
 
