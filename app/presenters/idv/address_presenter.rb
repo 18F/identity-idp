@@ -2,6 +2,22 @@
 
 module Idv
   class AddressPresenter
+    def page_heading
+      if update?
+        I18n.t('doc_auth.headings.address_update')
+      else
+        I18n.t('doc_auth.headings.address')
+      end
+    end
+
+    def update_or_continue_button
+      if update?
+        I18n.t('forms.buttons.submit.update')
+      else
+        I18n.t('forms.button.continue')
+      end
+    end
+
     def address_line1_hint
       "#{I18n.t('forms.example')} 150 Calle A Apt 3"
     end
@@ -20,6 +36,12 @@ module Idv
 
     def hint_class
       ['display-none', 'puerto-rico-extras']
+    end
+
+    private
+
+    def update?
+      true
     end
   end
 end
