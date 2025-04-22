@@ -1,5 +1,5 @@
 description: |
-  When the user transfers to the in-person proofing workflow.
+  When the user becomes able to visit the post office for in-person proofing.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
