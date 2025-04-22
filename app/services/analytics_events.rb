@@ -3103,6 +3103,30 @@ module AnalyticsEvents
     )
   end
 
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_in_person_proofing_choose_id_type_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
