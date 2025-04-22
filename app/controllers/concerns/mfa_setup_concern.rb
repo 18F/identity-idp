@@ -142,8 +142,8 @@ module MfaSetupConcern
   end
 
   def user_set_up_with_sms_phone_delivery?
-    (user_session[:in_account_creation_flow] == true &&
-      mfa_context.enabled_mfa_methods_count == 1) &&
+    user_session[:in_account_creation_flow] == true &&
+      mfa_context.enabled_mfa_methods_count == 1 &&
       mfa_context.phone_configurations.present? &&
       otp_delivery_sms?
   end
