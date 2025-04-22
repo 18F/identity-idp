@@ -4,12 +4,16 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:document_capture_session) do
+    create(:document_capture_session, user:, passport_status: 'allowed')
+  end
   let(:idv_session) { subject.idv_session }
 
   before do
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
       .to_return({ status: 200, body: { status: 'UP' }.to_json })
     stub_sign_in(user)
+    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
     stub_analytics

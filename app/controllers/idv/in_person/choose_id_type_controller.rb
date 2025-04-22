@@ -10,7 +10,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
   def show
     analytics.idv_in_person_proofing_choose_id_type_visited(**analytics_arguments)
     dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
-    auto_check_value = dos_passport_api_down ? :drivers_license : ''
+    auto_check_value = dos_passport_api_down ? :drivers_license : selected_id_type
     render 'idv/shared/choose_id_type',
            locals: {
              presenter: Idv::InPerson::ChooseIdTypePresenter.new,
