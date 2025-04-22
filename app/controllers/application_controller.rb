@@ -261,6 +261,7 @@ class ApplicationController < ActionController::Base
     )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
+    return multiple_accounts_detected_url if user_multiple_accounts_detected?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
@@ -520,6 +521,10 @@ class ApplicationController < ActionController::Base
   def user_is_banned?
     return false unless user_signed_in?
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
+  end
+  
+  def user_multiple_accounts_detected?
+
   end
 
   def handle_banned_user
