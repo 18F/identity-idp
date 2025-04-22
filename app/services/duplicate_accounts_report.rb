@@ -33,6 +33,7 @@ class DuplicateAccountsReport
         i.service_provider IN (?)
         AND i.ial = 2
         AND i.last_authenticated_at BETWEEN ? AND ?
+        AND p.active
     SQL
 
     ActiveRecord::Base.connection.execute(
