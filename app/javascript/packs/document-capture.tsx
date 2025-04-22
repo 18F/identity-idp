@@ -35,7 +35,6 @@ interface AppRootData {
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
-  selectedIdType: string;
   skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
   skipDocAuthFromSocure: string;
@@ -112,7 +111,6 @@ const {
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
   usStatesTerritories = '',
-  selectedIdType,
   skipDocAuthFromHowToVerify,
   skipDocAuthFromHandoff,
   skipDocAuthFromSocure,

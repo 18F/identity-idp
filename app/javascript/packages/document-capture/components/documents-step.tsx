@@ -25,12 +25,12 @@ export function DocumentsCaptureStep({
   value: Record<string, ImageValue>;
   isReviewStep: boolean;
 }) {
-  const { selectedIdType } = useContext(UploadContext);
-  const idIsPassport = selectedIdType === 'passport';
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
 
-  type DocumentSide = 'front' | 'back';
+  type DocumentSide = 'front' | 'back' | 'passport';
   const documentsSides: DocumentSide[] =
-    idIsPassport && isReviewStep ? ['front'] : ['front', 'back'];
+    idIsPassport && isReviewStep ? ['passport'] : ['front', 'back'];
 
   return (
     <>

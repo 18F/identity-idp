@@ -15,7 +15,6 @@ describe('document-capture/context/upload', () => {
     expect(result.current).to.have.keys([
       'upload',
       'isMockClient',
-      'selectedIdType',
       'statusPollInterval',
       'getStatus',
       'flowPath',

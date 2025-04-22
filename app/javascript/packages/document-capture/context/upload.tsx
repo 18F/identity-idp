@@ -9,7 +9,6 @@ const UploadContext = createContext({
   getStatus: () => Promise.resolve({} as UploadSuccessResponse),
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
-  selectedIdType: '',
   flowPath: 'standard' as FlowPath,
   idType: 'state_id',
   formData: {} as Record<string, any>,
@@ -198,7 +197,6 @@ function UploadContextProvider({
   endpoint,
   statusEndpoint,
   statusPollInterval,
-  selectedIdType,
   formData = DEFAULT_FORM_DATA,
   flowPath,
   idType,
@@ -231,7 +229,6 @@ function UploadContextProvider({
     flowPath,
     idType,
     formData,
-    selectedIdType,
     submitAttempts,
   });
 
