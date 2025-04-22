@@ -12,6 +12,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
            locals: {
              presenter: Idv::InPerson::ChooseIdTypePresenter.new,
              auto_check_value: '',
+             dos_passport_api_down: false,
            },
            layout: true
   end
