@@ -138,6 +138,17 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True means TMX check has a 'pass' review status
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks the result of the TMX fraud check during Identity Verification
+    def idv_tmx_fraud_check(success:, failure_reason: nil)
+      track_event(
+        'idv-tmx-fraud-check',
+        success:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits registration password
