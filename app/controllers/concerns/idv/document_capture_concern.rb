@@ -136,7 +136,7 @@ module Idv
     end
 
     def id_type
-      document_capture_session.passport_status == 'requested' ? 'passport' : 'state_id'
+      document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
   end
 end

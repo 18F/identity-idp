@@ -349,7 +349,7 @@ function AcuantCapture(
   const [imageCaptureText, setImageCaptureText] = useState('');
   // There's some pretty significant changes to this component when it's used for
   // selfie capture vs document image capture. This controls those changes.
-  const selfieCapture = name === 'selfie';
+  const startSelfieCapture = name === 'selfie';
   const startPassportCapture = isMobile && name === 'passport';
   // When it's the back of the ID we want to log information about the camera
   // This hook does that.
@@ -357,7 +357,7 @@ function AcuantCapture(
   useLogCameraInfo({ isBackOfId, hasStartedCropping });
   // When isCapturingEnvironment is set to true, automagically loads the Acuant camera
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(
-    (selfieCapture || startPassportCapture) && !isReviewStep,
+    (startSelfieCapture || startPassportCapture) && !isReviewStep,
   );
 
   const {
@@ -749,7 +749,7 @@ function AcuantCapture(
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      {isCapturingEnvironment && !selfieCapture && (
+      {isCapturingEnvironment && !startSelfieCapture && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
@@ -766,7 +766,7 @@ function AcuantCapture(
           )}
         </AcuantCamera>
       )}
-      {isCapturingEnvironment && selfieCapture && (
+      {isCapturingEnvironment && startSelfieCapture && (
         <AcuantSelfieCamera
           onImageCaptureSuccess={onSelfieCaptureSuccess}
           onImageCaptureFailure={onSelfieCaptureFailure}
