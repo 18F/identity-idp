@@ -6,16 +6,15 @@ import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-  SelfieCaptureContext,
 } from '@18f/identity-document-capture';
-import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+import PassportStep from '@18f/identity-document-capture/components/passport-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
-describe('document-capture/components/documents-step', () => {
-  it('renders with only front and back inputs by default', () => {
-    const { getByLabelText, queryByLabelText } = render(
-      <DocumentsStep
+describe('document-capture/components/passport-step', () => {
+  it('renders with only one input for passport by default', () => {
+    const { getByLabelText } = render(
+      <PassportStep
         value={{}}
         onChange={() => undefined}
         errors={[]}
@@ -26,13 +25,9 @@ describe('document-capture/components/documents-step', () => {
       />,
     );
 
-    const front = getByLabelText('doc_auth.headings.document_capture_front');
-    const back = getByLabelText('doc_auth.headings.document_capture_back');
-    const selfie = queryByLabelText('doc_auth.headings.document_capture_selfie');
+    const passport = getByLabelText('doc_auth.headings.document_capture_passport');
 
-    expect(front).to.be.ok();
-    expect(back).to.be.ok();
-    expect(selfie).to.not.exist();
+    expect(passport).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', async () => {
@@ -43,7 +38,7 @@ describe('document-capture/components/documents-step', () => {
         maxSubmissionAttemptsBeforeNativeCamera={3}
         failedFingerprints={{ front: [], back: [], passport: [] }}
       >
-        <DocumentsStep
+        <PassportStep
           value={{}}
           onChange={onChange}
           errors={[]}
@@ -55,22 +50,22 @@ describe('document-capture/components/documents-step', () => {
         ,
       </FailedCaptureAttemptsContextProvider>,
     );
-    const file = await getFixtureFile('doc_auth_images/id-back.jpg');
+    const file = await getFixtureFile('doc_auth_images/passport.jpg');
 
     await Promise.all([
       new Promise((resolve) => onChange.callsFake(resolve)),
-      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file),
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_passport'), file),
     ]);
     expect(onChange).to.have.been.calledWith({
-      front: file,
-      front_image_metadata: sinon.match(/^\{.+\}$/),
+      passport: file,
+      passport_image_metadata: sinon.match(/^\{.+\}$/),
     });
   });
 
-  it('renders device-specific instructions', () => {
-    let { getByText } = render(
+  it('renders mobile-specific instructions on mobile', () => {
+    const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <DocumentsStep
+        <PassportStep
           value={{}}
           onChange={() => undefined}
           errors={[]}
@@ -83,27 +78,33 @@ describe('document-capture/components/documents-step', () => {
     );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).to.throw();
+    expect(() => getByText('doc_auth.tips.document_capture_passport_tip1')).not.to.throw();
+  });
 
-    getByText = render(
-      <DocumentsStep
-        value={{}}
-        onChange={() => undefined}
-        errors={[]}
-        onError={() => undefined}
-        registerField={() => undefined}
-        unknownFieldErrors={[]}
-        toPreviousStep={() => undefined}
-      />,
-    ).getByText;
+  it('does not render mobile-specific instructions on desktop', () => {
+    const { getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: false }}>
+        <PassportStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />
+      </DeviceContext.Provider>,
+    );
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
+    expect(() => getByText('doc_auth.tips.document_capture_passport_tip1')).to.throw();
   });
 
   it('renders the hybrid flow warning if the flow is hybrid', () => {
     const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="hybrid" endpoint="unused" idType="state_id">
-          <DocumentsStep
+        <UploadContextProvider flowPath="hybrid" endpoint="unused" idType="passport">
+          <PassportStep
             value={{}}
             onChange={() => undefined}
             errors={[]}
@@ -123,8 +124,8 @@ describe('document-capture/components/documents-step', () => {
   it('does not render the hybrid flow warning if the flow is standard (default)', () => {
     const { queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="standard" endpoint="unused" idType="state_id">
-          <DocumentsStep
+        <UploadContextProvider flowPath="standard" endpoint="unused" idType="passport">
+          <PassportStep
             value={{}}
             onChange={() => undefined}
             errors={[]}
@@ -139,38 +140,5 @@ describe('document-capture/components/documents-step', () => {
     const notExpectedText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html');
 
     expect(queryByText(notExpectedText)).to.not.exist();
-  });
-
-  it('renders only with front, back when isSelfieCaptureEnabled is true', () => {
-    const { getByRole, getByLabelText } = render(
-      <SelfieCaptureContext.Provider
-        value={{
-          isSelfieCaptureEnabled: true,
-          isSelfieDesktopTestMode: false,
-          showHelpInitially: true,
-        }}
-      >
-        <DocumentsStep
-          value={{}}
-          onChange={() => undefined}
-          errors={[]}
-          onError={() => undefined}
-          registerField={() => undefined}
-          unknownFieldErrors={[]}
-          toPreviousStep={() => undefined}
-        />
-      </SelfieCaptureContext.Provider>,
-    );
-
-    const front = getByLabelText('doc_auth.headings.document_capture_front');
-    const back = getByLabelText('doc_auth.headings.document_capture_back');
-    const pageHeader = getByRole('heading', {
-      name: 'doc_auth.headings.document_capture',
-      level: 1,
-    });
-
-    expect(front).to.be.ok();
-    expect(back).to.be.ok();
-    expect(pageHeader).to.be.ok();
   });
 });
