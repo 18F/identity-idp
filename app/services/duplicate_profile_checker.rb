@@ -12,7 +12,7 @@ class DuplicateProfileChecker
   def validate_user_does_not_have_duplicate_profile
     return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
-    return if user_already_verified?
+    return if user_profile_already_validated?
     cacher = Pii::Cacher.new(user, user_session)
     profile_id = user&.active_profile&.id
     pii = cacher.fetch(profile_id)
@@ -34,8 +34,8 @@ class DuplicateProfileChecker
     IdentityConfig.store.eligible_one_account_providers.include?(sp&.friendly_name)
   end
 
-  def user_already_verified?
-    false
+  def user_profile_already_validated?
+    DuplicateProfileConfirmation.where(profile_id: user&.active_profile&.id).present?
   end
 
   def user_has_ial2_profile?
