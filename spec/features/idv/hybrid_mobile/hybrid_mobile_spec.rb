@@ -325,10 +325,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         choose(t('doc_auth.forms.id_type_preference.passport'))
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-        attach_and_submit_images
+        attach_passport_image
+        submit_images
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
         click_on t('idv.failure.button.warning')
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
       end
     end

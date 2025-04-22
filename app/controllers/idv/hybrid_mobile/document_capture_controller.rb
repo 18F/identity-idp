@@ -6,7 +6,6 @@ module Idv
       include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
-      include Idv::ChooseIdTypeConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant

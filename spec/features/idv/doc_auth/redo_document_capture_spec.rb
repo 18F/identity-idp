@@ -303,10 +303,11 @@ RSpec.feature 'document capture step', :js do
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_document_capture_url)
       # Attach fail images and then continue to retry
-      attach_and_submit_images
+      attach_passport_image
+      submit_images
       expect(page).to have_current_path(idv_document_capture_url)
       click_on t('idv.failure.button.warning')
-      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+      expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
       expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
     end
   end
@@ -340,10 +341,11 @@ RSpec.feature 'document capture step', :js do
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         # Attach fail images and then continue to retry
-        attach_and_submit_images
+        attach_passport_image
+        submit_images
         expect(page).to have_current_path(idv_document_capture_url)
         click_on t('idv.failure.button.warning')
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
       end
     end
