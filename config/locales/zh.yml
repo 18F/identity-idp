@@ -8,36 +8,43 @@ account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的�
 account_reset.confirm_delete_account.link_text: 设立新账户
 account_reset.confirm_delete_account.title: 你已删除自己的账户
 account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
-account_reset.confirm_request.instructions_end: 开始删除账户流程。请按照你电邮中的说明来完成这一流程。
-account_reset.confirm_request.instructions_start: 我们已发电邮到
+account_reset.confirm_request.info_html:
+  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
+  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
+  - 如果你改变主意，可以随时取消帐户删除。
 account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
 account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
 account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
+account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval}。
+account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
 account_reset.pending.header: 你已提出删除账户的请求。
 account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
-account_reset.recovery_options.check_saved_credential: 查看你是否有已保存的凭据
-account_reset.recovery_options.check_webauthn_platform_info: 如果你设立了人脸或触摸解锁，凭据可能已存在了一个密码管理器中，比如 iCloud Keychain 或者 Google Password Manager。尝试在用那个密码管理器的浏览器上使用人脸或触摸解锁。
+account_reset.recover_options.yes_delete: 删除我的帐户
+account_reset.recovery_option.cancel_deletion: 取消删除
+account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
+account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
+account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
 account_reset.recovery_options.header: 你确定要删除账户吗？
 account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
+account_reset.recovery_options.still_working: 仍然不行？
 account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
 account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
+account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
+account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
 account_reset.recovery_options.use_device: 使用另一个设备。
-account_reset.recovery_options.use_same_device: 否则，请尝试使用你设置人脸或触摸解锁的同一设备。
-account_reset.request.are_you_sure: 你确定无法使用自己任何一个身份证实方法吗？
+account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
+account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
+account_reset.request.continue_deletion: 你还要删除你的帐户吗？
 account_reset.request.delete_account: 删除你的账户
-account_reset.request.delete_account_info:
-  - 删除现有账户并设立一个新账户使你能够使用同一电邮地址并设置新的身份证实方法。但是，删除账户会去掉与你账户连接的所有机构的应用程序，你将需要恢复每个连接。
-  - 如果你继续的话，会首先收到一个确认电邮。 作为安全措施，你收到第一个电邮 24 小时后，会收到另外一个电邮，其中有让你继续删除账户的链接。
-account_reset.request.info:
-  - 如果你无法使用先前设立的身份证实方法访问你的账户，那唯一的选择就是删除账户并设立一个新账户。
-  - 账户一旦删除，我们是无法恢复的，所以请核查一下你有没有可以使用的另一种身份证实方法。
+account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
+account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
+account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
 account_reset.request.no_cancel: 取消
-account_reset.request.title: 账户删除和重设
-account_reset.request.yes_continue: 是的，继续删除
+account_reset.request.no_cancel2: 不要，取消删除帐户
+account_reset.request.yes_continue: 要，继续删除帐户
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
@@ -1434,7 +1441,7 @@ links.back_to_sp: 返回 %{sp}
 links.cancel: 取消
 links.cancel_account_creation: '‹ 取消设立账户'
 links.contact: 联系
-links.continue_sign_in: 继续登录
+links.continue_sign_in: 登录
 links.create_account: 设立账户
 links.exit_login: 退出 %{app_name}
 links.go_back: 返回
@@ -1684,10 +1691,10 @@ titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
-two_factor_authentication.account_reset.link: 删除你的账户
+two_factor_authentication.account_reset.link: 删除你的帐户
 two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 %{interval}。请随后回来查看。
 two_factor_authentication.account_reset.successful_cancel: 谢谢。你删除自己 %{app_name} 账户的请求已被取消。
-two_factor_authentication.account_reset.text_html: 如果你无法使用上述身份证实方法，可以通过 %{link_html} 重设你的首选。
+two_factor_authentication.account_reset.text_html: 如果你无法使用上述任何身份证实方法，可以%{link_html}创建一个新帐户。如果你删除帐户，不会丢失存储在政府机构中的任何信息的。
 two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.attempt_remaining_warning_html.other: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.auth_app.change_nickname: 更改昵称
@@ -1852,8 +1859,8 @@ user_mailer.account_reinstated.subject: 你的账户已解锁
 user_mailer.account_reinstated.we_have_finished_reviewing: 我们已完成对你%{app_name}账户的审查，你现在能使用账户信息登录了。
 user_mailer.account_rejected.intro: 我们无法在%{app_name}验证你的身份。请联系你试图访问其服务的那个机构。
 user_mailer.account_rejected.subject: 我们无法验证你的身份。
-user_mailer.account_reset_cancel.intro_html: 这封电邮确认你已取消删除你 %{app_name_html} 账户的请求。
-user_mailer.account_reset_cancel.subject: 请求已取消
+user_mailer.account_reset_cancel.intro_html: 这封电邮确认你已取消删除你 %{app_name_html} 账户的请求。<br/><br/> 你可以继续使用你的 %{app_name_html} 帐户，或提出新的删除帐户请求。
+user_mailer.account_reset_cancel.subject: '%{app_name} 帐户删除请求已取消'
 user_mailer.account_reset_complete.intro_html: 这封电邮确认你已删除你的 %{app_name_html} 账户。
 user_mailer.account_reset_complete.subject: 账户已删除
 user_mailer.account_reset_granted.button: 确认删除账户
@@ -1862,8 +1869,7 @@ user_mailer.account_reset_granted.help_html: 如果你不想删除你的账户�
 user_mailer.account_reset_granted.intro_html: 你%{waiting_period}的等待期已结束。请完成流程的第 2 步。<br><br> 如果您无法找到你的身份证实方法，请选择“确认删除账户”以删除你的 %{app_name} 帐户。<br><br> 如果你将来需要访问使用 %{app_name} 的参与政府网站，可以在帐户删除后使用相同的电子邮件地址创建一个新的 %{app_name} 帐户.<br><br>
 user_mailer.account_reset_granted.subject: 删除你的 %{app_name} 账户
 user_mailer.account_reset_request.cancel: 不想删除你的账户？登入你的 %{app_name} 账户来取消。
-user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除。
-user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
+user_mailer.account_reset_request.intro_html: '作为一项安全措施，要删除你的帐户，%{app_name}要求你走一个两步流程：<br><br> <strong>步骤 1 - %{waiting_period}时等待期:</strong> 这封电邮确认你已开始删除帐户的流程。如果你无法使用自己的身份证实方法从而不能登录， 需要等待%{waiting_period} 才能删除帐户。<br/><br/> <strong>步骤 2 - 确认删除帐户:</strong>%{waiting_period}等待期过后 你将收到第二封电邮，请你确认你要删除自己的 %{app_name} 帐户。 <strong>在你确认第二封电邮中的帐户删除之前，你的帐户不会被删除。</strong> 你将再有 24 小时的时间来确认删除帐户。'
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 请联系 %{app_name}支持
