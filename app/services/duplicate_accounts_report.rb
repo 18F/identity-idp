@@ -36,8 +36,7 @@ class DuplicateAccountsReport
     SQL
 
     ActiveRecord::Base.connection.execute(
-      ActiveRecord::Base.send(
-        :sanitize_sql_array,
+      ApplicationRecord.sanitize_sql_array(
         [
           query,
           sp_array,
