@@ -69,7 +69,7 @@ RSpec.describe MfaSetupConcern do
       let(:otp_delivery_sms?) { true }
       let(:recommend_webauthn_platform_for_sms_user?) { true }
 
-      it 'redirects' do
+      it 'redirects to webauthn recommendation screen' do
         expect(next_setup_path).to eq(webauthn_platform_recommended_path)
       end
     end
