@@ -138,7 +138,9 @@ module MfaSetupConcern
   end
 
   def otp_delivery_sms?
-    TwoFactorAuthenticatable::AuthMethod::SMS == 'sms'
+    current_user.phone_configurations.any? do |phone_configuration|
+      phone_configuration.mfa_enabled? && phone_configuration.delivery_preference == 'sms'
+    end
   end
 
   def user_set_up_with_sms_phone_delivery?
