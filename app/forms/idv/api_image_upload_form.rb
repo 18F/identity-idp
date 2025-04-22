@@ -5,9 +5,9 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    validates_presence_of :front, unless: :passport_submitted
-    validates_presence_of :back, unless: :passport_submitted
-    validates_presence_of :passport, if: :passport_submitted
+    validates_presence_of :front, unless: :passport_submittal
+    validates_presence_of :back, unless: :passport_submittal
+    validates_presence_of :passport, if: :passport_submittal
     validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
 
@@ -105,8 +105,9 @@ module Idv
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           # TrueID front_image required whether driver's license or passport
-          front_image: passport_submittal ? passport_image_bytes : front_image_bytes,
+          front_image: passport_submittal ? nil : front_image_bytes,
           back_image: passport_submittal ? nil : back_image_bytes,
+          passport_image: passport_submittal ? passport_image_bytes : nil,
           selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
           image_source: image_source,
           images_cropped: acuant_sdk_autocaptured_id?,
@@ -136,6 +137,10 @@ module Idv
 
     def back_image_bytes
       @back_image_bytes ||= back.read
+    end
+
+    def passport_image_bytes
+      @passport_image_bytes ||= passport.read
     end
 
     def selfie_image_bytes
@@ -224,6 +229,14 @@ module Idv
       if readable?(:back)
         @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+    end
+
+    def passport_image_fingerprint
+      return @passport_image_fingerprint if @passport_image_fingerprint
+      if readable?(:passport)
+        @passport_image_fingerprint =
+          Digest::SHA256.urlsafe_base64digest(passport_image_bytes)
       end
     end
 

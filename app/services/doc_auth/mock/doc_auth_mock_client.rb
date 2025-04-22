@@ -86,12 +86,15 @@ module DocAuth
         get_results(
           instance_id: instance_id,
           selfie_required: liveness_checking_required,
+          passport_submittal: passport_image.present?,
         )
       end
 
-      def get_results(instance_id:, selfie_required: false)
+      def get_results(instance_id:, selfie_required: false, passport_submittal: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        error_response = http_error_response(self.class.last_uploaded_back_image, 'result')
+        last_image = passport_submittal ?
+                       self.class.last_uploaded_passport_image : self.class.last_uploaded_back_image
+        error_response = http_error_response(last_image, 'result')
         return error_response if error_response
         overriden_config = config.dup.tap do |c|
           c.dpi_threshold = 290
@@ -100,7 +103,7 @@ module DocAuth
         end
 
         ResultResponse.new(
-          self.class.last_uploaded_back_image,
+          last_image,
           overriden_config,
           selfie_required,
         )

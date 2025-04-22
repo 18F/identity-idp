@@ -44,7 +44,7 @@ module DocAuth
         def body
           document = {
             Document: {
-              Front: encode(license_or_passport_image),
+              Front: encode(id_front_image),
               Back: (encode(back_image) if back_image_required?),
               Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: document_type,
@@ -54,7 +54,7 @@ module DocAuth
           settings.merge(document).to_json
         end
 
-        def license_or_passport_image
+        def id_front_image
           case document_type
           when 'Passport'
             passport_image
