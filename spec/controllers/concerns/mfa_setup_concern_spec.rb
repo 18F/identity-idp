@@ -58,6 +58,21 @@ RSpec.describe MfaSetupConcern do
       end
     end
 
+    context 'when user is recommended for webauthn platform setup' do
+      before do
+        controller.user_session[:mfa_selections] = ['phone']
+        controller.user_session[:platform_authenticator_available] = true
+        controller.user_session[:in_account_creation_flow] = true
+      end
+
+      let(:user) { create(:user, :fully_registered, :with_phone) }
+      let(:recommend_webauthn_platform_for_sms_user?) { true }
+
+      it 'redirects' do
+        expect(next_setup_path).to eq(webauthn_platform_recommended_path)
+      end
+    end
+
     context 'when user converts from second mfa reminder' do
       let(:user) { create(:user, :fully_registered, :with_phone, :with_backup_code) }
 
