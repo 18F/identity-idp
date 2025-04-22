@@ -50,6 +50,8 @@ module DocAuthHelper
   end
 
   def complete_welcome_step
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'))
+
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -69,7 +71,7 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
 
     # Wait until we leave the page
-    expect(page).not_to have_content(text, wait: 60)
+    expect(page).to have_no_content(text, wait: 60)
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)

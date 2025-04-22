@@ -12,6 +12,7 @@ RSpec.feature 'document capture step', :js do
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?).and_return(true)
   end
 
   before(:all) do
@@ -839,6 +840,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
         .and_return(false)
+      allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?).and_return(true)
+
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,

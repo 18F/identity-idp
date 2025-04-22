@@ -31,6 +31,8 @@ module DocumentCaptureStepHelper
   end
 
   def attach_selfie(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
+    expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
+
     attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
   end
 
