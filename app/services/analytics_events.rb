@@ -1969,6 +1969,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2018,6 +2019,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
     document_type: nil,
+    passport_check_result: nil,
     **extra
   )
     track_event(
@@ -2069,6 +2071,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
       document_type:,
+      passport_check_result:,
       **extra,
     )
   end

@@ -185,7 +185,7 @@ RSpec.describe Idv::Session do
 
       context 'when the user has an establishing in person enrollment' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user: user)
         end
         let(:profile) { subject.profile }
 
