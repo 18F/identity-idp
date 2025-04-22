@@ -66,6 +66,7 @@ RSpec.describe MfaSetupConcern do
       end
 
       let(:user) { create(:user, :fully_registered, :with_phone) }
+      let(:otp_delivery_sms?) { true }
       let(:recommend_webauthn_platform_for_sms_user?) { true }
 
       it 'redirects' do
