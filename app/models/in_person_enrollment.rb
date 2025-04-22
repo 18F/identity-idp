@@ -33,6 +33,14 @@ class InPersonEnrollment < ApplicationRecord
     STATUS_IN_FRAUD_REVIEW.to_sym => 6,
   }
 
+  DOCUMENT_TYPE_STATE_ID = 'state_id'
+  DOCUMENT_TYPE_PASSPORT_BOOK = 'passport_book'
+
+  enum :document_type, {
+    DOCUMENT_TYPE_STATE_ID.to_sym => 0,
+    DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
+  }
+
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
