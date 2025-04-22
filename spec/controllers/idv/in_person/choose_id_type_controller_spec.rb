@@ -7,6 +7,8 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
   let(:idv_session) { subject.idv_session }
 
   before do
+    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+      .to_return({ status: 200, body: { status: 'UP' }.to_json })
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
