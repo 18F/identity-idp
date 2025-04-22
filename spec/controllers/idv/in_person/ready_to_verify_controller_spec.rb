@@ -50,6 +50,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           end
 
           it 'logs analytics' do
+            stub_attempts_tracker
+            expect(@attempts_api_tracker).to receive(:idv_ipp_ready_to_verify_visit)
+
             response
 
             expect(@analytics).to have_logged_event('IdV: in person ready to verify visited')
