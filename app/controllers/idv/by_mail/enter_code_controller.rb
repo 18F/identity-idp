@@ -55,6 +55,11 @@ module Idv
         result = @gpo_verify_form.submit
         analytics.idv_verify_by_mail_enter_code_submitted(**result)
 
+        attempts_api_tracker.idv_verify_by_mail_enter_code_submitted(
+          success: result.success?,
+          failure_reason: attempts_api_tracker.parse_failure_reason(result),
+        )
+
         send_please_call_email_if_necessary(result:)
 
         if !result.success?

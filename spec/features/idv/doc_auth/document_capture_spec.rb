@@ -187,6 +187,67 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  context 'with a valid passport', allow_browser_log: true do
+    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+    before do
+      stub_request(:post, fake_dos_api_endpoint)
+        .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
+
+      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+        .and_return(fake_dos_api_endpoint)
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'works' do
+      expect(page).to have_content(t('doc_auth.headings.document_capture'))
+      expect(page).to have_current_path(idv_document_capture_url)
+
+      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+      attach_images(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        ),
+      )
+
+      submit_images
+      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+    end
+  end
+
+  context 'with an invalid passport', allow_browser_log: true do
+    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+    before do
+      stub_request(:post, fake_dos_api_endpoint)
+        .to_return(status: 200, body: '{}', headers: {})
+
+      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+        .and_return(fake_dos_api_endpoint)
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_document_capture_step
+    end
+
+    it 'fails' do
+      expect(page).to have_current_path(idv_document_capture_url)
+      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+      attach_images(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_mrz_credential.yml'
+        ),
+      )
+
+      submit_images
+
+      expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+    end
+  end
+
   context 'standard desktop flow' do
     before do
       visit_idp_from_oidc_sp_with_ial2
@@ -296,6 +357,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
   end
+
   context 'selfie check' do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -410,11 +472,11 @@ RSpec.feature 'document capture step', :js do
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
-                expect_rate_limited_header(false)
+                expect_rate_limited_header(true)
                 expect_try_taking_new_pictures(false)
                 # eslint-disable-next-line
                 expect_review_issues_body_message(
-                  'doc_auth.errors.doc_type_not_supported_heading',
+                  'doc_auth.errors.rate_limited_heading',
                 )
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
@@ -422,7 +484,7 @@ RSpec.feature 'document capture step', :js do
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
 
-                expect_review_issues_body_message('doc_auth.errors.card_type')
+                expect_review_issues_body_message('doc_auth.errors.general.fallback_field_level')
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple front doc auth errors

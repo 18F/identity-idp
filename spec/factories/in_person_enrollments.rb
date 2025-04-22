@@ -8,6 +8,7 @@ FactoryBot.define do
     sponsor_id { IdentityConfig.store.usps_ipp_sponsor_id }
 
     trait :establishing do
+      profile { nil }
       status { :establishing }
     end
 
@@ -22,6 +23,7 @@ FactoryBot.define do
           :in_person_verification_pending,
           user: user,
           in_person_enrollment: instance,
+          in_person_verification_pending_at: Time.zone.now,
         )
       end
     end

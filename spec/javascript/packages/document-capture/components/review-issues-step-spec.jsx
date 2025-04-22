@@ -216,7 +216,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders alternative error messages with in person and doc type is not supported', async () => {
-    const { getByRole, getByText, getByLabelText } = render(
+    const { getByRole, getByText, getByLabelText, queryByRole } = render(
       <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
         <I18nContext.Provider
           value={
@@ -226,9 +226,9 @@ describe('document-capture/components/review-issues-step', () => {
                   one: '<strong>One attempt</strong> remaining to add your ID online',
                   other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.doc.wrong_id_type_html':
-                  "We only accept a driver's license or a state ID card at this time.",
+                'doc_auth.errors.rate_limited_heading': 'We couldn’t verify your ID',
+                'doc_auth.errors.doc.doc_type_check':
+                  'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
               },
             })
           }
@@ -247,10 +247,13 @@ describe('document-capture/components/review-issues-step', () => {
         ,
       </InPersonContext.Provider>,
     );
-    expect(getByText('doc type not supported')).to.be.ok();
+    expect(getByText('We couldn’t verify your ID')).to.be.ok();
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
+    expect(
+      queryByRole('link', { name: 'idv.troubleshooting.options.use_another_id_type' }),
+    ).to.not.exist();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
     ).to.exist();
@@ -264,7 +267,9 @@ describe('document-capture/components/review-issues-step', () => {
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
     // now use the alternative error message
     expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
+      getByText(
+        'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
+      ),
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
@@ -272,7 +277,7 @@ describe('document-capture/components/review-issues-step', () => {
 
   it('renders alternative error messages with not in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
-      <InPersonContext.Provider value={{ inPersonURL: '' }}>
+      <InPersonContext.Provider value={{ inPersonURL: '', passportEnabled: true }}>
         <I18nContext.Provider
           value={
             new I18n({
@@ -281,9 +286,9 @@ describe('document-capture/components/review-issues-step', () => {
                   one: '<strong>One attempt</strong> remaining to add your ID online',
                   other: '<strong>%{count} attempts</strong> remaining to add your ID online',
                 },
-                'doc_auth.errors.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.doc.wrong_id_type_html':
-                  "We only accept a driver's license or a state ID card at this time.",
+                'doc_auth.errors.rate_limited_heading': 'We couldn’t verify your ID',
+                'doc_auth.errors.doc.doc_type_check':
+                  'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
               },
             })
           }
@@ -302,10 +307,13 @@ describe('document-capture/components/review-issues-step', () => {
         ,
       </InPersonContext.Provider>,
     );
-    expect(getByText('doc type not supported')).to.be.ok();
+    expect(getByText('We couldn’t verify your ID')).to.be.ok();
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
     expect(getByText(/only state id/)).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.use_another_id_type' }),
+    ).to.exist();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
     ).to.exist();
@@ -318,7 +326,9 @@ describe('document-capture/components/review-issues-step', () => {
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
     expect(
-      getByText("We only accept a driver's license or a state ID card at this time."),
+      getByText(
+        'Your ID must be issued by the U.S. government or a U.S. state or territory. We do not accept military IDs.',
+      ),
     ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();

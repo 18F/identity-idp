@@ -74,7 +74,7 @@ RSpec.describe Idv::Agent do
         context 'when resolution succeeds' do
           it 'proofs state_id' do
             expect(result[:context][:stages][:state_id]).to include(
-              transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
               errors: {},
               exception: nil,
               success: true,
@@ -107,7 +107,7 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:context][:stages]).to_not include(
               state_id: 'StateIdMock',
-              transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
             )
           end
         end
@@ -170,7 +170,7 @@ RSpec.describe Idv::Agent do
 
         it 'returns a successful result if resolution passes' do
           expect(result[:context][:stages][:state_id]).to include(
-            transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
             errors: {},
             exception: nil,
             success: true,

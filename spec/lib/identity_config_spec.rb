@@ -105,11 +105,10 @@ RSpec.describe IdentityConfig do
       aggregate_failures do
         keys.each do |key|
           expect(
-            !default_yaml_config.key?(key) && (
+            !default_yaml_config.key?(key) &&
               default_yaml_config['production'].key?(key) &&
               default_yaml_config['production'][key] == default_yaml_config['test'][key] &&
-              default_yaml_config['test'][key] == default_yaml_config['development'][key]
-            ),
+              default_yaml_config['test'][key] == default_yaml_config['development'][key],
           ).to(
             eq(false),
             "#{key} uses the same value in development, production and test instead of a default",

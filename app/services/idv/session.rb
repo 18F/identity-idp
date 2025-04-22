@@ -378,6 +378,10 @@ module Idv
       !!session[:idv_consent_given_at]
     end
 
+    def in_person_passports_allowed?
+      passport_allowed && IdentityConfig.store.in_person_passports_enabled
+    end
+
     private
 
     attr_reader :user_session

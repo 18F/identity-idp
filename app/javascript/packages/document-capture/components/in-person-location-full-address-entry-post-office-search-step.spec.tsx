@@ -54,6 +54,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         inPersonOutageMessageEnabled: false,
         inPersonOutageExpectedUpdateDate: 'January 1, 2024',
         optedInToInPersonProofing: false,
+        passportEnabled: false,
         usStatesTerritories,
       }}
     >

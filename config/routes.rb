@@ -424,6 +424,7 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
+      get '/session/errors/address_warning' => 'session_errors#address_warning'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
@@ -442,6 +443,8 @@ Rails.application.routes.draw do
           as: :capture_doc_dashes
       get '/in_person' => 'in_person#index'
       put '/in_person' => 'in_person#update'
+      get '/in_person/choose_id_type' => 'in_person/choose_id_type#show'
+      put '/in_person/choose_id_type' => 'in_person/choose_id_type#update'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'

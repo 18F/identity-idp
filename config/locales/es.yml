@@ -85,7 +85,7 @@ account.index.verification.identity_verification: Verificación de identidad
 account.index.verification.in_person_instructions_html: Para terminar de verificar su identidad, debe acudir a una oficina de correos participante antes del <strong>%{deadline}</strong>.
 account.index.verification.instructions: Ingrese su código de verificación para terminar de verificar su identidad.
 account.index.verification.learn_more_link: Obtenga más información sobre la verificación de su identidad
-account.index.verification.legacy_verified_html: El <strong>%{date}</strong>, usted verificó su identidad con %{app_name} usando su identificación estatal.
+account.index.verification.legacy_verified_html: Usted verificó su identidad con %{app_name} el <strong>%{date}</strong> usando su identificación.
 account.index.verification.pending_badge: Pendiente
 account.index.verification.pending_badge_tooltip: La verificación de su identidad está pendiente
 account.index.verification.reactivate_button: Ingrese el código de verificación que recibió por correo de los EE. UU.
@@ -509,6 +509,7 @@ devise.sessions.signed_out: Cerró su sesión.
 doc_auth.accessible_labels.camera_video_capture_instructions: Tomaremos la foto automáticamente
 doc_auth.accessible_labels.camera_video_capture_label: Visor con marco para centrar su identificación
 doc_auth.accessible_labels.document_capture_dialog: Captura de documento
+doc_auth.alt.passport_help: Pasaporte abierto en la página de la fotografía. La página de datos del pasaporte está dentro de las cuatro líneas de guía sobre un fondo oscuro.
 doc_auth.alt.selfie_help_1: Una persona con el rostro dentro de un óvalo verde.
 doc_auth.alt.selfie_help_2: Un dedo toca una marca de verificación debajo de la cara para confirmar la foto.
 doc_auth.buttons.add_new_photos: Añadir nuevas fotos
@@ -519,7 +520,7 @@ doc_auth.buttons.take_picture: Tomar la foto
 doc_auth.buttons.take_picture_retry: Volver a tomar la foto
 doc_auth.buttons.upload_picture: Cargar la foto
 doc_auth.errors.alerts.address_check: No pudimos leer la dirección en su identificación. Intente tomar nuevas fotos.
-doc_auth.errors.alerts.barcode_content_check: No pudimos leer el código de barras en el reverso de su documento de identidad. Puede ser debido a un problema con el código de barras, o bien el código de barras es un nuevo tipo que aún no reconocemos. Use otro documento de identidad expedido por el estado si tiene uno.
+doc_auth.errors.alerts.barcode_content_check: No pudimos leer el código de barras en el reverso de su identificación. Puede ser debido a un problema con el código de barras, o bien el código de barras es de un tipo nuevo que aún no reconocemos. Use otra identificación que tenga.
 doc_auth.errors.alerts.barcode_read_check: No pudimos leer el código de barras en el reverso de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.alerts.birth_date_checks: No pudimos leer la fecha de nacimiento en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.control_number_check: No pudimos leer el número de referencia en el reverso de su identificación. Intente tomar una nueva foto.
@@ -536,18 +537,15 @@ doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar de nuevo u
 doc_auth.errors.alerts.sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.visible_color_check: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
 doc_auth.errors.alerts.visible_photo_check: No pudimos verificar la fotografía de su identificación. Intente tomar nuevas fotos.
-doc_auth.errors.barcode_attention.confirm_info: Si la información siguiente es incorrecta, cargue nuevas fotos de su identificación emitida por el estado.
+doc_auth.errors.barcode_attention.confirm_info: Si la información siguiente es incorrecta, agregue nuevas fotos de su identificación
 doc_auth.errors.barcode_attention.heading: No pudimos leer el código de barras en su identificación.
 doc_auth.errors.camera.blocked: Su cámara está bloqueada
 doc_auth.errors.camera.blocked_detail_html: '<strong>Permita el acceso a su cámara para tomar las fotografías de %{app_name}.</strong><span>Intente tomar las fotografías de nuevo permitiendo el acceso. Si eso no funciona, tal vez necesite revisar la configuración de su dispositivo para permitir el acceso.</span>'
 doc_auth.errors.camera.failed: No se pudo activar la cámara; inténtelo de nuevo.
-doc_auth.errors.card_type: Inténtelo de nuevo con su licencia de conducir o tarjeta de identificación estatal.
 doc_auth.errors.choose_id_type_check: Seleccione el tipo de documento que tenga
 doc_auth.errors.consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación y luego haga clic en continuar.
-doc_auth.errors.doc_type_not_supported_heading: Solo aceptamos una licencia de conducir o una identificación estatal.
-doc_auth.errors.doc.doc_type_check: Su licencia de conducir o identificación estatal debe ser emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
+doc_auth.errors.doc.doc_type_check: Su identificación debe ser emitida por el gobierno de los EE. UU. o por un estado o territorio estadounidense. No aceptamos identificaciones militares.
 doc_auth.errors.doc.resubmit_failed_image: Ya intentó con esta imagen y no funcionó. Intente añadir una imagen diferente.
-doc_auth.errors.doc.wrong_id_type_html: Solo aceptamos una licencia de conducir o una identificación estatal emitida por un estado o territorio de los EE. UU. No aceptamos otras formas de identificación, como pasaportes o identificaciones militares. <a>Obtenga más información sobre las identificaciones aceptadas</a>
 doc_auth.errors.document_capture_canceled: Ha cancelado la carga de fotos de su identificación en este teléfono.
 doc_auth.errors.dpi.failed_short: La imagen es demasiado pequeña o está borrosa; inténtelo de nuevo.
 doc_auth.errors.dpi.top_msg: No pudimos leer su identificación. Es posible que el tamaño de su imagen o de su identificación sea demasiado pequeño o que la foto esté borrosa. Asegúrese de que su identificación se vea más grande dentro del marco de la imagen e intente tomar una nueva foto.
@@ -606,12 +604,13 @@ doc_auth.headers.unreadable_id: No pudimos leer su identificación
 doc_auth.headings.address: Actualice su domicilio actual
 doc_auth.headings.back: Reverso de su licencia de conducir o identificación estatal
 doc_auth.headings.capture_complete: Verificamos su documento de identidad
-doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras en su identificación. Si la información que aparece a continuación es incorrecta, %{link_html} de su identificación emitida por el estado.
+doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras de su identificación. Si la información siguiente es incorrecta, %{link_html} de su identificación.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
 doc_auth.headings.choose_id_type: Elija el tipo de su identificación
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
+doc_auth.headings.document_capture_passport: Su pasaporte
 doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
@@ -621,6 +620,9 @@ doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cam
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
+doc_auth.headings.passport: Su pasaporte
+doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
+doc_auth.headings.passport_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
@@ -656,7 +658,7 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted leyendo su identificación emitida por el estado.
+doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted al leer su identificación.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
@@ -667,11 +669,14 @@ doc_auth.info.interstitial_thanks: Gracias por su paciencia
 doc_auth.info.keep_window_open: No cierre esta ventana.
 doc_auth.info.learn_more: Obtenga más información sobre cómo protegemos su información confidencial
 doc_auth.info.lets_go: 'La verificación de la identidad se efectúa en dos partes:'
-doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su identificación emitida por el estado.
+doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su identificación.
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
 doc_auth.info.login_access_sp: Está usando %{app_name} para acceder a %{sp_name}.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
+doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
+doc_auth.info.passport_capture_help_1: Alinee la página de datos de su pasaporte con las líneas de guía.
+doc_auth.info.passport_capture_help_2: Manténgalo fijo y espere a que la cámara tome la foto.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede modificar su información.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
@@ -723,6 +728,9 @@ doc_auth.tips.document_capture_id_text1: Use una superficie plana y de color osc
 doc_auth.tips.document_capture_id_text2: Tome fotos en un lugar bien iluminado
 doc_auth.tips.document_capture_id_text3: Evite que se vean reflejos o sombras
 doc_auth.tips.document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB.
+doc_auth.tips.document_capture_passport_header: Cómo prepararse para tomar su foto
+doc_auth.tips.document_capture_passport_tip1: Busque un lugar bien iluminado, sin sombras ni reflejos, para tomar una foto.
+doc_auth.tips.document_capture_passport_tip2: Coloque su identificación en una superficie plana y de color oscuro.
 doc_auth.tips.document_capture_selfie_id_header_text: Cómo tomar fotos nítidas de su identificación
 doc_auth.tips.document_capture_selfie_selfie_text: Cómo prepararse para tomar su foto
 doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio que pueda cubrirle la cara, como anteojos o un sombrero.
@@ -730,11 +738,6 @@ doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien il
 doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
-doc_auth.tips.review_issues_id_header_text: 'Revise las imágenes de su identificación emitida por el estado:'
-doc_auth.tips.review_issues_id_text1: '¿Usó un fondo de color oscuro?'
-doc_auth.tips.review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
-doc_auth.tips.review_issues_id_text3: '¿Está apagado el flash de su cámara?'
-doc_auth.tips.review_issues_id_text4: '¿Todos los detalles se ven con precisión y claridad?'
 email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
@@ -1068,6 +1071,7 @@ idv.errors.pattern_mismatch.zipcode: Ingrese un código postal de 5 o 9 dígitos
 idv.errors.pattern_mismatch.zipcode_five: Ingrese un código postal de 5 dígitos.
 idv.errors.technical_difficulties: Estamos teniendo problemas técnicos
 idv.errors.try_again_later: Vuelva a intentarlo más tarde.
+idv.failure.address.warning: Revise la información que ingresó y vuelva a intentarlo. Si su dirección postal no es igual que su domicilio, intente ingresar la dirección donde vive actualmente.
 idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
@@ -1122,8 +1126,8 @@ idv.forgot_password.modal_header: '¿Está seguro de que no puede recordar su co
 idv.forgot_password.reset_password: Restablecer la contraseña
 idv.forgot_password.try_again: Vuelva a intentarlo
 idv.forgot_password.warnings:
-  - Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
-  - Tendrá que volver a ingresar su información personal, como su nombre, documento de identidad emitido por el estado, etc.
+  - Si olvidó su contraseña, deberá restablecerla y llenar el formulario de nuevo.
+  - Tendrá que volver a ingresar su información personal, como su nombre, identificación, etc.
 idv.form.address1: Línea de dirección 1
 idv.form.address2: Línea de dirección 2
 idv.form.city: Ciudad
@@ -1205,6 +1209,7 @@ idv.troubleshooting.options.learn_more_verify_by_phone: Obtenga más informació
 idv.troubleshooting.options.learn_more_verify_by_phone_in_person: Obtenga más información sobre la verificación de su número de teléfono
 idv.troubleshooting.options.learn_more_verify_in_person: Obtenga más información sobre la verificación en persona
 idv.troubleshooting.options.supported_documents: Obtenga más información sobre las identificaciones aceptadas
+idv.troubleshooting.options.use_another_id_type: Use otro tipo de identificación.
 idv.troubleshooting.options.verify_by_mail: Verifique su dirección por correo
 idv.unavailable.exit_button: Salir de %{app_name}
 idv.unavailable.idv_explanation.with_sp_html: '<strong>%{sp}</strong> necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted.'
@@ -1212,6 +1217,7 @@ idv.unavailable.idv_explanation.without_sp: La agencia a la que está intentando
 idv.unavailable.next_steps_html: '%{status_page_link_html} o salga de %{app_name} y vuelva a intentarlo más tarde.'
 idv.unavailable.status_page_link: Obtenga las actualizaciones en nuestra página de estado
 idv.unavailable.technical_difficulties: Lamentablemente, tenemos problemas técnicos y no podemos verificar su identidad en este momento.
+idv.warning.address.heading: No encontramos registros que coincidan con su dirección
 idv.warning.sessions.heading: No encontramos registros que coincidan con sus datos personales
 idv.warning.state_id.cancel_button: Salir de %{app_name}
 idv.warning.state_id.explanation: Lamentablemente, tenemos problemas técnicos con las identificaciones de su estado y no podemos verificar su información en este momento.
@@ -1288,13 +1294,9 @@ in_person_proofing.body.prepare.verify_step_about: 'Siga los siguientes pasos pa
 in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de teléfono principal o el que use con más frecuencia.
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
-in_person_proofing.body.state_id.alert_message: 'Su identificación emitida por el estado no debe estar vencida. Se aceptan estas formas de identificación:'
-in_person_proofing.body.state_id.id_types:
-  - Licencia para conducir estatal
-  - Identificación estatal que no sea la licencia para conducir
+in_person_proofing.body.state_id.alert_message: Necesita una licencia de conducir o una identificación estatal
+in_person_proofing.body.state_id.alert_text: No se aceptan los pasaportes para la verificación en persona. Su licencia de conducir o identificación estatal no deben estar vencidas.
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
-in_person_proofing.body.state_id.learn_more_link: Obtenga más información sobre las formas de identificación aceptadas.
-in_person_proofing.body.state_id.questions: '¿Tiene alguna pregunta?'
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.address1: Línea de dirección 1
@@ -1342,6 +1344,7 @@ in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su 
 in_person_proofing.headings.switch_back: Vuelva a su computadora para preparar la verificación de su identidad en persona
 in_person_proofing.headings.update_address: Actualice su domicilio actual
 in_person_proofing.headings.update_state_id: Actualice la información de su identificación
+in_person_proofing.info.choose_id_type: Select the type of document that you want to use. You’ll need to bring this document to the Post Office.
 in_person_proofing.process.barcode.caption_label: Código de registro
 in_person_proofing.process.barcode.heading: Muestre su código de barras de %{app_name}
 in_person_proofing.process.barcode.info: El empleado debe escanear el código de barras que aparece en la parte superior de esta página. Puede imprimir esta página o mostrarla en su dispositivo móvil.

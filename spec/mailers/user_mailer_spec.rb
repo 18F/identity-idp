@@ -857,7 +857,6 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
-          is_enhanced_ipp:,
         )
       end
 
@@ -914,12 +913,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'Need to change location section' do
-        context 'when Enhanced IPP is not enabled' do
-          let(:is_enhanced_ipp) { false }
+        context 'when enrollment is not enhanced ipp' do
           let(:mail) do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-              enrollment: enhanced_ipp_enrollment,
-              is_enhanced_ipp: is_enhanced_ipp,
+              enrollment: enrollment,
             )
           end
           it 'renders the change location heading' do
@@ -939,12 +936,10 @@ RSpec.describe UserMailer, type: :mailer do
           end
         end
 
-        context 'when Enhanced IPP is enabled' do
-          let(:is_enhanced_ipp) { true }
+        context 'when enrollment is enhanced ipp' do
           let(:mail) do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
               enrollment: enhanced_ipp_enrollment,
-              is_enhanced_ipp: is_enhanced_ipp,
             )
           end
 
@@ -1066,7 +1061,6 @@ RSpec.describe UserMailer, type: :mailer do
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enhanced_ipp_enrollment,
-            is_enhanced_ipp:,
           )
         end
 

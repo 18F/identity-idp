@@ -79,8 +79,7 @@ gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'terminal-table', require: false
-# until a release includes https://github.com/hallelujah/valid_email/pull/126
-gem 'valid_email', '>= 0.1.3', github: 'hallelujah/valid_email', ref: '486b860'
+gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
@@ -116,8 +115,8 @@ group :development, :test do
   gem 'psych'
   gem 'rspec', '~> 3.13.0'
   gem 'rspec-rails', '~> 7.0'
-  gem 'rubocop', '~> 1.70.0', require: false
-  gem 'rubocop-performance', '~> 1.23.0', require: false
+  gem 'rubocop', '~> 1.75.0', require: false
+  gem 'rubocop-performance', '~> 1.25.0', require: false
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'rubocop-capybara', require: false

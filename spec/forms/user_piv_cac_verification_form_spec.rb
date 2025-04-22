@@ -30,7 +30,7 @@ RSpec.describe UserPivCacVerificationForm do
           result = form.submit
           expect(result.to_h).to eq(
             success: false,
-            errors: { type: 'user.no_piv_cac_associated' },
+            error_details: { user: { no_piv_cac_associated: true } },
             piv_cac_configuration_id: nil,
             multi_factor_auth_method_created_at: nil,
             piv_cac_configuration_dn_uuid: nil,
@@ -49,7 +49,7 @@ RSpec.describe UserPivCacVerificationForm do
 
           expect(result.to_h).to eq(
             success: false,
-            errors: { type: 'user.piv_cac_mismatch' },
+            error_details: { user: { piv_cac_mismatch: true } },
             multi_factor_auth_method_created_at: nil,
             piv_cac_configuration_id: nil,
             piv_cac_configuration_dn_uuid: 'some-random-uuid',
@@ -69,7 +69,6 @@ RSpec.describe UserPivCacVerificationForm do
           result = form.submit
           expect(result.to_h).to eq(
             success: true,
-            errors: nil,
             piv_cac_configuration_id: piv_cac_configuration.id,
             multi_factor_auth_method_created_at: piv_cac_configuration.created_at.strftime('%s%L'),
             key_id: 'foo',
@@ -86,7 +85,7 @@ RSpec.describe UserPivCacVerificationForm do
             result = form.submit
             expect(result.to_h).to eq(
               success: false,
-              errors: { type: 'token.invalid' },
+              error_details: { token: { invalid: true } },
               piv_cac_configuration_id: nil,
               multi_factor_auth_method_created_at: nil,
               piv_cac_configuration_dn_uuid: nil,
@@ -112,7 +111,7 @@ RSpec.describe UserPivCacVerificationForm do
         expect(form.error_type).to eq 'token.bad'
         expect(result.to_h).to eq(
           success: false,
-          errors: { type: 'token.bad' },
+          error_details: { token: { bad: true } },
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_dn_uuid: nil,
           piv_cac_configuration_id: nil,
@@ -130,7 +129,7 @@ RSpec.describe UserPivCacVerificationForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: nil,
+          error_details: { token: { blank: true } },
           multi_factor_auth_method_created_at: nil,
           piv_cac_configuration_id: nil,
           piv_cac_configuration_dn_uuid: nil,

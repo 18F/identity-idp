@@ -1,0 +1,26 @@
+<% self.title = t('titles.failure.information_not_verified') %>
+
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: @step_indicator_steps,
+        current_step: :verify_info,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { t('idv.warning.address.heading') } %>
+
+  <p><%= t('idv.failure.address.warning') %></p>
+  <p><%= t('idv.failure.attempts_html', count: @remaining_submit_attempts) %></p>
+
+  <% c.with_action_button(
+       url: @address_path,
+       class: 'margin-bottom-2',
+     ) { t('idv.forgot_password.try_again') } %>
+<% end %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('links.cancel'), idv_cancel_path(step: :invalid_session) %>
+<% end %>

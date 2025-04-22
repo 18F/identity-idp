@@ -36,6 +36,7 @@ all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
+api_transaction_count_report_config: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
@@ -206,6 +207,7 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_message_enabled: false
 in_person_passports_enabled: true
+in_person_password_reset_expiration_days: 90
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
 in_person_proofing_opt_in_enabled: false

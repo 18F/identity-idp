@@ -6,7 +6,6 @@
 require:
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-performance
   - rubocop-capybara
   - ./lib/linters/i18n_helper_html_linter.rb
   - ./lib/linters/analytics_event_name_linter.rb
@@ -16,6 +15,9 @@ require:
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
   - ./lib/linters/errors_add_linter.rb
+
+plugins:
+  - rubocop-performance
 
 AllCops:
   Exclude:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -208,6 +208,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
 
+  create_table "duplicate_profile_confirmations", force: :cascade do |t|
+    t.bigint "profile_id", null: false, comment: "sensitive=false"
+    t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
+    t.bigint "duplicate_profile_ids", null: false, comment: "sensitive=false", array: true
+    t.boolean "confirmed_all", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["profile_id"], name: "index_duplicate_profile_confirmations_on_profile_id"
+  end
+
   create_table "email_addresses", force: :cascade do |t|
     t.bigint "user_id", comment: "sensitive=false"
     t.string "confirmation_token", limit: 255, comment: "sensitive=true"
@@ -337,6 +347,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
     t.datetime "last_batch_claimed_at", comment: "sensitive=false"
     t.string "sponsor_id", null: false, comment: "sensitive=false"
     t.string "doc_auth_result", comment: "sensitive=false"
+    t.integer "document_type", comment: "sensitive=false"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
@@ -680,6 +691,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_164321) do
   end
 
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
