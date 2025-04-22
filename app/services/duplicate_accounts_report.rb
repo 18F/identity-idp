@@ -20,7 +20,7 @@ class DuplicateAccountsReport
       SELECT 
         i.service_provider,
         u.uuid,
-        u.updated_at,
+        i.last_authenticated_at,
         sp.friendly_name,
         p.activated_at,
         p.ssn_signature

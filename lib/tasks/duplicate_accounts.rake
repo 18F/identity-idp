@@ -35,13 +35,13 @@ namespace :duplicate_accounts do
         result['uuid'],
         result['service_provider'],
         result['friendly_name'],
-        result['updated_at'],
+        result['last_authenticated_at'],
         result['activated_at'],
       ]
       result_str = "#{result['uuid']}, "\
                 "#{result['service_provider']}, "\
                 "#{result['friendly_name']}, "\
-                "#{result['updated_at']}, "\
+                "#{result['last_authenticated_at']}, "\
                 "#{result['activated_at']}"
       puts result_str
     end
