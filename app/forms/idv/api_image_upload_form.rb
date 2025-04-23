@@ -562,8 +562,6 @@ module Idv
         failed_back_fingerprint = nil
         failed_passport_fingerprint = nil
 
-        Rails.logger.info "\nstore_failed_images: errors_hash: #{errors_hash.inspect}\n"
-
         if errors_hash[:front] || errors_hash[:back] || errors_hash[:passport]
           if errors_hash[:front]
             failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
