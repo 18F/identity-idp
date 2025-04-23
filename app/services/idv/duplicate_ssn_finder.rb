@@ -10,11 +10,15 @@ module Idv
     end
 
     def ssn_is_unique?
-      associated_profiles_with_matching_ssn.empty?
+      Profile.active.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
-    def associated_profiles_with_matching_ssn
-      Profile.where.not(user_id: user.id).where(ssn_signature: ssn_signatures)
+    def associated_facial_match_profiles_with_ssn
+      Profile.active.facial_match.where(ssn_signature: ssn_signatures).where.not(user_id: user.id)
+    end
+
+    def ial2_profile_ssn_is_unique?
+      associated_facial_match_profiles_with_ssn.empty?
     end
 
     private
