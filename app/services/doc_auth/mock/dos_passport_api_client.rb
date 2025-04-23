@@ -8,7 +8,14 @@ module DocAuth
       end
 
       def fetch
-        DocAuth::Response.new(success: true)
+        if lexis_nexis_response&.passport_check_result&.dig(:PassportCheckResult) == 'Fail'
+          DocAuth::Response.new(
+            success: false,
+            errors: { mrz: 'bad' },
+          )
+        else
+          DocAuth::Response.new(success: true)
+        end
       end
 
       private
