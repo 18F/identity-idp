@@ -211,7 +211,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
   create_table "duplicate_profile_confirmations", force: :cascade do |t|
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
-    t.bigint "duplicate_profile_ids", null: false, comment: "sensitive=false", array: true
+    t.json "duplicate_profile_ids", null: false, comment: "sensitive=false"
     t.boolean "confirmed_all", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
@@ -479,6 +479,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
     t.text "encrypted_pii_recovery_multi_region", comment: "sensitive=true"
     t.datetime "gpo_verification_expired_at", comment: "sensitive=false"
     t.integer "idv_level", comment: "sensitive=false"
+    t.datetime "verify_profile_one_account_at"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
