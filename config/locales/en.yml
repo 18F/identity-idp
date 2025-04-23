@@ -8,36 +8,43 @@ account_reset.confirm_delete_account.info_html: The account for <strong>%{email}
 account_reset.confirm_delete_account.link_text: create a new account
 account_reset.confirm_delete_account.title: You have deleted your account
 account_reset.confirm_request.close_window: You can close this window if you’re done.
-account_reset.confirm_request.instructions_end: to begin the account delete process. Follow the instructions in your email to complete the process.
-account_reset.confirm_request.instructions_start: We sent an email to
+account_reset.confirm_request.info_html:
+  - We sent an email to <strong>%{email}</strong> to begin the account deletion process. This first email confirms that you’ve started the account deletion process. <strong>It does not mean your account has been successfully deleted.</strong>
+  - As a security measure, you will receive a second email with the link to continue deleting your account %{waiting_period} after the initial confirmation email arrives.
+  - If you change your mind, you can cancel out of account deletion any time.
 account_reset.confirm_request.security_note: As a security measure, we also sent a text to your registered phone number.
 account_reset.delete_account.are_you_sure: Are you sure you want to delete your account?
 account_reset.delete_account.info: Deleting your account should be your last resort if you are locked out of your account. You will not be able to recover any information linked to your account. We will notify the agencies you access with %{app_name} that you no longer have an account. Once your account is deleted, you can create a new one using the same email address.
 account_reset.delete_account.title: Deleting your account should be your last resort
 account_reset.pending.cancel_request: Cancel request
+account_reset.pending.cancel_request_prompt_html: If you have changed your mind and want to cancel account deletion click the “cancel request” button below.
 account_reset.pending.canceled: We have canceled your request to delete your account.
-account_reset.pending.confirm: If you cancel now, you must create a new request and wait another %{interval} to delete your account.
+account_reset.pending.canceled_info: Your request to delete your %{app_name} has been canceled. You may continue using your %{app_name} account, or create a new account deletion request.
 account_reset.pending.header: You requested to delete your account
 account_reset.pending.wait_html: There is a waiting period of %{waiting_period} to delete your account. In <strong>%{interval}</strong>, you will receive an email with instructions to complete the deletion.
-account_reset.recovery_options.check_saved_credential: See if you have a saved credential
-account_reset.recovery_options.check_webauthn_platform_info: If you set up face or touch unlock, you may have saved your credentials to a password manager, like iCloud Keychain or Google Password Manager. Try using face or touch unlock on a browser using that password manager.
+account_reset.recover_options.yes_delete: Delete my account
+account_reset.recovery_option.cancel_deletion: Cancel deletion
+account_reset.recovery_options.check_webauthn_platform_header: Use the same device you first set up face or touch unlock with
+account_reset.recovery_options.check_webauthn_platform_help_link: face or touch unlock
+account_reset.recovery_options.check_webauthn_platform_info_html: If you set up %{link_html} when you created your account make sure to use the same device you created your %{app_name} account on.
 account_reset.recovery_options.header: Are you sure you want to delete your account?
 account_reset.recovery_options.help_text: If you’re locked out and still need access to %{app_name}, try these steps instead.
+account_reset.recovery_options.still_working: Still not working?
 account_reset.recovery_options.try_another_device: Try another device where you might have selected the “remember device” option.
 account_reset.recovery_options.try_method_again: Try your authentication method again
+account_reset.recovery_options.try_method_description_html: Make sure you have access to the authentication method(s) you set up when you created your account, %{link_html}.
+account_reset.recovery_options.try_method_description_link: try your authentication method again
 account_reset.recovery_options.use_device: Use another device
-account_reset.recovery_options.use_same_device: Otherwise, try using the same device where you set up face or touch unlock.
-account_reset.request.are_you_sure: Are you sure you don’t have access to any of your authentication methods?
+account_reset.request.account_delete_link: Learn more about our account deletion process
+account_reset.request.choose_to_continue: 'If you choose to continue with account deletion, you will receive two emails:'
+account_reset.request.continue_deletion: Did you still want to continue with account deletion?
 account_reset.request.delete_account: Delete your account
-account_reset.request.delete_account_info:
-  - Deleting your existing account and creating a new one will allow you to use the same email address and set up new authentication methods. However, deleting will remove any agency applications you have linked to your account and you will need to restore each connection.
-  - If you continue, you will first receive an email confirmation. As a security measure, you will receive another email with the link to continue deleting your account %{interval} after the initial confirmation email arrives.
-account_reset.request.info:
-  - If you can’t access your account using the authentication methods you set up previously, deleting your account and creating a new one is the only option.
-  - We can’t undo an account delete, so please verify if you have another authentication method you can use instead.
+account_reset.request.delete_email1_html: <strong>Email 1:</strong> You will first receive an email confirmation. This <strong>does not</strong> mean your account has been deleted at this point.
+account_reset.request.delete_email2_html: <strong>Email 2:</strong> After %{interval} of the initial email confirmation, you will receive another email with a link to continue deleting your account. This requires you to confirm you want to delete your account. We cannot undo account deletion after this step.
+account_reset.request.delete_request_details_html: If you can’t sign in using the authentication methods you set up, you can regain access by deleting your account and creating a new one. Deleting your account does not delete any information you have stored with other government agencies.<br/>%{account_delete_link}.
 account_reset.request.no_cancel: Cancel
-account_reset.request.title: Account deletion and reset
-account_reset.request.yes_continue: Yes, continue deletion
+account_reset.request.no_cancel2: No, cancel account deletion
+account_reset.request.yes_continue: Yes, continue account deletion
 account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
 account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
@@ -498,6 +505,7 @@ devise.sessions.signed_out: You are now signed out.
 doc_auth.accessible_labels.camera_video_capture_instructions: We will automatically take the picture
 doc_auth.accessible_labels.camera_video_capture_label: Viewfinder with frame to center your ID
 doc_auth.accessible_labels.document_capture_dialog: Document capture
+doc_auth.alt.passport_help: A passport book opened to the page with a photo. The data page of the passport is inside four white guide lines on a dark background.
 doc_auth.alt.selfie_help_1: A person with their face in a green oval.
 doc_auth.alt.selfie_help_2: A finger taps a checkmark under the face to confirm the photo.
 doc_auth.buttons.add_new_photos: Add new photos
@@ -598,6 +606,7 @@ doc_auth.headings.choose_id_type: Choose your ID type
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
+doc_auth.headings.document_capture_passport: Your passport
 doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID
@@ -607,6 +616,9 @@ doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devic
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
+doc_auth.headings.passport: Your passport
+doc_auth.headings.passport_capture: Add a photo of your passport
+doc_auth.headings.passport_instructions.howto: How to take your photo
 doc_auth.headings.review_issues: Check your images and try again
 doc_auth.headings.secure_account: Secure your account
 doc_auth.headings.selfie: Photo of your face
@@ -658,6 +670,9 @@ doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue h
 doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
+doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
+doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
+doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
@@ -709,6 +724,9 @@ doc_auth.tips.document_capture_id_text1: Use a flat and dark surface
 doc_auth.tips.document_capture_id_text2: Take photos in a well-lit place
 doc_auth.tips.document_capture_id_text3: Avoid glare or shadows
 doc_auth.tips.document_capture_id_text4: File size should be at least 2 MB.
+doc_auth.tips.document_capture_passport_header: How to prepare for your photo
+doc_auth.tips.document_capture_passport_tip1: Find a well-lit place without glare or shadows to take a photo.
+doc_auth.tips.document_capture_passport_tip2: Place your ID on a dark, flat surface.
 doc_auth.tips.document_capture_selfie_id_header_text: How to take clear photos
 doc_auth.tips.document_capture_selfie_selfie_text: How to prepare for your photo
 doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face, like glasses or a hat
@@ -728,9 +746,9 @@ email_addresses.delete.warning: If you delete your email address
 email_addresses.unconfirmed: '(unconfirmed)'
 errors.account_reset.cancel_token_invalid: cancel token is invalid
 errors.account_reset.cancel_token_missing: cancel token is missing
-errors.account_reset.granted_token_expired: The link to delete your %{app_name} account has expired. Please create another request to delete your account.
-errors.account_reset.granted_token_invalid: The link to delete your %{app_name} account is invalid. Please try clicking the link in your email again.
-errors.account_reset.granted_token_missing: The link to delete your %{app_name} account is invalid. Please try clicking the link in your email again.
+errors.account_reset.granted_token_expired: The link to delete your %{app_name} account has expired or is invalid. Please create another request to delete your account.
+errors.account_reset.granted_token_invalid: The link to delete your %{app_name} account has expired or is invalid. Please create another request to delete your account.
+errors.account_reset.granted_token_missing: The link to delete your %{app_name} account has expired or is invalid. Please create another request to delete your account.
 errors.attributes.password.avoid_using_phrases_that_are_easily_guessed: Avoid using phrases that are easily guessed, such as parts of your email or personal dates.
 errors.attributes.password.too_short.one: Password must be at least one character long
 errors.attributes.password.too_short.other: Password must be at least %{count} characters long
@@ -1049,6 +1067,7 @@ idv.errors.pattern_mismatch.zipcode: Enter a 5 or 9 digit ZIP Code
 idv.errors.pattern_mismatch.zipcode_five: Enter a 5 digit ZIP Code
 idv.errors.technical_difficulties: We are having technical difficulties
 idv.errors.try_again_later: Try again later.
+idv.failure.address.warning: Please check the information you entered and try again. If your mailing address is different than your residential address, try entering the address where you currently live.
 idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then you must wait 6 hours before trying again.
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
@@ -1194,6 +1213,7 @@ idv.unavailable.idv_explanation.without_sp: The agency that you are trying to ac
 idv.unavailable.next_steps_html: '%{status_page_link_html} or exit %{app_name} and try again later.'
 idv.unavailable.status_page_link: Get updates on our status page
 idv.unavailable.technical_difficulties: Unfortunately, we are having technical difficulties and cannot verify your identity at this time.
+idv.warning.address.heading: We couldn’t find records matching your address
 idv.warning.sessions.heading: We couldn’t find records matching your personal information
 idv.warning.state_id.cancel_button: Exit %{app_name}
 idv.warning.state_id.explanation: Unfortunately, we’re experiencing technical difficulties with IDs from your state and are currently unable to verify your information.
@@ -1320,6 +1340,7 @@ in_person_proofing.headings.state_id_milestone_2: Enter the information on your 
 in_person_proofing.headings.switch_back: Switch back to your computer to prepare to verify your identity in person
 in_person_proofing.headings.update_address: Update your current residential address
 in_person_proofing.headings.update_state_id: Update the information on your ID
+in_person_proofing.info.choose_id_type: Select the type of document that you want to use. You’ll need to bring this document to the Post Office.
 in_person_proofing.process.barcode.caption_label: Enrollment code
 in_person_proofing.process.barcode.heading: Show your %{app_name} barcode
 in_person_proofing.process.barcode.info: The retail associate needs to scan your barcode at the top of this page. You can print this page or show it on your mobile device.
@@ -1407,7 +1428,7 @@ links.back_to_sp: Back to %{sp}
 links.cancel: Cancel
 links.cancel_account_creation: '‹ Cancel account creation'
 links.contact: Contact
-links.continue_sign_in: Continue sign in
+links.continue_sign_in: Sign in
 links.create_account: Create an account
 links.exit_login: Exit %{app_name}
 links.go_back: Go back
@@ -1657,10 +1678,10 @@ titles.webauthn_setup: Add your security key
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security authentication method, such as face or touch unlock, a security key or a government employee ID.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government employee ID, a high-security authentication method.'
 two_factor_authentication.account_reset.cancel_link: Cancel your request
-two_factor_authentication.account_reset.link: deleting your account
+two_factor_authentication.account_reset.link: delete your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
 two_factor_authentication.account_reset.successful_cancel: Thank you. Your request to delete your %{app_name} account has been canceled.
-two_factor_authentication.account_reset.text_html: If you can’t use any of the authentication methods above, you can reset your preferences by %{link_html}.
+two_factor_authentication.account_reset.text_html: If you can’t use any of the authentication methods above, you can %{link_html} and make a new one. You will not lose any information you have stored with government agencies if you delete your account.
 two_factor_authentication.attempt_remaining_warning_html.one: You have <strong>%{count} attempt</strong> remaining.
 two_factor_authentication.attempt_remaining_warning_html.other: You have <strong>%{count} attempts</strong> remaining.
 two_factor_authentication.auth_app.change_nickname: Change nickname
@@ -1825,8 +1846,8 @@ user_mailer.account_reinstated.subject: Your account is unlocked
 user_mailer.account_reinstated.we_have_finished_reviewing: We have finished reviewing your %{app_name} account and you can now log back in with your account information.
 user_mailer.account_rejected.intro: We couldn’t verify your identity with %{app_name}. Please contact the agency whose service you are trying to access.
 user_mailer.account_rejected.subject: We couldn’t verify your identity
-user_mailer.account_reset_cancel.intro_html: This email confirms you have canceled your request to delete your %{app_name_html} account.
-user_mailer.account_reset_cancel.subject: Request canceled
+user_mailer.account_reset_cancel.intro_html: This email confirms you have canceled your request to delete your %{app_name_html} account.<br/><br/> You may continue using your %{app_name_html} account, or create a new account deletion request.
+user_mailer.account_reset_cancel.subject: '%{app_name} account deletion request canceled'
 user_mailer.account_reset_complete.intro_html: This email confirms you have deleted your %{app_name_html} account.
 user_mailer.account_reset_complete.subject: Account deleted
 user_mailer.account_reset_granted.button: Confirm account deletion
@@ -1835,8 +1856,7 @@ user_mailer.account_reset_granted.help_html: If you don’t want to delete your 
 user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm account deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
-user_mailer.account_reset_request.header: Your account will be deleted in %{interval}
-user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> Step One: There is a waiting period of %{waiting_period} if you have lost access to your authentication methods and need to delete your account. If you locate your authentication methods, you can sign in to your %{app_name} account to cancel this request.<br><br> Step Two: After the waiting period of %{waiting_period}, you will receive an email that will ask you to confirm the deletion of your %{app_name} account. Your account will not be deleted until you confirm.'
+user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> <strong>Step 1, %{waiting_period} waiting period:</strong> This email confirms that you have started the process of account deletion. There is a %{waiting_period} waiting for account deletion to go through if you have lost access to your authentication methods cannot sign in.<br/><br/> <strong>Step 2, Confirm account deletion:</strong>After your %{waiting_period} waiting period, you will receive a second email that will ask you to confirm the deletion of your %{app_name} account. <strong>Your account will not be deleted until you confirm account deletion from the second email.</strong> You will have another 24 hours to confirm account deletion.'
 user_mailer.account_reset_request.subject: How to delete your %{app_name} account
 user_mailer.account_verified.change_password_link: change your password
 user_mailer.account_verified.contact_link: contact %{app_name} support

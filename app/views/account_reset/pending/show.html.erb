@@ -10,8 +10,14 @@
       ) %>
 </p>
 
-<%= link_to(
-      t('account_reset.pending.cancel_request'),
-      account_reset_pending_confirm_path,
-      class: 'usa-button usa-button--wide usa-button--big',
-    ) %>
+<p>
+  <%= t('account_reset.pending.cancel_request_prompt_html') %>
+</p>
+
+<%= render ButtonComponent.new(
+      url: account_reset_pending_cancel_path,
+      method: :post,
+      class: 'margin-top-3 margin-bottom-2',
+      wide: true,
+      big: true,
+    ).with_content(t('account_reset.pending.cancel_request')) %>

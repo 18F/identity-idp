@@ -10,6 +10,7 @@ const UploadContext = createContext({
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
   flowPath: 'standard' as FlowPath,
+  idType: 'state_id',
   formData: {} as Record<string, any>,
   submitAttempts: 0,
 });
@@ -174,6 +175,11 @@ interface UploadContextProviderProps {
   flowPath: FlowPath;
 
   /**
+   * The ID type, one of "state_id" or "passport".
+   */
+  idType: string;
+
+  /**
    *  Child elements.
    */
   children: ReactNode;
@@ -193,6 +199,7 @@ function UploadContextProvider({
   statusPollInterval,
   formData = DEFAULT_FORM_DATA,
   flowPath,
+  idType,
   children,
 }: UploadContextProviderProps) {
   const [submitAttempts, setSubmitAttempts] = useState(0);
@@ -220,6 +227,7 @@ function UploadContextProvider({
     statusPollInterval,
     isMockClient,
     flowPath,
+    idType,
     formData,
     submitAttempts,
   });

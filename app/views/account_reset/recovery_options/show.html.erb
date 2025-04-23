@@ -5,25 +5,43 @@
   <%= t('account_reset.recovery_options.help_text', app_name: APP_NAME) %>
 </p>
 
-  <%= render ProcessListComponent.new(class: 'margin-y-3') do |c| %>
-    <%= c.with_item(heading: t('account_reset.recovery_options.try_method_again')) %>
-    <%= c.with_item(heading: t('account_reset.recovery_options.use_device')) do %>
-      <p><%= t('account_reset.recovery_options.try_another_device') %></p>
-    <% end %>
-    <%= c.with_item(heading: t('account_reset.recovery_options.check_saved_credential')) do %>
-      <p><%= t('account_reset.recovery_options.check_webauthn_platform_info') %></p>
-      <p><%= t('account_reset.recovery_options.use_same_device') %></p>
-    <% end %>
+<%= render ProcessListComponent.new(class: 'margin-y-3') do |c| %>
+  <%= c.with_item(heading: t('account_reset.recovery_options.try_method_again')) do %>
+    <p> <%= t(
+              'account_reset.recovery_options.try_method_description_html',
+              link_html: link_to(t('account_reset.recovery_options.try_method_description_link'), login_two_factor_options_path),
+            ) %> </p>
   <% end %>
+  <%= c.with_item(heading: t('account_reset.recovery_options.use_device')) do %>
+    <p><%= t('account_reset.recovery_options.try_another_device') %></p>
+  <% end %>
+  <%= c.with_item(heading: t('account_reset.recovery_options.check_webauthn_platform_header')) do %>
+    <p><%= t(
+             'account_reset.recovery_options.check_webauthn_platform_info_html',
+             app_name: APP_NAME,
+             link_html: new_tab_link_to(
+               t('account_reset.recovery_options.check_webauthn_platform_help_link'),
+               MarketingSite.help_center_article_url(
+                 category: 'trouble-signing-in',
+                 article: 'face-or-touch-unlock',
+               ),
+             ),
+           ) %></p>
+  <% end %>
+<% end %>
 
-<%= button_to(
-      account_reset_recovery_options_cancel_path,
-      method: :post,
-      class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
-    ) { t('account_reset.request.no_cancel') } %>
+<p class="margin-bottom-3">
+  <%= t('account_reset.recovery_options.still_working') %>
+</p>
 
 <%= link_to(
-      t('account_reset.request.yes_continue'),
       account_reset_request_path,
+      class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
+    ) { t('account_reset.recover_options.yes_delete') } %>
+
+<%= button_to(
+      t('account_reset.recovery_option.cancel_deletion'),
+      account_reset_recovery_options_cancel_path,
+      method: :post,
       class: 'usa-button usa-button--unstyled',
     ) %>

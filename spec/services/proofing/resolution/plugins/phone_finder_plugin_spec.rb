@@ -98,7 +98,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhoneFinderPlugin do
               uuid_prefix: '123',
               first_name: 'FAKEY',
               last_name: 'MCFAKERSON',
-              ssn: '900-66-1234',
+              ssn: '900661234',
               dob: '1938-10-06',
               phone: '12025551212',
             },

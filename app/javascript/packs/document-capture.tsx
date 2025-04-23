@@ -10,6 +10,7 @@ import {
   MarketingSiteContextProvider,
   InPersonContext,
   SelfieCaptureContext,
+  PassportCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -29,6 +30,7 @@ interface AppRootData {
   useAlternateSdk: string;
   acuantVersion: string;
   flowPath: FlowPath;
+  idType: string;
   cancelUrl: string;
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
@@ -71,6 +73,7 @@ const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
+    idType,
     flowPath,
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
@@ -79,6 +82,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
+    id_type: idType,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
@@ -98,6 +102,7 @@ const {
   maxSubmissionAttemptsBeforeNativeCamera,
   acuantVersion,
   flowPath,
+  idType,
   cancelUrl: cancelURL,
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
@@ -168,6 +173,7 @@ render(
               isMockClient={isMockClient}
               formData={formData}
               flowPath={flowPath}
+              idType={idType}
             >
               <FlowContext.Provider
                 value={{
@@ -184,17 +190,19 @@ render(
                       showHelpInitially: true,
                     }}
                   >
-                    <FailedCaptureAttemptsContextProvider
-                      maxCaptureAttemptsBeforeNativeCamera={Number(
-                        maxCaptureAttemptsBeforeNativeCamera,
-                      )}
-                      maxSubmissionAttemptsBeforeNativeCamera={Number(
-                        maxSubmissionAttemptsBeforeNativeCamera,
-                      )}
-                      failedFingerprints={{ front: [], back: [] }}
-                    >
-                      <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
-                    </FailedCaptureAttemptsContextProvider>
+                    <PassportCaptureContext.Provider value={{ showHelpInitially: true }}>
+                      <FailedCaptureAttemptsContextProvider
+                        maxCaptureAttemptsBeforeNativeCamera={Number(
+                          maxCaptureAttemptsBeforeNativeCamera,
+                        )}
+                        maxSubmissionAttemptsBeforeNativeCamera={Number(
+                          maxSubmissionAttemptsBeforeNativeCamera,
+                        )}
+                        failedFingerprints={{ front: [], back: [], passport: [] }}
+                      >
+                        <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
+                      </FailedCaptureAttemptsContextProvider>
+                    </PassportCaptureContext.Provider>
                   </SelfieCaptureContext.Provider>
                 </ServiceProviderContextProvider>
               </FlowContext.Provider>
