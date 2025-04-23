@@ -524,7 +524,12 @@ class ApplicationController < ActionController::Base
   end
   
   def user_multiple_accounts_detected?
+    return false unless sp_eligible_for_one_account?
+    current_user&.active_profile&.verify_profile_one_account_at.present?
+  end
 
+  def sp_eligible_for_one_account?
+    sp.present? && IdentityConfig.store.eligible_one_account_providers.include?(sp&.issuer)
   end
 
   def handle_banned_user
