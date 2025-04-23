@@ -65,8 +65,7 @@ RSpec.describe MfaSetupConcern do
         controller.user_session[:in_account_creation_flow] = true
       end
 
-      let(:user) { create(:user, :fully_registered, :with_phone) }
-      let(:otp_delivery_sms?) { true }
+      let(:user) { create(:user, :fully_registered) }
       let(:recommend_webauthn_platform_for_sms_user?) { true }
 
       it 'redirects to webauthn recommendation screen' do

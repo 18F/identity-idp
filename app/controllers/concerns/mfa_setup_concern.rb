@@ -130,23 +130,19 @@ module MfaSetupConcern
   end
 
   def recommend_webauthn_platform_for_sms_user?
-    device_supports_platform_authenticator_setup? && user_set_up_with_sms_phone_delivery?
+    user_session[:platform_authenticator_available] == true && user_has_phone_setup?
   end
 
-  def device_supports_platform_authenticator_setup?
-    user_session[:platform_authenticator_available] == true
-  end
-
-  def otp_delivery_sms?
+  def user_set_up_with_sms?
     current_user.phone_configurations.any? do |phone_configuration|
       phone_configuration.mfa_enabled? && phone_configuration.delivery_preference == 'sms'
     end
   end
 
-  def user_set_up_with_sms_phone_delivery?
+  def user_has_phone_setup?
     user_session[:in_account_creation_flow] == true &&
       mfa_context.enabled_mfa_methods_count == 1 &&
       mfa_context.phone_configurations.present? &&
-      otp_delivery_sms?
+      user_set_up_with_sms?
   end
 end
