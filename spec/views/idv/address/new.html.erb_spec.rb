@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'idv/address/new' do
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
+  let(:address_update_request) { true }
 
   before do
-    assign(:presenter, Idv::AddressPresenter.new)
+    assign(:presenter, Idv::AddressPresenter.new(address_update_request: address_update_request))
     assign(:address_form, Idv::AddressForm.new({}))
     render
   end

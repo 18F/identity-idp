@@ -12,7 +12,7 @@ module Idv
       analytics.idv_address_visit
 
       @address_form = build_address_form
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(address_update_request: address_update_request?)
     end
 
     def update
@@ -75,7 +75,7 @@ module Idv
     end
 
     def failure
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(address_update_request: address_update_request?)
       render :new
     end
 
@@ -85,6 +85,10 @@ module Idv
           address_edited: address_edited?,
         ),
       )
+    end
+
+    def address_update_request?
+      [idv_verify_info_url].include?(request.referer)
     end
 
     def address_edited?

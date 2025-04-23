@@ -2,8 +2,15 @@
 
 module Idv
   class AddressPresenter
+
+    attr_reader :address_update_request
+
+    def initialize(address_update_request:)
+      @address_update_request = address_update_request
+    end
+
     def page_heading
-      if update?
+      if address_update_request
         I18n.t('doc_auth.headings.address_update')
       else
         I18n.t('doc_auth.headings.address')
@@ -11,10 +18,10 @@ module Idv
     end
 
     def update_or_continue_button
-      if update?
+      if address_update_request
         I18n.t('forms.buttons.submit.update')
       else
-        I18n.t('forms.button.continue')
+        I18n.t('forms.buttons.continue')
       end
     end
 
@@ -36,12 +43,6 @@ module Idv
 
     def hint_class
       ['display-none', 'puerto-rico-extras']
-    end
-
-    private
-
-    def update?
-      true
     end
   end
 end
