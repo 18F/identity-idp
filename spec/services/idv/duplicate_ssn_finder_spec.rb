@@ -75,7 +75,6 @@ RSpec.describe Idv::DuplicateSsnFinder do
     end
   end
 
-
   describe '#ial2_profile_ssn_is_unique?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
