@@ -1055,5 +1055,43 @@ RSpec.describe Idv::EnterPasswordController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
       end
     end
+
+    describe 'attempts api tracking' do
+      before do
+        stub_attempts_tracker
+      end
+
+      context 'with a non-proofed user' do
+        it 'does not track a reproofing event during initial proofing' do
+          expect(@attempts_api_tracker).not_to receive(:idv_reproof)
+
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+      end
+
+      context 'with a previously proofed user' do
+        context 'with a deactivated profile' do
+          before do
+            create(:profile, :deactivated, user:)
+          end
+
+          it 'tracks a reproofing event upon reproofing' do
+            expect(@attempts_api_tracker).to receive(:idv_reproof)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+
+        context 'with an activated profile' do
+          before do
+            create(:profile, :active, user:)
+          end
+
+          it 'tracks a reproofing event upon reproofing' do
+            expect(@attempts_api_tracker).to receive(:idv_reproof)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+      end
+    end
   end
 end

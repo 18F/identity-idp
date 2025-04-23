@@ -36,6 +36,13 @@ module AttemptsApi
       )
     end
 
+    # The user, who had previously successfully confirmed their identity, has
+    # reproofed. All the normal events are also sent, this simply notes that
+    # this is the second (or more) time they have gone through the process successfully.
+    def idv_reproof
+      track_event('idv-reproof')
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)

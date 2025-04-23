@@ -163,6 +163,10 @@ module Idv
     end
 
     def confirm_no_profile_yet
+      if current_user.profiles.where('activated_at is NOT NULL').present?
+        attempts_api_tracker.idv_reproof
+      end
+
       # When no profile has been minted yet, keep them on this page.
       return if !idv_session.profile.present?
 
