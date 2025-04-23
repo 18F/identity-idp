@@ -8,7 +8,6 @@ module DocAuth
       end
 
       def fetch
-        binding.pry
         DocAuth::Response.new(success: true)
       end
 
