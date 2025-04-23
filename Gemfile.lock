@@ -469,7 +469,7 @@ GEM
     pg (1.5.9)
     pg_query (6.1.0)
       google-protobuf (>= 3.25.3)
-    phonelib (0.10.7)
+    phonelib (0.10.8)
     pkcs11 (0.3.4)
     premailer (1.27.0)
       addressable
