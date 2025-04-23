@@ -2053,9 +2053,10 @@ vendor_outage.get_updates: Get updates
 vendor_outage.get_updates_on_status_page: Get updates on our status page
 vendor_outage.working: We are working to resolve an error
 webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
+webauthn_platform_recommended.description_security: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
+webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
 webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.upsell: Face or touch unlock is phishing-resistant and we don’t store any recordings of your face or fingerprint, so your information stays private.
 webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
 webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
 webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.

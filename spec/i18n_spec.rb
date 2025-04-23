@@ -84,10 +84,6 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_save_time' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.heading' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.skip' }, # English-only A/B test
       ].freeze
       # rubocop:enable Layout/LineLength
 

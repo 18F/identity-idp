@@ -2065,10 +2065,11 @@ vendor_outage.blocked.phone.default: 我们目前无法验证电话。请稍后�
 vendor_outage.get_updates: 获得最新信息
 vendor_outage.get_updates_on_status_page: 在我们的状态页面获得最新信息。
 vendor_outage.working: 我们正在争取解决错误。
-webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.cta: 设置人脸或触摸解锁
+webauthn_platform_recommended.description_security: 使用人脸或触摸解锁来保护你的登录。使用你的面孔、指纹、密码或其他方法来使你的帐户更安全。
+webauthn_platform_recommended.heading: 设置人脸或触摸解锁以更安全地登录
+webauthn_platform_recommended.skip: 跳过
+webauthn_platform_recommended.upsell: 人脸或触摸解锁具有防网络钓鱼功能，而且我们不会存储任何人脸或指纹记录，使得你的信息能保持私密。
 webauthn_setup_mismatch.description_undo: 点击“撤消”可删除此选项。
 webauthn_setup_mismatch.description.webauthn: 我们注意到您正在使用安全密钥而不是人脸或触摸解锁。点击“继续”即可从现在开始使用您的安全密钥登录。
 webauthn_setup_mismatch.description.webauthn_platform: 我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。点击“继续”即可从现在开始使用人脸或触摸解锁登录。
