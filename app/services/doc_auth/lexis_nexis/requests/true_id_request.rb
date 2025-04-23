@@ -55,6 +55,7 @@ module DocAuth
         end
 
         def id_front_image
+          # TrueID front_image required whether driver's license or passport
           case document_type
           when 'Passport'
             passport_image

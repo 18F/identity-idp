@@ -11,6 +11,7 @@ module DocAuth
   class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+                             DocAuth::LexisNexis::IssuerTypes::COUNTRY.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])

@@ -152,7 +152,6 @@ module Idv
       timer = JobHelpers::Timer.new
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
-          # TrueID front_image required whether driver's license or passport
           front_image: passport_submittal ? nil : front_image_bytes,
           back_image: passport_submittal ? nil : back_image_bytes,
           passport_image: passport_submittal ? passport_image_bytes : nil,
@@ -261,6 +260,7 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes[:passport_image_fingerprint] = passport_image_fingerprint
       @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes[:document_type] = document_type
@@ -405,7 +405,7 @@ module Idv
       if passport_submittal
         if capture_result&.failed_passport_image?(passport_image_fingerprint)
           errors.add(
-            :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+            :passport, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
           )
           error_sides << 'passport'
         end
@@ -524,8 +524,9 @@ module Idv
     end
 
     def acuant_sdk_captured_id?
-      image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+      (image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
+        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT) ||
+        image_metadata.dig(:passport, :source) == Idp::Constants::Vendors::ACUANT
     end
 
     def acuant_sdk_captured_selfie?
@@ -533,13 +534,15 @@ module Idv
     end
 
     def acuant_sdk_autocaptured_id?
-      image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
-        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
+      (image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO') ||
+        image_metadata.dig(:passport, :acuantCaptureMode) == 'AUTO'
     end
 
     def image_metadata
       @image_metadata ||= params
-        .permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h
+        .permit(:front_image_metadata, :back_image_metadata,
+                :passport_image_metadata, :selfie_image_metadata).to_h
         .transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError
@@ -559,6 +562,7 @@ module Idv
     end
 
     def update_funnel(client_response)
+      # TODO: with passports, should we change this to just id_image?
       steps = %i[front_image back_image]
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
@@ -601,6 +605,7 @@ module Idv
         return {
           front: [],
           back: [],
+          passport: [],
           selfie: [],
         }
       end
@@ -619,7 +624,7 @@ module Idv
             failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
           end
           if errors_hash[:passport]
-            failed_passport_fingerprint = extra_attributes[:passport_fingerprint]
+            failed_passport_fingerprint = extra_attributes[:passport_image_fingerprint]
           end
         elsif !client_response.doc_auth_success?
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
@@ -629,19 +634,19 @@ module Idv
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: failed_front_fingerprint,
           back_image_fingerprint: failed_back_fingerprint,
+          passport_image_fingerprint: failed_passport_fingerprint,
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
-          passport_image_fingerprint: failed_passport_fingerprint
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: failed_passport_fingerprint,
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
-          passport_image_fingerprint: failed_passport_fingerprint
         )
       end
       # retrieve updated data from session
@@ -649,8 +654,8 @@ module Idv
       {
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
-        selfie: captured_result&.failed_selfie_image_fingerprints || [],
         passport: captured_result&.failed_passport_image_fingerprints || [],
+        selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
 
