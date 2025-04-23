@@ -650,6 +650,7 @@ doc_auth.info.capture_status_none: Alignez
 doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
 doc_auth.info.choose_id_type: Sélectionnez le type de document dont vous disposez. Vous devrez prendre des photos de votre pièce d’identité pour confirmer votre identité.
+doc_auth.info.dos_passport_api_down_message: Nous ne pouvons actuellement pas accepter les passeports. Vous pouvez utiliser un permis de conduire, une carte d’identité d’un État ou réessayer ultérieurement.
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'

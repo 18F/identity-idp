@@ -3,16 +3,15 @@
 class Idv::InPerson::ChooseIdTypeController < ApplicationController
   include Idv::AvailabilityConcern
   include IdvStepConcern
+  include Idv::ChooseIdTypeConcern
 
   before_action :confirm_step_allowed
 
   def show
     analytics.idv_in_person_proofing_choose_id_type_visited(**analytics_arguments)
+
     render 'idv/shared/choose_id_type',
-           locals: {
-             presenter: Idv::InPerson::ChooseIdTypePresenter.new,
-             auto_check_value: '',
-           },
+           locals: locals_attrs(analytics:, presenter: Idv::InPerson::ChooseIdTypePresenter.new),
            layout: true
   end
 

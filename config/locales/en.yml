@@ -650,6 +650,7 @@ doc_auth.info.capture_status_none: Align
 doc_auth.info.capture_status_small_document: Move Closer
 doc_auth.info.capture_status_tap_to_capture: Tap to Capture
 doc_auth.info.choose_id_type: Select the type of document that you have. You’ll need to take photos of your ID to verify your identity.
+doc_auth.info.dos_passport_api_down_message: We cannot accept passports at this time. You can use a driver’s license or state ID, or try again later.
 doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'

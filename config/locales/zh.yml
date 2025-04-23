@@ -661,6 +661,7 @@ doc_auth.info.capture_status_none: 对齐
 doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
 doc_auth.info.choose_id_type: 选择你具备的身份证件类型你将需要拍你身份证件的照片来验证身份。
+doc_auth.info.dos_passport_api_down_message: 我们目前不能接受护照。你可以使用驾照或州ID，或稍后再试。
 doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'

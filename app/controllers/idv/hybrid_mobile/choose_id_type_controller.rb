@@ -13,9 +13,13 @@ module Idv
 
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
+
         render 'idv/shared/choose_id_type',
-               locals: { presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
-                         auto_check_value: auto_check_value }
+               locals: locals_attrs(
+                 analytics:,
+                 presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
+                 url_for: idv_hybrid_mobile_choose_id_type_path,
+               )
       end
 
       def update
