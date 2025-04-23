@@ -26,7 +26,7 @@
 
         <%= render ValidatedFieldComponent.new(
               form: f,
-              input_html: { value: 'update' },
+              input_html: { value: '' },
               label_html: { class: 'usa-label' },
               label: t('in_person_proofing.form.passport.surname'),
               name: :passport_surname,
@@ -36,7 +36,7 @@
         <%= render ValidatedFieldComponent.new(
               form: f,
               hint: t('in_person_proofing.form.passport.first_name_hint'),
-              input_html: { value: 'update' },
+              input_html: { value: '' },
               label_html: { lass: 'usa-label' },
               label: t('in_person_proofing.form.passport.first_name'),
               name: :passport_first_name,
@@ -55,7 +55,7 @@
         <%= render ValidatedFieldComponent.new(
               form: f,
               hint: t('in_person_proofing.form.passport.passport_number_hint'),
-              input_html: { value: 'update' },
+              input_html: { value: '' },
               label_html: { class: 'usa-label' },
               label: t('in_person_proofing.form.passport.passport_number'),
               name: :passport_number,

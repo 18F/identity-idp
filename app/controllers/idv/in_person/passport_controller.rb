@@ -20,8 +20,19 @@ module Idv
         {
           form:,
           pii:,
-          updating_passport: updating_passport?,
         }
+      end
+
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :ipp_passport,
+          controller: self,
+          next_steps: [:ipp_address],
+          # preconditions: ->(idv_session:, user:) { user.has_establishing_in_person_enrollment? AND ENROLLMENT TYPE IS PASSPORT MAYBE? WE NEED TO SEE WHERE WE ARE ADDING THIS},
+          undo_step: ->(idv_session:, user:) do
+            idv_session.invalidate_in_person_pii_from_user!
+          end,
+        )
       end
 
       private
@@ -41,7 +52,7 @@ module Idv
 
       def pii
         data = pii_from_user
-        if params.has_key?(:identity_doc) || params.has_key?(:state_id)
+        if params.has_key?(:identity_doc) || params.has_key?(:in_person_passport)
           data = data.merge(flow_params)
         end
         data.deep_symbolize_keys
@@ -51,10 +62,6 @@ module Idv
         render_not_found unless
           IdentityConfig.store.doc_auth_passports_enabled &&
           IdentityConfig.store.in_person_passports_enabled
-      end
-
-      def updating_passport?
-        user_session.dig(:idv, :ssn).present?
       end
     end
   end
