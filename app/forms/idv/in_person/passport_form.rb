@@ -5,7 +5,8 @@ module Idv
     class PassportForm
       include ActiveModel::Model
 
-      ATTRIBUTES = %i[passport_surname passport_first_name passport_dob passport_number passport_expiration].freeze
+      ATTRIBUTES = %i[passport_surname passport_first_name passport_dob passport_number
+                      passport_expiration].freeze
 
       attr_accessor(*ATTRIBUTES)
 
