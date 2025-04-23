@@ -11,13 +11,13 @@ module Idv
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
-      dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
-      auto_check_value = dos_passport_api_down ? :drivers_license : selected_id_type
+
       render 'idv/shared/choose_id_type',
-             locals: { presenter: Idv::ChooseIdTypePresenter.new,
-                       url_for: idv_choose_id_type_path,
-                       auto_check_value: auto_check_value,
-                       dos_passport_api_down: },
+             locals: locals_attrs(
+               analytics:,
+               presenter: Idv::ChooseIdTypePresenter.new,
+               url_for: idv_choose_id_type_path,
+             ),
              layout: true
     end
 

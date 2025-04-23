@@ -37,5 +37,15 @@ module Idv
       response = request.fetch(analytics)
       response.success?
     end
+
+    def locals_attrs(analytics:, presenter:, url_for: nil)
+      dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
+      {
+        presenter:,
+        url_for:,
+        dos_passport_api_down:,
+        auto_check_value: dos_passport_api_down ? :drivers_license : selected_id_type,
+      }
+    end
   end
 end
