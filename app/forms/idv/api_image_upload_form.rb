@@ -174,7 +174,10 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      response = DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz).fetch
+      mrz_client = document_capture_session.doc_auth_vendor == 'mock' ?
+                     DocAuth::Mock::DosPassportApiClient.new(client_response) :
+                     DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+      response = mrz_client.fetch
 
       analytics.idv_dos_passport_verification(
         document_type:,
@@ -557,16 +560,24 @@ module Idv
         errors_hash = client_response.errors&.to_h || {}
         failed_front_fingerprint = nil
         failed_back_fingerprint = nil
-        if errors_hash[:front] || errors_hash[:back]
+        failed_passport_fingerprint = nil
+
+        Rails.logger.info "\nstore_failed_images: errors_hash: #{errors_hash.inspect}\n"
+
+        if errors_hash[:front] || errors_hash[:back] || errors_hash[:passport]
           if errors_hash[:front]
             failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           end
           if errors_hash[:back]
             failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
           end
+          if errors_hash[:passport]
+            failed_passport_fingerprint = extra_attributes[:passport_fingerprint]
+          end
         elsif !client_response.doc_auth_success?
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          failed_passport_fingerprint = extra_attributes[:passport_image_fingerprint]
         end
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: failed_front_fingerprint,
@@ -574,6 +585,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          passport_image_fingerprint: failed_passport_fingerprint
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
@@ -582,6 +594,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          passport_image_fingerprint: failed_passport_fingerprint
         )
       end
       # retrieve updated data from session
@@ -590,6 +603,7 @@ module Idv
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
         selfie: captured_result&.failed_selfie_image_fingerprints || [],
+        passport: captured_result&.failed_passport_image_fingerprints || [],
       }
     end
 
