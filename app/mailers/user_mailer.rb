@@ -135,10 +135,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
-      @header = t(
-        'user_mailer.account_reset_request.header',
-        interval: @account_reset_deletion_period_interval,
-      )
+      @header = t('user_mailer.account_reset_request.subject', app_name: APP_NAME)
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
@@ -173,7 +170,10 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_cancel
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
+      )
     end
   end
 

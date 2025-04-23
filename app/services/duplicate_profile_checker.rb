@@ -13,7 +13,7 @@ class DuplicateProfileChecker
   def validate_user_does_not_have_duplicate_profile
     return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
-    return if user_already_verified?
+    return if user_profile_already_validated?
     cacher = Pii::Cacher.new(user, user_session)
     pii = cacher.fetch(profile.id)
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])

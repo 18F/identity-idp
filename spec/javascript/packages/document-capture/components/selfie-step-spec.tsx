@@ -68,7 +68,7 @@ describe('document-capture/components/selfie-step', () => {
       <FailedCaptureAttemptsContextProvider
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
-        failedFingerprints={{ front: [], back: [] }}
+        failedFingerprints={{ front: [], back: [], passport: [] }}
       >
         <SelfieCaptureContext.Provider
           value={{

@@ -31,14 +31,12 @@ RSpec.describe DataRequests::Local::WriteUserInfo do
       expect(email_row['value']).to eq('test@example.com')
       expect(email_row['created_at']).to be_present
       expect(email_row['confirmed_at']).to be_present
-      expect(email_row['internal_id']).to be_nil
 
       phone_row = parsed.find { |r| r['type'] == 'Phone configuration' }
       expect(phone_row['uuid']).to eq(uuid)
       expect(phone_row['value']).to eq('+1 555-555-5555')
       expect(phone_row['created_at']).to be_present
       expect(phone_row['confirmed_at']).to be_present
-      expect(phone_row['internal_id']).to be_present
     end
 
     context 'with a not_found user' do

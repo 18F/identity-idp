@@ -443,7 +443,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'with in person profile' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user: user)
         end
 
         before do
@@ -1034,7 +1034,7 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user is going through enhanced ipp' do
       let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
-        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        create(:in_person_enrollment, :establishing, user: user)
       end
       before do
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse

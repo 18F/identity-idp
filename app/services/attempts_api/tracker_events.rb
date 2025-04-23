@@ -11,6 +11,31 @@ module AttemptsApi
       )
     end
 
+    # A user becomes able to visit the post office for in-person proofing
+    def idv_ipp_ready_to_verify_visit
+      track_event('idv-ipp-ready-to-verify-visit')
+    end
+
+    # @param [Boolean] success True if the entered code matched the sent code
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if code did not match
+    # A user that requested to verify their address by mail entered the code contained in the letter
+    def idv_verify_by_mail_enter_code_submitted(success:, failure_reason: nil)
+      track_event(
+        'idv-verify-by-mail-enter-code-submitted',
+        success:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] resend False indicates this is the initial request
+    # User has requested the Address validation letter
+    def idv_verify_by_mail_letter_requested(resend:)
+      track_event(
+        'idv-verify-by-mail-letter-requested',
+        resend:,
+      )
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)
@@ -26,7 +51,7 @@ module AttemptsApi
     def logged_in_password_change(success:, failure_reason: nil)
       track_event(
         'logged-in-password-change',
-        success: success,
+        success:,
         failure_reason:,
       )
     end
@@ -74,6 +99,24 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
+    def mfa_enroll_webauthn_platform(success:)
+      track_event(
+        'mfa-enroll-webauthn-platform',
+        success:,
+      )
+    end
+
+    # @param [Boolean] success
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    def mfa_enroll_webauthn_roaming(success:)
+      track_event(
+        'mfa-enroll-webauthn-roaming',
+        success:,
+      )
+    end
+
     # Tracks when user submits a verification attempt using their MFA.
     # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
     # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
@@ -111,24 +154,6 @@ module AttemptsApi
         'user-registration-password-submitted',
         success:,
         failure_reason:,
-      )
-    end
-
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
-    def mfa_enroll_webauthn_platform(success:)
-      track_event(
-        'mfa-enroll-webauthn-platform',
-        success:,
-      )
-    end
-
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
-    def mfa_enroll_webauthn_roaming(success:)
-      track_event(
-        'mfa-enroll-webauthn-roaming',
-        success:,
       )
     end
   end

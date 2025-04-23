@@ -19,6 +19,7 @@ module Idv
       def show
         @is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
         analytics.idv_in_person_ready_to_verify_visit(**opt_in_analytics_properties)
+        attempts_api_tracker.idv_ipp_ready_to_verify_visit
         @presenter = ReadyToVerifyPresenter.new(
           enrollment: enrollment,
         )
