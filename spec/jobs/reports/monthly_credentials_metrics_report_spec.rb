@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
-  subject(:report) { Reports::CombinedInvoiceSupplementReportV3.new }
+RSpec.describe Reports::MonthlyCredentialsMetricsReport do
+  subject(:report) { Reports::MonthlyCredentialsMetricsReport.new }
 
   before do
     clear_agreements_data
@@ -99,50 +99,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
 
             expect(row['issuer']).to eq(iaa1_sp.issuer)
             expect(row['friendly_name']).to eq(iaa1_sp.friendly_name)
-
-            expect(row['year_month']).to eq('202004')
-            expect(row['year_month_readable']).to eq('April 2020')
-
-            expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
-            expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
-            expect(row['iaa_unique_users'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(7)
-            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(2)
-            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(9)
-
-            expect(row['issuer_ial1_unique_users'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_users'].to_i).to eq(2)
-            expect(row['issuer_unique_users'].to_i).to eq(2)
 
             expect(row['credentials_authorized_requesting_agency'].to_i).to eq(9)
             expect(row['new_identity_verification_credentials_authorized_for_partner'].to_i).to eq(2)
@@ -301,47 +257,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
 
             expect(row['year_month']).to eq('202009')
             expect(row['year_month_readable']).to eq('September 2020')
-
-            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
-            expect(row['iaa_ial2_unique_users'].to_i).to eq(8)
-            expect(row['iaa_unique_users'].to_i).to eq(8)
-            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(1)
-
-            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(1)
-
-            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
-            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(4)
-            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(4)
-
-            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_users'].to_i).to eq(4)
-            expect(row['issuer_unique_users'].to_i).to eq(4)
           end
 
           aggregate_failures do
@@ -357,47 +272,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
 
             expect(row['year_month']).to eq('202009')
             expect(row['year_month_readable']).to eq('September 2020')
-
-            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
-            expect(row['iaa_ial2_unique_users'].to_i).to eq(8)
-            expect(row['iaa_unique_users'].to_i).to eq(8)
-            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(1)
-
-            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(2)
-            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
-            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(4)
-            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(4)
-
-            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_users'].to_i).to eq(4)
-            expect(row['issuer_unique_users'].to_i).to eq(4)
           end
         end
       end
@@ -500,47 +374,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
 
             expect(row['year_month']).to eq('202009')
             expect(row['year_month_readable']).to eq('September 2020')
-
-            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
-            expect(row['iaa_ial2_unique_users'].to_i).to eq(1)
-            expect(row['iaa_unique_users'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
-            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
-            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
-
-            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_users'].to_i).to eq(1)
-            expect(row['issuer_unique_users'].to_i).to eq(1)
           end
 
           aggregate_failures do
@@ -556,47 +389,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV3 do
 
             expect(row['year_month']).to eq('202010')
             expect(row['year_month_readable']).to eq('October 2020')
-
-            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
-            expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
-            expect(row['iaa_unique_users'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(2)
-            expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year2'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['partner_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['partner_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial2_unique_user_events_year1'].to_i).to eq(2)
-            expect(row['issuer_ial2_unique_user_events_year2'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['issuer_ial2_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_user_events_unknown'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year1'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year2'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year3'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year4'].to_i).to eq(1)
-            expect(row['issuer_ial2_new_unique_user_events_year5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_year_greater_than_5'].to_i).to eq(0)
-            expect(row['issuer_ial2_new_unique_user_events_unknown'].to_i).to eq(0)
-
-            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
-            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(4)
-            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(4)
-
-            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
-            expect(row['issuer_ial2_unique_users'].to_i).to eq(2)
-            expect(row['issuer_unique_users'].to_i).to eq(2)
           end
         end
       end

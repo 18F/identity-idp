@@ -3,8 +3,10 @@
 require 'csv'
 
 module Reports
-  class CombinedInvoiceSupplementReportV3 < BaseReport
-    REPORT_NAME = 'combined-invoice-supplement-report-v3'
+  class MonthlyCredentialsMetricsReport < BaseReport
+    REPORT_NAME = 'monthly-credentials-metrics-report'
+    # class CombinedInvoiceSupplementReportV3 < BaseReport
+    #   REPORT_NAME = 'combined-invoice-supplement-report-v3'
 
     def perform(_date)
       # Exclude IAAs that ended more than 90 days ago
@@ -85,6 +87,7 @@ module Reports
       # rubocop:disable Metrics/BlockLength
       CSV.generate do |csv|
         csv << [
+          # todo: still need to determine which of the following need to be3 removed from this report
           'iaa_order_number',
           'partner',
           'iaa_start_date',
@@ -95,47 +98,6 @@ module Reports
 
           'year_month',
           'year_month_readable',
-
-          'iaa_ial1_unique_users',
-          'iaa_ial2_unique_users',
-          'iaa_unique_users',
-          'partner_ial2_unique_user_events_year1',
-          'partner_ial2_unique_user_events_year2',
-          'partner_ial2_unique_user_events_year3',
-          'partner_ial2_unique_user_events_year4',
-          'partner_ial2_unique_user_events_year5',
-          'partner_ial2_unique_user_events_year_greater_than_5',
-          'partner_ial2_unique_user_events_unknown',
-          'partner_ial2_new_unique_user_events_year1',
-          'partner_ial2_new_unique_user_events_year2',
-          'partner_ial2_new_unique_user_events_year3',
-          'partner_ial2_new_unique_user_events_year4',
-          'partner_ial2_new_unique_user_events_year5',
-          'partner_ial2_new_unique_user_events_year_greater_than_5',
-          'partner_ial2_new_unique_user_events_unknown',
-
-          'issuer_ial2_unique_user_events_year1',
-          'issuer_ial2_unique_user_events_year2',
-          'issuer_ial2_unique_user_events_year3',
-          'issuer_ial2_unique_user_events_year4',
-          'issuer_ial2_unique_user_events_year5',
-          'issuer_ial2_unique_user_events_year_greater_than_5',
-          'issuer_ial2_unique_user_events_unknown',
-          'issuer_ial2_new_unique_user_events_year1',
-          'issuer_ial2_new_unique_user_events_year2',
-          'issuer_ial2_new_unique_user_events_year3',
-          'issuer_ial2_new_unique_user_events_year4',
-          'issuer_ial2_new_unique_user_events_year5',
-          'issuer_ial2_new_unique_user_events_year_greater_than_5',
-          'issuer_ial2_new_unique_user_events_unknown',
-
-          'issuer_ial1_total_auth_count',
-          'issuer_ial2_total_auth_count',
-          'issuer_ial1_plus_2_total_auth_count',
-
-          'issuer_ial1_unique_users',
-          'issuer_ial2_unique_users',
-          'issuer_unique_users',
 
           'credentials_authorized_requesting_agency',
           'new_identity_verification_credentials_authorized_for_partner',
@@ -185,52 +147,14 @@ module Reports
                 year_month,
                 year_month_start.strftime('%B %Y'),
 
-                extract(iaa_results, :unique_users, ial: 1),
-                extract(iaa_results, :unique_users, ial: 2),
-                extract(iaa_results, :unique_users, ial: :all),
-                partner_results[:partner_ial2_unique_user_events_year1] || 0,
-                partner_results[:partner_ial2_unique_user_events_year2] || 0,
-                partner_results[:partner_ial2_unique_user_events_year3] || 0,
-                partner_results[:partner_ial2_unique_user_events_year4] || 0,
-                partner_results[:partner_ial2_unique_user_events_year5] || 0,
-                partner_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0,
-                partner_results[:partner_ial2_unique_user_events_unknown] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year1] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year2] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year3] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year4] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year5] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0,
-                partner_results[:partner_ial2_new_unique_user_events_unknown] || 0,
-
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year1] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year2] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year3] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year4] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year5] || 0,
-                issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
-                issuer_profile_age_results[:partner_ial2_unique_user_events_unknown] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year2] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year3] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year4] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year5] || 0,
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
-                issuer_profile_age_results[:partner_ial2_new_unique_user_events_unknown] || 0,
-
-                (ial1_total_auth_count = extract(issuer_results, :total_auth_count, ial: 1)),
-                (ial2_total_auth_count = extract(issuer_results, :total_auth_count, ial: 2)),
-                ial1_total_auth_count + ial2_total_auth_count,
-
-                extract(issuer_results, :unique_users, ial: 1),
-                extract(issuer_results, :unique_users, ial: 2),
-                extract(issuer_results, :unique_users, ial: :all),
-
                 # todo: these new lines are NOT being written out
                 # additional values for IRS specifically
-                ial1_total_auth_count + ial2_total_auth_count, # this line is what we need for Credentials authorized Requesting Agency
-
-                # line194-200 need to be added together for New identity verification/Credentials Authorized for Partner
+                # this line is what we need for Credentials authorized Requesting Agency
+                extract(
+                  issuer_results, :total_auth_count,
+                  ial: 1
+                ) + extract(issuer_results, :total_auth_count, ial: 2),
+                # New identity verification/Credentials Authorized for Partner
                 ((partner_results[:partner_ial2_new_unique_user_events_year1] || 0) +
                 (partner_results[:partner_ial2_new_unique_user_events_year2] || 0) +
                 (partner_results[:partner_ial2_new_unique_user_events_year3] || 0) +
