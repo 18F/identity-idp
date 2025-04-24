@@ -18,6 +18,15 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
+  def attach_and_submit_passport_image
+    attach_passport_image
+    submit_images
+  end
+
+  def attach_passport_image(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
+    attach_file t('doc_auth.headings.document_capture_passport'), file, make_visible: true
+  end
+
   def attach_liveness_images(
     file = Rails.root.join(
       'spec', 'fixtures',

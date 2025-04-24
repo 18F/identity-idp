@@ -14,7 +14,7 @@ module Idv
     before_action :set_usps_form_presenter
 
     def index
-      if idv_session.in_person_passports_allowed?
+      if idv_session.in_person_passports_allowed? && dos_passport_api_healthy?(analytics:)
         redirect_to idv_in_person_choose_id_type_url
       else
         redirect_to idv_in_person_state_id_url

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPersonController do
+  include PassportApiHelpers
+
   let(:in_person_proofing_enabled) { false }
   let(:sp) { nil }
   let(:user) { build(:user) }
@@ -83,15 +85,39 @@ RSpec.describe Idv::InPersonController do
               expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
             end
 
-            context 'when in person passports are allowed' do
+            context 'when passports are allowed' do
               before do
+                stub_health_check_settings
+                stub_health_check_endpoints_success
                 allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
               end
 
-              it 'redirects to the choose ID type page' do
+              it 'performs a DOS health check' do
                 get :index
 
-                expect(response).to redirect_to idv_in_person_choose_id_type_path
+                expect(WebMock).to have_requested(
+                  :get,
+                  IdentityConfig.store.dos_passport_composite_healthcheck_endpoint,
+                )
+              end
+
+              context 'when the health check succeeds' do
+                it 'redirects to the choose ID type page' do
+                  get :index
+
+                  expect(response).to redirect_to idv_in_person_choose_id_type_path
+                end
+              end
+
+              context 'when the health check fails' do
+                before do
+                  stub_composite_health_check_endpoint_failure
+                end
+                it 'redirects to the state id page' do
+                  get :index
+
+                  expect(response).to redirect_to idv_in_person_state_id_path
+                end
               end
             end
 
