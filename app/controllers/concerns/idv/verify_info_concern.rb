@@ -257,10 +257,11 @@ module Idv
         },
       )
 
-      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
-      if threatmetrix_reponse_body.present?
+      threatmetrix_response_body = delete_threatmetrix_response_body(form_response)
+
+      if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
-          response_body: threatmetrix_reponse_body,
+          response_body: threatmetrix_response_body,
         )
       end
 
@@ -381,7 +382,14 @@ module Idv
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
       return unless threatmetrix_result
 
-      return if threatmetrix_result[:review_status] == 'pass'
+      success = (threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_tmx_fraud_check(
+        success:,
+        failure_reason: threatmetrix_failure_reason(success, threatmetrix_result),
+      )
+
+      return if success
 
       FraudReviewRequest.create(
         user: current_user,
@@ -405,6 +413,17 @@ module Idv
       return if threatmetrix_result.blank?
 
       threatmetrix_result.delete(:response_body)
+    end
+
+    def threatmetrix_failure_reason(success, result)
+      return nil if success
+
+      tmx_summary_reason_code = result.dig(
+        :response_body,
+        :tmx_summary_reason_code,
+      ) || ['ThreatMetrix review has failed for unknown reasons']
+
+      { tmx_summary_reason_code: }
     end
 
     def add_cost(token, transaction_id: nil)
