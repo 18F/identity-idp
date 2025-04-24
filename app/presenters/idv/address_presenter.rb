@@ -8,11 +8,11 @@ module Idv
 
     attr_reader :idv_session
 
-    def address_title
+    def address_heading
       if idv_session.requested_letter
-        I18n.t('titles.doc_auth.mailing_address')
+        I18n.t('doc_auth.headings.mailing_address')
       else
-        I18n.t('titles.doc_auth.address')
+        I18n.t('doc_auth.headings.address')
       end
     end
 

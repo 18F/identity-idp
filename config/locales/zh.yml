@@ -626,6 +626,7 @@ doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
 doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
+doc_auth.headings.mailing_address: 输入你的邮寄地址
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
@@ -1636,7 +1637,6 @@ titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
 titles.doc_auth.link_sent: 链接已发送
-titles.doc_auth.mailing_address: 输入你的邮寄地址
 titles.doc_auth.processing_images: 正在处理你的图像
 titles.doc_auth.ssn: 输入你的社会保障号码
 titles.doc_auth.switch_back: 切换回你的电脑

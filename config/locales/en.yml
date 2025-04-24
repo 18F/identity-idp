@@ -615,6 +615,7 @@ doc_auth.headings.hybrid_handoff: How would you like to add your ID?
 doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
+doc_auth.headings.mailing_address: Enter your mailing address
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
@@ -1623,7 +1624,6 @@ titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
 titles.doc_auth.hybrid_handoff: Verify your ID
 titles.doc_auth.link_sent: Link sent
-titles.doc_auth.mailing_address: Enter your mailing address
 titles.doc_auth.processing_images: Processing your images
 titles.doc_auth.ssn: Enter your Social Security number
 titles.doc_auth.switch_back: Switch back to your computer

@@ -626,6 +626,7 @@ doc_auth.headings.hybrid_handoff: '¿Cómo desea añadir su identificación?'
 doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cambiar dispositivos
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
+doc_auth.headings.mailing_address: Ingrese su dirección postal
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
@@ -1635,7 +1636,6 @@ titles.doc_auth.address: Actualice su domicilio actual
 titles.doc_auth.doc_capture: Agregue su identificación
 titles.doc_auth.hybrid_handoff: Verifique su identidad
 titles.doc_auth.link_sent: Vínculo enviado
-titles.doc_auth.mailing_address: Ingrese su dirección postal
 titles.doc_auth.processing_images: Procesando sus imágenes
 titles.doc_auth.ssn: Ingrese su número de Seguro Social
 titles.doc_auth.switch_back: Vuelva a su computadora

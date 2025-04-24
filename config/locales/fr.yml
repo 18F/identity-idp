@@ -615,6 +615,7 @@ doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’i
 doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
+doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -1623,7 +1624,6 @@ titles.doc_auth.address: Mettre à jour votre adresse personnelle
 titles.doc_auth.doc_capture: Ajouter votre pièce d’identité
 titles.doc_auth.hybrid_handoff: Vérifier votre identité
 titles.doc_auth.link_sent: Lien envoyé
-titles.doc_auth.mailing_address: Saisir votre adresse postale de contact
 titles.doc_auth.processing_images: Traitement de vos images en cours
 titles.doc_auth.ssn: Saisir votre numéro de sécurité sociale
 titles.doc_auth.switch_back: Retourner sur votre ordinateur
