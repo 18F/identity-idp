@@ -17,6 +17,7 @@ module Idv
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
           .call(:usps_address, :view, true)
+        idv_session.requested_letter = true
         analytics.idv_request_letter_visited
       end
 

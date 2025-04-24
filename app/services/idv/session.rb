@@ -26,6 +26,7 @@ module Idv
   # @attr profile_id [Integer, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
+  # @attr requested_letter [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
   # @attr resolution_successful [Boolean, nil]
   # @attr resolution_vendor [String,nil]
@@ -72,6 +73,7 @@ module Idv
       profile_id
       proofing_started_at
       redo_document_capture
+      requested_letter
       residential_resolution_vendor
       resolution_successful
       resolution_vendor

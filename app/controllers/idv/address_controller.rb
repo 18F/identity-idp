@@ -12,7 +12,7 @@ module Idv
       analytics.idv_address_visit
 
       @address_form = build_address_form
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(idv_session:)
     end
 
     def update
@@ -75,7 +75,7 @@ module Idv
     end
 
     def failure
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(idv_session:)
       render :new
     end
 
