@@ -1,0 +1,36 @@
+<% self.title = @multiple_accounts_detected_presenter.heading %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { @multiple_accounts_detected_presenter.heading } %>
+
+  <p><%= @multiple_accounts_detected_presenter.intro %></p>
+
+  <div class="cardborder-primary-light">
+  <ul class="add-list-reset border-bottom border-primary-light">
+      <% @multiple_accounts_detected_presenter.other_accounts_detected.each do |dupe_account| %>
+        <li>
+          <div class="padding-1 border-top border-left border-right border-primary-light">
+            <p> <%= dupe_account[:email] %></p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  
+
+  <%= render ButtonComponent.new(
+        url: backup_code_setup_path,
+        method: :post,
+        big: true,
+        wide: true,
+        class: 'margin-top-3 margin-bottom-2',
+      ).with_content(t('account.index.backup_code_confirm_regenerate')) %>
+
+  <%= render ButtonComponent.new(
+        url: account_path,
+        big: true,
+        wide: true,
+        outline: true,
+      ).with_content(t('links.cancel')) %>
+<% end %>
+
