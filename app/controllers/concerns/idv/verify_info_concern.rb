@@ -389,7 +389,7 @@ module Idv
       tmx_summary_reason_code = result.dig(
         :response_body,
         :tmx_summary_reason_code,
-      ) || ["Unexpected ThreatMetrix review_status value: #{result[:review_status]}"]
+      ) || ['ThreatMetrix review has failed for unknown reasons']
 
       { tmx_summary_reason_code: }
     end

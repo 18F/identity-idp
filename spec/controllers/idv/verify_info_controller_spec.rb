@@ -376,7 +376,7 @@ RSpec.describe Idv::VerifyInfoController do
           expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
             failure_reason: {
-              tmx_summary_reason_code: ['Unexpected ThreatMetrix review_status value: '],
+              tmx_summary_reason_code: ['ThreatMetrix review has failed for unknown reasons'],
             },
           )
 
