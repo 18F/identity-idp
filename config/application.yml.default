@@ -469,7 +469,7 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 weekly_auth_funnel_report_config: '[]'
-irs_invoice_report_config: '[]'
+irs_monthly_cred_metrics: '[]'
 
 development:
   aamva_private_key: 123abc
