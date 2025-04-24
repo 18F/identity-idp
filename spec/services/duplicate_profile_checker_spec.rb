@@ -24,14 +24,14 @@ RSpec.describe DuplicateProfileChecker do
   let(:issuer) { sp.issuer }
 
   describe '#validate_user_does_not_have_duplicate_profile' do
-    context 'service provider eligible for duplicate profile check' do
+    context 'when service provider eligible for duplicate profile check' do
       before do
         allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
           .and_return([sp.friendly_name])
       end
 
-      context 'user has active IAL2 profile' do
-        context 'user has already been checked for duplicate profile' do
+      context 'when user has active IAL2 profile' do
+        context 'when user has already been checked for duplicate profile' do
           let(:user2) { create(:user, :fully_registered) }
           let!(:profile2) do
             profile2 = create(
@@ -65,8 +65,8 @@ RSpec.describe DuplicateProfileChecker do
           end
         end
 
-        context 'user has not been checked for duplicate profile' do
-          context 'user does not have other accounts with matching profile' do
+        context 'when user has not been checked for duplicate profile' do
+          context 'when user does not have other accounts with matching profile' do
             let(:user2) { create(:user, :proofed_with_selfie) }
 
             it 'does not create a new duplicate profile confirmation' do
@@ -80,7 +80,7 @@ RSpec.describe DuplicateProfileChecker do
             end
           end
 
-          context 'user has accounts with matching profile' do
+          context 'when user has accounts with matching profile' do
             let(:user2) { create(:user, :fully_registered) }
             let!(:profile2) do
               profile = create(
@@ -113,7 +113,7 @@ RSpec.describe DuplicateProfileChecker do
         end
       end
 
-      context 'user does not have active IAL2 profile' do
+      context 'when user does not have active IAL2 profile' do
         let(:user) { create(:user, :proofed) }
         it 'does not create a new duplicate profile confirmation' do
           dupe_profile_checker = DuplicateProfileChecker.new(
@@ -140,7 +140,7 @@ RSpec.describe DuplicateProfileChecker do
       end
     end
 
-    context 'service provider not eligible for duplicate profile check' do
+    context 'when service provider not eligible for duplicate profile check' do
       before do
         allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([])
       end
