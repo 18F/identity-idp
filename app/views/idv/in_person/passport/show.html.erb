@@ -17,7 +17,7 @@
 <%= simple_form_for(
       @idv_in_person_passport_form,
       data: {},
-      html: { class: 'margin-y-5' },
+      html: { class: 'margin-y-4' },
       method: 'put',
       url: idv_in_person_passport_url,
     ) do |f| %>
@@ -43,14 +43,16 @@
               required: true,
             ) %>
 
-        <%= render MemorableDateComponent.new(
-              content_tag: 'memorable-date',
-              form: f,
-              hint: t('in_person_proofing.form.passport.dob_hint'),
-              label: t('in_person_proofing.form.passport.dob'),
-              name: :passport_dob,
-              required: true,
-            ) %>
+        <div class="margin-bottom-4">
+          <%= render MemorableDateComponent.new(
+                content_tag: 'memorable-date',
+                form: f,
+                hint: t('in_person_proofing.form.passport.dob_hint'),
+                label: t('in_person_proofing.form.passport.dob'),
+                name: :passport_dob,
+                required: true,
+              ) %>
+        </div>
 
         <%= render ValidatedFieldComponent.new(
               form: f,
@@ -61,15 +63,16 @@
               name: :passport_number,
               required: true,
             ) %>
-
-        <%= render MemorableDateComponent.new(
-              content_tag: 'memorable-date',
-              form: f,
-              hint: t('in_person_proofing.form.passport.expiration_date_hint'),
-              label: t('in_person_proofing.form.passport.expiration_date'),
-              name: :passport_expiration,
-              required: true,
-            ) %>
+        <div class="margin-bottom-4">
+          <%= render MemorableDateComponent.new(
+                content_tag: 'memorable-date',
+                form: f,
+                hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+                label: t('in_person_proofing.form.passport.expiration_date'),
+                name: :passport_expiration,
+                required: true,
+              ) %>
+        </div>
     </div>
 
     <%= f.submit do %>
