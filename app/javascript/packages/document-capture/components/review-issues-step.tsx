@@ -34,6 +34,10 @@ export interface ReviewIssuesStepValue {
    * Back image metadata.
    */
   back_image_metadata?: string;
+  /**
+   * Passport image metadata.
+   */
+  passport_image_metadata?: string;
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
@@ -45,7 +49,11 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
   isFailedDocType?: boolean;
   isFailedSelfieLivenessOrQuality?: boolean;
   pii?: PII;
-  failedImageFingerprints?: { front: string[] | null; back: string[] | null };
+  failedImageFingerprints?: {
+    front: string[] | null;
+    back: string[] | null;
+    passport: string[] | null;
+  };
 }
 
 function ReviewIssuesStep({
@@ -64,7 +72,7 @@ function ReviewIssuesStep({
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   pii,
-  failedImageFingerprints = { front: [], back: [] },
+  failedImageFingerprints = { front: [], back: [], passport: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
@@ -98,7 +106,18 @@ function ReviewIssuesStep({
     const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
       backMetaData?.fingerprint ?? '',
     );
-    if (frontHasFailed || backHasFailed) {
+
+    let passportMetaData: { fingerprint: string | null } = { fingerprint: null };
+    try {
+      passportMetaData = JSON.parse(
+        typeof value.passport_image_metadata === 'undefined' ? '{}' : value.passport_image_metadata,
+      );
+    } catch (e) {}
+    const passportHasFailed = !!failedSubmissionImageFingerprints?.passport?.includes(
+      passportMetaData?.fingerprint ?? '',
+    );
+
+    if (frontHasFailed || backHasFailed || passportHasFailed) {
       setSkipWarning(true);
     }
   }, []);

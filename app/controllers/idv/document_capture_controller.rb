@@ -86,6 +86,7 @@ module Idv
 
     def extra_view_variables
       {
+        id_type:,
         document_capture_session_uuid: document_capture_session_uuid,
         mock_client: document_capture_session.doc_auth_vendor == 'mock',
         flow_path: 'standard',

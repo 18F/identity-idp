@@ -74,6 +74,7 @@ module I18n
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
+        { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -83,10 +84,6 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_save_time' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.heading' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.skip' }, # English-only A/B test
       ].freeze
       # rubocop:enable Layout/LineLength
 

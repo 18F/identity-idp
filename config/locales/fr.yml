@@ -8,36 +8,43 @@ account_reset.confirm_delete_account.info_html: Le compte pour <strong>%{email}<
 account_reset.confirm_delete_account.link_text: créer un nouveau compte
 account_reset.confirm_delete_account.title: Vous avez supprimé votre compte
 account_reset.confirm_request.close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
-account_reset.confirm_request.instructions_end: pour commencer le processus de suppression du compte. Suivez les instructions dans votre e-mail pour terminer le processus.
-account_reset.confirm_request.instructions_start: Nous avons envoyé un e-mail à
+account_reset.confirm_request.info_html:
+  - Nous avons envoyé un e-mail à <strong>%{email}</strong> pour lancer le processus de suppression du compte. Ce premier e-mail confirme que vous avez entamé le processus de suppression du compte. <strong>Cela ne signifie pas que votre compte a déjà été supprimé.</strong>
+  - Par mesure de sécurité, %{waiting_period} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra le lien permettant poursuivre la suppression de votre compte.
+  - Si vous changez d’avis, vous pouvez annuler la suppression de votre compte à tout moment
 account_reset.confirm_request.security_note: Par mesure de sécurité, nous avons également envoyé un SMS à votre numéro de téléphone enregistré.
 account_reset.delete_account.are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte ?
 account_reset.delete_account.info: La suppression de votre compte devrait être votre dernier recours si vous vous êtes fait bloquer de votre compte. Vous ne pourrez pas récupérer les informations liées à votre compte. Nous informerons les organismes auxquels vous accédez avec %{app_name} que vous ne disposez plus d’un compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
 account_reset.delete_account.title: La suppression de votre compte devrait être votre dernier recours
 account_reset.pending.cancel_request: Annuler la demande
+account_reset.pending.cancel_request_prompt_html: 'Si vous avez changé d’avis et souhaitez annuler la suppression de votre compte, cliquez sur le bouton «&nbsp;Annuler la demande&nbsp;» ci-dessous.'
 account_reset.pending.canceled: Nous avons annulé votre demande de suppression de votre compte.
-account_reset.pending.confirm: Si vous annulez maintenant, vous devez créer une nouvelle demande et attendre encore %{interval} pour supprimer votre compte.
+account_reset.pending.canceled_info: Votre demande de suppression de compte %{app_name} a été annulée. Vous pouvez continuer d’utiliser votre compte %{app_name} ou créer une nouvelle demande de suppression de compte.
 account_reset.pending.header: Vous avez demandé de supprimer votre compte
 account_reset.pending.wait_html: Il y a un délai d’attente de %{waiting_period} pour supprimer votre compte. Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des instructions pour terminer la suppression.
-account_reset.recovery_options.check_saved_credential: Vérifiez si vous avez des informations d’identification sauvegardées
-account_reset.recovery_options.check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou tactile, vous avez peut-être sauvegardé vos informations d’identification dans un gestionnaire de mots de passe, tel que iCloud Keychain ou Google Password Manager. Essayez d’utiliser le déverrouillage facial ou tactile sur un navigateur utilisant ce gestionnaire de mots de passe.
+account_reset.recover_options.yes_delete: Supprimer mon compte
+account_reset.recovery_option.cancel_deletion: Annuler la suppression
+account_reset.recovery_options.check_webauthn_platform_header: Utiliser le même appareil que celui sur lequel vous avez initialement configuré le déverrouillage facial ou tactile
+account_reset.recovery_options.check_webauthn_platform_help_link: déverrouillage facial ou tactile
+account_reset.recovery_options.check_webauthn_platform_info_html: Si vous aviez configuré le %{link_html} lors de la création de votre compte, veillez à utiliser le même appareil que celui sur lequel vous avez créé votre compte %{app_name}.
 account_reset.recovery_options.header: Êtes-vous sûr de vouloir supprimer votre compte ?
 account_reset.recovery_options.help_text: Si vous êtes bloqué et avez toujours besoin d’accéder à %{app_name}, essayez plutôt les mesures suivantes.
+account_reset.recovery_options.still_working: Cela ne fonctionne toujours pas ?
 account_reset.recovery_options.try_another_device: Essayer un autre appareil sur lequel vous avez peut-être sélectionné l’option « mémoriser l’appareil ».
 account_reset.recovery_options.try_method_again: Essayer à nouveau votre méthode d’authentification
+account_reset.recovery_options.try_method_description_html: Assurez-vous d’avoir accès aux méthodes d’authentification que vous aviez configurées lors de la création de votre compte, puis %{link_html}.
+account_reset.recovery_options.try_method_description_link: essayez à nouveau votre méthode d’authentification
 account_reset.recovery_options.use_device: Utiliser un autre appareil
-account_reset.recovery_options.use_same_device: Sinon, essayez d’utiliser le même appareil où vous avez configuré le déverrouillage facial ou tactile.
-account_reset.request.are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes d’authentification ?
+account_reset.request.account_delete_link: En savoir plus sur le processus de suppression d’un compte
+account_reset.request.choose_to_continue: 'Si vous décidez de mener à bien la suppression de votre compte, vous recevrez deux e-mails :'
+account_reset.request.continue_deletion: Voulez-vous poursuivre la suppression de votre compte ?
 account_reset.request.delete_account: Supprimer votre compte
-account_reset.request.delete_account_info:
-  - Supprimer votre compte existant et en créer un nouveau vous permet d’utiliser la même adresse e-mail et de définir de nouvelles options de sécurité. cependant, la suppression supprimera toutes les applications d’agence que vous avez liées à votre compte et vous devrez restaurer chaque connexion.
-  - Si vous continuez, vous recevra d’abord un email de confirmation. Par mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien pour continuer la suppression de votre compte %{interval} après l’email de confirmation initial arrive.
-account_reset.request.info:
-  - Si vous ne pouvez pas accéder à votre compte via les options de sécurité que vous avez définies auparavant, la suppression de votre compte et la création d’un nouveau compte est la seule option.
-  - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît assurez-vous que vous n’avez pas une autre option de sécurité que vous pouvez utiliser à la place.
+account_reset.request.delete_email1_html: <strong>E-mail 1:</strong> Vous recevrez tout d’abord un e-mail de confirmation. Cela <strong>ne signifie pas</strong> que votre compte a été supprimé à ce stade.
+account_reset.request.delete_email2_html: <strong>E-mail 2:</strong> %{interval} après le premier e-mail de confirmation, vous en recevrez un deuxième qui contiendra un lien vous permettant de poursuivre la suppression de votre compte. Pour cela, vous devez confirmer que vous voulez supprimer votre compte. Après cette étape, il n’est plus possible d’annuler la suppression d’un compte.
+account_reset.request.delete_request_details_html: Si vous ne parvenez toujours pas à vous connecter à l’aide des méthodes d’authentification que vous aviez configurées, vous pouvez supprimer votre compte puis en créer un nouveau. Supprimer votre compte n’efface aucune des informations que vous avez stockées auprès d’organismes publics.<br/>%{account_delete_link}.
 account_reset.request.no_cancel: Annuler
-account_reset.request.title: Suppression et réinitialisation de compte
-account_reset.request.yes_continue: Oui, continuer la suppression
+account_reset.request.no_cancel2: Non, annuler la suppression du compte
+account_reset.request.yes_continue: Oui, continuer la suppression du compte
 account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
 account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
@@ -498,6 +505,7 @@ devise.sessions.signed_out: Vous êtes maintenant déconnecté.
 doc_auth.accessible_labels.camera_video_capture_instructions: Nous prendrons automatiquement la photo
 doc_auth.accessible_labels.camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
 doc_auth.accessible_labels.document_capture_dialog: Capture du document
+doc_auth.alt.passport_help: Un passeport ouvert à la page de la photo. La page d’informations du passeport est placée sur un fond sombre à l’intérieur des quatre lignes formant un cadre.
 doc_auth.alt.selfie_help_1: Le visage d’une personne dans un ovale vert.
 doc_auth.alt.selfie_help_2: Un doigt coche une case sous le visage pour valider la photo.
 doc_auth.buttons.add_new_photos: Ajouter de nouvelles photos
@@ -598,6 +606,7 @@ doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
+doc_auth.headings.document_capture_passport: Votre passeport
 doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
@@ -607,6 +616,9 @@ doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pou
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
+doc_auth.headings.passport: Votre passeport
+doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
+doc_auth.headings.passport_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
@@ -638,6 +650,7 @@ doc_auth.info.capture_status_none: Alignez
 doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
 doc_auth.info.choose_id_type: Sélectionnez le type de document dont vous disposez. Vous devrez prendre des photos de votre pièce d’identité pour confirmer votre identité.
+doc_auth.info.dos_passport_api_down_message: Nous ne pouvons actuellement pas accepter les passeports. Vous pouvez utiliser un permis de conduire, une carte d’identité d’un État ou réessayer ultérieurement.
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
@@ -658,6 +671,9 @@ doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur 
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
+doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
+doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
+doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
@@ -709,6 +725,9 @@ doc_auth.tips.document_capture_id_text1: Utilisez une surface plane et foncée
 doc_auth.tips.document_capture_id_text2: Prenez vos photos dans un endroit bien éclairé
 doc_auth.tips.document_capture_id_text3: Évitez les reflets ou les ombres
 doc_auth.tips.document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo.
+doc_auth.tips.document_capture_passport_header: Comment vous préparer pour prendre la photo de vous-même
+doc_auth.tips.document_capture_passport_tip1: Prenez une photo dans un endroit bien éclairé sans ombre ou reflet.
+doc_auth.tips.document_capture_passport_tip2: Posez votre pièce d’identité sur une surface plane et sombre.
 doc_auth.tips.document_capture_selfie_id_header_text: Comment prendre des photos nettes
 doc_auth.tips.document_capture_selfie_selfie_text: Comment vous préparer pour prendre la photo de vous-même
 doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre visage (lunettes, couvre-chef, etc.)
@@ -1049,6 +1068,7 @@ idv.errors.pattern_mismatch.zipcode: Saisissez un code postal à 5 ou 9 chiffres
 idv.errors.pattern_mismatch.zipcode_five: Saisissez un code postal à 5 chiffres
 idv.errors.technical_difficulties: Nous rencontrons des difficultés techniques
 idv.errors.try_again_later: Veuillez réessayer ultérieurement.
+idv.failure.address.warning: Veuillez vérifier les informations que vous avez saisies et réessayer. Si votre adresse postale est différente de votre adresse personnelle, veuillez saisir l’adresse où vous résidez actuellement.
 idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
@@ -1194,6 +1214,7 @@ idv.unavailable.idv_explanation.without_sp: L’organisme auquel vous essayez d�
 idv.unavailable.next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et réessayez plus tard.'
 idv.unavailable.status_page_link: Obtenir les dernières informations sur notre page d’état des systèmes.
 idv.unavailable.technical_difficulties: Malheureusement, nous rencontrons des difficultés techniques et ne pouvons pas vérifier votre identité pour le moment.
+idv.warning.address.heading: Nous n’avons pas trouvé d’informations correspondant à votre adresse
 idv.warning.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
 idv.warning.state_id.cancel_button: Quitter %{app_name}
 idv.warning.state_id.explanation: Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations pour le moment.
@@ -1320,6 +1341,7 @@ in_person_proofing.headings.state_id_milestone_2: Saisissez les informations fig
 in_person_proofing.headings.switch_back: Revenez à votre ordinateur pour vous préparer à confirmer votre identité en personne
 in_person_proofing.headings.update_address: Mettre à jour votre adresse personnelle
 in_person_proofing.headings.update_state_id: Mettez à jour les informations figurant sur votre document d’identité
+in_person_proofing.info.choose_id_type: Select the type of document that you want to use. You’ll need to bring this document to the Post Office.
 in_person_proofing.process.barcode.caption_label: Code d’inscription
 in_person_proofing.process.barcode.heading: Montrez votre code-barres %{app_name}
 in_person_proofing.process.barcode.info: Le préposé doit scanner votre code-barres en haut de cette page. Vous pouvez imprimer cette page ou la montrer sur votre appareil mobile.
@@ -1407,7 +1429,7 @@ links.back_to_sp: Retour à %{sp}
 links.cancel: Annuler
 links.cancel_account_creation: '‹ Annuler la création du compte'
 links.contact: Contact
-links.continue_sign_in: Continuer la connexion
+links.continue_sign_in: Se connecter
 links.create_account: Créer un compte
 links.exit_login: Quitter %{app_name}
 links.go_back: Retour
@@ -1660,7 +1682,7 @@ two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
 two_factor_authentication.account_reset.successful_cancel: Je vous remercie. Votre demande de suppression de votre compte %{app_name} a été annulée.
-two_factor_authentication.account_reset.text_html: Si vous ne pouvez utiliser aucune des options de sécurité ci-dessus, vous pouvez réinitialiser vos préférences en %{link_html}.
+two_factor_authentication.account_reset.text_html: Si vous ne pouvez utiliser aucune des options d’authentification ci-dessus, vous pouvez %{link_html} puis en créer un nouveau. Vous ne perdrez aucune des informations que vous avez stockées auprès d’organismes publics en supprimant votre compte.
 two_factor_authentication.attempt_remaining_warning_html.one: Il vous reste <strong>%{count} tentative</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Il vous reste <strong>%{count} tentatives</strong>.
 two_factor_authentication.auth_app.change_nickname: Changer de pseudo
@@ -1825,8 +1847,8 @@ user_mailer.account_reinstated.subject: Votre compte est déverrouillé
 user_mailer.account_reinstated.we_have_finished_reviewing: Nous avons terminé l’examen de votre compte %{app_name} et vous pouvez maintenant vous reconnecter avec les informations de votre compte.
 user_mailer.account_rejected.intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez contacter l’organisme dont vous essayez d’accéder au service.
 user_mailer.account_rejected.subject: Nous n’avons pas pu vérifier votre identité
-user_mailer.account_reset_cancel.intro_html: Cet e-mail confirme que vous avez annulé votre demande de suppression de votre compte %{app_name_html}.
-user_mailer.account_reset_cancel.subject: Demande annulée
+user_mailer.account_reset_cancel.intro_html: Cet e-mail confirme que vous avez annulé votre demande de suppression de votre compte %{app_name_html}.<br/><br/> Vous pouvez continuer d’utiliser votre compte %{app_name_html} ou créer une nouvelle demande de suppression de compte.
+user_mailer.account_reset_cancel.subject: 'Annulation de la demande de suppression de compte %{app_name}'
 user_mailer.account_reset_complete.intro_html: Le présent e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
 user_mailer.account_reset_complete.subject: Compte supprimé
 user_mailer.account_reset_granted.button: Confirmer la suppression du compte
@@ -1835,8 +1857,7 @@ user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer 
 user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
-user_mailer.account_reset_request.header: Votre compte sera supprimé dans %{interval}
-user_mailer.account_reset_request.intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a un delai d’attente de %{waiting_period} si vous avez perdu l’accès à vos méthodes d’authentification et devez supprimer votre compte. Si vous trouvez vos méthodes d’authentification, vous pouvez vous connecter à votre compte %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après la période d’attente de %{waiting_period}, vous recevrez un e-mail qui vous demandera de confirmer la suppression de votre compte %{app_name}. Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé.'
+user_mailer.account_reset_request.intro_html: 'Par mesure de sécurité, %{app_name} requiert de suivre un processus en deux étapes pour supprimer votre compte:<br><br> <strong>Étape 1, période d’attente de %{waiting_period}:</strong> cet e-mail confirme que vous avez entamé le processus de suppression du compte. Il y a une période d’attente de %{waiting_period} avant que la suppression du compte puisse être menée à bien si vous avez perdu vos méthodes d’authentification pour vous connecter.<br/><br/> <strong>Étape 2, confirmer la suppression du compte:</strong> Après la période d’attente de %{waiting_period}, vous recevrez un deuxième e-mail vous demandant de confirmer la suppression de votre compte %{app_name}. <strong>Votre compte ne sera pas supprimé tant que vous n’aurez pas confirmé la suppression du compte à partir du deuxième e-mail.</strong> de plus pour confirmer la suppression du compte.'
 user_mailer.account_reset_request.subject: Comment supprimer votre compte %{app_name}
 user_mailer.account_verified.change_password_link: réinitialiser votre mot de passe
 user_mailer.account_verified.contact_link: contactez le service d’assistance de %{app_name}
@@ -2031,10 +2052,11 @@ vendor_outage.blocked.phone.default: Nous ne sommes pas actuellement en mesure d
 vendor_outage.get_updates: Obtenir les dernières informations
 vendor_outage.get_updates_on_status_page: Obtenir les dernières informations sur notre page d’état des systèmes.
 vendor_outage.working: Nous travaillons à la résolution d’une erreur
-webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.cta: Configurer le déverrouillage facial ou tactile
+webauthn_platform_recommended.description_security: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
+webauthn_platform_recommended.heading: Configurar el desbloqueo facial o táctil
+webauthn_platform_recommended.skip: Ignorer
+webauthn_platform_recommended.upsell: La confidentialité de vos informations est assurée car le déverrouillage par reconnaissance faciale ou tactile résiste à l’hameçonnage et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales.
 webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
 webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.

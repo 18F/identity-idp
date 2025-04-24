@@ -1226,6 +1226,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step_name
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_address_warning_visited(step_name:, remaining_submit_attempts:, **extra)
+    track_event(
+      :idv_doc_auth_address_warning_visited,
+      step_name: step_name,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
@@ -3094,6 +3106,30 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing address visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_in_person_proofing_choose_id_type_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_visited,
       flow_path:,
       step:,
       analytics_id:,
