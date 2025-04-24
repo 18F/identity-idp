@@ -163,7 +163,7 @@ module Idv
     end
 
     def confirm_no_profile_yet
-      if current_user.profiles.where('activated_at is NOT NULL').any?
+      if current_user.has_proofed_before?
         attempts_api_tracker.idv_reproof
       end
 
