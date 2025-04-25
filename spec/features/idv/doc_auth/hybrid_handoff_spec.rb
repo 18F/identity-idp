@@ -4,6 +4,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
+  include PassportApiHelpers
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:idv_send_link_max_attempts) { 3 }
@@ -11,6 +12,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
   let(:facial_match_required) { false }
+  let(:passports_enabled) { false }
   before do
     if facial_match_required
       visit_idp_from_oidc_sp_with_ial2(
@@ -19,6 +21,11 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
+    stub_health_check_settings
+    stub_health_check_endpoints
+
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
   end
   context 'on a desktop device send link' do
     before do
@@ -257,6 +264,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
   include IdvStepHelper
   include DocAuthHelper
   include InPersonHelper
+  include PassportApiHelpers
 
   def verify_handoff_page_selfie_version_content(page)
     expect(page).to have_current_path(idv_hybrid_handoff_path)
@@ -314,6 +322,14 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
   def verify_no_upload_photos_section_and_link(page)
     expect(page).to_not have_content(t('doc_auth.headings.upload_from_computer'))
   end
+
+  before do
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
+    stub_health_check_settings
+    stub_health_check_endpoints
+  end
+
+  let(:passports_enabled) { false }
 
   context 'on a desktop device with various ipp, socure, and selfie configuration' do
     let(:in_person_proofing_enabled) { true }

@@ -7,6 +7,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
   let(:instance_id) { 'fake-instance-id' }
 
+  before do
+    allow(IdentityConfig.store).to receive(doc_auth_passports_enabled)
+      .and_return(false)
+
   it 'allows doc auth without any external requests' do
     post_front_image_response = client.post_front_image(
       instance_id: instance_id,
