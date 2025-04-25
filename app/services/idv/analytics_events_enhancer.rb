@@ -127,7 +127,7 @@ module Idv
     private
 
     def analytics_attributes(method_name)
-      AnalyticsEventsEnhancer.extra_args_for_method(method_name)
+      Idv::AnalyticsEventsEnhancer.extra_args_for_method(method_name)
         .index_with do |arg_name|
           send(arg_name.to_s).presence
         end

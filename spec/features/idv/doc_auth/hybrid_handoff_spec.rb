@@ -182,6 +182,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       fill_in :doc_auth_phone, with: '415-555-0199'
 
       click_send_link
+
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
 
     it 'sets requested_at on the capture session' do
