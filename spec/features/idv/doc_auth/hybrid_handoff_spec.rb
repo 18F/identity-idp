@@ -27,6 +27,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
   end
+
   context 'on a desktop device send link' do
     before do
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -177,7 +178,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         impl.call(**config)
       end
 
+      fill_in :doc_auth_phone, with: ''
       fill_in :doc_auth_phone, with: '415-555-0199'
+
       click_send_link
     end
 
@@ -190,8 +193,11 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         impl.call(**config)
       end
 
+      fill_in :doc_auth_phone, with: ''
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
+
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
 
       document_capture_session = DocumentCaptureSession.find_by(uuid: doc_capture_session_uuid)
       expect(document_capture_session).to be
