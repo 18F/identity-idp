@@ -3,6 +3,7 @@
 module Idv
   class InPersonController < ApplicationController
     include Idv::AvailabilityConcern
+    include Idv::ChooseIdTypeConcern
     include RenderConditionConcern
     include IdvStepConcern
 
