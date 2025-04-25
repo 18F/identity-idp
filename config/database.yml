@@ -121,4 +121,4 @@ production:
   #   username: "<%=# Identity::Hostdata.config.redshift_username %>"
   #   password: "<%= Identity::Hostdata.config.redshift_password %>"
   #   encoding: utf8
-  <% end %>
+  <%# end %>
