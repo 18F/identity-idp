@@ -155,7 +155,7 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    it 'user can go through verification uploading ID and selfie on seprerate pages' do
+    it 'user can go through verification uploading ID and selfie on seperate pages' do
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
@@ -433,6 +433,7 @@ RSpec.feature 'document capture step', :js do
               click_continue
               expect_doc_capture_selfie_subheader
               click_button 'Take photo'
+              expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
               attach_selfie
               submit_images
 
@@ -610,7 +611,12 @@ RSpec.feature 'document capture step', :js do
               perform_in_browser(:mobile) do
                 visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
                 sign_in_and_2fa_user(@user)
+
                 complete_doc_auth_steps_before_document_capture_step
+                text = t('doc_auth.instructions.consent', app_name: APP_NAME)
+
+                # Wait until we leave the page
+                expect(page).to have_no_content(text, wait: 60)
               end
             end
 

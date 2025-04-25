@@ -69,15 +69,14 @@ module DocAuthHelper
       wait: 5,
     ).click
     click_on t('doc_auth.buttons.continue')
-
-    # Wait until we leave the page
-    expect(page).to have_no_content(text, wait: 60)
   end
 
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path(idv_agreement_path)
     complete_agreement_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+    expect(page).not_to have_current_path(idv_agreement_path)
   end
 
   def complete_hybrid_handoff_step
