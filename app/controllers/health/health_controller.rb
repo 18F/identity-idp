@@ -7,7 +7,7 @@ module Health
     def health_checker
       checkers = {
         database: DatabaseHealthChecker,
-        data_warehouse: DataWarehouseHealthChecker,
+        # data_warehouse: DataWarehouseHealthChecker,
       }
       MultiHealthChecker.new(**checkers)
     end
