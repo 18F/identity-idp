@@ -236,6 +236,12 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Send previous week's authentication reports to partners
+      irs_weekly_authentication_report: {
+        class: 'Reports::IrsAuthenticationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',
@@ -277,12 +283,14 @@ else
         cron: s3_cron_24h,
         args: -> { [Time.zone.today] },
       },
+
       # Previoius week API transaction count reprot
       api_transaction_count_report: {
         class: 'Reports::ApiTransactionCountReport',
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
