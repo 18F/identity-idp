@@ -5,14 +5,17 @@ RSpec.feature 'document capture step', :js do
   include DocAuthHelper
   include DocCaptureHelper
   include ActionView::Helpers::DateHelper
+  include PassportApiHelpers
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:passports_enabled) { false }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
     allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
   end
 
   before(:all) do
@@ -122,11 +125,13 @@ RSpec.feature 'document capture step', :js do
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
 
+        expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 10)
         expect(page).to have_current_path(idv_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
         # doc auth is successful while liveness is not req'd
+        expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 10)
         use_id_image('ial2_test_credential_no_liveness.yml')
         submit_images
 
@@ -172,6 +177,7 @@ RSpec.feature 'document capture step', :js do
       )
       click_continue
       click_button 'Take photo'
+      expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'), wait: 10)
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
@@ -190,12 +196,16 @@ RSpec.feature 'document capture step', :js do
 
   context 'standard desktop flow' do
     before do
+      stub_health_check_settings
+      stub_health_check_endpoints
+
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
 
     context 'with a valid passport', allow_browser_log: true do
+      let(:passports_enabled) { true }
       let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
       before do
@@ -203,15 +213,16 @@ RSpec.feature 'document capture step', :js do
           .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
 
         allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-                                         .and_return(fake_dos_api_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        choose_id_type(:passport)
       end
 
       it 'works' do
-        expect(page).to have_content(t('doc_auth.headings.document_capture'))
+        expect(page).to have_content(t('doc_auth.headings.passport_capture'))
         expect(page).to have_current_path(idv_document_capture_url)
 
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-        attach_images(
+        attach_passport(
           Rails.root.join(
             'spec', 'fixtures',
             'passport_credential.yml'
@@ -225,6 +236,7 @@ RSpec.feature 'document capture step', :js do
 
     context 'with an invalid passport', allow_browser_log: true do
       let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+      let(:passports_enabled) { true }
 
       before do
         stub_request(:post, fake_dos_api_endpoint)
@@ -235,12 +247,14 @@ RSpec.feature 'document capture step', :js do
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
+        choose_id_type(:passport)
       end
 
       it 'fails' do
+        expect(page).to have_content(t('doc_auth.headings.passport_capture'))
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-        attach_images(
+        attach_passport(
           Rails.root.join(
             'spec', 'fixtures',
             'passport_bad_mrz_credential.yml'
@@ -336,6 +350,7 @@ RSpec.feature 'document capture step', :js do
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
 
+        expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 10)
         expect(page).to have_current_path(idv_document_capture_url)
         expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
@@ -443,6 +458,7 @@ RSpec.feature 'document capture step', :js do
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
                 click_button 'Take photo'
+
                 click_idv_submit_default
                 expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
                 expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
