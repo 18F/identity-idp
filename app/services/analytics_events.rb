@@ -5340,7 +5340,7 @@ module AnalyticsEvents
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
-  # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [Boolean] address_line2_present whether or not we have an address that uses the 2nd line
   # @param [String] zip_code zip code from state issued ID
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
