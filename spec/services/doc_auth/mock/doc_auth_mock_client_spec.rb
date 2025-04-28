@@ -10,6 +10,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
   before do
     allow(IdentityConfig.store).to receive(doc_auth_passports_enabled)
       .and_return(false)
+  end
 
   it 'allows doc auth without any external requests' do
     post_front_image_response = client.post_front_image(
@@ -304,6 +305,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       post_images_response = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
+        passport_image: nil,
       )
 
       expect(post_images_response.success?).to eq(false)
@@ -316,6 +318,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     post_images_response = client.post_images(
       front_image: DocAuthImageFixtures.document_front_image,
       back_image: DocAuthImageFixtures.document_back_image,
+      passport_image: nil,
       image_source: DocAuth::ImageSources::UNKNOWN,
     )
 
@@ -343,6 +346,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         response = client.post_images(
           front_image: image,
           back_image: image,
+          passport_image: nil,
           liveness_checking_required: liveness_checking_required,
           selfie_image: image,
         )
@@ -355,6 +359,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         response = client.post_images(
           front_image: image_no_setting,
           back_image: image_no_setting,
+          passport_image: nil,
           liveness_checking_required: liveness_checking_required,
           selfie_image: image_no_setting,
         )
@@ -377,6 +382,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         response = client.post_images(
           front_image: image,
           back_image: image,
+          passport_image: nil,
           liveness_checking_required: liveness_checking_required,
         )
 
@@ -453,6 +459,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         post_images_response = client.post_images(
           front_image: image,
           back_image: image,
+          passport_image: nil,
           selfie_image: image,
           liveness_checking_required: liveness_checking_required,
         )
@@ -485,6 +492,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           post_images_response = client.post_images(
             front_image: image,
             back_image: image,
+            passport_image: nil,
             selfie_image: image,
             liveness_checking_required: liveness_checking_required,
           )
@@ -517,6 +525,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           post_images_response = client.post_images(
             front_image: image,
             back_image: image,
+            passport_image: nil,
             selfie_image: image,
             liveness_checking_required: liveness_checking_required,
           )
@@ -548,6 +557,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           post_images_response = client.post_images(
             front_image: image,
             back_image: image,
+            passport_image: nil,
             selfie_image: image,
             liveness_checking_required: liveness_checking_required,
           )

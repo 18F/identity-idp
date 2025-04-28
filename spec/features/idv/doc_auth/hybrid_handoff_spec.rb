@@ -25,7 +25,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     stub_health_check_settings
     stub_health_check_endpoints
 
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
   end
 
   context 'on a desktop device send link' do
@@ -332,7 +333,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
     stub_health_check_settings
     stub_health_check_endpoints
   end

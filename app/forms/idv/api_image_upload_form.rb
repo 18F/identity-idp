@@ -583,7 +583,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
-          passport_image_fingerprint: failed_passport_fingerprint
+          passport_image_fingerprint: failed_passport_fingerprint,
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
@@ -592,7 +592,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
-          passport_image_fingerprint: failed_passport_fingerprint
+          passport_image_fingerprint: failed_passport_fingerprint,
         )
       end
       # retrieve updated data from session

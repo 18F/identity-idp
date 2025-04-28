@@ -14,8 +14,10 @@ RSpec.feature 'document capture step', :js do
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
-    allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?).and_return(true)
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
+    allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?)
+      .and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
   end
 
   before(:all) do
@@ -243,7 +245,7 @@ RSpec.feature 'document capture step', :js do
           .to_return(status: 200, body: '{}', headers: {})
 
         allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-                                         .and_return(fake_dos_api_endpoint)
+          .and_return(fake_dos_api_endpoint)
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(@user)
         complete_doc_auth_steps_before_document_capture_step
@@ -862,7 +864,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
         .and_return(false)
-      allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?).and_return(true)
+      allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?)
+        .and_return(true)
 
       visit_idp_from_sp_with_ial2(
         :oidc,

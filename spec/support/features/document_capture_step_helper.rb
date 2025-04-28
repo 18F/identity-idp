@@ -173,4 +173,3 @@ module DocumentCaptureStepHelper
     click_continue
   end
 end
-
