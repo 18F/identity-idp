@@ -10,10 +10,9 @@ module Reports
 
     def perform(_date)
       return unless IdentityConfig.store.s3_reports_enabled
-      binding.pry
       iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 30.days.ago }
-      
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts)
+      binding.pry
       save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
       subject = "IRS Monthly Credential Metrics"
@@ -36,7 +35,7 @@ module Reports
     # @param [Array<IaaReportingHelper::IaaConfig>] iaas
     # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
     # @return [String] CSV report
-    def monthly_credentials_emailable_reports(issuer)
+    def build_csv(iaas, partner_accounts)
       last_month_start = Date.today.last_month.beginning_of_month
       last_month_end = Date.today.last_month.end_of_month
     
