@@ -24,6 +24,12 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
         expect(subject.ssn_is_unique?).to eq false
       end
+
+      it 'recognizes fingerprint without dashes' do
+        create(:profile, pii: { ssn: ssn.delete('-') })
+
+        expect(subject.ssn_is_unique?).to eq false
+      end
     end
 
     context 'when ssn is already taken by same profile' do

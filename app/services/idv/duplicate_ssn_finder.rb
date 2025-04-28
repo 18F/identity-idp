@@ -22,17 +22,16 @@ module Idv
     end
 
     def ssn_signatures
-      current_signature = ssn_signature(Pii::Fingerprinter.current_key)
-      old_signatures = IdentityConfig.store.hmac_fingerprinter_key_queue.map do |key|
-        ssn_signature(key)
+      formatted_ssn = SsnFormatter.format(ssn)
+      normalized_ssn = SsnFormatter.normalize(ssn)
+      ssns = [formatted_ssn, normalized_ssn]
+
+      keys = [Pii::Fingerprinter.current_key] + IdentityConfig.store.hmac_fingerprinter_key_queue
+      keys.flat_map do |key|
+        ssns.map do |ssn|
+          Pii::Fingerprinter.fingerprint(ssn, key)
+        end
       end
-      [current_signature] + old_signatures
-    end
-
-    private
-
-    def ssn_signature(key)
-      Pii::Fingerprinter.fingerprint(ssn, key)
     end
   end
 end
