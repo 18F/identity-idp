@@ -19,12 +19,14 @@ class DuplicateProfileChecker
     associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
     if !duplicate_ssn_finder.ial2_profile_ssn_is_unique?
       confirmation = DuplicateProfileConfirmation.find_by(profile_id:)
-      if confirmation_needs_updating?(confirmation, associated_profiles)
-        confirmation.update(
-          confirmed_at: Time.zone.now,
-          confirmed: false,
-          duplicate_profile_ids: associated_profiles.map(&:id),
-        )
+      if confirmation
+        if !(confirmation.duplicate_profile_ids == associated_profiles.map(&:id))
+          confirmation.update(
+            confirmed_at: Time.zone.now,
+            confirmed_all: false,
+            duplicate_profile_ids: associated_profiles.map(&:id),
+          )
+        end
       else
         DuplicateProfileConfirmation.create(
           profile_id: profile_id,
@@ -36,11 +38,6 @@ class DuplicateProfileChecker
   end
 
   private
-
-  def confirmation_needs_updating?(confirmation, associated_profiles)
-    return false unless confirmation
-    !(confirmation.duplicate_profile_ids == associated_profiles.map(&:id))
-  end
 
   def sp_eligible_for_one_account?
     return false unless sp.present?
