@@ -2,6 +2,8 @@
 
 require 'csv'
 #require_relative 'app/jobs/reports/base_report.rb'
+require 'reporting/credential_report'
+
 
 module Reports
   class IRSMonthlyCredMetrics < BaseReport
@@ -11,21 +13,22 @@ module Reports
     def perform(_date)
       return unless IdentityConfig.store.s3_reports_enabled
       iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 30.days.ago }
-      csv = build_csv(iaas, IaaReportingHelper.partner_accounts)
-      binding.pry
-      save_report(REPORT_NAME, csv, extension: 'csv')
+      csv = build_csv(iaas, IaaReportingHelper.partner_accounts, _date)
+      #save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
       subject = "IRS Monthly Credential Metrics"
-    
+      # last_month_start = Date.today.last_month.beginning_of_month
+      # last_month_end = Date.today.last_month.end_of_month
+      #time_range = (last_month_start..last_month_end)
+      binding.pry
       report_configs.each do |report_hash|
-        reports = monthly_credentials_emailable_reports(report_hash['issuers'])
-
-        report_hash['emails'].each do |email|
+        reports = monthly_credentials_emailable_reports(report_hash['issuers'], _date)
+        report_hash['emails'].each do |email|s
           ReportMailer.tables_report(
-            email:,
-            subject:,
-            message:,
-            reports: ,
+            email: email,
+            subject: subject,
+            message: message,
+            reports: reports,
             attachment_format: :csv,
           ).deliver_now
         end
@@ -35,16 +38,16 @@ module Reports
     # @param [Array<IaaReportingHelper::IaaConfig>] iaas
     # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
     # @return [String] CSV report
-    def build_csv(iaas, partner_accounts)
-      last_month_start = Date.today.last_month.beginning_of_month
-      last_month_end = Date.today.last_month.end_of_month
+    def build_csv(iaas, partner_accounts, _date)
+      report_month_start = _date.beginning_of_month
+      report_month_end = _date.end_of_month
     
       by_iaa_results = iaas.flat_map do |iaa|
         Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
           key: iaa.key,
           issuers: iaa.issuers,
-          start_date: iaa.start_date,
-          end_date: iaa.end_date,
+          start_date: report_month_start,
+          end_date: report_month_end,
         )
       end
 
@@ -52,8 +55,8 @@ module Reports
         iaa.issuers.flat_map do |issuer|
           Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
             issuer: issuer,
-            iaa_start_date: iaa.start_date,
-            iaa_end_date: iaa.end_date,
+            iaa_start_date: report_month_start,
+            iaa_end_date: report_month_end,
             iaa: iaa.key,
           )
         end
@@ -63,8 +66,8 @@ module Reports
         Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
           partner: partner_account.partner,
           issuers: partner_account.issuers,
-          start_date: partner_account.start_date,
-          end_date: partner_account.end_date,
+          start_date: report_month_start,
+          end_date: report_month_end,
         )
       end
 
@@ -73,8 +76,8 @@ module Reports
           Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
             partner: partner_account.partner,
             issuers: [issuer],
-            start_date: partner_account.start_date,
-            end_date: partner_account.end_date,
+            start_date: report_month_start,
+            end_date: report_month_end,
           )
         end
       end
@@ -206,15 +209,15 @@ module Reports
       # rubocop:enable Metrics/BlockLength
     end
 
-    def monthly_credentials_emailable_reports(issuers)
+    def monthly_credentials_emailable_reports(issuers, _date)
       Reporting::CredentialReport.new(
         issuers:,
-        time_range: report_date.all_month,
+        time_range: _date.all_month.begin.beginning_of_day.._date.all_month.end.end_of_day,
       ).as_emailable_reports
     end
 
     def report_configs
-      IdentityConfig.store.irs_invoice_report_config
+      IdentityConfig.store.irs_monthly_cred_metrics
     end
 
     def extract(arr, key, ial:)
