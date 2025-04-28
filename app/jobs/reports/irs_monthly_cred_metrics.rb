@@ -16,17 +16,17 @@ module Reports
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts)
       save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
-      subject = "IRS Combined Invoice Supplement Report"
+      subject = "IRS Monthly Credential Metrics"
     
       report_configs.each do |report_hash|
-        reports = monthly_authentication_emailable_reports(report_hash['issuers'])
+        reports = monthly_credentials_emailable_reports(report_hash['issuers'])
 
         report_hash['emails'].each do |email|
           ReportMailer.tables_report(
             email:,
             subject:,
             message:,
-            reports:,
+            reports: ,
             attachment_format: :csv,
           ).deliver_now
         end
@@ -36,7 +36,7 @@ module Reports
     # @param [Array<IaaReportingHelper::IaaConfig>] iaas
     # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
     # @return [String] CSV report
-    def build_csv(iaas, partner_accounts)
+    def monthly_credentials_emailable_reports(issuer)
       last_month_start = Date.today.last_month.beginning_of_month
       last_month_end = Date.today.last_month.end_of_month
     
@@ -205,6 +205,17 @@ module Reports
         end
       end
       # rubocop:enable Metrics/BlockLength
+    end
+
+    def monthly_credentials_emailable_reports(issuers)
+      Reporting::CredentialReport.new(
+        issuers:,
+        time_range: report_date.all_month,
+      ).as_emailable_reports
+    end
+
+    def report_configs
+      IdentityConfig.store.irs_invoice_report_config
     end
 
     def extract(arr, key, ial:)
