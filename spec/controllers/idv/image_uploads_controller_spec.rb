@@ -70,6 +70,39 @@ RSpec.describe Idv::ImageUploadsController do
 
         expect_funnel_update_counts(user, 0)
       end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:writer) { EncryptedDocStorage::DocWriter.new }
+        let(:result) do
+          EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+        end
+
+        before do
+          stub_attempts_tracker
+
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).and_return result
+          expect(writer).to receive(:write).and_call_original
+          expect(writer).to receive(:write).and_call_original
+        end
+
+        it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: nil,
+            document_front_image_file_id: nil,
+            selfie_image_encryption_key: nil,
+            selfie_image_file_id: nil,
+            failure_reason: { front: [:blank] },
+          )
+          action
+        end
+      end
     end
 
     context 'when a value is not a file' do
@@ -97,29 +130,40 @@ RSpec.describe Idv::ImageUploadsController do
         end
       end
 
-      it 'tracks events' do
-        stub_analytics
+      context 'the attempts_api_tracker is enabled' do
+        let(:writer) { EncryptedDocStorage::DocWriter.new }
+        let(:result) do
+          EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+        end
+        before do
+          allow(writer).to receive(:write).and_return result
+        end
 
-        action
+        before do
+          stub_attempts_tracker
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
 
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth image upload form submitted',
-          success: false,
-          error_details: {
-            front: { not_a_file: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: 1,
-          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          flow_path: 'standard',
-          back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
-          document_type: an_instance_of(String),
-        )
+          # testing that the storage is happening
+          expect(writer).to receive(:write).and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
 
-        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
+        it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: nil,
+            document_front_image_file_id: nil,
+            selfie_image_encryption_key: nil,
+            selfie_image_file_id: nil,
+            failure_reason: { front: [:not_a_file] },
+          )
 
-        expect_funnel_update_counts(user, 0)
+          action
+        end
       end
     end
 

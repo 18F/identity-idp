@@ -26,6 +26,10 @@ module AttemptsApiTrackingHelper
       parsed_errors || result.errors.presence
     end
 
+    def enabled?
+      true
+    end
+
     def track_mfa_submit_event(_attributes)
       # no-op
     end
