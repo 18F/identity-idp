@@ -209,7 +209,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
-      validate_user_does_not_have_duplicate_profile
+      check_for_duplicate_profiles
       redirect_to next_url_after_valid_authentication
     end
 
@@ -312,13 +312,11 @@ module Users
       update_user_password_compromised_checked_at
     end
 
-    def validate_user_does_not_have_duplicate_profile
-      dupe_profile_checker = DuplicateProfileChecker.new(
+    def check_for_duplicate_profiles
+      DuplicateProfileChecker.new(
         user: current_user,
         user_session: user_session, sp: sp_from_sp_session
-      )
-
-      dupe_profile_checker.validate_user_does_not_have_duplicate_profile
+      ).check_for_duplicate_profiles
     end
 
     def eligible_for_password_lookup?
