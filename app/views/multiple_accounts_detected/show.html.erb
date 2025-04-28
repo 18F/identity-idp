@@ -10,11 +10,39 @@
       <% @multiple_accounts_detected_presenter.other_accounts_detected.each do |dupe_account| %>
         <li>
           <div class="padding-1 border-top border-left border-right border-primary-light">
-            <p> <%= dupe_account[:email] %></p>
+            <p> <%= render(
+                      'shared/masked_text',
+                      text: dupe_account[:email],
+                      masked_text: dupe_account[:masked_email],
+                      accessible_masked_text: dupe_account[:email],
+                    ) %></p> 
+            <p> <%= t(
+                      'multiple_accounts_detected.created_at_html',
+                      timestamp_html: render(TimeComponent.new(time: dupe_account[:created_at])),
+                    ) %>
+            </p>
+            <p> <%= t(
+                      'multiple_accounts_detected.last_sign_in_at_html',
+                      timestamp_html: render(TimeComponent.new(time: dupe_account[:last_sign_in])),
+                    ) %>
+            </p>
           </div>
         </li>
       <% end %>
     </ul>
+  </div>
+
+  <div class="margin-top-4 grid-col-5">
+    <%= render ButtonComponent.new(
+          url: root_url,
+        ).with_content(@multiple_accounts_detected_presenter.recognize_all_accounts) %>
+  </div>
+
+  <div class="margin-top-3 grid-col-5">
+    <%= render ButtonComponent.new(
+          url: root_url,
+          outline: true,
+        ).with_content(@multiple_accounts_detected_presenter.has_unknown_accounts) %>
   </div>
   
 <% end %>

@@ -1463,11 +1463,13 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
+multiple_accounts_detected.created_at_html: "<strong> Created: </strong> %{timestamp_html}"
 multiple_accounts_detected.heading: We believe you may have another account
 multiple_accounts_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
-multiple_accounts_detected.yes_single: Yes this is my account
+multiple_accounts_detected.last_sign_in_at_html: "<strong> Last login: </strong> %{timestamp_html}"
+mutliple_accounts_detected.no_recognize: I do not recognize this account
+multiple_accounts_detected.yes_single: Yes, this is my account
 multiple_accounts_detected.yes_many: Yes, these are my accounts
-mutliple_accounts_detected.no_recognize: I don't recognize an account above
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.
