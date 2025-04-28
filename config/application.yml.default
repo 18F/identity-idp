@@ -122,6 +122,7 @@ doc_auth_vendor_socure_percent: 0
 doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
+doc_escrow_s3_enabled: false
 domain_name: login.gov
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
