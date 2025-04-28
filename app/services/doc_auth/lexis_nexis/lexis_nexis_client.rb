@@ -11,9 +11,9 @@ module DocAuth
       end
 
       def post_images(
-        front_image:,
-        back_image:,
-        passport_image:,
+        front_image: nil,
+        back_image: nil,
+        passport_image: nil,
         document_type: nil,
         selfie_image: nil,
         image_source: nil,

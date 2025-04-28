@@ -11,6 +11,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_metadata: front_image_metadata.to_json,
           back: back_image,
           back_image_metadata: back_image_metadata.to_json,
+          passport: passport_image,
+          passport_image_metadata: passport_image_metadata.to_json,
           selfie: selfie_image,
           selfie_image_metadata: selfie_image_metadata.to_json,
           document_capture_session_uuid: document_capture_session_uuid,
@@ -27,10 +29,13 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:passport_image) { nil }
+  let(:passport_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
+  let(:passport_image_file_name) { 'passport.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }
   let(:store_encrypted_images) { false }
   let(:document_type) { 'DriversLicense' }
@@ -43,7 +48,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       fileName: front_image_file_name,
     }
   end
-
   let(:back_image_metadata) do
     {
       width: 20,
@@ -53,17 +57,32 @@ RSpec.describe Idv::ApiImageUploadForm do
       fileName: back_image_file_name,
     }
   end
+  let(:passport_image_metadata) do
+    {
+      width: 20,
+      height: 20,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: passport_image_file_name,
+    }
+  end
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { create(:document_capture_session, doc_auth_vendor: 'mock') }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:doc_escrow_enabled) { false }
   let(:result) do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+  end
+  let(:image_config) do
+    DocAuth::Mock::Config.new(
+      dpi_threshold: 290,
+      sharpness_threshold: 40,
+      glare_threshold: 40,
+    )
   end
 
   before do
@@ -220,6 +239,13 @@ RSpec.describe Idv::ApiImageUploadForm do
               width: 40,
               fileName: front_image_file_name,
             },
+            passport: {
+              height: 20,
+              mimeType: 'image/png',
+              source: 'upload',
+              width: 20,
+              fileName: passport_image_file_name,
+            },
           },
           doc_auth_result: 'Passed',
           errors: {},
@@ -243,6 +269,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           zip_code: '59010',
           issue_year: 2019,
           document_type: document_type,
+          passport_check_result: {},
         )
       end
 
@@ -339,6 +366,13 @@ RSpec.describe Idv::ApiImageUploadForm do
                 source: 'upload',
                 width: 10,
               },
+              passport: {
+                height: 20,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 20,
+                fileName: passport_image_file_name,
+              },
             },
             doc_auth_result: 'Passed',
             errors: {},
@@ -365,6 +399,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             issue_year: 2019,
             selfie_attempts: a_kind_of(Numeric),
             document_type: document_type,
+            passport_check_result: {},
           )
         end
 
@@ -780,119 +815,108 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'Passport MRZ validation fails' do
+    context 'uploading a Passport image' do
+      let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml.read }
       let(:passport_pii_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {},
-          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
+        DocAuth::Mock::ResultResponse.new(
+          passport_image,
+          image_config,
         )
       end
+      let(:response) { form.submit }
 
-      let(:failed_passport_mrz_response) do
-        DocAuth::Response.new(
-          success: false,
-          errors: { passport: 'invalid MRZ' },
-          extra: {
-            vendor: 'DoS',
-            correlation_id_sent: 'something',
-            correlation_id_received: 'something else',
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:post_images_to_client)
+          .and_return(passport_pii_response)
+      end
+
+      context 'Passport MRZ validation fails' do
+        let(:failed_passport_mrz_response) do
+          DocAuth::Response.new(
+            success: false,
+            errors: { passport: 'invalid MRZ' },
+            extra: {
+              vendor: 'DoS',
+              correlation_id_sent: 'something',
+              correlation_id_received: 'something else',
+              response: 'NO',
+            },
+          )
+        end
+
+        before do
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
+            .to receive(:fetch)
+            .and_return(failed_passport_mrz_response)
+        end
+
+        it 'is not successful' do
+          expect(response.success?).to eq(false)
+        end
+
+        it 'includes remaining_submit_attempts' do
+          expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
+        end
+
+        it 'includes mrz errors' do
+          expect(response.errors).to eq({ passport: 'invalid MRZ' })
+        end
+
+        it 'logs the check event' do
+          response
+
+          expect(fake_analytics).to have_logged_event(
+            :idv_dos_passport_verification,
+            success: false,
             response: 'NO',
-          },
-        )
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            document_type: document_type,
+          )
+        end
       end
 
-      let(:response) { form.submit }
+      context 'Passport MRZ validation succeeds' do
+        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml.read }
 
-      before do
-        allow_any_instance_of(described_class)
-          .to receive(:post_images_to_client)
-          .and_return(passport_pii_response)
+        let(:successful_passport_mrz_response) do
+          DocAuth::Response.new(
+            success: true,
+            errors: {},
+            extra: {
+              vendor: 'DoS',
+              correlation_id_sent: 'something',
+              correlation_id_received: 'something else',
+              response: 'YES',
+            },
+          )
+        end
 
-        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
-          .to receive(:fetch)
-          .and_return(failed_passport_mrz_response)
-      end
+        before do
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
+            .to receive(:fetch)
+            .and_return(successful_passport_mrz_response)
+        end
 
-      it 'is not successful' do
-        expect(response.success?).to eq(false)
-      end
+        it 'is successful' do
+          expect(response.success?).to eq(true)
+        end
 
-      it 'includes remaining_submit_attempts' do
-        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
-      end
+        it 'logs the check event' do
+          response
 
-      it 'includes mrz errors' do
-        expect(response.errors).to eq({ passport: 'invalid MRZ' })
-      end
-
-      it 'logs the check event' do
-        response
-
-        expect(fake_analytics).to have_logged_event(
-          :idv_dos_passport_verification,
-          success: false,
-          response: 'NO',
-          submit_attempts: 1,
-          remaining_submit_attempts: 3,
-          user_id: document_capture_session.user.uuid,
-          document_type: document_type,
-        )
-      end
-    end
-
-    context 'Passport MRZ validation succeeds' do
-      let(:passport_pii_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {},
-          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
-        )
-      end
-
-      let(:successful_passport_mrz_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {
-            vendor: 'DoS',
-            correlation_id_sent: 'something',
-            correlation_id_received: 'something else',
+          expect(fake_analytics).to have_logged_event(
+            :idv_dos_passport_verification,
+            success: true,
             response: 'YES',
-          },
-        )
-      end
-
-      let(:response) { form.submit }
-
-      before do
-        allow_any_instance_of(described_class)
-          .to receive(:post_images_to_client)
-          .and_return(passport_pii_response)
-
-        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
-          .to receive(:fetch)
-          .and_return(successful_passport_mrz_response)
-      end
-
-      it 'is successful' do
-        expect(response.success?).to eq(true)
-      end
-
-      it 'logs the check event' do
-        response
-
-        expect(fake_analytics).to have_logged_event(
-          :idv_dos_passport_verification,
-          success: true,
-          response: 'YES',
-          submit_attempts: 1,
-          remaining_submit_attempts: 3,
-          user_id: document_capture_session.user.uuid,
-          document_type: document_type,
-        )
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            document_type: document_type,
+          )
+        end
       end
     end
 

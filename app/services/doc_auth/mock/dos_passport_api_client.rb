@@ -11,7 +11,7 @@ module DocAuth
         if lexis_nexis_response&.passport_check_result&.dig(:PassportCheckResult) == 'Fail'
           DocAuth::Response.new(
             success: false,
-            errors: { mrz: 'bad' },
+            errors: { passport: 'invalid MRZ' },
           )
         else
           DocAuth::Response.new(success: true)

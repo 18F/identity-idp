@@ -133,6 +133,8 @@ module DocAuth
       end
 
       def passport_check_result
+        return {} if !parsed_data_from_uploaded_file.has_key?('passport_check_result')
+
         parsed_data_from_uploaded_file.dig('passport_check_result')
           &.transform_keys! { |key| key.to_s.camelize }
           &.deep_symbolize_keys

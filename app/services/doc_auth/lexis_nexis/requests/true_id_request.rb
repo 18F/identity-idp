@@ -11,10 +11,10 @@ module DocAuth
           config:,
           user_uuid:,
           uuid_prefix:,
-          front_image:,
-          back_image:,
-          passport_image:,
           document_type:,
+          front_image: nil,
+          back_image: nil,
+          passport_image: nil,
           selfie_image: nil,
           image_source: nil,
           images_cropped: false,
@@ -69,7 +69,7 @@ module DocAuth
             http_response,
             config,
             liveness_checking_required,
-            request_context,
+            request_context:,
           )
         end
 
