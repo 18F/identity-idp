@@ -1055,5 +1055,57 @@ RSpec.describe Idv::EnterPasswordController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
       end
     end
+
+    describe 'attempts api tracking' do
+      before do
+        stub_attempts_tracker
+      end
+
+      context 'with a non-proofed user' do
+        it 'does not track a reproofing event during initial proofing' do
+          expect(@attempts_api_tracker).not_to receive(:idv_reproof)
+
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+      end
+
+      context 'with a previously proofed user' do
+        context 'with a deactivated profile' do
+          before { create(:profile, :deactivated, user:) }
+
+          it 'tracks a reproofing event upon reproofing' do
+            expect(@attempts_api_tracker).to receive(:idv_reproof)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+
+        context 'with an activated legacy idv  profile' do
+          before { create(:profile, :active, user:) }
+
+          context 'when requesting ial2' do
+            before do
+              resolved_authn_context_result = Vot::Parser.new(
+                acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+              ).parse
+
+              allow(controller).to receive(:resolved_authn_context_result)
+                .and_return(resolved_authn_context_result)
+            end
+
+            it 'tracks a reproofing event upon reproofing' do
+              expect(@attempts_api_tracker).to receive(:idv_reproof)
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
+          end
+
+          context 'when not ial2' do
+            it 'redirect away, and does not track a reproofing event upon reproofing' do
+              expect(@attempts_api_tracker).not_to receive(:idv_reproof)
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
+          end
+        end
+      end
+    end
   end
 end

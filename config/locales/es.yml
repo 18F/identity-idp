@@ -661,6 +661,7 @@ doc_auth.info.capture_status_none: Alinear
 doc_auth.info.capture_status_small_document: Acercar
 doc_auth.info.capture_status_tap_to_capture: Tocar para capturar
 doc_auth.info.choose_id_type: Seleccione el tipo de documento que tenga. Tendrá que tomar fotografías de su identificación para verificar su identidad.
+doc_auth.info.dos_passport_api_down_message: No podemos aceptar pasaportes por ahora. Puede usar una licencia de conducir o identificación estatal, o bien vuelva a intentarlo más tarde.
 doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
@@ -2063,10 +2064,11 @@ vendor_outage.blocked.phone.default: No podemos verificar teléfonos en estos mo
 vendor_outage.get_updates: Obtenga actualizaciones
 vendor_outage.get_updates_on_status_page: Obtenga las actualizaciones en nuestra página de estado
 vendor_outage.working: Estamos trabajando para corregir un error
-webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.cta: Configurar el desbloqueo facial o táctil
+webauthn_platform_recommended.description_security: Proteja su inicio de sesión con el desbloqueo facial o táctil. Use su rostro, huella dactilar, contraseña u otro método para mantener su cuenta más segura.
+webauthn_platform_recommended.heading: Configuración del desbloqueo facial o táctil para un inicio de sesión más seguro
+webauthn_platform_recommended.skip: Omitir
+webauthn_platform_recommended.upsell: El desbloqueo facial o táctil está protegido contra el phishing y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, con el fin de resguardar la privacidad de su información.
 webauthn_setup_mismatch.description_undo: Haga clic en “Deshacer” para quitar esta opción.
 webauthn_setup_mismatch.description.webauthn: Sabemos que está usando una clave de seguridad en lugar de desbloqueo facial o táctil. Haga clic en “Continuar” para iniciar sesión con su clave de seguridad de aquí en adelante.
 webauthn_setup_mismatch.description.webauthn_platform: Sabemos que está usando desbloqueo facial o táctil en lugar de una clave de seguridad. Haga clic en “Continuar” para iniciar sesión con desbloqueo facial o táctil de aquí en adelante.
