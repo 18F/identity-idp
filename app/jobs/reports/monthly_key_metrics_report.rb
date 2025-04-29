@@ -77,7 +77,6 @@ module Reports
         agency_and_sp_report.agency_and_sp_emailable_report,
         active_users_count_report.active_users_count_apg_emailable_report,
       ]
-      binding.pry
     end
 
     def emails
