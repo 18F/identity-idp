@@ -36,6 +36,13 @@ module AttemptsApi
       )
     end
 
+    # The user, who had previously successfully confirmed their identity, has
+    # reproofed. All the normal events are also sent, this simply notes that
+    # this is the second (or more) time they have gone through the process successfully.
+    def idv_reproof
+      track_event('idv-reproof')
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)
@@ -140,6 +147,17 @@ module AttemptsApi
       track_event(
         'mfa-submission-code-rate-limited',
         mfa_device_type:,
+      )
+    end
+
+    # @param [Boolean] success True means TMX check has a 'pass' review status
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks the result of the TMX fraud check during Identity Verification
+    def idv_tmx_fraud_check(success:, failure_reason: nil)
+      track_event(
+        'idv-tmx-fraud-check',
+        success:,
+        failure_reason:,
       )
     end
 
