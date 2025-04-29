@@ -52,6 +52,7 @@ module Idv
             redirect_url = idv_in_person_ssn_url
           end
 
+          enrollment.update!(document_type: :state_id)
           idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
 
           analytics.idv_in_person_proofing_state_id_submitted(
@@ -155,6 +156,14 @@ module Idv
             :day,
             :year,
           ],
+        )
+      end
+
+      def enrollment
+        current_user.establishing_in_person_enrollment || InPersonEnrollment.find_or_initialize_by(
+          user: current_user,
+          status: :establishing,
+          profile: nil,
         )
       end
 
