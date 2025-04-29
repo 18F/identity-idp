@@ -58,7 +58,10 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       expect(csvs.size).to eq(1)
 
       csv = csvs.first
-      expect(csv).to include('Week,True ID,Instant verify,Phone Finder,Socure (DocV),Fraud Score and Attribute,Threat Metrix')
+      expect(csv).to include(
+        'Week,True ID,Instant verify,Phone Finder,Socure (DocV),Fraud Score and Attribute,' \
+        ' Threat Metrix',
+      )
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")
     end
   end
