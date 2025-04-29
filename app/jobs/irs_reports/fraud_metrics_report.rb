@@ -46,8 +46,8 @@ module IrsReports
     end
 
     def run_report(config)
-      date_anchor = report_date.is_a?(Date) ? report_date.in_time_zone.end_of_day : report_date # Ensures CloudWatchClient always receives time arguments to avoid the ArgumentError associated with Date objects
-      
+      date_anchor = report_date.is_a?(Date) ? report_date.in_time_zone.end_of_day : report_date
+
       issuers = Array(config['issuers']).select(&:present?)
       email_addresses = Array(config['emails']).select(&:present?)
 
@@ -61,11 +61,11 @@ module IrsReports
         issuers: issuers,
       )
 
-      reports.as_emailable_reports. each do |report|
+      reports.as_emailable_reports.each do |report|
         upload_to_s3(
           report.table,
           report_name: "#{issuers.first}_#{report.filename}",
-          )
+        )
       end
 
       ReportMailer.tables_report(
@@ -73,7 +73,7 @@ module IrsReports
         subject: "Fraud Metrics Report - #{report_date.to_date}",
         reports: reports.as_emailable_reports,
         message: preamble,
-        attachment_format: :xlsx
+        attachment_format: :xlsx,
       ).deliver_now
     end
 

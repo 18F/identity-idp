@@ -29,12 +29,11 @@ module IrsReporting
     # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
     def initialize(
-      issuers: nil,
-      time_range:,
+      time_range:, issuers: nil,
       verbose: false,
       progress: false,
-      slice: 12.hours,
-      threads: 10
+      slice: 6.hours,
+      threads: 1
     )
       @issuers = Array(issuers).presence # always an Array or nil
       @time_range = time_range
@@ -51,7 +50,7 @@ module IrsReporting
     def progress?
       @progress
     end
-    
+
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
@@ -63,17 +62,17 @@ module IrsReporting
           table: overview_table,
         ),
         Reporting::EmailableReport.new(
-          title: "Fraud Metrics",
+          title: 'Fraud Metrics',
           table: fraud_metrics_table,
           filename: 'fraud_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "Suspended User Metrics",
+          title: 'Suspended User Metrics',
           table: suspended_metrics_table,
           filename: 'suspended_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "Reinstated User Metrics",
+          title: 'Reinstated User Metrics',
           table: reinstated_metrics_table,
           filename: 'reinstated_metrics',
         ),
@@ -83,9 +82,14 @@ module IrsReporting
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
-        ['Fraud Rules Catch Rate', 'Count', 'The count of unique accounts flagged for fraud review.'],
-        ['Fraudulent credentials disabled', 'Count', 'The count of unique accounts suspended due to suspected fraudulent activity within the reporting month.'],
-        ['Fraudulent credentials reinstated', 'Count', 'The count of unique suspended accounts that are reinstated within the reporting month.'],
+        ['Fraud Rules Catch Rate', 'Count',
+         'The count of unique accounts flagged for fraud review.'],
+        ['Fraudulent credentials disabled', 'Count',
+         'The count of unique accounts suspended due to ' + '
+         suspected fraudulent activity within the reporting month.'],
+        ['Fraudulent credentials reinstated', 'Count',
+         'The count of unique suspended accounts ' + '
+         that are reinstated within the reporting month.'],
       ]
     end
 
@@ -203,7 +207,7 @@ module IrsReporting
     end
 
     def lg99_unique_users_count
-      @lg99_unique_users_count ||= (data[Events::IDV_FINAL_RESOLUTION]).count
+      @lg99_unique_users_count ||= data[Events::IDV_FINAL_RESOLUTION].count
     end
 
     def unique_suspended_users_count

@@ -2,14 +2,17 @@ require 'rails_helper'
 require 'irs_reporting/fraud_metrics_lg99_report'
 
 RSpec.describe IrsReporting::FraudMetricsLg99Report do
-  let(:issuer) {'my:example:issuer'}
+  let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
       ['Fraud Rules Catch Rate', 'Count', 'The count of unique accounts flagged for fraud review.'],
-      ['Fraudulent credentials disabled', 'Count', 'The count of unique accounts suspended due to suspected fraudulent activity within the reporting month.'],
-      ['Fraudulent credentials reinstated', 'Count', 'The count of unique suspended accounts that are reinstated within the reporting month.'],
+      ['Fraudulent credentials disabled', 'Count',
+       'The count of unique accounts suspended due to suspected fraudulent activity within the ' + '
+       reporting month.'],
+      ['Fraudulent credentials reinstated', 'Count',
+       'The count of unique suspended accounts that are reinstated within the reporting month.'],
     ]
   end
   let(:expected_overview_table) do
@@ -89,7 +92,7 @@ RSpec.describe IrsReporting::FraudMetricsLg99Report do
       end
     end
   end
-  
+
   describe '#overview_table' do
     it 'renders an overview table' do
       aggregate_failures do
@@ -99,7 +102,7 @@ RSpec.describe IrsReporting::FraudMetricsLg99Report do
       end
     end
   end
-  
+
   describe '#fraud_metrics_table' do
     it 'renders a fraud metrics table' do
       aggregate_failures do

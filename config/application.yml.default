@@ -274,6 +274,7 @@ max_sign_in_failures_window_in_seconds: 60
 mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
+monthly_fraud_metrics_report_config: '[]'
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 newrelic_license_key: ''
@@ -470,7 +471,6 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 weekly_auth_funnel_report_config: '[]'
-monthly_fraud_metrics_report_config: '[]'
 
 development:
   aamva_private_key: 123abc

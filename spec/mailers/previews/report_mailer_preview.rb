@@ -111,7 +111,9 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def irs_fraud_metrics_report
     irs_fraud_metrics_report = IrsReports::FraudMetricsReport.new(Time.zone.yesterday)
-    test_config = [{"emails":["data@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name-1"]}].to_json
+    test_config = [{ emails: ['data@example.com'],
+                     issuers: ['urn:gov:gsa:openidconnect.profiles: ' + '
+                                sp:sso:agency_name:app_name-1'] }].to_json
     stub_cloudwatch_client(irs_fraud_metrics_report.run_report(test_config))
 
     ReportMailer.tables_report(

@@ -176,7 +176,7 @@ module Reporting
     end
 
     def lg99_unique_users_count
-      @lg99_unique_users_count ||= (data[Events::IDV_FINAL_RESOLUTION]).count
+      @lg99_unique_users_count ||= data[Events::IDV_FINAL_RESOLUTION].count
     end
 
     def unique_suspended_users_count

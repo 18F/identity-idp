@@ -33,20 +33,23 @@ RSpec.describe IrsReports::FraudMetricsReport do
     [
       ['Metric', 'Unit', 'Definition'],
       ['Fraud Rules Catch Rate', 'Count', 'The count of unique accounts flagged for fraud review.'],
-      ['Fraudulent credentials disabled', 'Count', 'The count of unique accounts suspended due to suspected fraudulent activity within the reporting month.'],
-      ['Fraudulent credentials reinstated', 'Count', 'The count of unique suspended accounts that are reinstated within the reporting month.'],
+      ['Fraudulent credentials disabled', 'Count',
+       'The count of unique accounts suspended due to suspected fraudulent activity within the ' + '
+       reporting month.'],
+      ['Fraudulent credentials reinstated', 'Count',
+       'The count of unique suspended accounts that are reinstated within the reporting month.'],
     ]
   end
-  
+
   let(:mock_overview_table) do
     [
       ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
       # This needs to be Date.today so it works when run on the command line
-      ['Report Generated', Date.today.to_s],
+      ['Report Generated', Time.zone.today.to_s],
       ['Issuer', ':some:issuer'],
     ]
   end
-  
+
   let(:mock_identity_verification_fraud_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -97,14 +100,29 @@ RSpec.describe IrsReports::FraudMetricsReport do
     mock_fraud_metrics = instance_double(
       IrsReporting::FraudMetricsLg99Report,
       as_emailable_reports: [
-        Reporting::EmailableReport.new(title: 'Definitions', filename: 'definitions', table: mock_definitions_table),
-        Reporting::EmailableReport.new(title: 'Overview', filename: 'overview', table: mock_overview_table),
-        Reporting::EmailableReport.new(title: 'Fraud Metrics', filename: 'fraud_metrics', table: mock_identity_verification_fraud_table),
-        Reporting::EmailableReport.new(title: 'Suspended User Metrics', filename: 'suspended_metrics',  table: mock_suspended_metrics_table),
-        Reporting::EmailableReport.new(title: 'Reinstated User Metrics', filename: 'reinstated_metrics', table: mock_reinstated_metrics_table),
+        Reporting::EmailableReport.new(
+          title: 'Definitions', filename: 'definitions',
+          table: mock_definitions_table
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Overview', filename: 'overview',
+          table: mock_overview_table
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Fraud Metrics', filename: 'fraud_metrics',
+          table: mock_identity_verification_fraud_table
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Suspended User Metrics',
+          filename: 'suspended_metrics', table: mock_suspended_metrics_table
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Reinstated User Metrics',
+          filename: 'reinstated_metrics', table: mock_reinstated_metrics_table
+        ),
       ],
     )
-    
+
     allow(IrsReporting::FraudMetricsLg99Report).to receive(:new).and_return(mock_fraud_metrics)
 
     # ensures uploads actually occur
@@ -116,7 +134,7 @@ RSpec.describe IrsReports::FraudMetricsReport do
       hash_including(
         email: match_array(mock_emails),
         subject: "Fraud Metrics Report - #{report_date.to_date}",
-      )
+      ),
     ).and_call_original
 
     report.perform(report_date)
@@ -127,7 +145,7 @@ RSpec.describe IrsReports::FraudMetricsReport do
       allow(IdentityConfig.store).to receive(:monthly_fraud_metrics_report_config)
         .and_return([{ 'emails' => [], 'issuers' => [issuer] }])
     end
-    
+
     it 'does not attempt to build or send a report' do
       expect(IrsReporting::FraudMetricsLg99Report).not_to receive(:new)
       expect(ReportMailer).not_to receive(:tables_report)
@@ -146,7 +164,6 @@ RSpec.describe IrsReports::FraudMetricsReport do
 
     report.perform(report_date)
   end
-
 
   describe '#preamble' do
     subject(:preamble) { report.preamble(env:) }
