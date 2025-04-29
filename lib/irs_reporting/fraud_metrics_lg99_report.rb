@@ -33,8 +33,8 @@ module IrsReporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 6.hours,
-      threads: 1
+      slice: 12.hours,
+      threads: 10
     )
       @issuers = Array(issuers).presence # always an Array or nil
       @time_range = time_range
