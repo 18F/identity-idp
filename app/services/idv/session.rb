@@ -9,6 +9,7 @@ module Idv
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
   # @attr gpo_code_verified [Boolean, nil]
+  # @attr gpo_letter_requested [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
   # @attr idv_consent_given [Boolean, nil]
@@ -26,7 +27,6 @@ module Idv
   # @attr profile_id [Integer, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
-  # @attr requested_letter [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
   # @attr resolution_successful [Boolean, nil]
   # @attr resolution_vendor [String,nil]
@@ -57,6 +57,7 @@ module Idv
       flow_path
       go_back_path
       gpo_code_verified
+      gpo_letter_requested
       had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
@@ -73,7 +74,6 @@ module Idv
       profile_id
       proofing_started_at
       redo_document_capture
-      requested_letter
       residential_resolution_vendor
       resolution_successful
       resolution_vendor

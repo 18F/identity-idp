@@ -2,15 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'idv/address/new' do
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
-  let(:idv_session) do
-    Idv::Session.new(
-      user_session: {},
-      current_user: nil,
-      service_provider: nil,
-    )
-  end
+
   before do
-    assign(:presenter, Idv::AddressPresenter.new(idv_session: idv_session))
+    assign(:presenter, Idv::AddressPresenter.new(gpo_letter_requested: nil))
     assign(:address_form, Idv::AddressForm.new({}))
     render
   end

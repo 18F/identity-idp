@@ -2,14 +2,14 @@
 
 module Idv
   class AddressPresenter
-    def initialize(idv_session:)
-      @idv_session = idv_session
+    def initialize(gpo_letter_requested:)
+      @gpo_letter_requested = gpo_letter_requested
     end
 
-    attr_reader :idv_session
+    attr_reader :gpo_letter_requested
 
     def address_heading
-      if idv_session.requested_letter
+      if gpo_letter_requested
         I18n.t('doc_auth.headings.mailing_address')
       else
         I18n.t('doc_auth.headings.address')
@@ -17,7 +17,7 @@ module Idv
     end
 
     def address_info
-      if idv_session.requested_letter
+      if gpo_letter_requested
         I18n.t('doc_auth.info.mailing_address')
       else
         I18n.t('doc_auth.info.address')
@@ -25,7 +25,7 @@ module Idv
     end
 
     def form_button_text
-      if idv_session.requested_letter
+      if gpo_letter_requested
         I18n.t('forms.buttons.continue')
       else
         I18n.t('forms.buttons.submit.update')
