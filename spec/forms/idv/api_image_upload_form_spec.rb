@@ -269,8 +269,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            selfie_image_encryption_key: nil,
-            selfie_image_file_id: nil,
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
           form.submit
@@ -404,8 +404,8 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
               document_front_image_file_id: 'name',
-              selfie_image_encryption_key: '12345',
-              selfie_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
               failure_reason: nil,
             )
             form.submit
@@ -537,8 +537,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: nil,
             document_front_image_file_id: nil,
-            selfie_image_encryption_key: nil,
-            selfie_image_file_id: nil,
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
             failure_reason: { front: [:blank] },
           )
           form.submit
@@ -600,8 +600,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            selfie_image_encryption_key: nil,
-            selfie_image_file_id: nil,
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
           form.submit

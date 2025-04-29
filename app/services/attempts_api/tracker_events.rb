@@ -26,8 +26,8 @@ module AttemptsApi
         document_back_image_file_id:,
         document_front_image_encryption_key:,
         document_front_image_file_id:,
-        selfie_image_encryption_key:,
-        selfie_image_file_id:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
         failure_reason: nil
       )
       track_event(
@@ -38,8 +38,8 @@ module AttemptsApi
         document_back_image_file_id:,
         document_front_image_encryption_key:,
         document_front_image_file_id:,
-        selfie_image_encryption_key:,
-        selfie_image_file_id:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
       )
     end
 

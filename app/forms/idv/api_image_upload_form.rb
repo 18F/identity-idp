@@ -110,7 +110,6 @@ module Idv
     def track_upload_attempt(response)
       return unless attempts_api_tracker.enabled?
 
-      # back_metadata = write_image(image: back.present? ? back_image_bytes : nil)
       back_metadata = write_image(image: readable?(:back) ? back_image_bytes : nil)
       front_metadata = write_image(image: readable?(:front) ? front_image_bytes : nil)
       selfie_metadata = write_image(image: readable?(:selfie) ? selfie_image_bytes : nil)
@@ -121,8 +120,8 @@ module Idv
         document_back_image_file_id: back_metadata.name,
         document_front_image_encryption_key: front_metadata.encryption_key,
         document_front_image_file_id: front_metadata.name,
-        selfie_image_encryption_key: selfie_metadata.encryption_key,
-        selfie_image_file_id: selfie_metadata.name,
+        document_selfie_image_encryption_key: selfie_metadata.encryption_key,
+        document_selfie_image_file_id: selfie_metadata.name,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
     end
