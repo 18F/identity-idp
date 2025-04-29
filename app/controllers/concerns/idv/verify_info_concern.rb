@@ -79,6 +79,23 @@ module Idv
       )
     end
 
+    def address_exception?(result)
+      result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :resolution,
+        :exception,
+      ).present? &&
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :resolution,
+          :attributes_requiring_additional_verification,
+        ) == ['address']
+    end
+
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
       has_exception = proofing_results_exception.present?
@@ -89,6 +106,7 @@ module Idv
         :state_id,
         :mva_exception,
       ).present?
+      is_address_exception = address_exception?(result)
       is_threatmetrix_exception = result.extra.dig(
         :proofing_results,
         :context,
@@ -113,6 +131,9 @@ module Idv
       elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
+      elsif has_exception && is_address_exception
+        idv_failure_log_address_warning
+        redirect_to address_warning_url
       elsif (has_exception && is_threatmetrix_exception) ||
             (!has_exception && resolution_failed)
         idv_failure_log_warning
@@ -147,6 +168,13 @@ module Idv
       )
     end
 
+    def idv_failure_log_address_warning
+      analytics.idv_doc_auth_address_warning_visited(
+        step_name: STEP_NAME,
+        remaining_submit_attempts: resolution_rate_limiter.remaining_count,
+      )
+    end
+
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
         step_name: STEP_NAME,
@@ -164,6 +192,10 @@ module Idv
 
     def state_id_warning_url
       idv_session_errors_state_id_warning_url(flow: flow_param)
+    end
+
+    def address_warning_url
+      idv_session_errors_address_warning_url(flow: flow_param)
     end
 
     def warning_url
@@ -212,10 +244,12 @@ module Idv
           previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
             [:errors, :ssn],
+            [:errors, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
+            [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
             [:proofing_results, :biographical_info],
@@ -223,10 +257,11 @@ module Idv
         },
       )
 
-      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
-      if threatmetrix_reponse_body.present?
+      threatmetrix_response_body = delete_threatmetrix_response_body(form_response)
+
+      if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
-          response_body: threatmetrix_reponse_body,
+          response_body: threatmetrix_response_body,
         )
       end
 
@@ -347,7 +382,14 @@ module Idv
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
       return unless threatmetrix_result
 
-      return if threatmetrix_result[:review_status] == 'pass'
+      success = (threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_tmx_fraud_check(
+        success:,
+        failure_reason: threatmetrix_failure_reason(success, threatmetrix_result),
+      )
+
+      return if success
 
       FraudReviewRequest.create(
         user: current_user,
@@ -371,6 +413,17 @@ module Idv
       return if threatmetrix_result.blank?
 
       threatmetrix_result.delete(:response_body)
+    end
+
+    def threatmetrix_failure_reason(success, result)
+      return nil if success
+
+      tmx_summary_reason_code = result.dig(
+        :response_body,
+        :tmx_summary_reason_code,
+      ) || ['ThreatMetrix review has failed for unknown reasons']
+
+      { tmx_summary_reason_code: }
     end
 
     def add_cost(token, transaction_id: nil)

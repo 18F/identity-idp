@@ -1226,6 +1226,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step_name
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_address_warning_visited(step_name:, remaining_submit_attempts:, **extra)
+    track_event(
+      :idv_doc_auth_address_warning_visited,
+      step_name: step_name,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
@@ -1969,6 +1981,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2018,6 +2031,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
     document_type: nil,
+    passport_check_result: nil,
     **extra
   )
     track_event(
@@ -2069,6 +2083,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
       document_type:,
+      passport_check_result:,
       **extra,
     )
   end
@@ -3091,6 +3106,30 @@ module AnalyticsEvents
   )
     track_event(
       'IdV: in person proofing address visited',
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_in_person_proofing_choose_id_type_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_visited,
       flow_path:,
       step:,
       analytics_id:,

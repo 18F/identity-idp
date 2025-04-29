@@ -669,7 +669,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCropped({
             ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            cardType: AcuantDocumentType.PASSPORT,
+            cardType: AcuantDocumentType.NONE,
           });
         }),
       });
@@ -682,7 +682,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.have.been.calledWith(
         'IdV: test image added',
         sinon.match({
-          documentType: 'passport',
+          documentType: 'none',
           isAssessedAsUnsupported: true,
           assessment: 'unsupported',
         }),

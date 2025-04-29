@@ -338,6 +338,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
+        passport_check_result: nil,
         portrait_match_results: nil,
       )
       expect(response.doc_auth_success?).to eq(true)
@@ -421,6 +422,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         portrait_match_results: nil,
         alert_failure_count: 1,
         liveness_enabled: false,
+        passport_check_result: nil,
         vendor: 'Mock',
         processed_alerts: {
           failed: [{ name: '2D Barcode Read', result: 'Failed' }],
@@ -470,6 +472,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         portrait_match_results: nil,
         alert_failure_count: 1,
         liveness_enabled: false,
+        passport_check_result: nil,
         vendor: 'Mock',
         processed_alerts: {
           failed: [{ name: '2D Barcode Read', result: 'Failed' }],
@@ -553,6 +556,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
+        passport_check_result: nil,
         portrait_match_results: nil,
       )
     end

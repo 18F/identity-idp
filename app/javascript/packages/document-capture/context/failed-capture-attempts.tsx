@@ -15,6 +15,7 @@ interface UploadedImageFingerprints {
    */
   front: string[] | null;
   back: string[] | null;
+  passport: string[] | null;
 }
 
 interface FailedCaptureAttemptsContextInterface {
@@ -101,7 +102,7 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
-  failedSubmissionImageFingerprints: { front: [], back: [] },
+  failedSubmissionImageFingerprints: { front: [], back: [], passport: [] },
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
@@ -110,14 +111,14 @@ interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
-  failedFingerprints: { front: []; back: [] };
+  failedFingerprints: { front: []; back: []; passport: [] };
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
-  failedFingerprints = { front: [], back: [] },
+  failedFingerprints = { front: [], back: [], passport: [] },
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,

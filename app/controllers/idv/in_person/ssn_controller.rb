@@ -48,7 +48,7 @@ module Idv
 
         if form_response.success?
           idv_session.previous_ssn = idv_session.ssn
-          idv_session.ssn = params[:doc_auth][:ssn]
+          idv_session.ssn = SsnFormatter.normalize(params[:doc_auth][:ssn])
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message

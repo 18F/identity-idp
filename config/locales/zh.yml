@@ -8,36 +8,43 @@ account_reset.confirm_delete_account.info_html: '<strong>%{email}</strong> 的�
 account_reset.confirm_delete_account.link_text: 设立新账户
 account_reset.confirm_delete_account.title: 你已删除自己的账户
 account_reset.confirm_request.close_window: 你完成后可以关闭这一窗口。
-account_reset.confirm_request.instructions_end: 开始删除账户流程。请按照你电邮中的说明来完成这一流程。
-account_reset.confirm_request.instructions_start: 我们已发电邮到
+account_reset.confirm_request.info_html:
+  - 我们向 <strong>%{email}</strong> 发送了电邮以开始帐户删除流程。第一封电邮确认你已启动帐户删除流程。 <strong>这并不意味着你的帐户已成功删除</strong>
+  - 作为一项安全措施，在首个确认电邮到达 %{waiting_period} 你将收到第二封电邮，其中包含继续删除帐户的链接。
+  - 如果你改变主意，可以随时取消帐户删除。
 account_reset.confirm_request.security_note: 作为一项安全措施，我们也向你登记的电话号码发了短信。
 account_reset.delete_account.are_you_sure: 你确定要删除账户吗？
 account_reset.delete_account.info: 被锁在账户之外时，取消账户应当是最后的选择。你将无法重获与自己账户链接的任何信息。我们将通知你通过 %{app_name} 访问的政府机构你不再有账户。账户删除后，你可以使用同一电邮地址来设立新账户。
 account_reset.delete_account.title: 删除账户应当是你最后的选择。
 account_reset.pending.cancel_request: 取消请求
+account_reset.pending.cancel_request_prompt_html: 如果你改变主意，希望取消删除帐户，请点击下面的“取消请求”按钮。
 account_reset.pending.canceled: 我们已取消了你删除帐户的请求。
-account_reset.pending.confirm: 如果现在取消，你如果要删除账户的话，必须提出新请求并再等待%{interval}。
+account_reset.pending.canceled_info: 你的删除 %{app_name} 请求已被取消。 你可以继续使用你的 %{app_name} 帐户，或提出新的删除帐户请求。
 account_reset.pending.header: 你已提出删除账户的请求。
 account_reset.pending.wait_html: 要删除你的账户，有一个%{waiting_period}的等待期。你会在 <strong>%{interval}</strong> 收到电邮，向你说明如何完成删除。
-account_reset.recovery_options.check_saved_credential: 查看你是否有已保存的凭据
-account_reset.recovery_options.check_webauthn_platform_info: 如果你设立了人脸或触摸解锁，凭据可能已存在了一个密码管理器中，比如 iCloud Keychain 或者 Google Password Manager。尝试在用那个密码管理器的浏览器上使用人脸或触摸解锁。
+account_reset.recover_options.yes_delete: 删除我的帐户
+account_reset.recovery_option.cancel_deletion: 取消删除
+account_reset.recovery_options.check_webauthn_platform_header: 使用你首次设置人脸或触摸解锁的同一设备
+account_reset.recovery_options.check_webauthn_platform_help_link: 人脸或触摸解锁
+account_reset.recovery_options.check_webauthn_platform_info_html: ​​如果你在创建帐户时设置了 %{link_html}，请确保使用你创建 %{app_name} 帐户的同一设备。
 account_reset.recovery_options.header: 你确定要删除账户吗？
 account_reset.recovery_options.help_text: 如果你被锁定在账户外而且仍然需要访问 %{app_name} ，请尝试以下步骤。
+account_reset.recovery_options.still_working: 仍然不行？
 account_reset.recovery_options.try_another_device: 使用你也许选择了“记住设备”选项的另一个设备。
 account_reset.recovery_options.try_method_again: 再次尝试你的身份证实方法。
+account_reset.recovery_options.try_method_description_html: 确保你可以使用创建帐户时设置的身份证实方法，%{link_html}
+account_reset.recovery_options.try_method_description_link: 再用你的身份证实方法试一次。
 account_reset.recovery_options.use_device: 使用另一个设备。
-account_reset.recovery_options.use_same_device: 否则，请尝试使用你设置人脸或触摸解锁的同一设备。
-account_reset.request.are_you_sure: 你确定无法使用自己任何一个身份证实方法吗？
+account_reset.request.account_delete_link: 了解有关帐户删除流程的更多信息。
+account_reset.request.choose_to_continue: 如果你选择继续删除帐户，你将收到两封电邮：
+account_reset.request.continue_deletion: 你还要删除你的帐户吗？
 account_reset.request.delete_account: 删除你的账户
-account_reset.request.delete_account_info:
-  - 删除现有账户并设立一个新账户使你能够使用同一电邮地址并设置新的身份证实方法。但是，删除账户会去掉与你账户连接的所有机构的应用程序，你将需要恢复每个连接。
-  - 如果你继续的话，会首先收到一个确认电邮。 作为安全措施，你收到第一个电邮 24 小时后，会收到另外一个电邮，其中有让你继续删除账户的链接。
-account_reset.request.info:
-  - 如果你无法使用先前设立的身份证实方法访问你的账户，那唯一的选择就是删除账户并设立一个新账户。
-  - 账户一旦删除，我们是无法恢复的，所以请核查一下你有没有可以使用的另一种身份证实方法。
+account_reset.request.delete_email1_html: <strong>电邮 1:</strong> 你首先会收到一封确认电邮。<strong>这并不</strong>意味着你的帐户此时已被删除。
+account_reset.request.delete_email2_html: <strong>电邮 2:</strong> 在收到第一封确认电邮 %{interval} 你将收到另一封电邮，其中包含继续删除帐户的链接。这需要你确认你要删除帐户。这个步骤后，我们就无法撤消帐户删除了。
+account_reset.request.delete_request_details_html: 如果你无法使用你设置的身份证实方法登录，可以通过删除你的帐户并创建一个新帐户来重新获得访问权限。删除你的帐户不会删除你在其他政府机构存储的任何信息。<br/>%{account_delete_link}.
 account_reset.request.no_cancel: 取消
-account_reset.request.title: 账户删除和重设
-account_reset.request.yes_continue: 是的，继续删除
+account_reset.request.no_cancel2: 不要，取消删除帐户
+account_reset.request.yes_continue: 要，继续删除帐户
 account.connected_apps.associated_attributes_html: '在 %{timestamp_html} 用以下电邮做的连接：'
 account.connected_apps.associated_html: 已连接 %{timestamp_html}
 account.connected_apps.description: 使用你的 %{app_name} 账户，你可以安全地连接到网上多个政府账户。以下列出了你目前已连接的所有账户。
@@ -509,6 +516,7 @@ devise.sessions.signed_out: 你现在已登出。
 doc_auth.accessible_labels.camera_video_capture_instructions: 我们会自动拍张照片。
 doc_auth.accessible_labels.camera_video_capture_label: 带框的取景器能把你身份证件放在中间。
 doc_auth.accessible_labels.document_capture_dialog: 文档扫描
+doc_auth.alt.passport_help: 护照本打开到带有照片的那一页。护照的数据页框是在深色背景上的四条白色引导线内。
 doc_auth.alt.selfie_help_1: 人脸在绿色椭圆中。
 doc_auth.alt.selfie_help_2: 手指点击面孔下的勾选标记来确认照片。
 doc_auth.buttons.add_new_photos: 添加新照片
@@ -609,6 +617,7 @@ doc_auth.headings.choose_id_type: 选择你的身份证件类型
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
+doc_auth.headings.document_capture_passport: 你的护照
 doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
@@ -618,6 +627,9 @@ doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.no_ssn: 没有社会保障号码？
+doc_auth.headings.passport: 你的护照
+doc_auth.headings.passport_capture: 添加一张你护照的照片
+doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
@@ -649,6 +661,7 @@ doc_auth.info.capture_status_none: 对齐
 doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
 doc_auth.info.choose_id_type: 选择你具备的身份证件类型你将需要拍你身份证件的照片来验证身份。
+doc_auth.info.dos_passport_api_down_message: 我们目前不能接受护照。你可以使用驾照或州ID，或稍后再试。
 doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
@@ -669,6 +682,9 @@ doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“�
 doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
+doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。
+doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
+doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
 doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
@@ -720,6 +736,9 @@ doc_auth.tips.document_capture_id_text1: 使用水平和深色表面
 doc_auth.tips.document_capture_id_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_id_text3: 避免炫光或阴影
 doc_auth.tips.document_capture_id_text4: 文件大小应当至少 2 兆。
+doc_auth.tips.document_capture_passport_header: 如何准备拍照
+doc_auth.tips.document_capture_passport_tip1: 找一个光线充足、没有眩光或阴影的地方拍照。
+doc_auth.tips.document_capture_passport_tip2: 把你身份证件放在一个暗色、平坦的表面
 doc_auth.tips.document_capture_selfie_id_header_text: 如何拍摄清晰照片
 doc_auth.tips.document_capture_selfie_selfie_text: 如何准备拍照
 doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东西，比如眼镜或帽子
@@ -1062,6 +1081,7 @@ idv.errors.pattern_mismatch.zipcode: 输入 5 或 9 位的邮编
 idv.errors.pattern_mismatch.zipcode_five: 输入 5 位的邮编
 idv.errors.technical_difficulties: 我们目前遇到技术困难
 idv.errors.try_again_later: 请稍后再试。
+idv.failure.address.warning: 请检查一下你输入的信息，然后再试一下。如果你的邮寄地址与居住地址不同，请尝试输入你目前居住的地址。
 idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
@@ -1207,6 +1227,7 @@ idv.unavailable.idv_explanation.without_sp: 你试图访问的机构需要确保
 idv.unavailable.next_steps_html: '%{status_page_link_html} 或者退出 %{app_name}，稍后再试。'
 idv.unavailable.status_page_link: 在我们的状态页面获得最新信息。
 idv.unavailable.technical_difficulties: 很遗憾，我们这边现在遇到技术困难，目前无法验证你的身份。
+idv.warning.address.heading: 我们找不到与你地址匹配的记录
 idv.warning.sessions.heading: 我们找不到与你个人信息匹配的记录
 idv.warning.state_id.cancel_button: 退出 %{app_name}
 idv.warning.state_id.explanation: 遗憾的是，处理来自你所在州的身份证件时我们遇到技术困难，目前无法验证你的信息。
@@ -1284,13 +1305,9 @@ in_person_proofing.body.prepare.verify_step_about: 完成以下步骤来生成�
 in_person_proofing.body.prepare.verify_step_enter_phone: 输入你的主要电话号码或者你最常使用的号码。
 in_person_proofing.body.prepare.verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
 in_person_proofing.body.prepare.verify_step_post_office: 找到你附件的参与邮局。
-in_person_proofing.body.state_id.alert_message: 州政府颁发给你的身份证件必须尚未过期。系统接受的身份证件包括：
-in_person_proofing.body.state_id.id_types:
-  - 州驾照
-  - 州非驾照身份卡
+in_person_proofing.body.state_id.alert_message: 你需要驾照或州身份证件。
+in_person_proofing.body.state_id.alert_text: 亲身验证时不能用护照。你的驾照或州身份证件不得过期。
 in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
-in_person_proofing.body.state_id.learn_more_link: 了解更多有关哪些身份证件可被接受的信息。
-in_person_proofing.body.state_id.questions: 有问题吗？
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
 in_person_proofing.form.passport.dob: Date of birth
@@ -1349,6 +1366,7 @@ in_person_proofing.headings.state_id_milestone_2: 输入你州政府颁发身份
 in_person_proofing.headings.switch_back: 切换回你的电脑，来准备亲身去验证身份。
 in_person_proofing.headings.update_address: 更新你当前的住宅地址
 in_person_proofing.headings.update_state_id: 更新你身份证件上的信息
+in_person_proofing.info.choose_id_type: Select the type of document that you want to use. You’ll need to bring this document to the Post Office.
 in_person_proofing.process.barcode.caption_label: 注册代码
 in_person_proofing.process.barcode.heading: 出示你的 %{app_name} 条形码
 in_person_proofing.process.barcode.info: 邮局工作人员需要扫描该页顶部的条形码你可以把该页打印出来，或在你的移动设备上显示。
@@ -1436,7 +1454,7 @@ links.back_to_sp: 返回 %{sp}
 links.cancel: 取消
 links.cancel_account_creation: '‹ 取消设立账户'
 links.contact: 联系
-links.continue_sign_in: 继续登录
+links.continue_sign_in: 登录
 links.create_account: 设立账户
 links.exit_login: 退出 %{app_name}
 links.go_back: 返回
@@ -1686,10 +1704,10 @@ titles.webauthn_setup: 添加你的安全密钥
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> 要求一种高安全水平的身份证实方法。比如人脸或触摸解锁、安全密钥或政府雇员身份证件。'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> 要求你的政府雇员身份证件，这是一种高安全水平的身份证实方法。'
 two_factor_authentication.account_reset.cancel_link: 取消你的请求
-two_factor_authentication.account_reset.link: 删除你的账户
+two_factor_authentication.account_reset.link: 删除你的帐户
 two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 %{interval}。请随后回来查看。
 two_factor_authentication.account_reset.successful_cancel: 谢谢。你删除自己 %{app_name} 账户的请求已被取消。
-two_factor_authentication.account_reset.text_html: 如果你无法使用上述身份证实方法，可以通过 %{link_html} 重设你的首选。
+two_factor_authentication.account_reset.text_html: 如果你无法使用上述任何身份证实方法，可以%{link_html}创建一个新帐户。如果你删除帐户，不会丢失存储在政府机构中的任何信息的。
 two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.attempt_remaining_warning_html.other: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.auth_app.change_nickname: 更改昵称
@@ -1854,8 +1872,8 @@ user_mailer.account_reinstated.subject: 你的账户已解锁
 user_mailer.account_reinstated.we_have_finished_reviewing: 我们已完成对你%{app_name}账户的审查，你现在能使用账户信息登录了。
 user_mailer.account_rejected.intro: 我们无法在%{app_name}验证你的身份。请联系你试图访问其服务的那个机构。
 user_mailer.account_rejected.subject: 我们无法验证你的身份。
-user_mailer.account_reset_cancel.intro_html: 这封电邮确认你已取消删除你 %{app_name_html} 账户的请求。
-user_mailer.account_reset_cancel.subject: 请求已取消
+user_mailer.account_reset_cancel.intro_html: 这封电邮确认你已取消删除你 %{app_name_html} 账户的请求。<br/><br/> 你可以继续使用你的 %{app_name_html} 帐户，或提出新的删除帐户请求。
+user_mailer.account_reset_cancel.subject: '%{app_name} 帐户删除请求已取消'
 user_mailer.account_reset_complete.intro_html: 这封电邮确认你已删除你的 %{app_name_html} 账户。
 user_mailer.account_reset_complete.subject: 账户已删除
 user_mailer.account_reset_granted.button: 确认删除账户
@@ -1864,8 +1882,7 @@ user_mailer.account_reset_granted.help_html: 如果你不想删除你的账户�
 user_mailer.account_reset_granted.intro_html: 你%{waiting_period}的等待期已结束。请完成流程的第 2 步。<br><br> 如果您无法找到你的身份证实方法，请选择“确认删除账户”以删除你的 %{app_name} 帐户。<br><br> 如果你将来需要访问使用 %{app_name} 的参与政府网站，可以在帐户删除后使用相同的电子邮件地址创建一个新的 %{app_name} 帐户.<br><br>
 user_mailer.account_reset_granted.subject: 删除你的 %{app_name} 账户
 user_mailer.account_reset_request.cancel: 不想删除你的账户？登入你的 %{app_name} 账户来取消。
-user_mailer.account_reset_request.header: 你的账户会在%{interval}后删除。
-user_mailer.account_reset_request.intro_html: 作为一项安全措施，%{app_name} 要求一个两步流程来删除你的帐户：<br><br> 第一步：如果你丢失了身份证实方法但需删除账户，有一个%{waiting_period} 的等待期。如果你找到了身份证实方法，可以登录你的 %{app_name} 帐户来取消这个请求。<br><br> 第二步：%{waiting_period}等待期之后，你会收到一封电邮，请你确认要删除 %{app_name} 账户。只有经你确认后，你的账户才会被删除。
+user_mailer.account_reset_request.intro_html: '作为一项安全措施，要删除你的帐户，%{app_name}要求你走一个两步流程：<br><br> <strong>步骤 1 - %{waiting_period}时等待期:</strong> 这封电邮确认你已开始删除帐户的流程。如果你无法使用自己的身份证实方法从而不能登录， 需要等待%{waiting_period} 才能删除帐户。<br/><br/> <strong>步骤 2 - 确认删除帐户:</strong>%{waiting_period}等待期过后 你将收到第二封电邮，请你确认你要删除自己的 %{app_name} 帐户。 <strong>在你确认第二封电邮中的帐户删除之前，你的帐户不会被删除。</strong> 你将再有 24 小时的时间来确认删除帐户。'
 user_mailer.account_reset_request.subject: 如何删除你的 %{app_name} 账户
 user_mailer.account_verified.change_password_link: 更改密码
 user_mailer.account_verified.contact_link: 请联系 %{app_name}支持
@@ -2060,10 +2077,11 @@ vendor_outage.blocked.phone.default: 我们目前无法验证电话。请稍后�
 vendor_outage.get_updates: 获得最新信息
 vendor_outage.get_updates_on_status_page: 在我们的状态页面获得最新信息。
 vendor_outage.working: 我们正在争取解决错误。
-webauthn_platform_recommended.cta: Set up face or touch unlock
-webauthn_platform_recommended.description_save_time: Save time by using your face, fingerprint, password, or another method to access your account. This method is faster than receiving a one-time code through text or voice message.
-webauthn_platform_recommended.heading: Set up face or touch unlock for a quick and easy sign in
-webauthn_platform_recommended.skip: Skip
+webauthn_platform_recommended.cta: 设置人脸或触摸解锁
+webauthn_platform_recommended.description_security: 使用人脸或触摸解锁来保护你的登录。使用你的面孔、指纹、密码或其他方法来使你的帐户更安全。
+webauthn_platform_recommended.heading: 设置人脸或触摸解锁以更安全地登录
+webauthn_platform_recommended.skip: 跳过
+webauthn_platform_recommended.upsell: 人脸或触摸解锁具有防网络钓鱼功能，而且我们不会存储任何人脸或指纹记录，使得你的信息能保持私密。
 webauthn_setup_mismatch.description_undo: 点击“撤消”可删除此选项。
 webauthn_setup_mismatch.description.webauthn: 我们注意到您正在使用安全密钥而不是人脸或触摸解锁。点击“继续”即可从现在开始使用您的安全密钥登录。
 webauthn_setup_mismatch.description.webauthn_platform: 我们注意到您正在使用人脸或触摸解锁，而不是安全密钥。点击“继续”即可从现在开始使用人脸或触摸解锁登录。

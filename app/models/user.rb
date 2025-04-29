@@ -207,6 +207,10 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.fraud_rejection?
   end
 
+  def has_proofed_before?
+    profiles.where('activated_at is NOT NULL').any?
+  end
+
   def in_person_pending_profile?
     in_person_pending_profile.present?
   end

@@ -1945,4 +1945,33 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '#has_proofed_before' do
+    context 'when a user has not proofed before' do
+      let(:user) { create(:user) }
+
+      it 'returns false' do
+        expect(user.has_proofed_before?).to be false
+      end
+    end
+
+    context 'when a user has proofed before' do
+      let(:user) { create(:user, :proofed) }
+      context 'when an active profile' do
+        it 'returns false' do
+          expect(user.has_proofed_before?).to be true
+        end
+      end
+
+      context 'when a user has a deactivated profile' do
+        before do
+          user.profiles.first.update(active: false)
+        end
+
+        it 'returns false' do
+          expect(user.has_proofed_before?).to be true
+        end
+      end
+    end
+  end
 end

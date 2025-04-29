@@ -234,6 +234,68 @@ RSpec.describe Idv::SessionErrorsController do
     end
   end
 
+  describe '#address_warning' do
+    let(:action) { :address_warning }
+    let(:template) { 'idv/session_errors/address_warning' }
+
+    subject(:response) { get action }
+    it_behaves_like 'an idv session errors controller action'
+
+    context 'with rate limit attempts' do
+      let(:user) { create(:user) }
+
+      before do
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment!
+      end
+
+      it 'assigns remaining count' do
+        response
+
+        expect(assigns(:remaining_submit_attempts)).to be_kind_of(Numeric)
+      end
+
+      it 'assigns URL to try again' do
+        response
+
+        expect(assigns(:address_path)).to eq(idv_address_url)
+      end
+
+      it 'logs an event with attempts remaining' do
+        response
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          type: action.to_s,
+          remaining_submit_attempts: IdentityConfig.store.idv_max_attempts - 1,
+        )
+      end
+    end
+
+    context 'while rate limited' do
+      let(:user) { create(:user) }
+
+      before do
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
+      end
+
+      it 'assigns expiration time' do
+        get action
+
+        expect(assigns(:expires_at)).not_to eq(Time.zone.now)
+      end
+
+      it 'logs an event with attempts remaining' do
+        get action
+
+        expect(@analytics).to have_logged_event(
+          'IdV: session error visited',
+          type: 'address_warning',
+          remaining_submit_attempts: 0,
+        )
+      end
+    end
+  end
+
   describe '#failure' do
     let(:action) { :failure }
     let(:template) { 'idv/session_errors/failure' }

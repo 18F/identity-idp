@@ -278,6 +278,16 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks the attempts event' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: true,
+            failure_reason: nil,
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is No Result' do
@@ -286,6 +296,16 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: { tmx_summary_reason_code: ['Identity_Negative_History'] },
+          )
+
+          get :show
         end
       end
 
@@ -350,6 +370,18 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['ThreatMetrix review has failed for unknown reasons'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is Reject' do
@@ -359,6 +391,18 @@ RSpec.describe Idv::VerifyInfoController do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
         end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is Review' do
@@ -367,6 +411,18 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
         end
       end
     end
@@ -384,6 +440,14 @@ RSpec.describe Idv::VerifyInfoController do
 
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
+        end
+
+        it 'does not track a threatmetrix check' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).not_to receive(:idv_tmx_fraud_check)
+
+          get :show
         end
       end
     end
@@ -422,7 +486,7 @@ RSpec.describe Idv::VerifyInfoController do
       it 'logs the edit distance between SSNs' do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 
@@ -539,6 +603,79 @@ RSpec.describe Idv::VerifyInfoController do
             step_name: 'verify_info',
             remaining_submit_attempts: kind_of(Numeric),
           )
+        end
+      end
+    end
+
+    context 'when instant verify address proofing results in an exception' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+      let(:success) { false }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:error_attributes) { nil }
+      let(:vendor_name) { 'instantverify_placeholder' }
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: success,
+            errors: {},
+            exception: exception,
+            vendor_name: 'instant_verify_test',
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: success,
+            errors: {},
+            exception: 'fake exception',
+            vendor_name: vendor_name,
+            attributes_requiring_additional_verification: error_attributes,
+          ),
+          same_address_as_id: nil,
+          should_proof_state_id: true,
+          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      context 'address is the only exception' do
+        let(:error_attributes) { ['address'] }
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_address_warning_url
+        end
+
+        it 'logs an event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_doc_auth_address_warning_visited,
+            step_name: 'verify_info',
+            remaining_submit_attempts: kind_of(Numeric),
+          )
+        end
+      end
+
+      context 'there are more instant verify exceptions' do
+        let(:error_attributes) { ['address', 'dob', 'ssn'] }
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_exception_url
         end
       end
     end

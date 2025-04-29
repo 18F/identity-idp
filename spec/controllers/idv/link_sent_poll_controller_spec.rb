@@ -211,7 +211,7 @@ RSpec.describe Idv::LinkSentPollController do
     context 'when user opted for in-person proofing' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        create(:in_person_enrollment, :establishing, user: user)
       end
 
       it 'returns success with redirect' do

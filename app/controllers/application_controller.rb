@@ -256,9 +256,6 @@ class ApplicationController < ActionController::Base
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
-    return webauthn_platform_recommended_path if recommend_webauthn_platform_for_sms_user?(
-      :recommend_for_authentication,
-    )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)

@@ -36,6 +36,7 @@ all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
+api_transaction_count_report_config: '[]'
 asset_host: ''
 async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
