@@ -25,8 +25,6 @@ properties:
     $ref: './identity-proofing/IdvTmxFraudCheck.yml'
   idv-verification-submitted:
     $ref: './identity-proofing/IdvVerificationSubmitted.yml'
-  idv-verification-rate-limited:
-    $ref: './identity-proofing/IdvVerificationRateLimited.yml'
   idv-verify-by-mail-letter-requested:
     $ref: './identity-proofing/IdvVerifyByMailLetterRequested.yml'
   idv-verify-by-mail-enter-code-submitted:
