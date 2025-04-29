@@ -74,10 +74,6 @@ module AttemptsApi
       parsed_errors || result.errors.presence
     end
 
-    def enabled?
-      IdentityConfig.store.attempts_api_enabled && @enabled_for_session
-    end
-
     private
 
     def hashed_session_id
@@ -88,6 +84,10 @@ module AttemptsApi
     def hashed_cookie_device_uuid
       return nil unless cookie_device_uuid
       Digest::SHA1.hexdigest(cookie_device_uuid)
+    end
+
+    def enabled?
+      IdentityConfig.store.attempts_api_enabled && @enabled_for_session
     end
 
     def redis_client

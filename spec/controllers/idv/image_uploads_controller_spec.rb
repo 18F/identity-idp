@@ -14,11 +14,11 @@ RSpec.describe Idv::ImageUploadsController do
   let(:result) do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
-  let(:attempts_api_enabled) { false }
+  let(:doc_escrow_enabled) { false }
   before do
     stub_attempts_tracker
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-    allow(@attempts_api_tracker).to receive(:enabled?).and_return(attempts_api_enabled)
+    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
     stub_sign_in(user) if user
   end
 
@@ -80,7 +80,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       context 'when the attempts_api_tracker is enabled' do
-        let(:attempts_api_enabled) { true }
+        let(:doc_escrow_enabled) { true }
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
@@ -134,7 +134,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       context 'when the attempts_api_tracker is enabled' do
-        let(:attempts_api_enabled) { true }
+        let(:doc_escrow_enabled) { true }
         before do
           allow(writer).to receive(:write).and_return result
         end
@@ -181,7 +181,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         context 'when the attempts_api_tracker is enabled' do
-          let(:attempts_api_enabled) { true }
+          let(:doc_escrow_enabled) { true }
           before do
             allow(writer).to receive(:write).and_return result
           end
@@ -229,7 +229,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         context 'when the attempts_api_tracker is enabled' do
-          let(:attempts_api_enabled) { true }
+          let(:doc_escrow_enabled) { true }
           before do
             allow(writer).to receive(:write).and_return result
           end
@@ -326,7 +326,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         context 'when the attempts_api_tracker is enabled' do
-          let(:attempts_api_enabled) { true }
+          let(:doc_escrow_enabled) { true }
 
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
@@ -425,7 +425,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       context 'when the attempts_api_tracker is enabled' do
-        let(:attempts_api_enabled) { true }
+        let(:doc_escrow_enabled) { true }
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)

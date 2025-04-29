@@ -108,7 +108,7 @@ module Idv
     end
 
     def track_upload_attempt(response)
-      return unless attempts_api_tracker.enabled?
+      return unless doc_escrow_enabled?
 
       back_metadata = write_image(image: readable?(:back) ? back_image_bytes : nil)
       front_metadata = write_image(image: readable?(:front) ? front_image_bytes : nil)
@@ -132,12 +132,16 @@ module Idv
 
     def encrypted_document_storage_writer
       @encrypted_document_storage_writer ||= EncryptedDocStorage::DocWriter.new(
-        s3_enabled: doc_escrow_s3_enabled?,
+        s3_enabled: doc_escrow_s3_storage_enabled?,
       )
     end
 
-    def doc_escrow_s3_enabled?
-      IdentityConfig.store.doc_escrow_s3_enabled
+    def doc_escrow_enabled?
+      IdentityConfig.store.doc_escrow_enabled
+    end
+
+    def doc_escrow_s3_storage_enabled?
+      IdentityConfig.store.doc_escrow_s3_storage_enabled
     end
 
     def post_images_to_client

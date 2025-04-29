@@ -68,7 +68,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   before do
-    allow(attempts_api_tracker).to receive(:enabled?).and_return doc_escrow_enabled
+    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
   end
 
