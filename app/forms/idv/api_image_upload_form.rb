@@ -19,6 +19,7 @@ module Idv
       service_provider:,
       acuant_sdk_upgrade_ab_test_bucket:,
       analytics: nil,
+      attempts_api_tracker: nil,
       uuid_prefix: nil,
       liveness_checking_required: false
     )
@@ -26,6 +27,7 @@ module Idv
       @service_provider = service_provider
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
+      @attempts_api_tracker = attempts_api_tracker
       @readable = {}
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
@@ -70,8 +72,14 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
+    attr_reader :acuant_sdk_upgrade_ab_test_bucket,
+                :analytics,
+                :attempts_api_tracker,
+                :form_response,
+                :liveness_checking_required,
+                :params,
+                :service_provider,
+                :uuid_prefix
 
     def abandon_any_ipp_progress
       user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
@@ -358,6 +366,7 @@ module Idv
 
     def track_rate_limited
       analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
+      attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 
     def document_capture_session_uuid
