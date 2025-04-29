@@ -135,7 +135,6 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
           fill_in :doc_auth_phone, with: '415-555-0199'
           click_send_link
 
-          page.has_content? t('forms.buttons.back')
           expect(page).to have_current_path(idv_link_sent_path)
 
           click_doc_auth_back_link
