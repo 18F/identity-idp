@@ -36,8 +36,8 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
       expect(rendered).to have_content(t('in_person_proofing.form.passport.expiration_date'))
     end
 
-    it 'renders continue' do
-      expect(rendered).to have_content(t('forms.buttons.continue'))
+    it 'renders submit' do
+      expect(rendered).to have_content(t('forms.buttons.submit.default'))
     end
 
     it 'renders troubleshooting content' do
