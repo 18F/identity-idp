@@ -54,6 +54,28 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the link user clicked on is valid and not expired
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user clicks the email link to reset their password
+    def forgot_password_email_confirmed(success:, failure_reason: nil)
+      track_event(
+        'forgot-password-email-confirmed',
+        success:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success True if new password was successfully submitted
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user submits a new password have requesting a password reset
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+      track_event(
+        'forgot-password-new-password-submitted',
+        success:,
+        failure_reason:,
+      )
+    end
+
     # A user becomes able to visit the post office for in-person proofing
     def idv_ipp_ready_to_verify_visit
       track_event('idv-ipp-ready-to-verify-visit')
@@ -65,17 +87,6 @@ module AttemptsApi
     def idv_verify_by_mail_enter_code_submitted(success:, failure_reason: nil)
       track_event(
         'idv-verify-by-mail-enter-code-submitted',
-        success:,
-        failure_reason:,
-      )
-    end
-
-    # @param [Boolean] success True if the link user clicked on is valid and not expired
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    # A user clicks the email link to reset their password
-    def forgot_password_email_confirmed(success:, failure_reason: nil)
-      track_event(
-        'forgot-password-email-confirmed',
         success:,
         failure_reason:,
       )
@@ -105,17 +116,6 @@ module AttemptsApi
       track_event(
         'idv-rate-limited',
         limiter_type:,
-      )
-    end
-
-    # @param [Boolean] success True if new password was successfully submitted
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    # A user submits a new password have requesting a password reset
-    def forgot_password_new_password_submitted(success:, failure_reason: nil)
-      track_event(
-        'forgot-password-new-password-submitted',
-        success:,
-        failure_reason:,
       )
     end
 
@@ -162,17 +162,6 @@ module AttemptsApi
       )
     end
 
-    # Tracks when user submits registration password
-    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
-    # The user has exceeded the rate limit during enrollment
-    # and account has been locked
-    def mfa_enroll_code_rate_limited(mfa_device_type:)
-      track_event(
-        'mfa-enroll-code-rate-limited',
-        mfa_device_type:,
-      )
-    end
-
     # @param [Boolean] success
     # A user has attempted to enroll the TOTP MFA method to their account
     def mfa_enroll_totp(success:)
@@ -182,21 +171,14 @@ module AttemptsApi
       )
     end
 
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
-    def mfa_enroll_webauthn_platform(success:)
+    # Tracks when user submits registration password
+    # @param [String<'backup_code', 'otp', 'piv_cac', 'totp'>] mfa_device_type
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_code_rate_limited(mfa_device_type:)
       track_event(
-        'mfa-enroll-webauthn-platform',
-        success:,
-      )
-    end
-
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
-    def mfa_enroll_webauthn_roaming(success:)
-      track_event(
-        'mfa-enroll-webauthn-roaming',
-        success:,
+        'mfa-enroll-code-rate-limited',
+        mfa_device_type:,
       )
     end
 
