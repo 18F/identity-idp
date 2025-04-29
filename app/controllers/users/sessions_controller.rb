@@ -209,6 +209,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
+      check_for_duplicate_profiles
       redirect_to next_url_after_valid_authentication
     end
 
@@ -309,6 +310,13 @@ module Users
       session[:redirect_to_change_password] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
+    end
+
+    def check_for_duplicate_profiles
+      DuplicateProfileChecker.new(
+        user: current_user,
+        user_session: user_session, sp: sp_from_sp_session
+      ).check_for_duplicate_profiles
     end
 
     def eligible_for_password_lookup?
