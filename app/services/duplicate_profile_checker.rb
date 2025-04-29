@@ -10,7 +10,7 @@ class DuplicateProfileChecker
     @profile = user&.active_profile
   end
 
-  def validate_user_does_not_have_duplicate_profile
+  def check_for_duplicate_profiles
     return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
     cacher = Pii::Cacher.new(user, user_session)
@@ -18,11 +18,22 @@ class DuplicateProfileChecker
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
     associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
     if !duplicate_ssn_finder.ial2_profile_ssn_is_unique?
-      DuplicateProfileConfirmation.create(
-        profile_id: profile.id,
-        confirmed_at: Time.zone.now,
-        duplicate_profile_ids: associated_profiles.map(&:id),
-      )
+      confirmation = DuplicateProfileConfirmation.find_by(profile_id:)
+      if confirmation
+        if !(confirmation.duplicate_profile_ids == associated_profiles.map(&:id))
+          confirmation.update(
+            confirmed_at: Time.zone.now,
+            confirmed_all: false,
+            duplicate_profile_ids: associated_profiles.map(&:id),
+          )
+        end
+      else
+        DuplicateProfileConfirmation.create(
+          profile_id: profile_id,
+          confirmed_at: Time.zone.now,
+          duplicate_profile_ids: associated_profiles.map(&:id),
+        )
+      end
     end
 
     profile.has_been_checked_for_duplicate_profiles
@@ -32,10 +43,6 @@ class DuplicateProfileChecker
 
   def sp_eligible_for_one_account?
     sp.present? && IdentityConfig.store.eligible_one_account_providers.include?(sp.issuer)
-  end
-
-  def user_already_verified?
-    profile.verify_profile_one_account_at.present?
   end
 
   def user_has_ial2_profile?

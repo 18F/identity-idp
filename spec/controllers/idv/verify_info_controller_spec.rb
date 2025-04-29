@@ -278,6 +278,16 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks the attempts event' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: true,
+            failure_reason: nil,
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is No Result' do
@@ -286,6 +296,16 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: { tmx_summary_reason_code: ['Identity_Negative_History'] },
+          )
+
+          get :show
         end
       end
 
@@ -350,6 +370,18 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['ThreatMetrix review has failed for unknown reasons'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is Reject' do
@@ -359,6 +391,18 @@ RSpec.describe Idv::VerifyInfoController do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
         end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is Review' do
@@ -367,6 +411,18 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
         end
       end
     end
@@ -384,6 +440,14 @@ RSpec.describe Idv::VerifyInfoController do
 
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
+        end
+
+        it 'does not track a threatmetrix check' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).not_to receive(:idv_tmx_fraud_check)
+
+          get :show
         end
       end
     end
