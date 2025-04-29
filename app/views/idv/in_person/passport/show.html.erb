@@ -22,7 +22,7 @@
       url: idv_in_person_passport_url,
     ) do |f| %>
 
-    <div class="margin-bottom-4">
+    <div class="margin-bottom-5">
 
         <%= render ValidatedFieldComponent.new(
               form: f,
@@ -63,16 +63,15 @@
               name: :passport_number,
               required: true,
             ) %>
-        <div class="margin-bottom-4">
-          <%= render MemorableDateComponent.new(
-                content_tag: 'memorable-date',
-                form: f,
-                hint: t('in_person_proofing.form.passport.expiration_date_hint'),
-                label: t('in_person_proofing.form.passport.expiration_date'),
-                name: :passport_expiration,
-                required: true,
-              ) %>
-        </div>
+
+        <%= render MemorableDateComponent.new(
+              content_tag: 'memorable-date',
+              form: f,
+              hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+              label: t('in_person_proofing.form.passport.expiration_date'),
+              name: :passport_expiration,
+              required: true,
+            ) %>
     </div>
 
     <%= f.submit do %>
@@ -84,7 +83,7 @@
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
       <% c.with_option(
            url: idv_in_person_state_id_url,
-           new_tab: true,
+           new_tab: false,
          ).with_content(t('in_person_proofing.form.passport.redirect_to_state_id')) %>
 <% end %>
 
