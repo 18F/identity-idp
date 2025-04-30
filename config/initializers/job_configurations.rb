@@ -248,6 +248,12 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Send irs fraud metrics to Team Data
+      irs_fraud_metrics_report: {
+        class: 'Reports::IrsFraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
