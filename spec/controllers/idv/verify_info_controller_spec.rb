@@ -17,6 +17,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_sign_in(user)
     stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -150,6 +151,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to ssn failure url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :proof_ssn,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
@@ -167,6 +171,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url

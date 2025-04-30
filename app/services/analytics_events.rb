@@ -3115,6 +3115,39 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Hash] error_details
+  def idv_in_person_proofing_choose_id_type_submitted(
+    success:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    chosen_id_type:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_submitted,
+      success:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      chosen_id_type:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      error_details:,
+      **extra,
+    )
+  end
+
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step Current IdV step
   # @param [String] analytics_id
