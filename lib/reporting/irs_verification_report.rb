@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsAuthenticationReport
+  class IrsVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
@@ -200,7 +200,7 @@ if __FILE__ == $PROGRAM_NAME
   # Parse command-line options
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
   # Generate the report and output CSVs
-  Reporting::IrsAuthenticationReport.new(**options).to_csvs.each do |csv|
+  Reporting::IrsVerificationReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end

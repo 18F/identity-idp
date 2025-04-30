@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_authentication_report'
+require 'reporting/irs_verification_report'
 
 module Reports
-  class IrsAuthenticationReport < BaseReport
-    REPORT_NAME = 'irs-authentication-report'
+  class IrsVerificationReport < BaseReport
+    REPORT_NAME = 'irs-verification-report'
 
     attr_reader :report_date
 
@@ -19,7 +19,7 @@ module Reports
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - IRS Authentication Report NOT SENT'
+        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
         return false
       end
 
@@ -28,9 +28,9 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        title: 'IRS Authentication Report',
+        title: 'IRS Verification Report',
         email: email_addresses,
-        subject: "IRS Authentication Report - #{report_date.to_date}",
+        subject: "IRS Verification Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
@@ -57,7 +57,7 @@ module Reports
     end
 
     def reports
-      @reports ||= irs_authentication_report.as_emailable_reports
+      @reports ||= irs_verification_report.as_emailable_reports
     end
 
     def previous_week_range
@@ -68,16 +68,15 @@ module Reports
       last_sunday.beginning_of_day..last_saturday.end_of_day
     end
 
-    def irs_authentication_report
-      @irs_authentication_report ||= Reporting::IrsAuthenticationReport.new(
+    def irs_verification_report
+      @irs_verification_report ||= Reporting::IrsVerificationnReport.new(
         time_range: previous_week_range,
-        issuers: IdentityConfig.store.irs_authentication_report_issuers || [],
-        # issuers: ['urn:gov:gsa:openidconnect.profiles:sp:sso:irs:sample'], # Make dynamic
+        issuers: IdentityConfig.store.irs_verification_report_issuers || [],
       )
     end
 
     def emails
-      emails = [*IdentityConfig.store.irs_authentication_report_config]
+      emails = [*IdentityConfig.store.irs_verification_report_config]
       if report_date.next_day.day == 1
         emails += IdentityConfig.store.team_all_login_emails
       end

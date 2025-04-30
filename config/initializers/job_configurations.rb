@@ -237,8 +237,8 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send previous week's authentication reports to partners
-      irs_weekly_authentication_report: {
-        class: 'Reports::IrsAuthenticationReport',
+      irs_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
