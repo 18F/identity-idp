@@ -111,6 +111,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_content t('doc_auth.forms.id_type_preference.passport')
 
           choose t('doc_auth.forms.id_type_preference.passport')
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_in_person_passport_path)
+          expect(page).to have_content t('in_person_proofing.headings.passport')
+          expect(page).to have_content t('in_person_proofing.body.passport.info')
         end
       end
     end
