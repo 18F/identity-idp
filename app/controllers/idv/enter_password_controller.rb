@@ -143,6 +143,7 @@ module Idv
       end
 
       if profile.active?
+        attempts_api_tracker.idv_enrollment_complete
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,

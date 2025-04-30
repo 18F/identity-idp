@@ -9,9 +9,10 @@ class GpoVerifyForm
   validate :validate_pending_profile
 
   attr_accessor :otp, :pii, :pii_attributes
-  attr_reader :user, :resolved_authn_context_result
+  attr_reader :attempts_api_tracker, :user, :resolved_authn_context_result
 
-  def initialize(user:, pii:, resolved_authn_context_result:, otp: nil)
+  def initialize(attempts_api_tracker:, user:, pii:, resolved_authn_context_result:, otp: nil)
+    @attempts_api_tracker = attempts_api_tracker
     @user = user
     @pii = pii
     @resolved_authn_context_result = resolved_authn_context_result
@@ -35,6 +36,7 @@ class GpoVerifyForm
     else
       reset_sensitive_fields
     end
+    attempts_api_tracker.idv_enrollment_complete if pending_profile&.active?
     FormResponse.new(
       success: result,
       errors: errors,

@@ -399,6 +399,13 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
 
+      it 'tracks the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:idv_enrollment_complete)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+
       it 'creates an `account_verified` event once per confirmation' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
         events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
