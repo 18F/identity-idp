@@ -109,17 +109,17 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def irs_authentication_report
-    irs_authentication_report = Reports::IrsAuthenticationReport.new(Time.zone.yesterday)
+  def irs_verification_report
+    irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
 
-    stub_cloudwatch_client(irs_authentication_report.irs_authentication_report)
+    stub_cloudwatch_client(irs_verification_report.irs_verification_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example IRS Authentication Report - #{Time.zone.now.to_date}",
-      message: "Report: IRS Authentication Report -  #{Time.zone.now.to_date}",
+      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
       attachment_format: :xlsx,
-      reports: irs_authentication_report.reports,
+      reports: irs_verification_report.reports,
     )
   end
 

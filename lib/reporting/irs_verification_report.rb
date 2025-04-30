@@ -33,7 +33,7 @@ module Reporting
     def as_tables
       [
         overview_table,
-        authentication_funnel_table,
+        funnel_table,
       ]
     end
 
@@ -48,12 +48,12 @@ module Reporting
           filename: 'Overview Report',
         ),
         Reporting::EmailableReport.new(
-          title: 'Authentication Funnel Metrics',
+          title: 'Funnel Metrics',
           subtitle: '',
           float_as_percent: true,
           precision: 2,
-          table: authentication_funnel_table,
-          filename: 'Authentication Funnel Metrics',
+          table: funnel_table,
+          filename: 'Funnel Metrics',
         ),
 
       ]
@@ -75,7 +75,7 @@ module Reporting
       ]
     end
 
-    def authentication_funnel_table
+    def funnel_table
       [
         [
           'Metric',

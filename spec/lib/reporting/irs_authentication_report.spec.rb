@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/irs_authentication_report'
+require 'reporting/irs_verification_report'
 
-RSpec.describe Reporting::IrsAuthenticationReport do
+RSpec.describe Reporting::IrsVerificationReport do
   let(:time_range) do
     Time.zone.today.beginning_of_week(:sunday) - 7.days..Time.zone.today.end_of_week(:saturday) - 7.days
   end
@@ -26,7 +26,7 @@ RSpec.describe Reporting::IrsAuthenticationReport do
     end
   end
 
-  describe '#authentication_funnel_table' do
+  describe '#funnel_table' do
     it 'generates the authentication funnel table with the correct metrics' do
       allow(report).to receive(:verification_demand_results).and_return(100)
       allow(report).to receive(:document_authentication_success_results).and_return(80)
