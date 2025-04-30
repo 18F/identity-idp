@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'reporting/cloudwatch_client'
+
 module DataWarehouse
   class TableSummaryStatsExportJob < BaseJob
     REPORT_NAME = 'table_summary_stats'
@@ -7,6 +9,7 @@ module DataWarehouse
     TABLE_EXCLUSION_LIST = %w[
       agency_identities
       usps_confirmations
+      usps_confirmation_codes
     ].freeze
 
     TIMESTAMP_OVERRIDE = {
@@ -18,8 +21,55 @@ module DataWarehouse
     def perform(timestamp)
       return if data_warehouse_disabled?
 
-      data = fetch_table_max_ids_and_counts(timestamp)
+      idp_data = fetch_table_max_ids_and_counts(timestamp)
+      cloudwatch_data = fetch_log_group_counts(timestamp)
+      data = idp_data.merge(cloudwatch_data)
       upload_to_s3(data, timestamp)
+    end
+
+    def fetch_log_group_counts(timestamp)
+      log_groups.each_with_object({}) do |log_group_name, result|
+        table_name = 'logs.' + log_group_name.split('/').last.split('.').first
+        result[table_name] = cloudwatch_client(log_group_name: log_group_name).fetch(
+          query: cloudwatch_query(log_group_name),
+          from: timestamp.beginning_of_day,
+          to: timestamp.end_of_day,
+        )[0]
+        # set row count to 0 if nil or else convert to int
+        result[table_name].nil? ? result[table_name] =
+                                    { row_count: 0 } : result[table_name]['row_count'] =
+                                                         result[table_name]['row_count'].to_i
+      end
+    end
+
+    def log_groups
+      env = Identity::Hostdata.env
+      [
+        "#{env}_/srv/idp/shared/log/events.log",
+        "#{env}_/srv/idp/shared/log/production.log",
+      ]
+    end
+
+    def cloudwatch_client(log_group_name: nil)
+      Reporting::CloudwatchClient.new(
+        log_group_name: log_group_name,
+        ensure_complete_logs: false,
+      )
+    end
+
+    def cloudwatch_query(log_group_name)
+      base_log_group = "#{Identity::Hostdata.env}_/srv/idp/shared/log"
+      log_stream_filter_map = {
+        "#{base_log_group}/events.log" => "@logStream like 'worker-i-' or @logStream like 'idp-i-'",
+        "#{base_log_group}/production.log" => "@logStream like 'idp-i-'",
+      }
+      <<~QUERY
+        fields @timestamp
+        | filter #{log_stream_filter_map[log_group_name]}
+        | filter @message like /\\{.*/
+        | filter @message not like 'unused_identity_config_keys'
+        | stats count() as row_count
+      QUERY
     end
 
     def fetch_table_max_ids_and_counts(timestamp)
@@ -36,7 +86,7 @@ module DataWarehouse
         next if TABLE_EXCLUSION_LIST.include?(table)
 
         if table_has_id_column?(table)
-          active_tables[table] = fetch_max_id_and_count(table, timestamp)
+          active_tables['idp.' + table] = fetch_max_id_and_count(table, timestamp)
         end
       end
 
