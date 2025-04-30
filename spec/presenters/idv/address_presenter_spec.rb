@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::AddressPresenter do
   let(:address_update_request) { nil }
-  subject(:presenter) { described_class.new(address_update_request: )}
+  subject(:presenter) { described_class.new(address_update_request:) }
 
   context 'address update request is true' do
     let(:address_update_request) { true }

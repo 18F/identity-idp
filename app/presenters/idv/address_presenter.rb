@@ -2,7 +2,6 @@
 
 module Idv
   class AddressPresenter
-
     attr_reader :address_update_request
 
     def initialize(address_update_request:)
