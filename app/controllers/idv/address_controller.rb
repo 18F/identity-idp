@@ -88,7 +88,7 @@ module Idv
     end
 
     def address_update_request?
-      [idv_verify_info_url].include?(request.referer)
+      idv_verify_info_url == request.referer
     end
 
     def address_edited?
