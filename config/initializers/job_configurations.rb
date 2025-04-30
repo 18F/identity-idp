@@ -186,7 +186,7 @@ else
       table_summary_stats_export_job: {
         class: 'DataWarehouse::TableSummaryStatsExportJob',
         cron: gpo_cron_24h,
-        args: -> { [Time.zone.now.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday] },
       },
       # Send Duplicate SSN report to S3
       duplicate_ssn: {
