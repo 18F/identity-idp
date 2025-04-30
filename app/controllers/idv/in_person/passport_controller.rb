@@ -28,10 +28,10 @@ module Idv
           key: :ipp_passport,
           controller: self,
           next_steps: [:ipp_address],
-          # preconditions: ->(idv_session:, user:) {
-          #   user.has_establishing_in_person_enrollment? &&
-          #   ENROLLMENT TYPE IS PASSPORT MAYBE? WE NEED TO SEE WHERE WE ARE ADDING THIS
-          # },
+          preconditions: ->(idv_session:, user:) {
+            # user.has_establishing_in_person_enrollment? &&
+            # ENROLLMENT TYPE IS PASSPORT MAYBE? WE NEED TO SEE WHERE WE ARE ADDING THIS
+          },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!
           end,
