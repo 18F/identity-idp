@@ -36,7 +36,12 @@ module DocAuth
           when 'YES'
             DocAuth::Response.new(success: true, errors: {}, exception: nil, extra:)
           when 'NO'
-            DocAuth::Response.new(success: false, errors: {}, exception: nil, extra:)
+            DocAuth::Response.new(
+              success: false,
+              errors: { passport: 'invalid MRZ' },
+              exception: nil,
+              extra:,
+            )
           else
             DocAuth::Response.new(
               success: false,

@@ -20,7 +20,6 @@ module Idv
     def image_upload_form
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
-        passport_submittal: params['passport'].present?,
         acuant_sdk_upgrade_ab_test_bucket: ab_test_bucket(:ACUANT_SDK),
         analytics:,
         attempts_api_tracker:,

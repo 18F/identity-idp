@@ -22,7 +22,6 @@ module Idv
       service_provider:,
       analytics: nil,
       liveness_checking_required: false,
-      passport_submittal: false,
       uuid_prefix: nil
     )
       @params = params
@@ -33,7 +32,6 @@ module Idv
       @service_provider = service_provider
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
-      @passport_submittal = passport_submittal
     end
 
     def submit
@@ -80,7 +78,6 @@ module Idv
                 :form_response,
                 :liveness_checking_required,
                 :params,
-                :passport_submittal,
                 :service_provider,
                 :uuid_prefix
 
@@ -349,6 +346,10 @@ module Idv
       as_readable(:passport)
     end
 
+    def passport_submittal
+      params['passport'].present?
+    end
+
     def selfie
       as_readable(:selfie)
     end
@@ -523,9 +524,12 @@ module Idv
     end
 
     def acuant_sdk_captured_id?
-      (image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT) ||
+      if passport_submittal
         image_metadata.dig(:passport, :source) == Idp::Constants::Vendors::ACUANT
+      else
+        image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
+          image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+      end
     end
 
     def acuant_sdk_captured_selfie?
@@ -533,9 +537,12 @@ module Idv
     end
 
     def acuant_sdk_autocaptured_id?
-      (image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
-        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO') ||
+      if passport_submittal
         image_metadata.dig(:passport, :acuantCaptureMode) == 'AUTO'
+      else
+        image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+          image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
+      end
     end
 
     def image_metadata

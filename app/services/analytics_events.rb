@@ -4268,6 +4268,7 @@ module AnalyticsEvents
   # @param [Boolean] isAssessedAsBlurry
   # @param [Boolean] isAssessedAsGlare
   # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] mimeType MIME type of image added
   # @param [Integer] moire
   # @param [Integer] sharpness
@@ -4275,7 +4276,6 @@ module AnalyticsEvents
   # @param [Integer] size size of image added in bytes
   # @param [String] source
   # @param [Boolean] use_alternate_sdk
-  # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [Integer] width width of image added in pixels
   # Back image was added in document capture
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
@@ -4296,6 +4296,7 @@ module AnalyticsEvents
     isAssessedAsBlurry:,
     isAssessedAsGlare:,
     isAssessedAsUnsupported:,
+    liveness_checking_required:,
     mimeType:,
     moire:,
     sharpness:,
@@ -4303,37 +4304,36 @@ module AnalyticsEvents
     size:,
     source:,
     use_alternate_sdk:,
-    liveness_checking_required:,
     width:,
     **extra
   )
     track_event(
       'Frontend: IdV: passport image added',
-      acuantCaptureMode: acuantCaptureMode,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      assessment: assessment,
-      captureAttempts: captureAttempts,
-      documentType: documentType,
-      dpi: dpi,
-      failedImageResubmission: failedImageResubmission,
-      fingerprint: fingerprint,
-      flow_path: flow_path,
-      glare: glare,
-      glareScoreThreshold: glareScoreThreshold,
-      height: height,
-      isAssessedAsBlurry: isAssessedAsBlurry,
-      isAssessedAsGlare: isAssessedAsGlare,
-      isAssessedAsUnsupported: isAssessedAsUnsupported,
-      mimeType: mimeType,
-      moire: moire,
-      sharpness: sharpness,
-      sharpnessScoreThreshold: sharpnessScoreThreshold,
-      size: size,
-      source: source,
-      use_alternate_sdk: use_alternate_sdk,
-      liveness_checking_required: liveness_checking_required,
-      width: width,
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      captureAttempts:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      liveness_checking_required:,
+      mimeType:,
+      moire:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
       **extra,
     )
   end
@@ -4341,34 +4341,34 @@ module AnalyticsEvents
 
   # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
   # @param [String] acuant_version
+  # @param [Number] captureAttempts count of image capturing attempts
+  # @param [Boolean] click_source
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] isDrop
-  # @param [Boolean] click_source
-  # @param [Boolean] use_alternate_sdk
-  # @param [Number] captureAttempts count of image capturing attempts
   # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] use_alternate_sdk
   # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
   def idv_passport_image_clicked(
     acuant_sdk_upgrade_a_b_testing_enabled:,
     acuant_version:,
+    captureAttempts:,
+    click_source:,
     flow_path:,
     isDrop:,
-    click_source:,
-    use_alternate_sdk:,
-    captureAttempts:,
     liveness_checking_required:,
+    use_alternate_sdk:,
     **extra
   )
     track_event(
       'Frontend: IdV: passport image clicked',
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isDrop: isDrop,
-      click_source: click_source,
-      use_alternate_sdk: use_alternate_sdk,
-      liveness_checking_required: liveness_checking_required,
-      captureAttempts: captureAttempts,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      captureAttempts:,
+      click_source:,
+      flow_path:,
+      isDrop:,
+      liveness_checking_required:,
+      use_alternate_sdk:,
       **extra,
     )
   end

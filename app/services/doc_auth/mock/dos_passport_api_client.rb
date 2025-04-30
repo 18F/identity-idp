@@ -3,12 +3,12 @@
 module DocAuth
   module Mock
     class DosPassportApiClient
-      def initialize(lexis_nexis_response)
-        @lexis_nexis_response = lexis_nexis_response
+      def initialize(mock_client_response)
+        @mock_client_response = mock_client_response
       end
 
       def fetch
-        if lexis_nexis_response&.passport_check_result&.dig(:PassportCheckResult) == 'Fail'
+        if mock_client_response&.passport_check_result&.dig(:PassportCheckResult) == 'Fail'
           DocAuth::Response.new(
             success: false,
             errors: { passport: 'invalid MRZ' },
@@ -20,7 +20,7 @@ module DocAuth
 
       private
 
-      attr_accessor :lexis_nexis_response
+      attr_accessor :mock_client_response
     end
   end
 end
