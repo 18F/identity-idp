@@ -35,6 +35,7 @@
   <div class="margin-top-4 grid-col-5">
     <%= render ButtonComponent.new(
           url: multiple_accounts_detected_recognize_accounts_url,
+          method: :post,
         ).with_content(@multiple_accounts_detected_presenter.recognize_all_accounts) %>
   </div>
 
@@ -42,6 +43,7 @@
     <%= render ButtonComponent.new(
           url: multiple_accounts_detected_do_not_recognize_url,
           outline: true,
+          method: :post,
         ).with_content(@multiple_accounts_detected_presenter.has_unknown_accounts) %>
   </div>
   
