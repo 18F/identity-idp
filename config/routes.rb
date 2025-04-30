@@ -206,9 +206,9 @@ Rails.application.routes.draw do
     end
 
     get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
-    get '/multiple_accounts_detected' => 'multiple_accounts_detected#show' 
-    post '/multiple_accounts_detected/recognize_accounts' => 'multiple_accounts_detected#recognize_accounts' 
-    post '/multiple_accounts_detected/do_not_recognize' => 'multiple_accounts_detected#do_not_recognize' 
+    get '/multiple_accounts_detected' => 'multiple_accounts_detected#show'
+    post '/multiple_accounts_detected/recognize_accounts' => 'multiple_accounts_detected#recognize_accounts'
+    post '/multiple_accounts_detected/do_not_recognize' => 'multiple_accounts_detected#do_not_recognize'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'

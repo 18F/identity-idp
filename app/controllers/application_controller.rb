@@ -519,7 +519,7 @@ class ApplicationController < ActionController::Base
     return false unless user_signed_in?
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
   end
-  
+
   def user_multiple_accounts_detected?
     return false unless sp_eligible_for_one_account?
     profile = current_user&.active_profile
@@ -530,8 +530,10 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_eligible_for_one_account?
-    sp_from_sp_session.present? && IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
+    sp_from_sp_session.present? &&
+      IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
   end
+
   def handle_banned_user
     return unless user_is_banned?
     analytics.banned_user_redirect

@@ -5,7 +5,7 @@ class MultipleAccountsDetectedController < ApplicationController
   before_action :redirect_unless_user_has_active_duplicate_profile_confirmation
 
   def show
-    @multiple_accounts_detected_presenter = MultipleAccountsDetectedPresenter.new(user: current_user)
+    @accounts_detected_presenter = MultipleAccountsDetectedPresenter.new(user: current_user)
     analytics.one_account_multiple_accounts_detected
   end
 
@@ -21,23 +21,21 @@ class MultipleAccountsDetectedController < ApplicationController
     redirect_to after_sign_in_path_for(current_user)
   end
 
-  private 
+  private
 
   def redirect_unless_user_has_active_duplicate_profile_confirmation
     if current_user&.active_profile.present?
-      if duplicate_profile_confirmation && duplicate_profile_confirmation&.confirmed_all == nil
+      if dupe_profile_confirmation && dupe_profile_confirmation&.confirmed_all.nil?
         return
       end
     end
     redirect_to after_sign_in_path_for(current_user)
   end
 
-
-  def duplicate_profile_confirmation 
+  def dupe_profile_confirmation
     return unless current_user.active_profile
-    @duplicate_profile_confirmation ||= DuplicateProfileConfirmation.find_by(
-      profile_id: current_user.active_profile.id
+    @dupe_profile_confirmation ||= DuplicateProfileConfirmation.find_by(
+      profile_id: current_user.active_profile.id,
     )
   end
 end
-  

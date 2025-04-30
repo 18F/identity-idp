@@ -3,13 +3,14 @@
 class MultipleAccountsDetectedPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :duplicate_profile_confirmation
+  attr_reader :user, :dupe_profile_confirmation
 
   def initialize(user:)
-      @user = user
-      @duplicate_profile_confirmation = DuplicateProfileConfirmation.where(profile_id: user.active_profile.id).last
+    @user = user
+    @dupe_profile_confirmation = DuplicateProfileConfirmation.where(
+      profile_id: user.active_profile.id,
+    ).last
   end
-
 
   def heading
     I18n.t('multiple_accounts_detected.heading')
@@ -30,7 +31,7 @@ class MultipleAccountsDetectedPresenter
         masked_email: masked_email(dupe_user.last_sign_in_email_address.email),
         last_sign_in: dupe_user.last_sign_in_email_address.last_sign_in_at,
         created_at: dupe_user.created_at,
-     }
+      }
     end
   end
 
@@ -38,19 +39,19 @@ class MultipleAccountsDetectedPresenter
     I18n.t('multiple_accounts_detected.yes_single')
   end
 
-  def has_unknown_accounts
+  def dont_recognize_some_accounts
     I18n.t('mutliple_accounts_detected.no_recognize')
   end
 
-  private 
-  
+  private
+
   def masked_email(email)
-    email.gsub(/^(.+)@(.+)$/) do |match|
+    email.gsub(/^(.+)@(.+)$/) do |_match|
       local_part = $1
       domain_part = "@#{$2}"
       local_length = local_part.length
       mask_char = '*'
-    
+
       masked_local_part = case local_length
                           when 1 then mask_char
                           when 2 then mask_char * 2
@@ -62,4 +63,3 @@ class MultipleAccountsDetectedPresenter
     end
   end
 end
-  

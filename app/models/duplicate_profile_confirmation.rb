@@ -3,7 +3,6 @@
 class DuplicateProfileConfirmation < ApplicationRecord
   belongs_to :profile
 
-
   def mark_some_accounts_not_recognized
     update!(confirmed_all: false)
   end

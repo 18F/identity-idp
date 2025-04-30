@@ -6303,18 +6303,17 @@ module AnalyticsEvents
       **extra,
     )
   end
-  
 
-  #Tracks when user lands on page notifying them multiple profiles contain same information
+  # Tracks when user lands on page notifying them multiple profiles contain same information
   def one_account_multiple_accounts_detected
     track_event(:one_account_multiple_accounts_detected)
   end
 
-  #Tracks when user says they recognize all accounts that has same profile information.
+  # Tracks when user says they recognize all accounts that has same profile information.
   def one_account_recognize_all_accounts
     track_event(:one_account_recognize_all_accounts)
   end
-  
+
   def one_account_unknown_account_detected
     track_event(:one_account_unknown_account_detected)
   end
