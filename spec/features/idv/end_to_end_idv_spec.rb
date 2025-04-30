@@ -135,7 +135,7 @@ RSpec.describe 'Identity verification', :js do
         .update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing', allow_browser_log: true do
+    scenario 'In person proofing with state ID', allow_browser_log: true do
       visit_idp_from_sp_with_ial2(sp)
       user = sign_up_and_2fa_ial1_user
 
