@@ -123,11 +123,9 @@ module Idv
       )
 
       if ssn_rate_limiter.limited?
-        idv_failure_log_rate_limited(:proof_ssn)
-        redirect_to idv_session_errors_ssn_failure_url
+        rate_limit_redirect!(:proof_ssn, step_name: STEP_NAME)
       elsif resolution_rate_limiter.limited?
-        idv_failure_log_rate_limited(:idv_resolution)
-        redirect_to rate_limited_url
+        rate_limit_redirect!(:idv_resolution, step_name: STEP_NAME)
       elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
@@ -144,20 +142,6 @@ module Idv
       else
         idv_failure_log_warning
         redirect_to warning_url
-      end
-    end
-
-    def idv_failure_log_rate_limited(rate_limit_type)
-      if rate_limit_type == :proof_ssn
-        analytics.rate_limit_reached(
-          limiter_type: :proof_ssn,
-          step_name: STEP_NAME,
-        )
-      elsif rate_limit_type == :idv_resolution
-        analytics.rate_limit_reached(
-          limiter_type: :idv_resolution,
-          step_name: STEP_NAME,
-        )
       end
     end
 

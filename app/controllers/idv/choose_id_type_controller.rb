@@ -16,7 +16,7 @@ module Idv
              locals: locals_attrs(
                analytics:,
                presenter: Idv::ChooseIdTypePresenter.new,
-               url_for: idv_choose_id_type_path,
+               form_submit_url: idv_choose_id_type_path,
              ),
              layout: true
     end

@@ -18,7 +18,7 @@ module Idv
                locals: locals_attrs(
                  analytics:,
                  presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
-                 url_for: idv_hybrid_mobile_choose_id_type_path,
+                 form_submit_url: idv_hybrid_mobile_choose_id_type_path,
                )
       end
 
