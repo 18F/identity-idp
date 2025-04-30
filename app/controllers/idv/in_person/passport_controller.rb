@@ -11,8 +11,6 @@ module Idv
 
       def show
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
-
-        @idv_in_person_passport_form = Idv::InPerson::PassportForm.new
       end
 
       def extra_view_variables
