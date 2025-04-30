@@ -17,7 +17,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         }.compact,
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
-      attempts_api_tracker:,
       analytics: fake_analytics,
       attempts_api_tracker:,
       liveness_checking_required:,
