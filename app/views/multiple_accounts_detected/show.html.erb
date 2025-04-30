@@ -34,13 +34,13 @@
 
   <div class="margin-top-4 grid-col-5">
     <%= render ButtonComponent.new(
-          url: root_url,
+          url: multiple_accounts_detected_recognize_accounts_url,
         ).with_content(@multiple_accounts_detected_presenter.recognize_all_accounts) %>
   </div>
 
   <div class="margin-top-3 grid-col-5">
     <%= render ButtonComponent.new(
-          url: root_url,
+          url: multiple_accounts_detected_do_not_recognize_url,
           outline: true,
         ).with_content(@multiple_accounts_detected_presenter.has_unknown_accounts) %>
   </div>

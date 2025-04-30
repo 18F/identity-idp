@@ -522,13 +522,16 @@ class ApplicationController < ActionController::Base
   
   def user_multiple_accounts_detected?
     return false unless sp_eligible_for_one_account?
-    current_user&.active_profile&.verify_profile_one_account_at.present?
+    profile = current_user&.active_profile
+    DuplicateProfileConfirmation.where(
+      profile_id: profile.id,
+      confirmed_all: nil,
+    ).present?
   end
 
   def sp_eligible_for_one_account?
     sp_from_sp_session.present? && IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
   end
-
   def handle_banned_user
     return unless user_is_banned?
     analytics.banned_user_redirect
