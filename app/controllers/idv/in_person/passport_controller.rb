@@ -6,8 +6,7 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
 
-      before_action :render_404_if_controller_not_enabled
-      # before_action :confirm_step_allowed
+      before_action :confirm_step_allowed
       before_action :initialize_pii_from_user, only: [:show]
 
       def show
@@ -29,8 +28,7 @@ module Idv
           controller: self,
           next_steps: [:ipp_address],
           preconditions: ->(idv_session:, user:) {
-            # user.has_establishing_in_person_enrollment? &&
-            # ENROLLMENT TYPE IS PASSPORT MAYBE? WE NEED TO SEE WHERE WE ARE ADDING THIS
+            idv_session.in_person_passports_allowed? && user.has_establishing_in_person_enrollment?
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!
@@ -59,12 +57,6 @@ module Idv
           data = data.merge(flow_params)
         end
         data.deep_symbolize_keys
-      end
-
-      def render_404_if_controller_not_enabled
-        render_not_found unless
-          IdentityConfig.store.doc_auth_passports_enabled &&
-          IdentityConfig.store.in_person_passports_enabled
       end
     end
   end
