@@ -21,7 +21,7 @@ module Pii
     :state_id_issued,
     :state_id_jurisdiction,
     :state_id_number,
-    :state_id_type,
+    :id_doc_type,
     :issuing_country_code,
   )
 end

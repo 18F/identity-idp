@@ -9,7 +9,7 @@ module Idv
     validate :state_id_or_passport
 
     attr_reader :first_name, :last_name, :dob, :attention_with_barcode,
-                :jurisdiction, :state_id_number, :state_id_expiration, :state_id_type
+                :jurisdiction, :state_id_number, :state_id_expiration, :id_doc_type
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -17,7 +17,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @state_id_type = pii[:state_id_type]
+      @id_doc_type = pii[:id_doc_type]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -26,7 +26,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: self.class.pii_like_keypaths(document_type: state_id_type),
+          pii_like_keypaths: self.class.pii_like_keypaths(document_type: id_doc_type),
           attention_with_barcode: attention_with_barcode?,
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
           id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
@@ -75,7 +75,7 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
-    STATE_ID_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
+    ID_DOC_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
 
     attr_reader :pii_from_doc
 
@@ -101,8 +101,8 @@ module Idv
     end
 
     def state_id_or_passport
-      case state_id_type
-      when *STATE_ID_TYPES
+      case id_doc_type
+      when *ID_DOC_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       when 'passport'
