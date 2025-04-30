@@ -479,7 +479,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
     t.text "encrypted_pii_recovery_multi_region", comment: "sensitive=true"
     t.datetime "gpo_verification_expired_at", comment: "sensitive=false"
     t.integer "idv_level", comment: "sensitive=false"
-    t.datetime "verify_profile_one_account_at", comment: "sensitive=false"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"

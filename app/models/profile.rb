@@ -265,12 +265,6 @@ class Profile < ApplicationRecord
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
 
-  def has_been_checked_for_duplicate_profiles
-    update!(
-      verify_profile_one_account_at: Time.zone.now
-    )
-  end 
-
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
