@@ -27,14 +27,14 @@ RSpec.describe Reporting::IrsVerificationReport do
   end
 
   describe '#funnel_table' do
-    it 'generates the authentication funnel table with the correct metrics' do
+    it 'generates the funnel table with the correct metrics' do
       allow(report).to receive(:verification_demand_results).and_return(100)
       allow(report).to receive(:document_authentication_success_results).and_return(80)
       allow(report).to receive(:information_validation_success_results).and_return(70)
       allow(report).to receive(:phone_verification_success_results).and_return(60)
       allow(report).to receive(:total_verified_results).and_return(50)
 
-      table = report.authentication_funnel_table
+      table = report.funnel_table
 
       expect(table).to include(
         ['Metric', 'Count', 'Rate'],

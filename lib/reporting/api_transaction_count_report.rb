@@ -119,7 +119,7 @@ module Reporting
 
     def fetch_results(query:)
       Rails.logger.info("Executing query: #{query}")
-      Rails.logger.info("Time range: #{time_range.begin.to_date} to #{time_range.end.to_date}")
+      Rails.logger.info("Time range: #{time_range.begin.to_time} to #{time_range.end.to_time}")
 
       results = cloudwatch_client.fetch(
         query:,
