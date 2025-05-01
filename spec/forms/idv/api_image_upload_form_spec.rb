@@ -30,7 +30,6 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:passport_image) { nil }
-  let(:passport_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
   let(:front_image_file_name) { 'front.jpg' }
@@ -816,10 +815,13 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'uploading a Passport image' do
-      let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml.read }
+      # let(:passport_image) { DocAuthImageFixtures.document_back_image_multipart }
+      let(:front_image) { nil }
+      let(:back_image) { nil }
+      let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml }
       let(:passport_pii_response) do
         DocAuth::Mock::ResultResponse.new(
-          passport_image,
+          passport_image.read,
           image_config,
         )
       end
@@ -879,7 +881,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       context 'Passport MRZ validation succeeds' do
-        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml.read }
+        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
 
         let(:successful_passport_mrz_response) do
           DocAuth::Response.new(
