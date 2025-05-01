@@ -18,7 +18,8 @@ RSpec.describe Idv::ApiImageUploadForm do
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
-      liveness_checking_required: liveness_checking_required,
+      attempts_api_tracker:,
+      liveness_checking_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
@@ -55,6 +56,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -84,6 +86,9 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when rate limited from submission' do
       it 'is not valid' do
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
         RateLimiter.new(
           rate_limit_type: :idv_doc_auth,
           user: document_capture_session.user,

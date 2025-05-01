@@ -616,6 +616,7 @@ doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’i
 doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
+doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -671,6 +672,7 @@ doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les inst
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
+doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
@@ -1174,9 +1176,9 @@ idv.messages.gpo.info_alert: Vous devrez attendre de recevoir votre lettre pour 
 idv.messages.gpo.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
 idv.messages.gpo.letter_on_the_way: Nous vous envoyons une lettre
 idv.messages.gpo.resend: Envoyez-moi une autre lettre
-idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
+idv.messages.gpo.verify_address_again_html: Si vous ne pouvez pas recevoir de courrier à cette adresse, vous devrez %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: confirmer à nouveau votre adresse
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.

@@ -6,6 +6,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   include ActionView::Helpers::DateHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
@@ -19,6 +20,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     end
     sign_in_and_2fa_user
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
   end
   context 'on a desktop device send link' do
     before do
@@ -118,6 +122,9 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts)
         .and_return(idv_send_link_max_attempts)
+      expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+        limiter_type: :idv_send_link,
+      )
 
       freeze_time do
         idv_send_link_max_attempts.times do
@@ -136,13 +143,14 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_hybrid_handoff_path)
         expect(page).to have_content(
           I18n.t(
             'doc_auth.errors.send_link_limited',
             timeout: timeout,
           ),
         )
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+
         expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end

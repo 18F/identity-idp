@@ -627,6 +627,7 @@ doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
 doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
+doc_auth.headings.mailing_address: 输入你的邮寄地址
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
@@ -682,6 +683,7 @@ doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你身份�
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
 doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
 doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
+doc_auth.info.mailing_address: 我们会将包含验证码的信件邮寄到这个地址。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。
 doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
@@ -1187,9 +1189,9 @@ idv.messages.gpo.info_alert: 你得等到收到信件后才能完成验证你的
 idv.messages.gpo.learn_more_verify_by_mail: 对通过邮件验证你地址获得更多了解
 idv.messages.gpo.letter_on_the_way: 我们正在给你发信。
 idv.messages.gpo.resend: 给我另外发送一封信
-idv.messages.gpo.start_over_html: 如果该地址不对，你需要%{start_over_link_html}。
-idv.messages.gpo.start_over_link_text: 重新开始并用你新地址进行验证。
 idv.messages.gpo.timeframe_html: 你会在<strong> 5 到 10 天</strong> 里收到带有<strong>验证码</strong>的信。
+idv.messages.gpo.verify_address_again_html: 如果你无法在此地址接受邮件，则需要%{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: 再次验证你的地址
 idv.messages.otp_delivery_method_description: 如果你在上面输入的是座机电话，请在下边选择“接听电话”。
 idv.messages.phone.alert_html: '<strong>输入一个符合以下条件的电话号码：</strong>'
 idv.messages.phone.description: 我们会检查记录以验证你的电话号码是否与你验证过的信息相符，并发送一个一次性代码。

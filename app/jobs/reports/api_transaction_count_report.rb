@@ -28,7 +28,6 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        title: 'API Transaction Count Report',
         email: email_addresses,
         subject: "API Transaction Count Report - #{report_date.to_date}",
         reports: reports,

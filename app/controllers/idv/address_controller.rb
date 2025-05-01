@@ -12,7 +12,10 @@ module Idv
       analytics.idv_address_visit
 
       @address_form = build_address_form
-      @presenter = AddressPresenter.new(address_update_request: address_update_request?)
+      @presenter = AddressPresenter.new(
+        gpo_letter_requested: idv_session.gpo_letter_requested,
+        address_update_request: address_update_request?,
+      )
     end
 
     def update
@@ -75,7 +78,10 @@ module Idv
     end
 
     def failure
-      @presenter = AddressPresenter.new(address_update_request: address_update_request?)
+      @presenter = AddressPresenter.new(
+        gpo_letter_requested: idv_session.gpo_letter_requested,
+        address_update_request: address_update_request?,
+      )
       render :new
     end
 

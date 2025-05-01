@@ -9,7 +9,7 @@
 
 <% self.title = t('titles.doc_auth.address') %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.page_heading) %>
+<%= render PageHeadingComponent.new.with_content(@presenter.address_heading) %>
 
 <%= render AlertComponent.new(
       type: :info,
@@ -20,7 +20,7 @@
     end
 %>
 
-<p><%= t('doc_auth.info.address') %></p>
+<p><%= @presenter.address_info %></p>
 
 <%= simple_form_for(
       @address_form,
@@ -79,6 +79,7 @@
           },
         ) %>
   </div>
+
   <%= f.submit @presenter.update_or_continue_button, class: 'display-block margin-y-5' %>
 <% end %>
 
