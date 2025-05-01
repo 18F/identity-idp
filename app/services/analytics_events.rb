@@ -534,6 +534,7 @@ module AnalyticsEvents
     rate_limited:,
     valid_captcha_result:,
     captcha_validation_performed:,
+    device:,
     sign_in_failure_count:,
     sp_request_url_present:,
     remember_device:,
