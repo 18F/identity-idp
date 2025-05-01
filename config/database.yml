@@ -112,3 +112,13 @@ production:
     sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
+  <% if IdentityConfig.store.data_warehouse_enabled %>
+  data_warehouse:
+    adapter: redshift
+    host: <%= URI.parse("redshift://#{Identity::Hostdata.config.redshift_host}").host %>
+    port: 5439
+    database: "<%= Identity::Hostdata.config.redshift_database_name %>"
+    username: "<%= JSON.parse(Identity::Hostdata.builder_config.secrets_client.get_secret_value(secret_id: Identity::Hostdata.config.redshift_secret_arn).secret_string)['username'] %>"
+    password: "<%= JSON.parse(Identity::Hostdata.builder_config.secrets_client.get_secret_value(secret_id: Identity::Hostdata.config.redshift_secret_arn).secret_string)['password'] %>"
+    encoding: utf8
+  <% end %>
