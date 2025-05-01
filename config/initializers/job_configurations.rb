@@ -236,6 +236,13 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Send previous week's verification reports to partners
+      irs_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',
