@@ -1305,7 +1305,6 @@ in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
-in_person_proofing.form.passport.redirect_to_state_id: Use a driver’s license or state ID instead
 in_person_proofing.form.passport.surname: Surname
 in_person_proofing.form.state_id.address1: Adresse ligne 1
 in_person_proofing.form.state_id.address1_hint: 'Exemple : 150 Calle A Apt 3'
