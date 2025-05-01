@@ -50,8 +50,7 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          if doc_pii_response.success? &&
-             doc_pii_response.pii_from_doc[:state_id_type] == 'passport'
+          if doc_pii_response.success? && passport_submittal
             passport_response = validate_mrz(client_response)
           end
         end
@@ -217,6 +216,13 @@ module Idv
     end
 
     def validate_mrz(client_response)
+      unless client_response.pii_from_doc.state_id_type == 'passport'
+        id_type = client_response.pii_from_doc.state_id_type
+        return DocAuth::Response.new(
+          success: false,
+          errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
+        )
+      end
       mrz_client = document_capture_session.doc_auth_vendor == 'mock' ?
                      DocAuth::Mock::DosPassportApiClient.new(client_response) :
                      DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
@@ -568,8 +574,8 @@ module Idv
     end
 
     def update_funnel(client_response)
-      # TODO: with passports, should we change this to just id_image?
       steps = %i[front_image back_image]
+      steps = %i[passport_image] if passport_submittal
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
           .call(step.to_s, :update, client_response.success?)

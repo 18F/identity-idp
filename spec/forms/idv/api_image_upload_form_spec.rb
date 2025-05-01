@@ -920,6 +920,31 @@ RSpec.describe Idv::ApiImageUploadForm do
           )
         end
       end
+
+      # An edge case where the user selects passport,
+      # but captures a picture of their driver's license instead.
+      # This is necessary since we forward the passport image in
+      # the `front` field, same as the front of the DL.
+      context 'User submits drivers license as passport' do
+        let(:client_response) do
+          DocAuth::Response.new(
+            success: true,
+            pii_from_doc: Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT),
+          )
+        end
+
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:post_images_to_client)
+            .and_return(client_response)
+        end
+
+        it 'fails the MRZ validation' do
+          message = 'Cannot validate MRZ for id type: drivers_license'
+          expect(response.success?).to eq(false)
+          expect(response.errors[:passport]).to eq(message)
+        end
+      end
     end
 
     describe 'image source' do
