@@ -62,18 +62,38 @@ RSpec.describe Idv::InPerson::PassportController do
         subject.idv_session.opted_in_to_in_person_proofing =
           analytics_arguments[:opted_in_to_in_person_proofing]
         subject.idv_session.skip_hybrid_handoff = analytics_arguments[:skip_hybrid_handoff]
-        get :show
       end
 
-      it 'renders the passport form' do
-        expect(response).to render_template 'idv/in_person/passport/show'
+      context 'when document_capture_session is "requested"' do
+        before do
+          get :show
+        end
+
+        it 'renders the passport form' do
+          expect(response).to render_template 'idv/in_person/passport/show'
+        end
+
+        it 'logs the idv_in_person_proofing_passport_visited event' do
+          expect(@analytics).to have_logged_event(
+            :idv_in_person_proofing_passport_visited,
+            analytics_arguments,
+          )
+        end
       end
 
-      it 'logs the idv_in_person_proofing_passport_visited event' do
-        expect(@analytics).to have_logged_event(
-          :idv_in_person_proofing_passport_visited,
-          analytics_arguments,
-        )
+      context 'when document_capture_session is "not_requested"' do
+        before do
+          subject.document_capture_session.update!(passport_status: 'not_requested')
+          get :show
+        end
+
+        it 'does not render the passport form' do
+          expect(response).to_not render_template 'idv/in_person/passport/show'
+        end
+
+        it 'does not log the idv_in_person_proofing_passport_visited event' do
+          expect(@analytics).to_not have_logged_event(:idv_in_person_proofing_passport_visited)
+        end
       end
     end
   end
