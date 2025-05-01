@@ -42,7 +42,7 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
 
     it 'renders troubleshooting content' do
       expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
-      expect(rendered).to have_content(t('in_person_proofing.form.passport.redirect_to_state_id'))
+      expect(rendered).to have_content(t('idv.troubleshooting.options.use_another_id_type'))
     end
 
     it 'renders a cancel link' do

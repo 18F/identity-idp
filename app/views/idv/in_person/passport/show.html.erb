@@ -82,9 +82,9 @@
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
       <% c.with_option(
-           url: idv_in_person_state_id_url,
+           url: idv_in_person_choose_id_type_url,
            new_tab: false,
-         ).with_content(t('in_person_proofing.form.passport.redirect_to_state_id')) %>
+         ).with_content(t('idv.troubleshooting.options.use_another_id_type')) %>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'passport' %>

@@ -26,7 +26,11 @@ module Idv
           controller: self,
           next_steps: [:ipp_address],
           preconditions: ->(idv_session:, user:) {
-            idv_session.in_person_passports_allowed? && user.has_establishing_in_person_enrollment?
+            idv_session.in_person_passports_allowed? &&
+            user.has_establishing_in_person_enrollment? &&
+            DocumentCaptureSession.find_by(
+              uuid: idv_session.document_capture_session_uuid,
+            ).passport_status == 'requested'
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!
