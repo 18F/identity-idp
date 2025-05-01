@@ -21,18 +21,27 @@ module Idv
       associated_facial_match_profiles_with_ssn.empty?
     end
 
-    private
-
+    # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:
+    # - No dashes, ex: 123456789
+    # - Dashes, ex: 123-45-6789
+    # - Only first dash, ex: 123-456789
+    # - Only second dash, ex: 12345-6789
+    #
+    # The latter two cases are particularly unlikely, but are included for completeness' sake.
     def ssn_signatures
-      current_signature = ssn_signature(Pii::Fingerprinter.current_key)
-      old_signatures = IdentityConfig.store.hmac_fingerprinter_key_queue.map do |key|
-        ssn_signature(key)
-      end
-      [current_signature] + old_signatures
-    end
+      formatted_ssn = SsnFormatter.format(ssn)
+      normalized_ssn = SsnFormatter.normalize(ssn)
+      only_first_dash_ssn = "#{normalized_ssn[0..2]}-#{normalized_ssn[3..8]}"
+      only_second_dash_ssn = "#{normalized_ssn[0..4]}-#{normalized_ssn[5..8]}"
 
-    def ssn_signature(key)
-      Pii::Fingerprinter.fingerprint(ssn, key)
+      ssns = [formatted_ssn, normalized_ssn, only_first_dash_ssn, only_second_dash_ssn]
+
+      keys = [Pii::Fingerprinter.current_key] + IdentityConfig.store.hmac_fingerprinter_key_queue
+      keys.flat_map do |key|
+        ssns.map do |ssn|
+          Pii::Fingerprinter.fingerprint(ssn, key)
+        end
+      end
     end
   end
 end
