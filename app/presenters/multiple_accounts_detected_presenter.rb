@@ -36,14 +36,26 @@ class MultipleAccountsDetectedPresenter
   end
 
   def recognize_all_accounts
-    I18n.t('multiple_accounts_detected.yes_single')
+    if multiple_dupe_profiles?
+      I18n.t('multiple_accounts_detected.yes_many')
+    else
+      I18n.t('multiple_accounts_detected.yes_single')
+    end
   end
 
   def dont_recognize_some_accounts
-    I18n.t('mutliple_accounts_detected.no_recognize')
+    if multiple_dupe_profiles?
+      I18n.t('mutliple_accounts_detected.no_recognize_many')
+    else
+      I18n.t('mutliple_accounts_detected.no_recognize_single')
+    end
   end
 
   private
+
+  def multiple_dupe_profiles?
+    dupe_profile_confirmation.duplicate_profile_ids.count > 1
+  end
 
   def masked_email(email)
     email.gsub(/^(.+)@(.+)$/) do |_match|

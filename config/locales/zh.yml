@@ -1477,6 +1477,14 @@ mfa.second_method_warning.link: 添加第二个身份证实方法。
 mfa.second_method_warning.text: 如果你丢失唯一的身份证实方法，就不得不删除你的账户并从头开始。
 mfa.skip: 现在先跳过
 mfa.webauthn_platform_message: 添加另一个身份证实方法，以防你无法使用第一个方法。
+multiple_accounts_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+multiple_accounts_detected.heading: We believe you may have another account
+multiple_accounts_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+multiple_accounts_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+multiple_accounts_detected.yes_many: Yes, these are my accounts
+multiple_accounts_detected.yes_single: Yes, this is my account
+mutliple_accounts_detected.no_recognize_single: I do not recognize this account
+mutliple_accounts_detected.no_recognize_many: "I don't recognize these accounts"
 notices.account_reactivation: 好！你有个人密钥。
 notices.authenticated_successfully: 成功验证。
 notices.backup_codes_configured: 备用代码加到了你账户。

@@ -1464,6 +1464,14 @@ mfa.second_method_warning.link: Ajouter une deuxième méthode d’authentificat
 mfa.second_method_warning.text: Vous devrez supprimer votre compte et recommencer si vous perdez votre seule méthode d’authentification.
 mfa.skip: Sauter pour le moment
 mfa.webauthn_platform_message: Ajouter une autre méthode d’authentification au cas où vous perdriez l’accès à la première.
+multiple_accounts_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+multiple_accounts_detected.heading: We believe you may have another account
+multiple_accounts_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+multiple_accounts_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+multiple_accounts_detected.yes_many: Yes, these are my accounts
+multiple_accounts_detected.yes_single: Yes, this is my account
+mutliple_accounts_detected.no_recognize_single: I do not recognize this account
+mutliple_accounts_detected.no_recognize_many: "I don't recognize these accounts"
 notices.account_reactivation: Parfait ! Vous avez votre clé personnelle.
 notices.authenticated_successfully: Authentifié avec succès.
 notices.backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.
