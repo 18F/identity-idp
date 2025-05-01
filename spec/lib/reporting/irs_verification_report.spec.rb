@@ -3,7 +3,8 @@ require 'reporting/irs_verification_report'
 
 RSpec.describe Reporting::IrsVerificationReport do
   let(:time_range) do
-    Time.zone.today.beginning_of_week(:sunday) - 7.days..Time.zone.today.end_of_week(:saturday) - 7.days
+    Time.zone.today.beginning_of_week(:sunday) - 7.days..
+      Time.zone.today.end_of_week(:saturday) - 7.days
   end
   let(:issuers) { ['issuer1', 'issuer2'] }
   let(:mock_results) { [{ 'name' => 'IdV: doc auth welcome visited', 'user_id' => 'user1' }] }
@@ -20,7 +21,7 @@ RSpec.describe Reporting::IrsVerificationReport do
 
       expect(table).to include(
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', Date.today.to_s],
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.join(', ')],
       )
     end
