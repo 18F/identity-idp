@@ -6,7 +6,7 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validate :state_id_or_passport
+    validate :id_doc_type_valid?
 
     attr_reader :first_name, :last_name, :dob, :attention_with_barcode,
                 :jurisdiction, :state_id_number, :state_id_expiration, :id_doc_type
@@ -75,7 +75,7 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
-    ID_DOC_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
+    STATE_ID_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
 
     attr_reader :pii_from_doc
 
@@ -100,9 +100,9 @@ module Idv
       end
     end
 
-    def state_id_or_passport
+    def id_doc_type_valid?
       case id_doc_type
-      when *ID_DOC_TYPES
+      when *STATE_ID_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       when 'passport'

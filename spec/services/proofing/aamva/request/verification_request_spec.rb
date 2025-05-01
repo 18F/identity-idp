@@ -27,7 +27,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       sex: nil,
       state_id_number: state_id_number,
       state_id_jurisdiction: state_id_jurisdiction,
-      state_id_type: 'drivers_license',
+      id_doc_type: 'drivers_license',
       state_id_expiration: nil,
       state_id_issued: nil,
     }
@@ -186,48 +186,48 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       end
     end
 
-    context '#state_id_type' do
+    context '#id_doc_type' do
       context 'when the type is a Drivers License' do
         it 'includes DocumentCategoryCode=1' do
-          applicant.state_id_data.state_id_type = 'drivers_license'
+          applicant.state_id_data.id_doc_type = 'drivers_license'
           expect(subject.body).to include(
             '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
           )
-          expect(subject.requested_attributes).to include(:state_id_type)
+          expect(subject.requested_attributes).to include(:id_doc_type)
         end
       end
 
       context 'when the type is a learners permit' do
         it 'includes DocumentCategoryCode=2' do
-          applicant.state_id_data.state_id_type = 'drivers_permit'
+          applicant.state_id_data.id_doc_type = 'drivers_permit'
           expect(subject.body).to include(
             '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
           )
-          expect(subject.requested_attributes).to include(:state_id_type)
+          expect(subject.requested_attributes).to include(:id_doc_type)
         end
       end
 
       context 'when the type is an ID Card' do
         it 'includes DocumentCategoryCode=3' do
-          applicant.state_id_data.state_id_type = 'state_id_card'
+          applicant.state_id_data.id_doc_type = 'state_id_card'
           expect(subject.body).to include(
             '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
           )
-          expect(subject.requested_attributes).to include(:state_id_type)
+          expect(subject.requested_attributes).to include(:id_doc_type)
         end
       end
 
       context 'when the type is something invalid' do
         it 'does not add a DocumentCategoryCode for nil ID type' do
-          applicant.state_id_data.state_id_type = nil
+          applicant.state_id_data.id_doc_type = nil
           expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          expect(subject.requested_attributes).to_not include(:state_id_type)
+          expect(subject.requested_attributes).to_not include(:id_doc_type)
         end
 
         it 'does not add a DocumentCategoryCode for invalid ID types' do
-          applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
+          applicant.state_id_data.id_doc_type = 'License to Keep an Alpaca'
           expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          expect(subject.requested_attributes).to_not include(:state_id_type)
+          expect(subject.requested_attributes).to_not include(:id_doc_type)
         end
       end
     end
@@ -310,7 +310,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         zipcode: '20176-1234',
         state_id_number: '98765421',
         state_id_jurisdiction: 'VA',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
       }
     end
 
@@ -324,7 +324,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         state: :present,
         zipcode: :present,
         state_id_number: :present,
-        state_id_type: :present,
+        id_doc_type: :present,
         state_id_jurisdiction: :present,
       )
     end

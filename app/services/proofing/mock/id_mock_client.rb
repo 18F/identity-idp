@@ -12,7 +12,7 @@ module Proofing
       TRIGGER_MVA_TIMEOUT = 'mvatimeout'
 
       def proof(applicant)
-        return mva_timeout_result if mva_timeout?(applicant[:id_doc_type])
+        return mva_timeout_result if mva_timeout?(applicant[:state_id_number])
 
         errors = {}
         if jurisdiction_not_supported?(applicant)
