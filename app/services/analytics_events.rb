@@ -522,6 +522,7 @@ module AnalyticsEvents
   # @param [Boolean] rate_limited Whether the user has exceeded user IP rate limiting
   # @param [Boolean] valid_captcha_result Whether user passed the reCAPTCHA check or was exempt
   # @param [Boolean] captcha_validation_performed Whether a reCAPTCHA check was performed
+  # @param [String] device Information about device used to sign in
   # @param [String] sign_in_failure_count represents number of prior login failures
   # @param [Boolean] sp_request_url_present if was an SP request URL in the session
   # @param [Boolean] remember_device if the remember device cookie was present
@@ -550,6 +551,7 @@ module AnalyticsEvents
       rate_limited:,
       valid_captcha_result:,
       captcha_validation_performed:,
+      device:,
       sign_in_failure_count:,
       sp_request_url_present:,
       remember_device:,
