@@ -25,6 +25,10 @@ module FlowPolicyHelper
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :document_capture
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+    when :ipp
+      idv_session.send(:user_session)['idv/in_person'] = {
+        pii_from_user: {},
+      }
     when :ipp_state_id
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT.dup,
@@ -78,6 +82,8 @@ module FlowPolicyHelper
       %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
       %i[welcome agreement how_to_verify hybrid_handoff document_capture]
+    when :ipp
+      %i[welcome agreement how_to_verify hybrid_handoff ipp]
     when :ipp_state_id
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id]
     when :ipp_address

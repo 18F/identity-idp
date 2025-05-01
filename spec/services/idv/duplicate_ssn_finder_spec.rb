@@ -41,4 +41,70 @@ RSpec.describe Idv::DuplicateSsnFinder do
       end
     end
   end
+
+  describe '#associated_facial_match_profiles_with_ssn' do
+    let(:ssn) { '123-45-6789' }
+    let(:user) { create(:user) }
+
+    subject { described_class.new(ssn: ssn, user: user) }
+    context 'when profile is IAL2' do
+      context 'when ssn is taken by different profile by and is IAL2' do
+        it 'returns list different profile' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
+          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(1)
+        end
+      end
+
+      context 'when ssn is taken by different profile by and is not IAL2' do
+        it 'returns empty array' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+
+          create(:profile, pii: { ssn: ssn }, active: true)
+          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(0)
+        end
+      end
+
+      context 'when ssn is not taken by other profiles' do
+        it 'returns empty array' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(0)
+        end
+      end
+    end
+  end
+
+  describe '#ial2_profile_ssn_is_unique?' do
+    let(:ssn) { '123-45-6789' }
+    let(:user) { create(:user) }
+
+    subject { described_class.new(ssn: ssn, user: user) }
+    context 'when profile is IAL2' do
+      context 'when ssn is taken by different profile by and is IAL2' do
+        it 'returns false' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
+          expect(subject.ial2_profile_ssn_is_unique?).to eq false
+        end
+      end
+
+      context 'when ssn is taken by different profile by and is not IAL2' do
+        it 'returns true' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+
+          create(:profile, pii: { ssn: ssn }, active: true)
+          expect(subject.ial2_profile_ssn_is_unique?).to eq true
+        end
+      end
+
+      context 'when ssn is not taken by other profiles' do
+        it 'returns true' do
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+          expect(subject.ial2_profile_ssn_is_unique?).to eq true
+        end
+      end
+    end
+  end
 end

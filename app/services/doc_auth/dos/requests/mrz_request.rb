@@ -56,8 +56,8 @@ module DocAuth
           {
             'Content-Type': 'application/json',
             'X-Correlation-ID': correlation_id,
-            client_id: IdentityConfig.store.dos_passport_client_id,
-            client_secret: IdentityConfig.store.dos_passport_client_secret,
+            'Client-Id': IdentityConfig.store.dos_passport_client_id,
+            'Client-Secret': IdentityConfig.store.dos_passport_client_secret,
           }
         end
 
