@@ -21,7 +21,7 @@ class MultipleAccountsDetectedPresenter
   end
 
   def other_accounts_detected
-    profile_ids = duplicate_profile_confirmation.duplicate_profile_ids
+    profile_ids = dupe_profile_confirmation.duplicate_profile_ids
 
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|
