@@ -4,6 +4,9 @@ RSpec.describe Idv::InPerson::PassportController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:document_capture_session) do
+    create(:document_capture_session, user:, passport_status: 'requested')
+  end
   let(:idv_session) { subject.idv_session }
   let(:enrollment) { InPersonEnrollment.new }
 
@@ -11,6 +14,7 @@ RSpec.describe Idv::InPerson::PassportController do
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
     subject.user_session['idv/in_person'] = { pii_from_user: {} }
     stub_analytics
   end
