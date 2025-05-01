@@ -43,12 +43,15 @@ module Users
 
       rate_limit_password_failure = true
 
+      # exempt? false here if device does not exist
       return process_failed_captcha unless recaptcha_response.success?
 
       self.resource = warden.authenticate!(auth_options)
+      # Device potentially created here
       handle_valid_authentication
     ensure
       handle_invalid_authentication if rate_limit_password_failure && !current_user
+      # Since a device was created above, recaptcha_form.exempt? might be true now even if it wasn't initially
       track_authentication_attempt
     end
 
@@ -199,6 +202,7 @@ module Users
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
       set_new_device_session(nil)
+      # device created here if it does not exist
       event, = create_user_event(:sign_in_before_2fa)
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
@@ -226,6 +230,7 @@ module Users
         success: success,
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
+        # recaptcha_form.exempt? might be true now, even if the device didn't exist initially
         captcha_validation_performed: captcha_validation_performed?,
         valid_captcha_result: recaptcha_response.success?,
         sign_in_failure_count: session[:sign_in_failure_count].to_i,
