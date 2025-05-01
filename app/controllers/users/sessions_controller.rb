@@ -227,6 +227,7 @@ module Users
         user_locked_out: user_locked_out?(user),
         rate_limited: rate_limited?,
         captcha_validation_performed: captcha_validation_performed?,
+        device: recaptcha_form.device,
         valid_captcha_result: recaptcha_response.success?,
         sign_in_failure_count: session[:sign_in_failure_count].to_i,
         sp_request_url_present: sp_session[:request_url].present?,
