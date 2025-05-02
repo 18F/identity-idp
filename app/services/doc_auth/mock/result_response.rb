@@ -132,6 +132,14 @@ module DocAuth
         selfie_check_performed? ? 'test_liveness_workflow' : 'test_non_liveness_workflow'
       end
 
+      def passport_check_result
+        return {} if !parsed_data_from_uploaded_file.has_key?('passport_check_result')
+
+        parsed_data_from_uploaded_file.dig('passport_check_result')
+          &.transform_keys! { |key| key.to_s.camelize }
+          &.deep_symbolize_keys
+      end
+
       private
 
       def parsed_alerts
@@ -172,12 +180,6 @@ module DocAuth
 
       def portrait_match_results
         parsed_data_from_uploaded_file.dig('portrait_match_results')
-          &.transform_keys! { |key| key.to_s.camelize }
-          &.deep_symbolize_keys
-      end
-
-      def passport_check_result
-        parsed_data_from_uploaded_file.dig('passport_check_result')
           &.transform_keys! { |key| key.to_s.camelize }
           &.deep_symbolize_keys
       end
