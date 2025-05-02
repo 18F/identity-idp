@@ -72,7 +72,7 @@ module Reports
         total_user_count_report.total_user_count_emailable_report,
         monthly_idv_report.monthly_idv_report_emailable_report,
         proofing_rate_report.proofing_rate_emailable_report,
-        account_reset_rate_report.as_emailable_reports,
+        account_reset_rate_report.account_reset_rate_emailable_report,
         account_reuse_report.account_reuse_emailable_report,
         agency_and_sp_report.agency_and_sp_emailable_report,
         active_users_count_report.active_users_count_apg_emailable_report,
@@ -99,7 +99,8 @@ module Reports
     end
 
     def account_reset_rate_report
-      @account_reset_rate_report ||= Reporting::AccountResetReport.new(time_range: report_date.all_month)
+      @account_reset_rate_report ||= Reporting::AccountResetReport.new(
+        time_range: report_date.all_month)
     end
 
     # def account_deletion_rate_report

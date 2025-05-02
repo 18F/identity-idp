@@ -54,13 +54,12 @@ module Reporting
       ]
     end
 
-    def as_emailable_reports
-      [
-        Reporting::EmailableReport.new(
-          title: 'Account Reset Rate',
+    def account_reset_rate_emailable_report
+      EmailableReport.new(
+          subtitle: 'Account Reset Rate',
           table: account_reset_table,
-        ),
-      ]
+        )
+      
     end
     
     def to_csvs
