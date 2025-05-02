@@ -5,15 +5,13 @@ RSpec.describe SignInRecaptchaForm do
   let(:user) { create(:user, :with_authenticated_device) }
   let(:score_threshold_config) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
-  let(:email) { user.email }
+  let(:existing_device) { false }
   let(:ab_test_bucket) { :sign_in_recaptcha }
   let(:recaptcha_token) { 'token' }
-  let(:device_cookie) { Random.hex }
   let(:score) { 1.0 }
   subject(:form) do
     described_class.new(
-      email:,
-      device_cookie:,
+      existing_device:,
       ab_test_bucket:,
       form_class: RecaptchaMockForm,
       analytics:,
@@ -45,8 +43,7 @@ RSpec.describe SignInRecaptchaForm do
   context 'with custom recaptcha form class' do
     subject(:form) do
       described_class.new(
-        email:,
-        device_cookie:,
+        existing_device:,
         ab_test_bucket:,
         analytics:,
         form_class: RecaptchaForm,
@@ -74,29 +71,18 @@ RSpec.describe SignInRecaptchaForm do
       let(:ab_test_bucket) { nil }
 
       it { is_expected.to eq(true) }
-
-      it { expect(queries_database?).to eq(false) }
     end
 
     context 'score threshold configured at zero' do
       let(:score_threshold_config) { 0.0 }
 
       it { is_expected.to eq(true) }
-
-      it { expect(queries_database?).to eq(false) }
     end
 
     context 'existing device for user' do
-      let(:device_cookie) { user.devices.first.cookie_uuid }
+      let(:existing_device) { true }
 
       it { is_expected.to eq(true) }
-
-      it { expect(queries_database?).to eq(true) }
-    end
-
-    def queries_database?
-      user
-      QueryTracker.track { exempt? }.present?
     end
   end
 
@@ -108,7 +94,7 @@ RSpec.describe SignInRecaptchaForm do
       let(:score) { 0.0 }
 
       context 'existing device for user' do
-        let(:device_cookie) { user.devices.first.cookie_uuid }
+        let(:existing_device) { true }
 
         it 'is successful' do
           expect(response.to_h).to eq(success: true)
