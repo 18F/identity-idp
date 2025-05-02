@@ -43,7 +43,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
     Idv::StepInfo.new(
       key: :ipp_choose_id_type,
       controller: self,
-      next_steps: [:ipp_state_id],
+      next_steps: [:ipp_state_id, :ipp_passport],
       preconditions: ->(idv_session:, user:) {
         idv_session.in_person_passports_allowed? && user.has_establishing_in_person_enrollment?
       },

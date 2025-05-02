@@ -3253,6 +3253,28 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_visited(
+    step: nil,
+    analytics_id: nil,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_visited,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
