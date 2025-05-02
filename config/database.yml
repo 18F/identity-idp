@@ -116,9 +116,9 @@ production:
 <% redshift_config = JSON.parse(Identity::Hostdata.config_builder.secrets_client.get_secret_value(secret_id: Identity::Hostdata.config.redshift_secret_arn).secret_string) %>
   data_warehouse:
     adapter: postgresql
-    host: <%= Identity::Hostdata.config.redshift_endpoint_host %>
+    host: <%= IdentityConfig.store.redshift_endpoint_host %>
     port: 5439
-    database: "<%= Identity::Hostdata.config.redshift_database_name %>"
+    database: "<%= IdentityConfig.store.redshift_database_name %>"
     username: "<%= redshift_config['username'] %>"
     password: "<%= redshift_config['password'] %>"
     encoding: utf8
