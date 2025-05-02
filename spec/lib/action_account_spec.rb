@@ -237,9 +237,11 @@ RSpec.describe ActionAccount do
       let(:user_without_profile) { create(:user) }
 
       let(:analytics) { FakeAnalytics.new }
+      let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
       before do
         allow(Analytics).to receive(:new).and_return(analytics)
+        allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
       end
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
@@ -251,6 +253,7 @@ RSpec.describe ActionAccount do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
           profile: user.pending_profile,
         )
+        expect(attempts_api_tracker).to receive(:idv_enrollment_complete)
 
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 

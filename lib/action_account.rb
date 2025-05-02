@@ -287,6 +287,7 @@ class ActionAccount
           success = true
 
           if profile.active?
+            attempts_api_tracker(profile:).idv_enrollment_complete
             UserEventCreator.new(current_user: user)
               .create_out_of_band_user_event(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
@@ -354,6 +355,18 @@ class ActionAccount
         uuids: users.map(&:uuid),
         messages:,
         table:,
+      )
+    end
+
+    def attempts_api_tracker(profile:)
+      AttemptsApi::Tracker.new(
+        enabled_for_session: profile.initiating_service_provider&.attempts_api_enabled?,
+        session_id: nil,
+        request: nil,
+        user: profile.user,
+        sp: profile.initiating_service_provider,
+        cookie_device_uuid: nil,
+        sp_request_uri: nil,
       )
     end
   end
