@@ -132,7 +132,7 @@ module DocAuth
         end
 
         def passport_pii?
-          @passport_pii ||= pii_from_doc&.state_id_type == 'passport'
+          @passport_pii ||= pii_from_doc&.id_doc_type == 'passport'
         end
 
         def transaction_status

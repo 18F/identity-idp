@@ -6,10 +6,10 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validate :state_id_or_passport
+    validate :id_doc_type_valid?
 
     attr_reader :first_name, :last_name, :dob, :attention_with_barcode,
-                :jurisdiction, :state_id_number, :state_id_expiration, :state_id_type
+                :jurisdiction, :state_id_number, :state_id_expiration, :id_doc_type
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -17,7 +17,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @state_id_type = pii[:state_id_type]
+      @id_doc_type = pii[:id_doc_type]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -26,7 +26,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: self.class.pii_like_keypaths(document_type: state_id_type),
+          pii_like_keypaths: self.class.pii_like_keypaths(document_type: id_doc_type),
           attention_with_barcode: attention_with_barcode?,
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
           id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
@@ -100,8 +100,8 @@ module Idv
       end
     end
 
-    def state_id_or_passport
-      case state_id_type
+    def id_doc_type_valid?
+      case id_doc_type
       when *STATE_ID_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)

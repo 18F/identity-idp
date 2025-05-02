@@ -11,7 +11,7 @@ module Proofing
           'DriverLicenseExpirationDateMatchIndicator' => :state_id_expiration,
           'DriverLicenseIssueDateMatchIndicator' => :state_id_issued,
           'DriverLicenseNumberMatchIndicator' => :state_id_number,
-          'DocumentCategoryMatchIndicator' => :state_id_type,
+          'DocumentCategoryMatchIndicator' => :id_doc_type,
           'PersonBirthDateMatchIndicator' => :dob,
           'PersonHeightMatchIndicator' => :height,
           'PersonSexCodeMatchIndicator' => :sex,

@@ -9,7 +9,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
       dob: '10/29/1942',
       state_id_number: '123456789',
       state_id_jurisdiction: 'CA',
-      state_id_type: 'drivers_license',
+      id_doc_type: 'drivers_license',
     )
   end
 
@@ -77,7 +77,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
             state_id_expiration: true,
             state_id_issued: true,
             state_id_number: true,
-            state_id_type: true,
+            id_doc_type: true,
             zipcode: true,
           },
         )
@@ -114,7 +114,7 @@ RSpec.describe Proofing::Aamva::VerificationClient do
               state_id_expiration: true,
               state_id_issued: true,
               state_id_number: true,
-              state_id_type: true,
+              id_doc_type: true,
               zipcode: true,
             },
           )

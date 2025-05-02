@@ -22,7 +22,7 @@ RSpec.describe DocumentCaptureSession do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: 'USA',
       ),

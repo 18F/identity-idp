@@ -220,7 +220,7 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
-        state_id_type: pii[:state_id_type],
+        id_doc_type: pii[:id_doc_type],
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
@@ -335,14 +335,14 @@ module Idv
       state: nil,
       state_id_jurisdiction: nil,
       state_id_number: nil,
-      state_id_type: nil,
+      id_doc_type: nil,
       extra: {}
     )
       state_id = result.dig(:context, :stages, :state_id)
       if state_id
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-        state_id[:state_id_type] = state_id_type if state_id_type
+        state_id[:id_doc_type] = id_doc_type if id_doc_type
         if state_id_number
           state_id[:state_id_number] =
             StringRedacter.redact_alphanumeric(state_id_number)

@@ -28,7 +28,7 @@ class AamvaTest
       dob: '2023-01-01',
       state_id_number: '1234567890',
       state_id_jurisdiction: 'VA',
-      state_id_type: 'drivers_license',
+      id_doc_type: 'drivers_license',
       address1: '123 Fake St',
       city: 'Arlington',
       state: 'VA',

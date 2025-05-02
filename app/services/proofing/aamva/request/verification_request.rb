@@ -30,7 +30,7 @@ module Proofing
           state: RequestAttribute.new('//nc:LocationStateUsPostalServiceCode', true),
           zipcode: RequestAttribute.new('//nc:LocationPostalCode', true),
           state_id_number: RequestAttribute.new('//nc:IdentificationID', true),
-          state_id_type: RequestAttribute.new('//aa:DocumentCategoryCode', false),
+          id_doc_type: RequestAttribute.new('//aa:DocumentCategoryCode', false),
           state_id_expiration: RequestAttribute.new('//aa:DriverLicenseExpirationDate', false),
           state_id_jurisdiction: RequestAttribute.new('//aa:MessageDestinationId', true),
           state_id_issued: RequestAttribute.new('//aa:DriverLicenseIssueDate', false),
@@ -160,8 +160,8 @@ module Proofing
             inside: '//dldv:verifyDriverLicenseDataRequest',
           )
 
-          add_state_id_type(
-            applicant.state_id_data.state_id_type,
+          add_id_doc_type(
+            applicant.state_id_data.id_doc_type,
             document,
           )
 
@@ -169,7 +169,7 @@ module Proofing
           document.to_s
         end
 
-        def add_state_id_type(id_type, document)
+        def add_id_doc_type(id_type, document)
           category_code = case id_type
                             when 'drivers_license'
                               1

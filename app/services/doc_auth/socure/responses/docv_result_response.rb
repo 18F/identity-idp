@@ -80,7 +80,7 @@ module DocAuth
             reason_codes: get_data(DATA_PATHS[:reason_codes]),
             document_type: get_data(DATA_PATHS[:document_type]),
             state: state,
-            state_id_type:,
+            id_doc_type:,
             flow_path: nil,
             liveness_checking_required: @biometric_comparison_required,
             issue_year: state_id_issued&.year,
@@ -128,7 +128,7 @@ module DocAuth
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued:,
             state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
-            state_id_type: state_id_type,
+            id_doc_type: id_doc_type,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
             issuing_country_code: get_data(DATA_PATHS[:issuing_country]),
           )
@@ -160,7 +160,7 @@ module DocAuth
           parse_date(get_data(DATA_PATHS[:issue_date]))
         end
 
-        def state_id_type
+        def id_doc_type
           document_id_type&.gsub(/\W/, '')&.underscore
         end
 

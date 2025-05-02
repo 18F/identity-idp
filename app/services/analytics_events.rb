@@ -1930,7 +1930,7 @@ module AnalyticsEvents
   # @param [String] doc_auth_result
   # @param [String] state
   # @param [String] country for passport doc types
-  # @param [String] state_id_type
+  # @param [String] id_doc_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -1994,7 +1994,7 @@ module AnalyticsEvents
     success:,
     errors:,
     exception:,
-    state_id_type:,
+    id_doc_type:,
     async:,
     submit_attempts:,
     remaining_submit_attempts:,
@@ -2051,7 +2051,7 @@ module AnalyticsEvents
       doc_auth_result:,
       state:,
       country:,
-      state_id_type:,
+      id_doc_type:,
       async:,
       submit_attempts: submit_attempts,
       remaining_submit_attempts: remaining_submit_attempts,
@@ -5496,7 +5496,7 @@ module AnalyticsEvents
   # @param [Hash] decision accept or reject of given ID
   # @param [String] user_id internal id of socure user
   # @param [String] state state of ID
-  # @param [String] state_id_type type of state issued ID
+  # @param [String] id_doc_type type of state issued ID or passport
   # @param [Boolean] async whether or not this worker is running asynchronously
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -5531,7 +5531,7 @@ module AnalyticsEvents
     document_type: nil,
     decision: nil,
     state: nil,
-    state_id_type: nil,
+    id_doc_type: nil,
     liveness_checking_required: nil,
     issue_year: nil,
     address_line2_present: nil,
@@ -5563,7 +5563,7 @@ module AnalyticsEvents
       decision:,
       user_id:,
       state:,
-      state_id_type:,
+      id_doc_type:,
       async:,
       submit_attempts:,
       remaining_submit_attempts:,

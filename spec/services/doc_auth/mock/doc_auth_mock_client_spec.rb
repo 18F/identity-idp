@@ -42,7 +42,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
@@ -83,7 +83,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         passport_issued: '2015-03-15',
         nationality_code: 'USA',
         document_number: '000000',
-        state_id_type: 'passport',
+        id_doc_type: 'passport',
       ).to_h
     end
 
@@ -125,7 +125,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         height: 66
         state_id_number: '111111111'
         state_id_jurisdiction: ND
-        state_id_type: drivers_license
+        id_doc_type: drivers_license
         state_id_expiration: '2089-12-31'
         state_id_issued: '2009-12-31'
         issuing_country_code: 'CA'
@@ -164,7 +164,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2089-12-31',
         state_id_issued: '2009-12-31',
         issuing_country_code: 'CA',
@@ -212,7 +212,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
