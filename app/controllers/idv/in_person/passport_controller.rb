@@ -13,6 +13,10 @@ module Idv
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
       end
 
+      def update
+        enrollment.update!(document_type: :passport_book)
+      end
+
       def extra_view_variables
         {
           form:,
@@ -46,6 +50,10 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
           .merge(extra_analytics_properties)
+      end
+
+      def enrollment
+        current_user.establishing_in_person_enrollment
       end
 
       def initialize_pii_from_user
