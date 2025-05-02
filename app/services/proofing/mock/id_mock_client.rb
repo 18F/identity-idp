@@ -19,7 +19,7 @@ module Proofing
           errors[:state_id_jurisdiction] = ['The jurisdiction could not be verified']
         elsif invalid_state_id_number?(applicant[:state_id_number])
           errors[:state_id_number] = ['The state ID number could not be verified']
-        elsif invalid_state_id_type?(applicant[:id_doc_type])
+        elsif invalid_id_doc_type?(applicant[:id_doc_type])
           errors[:id_doc_type] = ['The state ID type could not be verified']
         end
 
