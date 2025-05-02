@@ -5,7 +5,6 @@ Rails.application.routes.draw do
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
-  # get '/api/health/data_warehouse' => 'health/data_warehouse#index'
   get '/api/health/jobs' => 'health/health#index'
   get '/api/health/outbound' => 'health/outbound#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
