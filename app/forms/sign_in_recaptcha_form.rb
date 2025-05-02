@@ -32,6 +32,7 @@ class SignInRecaptchaForm
   end
 
   def exempt?
+    # Because device can change, the result of this can change
     IdentityConfig.store.sign_in_recaptcha_score_threshold.zero? ||
       ab_test_bucket != :sign_in_recaptcha ||
       device.present?
@@ -45,6 +46,7 @@ class SignInRecaptchaForm
   end
 
   def device
+    # This can change
     User.find_with_confirmed_email(email)&.devices&.find_by(cookie_uuid: device_cookie)
   end
 
