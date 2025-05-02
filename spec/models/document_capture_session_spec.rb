@@ -151,6 +151,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint1',
         back_image_fingerprint: nil,
+        passport_image_fingerprint: 'fingerprint-p1',
         selfie_image_fingerprint: nil,
         doc_auth_success: false,
         selfie_status: :not_processed,
@@ -163,6 +164,7 @@ RSpec.describe DocumentCaptureSession do
       expect(result.failed_front_image?('fingerprint1')).to eq(true)
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
+      expect(result.failed_passport_image?('fingerprint-p1')).to eq(true)
       expect(result.doc_auth_success).to eq(false)
       expect(result.selfie_status).to eq(:not_processed)
     end
@@ -173,6 +175,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint1',
         back_image_fingerprint: nil,
+        passport_image_fingerprint: 'fingerprint-p1',
         selfie_image_fingerprint: nil,
         doc_auth_success: false,
         selfie_status: :not_processed,
@@ -182,6 +185,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint2',
         back_image_fingerprint: 'fingerprint3',
+        passport_image_fingerprint: 'fingerprint-p2',
         selfie_image_fingerprint: nil,
         doc_auth_success: false,
         selfie_status: :not_processed,
@@ -191,6 +195,8 @@ RSpec.describe DocumentCaptureSession do
       expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
       expect(old_result.failed_back_image?('fingerprint3')).to eq(false)
+      expect(old_result.failed_passport_image?('fingerprint-p1')).to eq(true)
+      expect(old_result.failed_passport_image?('fingerprint-p2')).to eq(false)
       expect(old_result.failed_selfie_image_fingerprints).to be_nil
       expect(old_result.doc_auth_success).to eq(false)
       expect(old_result.selfie_status).to eq(:not_processed)
@@ -198,6 +204,8 @@ RSpec.describe DocumentCaptureSession do
       expect(new_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(new_result.failed_front_image?('fingerprint2')).to eq(true)
       expect(new_result.failed_back_image?('fingerprint3')).to eq(true)
+      expect(new_result.failed_passport_image?('fingerprint-p1')).to eq(true)
+      expect(new_result.failed_passport_image?('fingerprint-p2')).to eq(true)
       expect(new_result.failed_selfie_image_fingerprints).to be_nil
       expect(new_result.doc_auth_success).to eq(false)
       expect(new_result.selfie_status).to eq(:not_processed)
@@ -207,6 +215,7 @@ RSpec.describe DocumentCaptureSession do
       record.store_failed_auth_data(
         front_image_fingerprint: 'fingerprint2',
         back_image_fingerprint: 'fingerprint3',
+        passport_image_fingerprint: 'fingerprint-p3',
         selfie_image_fingerprint: 'fingerprint4',
         doc_auth_success: false,
         selfie_status: :fail,
@@ -216,12 +225,17 @@ RSpec.describe DocumentCaptureSession do
       expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
       expect(old_result.failed_front_image?('fingerprint2')).to eq(true)
       expect(old_result.failed_back_image?('fingerprint3')).to eq(true)
+      expect(old_result.failed_passport_image?('fingerprint-p1')).to eq(true)
+      expect(old_result.failed_passport_image?('fingerprint-p2')).to eq(true)
+      expect(old_result.failed_passport_image?('fingerprint-p3')).to eq(false)
       expect(old_result.failed_selfie_image_fingerprints).to be_nil
       expect(old_result.doc_auth_success).to eq(false)
       expect(old_result.selfie_status).to eq(:not_processed)
 
       expect(new_result.failed_front_image_fingerprints.length).to eq(2)
       expect(new_result.failed_back_image_fingerprints.length).to eq(1)
+      expect(new_result.failed_passport_image_fingerprints.length).to eq(3)
+      expect(new_result.failed_passport_image?('fingerprint-p3')).to eq(true)
       expect(new_result.failed_selfie_image?('fingerprint4')).to eq(true)
       expect(new_result.doc_auth_success).to eq(false)
       expect(new_result.selfie_status).to eq(:fail)
@@ -234,6 +248,7 @@ RSpec.describe DocumentCaptureSession do
         record.store_failed_auth_data(
           front_image_fingerprint: 'fingerprint1',
           back_image_fingerprint: 'fingerprint2',
+          passport_image_fingerprint: nil,
           selfie_image_fingerprint: 'fingerprint3',
           doc_auth_success: false,
           selfie_status: :pass,

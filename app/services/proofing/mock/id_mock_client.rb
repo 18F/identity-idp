@@ -21,8 +21,6 @@ module Proofing
           errors[:state_id_number] = ['The state ID number could not be verified']
         elsif invalid_state_id_type?(applicant[:state_id_type])
           errors[:state_id_type] = ['The state ID type could not be verified']
-        elsif bad_mrz?(applicant)
-          errors[:mrz] = ['The passport MRZ could not be verified']
         end
 
         return unverifiable_result(errors) if errors.any?
@@ -79,11 +77,6 @@ module Proofing
       def invalid_state_id_type?(state_id_type)
         !SUPPORTED_STATE_ID_TYPES.include?(state_id_type) &&
           !state_id_type.nil?
-      end
-
-      def bad_mrz?(applicant)
-        applicant[:state_id_type] == 'passport' &&
-          applicant[:mrz] == 'bad mrz'
       end
     end
   end

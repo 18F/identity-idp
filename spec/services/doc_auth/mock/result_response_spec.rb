@@ -338,7 +338,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
-        passport_check_result: nil,
+        passport_check_result: {},
         portrait_match_results: nil,
       )
       expect(response.doc_auth_success?).to eq(true)
@@ -556,7 +556,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
-        passport_check_result: nil,
+        passport_check_result: {},
         portrait_match_results: nil,
       )
     end
@@ -689,7 +689,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Front:
             ClassName: Identification Card
             CountryCode: USA
-            IssuerType: Country
+            IssuerType: Forgery
           Back:
             ClassName: Identification Card
             CountryCode: USA

@@ -42,6 +42,7 @@ module DocAuth
     def doc_issuer_type_ok?(classification_info, doc_side)
       side_issuer_type = classification_info&.with_indifferent_access&.dig(doc_side, :IssuerType)
       side_issuer_type == DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name ||
+        side_issuer_type == DocAuth::LexisNexis::IssuerTypes::COUNTRY.name ||
         side_issuer_type == DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name ||
         !side_issuer_type.present?
     end
