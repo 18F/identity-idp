@@ -7,7 +7,7 @@
   "downstreamHealth": [
     {
       "name": "ViPRR System API",
-      "status": "DOWN",
+      "status": "Down",
       "environment": "dev-share",
       "comments": "DOWN",
       "downstreamHealth": null
