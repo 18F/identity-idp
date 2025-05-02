@@ -16,19 +16,19 @@ module Idv
 
     def initialize(
       params,
-      service_provider:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      attempts_api_tracker:,
+      service_provider:,
       analytics: nil,
-      attempts_api_tracker: nil,
-      uuid_prefix: nil,
-      liveness_checking_required: false
+      liveness_checking_required: false,
+      uuid_prefix: nil
     )
       @params = params
-      @service_provider = service_provider
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
       @readable = {}
+      @service_provider = service_provider
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
     end
@@ -102,7 +102,46 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response)
+      track_upload_attempt(response)
+
       response
+    end
+
+    def track_upload_attempt(response)
+      return unless doc_escrow_enabled?
+
+      back_metadata = write_image(image: readable?(:back) ? back_image_bytes : nil)
+      front_metadata = write_image(image: readable?(:front) ? front_image_bytes : nil)
+      selfie_metadata = write_image(image: readable?(:selfie) ? selfie_image_bytes : nil)
+
+      attempts_api_tracker.idv_document_uploaded(
+        success: response.success?,
+        document_back_image_encryption_key: back_metadata.encryption_key,
+        document_back_image_file_id: back_metadata.name,
+        document_front_image_encryption_key: front_metadata.encryption_key,
+        document_front_image_file_id: front_metadata.name,
+        document_selfie_image_encryption_key: selfie_metadata.encryption_key,
+        document_selfie_image_file_id: selfie_metadata.name,
+        failure_reason: attempts_api_tracker.parse_failure_reason(response),
+      )
+    end
+
+    def write_image(image: nil)
+      encrypted_document_storage_writer.write(image:)
+    end
+
+    def encrypted_document_storage_writer
+      @encrypted_document_storage_writer ||= EncryptedDocStorage::DocWriter.new(
+        s3_enabled: doc_escrow_s3_storage_enabled?,
+      )
+    end
+
+    def doc_escrow_enabled?
+      IdentityConfig.store.doc_escrow_enabled
+    end
+
+    def doc_escrow_s3_storage_enabled?
+      IdentityConfig.store.doc_escrow_s3_storage_enabled
     end
 
     def post_images_to_client

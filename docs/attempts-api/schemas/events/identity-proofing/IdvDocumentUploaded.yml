@@ -10,7 +10,7 @@ allOf:
       document_back_image_file_id: 
         type: string
         description: If this image exists, the ID used to retrieve it if needed
-      selfie_image_file_id: 
+      document_selfie_image_file_id: 
         type: string
         description: If this image exists, the ID used to retrieve it if needed
       document_front_image_encryption_key:
@@ -19,7 +19,7 @@ allOf:
       document_back_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the back image file if it exists.
-      selfie_image_encryption_key:
+      document_selfie_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
       success:

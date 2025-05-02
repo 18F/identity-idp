@@ -11,6 +11,38 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success True if the images were successfully uploaded
+    # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
+    # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
+    # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
+    # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
+    # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfiet
+    # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if password was not successfully changed
+    # A user has uploaded documents locally
+    def idv_document_uploaded(
+        success:,
+        document_back_image_encryption_key:,
+        document_back_image_file_id:,
+        document_front_image_encryption_key:,
+        document_front_image_file_id:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
+        failure_reason: nil
+      )
+      track_event(
+        'idv-document-uploaded',
+        success:,
+        failure_reason:,
+        document_back_image_encryption_key:,
+        document_back_image_file_id:,
+        document_front_image_encryption_key:,
+        document_front_image_file_id:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
+      )
+    end
+
     # A user becomes able to visit the post office for in-person proofing
     def idv_ipp_ready_to_verify_visit
       track_event('idv-ipp-ready-to-verify-visit')

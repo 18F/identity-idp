@@ -24,6 +24,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:selfie_image) { nil }
@@ -31,6 +32,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }
+  let(:store_encrypted_images) { false }
   let(:document_type) { 'DriversLicense' }
   let(:front_image_metadata) do
     {
@@ -57,6 +59,17 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+
+  let(:writer) { EncryptedDocStorage::DocWriter.new }
+  let(:doc_escrow_enabled) { false }
+  let(:result) do
+    EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+  end
+
+  before do
+    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
+    allow(writer).to receive(:write).and_return result
+  end
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -233,6 +246,36 @@ RSpec.describe Idv::ApiImageUploadForm do
         )
       end
 
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: nil,
+          )
+          form.submit
+        end
+      end
+
       it 'returns the expected response' do
         response = form.submit
 
@@ -335,6 +378,37 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
+        end
+
+        context 'the attempts_api_tracker is enabled' do
+          let(:doc_escrow_enabled) { true }
+
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            allow(writer).to receive(:write).exactly(3).times
+
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+              .and_return result
+            expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+              .and_return result
+            expect(writer).to receive(:write).with(image: form.send(:selfie_image_bytes))
+              .and_return result
+          end
+
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
+              failure_reason: nil,
+            )
+            form.submit
+          end
         end
       end
 
@@ -440,6 +514,35 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: nil,
+            document_front_image_file_id: nil,
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: { front: [:blank] },
+          )
+          form.submit
+        end
+      end
     end
 
     context 'posting images to client fails' do
@@ -472,6 +575,36 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(nil)
+      end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event (as a success as doc upload succeeded)' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: nil,
+          )
+          form.submit
+        end
       end
 
       it 'saves the doc_auth_result to document_capture_session' do
