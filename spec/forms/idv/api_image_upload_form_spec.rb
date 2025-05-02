@@ -11,6 +11,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_metadata: front_image_metadata.to_json,
           back: back_image,
           back_image_metadata: back_image_metadata.to_json,
+          passport: passport_image,
+          passport_image_metadata: passport_image_metadata.to_json,
           selfie: selfie_image,
           selfie_image_metadata: selfie_image_metadata.to_json,
           document_capture_session_uuid: document_capture_session_uuid,
@@ -24,13 +26,17 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:passport_image) { nil }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
   let(:front_image_file_name) { 'front.jpg' }
   let(:back_image_file_name) { 'back.jpg' }
+  let(:passport_image_file_name) { 'passport.jpg' }
   let(:selfie_image_file_name) { 'selfie.jpg' }
+  let(:store_encrypted_images) { false }
   let(:document_type) { 'DriversLicense' }
   let(:front_image_metadata) do
     {
@@ -41,7 +47,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       fileName: front_image_file_name,
     }
   end
-
   let(:back_image_metadata) do
     {
       width: 20,
@@ -51,12 +56,38 @@ RSpec.describe Idv::ApiImageUploadForm do
       fileName: back_image_file_name,
     }
   end
+  let(:passport_image_metadata) do
+    {
+      width: 20,
+      height: 20,
+      mimeType: 'image/png',
+      source: 'upload',
+      fileName: passport_image_file_name,
+    }
+  end
   let(:selfie_image_metadata) { nil }
   let!(:document_capture_session) { create(:document_capture_session, doc_auth_vendor: 'mock') }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:acuant_sdk_upgrade_ab_test_bucket) {}
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:writer) { EncryptedDocStorage::DocWriter.new }
+  let(:doc_escrow_enabled) { false }
+  let(:result) do
+    EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+  end
+  let(:image_config) do
+    DocAuth::Mock::Config.new(
+      dpi_threshold: 290,
+      sharpness_threshold: 40,
+      glare_threshold: 40,
+    )
+  end
+
+  before do
+    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
+    allow(writer).to receive(:write).and_return result
+  end
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -207,6 +238,13 @@ RSpec.describe Idv::ApiImageUploadForm do
               width: 40,
               fileName: front_image_file_name,
             },
+            passport: {
+              height: 20,
+              mimeType: 'image/png',
+              source: 'upload',
+              width: 20,
+              fileName: passport_image_file_name,
+            },
           },
           doc_auth_result: 'Passed',
           errors: {},
@@ -230,7 +268,38 @@ RSpec.describe Idv::ApiImageUploadForm do
           zip_code: '59010',
           issue_year: 2019,
           document_type: document_type,
+          passport_check_result: {},
         )
+      end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: nil,
+          )
+          form.submit
+        end
       end
 
       it 'returns the expected response' do
@@ -296,6 +365,13 @@ RSpec.describe Idv::ApiImageUploadForm do
                 source: 'upload',
                 width: 10,
               },
+              passport: {
+                height: 20,
+                mimeType: 'image/png',
+                source: 'upload',
+                width: 20,
+                fileName: passport_image_file_name,
+              },
             },
             doc_auth_result: 'Passed',
             errors: {},
@@ -322,6 +398,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             issue_year: 2019,
             selfie_attempts: a_kind_of(Numeric),
             document_type: document_type,
+            passport_check_result: {},
           )
         end
 
@@ -335,6 +412,37 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(response.selfie_status).to eq(:success)
           expect(response.errors).to eq({})
           expect(response.attention_with_barcode?).to eq(false)
+        end
+
+        context 'the attempts_api_tracker is enabled' do
+          let(:doc_escrow_enabled) { true }
+
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            allow(writer).to receive(:write).exactly(3).times
+
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+              .and_return result
+            expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+              .and_return result
+            expect(writer).to receive(:write).with(image: form.send(:selfie_image_bytes))
+              .and_return result
+          end
+
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
+              failure_reason: nil,
+            )
+            form.submit
+          end
         end
       end
 
@@ -440,6 +548,35 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
       end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: nil,
+            document_front_image_file_id: nil,
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: { front: [:blank] },
+          )
+          form.submit
+        end
+      end
     end
 
     context 'posting images to client fails' do
@@ -472,6 +609,36 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.attention_with_barcode?).to eq(false)
         expect(response.pii_from_doc).to eq(nil)
+      end
+
+      context 'the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        before do
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          allow(writer).to receive(:write).exactly(3).times
+
+          # testing that the storage is happening
+          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
+            .and_return result
+          expect(writer).to receive(:write).with(image: nil).and_call_original
+        end
+
+        it 'tracks the event (as a success as doc upload succeeded)' do
+          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_selfie_image_encryption_key: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: nil,
+          )
+          form.submit
+        end
       end
 
       it 'saves the doc_auth_result to document_capture_session' do
@@ -647,119 +814,135 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'Passport MRZ validation fails' do
+    context 'uploading a Passport image' do
+      let(:front_image) { nil }
+      let(:back_image) { nil }
+      let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml }
       let(:passport_pii_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {},
-          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
+        DocAuth::Mock::ResultResponse.new(
+          passport_image.read,
+          image_config,
         )
       end
+      let(:response) { form.submit }
 
-      let(:failed_passport_mrz_response) do
-        DocAuth::Response.new(
-          success: false,
-          errors: { passport: 'invalid MRZ' },
-          extra: {
-            vendor: 'DoS',
-            correlation_id_sent: 'something',
-            correlation_id_received: 'something else',
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:post_images_to_client)
+          .and_return(passport_pii_response)
+      end
+
+      context 'Passport MRZ validation fails' do
+        let(:failed_passport_mrz_response) do
+          DocAuth::Response.new(
+            success: false,
+            errors: { passport: 'invalid MRZ' },
+            extra: {
+              vendor: 'DoS',
+              correlation_id_sent: 'something',
+              correlation_id_received: 'something else',
+              response: 'NO',
+            },
+          )
+        end
+
+        before do
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
+            .to receive(:fetch)
+            .and_return(failed_passport_mrz_response)
+        end
+
+        it 'is not successful' do
+          expect(response.success?).to eq(false)
+        end
+
+        it 'includes remaining_submit_attempts' do
+          expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
+        end
+
+        it 'includes mrz errors' do
+          expect(response.errors).to eq({ passport: 'invalid MRZ' })
+        end
+
+        it 'logs the check event' do
+          response
+
+          expect(fake_analytics).to have_logged_event(
+            :idv_dos_passport_verification,
+            success: false,
             response: 'NO',
-          },
-        )
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            document_type: document_type,
+          )
+        end
       end
 
-      let(:response) { form.submit }
+      context 'Passport MRZ validation succeeds' do
+        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
 
-      before do
-        allow_any_instance_of(described_class)
-          .to receive(:post_images_to_client)
-          .and_return(passport_pii_response)
+        let(:successful_passport_mrz_response) do
+          DocAuth::Response.new(
+            success: true,
+            errors: {},
+            extra: {
+              vendor: 'DoS',
+              correlation_id_sent: 'something',
+              correlation_id_received: 'something else',
+              response: 'YES',
+            },
+          )
+        end
 
-        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
-          .to receive(:fetch)
-          .and_return(failed_passport_mrz_response)
-      end
+        before do
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
+            .to receive(:fetch)
+            .and_return(successful_passport_mrz_response)
+        end
 
-      it 'is not successful' do
-        expect(response.success?).to eq(false)
-      end
+        it 'is successful' do
+          expect(response.success?).to eq(true)
+        end
 
-      it 'includes remaining_submit_attempts' do
-        expect(response.extra[:remaining_submit_attempts]).to be_a_kind_of(Numeric)
-      end
+        it 'logs the check event' do
+          response
 
-      it 'includes mrz errors' do
-        expect(response.errors).to eq({ passport: 'invalid MRZ' })
-      end
-
-      it 'logs the check event' do
-        response
-
-        expect(fake_analytics).to have_logged_event(
-          :idv_dos_passport_verification,
-          success: false,
-          response: 'NO',
-          submit_attempts: 1,
-          remaining_submit_attempts: 3,
-          user_id: document_capture_session.user.uuid,
-          document_type: document_type,
-        )
-      end
-    end
-
-    context 'Passport MRZ validation succeeds' do
-      let(:passport_pii_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {},
-          pii_from_doc: Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT),
-        )
-      end
-
-      let(:successful_passport_mrz_response) do
-        DocAuth::Response.new(
-          success: true,
-          errors: {},
-          extra: {
-            vendor: 'DoS',
-            correlation_id_sent: 'something',
-            correlation_id_received: 'something else',
+          expect(fake_analytics).to have_logged_event(
+            :idv_dos_passport_verification,
+            success: true,
             response: 'YES',
-          },
-        )
+            submit_attempts: 1,
+            remaining_submit_attempts: 3,
+            user_id: document_capture_session.user.uuid,
+            document_type: document_type,
+          )
+        end
       end
 
-      let(:response) { form.submit }
+      # An edge case where the user selects passport,
+      # but captures a picture of their driver's license instead.
+      # This is necessary since we forward the passport image in
+      # the `front` field, same as the front of the DL.
+      context 'User submits drivers license as passport' do
+        let(:client_response) do
+          DocAuth::Response.new(
+            success: true,
+            pii_from_doc: Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT),
+          )
+        end
 
-      before do
-        allow_any_instance_of(described_class)
-          .to receive(:post_images_to_client)
-          .and_return(passport_pii_response)
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:post_images_to_client)
+            .and_return(client_response)
+        end
 
-        allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest)
-          .to receive(:fetch)
-          .and_return(successful_passport_mrz_response)
-      end
-
-      it 'is successful' do
-        expect(response.success?).to eq(true)
-      end
-
-      it 'logs the check event' do
-        response
-
-        expect(fake_analytics).to have_logged_event(
-          :idv_dos_passport_verification,
-          success: true,
-          response: 'YES',
-          submit_attempts: 1,
-          remaining_submit_attempts: 3,
-          user_id: document_capture_session.user.uuid,
-          document_type: document_type,
-        )
+        it 'fails the MRZ validation' do
+          message = 'Cannot validate MRZ for id type: drivers_license'
+          expect(response.success?).to eq(false)
+          expect(response.errors[:passport]).to eq(message)
+        end
       end
     end
 

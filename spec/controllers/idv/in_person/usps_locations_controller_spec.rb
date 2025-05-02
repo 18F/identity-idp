@@ -360,6 +360,54 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
     let(:sp) { create(:service_provider, ial: 2) }
     subject(:response) { put :update, params: selected_location }
 
+    context 'when legacy request body is sent with location data' do
+      it 'updates enrollment with location data' do
+        response
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+      end
+    end
+
+    context 'when updated request body' do
+      context 'with selected location set' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: {
+                formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
+                name: 'BALTIMORE',
+                saturday_hours: '8:30 AM - 5:00 PM',
+                street_address: '123 Fake St.',
+                sunday_hours: 'Closed',
+                weekday_hours: '8:30 AM - 7:00 PM',
+              },
+            },
+          }
+        end
+        it 'updates enrollment with location data' do
+          response
+          expect(enrollment.selected_location_details).to eq(
+            selected_location[:usps_location].as_json['selected_location'],
+          )
+        end
+      end
+
+      context 'with selected location not set' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+        it 'updates enrollment with location data' do
+          response
+          expect(enrollment.selected_location_details).to be_nil
+        end
+      end
+    end
+
     context 'when the user is going through ID-IPP' do
       it 'creates an in person enrollment' do
         expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
@@ -371,6 +419,25 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
+      end
+
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+
+        it 'saves selected location as nil' do
+          expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+          expect(enrollment.user).to eq(user)
+          expect(enrollment.status).to eq('establishing')
+          expect(enrollment.profile).to be_nil
+          expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 
@@ -393,6 +460,25 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
+      end
+
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+
+        it 'saves selected location as nil' do
+          expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+          expect(enrollment.user).to eq(user)
+          expect(enrollment.status).to eq('establishing')
+          expect(enrollment.profile).to be_nil
+          expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_eipp_sponsor_id)
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 
@@ -433,6 +519,23 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
+      end
+
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+
+        it 'saves selected location as nil' do
+          response
+          enrollment = hybrid_user.reload.establishing_in_person_enrollment
+
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 

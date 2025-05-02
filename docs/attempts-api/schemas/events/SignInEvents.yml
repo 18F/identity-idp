@@ -17,3 +17,5 @@ properties:
     $ref: './sign-in/MfaLoginPhoneOtpSentRateLimited.yml'
   mfa-login-auth-submitted:
     $ref: './sign-in/MfaLoginAuthSubmitted.yml'
+  mfa-submission-code-rate-limited:
+    $ref: './sign-in/MfaSubmissionCodeRateLimited.yml'

@@ -1283,6 +1283,7 @@ in_person_proofing.body.location.location_button: Seleccionar
 in_person_proofing.body.location.po_search.address_label: Dirección
 in_person_proofing.body.location.po_search.address_search_label: Introduzca una dirección para buscar una oficina de correos cercana.
 in_person_proofing.body.location.po_search.city_label: Ciudad
+in_person_proofing.body.location.po_search.continue_button: Continuar
 in_person_proofing.body.location.po_search.is_searching_message: Buscando oficinas de correos…
 in_person_proofing.body.location.po_search.none_found: Lo sentimos, no hay oficinas de correos participantes a menos de 50 millas de %{address}.
 in_person_proofing.body.location.po_search.none_found_tip: Puede buscar usando una dirección diferente, o agregue fotos de su identificación para intentar verificar su identidad en línea de nuevo.
@@ -1292,6 +1293,10 @@ in_person_proofing.body.location.po_search.results_description.other: Hay %{coun
 in_person_proofing.body.location.po_search.results_instructions: Seleccione una oficina de correos a continuación, o busque de nuevo usando una dirección diferente.
 in_person_proofing.body.location.po_search.search_button: Buscar
 in_person_proofing.body.location.po_search.state_label: Estado
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Siga verificando su identidad. Después de generar un código de barras, puede usar nuestro <a target="_blank" href="%{link_url}"></a> para buscar un lugar participante.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Lo sentimos, tuvimos problemas técnicos y no pudimos buscar una oficina de correos participante.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centro de ayuda
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: Código postal
 in_person_proofing.body.location.retail_hours_heading: Horario de atención al público
 in_person_proofing.body.location.retail_hours_sat: 'Sábado:'

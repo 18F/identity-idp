@@ -1272,6 +1272,7 @@ in_person_proofing.body.location.location_button: Select
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City
+in_person_proofing.body.location.po_search.continue_button: Continue
 in_person_proofing.body.location.po_search.is_searching_message: Searching for Post Office locations…
 in_person_proofing.body.location.po_search.none_found: Sorry, there are no participating Post Offices within 50 miles of %{address}
 in_person_proofing.body.location.po_search.none_found_tip: You can search using a different address, or add photos of your ID to try and verify your identity online again.
@@ -1281,6 +1282,10 @@ in_person_proofing.body.location.po_search.results_description.other: There are 
 in_person_proofing.body.location.po_search.results_instructions: Select a Post Office location below, or search again using a different address.
 in_person_proofing.body.location.po_search.search_button: Search
 in_person_proofing.body.location.po_search.state_label: State
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Please continue verifying your identity. You can use our <a target="_blank" href="%{link_url}"></a> to search for a participating location after you generate a barcode.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Sorry, we ran into technical difficulties and couldn’t search for a participating Post Office.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Help Center
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: ZIP Code
 in_person_proofing.body.location.retail_hours_heading: Retail Hours
 in_person_proofing.body.location.retail_hours_sat: 'Sat:'

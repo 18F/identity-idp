@@ -9,14 +9,14 @@ RSpec.describe DocAuth::ErrorGenerator do
     )
   end
 
-  let(:passport_classification_details) do
-    { ClassName: 'Passport',
+  let(:unsupported_classification_details) do
+    { ClassName: 'LibraryCard',
       Issue: '2006',
       IssueType: 'ePassport',
       Name: 'United States (USA) ePassport',
       IssuerCode: 'USA',
       IssuerName: 'United States',
-      IssuerType: 'Country' }
+      IssuerType: 'Library' }
   end
   let(:unknown_classification_details) do
     { ClassName: 'Unknown',
@@ -33,7 +33,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       Name: 'United States (USA) Veteran Health Identification Card',
       IssuerCode: 'USA',
       IssuerName: 'United States',
-      IssuerType: 'Country' }
+      IssuerType: 'HHS' }
   end
 
   let(:liveness_enabled) { nil }
@@ -301,7 +301,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
         classification_info: { Back: unknown_classification_details,
-                               Front: passport_classification_details },
+                               Front: unsupported_classification_details },
       )
 
       expect(warn_notifier).to receive(:call)
@@ -361,7 +361,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [],
         classification_info: { Back: unknown_classification_details,
-                               Front: passport_classification_details },
+                               Front: unsupported_classification_details },
       )
 
       expect(warn_notifier).to receive(:call)

@@ -73,6 +73,7 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        { key: 'in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text' },
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
