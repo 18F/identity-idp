@@ -4,11 +4,13 @@ RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
+  include PassportApiHelpers
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:passports_enabled) { false }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -16,6 +18,12 @@ RSpec.feature 'document capture step', :js do
       attempts_api_tracker,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?)
+      .and_return(true)
+    allow_any_instance_of(Idv::ChooseIdTypeController).to receive(:dos_passport_api_healthy?)
+      .and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
   end
 
   before(:all) do
@@ -197,6 +205,7 @@ RSpec.feature 'document capture step', :js do
 
   context 'with a valid passport', allow_browser_log: true do
     let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+    let(:passports_enabled) { true }
 
     before do
       stub_request(:post, fake_dos_api_endpoint)
@@ -211,9 +220,8 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    # TODO: update this to properly arrive on the passport capture page
-    # deferring to LG-15896
-    xit 'works' do
+    it 'works' do
+      choose_id_type(:passport)
       expect(page).to have_content(t('doc_auth.headings.document_capture'))
       expect(page).to have_current_path(idv_document_capture_url)
 
@@ -232,6 +240,7 @@ RSpec.feature 'document capture step', :js do
 
   context 'with an invalid passport', allow_browser_log: true do
     let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+    let(:passports_enabled) { true }
 
     before do
       stub_request(:post, fake_dos_api_endpoint)
@@ -244,12 +253,11 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    # TODO: update this to properly arrive on the passport capture page
-    # deferring to LG-15896
-    xit 'fails' do
+    it 'fails' do
+      choose_id_type(:passport)
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_images(
+      attach_passport(
         Rails.root.join(
           'spec', 'fixtures',
           'passport_bad_mrz_credential.yml'
