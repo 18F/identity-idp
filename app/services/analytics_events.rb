@@ -3257,6 +3257,7 @@ module AnalyticsEvents
   # @param [String] analytics_id Current IdV flow identifier
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
   def idv_in_person_proofing_passport_visited(
     step: nil,
     analytics_id: nil,
