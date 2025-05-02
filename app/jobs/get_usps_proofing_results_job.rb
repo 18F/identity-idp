@@ -491,6 +491,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     unless fraud_result_pending?(enrollment)
       enrollment.profile&.activate_after_passing_in_person
+      attempts_api_tracker(enrollment:).idv_enrollment_complete if enrollment.profile.active?
 
       # send SMS and email
       send_enrollment_status_sms_notification(enrollment: enrollment)
@@ -501,6 +502,18 @@ class GetUspsProofingResultsJob < ApplicationJob
         job_name: self.class.name,
       )
     end
+  end
+
+  def attempts_api_tracker(enrollment:)
+    AttemptsApi::Tracker.new(
+      enabled_for_session: enrollment.service_provider&.attempts_api_enabled?,
+      session_id: nil,
+      request: nil,
+      user: enrollment.user,
+      sp: enrollment.service_provider,
+      cookie_device_uuid: nil,
+      sp_request_uri: nil,
+    )
   end
 
   def handle_passed_with_fraud_review_pending(enrollment, response)

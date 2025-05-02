@@ -5,9 +5,8 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
 
   let(:current_time) { Time.zone.now }
   let(:in_person_results_delay_in_hours) { 2 }
-  let(:analytics) do
-    instance_double(Analytics)
-  end
+  let(:analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:default_job_completion_analytics) do
     {
       enrollments_checked: 0,
@@ -32,6 +31,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
     allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_started)
     allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_completed)
     allow(Analytics).to receive(:new).and_return(analytics)
+    allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).and_return(
       in_person_results_delay_in_hours,
@@ -2001,6 +2001,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         :idv_in_person_usps_proofing_results_job_email_initiated,
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
                       subject.perform(current_time)
                     end
 
@@ -2045,6 +2046,10 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         deactivation_reason: nil,
                         in_person_verification_pending_at: nil,
                       )
+                    end
+
+                    it 'tracks the successful enrollment in the attempts api' do
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2222,6 +2227,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         :idv_in_person_usps_proofing_results_job_email_initiated,
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
                       subject.perform(current_time)
                     end
 
@@ -2266,6 +2272,10 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         deactivation_reason: nil,
                         in_person_verification_pending_at: nil,
                       )
+                    end
+
+                    it 'tracks the successful enrollment in the attempts api' do
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2321,6 +2331,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         :idv_in_person_usps_proofing_results_job_email_initiated,
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
                       subject.perform(current_time)
                     end
 
@@ -2365,6 +2376,10 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         deactivation_reason: nil,
                         in_person_verification_pending_at: nil,
                       )
+                    end
+
+                    it 'tracks the successful enrollment in the attempts api' do
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2421,6 +2436,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         :idv_in_person_usps_proofing_results_job_email_initiated,
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
                       subject.perform(current_time)
                     end
 
@@ -2465,6 +2481,10 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                         deactivation_reason: nil,
                         in_person_verification_pending_at: nil,
                       )
+                    end
+
+                    it 'tracks the successful enrollment in the attempts api' do
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
                     end
 
                     it 'sends a proofing sms notification' do
