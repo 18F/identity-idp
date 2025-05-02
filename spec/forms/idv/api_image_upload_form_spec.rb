@@ -815,7 +815,6 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'uploading a Passport image' do
-      # let(:passport_image) { DocAuthImageFixtures.document_back_image_multipart }
       let(:front_image) { nil }
       let(:back_image) { nil }
       let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml }

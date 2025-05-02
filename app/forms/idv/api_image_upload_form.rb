@@ -216,8 +216,8 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      unless client_response.pii_from_doc.state_id_type == 'passport'
-        id_type = client_response.pii_from_doc.state_id_type
+      id_type = client_response.pii_from_doc.state_id_type
+      unless id_type == 'passport'
         return DocAuth::Response.new(
           success: false,
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
