@@ -59,6 +59,7 @@ function FullAddressSearch({
         disabled={disabled}
         locationsURL={locationsURL}
         uspsApiError={apiError}
+        usesErrorComponent={usesErrorComponent}
       />
       {usesErrorComponent && apiError && <SkipUspsFacilitiesApiErrorMessage />}
       {locationResults && foundAddress && !isLoadingLocations && (
