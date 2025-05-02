@@ -160,11 +160,7 @@ module Idv
       end
 
       def enrollment
-        current_user.establishing_in_person_enrollment || InPersonEnrollment.find_or_initialize_by(
-          user: current_user,
-          status: :establishing,
-          profile: nil,
-        )
+        current_user.establishing_in_person_enrollment
       end
 
       def form
