@@ -1271,6 +1271,7 @@ in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
+in_person_proofing.body.location.po_search.continue_button: Suite
 in_person_proofing.body.location.po_search.is_searching_message: Recherche des bureaux de poste en cours…
 in_person_proofing.body.location.po_search.none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon de 50 miles de %{address}
 in_person_proofing.body.location.po_search.none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre adresse, ou ajouter des photos de votre pièce d’identité pour essayer de confirmer à nouveau votre identité en ligne.
@@ -1280,6 +1281,10 @@ in_person_proofing.body.location.po_search.results_description.other: Il y a %{c
 in_person_proofing.body.location.po_search.results_instructions: Sélectionnez un bureau de poste ci-dessous ou effectuez une nouvelle recherche en utilisant une autre adresse.
 in_person_proofing.body.location.po_search.search_button: Rechercher
 in_person_proofing.body.location.po_search.state_label: État
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Veuillez poursuivre la procédure de vérification d’identité. Vous pouvez recourir au <a target="_blank" href="%{link_url}"></a> pour rechercher un bureau participant après avoir généré un code-barres.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Nous n’avons pas pu rechercher de bureau de poste participant pour des raisons techniques et nous en excusons.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centre d’aide
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: Code postal
 in_person_proofing.body.location.retail_hours_heading: Heures d’ouverture
 in_person_proofing.body.location.retail_hours_sat: 'Sam :'
