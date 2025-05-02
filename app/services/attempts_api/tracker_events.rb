@@ -2,8 +2,8 @@
 
 module AttemptsApi
   module TrackerEvents
-    # param [Boolean] success True if account successfully deleted
-    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # @param [Boolean] success True if account successfully deleted
+    # @param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
     # Account was successfully deleted after the account reset request was completed
     def account_reset_account_deleted(success:, failure_reason: nil)
       track_event(
