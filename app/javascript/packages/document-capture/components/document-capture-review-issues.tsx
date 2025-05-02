@@ -36,9 +36,9 @@ function DocumentCaptureReviewIssues({
   const { idType } = useContext(UploadContext);
   const idIsPassport = idType === 'passport';
 
-  const pageHeading = idIsPassport ?
-    t('doc_auth.headings.review_issues_passport') :
-    t('doc_auth.headings.review_issues');
+  const pageHeading = idIsPassport
+    ? t('doc_auth.headings.review_issues_passport')
+    : t('doc_auth.headings.review_issues');
 
   const defaultSideProps = {
     registerField,
@@ -67,11 +67,7 @@ function DocumentCaptureReviewIssues({
           />
         </p>
       )}
-      {idIsPassport && 
-        <p>
-          {t('doc_auth.info.review_passport')}
-        </p>
-      }
+      {idIsPassport && <p>{t('doc_auth.info.review_passport')}</p>}
       <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
