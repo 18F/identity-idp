@@ -257,7 +257,7 @@ RSpec.feature 'document capture step', :js do
       choose_id_type(:passport)
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_passport(
+      attach_passport_image(
         Rails.root.join(
           'spec', 'fixtures',
           'passport_bad_mrz_credential.yml'

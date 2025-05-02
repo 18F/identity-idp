@@ -257,7 +257,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         choose_id_type(:passport)
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
         binding.pry
-        attach_images(
+        attach_passport_image(
           Rails.root.join(
             'spec', 'fixtures',
             'passport_credential.yml'
@@ -360,7 +360,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         choose_id_type(:passport)
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
         binding.pry
-        attach_images(
+        attach_passport_image(
           Rails.root.join(
             'spec', 'fixtures',
             'passport_credential.yml'
