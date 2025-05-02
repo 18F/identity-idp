@@ -295,13 +295,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'UP' }.to_json })
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
       reload_ab_tests
     end
 
@@ -325,7 +318,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         choose(t('doc_auth.forms.id_type_preference.passport'))
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-        attach_passport_image
+        attach_passport_image(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_mrz_credential.yml'
+          ),
+        )
         submit_images
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
         click_on t('idv.failure.button.warning')

@@ -279,13 +279,6 @@ RSpec.feature 'document capture step', :js do
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'UP' }.to_json })
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
       reload_ab_tests
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -303,7 +296,12 @@ RSpec.feature 'document capture step', :js do
       click_on t('forms.buttons.continue')
       expect(page).to have_current_path(idv_document_capture_url)
       # Attach fail images and then continue to retry
-      attach_passport_image
+      attach_passport_image(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_mrz_credential.yml'
+        ),
+      )
       submit_images
       expect(page).to have_current_path(idv_document_capture_url)
       click_on t('idv.failure.button.warning')
@@ -318,13 +316,6 @@ RSpec.feature 'document capture step', :js do
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'UP' }.to_json })
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
       reload_ab_tests
     end
 
@@ -341,7 +332,12 @@ RSpec.feature 'document capture step', :js do
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         # Attach fail images and then continue to retry
-        attach_passport_image
+        attach_passport_image(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_mrz_credential.yml'
+          ),
+        )
         submit_images
         expect(page).to have_current_path(idv_document_capture_url)
         click_on t('idv.failure.button.warning')
