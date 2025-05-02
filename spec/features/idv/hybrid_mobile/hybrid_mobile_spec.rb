@@ -329,6 +329,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         click_on t('idv.failure.button.warning')
         expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
+        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
       end
     end
   end

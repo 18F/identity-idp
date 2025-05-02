@@ -5,7 +5,7 @@ import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import GeneralError from './general-error';
-import { SelfieCaptureContext } from '../context';
+import { SelfieCaptureContext, UploadContext } from '../context';
 import { DocumentCaptureSubheaderOne, DocumentsCaptureStep } from './documents-step';
 import { SelfieCaptureStep } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
@@ -33,6 +33,12 @@ function DocumentCaptureReviewIssues({
 }: DocumentCaptureReviewIssuesProps) {
   const { t } = useI18n();
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
+
+  const pageHeading = idIsPassport ?
+    t('doc_auth.headings.review_issues_passport') :
+    t('doc_auth.headings.review_issues');
 
   const defaultSideProps = {
     registerField,
@@ -43,7 +49,7 @@ function DocumentCaptureReviewIssues({
 
   return (
     <>
-      <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
+      <PageHeading>{pageHeading}</PageHeading>
       {isSelfieCaptureEnabled && <DocumentCaptureSubheaderOne />}
       <GeneralError
         unknownFieldErrors={unknownFieldErrors}
@@ -54,13 +60,18 @@ function DocumentCaptureReviewIssues({
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.doc_type_check') : null}
         hasDismissed={hasDismissed}
       />
-      {Number.isFinite(remainingSubmitAttempts) && (
+      {Number.isFinite(remainingSubmitAttempts) && !idIsPassport && (
         <p>
           <HtmlTextWithStrongNoWrap
             text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
           />
         </p>
       )}
+      {idIsPassport && 
+        <p>
+          {t('doc_auth.info.review_passport')}
+        </p>
+      }
       <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
