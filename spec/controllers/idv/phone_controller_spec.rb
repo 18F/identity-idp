@@ -527,9 +527,14 @@ RSpec.describe Idv::PhoneController do
       context 'when the user is rate limited by submission' do
         before do
           stub_analytics
+          stub_attempts_tracker
 
           rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
           rate_limiter.increment_to_limited!
+
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
         end

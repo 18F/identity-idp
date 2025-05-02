@@ -28,22 +28,6 @@ RSpec.feature 'idv gpo confirm start over', js: true do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
 
-  context 'user decides to start over from request letter page' do
-    it 'allows user to start over' do
-      start_idv_from_sp
-      complete_idv_steps_before_gpo_step
-      click_on t('idv.messages.gpo.start_over_link_text')
-
-      expect(page).to have_current_path idv_confirm_start_over_before_letter_path
-      expect(page).to have_content(t('idv.cancel.description.gpo.start_over_new_address'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone'))
-      expect(fake_analytics).to have_logged_event(:idv_gpo_confirm_start_over_before_letter_visited)
-      click_idv_continue
-
-      expect(page).to have_current_path idv_welcome_path
-    end
-  end
-
   context 'user decides to start over after requesting a letter' do
     before do
       sign_in_live_with_2fa(user)

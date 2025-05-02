@@ -4,6 +4,7 @@ import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import FullAddressSearchInput from './full-address-search-input';
+import SkipUspsFacilitiesApiErrorMessage from './skip-usps-facilities-api-error-message';
 import type { FullAddressSearchProps } from '../types';
 
 function FullAddressSearch({
@@ -16,6 +17,7 @@ function FullAddressSearch({
   resultsHeaderComponent,
   usStatesTerritories,
   resultsSectionHeading,
+  usesErrorComponent,
 }: FullAddressSearchProps) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -26,7 +28,7 @@ function FullAddressSearch({
 
   return (
     <>
-      {apiError && (
+      {!usesErrorComponent && apiError && (
         <Alert type="error" className="margin-bottom-4">
           {t('idv.failure.exceptions.post_office_search_error')}
         </Alert>
@@ -42,6 +44,7 @@ function FullAddressSearch({
       <FullAddressSearchInput
         usStatesTerritories={usStatesTerritories}
         registerField={registerField}
+        onContinue={handleLocationSelect}
         onFoundLocations={(
           address: LocationQuery | null,
           locations: FormattedLocation[] | null | undefined,
@@ -49,12 +52,15 @@ function FullAddressSearch({
           setFoundAddress(address);
           setLocationResults(locations);
           onFoundLocations(locations);
+          setApiError(null);
         }}
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabled}
         locationsURL={locationsURL}
+        uspsApiError={apiError}
       />
+      {usesErrorComponent && apiError && <SkipUspsFacilitiesApiErrorMessage />}
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}

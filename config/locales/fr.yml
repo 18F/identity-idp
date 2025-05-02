@@ -615,6 +615,7 @@ doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’i
 doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
+doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -670,6 +671,7 @@ doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les inst
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
+doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
@@ -1173,9 +1175,9 @@ idv.messages.gpo.info_alert: Vous devrez attendre de recevoir votre lettre pour 
 idv.messages.gpo.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
 idv.messages.gpo.letter_on_the_way: Nous vous envoyons une lettre
 idv.messages.gpo.resend: Envoyez-moi une autre lettre
-idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
+idv.messages.gpo.verify_address_again_html: Si vous ne pouvez pas recevoir de courrier à cette adresse, vous devrez %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: confirmer à nouveau votre adresse
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.
@@ -1269,6 +1271,7 @@ in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
+in_person_proofing.body.location.po_search.continue_button: Suite
 in_person_proofing.body.location.po_search.is_searching_message: Recherche des bureaux de poste en cours…
 in_person_proofing.body.location.po_search.none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon de 50 miles de %{address}
 in_person_proofing.body.location.po_search.none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre adresse, ou ajouter des photos de votre pièce d’identité pour essayer de confirmer à nouveau votre identité en ligne.
@@ -1278,6 +1281,10 @@ in_person_proofing.body.location.po_search.results_description.other: Il y a %{c
 in_person_proofing.body.location.po_search.results_instructions: Sélectionnez un bureau de poste ci-dessous ou effectuez une nouvelle recherche en utilisant une autre adresse.
 in_person_proofing.body.location.po_search.search_button: Rechercher
 in_person_proofing.body.location.po_search.state_label: État
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Veuillez poursuivre la procédure de vérification d’identité. Vous pouvez recourir au <a target="_blank" href="%{link_url}"></a> pour rechercher un bureau participant après avoir généré un code-barres.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Nous n’avons pas pu rechercher de bureau de poste participant pour des raisons techniques et nous en excusons.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centre d’aide
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: Code postal
 in_person_proofing.body.location.retail_hours_heading: Heures d’ouverture
 in_person_proofing.body.location.retail_hours_sat: 'Sam :'

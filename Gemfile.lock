@@ -13,10 +13,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 67a19c577b8fa9305350cf9cefa572cef4a80310
-  tag: v4.4.1
+  revision: 9ca068367233766b6709a724fa09cba8409a1a11
+  tag: v4.4.2
   specs:
-    identity-hostdata (4.4.1)
+    identity-hostdata (4.4.2)
       activesupport (>= 6.1, < 9)
       aws-sdk-s3 (~> 1.8)
       aws-sdk-secretsmanager (>= 1.91)
@@ -438,7 +438,7 @@ GEM
       uri
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
-    net-imap (0.5.6)
+    net-imap (0.5.8)
       date
       net-protocol
     net-pop (0.1.2)
@@ -452,7 +452,7 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
     nio4r (2.7.4)
-    nokogiri (1.18.5)
+    nokogiri (1.18.8)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     numbers_and_words (0.11.12)
@@ -469,7 +469,7 @@ GEM
     pg (1.5.9)
     pg_query (6.1.0)
       google-protobuf (>= 3.25.3)
-    phonelib (0.10.7)
+    phonelib (0.10.8)
     pkcs11 (0.3.4)
     premailer (1.27.0)
       addressable

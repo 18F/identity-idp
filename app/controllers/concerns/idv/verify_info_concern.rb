@@ -123,11 +123,9 @@ module Idv
       )
 
       if ssn_rate_limiter.limited?
-        idv_failure_log_rate_limited(:proof_ssn)
-        redirect_to idv_session_errors_ssn_failure_url
+        rate_limit_redirect!(:proof_ssn, step_name: STEP_NAME)
       elsif resolution_rate_limiter.limited?
-        idv_failure_log_rate_limited(:idv_resolution)
-        redirect_to rate_limited_url
+        rate_limit_redirect!(:idv_resolution, step_name: STEP_NAME)
       elsif has_exception && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
@@ -144,20 +142,6 @@ module Idv
       else
         idv_failure_log_warning
         redirect_to warning_url
-      end
-    end
-
-    def idv_failure_log_rate_limited(rate_limit_type)
-      if rate_limit_type == :proof_ssn
-        analytics.rate_limit_reached(
-          limiter_type: :proof_ssn,
-          step_name: STEP_NAME,
-        )
-      elsif rate_limit_type == :idv_resolution
-        analytics.rate_limit_reached(
-          limiter_type: :idv_resolution,
-          step_name: STEP_NAME,
-        )
       end
     end
 
@@ -257,10 +241,11 @@ module Idv
         },
       )
 
-      threatmetrix_reponse_body = delete_threatmetrix_response_body(form_response)
-      if threatmetrix_reponse_body.present?
+      threatmetrix_response_body = delete_threatmetrix_response_body(form_response)
+
+      if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
-          response_body: threatmetrix_reponse_body,
+          response_body: threatmetrix_response_body,
         )
       end
 
@@ -281,7 +266,8 @@ module Idv
     end
 
     def next_step_url
-      return idv_request_letter_url if FeatureManagement.idv_by_mail_only?
+      return idv_request_letter_url if FeatureManagement.idv_by_mail_only? ||
+                                       idv_session.gpo_letter_requested
       idv_phone_url
     end
 
@@ -381,7 +367,14 @@ module Idv
       threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
       return unless threatmetrix_result
 
-      return if threatmetrix_result[:review_status] == 'pass'
+      success = (threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_tmx_fraud_check(
+        success:,
+        failure_reason: threatmetrix_failure_reason(success, threatmetrix_result),
+      )
+
+      return if success
 
       FraudReviewRequest.create(
         user: current_user,
@@ -405,6 +398,17 @@ module Idv
       return if threatmetrix_result.blank?
 
       threatmetrix_result.delete(:response_body)
+    end
+
+    def threatmetrix_failure_reason(success, result)
+      return nil if success
+
+      tmx_summary_reason_code = result.dig(
+        :response_body,
+        :tmx_summary_reason_code,
+      ) || ['ThreatMetrix review has failed for unknown reasons']
+
+      { tmx_summary_reason_code: }
     end
 
     def add_cost(token, transaction_id: nil)

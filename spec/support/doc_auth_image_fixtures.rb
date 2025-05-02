@@ -19,6 +19,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
+  def self.document_passport_image
+    load_image_data('passport.jpg')
+  end
+
+  def self.document_passport_image_multipart
+    Rack::Test::UploadedFile.new(fixture_path('passport.jpg'), 'image/jpeg')
+  end
+
   def self.selfie_image
     load_image_data('selfie.jpg')
   end

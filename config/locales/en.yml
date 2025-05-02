@@ -615,6 +615,7 @@ doc_auth.headings.hybrid_handoff: How would you like to add your ID?
 doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
+doc_auth.headings.mailing_address: Enter your mailing address
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
@@ -670,6 +671,7 @@ doc_auth.info.link_sent: Please check your phone and follow instructions to take
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
+doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
@@ -1173,9 +1175,9 @@ idv.messages.gpo.info_alert: You’ll need to wait until your letter is delivere
 idv.messages.gpo.learn_more_verify_by_mail: Learn more about verifying your address by mail
 idv.messages.gpo.letter_on_the_way: We are sending you a letter
 idv.messages.gpo.resend: Send me another letter
-idv.messages.gpo.start_over_html: If this isn’t the right address, you’ll need to %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: start over and verify with your new address
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
+idv.messages.gpo.verify_address_again_html: If you cannot receive mail at this address, you’ll need to %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: verify your address again
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
@@ -1269,6 +1271,7 @@ in_person_proofing.body.location.location_button: Select
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City
+in_person_proofing.body.location.po_search.continue_button: Continue
 in_person_proofing.body.location.po_search.is_searching_message: Searching for Post Office locations…
 in_person_proofing.body.location.po_search.none_found: Sorry, there are no participating Post Offices within 50 miles of %{address}
 in_person_proofing.body.location.po_search.none_found_tip: You can search using a different address, or add photos of your ID to try and verify your identity online again.
@@ -1278,6 +1281,10 @@ in_person_proofing.body.location.po_search.results_description.other: There are 
 in_person_proofing.body.location.po_search.results_instructions: Select a Post Office location below, or search again using a different address.
 in_person_proofing.body.location.po_search.search_button: Search
 in_person_proofing.body.location.po_search.state_label: State
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Please continue verifying your identity. You can use our <a target="_blank" href="%{link_url}"></a> to search for a participating location after you generate a barcode.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Sorry, we ran into technical difficulties and couldn’t search for a participating Post Office.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Help Center
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: ZIP Code
 in_person_proofing.body.location.retail_hours_heading: Retail Hours
 in_person_proofing.body.location.retail_hours_sat: 'Sat:'
