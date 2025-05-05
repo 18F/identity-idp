@@ -815,11 +815,6 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  def expect_to_try_again
-    click_try_again
-    expect(page).to have_current_path(idv_document_capture_path)
-  end
-
   def use_id_image(filename)
     expect(page).to have_content('Front of your ID')
     attach_images Rails.root.join('spec', 'fixtures', filename)

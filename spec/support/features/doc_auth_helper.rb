@@ -224,6 +224,15 @@ module DocAuthHelper
     )
   end
 
+  def expect_to_try_again(is_hybrid: false)
+    click_try_again
+    if is_hybrid
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+    else
+      expect(page).to have_current_path(idv_document_capture_path)
+    end
+  end
+
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp

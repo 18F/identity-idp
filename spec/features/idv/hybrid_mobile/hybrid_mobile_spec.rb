@@ -208,15 +208,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   context 'passport happy path', allow_net_connect_on_start: false, allow_browser_log: true do
-    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-
     before do
-      stub_request(:post, fake_dos_api_endpoint)
-        .to_return(status: 200, body: '{"response" : "YES"}', headers: {})
-
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-        .and_return(fake_dos_api_endpoint)
-      
       allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
@@ -236,7 +228,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         user = sign_in_and_2fa_user
 
         complete_doc_auth_steps_before_hybrid_handoff_step
-        binding.pry
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
@@ -252,20 +243,16 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-        binding.pry
         expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
         choose_id_type(:passport)
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-        binding.pry
         attach_passport_image(
           Rails.root.join(
             'spec', 'fixtures',
             'passport_credential.yml'
           ),
         )
-        binding.pry
         submit_images
-        binding.pry
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
         expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
@@ -311,15 +298,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   end
 
   context 'passport error path', allow_net_connect_on_start: false, allow_browser_log: true do
-    let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-
     before do
-      stub_request(:post, fake_dos_api_endpoint)
-        .to_return(status: 200, body: '{}', headers: {})
-
-      allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-        .and_return(fake_dos_api_endpoint)
-      
       allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
@@ -339,7 +318,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         user = sign_in_and_2fa_user
 
         complete_doc_auth_steps_before_hybrid_handoff_step
-        binding.pry
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
@@ -355,23 +333,21 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-        binding.pry
         expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
         choose_id_type(:passport)
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-        binding.pry
         attach_passport_image(
           Rails.root.join(
             'spec', 'fixtures',
-            'passport_credential.yml'
+            'passport_bad_mrz_credential.yml'
           ),
         )
-        binding.pry
         submit_images
-        binding.pry
         expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).to have_content('invalid MRZ')
+        expect_to_try_again(is_hybrid: true)
+        expect(page).to have_content('invalid MRZ')
       end
-
     end
   end
 
