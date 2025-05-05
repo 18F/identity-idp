@@ -269,8 +269,17 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
         fill_out_ssn_form_ok
         click_idv_continue
-
-        expect(page).to have_content(t('headings.verify'))
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+        expect(page).to have_content(t('doc_auth.headings.address'))
+        fill_in 'idv_form_address1', with: '123 Main St'
+        fill_in 'idv_form_city', with: 'Nowhere'
+        select 'Virginia', from: 'idv_form_state'
+        fill_in 'idv_form_zipcode', with: '66044'
+        click_button t('forms.buttons.submit.update')
+        expect(page).to have_current_path(idv_verify_info_path)
+        expect(page).to have_content('VA')
+        expect(page).to have_content('123 Main St')
+        expect(page).to have_content('Nowhere')
         complete_verify_step
 
         prefilled_phone = page.find(id: 'idv_phone_form_phone').value
