@@ -22,12 +22,25 @@ allOf:
         type: string
       date_of_birth:
         type: string
-      address:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      state: 
+        type: string
+      country:
+        type: string
+      zip:
         type: string
       document_front_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
       document_back_image_file_id: 
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_selfie_image_file_id: 
         type: string
         description: The ID used to retrieve this image if needed
       document_front_image_encryption_key:
@@ -36,6 +49,13 @@ allOf:
       document_back_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the back image file.
+      document_selfie_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
+      liveness_checking_required:
+        type: boolean
+        description: |
+          Indicates whether liveness checking is required
       failure_reason:
           type: object
           description: |
