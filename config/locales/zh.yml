@@ -1297,7 +1297,7 @@ in_person_proofing.body.location.po_search.state_label: 州
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: 请继续验证你的身份。生成条形码后，你可以使用我们的<a target="_blank" href="%{link_url}"></a>搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: 抱歉，我们遇到了技术困难，无法搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: 帮助中心
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: 地图图钉图像
 in_person_proofing.body.location.po_search.zipcode_label: 邮编
 in_person_proofing.body.location.retail_hours_heading: 营业时间
 in_person_proofing.body.location.retail_hours_sat: 周六：
