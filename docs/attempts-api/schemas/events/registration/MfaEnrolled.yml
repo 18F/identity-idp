@@ -1,0 +1,27 @@
+description: The user has set up multi-factor authentication 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the entered code matched what was sent AND was not expired.
+      mfa_device_type:
+        type: string
+        enum:
+          - backup_code
+          - otp
+          - piv_cac
+          - totp
+          - webauthn
+          - webauthn_platform
+        phone_number:
+          type: string
+          description: If the mfa_device_type is `phone`, the provided phone number.
+        otp_delivery_method:
+          type: string
+          enum: 
+            - sms
+            - voice
+          description: If the mfa_device_type is `phone`, the `otp_delivery_method` is included. 
