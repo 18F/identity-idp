@@ -218,9 +218,10 @@ module InPersonHelper
     end
   end
 
-  def mark_in_person_enrollment_passed(user)
+  def mark_in_person_enrollment_passed(user, document_type = :state_id)
     enrollment = user.in_person_enrollments.last
     expect(enrollment).to_not be_nil
+    expect(enrollment.document_type&.to_sym).to eq(document_type)
     enrollment.profile.activate_after_passing_in_person
     enrollment.update(status: :passed)
   end

@@ -4,18 +4,21 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
       city: 'Washington', state: 'DC', zip_code: '20500'
     )
   end
+
   let(:fake_address) do
     UspsInPersonProofing::Applicant.new(
       address: '742 Evergreen Terrace',
       city: 'Springfield', state: 'MO', zip_code: '89011'
     )
   end
+
   let(:selected_location) do
     {
       usps_location: {
@@ -40,6 +43,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   describe '#index' do
     let(:locale) { nil }
     let(:proofer) { double('Proofer') }
+
     let(:locations) do
       [
         UspsInPersonProofing::PostOffice.new(
@@ -80,6 +84,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         ),
       ]
     end
+
     subject(:response) do
       post :index, params: { locale: locale,
                              address: { street_address: '1600 Pennsylvania Ave',
@@ -230,6 +235,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
 
     context 'with failed connection to Faraday' do
       let(:exception) { Faraday::ConnectionFailed.new }
+
       subject(:response) do
         post :index,
              params: { address: { street_address: '742 Evergreen Terrace',
@@ -358,6 +364,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   describe '#update' do
     let(:enrollment) { InPersonEnrollment.last }
     let(:sp) { create(:service_provider, ial: 2) }
+
     subject(:response) { put :update, params: selected_location }
 
     context 'when legacy request body is sent with location data' do
@@ -415,6 +422,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         expect(enrollment.status).to eq('establishing')
         expect(enrollment.profile).to be_nil
         expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+        expect(enrollment.document_type).to eq(nil)
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,
         )

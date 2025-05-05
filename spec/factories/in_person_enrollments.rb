@@ -6,6 +6,7 @@ FactoryBot.define do
     unique_id { InPersonEnrollment.generate_unique_id }
     user { association :user, :fully_registered }
     sponsor_id { IdentityConfig.store.usps_ipp_sponsor_id }
+    document_type { nil }
 
     trait :establishing do
       profile { nil }
@@ -70,6 +71,10 @@ FactoryBot.define do
 
     trait :enhanced_ipp do
       sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
+    end
+
+    trait :state_id do
+      document_type { :state_id }
     end
   end
 end
