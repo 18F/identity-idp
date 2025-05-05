@@ -55,6 +55,14 @@ module Reporting
           table: funnel_table,
           filename: 'Funnel Metrics',
         ),
+        Reporting::EmailableReport.new(
+          title: 'Metrics Definitions',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: data_definition_table,
+          filename: 'Metric Definitions',
+        ),
 
       ]
     end
@@ -116,6 +124,20 @@ module Reporting
             verification_demand_results,
           ),
         ],
+      ]
+    end
+
+    def data_definition_table
+      [
+        ['Metric', 'Definition'],
+        ['Verification Demand', 'The count of users who started the identity verification process'],
+        ['Document Authentication Success',
+         'Users who successfully completed document authentication'],
+        ['Information Validation Success', 'Users who successfully validated their information'],
+        ['Phone Verification Success', 'Users who successfully verified their using their phone'],
+        ['Total Verified', 'Users who completed the entire process'],
+        ['Verification Fallouts',
+         'The percentage of users that did not complete the identity verification process'],
       ]
     end
 
