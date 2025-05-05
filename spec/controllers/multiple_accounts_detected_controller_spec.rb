@@ -24,7 +24,7 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
         DuplicateProfileConfirmation.create(
           profile_id: user.active_profile.id,
           confirmed_at: Time.zone.now,
-          duplicate_profile_ids: [profile2.id]
+          duplicate_profile_ids: [profile2.id],
         )
       end
 
@@ -42,7 +42,7 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
         get :show
 
         expect(@analytics).to have_logged_event(
-          :one_account_multiple_accounts_detected
+          :one_account_multiple_accounts_detected,
         )
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
       @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
         profile_id: user.active_profile.id,
         confirmed_at: Time.zone.now,
-        duplicate_profile_ids: [profile2.id]
+        duplicate_profile_ids: [profile2.id],
       )
     end
 
@@ -61,13 +61,13 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
       post :do_not_recognize
 
       expect(@analytics).to have_logged_event(
-        :one_account_unknown_account_detected
+        :one_account_unknown_account_detected,
       )
     end
 
     it 'marks some accounts as not recognized' do
       post :do_not_recognize
-      @dupe_profile_confirmation.reload 
+      @dupe_profile_confirmation.reload
       expect(@dupe_profile_confirmation.confirmed_all).to eq(false)
     end
   end
@@ -77,15 +77,13 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
       @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
         profile_id: user.active_profile.id,
         confirmed_at: Time.zone.now,
-        duplicate_profile_ids: [profile2.id]
+        duplicate_profile_ids: [profile2.id],
       )
     end
 
     it 'logs an analytics event' do
-      
       post :recognize_accounts
-      expect(@analytics).to have_logged_event(
-      )
+      expect(@analytics).to have_logged_event
     end
 
     it 'marks all accounts as recognized' do
