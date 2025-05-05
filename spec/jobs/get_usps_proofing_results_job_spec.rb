@@ -2049,7 +2049,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
 
                     it 'tracks the successful enrollment in the attempts api' do
-                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete).with(
+                        reproof: false,
+                      )
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2275,7 +2277,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
 
                     it 'tracks the successful enrollment in the attempts api' do
-                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete).with(
+                        reproof: false,
+                      )
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2379,7 +2383,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
 
                     it 'tracks the successful enrollment in the attempts api' do
-                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete).with(
+                        reproof: false,
+                      )
                     end
 
                     it 'sends a proofing sms notification' do
@@ -2484,7 +2490,9 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
 
                     it 'tracks the successful enrollment in the attempts api' do
-                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete)
+                      expect(attempts_api_tracker).to have_received(:idv_enrollment_complete).with(
+                        reproof: false,
+                      )
                     end
 
                     it 'sends a proofing sms notification' do

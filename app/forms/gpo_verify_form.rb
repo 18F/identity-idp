@@ -22,6 +22,7 @@ class GpoVerifyForm
   def submit
     result = valid?
     fraud_check_failed = pending_profile&.fraud_pending_reason.present?
+    reproof = user.has_proofed_before?
 
     if result
       pending_profile&.remove_gpo_deactivation_reason
@@ -36,7 +37,11 @@ class GpoVerifyForm
     else
       reset_sensitive_fields
     end
-    attempts_api_tracker.idv_enrollment_complete if pending_profile&.active?
+
+    if pending_profile&.active?
+      attempts_api_tracker.idv_enrollment_complete(reproof:)
+    end
+
     FormResponse.new(
       success: result,
       errors: errors,

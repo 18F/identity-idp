@@ -490,8 +490,12 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     unless fraud_result_pending?(enrollment)
+      reproof = enrollment.user&.has_proofed_before?
       enrollment.profile&.activate_after_passing_in_person
-      attempts_api_tracker(enrollment:).idv_enrollment_complete if enrollment.profile.active?
+
+      if enrollment.profile&.active?
+        attempts_api_tracker(enrollment:).idv_enrollment_complete(reproof:)
+      end
 
       # send SMS and email
       send_enrollment_status_sms_notification(enrollment: enrollment)

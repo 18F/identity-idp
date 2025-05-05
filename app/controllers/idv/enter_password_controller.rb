@@ -127,6 +127,7 @@ module Idv
     end
 
     def init_profile
+      reproof = current_user.has_proofed_before?
       profile = idv_session.create_profile_from_applicant_with_password(
         password,
         is_enhanced_ipp: resolved_authn_context_result.enhanced_ipp?,
@@ -143,7 +144,7 @@ module Idv
       end
 
       if profile.active?
-        attempts_api_tracker.idv_enrollment_complete
+        attempts_api_tracker.idv_enrollment_complete(reproof:)
         create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           profile: idv_session.profile,

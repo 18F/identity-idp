@@ -181,8 +181,17 @@ RSpec.describe GpoVerifyForm do
           end
 
           it 'tracks an enrollment event' do
-            expect(attempts_api_tracker).to receive(:idv_enrollment_complete)
+            expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
             subject.submit
+          end
+
+          context 'the user has proofed before' do
+            before { create(:profile, :deactivated, user:) }
+
+            it 'tracks an enrollment event with reproof set to true' do
+              expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
+              subject.submit
+            end
           end
         end
       end
@@ -230,7 +239,7 @@ RSpec.describe GpoVerifyForm do
         end
 
         it 'tracks an enrollment event' do
-          expect(attempts_api_tracker).to receive(:idv_enrollment_complete)
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
           subject.submit
         end
       end
@@ -246,7 +255,7 @@ RSpec.describe GpoVerifyForm do
         end
 
         it 'tracks an enrollment event' do
-          expect(attempts_api_tracker).to receive(:idv_enrollment_complete)
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
           subject.submit
         end
       end
@@ -262,7 +271,7 @@ RSpec.describe GpoVerifyForm do
         end
 
         it 'tracks an enrollment event' do
-          expect(attempts_api_tracker).to receive(:idv_enrollment_complete)
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
           subject.submit
         end
       end
