@@ -281,6 +281,13 @@ RSpec.describe Idv::EnterPasswordController do
           in_person_verification_pending: false,
         )
       end
+
+      it 'does not track the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).not_to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: 'wrong' } }
+      end
     end
 
     it 'redirects to personal key path', :freeze_time do
