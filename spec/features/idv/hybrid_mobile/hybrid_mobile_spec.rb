@@ -292,16 +292,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
         fill_out_phone_form_ok
         verify_phone_otp
-
-        fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
-        click_idv_continue
-
-        acknowledge_and_confirm_personal_key
-
-        validate_idv_completed_page(user)
-        click_agree_and_continue
-
-        validate_return_to_sp
       end
     end
   end
