@@ -76,7 +76,7 @@ module AttemptsApi
       )
     end
 
-    # @param [Boolean] success True indicates that the user has proofed previously
+    # @param [Boolean] reproof True indicates that the user has proofed previously
     # A userhas completed the identity verification process and has an active profile
     def idv_enrollment_complete(reproof:)
       track_event(
