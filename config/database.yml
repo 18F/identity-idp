@@ -122,4 +122,6 @@ production:
     username: "<%= redshift_config['username'] %>"
     password: "<%= redshift_config['password'] %>"
     encoding: utf8
+    database_tasks: false
+    replica: true
 <% end %>
