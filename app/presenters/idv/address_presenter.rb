@@ -19,6 +19,10 @@ module Idv
       end
     end
 
+    def back_button?
+      gpo_letter_requested || address_update_request
+    end
+
     def update_or_continue_button
       if address_update_request
         I18n.t('forms.buttons.submit.update')

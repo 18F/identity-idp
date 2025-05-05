@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/address/new' do
+  let(:user) { build(:user) }
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
   let(:gpo_letter_requested) { nil }
   let(:address_update_request) { nil }
 
   shared_examples 'valid address page and form' do
     before do
+      allow(view).to receive(:current_user).and_return(user)
       assign(
         :presenter, Idv::AddressPresenter.new(
           gpo_letter_requested: gpo_letter_requested,
@@ -30,6 +32,7 @@ RSpec.describe 'idv/address/new' do
         expect(parsed_page).to have_content(t('doc_auth.headings.address'))
         expect(parsed_page).to have_content(t('doc_auth.info.address'))
         expect(parsed_page).to have_content(t('forms.buttons.continue'))
+        expect(parsed_page).to have_link(t('links.cancel'))
       end
     end
 
@@ -120,7 +123,7 @@ RSpec.describe 'idv/address/new' do
     it_behaves_like 'valid address page and form'
   end
 
-  context 'whene user is requsting an address update' do
+  context 'whene user is requesting an address update' do
     let(:address_update_request) { true }
 
     it_behaves_like 'valid address page and form'
