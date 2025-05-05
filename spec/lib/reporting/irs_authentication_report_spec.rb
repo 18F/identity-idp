@@ -8,13 +8,13 @@ RSpec.describe Reporting::IrsAuthenticationReport do
     [
       ['Metric', 'Unit', 'Definition'],
       ['System and Application Demand', 'Count',
-      'The count of new users that started the registration process with Login.gov.'],
+       'The count of new users that started the registration process with Login.gov.'],
       ['System and Application Errors', 'Count',
-      'The count of new users who did not complete the registration process'],
+       'The count of new users who did not complete the registration process'],
       ['Authentication attempts', 'Count',
-      'The count of new users who completed the registration process sucessfully'],
+       'The count of new users who completed the registration process sucessfully'],
       ['Authentication success rate', 'Percentage',
-      'The percentage of new users who completed registration process successfully'],
+       'The percentage of new users who completed registration process successfully'],
     ]
   end
   let(:expected_overview_table) do
@@ -31,7 +31,7 @@ RSpec.describe Reporting::IrsAuthenticationReport do
       ['System and Application Errors', 2, '50.0%'],
       ['Authentication attempts', 2, '50.0%'],
       ['Authentication success rate', 1, '25.0%'],
-  ]
+    ]
   end
 
   subject(:report) { Reporting::IrsAuthenticationReport.new(issuers: [issuer], time_range:) }

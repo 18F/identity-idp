@@ -83,7 +83,7 @@ module Reporting
          'The count of new users who did not complete the registration process'],
         ['Authentication attempts', 'Count',
          'The count of new users who completed the registration process sucessfully'],
-         ['Authentication success rate', 'Percentage',
+        ['Authentication success rate', 'Percentage',
          'The percentage of new users who completed registration process successfully'],
       ]
     end
