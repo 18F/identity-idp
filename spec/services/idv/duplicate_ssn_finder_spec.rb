@@ -24,6 +24,27 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
         expect(subject.ssn_is_unique?).to eq false
       end
+
+      it 'recognizes fingerprint without dashes' do
+        ssn_without_dashes = '123456789'
+        create(:profile, pii: { ssn: ssn_without_dashes })
+
+        expect(subject.ssn_is_unique?).to eq false
+      end
+
+      it 'recognizes fingerprint when SSN has only the first dash' do
+        ssn_with_first_dash = '123-456789'
+        create(:profile, pii: { ssn: ssn_with_first_dash })
+
+        expect(subject.ssn_is_unique?).to eq false
+      end
+
+      it 'recognizes fingerprint when SSN has only the second dash' do
+        ssn_with_second_dash = '12345-6789'
+        create(:profile, pii: { ssn: ssn_with_second_dash })
+
+        expect(subject.ssn_is_unique?).to eq false
+      end
     end
 
     context 'when ssn is already taken by same profile' do

@@ -53,15 +53,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
   context 'when given passport yaml' do
     let(:passport_yaml) { 'needs to be set' }
 
-    let(:post_front_image_response) do
-      client.post_front_image(
-        instance_id: instance_id,
-        image: passport_yaml,
-      )
-    end
-
-    let(:post_back_image_response) do
-      client.post_back_image(
+    let(:post_passport_image_response) do
+      client.post_passport_image(
         instance_id: instance_id,
         image: passport_yaml,
       )
@@ -70,6 +63,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     let(:get_results_response) do
       client.get_results(
         instance_id: instance_id,
+        passport_submittal: true,
       )
     end
 
@@ -97,8 +91,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       let(:passport_yaml) { DocAuthImageFixtures.passport_passed_yaml.read }
 
       it 'passes' do
-        expect(post_front_image_response.success?).to eq(true)
-        expect(post_back_image_response.success?).to eq(true)
+        expect(post_passport_image_response.success?).to eq(true)
         expect(get_results_response.success?).to eq(true)
         expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
       end
@@ -108,9 +101,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       let(:passport_yaml) { DocAuthImageFixtures.passport_failed_yaml.read }
 
       it 'fails' do
-        expect(post_front_image_response.success?).to eq(true)
-        expect(post_back_image_response.success?).to eq(true)
-        expect(get_results_response.success?).to eq(false)
+        expect(post_passport_image_response.success?).to eq(true)
+        expect(get_results_response.success?).to eq(true)
         expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
       end
     end

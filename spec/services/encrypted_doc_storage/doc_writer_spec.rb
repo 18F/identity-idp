@@ -33,15 +33,36 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       subject.write(image:)
     end
 
-    context 'when S3Storage is passed in' do
+    context 'when S3Storage is initalized' do
+      subject do
+        EncryptedDocStorage::DocWriter.new(s3_enabled: true)
+      end
+
       it 'uses S3' do
         expect_any_instance_of(EncryptedDocStorage::S3Storage).to receive(:write_image).once
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(:write_image)
 
-        subject.write(
-          image:,
-          data_store: EncryptedDocStorage::S3Storage,
-        )
+        subject.write(image:)
+      end
+    end
+
+    context 'when an image is not passed in' do
+      context 'when the image value is nil' do
+        it 'returns a blank Result object' do
+          result = subject.write(image: nil)
+
+          expect(result.name).to be nil
+          expect(result.encryption_key).to be nil
+        end
+      end
+
+      context 'when the image value is an empty string' do
+        it 'returns a blank Result object' do
+          result = subject.write(image: '')
+
+          expect(result.name).to be nil
+          expect(result.encryption_key).to be nil
+        end
       end
     end
 
