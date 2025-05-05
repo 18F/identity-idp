@@ -11,13 +11,13 @@ class MultipleAccountsDetectedController < ApplicationController
 
   def do_not_recognize
     analytics.one_account_unknown_account_detected
-    duplicate_profile_confirmation.mark_some_accounts_not_recognized
+    dupe_profile_confirmation.mark_some_accounts_not_recognized
     redirect_to after_sign_in_path_for(current_user)
   end
 
   def recognize_accounts
     analytics.one_account_recognize_all_accounts
-    duplicate_profile_confirmation.mark_all_accounts_recognized
+    dupe_profile_confirmation.mark_all_accounts_recognized
     redirect_to after_sign_in_path_for(current_user)
   end
 
@@ -29,7 +29,7 @@ class MultipleAccountsDetectedController < ApplicationController
         return
       end
     end
-    redirect_to after_sign_in_path_for(current_user)
+    redirect_to root_url
   end
 
   def dupe_profile_confirmation
