@@ -192,7 +192,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           stub_health_check_endpoints_success
         end
 
-        it 'directs the user to the choose id page with a deactivated passport option' do
+        it 'directs the user to the choose id page with a deactivated passport option & warning' do
           reload_ab_tests
           visit_idp_from_sp_with_ial2(service_provider)
           sign_in_live_with_2fa(user)
@@ -228,6 +228,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           )
           expect(page).to have_content strip_nbsp(
             t('doc_auth.info.dos_passport_api_down_message'),
+          )
+          expect(page).to have_field(
+            'doc_auth_choose_id_type_preference_passport',
+            visible: :all,
+            disabled: true,
           )
           expect(page).to have_content strip_nbsp(
             t('doc_auth.forms.id_type_preference.passport'),
