@@ -8,7 +8,7 @@ RSpec.describe Idv::InPerson::PassportController do
     create(:document_capture_session, user:, passport_status: 'requested')
   end
   let(:idv_session) { subject.idv_session }
-  let(:enrollment) { InPersonEnrollment.new }
+  let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
 
   before do
     stub_sign_in(user)
@@ -71,6 +71,7 @@ RSpec.describe Idv::InPerson::PassportController do
 
         it 'renders the passport form' do
           expect(response).to render_template 'idv/in_person/passport/show'
+          expect(enrollment.document_type).to eq(nil)
         end
 
         it 'logs the idv_in_person_proofing_passport_visited event' do
@@ -94,6 +95,35 @@ RSpec.describe Idv::InPerson::PassportController do
         it 'does not log the idv_in_person_proofing_passport_visited event' do
           expect(@analytics).to_not have_logged_event(:idv_in_person_proofing_passport_visited)
         end
+      end
+    end
+  end
+
+  describe '#update' do
+    context 'when in person passports are allowed' do
+      before do
+        allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+      end
+
+      let(:analytics_arguments) do
+        {
+          step: 'passport',
+          analytics_id: 'In Person Proofing',
+          skip_hybrid_handoff: false,
+        }
+      end
+
+      before do
+        subject.idv_session.opted_in_to_in_person_proofing =
+          analytics_arguments[:opted_in_to_in_person_proofing]
+        subject.idv_session.skip_hybrid_handoff = analytics_arguments[:skip_hybrid_handoff]
+      end
+
+      it 'sets the enrollment document type' do
+        expect(enrollment.document_type).to eq(nil)
+        put :update
+
+        expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK)
       end
     end
   end
