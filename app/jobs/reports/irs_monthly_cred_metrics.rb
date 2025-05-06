@@ -33,7 +33,6 @@ module Reports
         Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
-      binding.pry
       report = as_emailable_reports(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: _date).first
       upload_to_s3(report.table, _date, report_name: REPORT_NAME)
 
