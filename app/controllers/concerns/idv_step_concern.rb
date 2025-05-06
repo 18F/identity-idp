@@ -85,6 +85,10 @@ module IdvStepConcern
     end
   end
 
+  def in_person_passports_allowed?
+    IdentityConfig.store.in_person_passports_enabled && document_capture_session.passport_allowed?
+  end
+
   private
 
   def extra_analytics_properties
