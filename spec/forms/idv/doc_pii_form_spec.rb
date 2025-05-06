@@ -7,7 +7,7 @@ RSpec.describe Idv::DocPiiForm do
   let(:subject) { Idv::DocPiiForm.new(pii: pii) }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
   let(:valid_state_id_expiration) { Time.zone.today.to_s }
-  let(:state_id_type) { 'drivers_license' }
+  let(:id_doc_type) { 'drivers_license' }
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
   end
@@ -22,7 +22,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
@@ -37,13 +37,13 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: mrz,
     }
   end
-  let(:nil_state_id_type_pii) do
+  let(:nil_id_doc_type_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
@@ -51,7 +51,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: nil,
+      id_doc_type: nil,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
@@ -65,7 +65,7 @@ RSpec.describe Idv::DocPiiForm do
       dob: valid_dob,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
     }
@@ -77,7 +77,7 @@ RSpec.describe Idv::DocPiiForm do
       dob: nil,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
     }
@@ -89,7 +89,7 @@ RSpec.describe Idv::DocPiiForm do
       dob: too_young_dob,
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
     }
@@ -102,7 +102,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
@@ -117,7 +117,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
@@ -132,7 +132,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: 12345,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
@@ -146,7 +146,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: nil,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
@@ -160,7 +160,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: 'YORK',
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
@@ -174,7 +174,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'XX',
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
@@ -188,7 +188,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: nil,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_expiration: valid_state_id_expiration,
@@ -202,7 +202,7 @@ RSpec.describe Idv::DocPiiForm do
       address1: nil,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      state_id_type: state_id_type,
+      id_doc_type: id_doc_type,
       state_id_jurisdiction: 'AL',
       state_id_number: nil,
       state_id_expiration: valid_state_id_expiration,
@@ -216,7 +216,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: nil,
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: mrz,
@@ -230,7 +230,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2022-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: mrz,
@@ -244,7 +244,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: nil,
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: mrz,
@@ -258,7 +258,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'XYZ',
       nationality_code: 'USA',
       mrz: mrz,
@@ -272,7 +272,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'XYZ',
       mrz: mrz,
@@ -286,7 +286,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: nil,
@@ -315,8 +315,8 @@ RSpec.describe Idv::DocPiiForm do
       end
     end
 
-    context 'when the state_id_type is not specified' do
-      let(:pii) { nil_state_id_type_pii }
+    context 'when the id_doc_type is not specified' do
+      let(:pii) { nil_id_doc_type_pii }
 
       it 'returns a general no liveness error' do
         result = subject.submit

@@ -11,7 +11,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
 
   before do
     stub_health_check_settings
-    stub_health_check_endpoints
+    stub_health_check_endpoints_success
   end
 
   shared_examples 'a DOS healthcheck endpoint' do |endpoint, success_body|

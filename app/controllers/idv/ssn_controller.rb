@@ -74,7 +74,7 @@ module Idv
     private
 
     def next_url
-      if (idv_session.pii_from_doc&.state_id_type == 'passport' ||
+      if (idv_session.pii_from_doc&.id_doc_type == 'passport' ||
           idv_session.pii_from_doc&.state == 'PR'
          ) && !ssn_presenter.updating_ssn?
         idv_address_url

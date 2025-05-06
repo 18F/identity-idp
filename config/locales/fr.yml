@@ -597,7 +597,8 @@ doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne 
 doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État
 doc_auth.headers.underage: Condition d’âge non remplie
 doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
-doc_auth.headings.address: Mettre à jour votre adresse personnelle
+doc_auth.headings.address: Saisir votre adresse personnelle actuelle
+doc_auth.headings.address_update: Mettre à jour votre adresse personnelle
 doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous sont incorrectes, veuillez %{link_html} de votre pièce d’identité.
@@ -615,6 +616,7 @@ doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’i
 doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
+doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -670,6 +672,7 @@ doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les inst
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
 doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
+doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
@@ -1181,9 +1184,9 @@ idv.messages.gpo.info_alert: Vous devrez attendre de recevoir votre lettre pour 
 idv.messages.gpo.learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
 idv.messages.gpo.letter_on_the_way: Nous vous envoyons une lettre
 idv.messages.gpo.resend: Envoyez-moi une autre lettre
-idv.messages.gpo.start_over_html: Si ce n’est pas la bonne adresse, vous devrez %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: recommencer et vérifier avec votre nouvelle adresse
 idv.messages.gpo.timeframe_html: Vous recevrez une lettre avec un <strong>code de vérification</strong> dans un délai de <strong>5 à 10 jours</strong>.
+idv.messages.gpo.verify_address_again_html: Si vous ne pouvez pas recevoir de courrier à cette adresse, vous devrez %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: confirmer à nouveau votre adresse
 idv.messages.otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus, veuillez sélectionner « Appel téléphonique » ci-dessous.
 idv.messages.phone.alert_html: '<strong>Saisissez un numéro de téléphone qui est :</strong>'
 idv.messages.phone.description: Nous vérifierons que votre numéro de téléphone correspond aux renseignements figurant sur votre pièce d’identité.
@@ -1277,6 +1280,7 @@ in_person_proofing.body.location.location_button: Sélectionner
 in_person_proofing.body.location.po_search.address_label: Adresse
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
+in_person_proofing.body.location.po_search.continue_button: Suite
 in_person_proofing.body.location.po_search.is_searching_message: Recherche des bureaux de poste en cours…
 in_person_proofing.body.location.po_search.none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon de 50 miles de %{address}
 in_person_proofing.body.location.po_search.none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre adresse, ou ajouter des photos de votre pièce d’identité pour essayer de confirmer à nouveau votre identité en ligne.
@@ -1286,12 +1290,17 @@ in_person_proofing.body.location.po_search.results_description.other: Il y a %{c
 in_person_proofing.body.location.po_search.results_instructions: Sélectionnez un bureau de poste ci-dessous ou effectuez une nouvelle recherche en utilisant une autre adresse.
 in_person_proofing.body.location.po_search.search_button: Rechercher
 in_person_proofing.body.location.po_search.state_label: État
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Veuillez poursuivre la procédure de vérification d’identité. Vous pouvez recourir au <a target="_blank" href="%{link_url}"></a> pour rechercher un bureau participant après avoir généré un code-barres.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Nous n’avons pas pu rechercher de bureau de poste participant pour des raisons techniques et nous en excusons.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centre d’aide
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: Code postal
 in_person_proofing.body.location.retail_hours_heading: Heures d’ouverture
 in_person_proofing.body.location.retail_hours_sat: 'Sam :'
 in_person_proofing.body.location.retail_hours_sun: 'Dim :'
 in_person_proofing.body.location.retail_hours_weekday: 'Du lundi au vendredi :'
 in_person_proofing.body.location.selection: 'Voici le bureau que vous avez sélectionné :'
+in_person_proofing.body.passport.info: We will verify this information against records. Your passport book must not be expired.
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} est un site Web sécurisé de l’administration. La Poste des États-Unis et nous utilisons vos données pour confirmer votre identité.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: Des questions ?
@@ -1304,6 +1313,15 @@ in_person_proofing.body.state_id.alert_text: Les passeports ne sont pas accepté
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.form.state_id.address1: Adresse ligne 1
 in_person_proofing.form.state_id.address1_hint: 'Exemple : 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Adresse ligne 2
@@ -1343,6 +1361,7 @@ in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les docum
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
 in_person_proofing.headings.id_address: Adresse sur votre pièce d’identité
+in_person_proofing.headings.passport: Enter the information on your U.S. passport book
 in_person_proofing.headings.po_search.location: Trouvez un bureau de poste participant
 in_person_proofing.headings.prepare: Confirmez votre identité en personne
 in_person_proofing.headings.state_id_milestone_2: Saisissez les informations figurant sur votre pièce d’identité délivrée par l’État

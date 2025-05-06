@@ -1509,6 +1509,7 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
   def idv_doc_auth_failed_image_resubmitted(
@@ -1517,9 +1518,10 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     submit_attempts:,
-    front_image_fingerprint:,
-    back_image_fingerprint:,
     selfie_image_fingerprint:,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     document_type: nil,
     **extra
   )
@@ -1532,6 +1534,7 @@ module AnalyticsEvents
       submit_attempts:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       document_type:,
       **extra,
@@ -1879,6 +1882,7 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of passport image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
@@ -1894,6 +1898,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     document_type: nil,
@@ -1909,6 +1914,7 @@ module AnalyticsEvents
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       liveness_checking_required:,
       selfie_image_fingerprint:,
       acuant_sdk_upgrade_ab_test_bucket:,
@@ -1924,7 +1930,7 @@ module AnalyticsEvents
   # @param [String] doc_auth_result
   # @param [String] state
   # @param [String] country for passport doc types
-  # @param [String] state_id_type
+  # @param [String] id_doc_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -1934,6 +1940,7 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
@@ -1987,7 +1994,7 @@ module AnalyticsEvents
     success:,
     errors:,
     exception:,
-    state_id_type:,
+    id_doc_type:,
     async:,
     submit_attempts:,
     remaining_submit_attempts:,
@@ -2003,6 +2010,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     attention_with_barcode: nil,
     doc_type_supported: nil,
@@ -2043,7 +2051,7 @@ module AnalyticsEvents
       doc_auth_result:,
       state:,
       country:,
-      state_id_type:,
+      id_doc_type:,
       async:,
       submit_attempts: submit_attempts,
       remaining_submit_attempts: remaining_submit_attempts,
@@ -2052,6 +2060,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       attention_with_barcode:,
       doc_type_supported:,
@@ -2103,6 +2112,7 @@ module AnalyticsEvents
   # @param [Integer] submit_attempts Times that user has tried submitting
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
   # @param [Hash] classification_info document image side information, issuing country and type etc
@@ -2123,6 +2133,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     classification_info: nil,
     document_type: nil,
@@ -2144,6 +2155,7 @@ module AnalyticsEvents
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
@@ -3241,6 +3253,28 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_visited(
+    step: nil,
+    analytics_id: nil,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_visited,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -4238,6 +4272,129 @@ module AnalyticsEvents
   def idv_not_verified_visited(**extra)
     track_event('IdV: Not verified visited', **extra)
   end
+
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    captureAttempts:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    liveness_checking_required:,
+    mimeType:,
+    moire:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image added',
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      captureAttempts:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      liveness_checking_required:,
+      mimeType:,
+      moire:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Number] captureAttempts count of image capturing attempts
+  # @param [Boolean] click_source
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] isDrop
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    captureAttempts:,
+    click_source:,
+    flow_path:,
+    isDrop:,
+    liveness_checking_required:,
+    use_alternate_sdk:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      captureAttempts:,
+      click_source:,
+      flow_path:,
+      isDrop:,
+      liveness_checking_required:,
+      use_alternate_sdk:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
 
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
@@ -5361,7 +5518,7 @@ module AnalyticsEvents
   # @param [Hash] decision accept or reject of given ID
   # @param [String] user_id internal id of socure user
   # @param [String] state state of ID
-  # @param [String] state_id_type type of state issued ID
+  # @param [String] id_doc_type type of state issued ID or passport
   # @param [Boolean] async whether or not this worker is running asynchronously
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -5396,7 +5553,7 @@ module AnalyticsEvents
     document_type: nil,
     decision: nil,
     state: nil,
-    state_id_type: nil,
+    id_doc_type: nil,
     liveness_checking_required: nil,
     issue_year: nil,
     address_line2_present: nil,
@@ -5428,7 +5585,7 @@ module AnalyticsEvents
       decision:,
       user_id:,
       state:,
-      state_id_type:,
+      id_doc_type:,
       async:,
       submit_attempts:,
       remaining_submit_attempts:,

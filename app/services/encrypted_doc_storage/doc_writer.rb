@@ -7,9 +7,16 @@ module EncryptedDocStorage
       :encryption_key,
     )
 
-    def write(image:, data_store: LocalStorage)
+    def initialize(s3_enabled: false)
+      @s3_enabled = s3_enabled
+    end
+
+    def write(image: nil)
+      if image.blank?
+        return Result.new(name: nil, encryption_key: nil)
+      end
+
       name = SecureRandom.uuid
-      storage = data_store.new
 
       storage.write_image(
         encrypted_image: aes_cipher.encrypt(image, key),
@@ -26,6 +33,12 @@ module EncryptedDocStorage
 
     def aes_cipher
       @aes_cipher ||= Encryption::AesCipherV2.new
+    end
+
+    def storage
+      @storage ||= begin
+        @s3_enabled ? S3Storage.new : LocalStorage.new
+      end
     end
 
     def key

@@ -25,12 +25,12 @@ module DocAuth
         @authentication_result_field_data = true_id_product&.dig(:AUTHENTICATION_RESULT)
         return nil unless id_auth_field_data.present?
 
-        state_id_type_slug = id_auth_field_data['Fields_DocumentClassName']
-        @state_id_type = DocAuth::Response::ID_TYPE_SLUGS[state_id_type_slug]
+        id_doc_type_slug = id_auth_field_data['Fields_DocumentClassName']
+        @id_doc_type = DocAuth::Response::ID_TYPE_SLUGS[id_doc_type_slug]
 
-        if state_id_type == 'drivers_license' || state_id_type == 'state_id_card'
+        if id_doc_type == 'drivers_license' || id_doc_type == 'state_id_card'
           generate_state_id_pii
-        elsif state_id_type == 'passport'
+        elsif id_doc_type == 'passport'
           generate_passport_pii
         end
       end
@@ -39,8 +39,8 @@ module DocAuth
         @id_auth_field_data
       end
 
-      def state_id_type
-        @state_id_type
+      def id_doc_type
+        @id_doc_type
       end
 
       def authentication_result_field_data
@@ -155,7 +155,7 @@ module DocAuth
           state_id_issued: issue_date,
           state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
           state_id_number: document_number,
-          state_id_type:,
+          id_doc_type:,
           issuing_country_code:,
         )
       end
@@ -169,7 +169,7 @@ module DocAuth
           sex:,
           passport_expiration: expiration_date,
           passport_issued: issue_date,
-          state_id_type:,
+          id_doc_type:,
           issuing_country_code:,
           document_number:,
           birth_place: id_auth_field_data['Fields_BirthPlace'],

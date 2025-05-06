@@ -281,6 +281,13 @@ RSpec.describe Idv::EnterPasswordController do
           in_person_verification_pending: false,
         )
       end
+
+      it 'does not track the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).not_to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: 'wrong' } }
+      end
     end
 
     it 'redirects to personal key path', :freeze_time do
@@ -397,6 +404,13 @@ RSpec.describe Idv::EnterPasswordController do
         expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
           profile: user.reload.active_profile,
         )
+      end
+
+      it 'tracks the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
       end
 
       it 'creates an `account_verified` event once per confirmation' do
@@ -1063,6 +1077,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'with a non-proofed user' do
         it 'does not track a reproofing event during initial proofing' do
+          # TODO: Attempts API Move the idv_reproo event to the initation of the proofing process
           expect(@attempts_api_tracker).not_to receive(:idv_reproof)
 
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
@@ -1094,6 +1109,11 @@ RSpec.describe Idv::EnterPasswordController do
 
             it 'tracks a reproofing event upon reproofing' do
               expect(@attempts_api_tracker).to receive(:idv_reproof)
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
+
+            it 'tracks a reproofing event upon reproofing' do
+              expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
           end

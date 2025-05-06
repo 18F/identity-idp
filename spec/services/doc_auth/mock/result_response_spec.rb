@@ -45,7 +45,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -74,7 +74,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -99,7 +99,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           dob: 10/06/1938
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
       YAML
     end
 
@@ -295,7 +295,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           sex: female
           height: 66
           state_id_number: '123456789'
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_jurisdiction: 'NY'
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
@@ -325,7 +325,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66,
           weight: nil,
           eye_color: nil,
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -338,7 +338,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
-        passport_check_result: nil,
+        passport_check_result: {},
         portrait_match_results: nil,
       )
       expect(response.doc_auth_success?).to eq(true)
@@ -385,7 +385,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '1111111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2099-12-31',
           state_id_issued: '2019-12-31',
           issuing_country_code: 'US',
@@ -514,7 +514,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -543,7 +543,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -556,7 +556,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         classification_info: {},
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
-        passport_check_result: nil,
+        passport_check_result: {},
         portrait_match_results: nil,
       )
     end
@@ -689,7 +689,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Front:
             ClassName: Identification Card
             CountryCode: USA
-            IssuerType: Country
+            IssuerType: Forgery
           Back:
             ClassName: Identification Card
             CountryCode: USA

@@ -1,0 +1,91 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
+        current_step: :verify_info,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('in_person_proofing.headings.passport') %>
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.passport')) %>
+
+<p>
+  <%= t('in_person_proofing.body.passport.info') %>
+</p>
+
+<%= simple_form_for(
+      :idv_in_person_passport_form,
+      data: {},
+      html: { class: 'margin-y-4' },
+      method: 'put',
+      url: idv_in_person_passport_url,
+    ) do |f| %>
+
+    <div class="margin-bottom-5">
+
+        <%= render ValidatedFieldComponent.new(
+              form: f,
+              input_html: { value: '' },
+              label_html: { class: 'usa-label' },
+              label: t('in_person_proofing.form.passport.surname'),
+              name: :passport_surname,
+              required: true,
+            ) %>
+
+        <%= render ValidatedFieldComponent.new(
+              form: f,
+              hint: t('in_person_proofing.form.passport.first_name_hint'),
+              input_html: { value: '' },
+              label_html: { lass: 'usa-label' },
+              label: t('in_person_proofing.form.passport.first_name'),
+              name: :passport_first_name,
+              required: true,
+            ) %>
+
+        <div class="margin-bottom-4">
+          <%= render MemorableDateComponent.new(
+                content_tag: 'memorable-date',
+                form: f,
+                hint: t('in_person_proofing.form.passport.dob_hint'),
+                label: t('in_person_proofing.form.passport.dob'),
+                name: :passport_dob,
+                required: true,
+              ) %>
+        </div>
+
+        <%= render ValidatedFieldComponent.new(
+              form: f,
+              hint: t('in_person_proofing.form.passport.passport_number_hint'),
+              input_html: { value: '' },
+              label_html: { class: 'usa-label' },
+              label: t('in_person_proofing.form.passport.passport_number'),
+              name: :passport_number,
+              required: true,
+            ) %>
+
+        <%= render MemorableDateComponent.new(
+              content_tag: 'memorable-date',
+              form: f,
+              hint: t('in_person_proofing.form.passport.expiration_date_hint'),
+              label: t('in_person_proofing.form.passport.expiration_date'),
+              name: :passport_expiration,
+              required: true,
+            ) %>
+    </div>
+
+    <%= f.submit do %>
+        <%= t('forms.buttons.submit.default') %>
+    <% end %>
+<% end %>
+
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+      <% c.with_option(
+           url: idv_in_person_choose_id_type_url,
+           new_tab: false,
+         ).with_content(t('idv.troubleshooting.options.use_another_id_type')) %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'passport' %>
+<%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>

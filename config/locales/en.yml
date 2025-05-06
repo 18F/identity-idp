@@ -597,7 +597,8 @@ doc_auth.headers.low_resolution: Your device’s camera may not be supported.
 doc_auth.headers.unaccepted_id_type: Use a driver’s license or a state ID
 doc_auth.headers.underage: Age requirement not met
 doc_auth.headers.unreadable_id: We could not read your ID
-doc_auth.headings.address: Update your current residential address
+doc_auth.headings.address: Enter your current residential address
+doc_auth.headings.address_update: Update your current residential address
 doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your ID.
@@ -615,6 +616,7 @@ doc_auth.headings.hybrid_handoff: How would you like to add your ID?
 doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
+doc_auth.headings.mailing_address: Enter your mailing address
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
@@ -670,6 +672,7 @@ doc_auth.info.link_sent: Please check your phone and follow instructions to take
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically.
 doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
+doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
@@ -1181,9 +1184,9 @@ idv.messages.gpo.info_alert: You’ll need to wait until your letter is delivere
 idv.messages.gpo.learn_more_verify_by_mail: Learn more about verifying your address by mail
 idv.messages.gpo.letter_on_the_way: We are sending you a letter
 idv.messages.gpo.resend: Send me another letter
-idv.messages.gpo.start_over_html: If this isn’t the right address, you’ll need to %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: start over and verify with your new address
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
+idv.messages.gpo.verify_address_again_html: If you cannot receive mail at this address, you’ll need to %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: verify your address again
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
@@ -1277,6 +1280,7 @@ in_person_proofing.body.location.location_button: Select
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City
+in_person_proofing.body.location.po_search.continue_button: Continue
 in_person_proofing.body.location.po_search.is_searching_message: Searching for Post Office locations…
 in_person_proofing.body.location.po_search.none_found: Sorry, there are no participating Post Offices within 50 miles of %{address}
 in_person_proofing.body.location.po_search.none_found_tip: You can search using a different address, or add photos of your ID to try and verify your identity online again.
@@ -1286,12 +1290,17 @@ in_person_proofing.body.location.po_search.results_description.other: There are 
 in_person_proofing.body.location.po_search.results_instructions: Select a Post Office location below, or search again using a different address.
 in_person_proofing.body.location.po_search.search_button: Search
 in_person_proofing.body.location.po_search.state_label: State
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Please continue verifying your identity. You can use our <a target="_blank" href="%{link_url}"></a> to search for a participating location after you generate a barcode.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Sorry, we ran into technical difficulties and couldn’t search for a participating Post Office.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Help Center
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
 in_person_proofing.body.location.po_search.zipcode_label: ZIP Code
 in_person_proofing.body.location.retail_hours_heading: Retail Hours
 in_person_proofing.body.location.retail_hours_sat: 'Sat:'
 in_person_proofing.body.location.retail_hours_sun: 'Sun:'
 in_person_proofing.body.location.retail_hours_weekday: 'Monday to Friday:'
 in_person_proofing.body.location.selection: 'This is the location you selected:'
+in_person_proofing.body.passport.info: We will verify this information against records. Your passport book must not be expired.
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} is a secure, government website. We and the U.S. Postal Service use your data to verify your identity.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: Learn more about privacy and security.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: Questions?
@@ -1304,6 +1313,15 @@ in_person_proofing.body.state_id.alert_text: Passports are not accepted in perso
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
 in_person_proofing.form.address.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using substitutes for those characters.'
 in_person_proofing.form.address.state_prompt: '- Select -'
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.form.state_id.address1: Address line 1
 in_person_proofing.form.state_id.address1_hint: 'Example: 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Address line 2
@@ -1343,6 +1361,7 @@ in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting docu
 in_person_proofing.headings.barcode_what_to_bring: What to bring to the Post Office
 in_person_proofing.headings.cta: Try verifying your ID in person
 in_person_proofing.headings.id_address: Address on your ID
+in_person_proofing.headings.passport: Enter the information on your U.S. passport book
 in_person_proofing.headings.po_search.location: Find a participating Post Office
 in_person_proofing.headings.prepare: Verify your identity in person
 in_person_proofing.headings.state_id_milestone_2: Enter the information on your state‑issued ID
