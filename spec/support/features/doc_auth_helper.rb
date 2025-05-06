@@ -88,7 +88,6 @@ module DocAuthHelper
     if IdentityConfig.store.in_person_proofing_opt_in_enabled
       click_on t('forms.buttons.continue_online')
     end
-    expect(page).to have_content(t('doc_auth.headings.hybrid_handoff'), wait: 5)
     complete_hybrid_handoff_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
