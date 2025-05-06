@@ -51,13 +51,17 @@ function getHeading({
   return t('doc_auth.errors.rate_limited_heading');
 }
 
-function getSubheading({ nonIppOrFailedResult, t }) {
+function getSubheading({ nonIppOrFailedResult, passportError, t }) {
   const showSubheading = !nonIppOrFailedResult;
 
-  if (showSubheading) {
+  if (showSubheading && !passportError) {
     return <h2>{t('doc_auth.errors.rate_limited_subheading')}</h2>;
   }
   return undefined;
+}
+
+function isPassportError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'passport');
 }
 
 function DocumentCaptureWarning({
@@ -87,10 +91,13 @@ function DocumentCaptureWarning({
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
+  const passportError = isPassportError(unknownFieldErrors);
   const subheading = getSubheading({
     nonIppOrFailedResult,
+    passportError,
     t,
   });
+
   const subheadingRef = useRef<HTMLDivElement>(null);
   const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
 

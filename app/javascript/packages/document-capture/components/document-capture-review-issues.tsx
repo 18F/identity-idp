@@ -59,15 +59,15 @@ function DocumentCaptureReviewIssues({
         altIsFailedSelfieDontIncludeAttempts
         altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.doc_type_check') : null}
         hasDismissed={hasDismissed}
+        isPassportError={idIsPassport}
       />
-      {Number.isFinite(remainingSubmitAttempts) && !idIsPassport && (
+      {Number.isFinite(remainingSubmitAttempts) && (
         <p>
           <HtmlTextWithStrongNoWrap
             text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
           />
         </p>
       )}
-      {idIsPassport && <p>{t('doc_auth.info.review_passport')}</p>}
       <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
       {isSelfieCaptureEnabled && (
         <SelfieCaptureStep
