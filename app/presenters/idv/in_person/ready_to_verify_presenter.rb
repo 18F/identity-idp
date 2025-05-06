@@ -33,6 +33,10 @@ module Idv
         )
       end
 
+      def location_search_skipped?
+        enrollment.selected_location_details.nil?
+      end
+
       def selected_location_hours(prefix)
         return unless selected_location_details
         hours = selected_location_details["#{prefix}_hours"]

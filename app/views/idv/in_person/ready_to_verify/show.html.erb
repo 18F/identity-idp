@@ -19,6 +19,10 @@
   <%= t('in_person_proofing.body.barcode.email_sent') %>
 <% end %>
 
+<% if @presenter.location_search_skipped? %>
+  <%= render 'shared/location_search_skipped_notice' %>
+<% end %>
+
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= @presenter.barcode_heading_text %>
 <% end %>
