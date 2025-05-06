@@ -746,6 +746,14 @@ doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien il
 doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: I do not recognize this account
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
@@ -1475,14 +1483,6 @@ mfa.second_method_warning.link: Agregue un segundo método de autenticación.
 mfa.second_method_warning.text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de autenticación.
 mfa.skip: Omitir por ahora
 mfa.webauthn_platform_message: Agregue otro método de autenticación en caso de que pierda el acceso al primero.
-multiple_accounts_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-multiple_accounts_detected.heading: We believe you may have another account
-multiple_accounts_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
-multiple_accounts_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-multiple_accounts_detected.yes_many: Yes, these are my accounts
-multiple_accounts_detected.yes_single: Yes, this is my account
-mutliple_accounts_detected.no_recognize_single: I do not recognize this account
-mutliple_accounts_detected.no_recognize_many: "I don't recognize these accounts"
 notices.account_reactivation: Qué bien. Tiene su clave personal.
 notices.authenticated_successfully: Logró autenticarse.
 notices.backup_codes_configured: Los códigos de recuperación se agregaron a su cuenta.

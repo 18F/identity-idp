@@ -17,12 +17,12 @@
                       accessible_masked_text: dupe_profile[:email],
                     ) %></p> 
             <p> <%= t(
-                      'multiple_accounts_detected.created_at_html',
+                      'duplicate_profiles_detected.created_at_html',
                       timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
                     ) %>
             </p>
             <p> <%= t(
-                      'multiple_accounts_detected.last_sign_in_at_html',
+                      'duplicate_profiles_detected.last_sign_in_at_html',
                       timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
                     ) %>
             </p>

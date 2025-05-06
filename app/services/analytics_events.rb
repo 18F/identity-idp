@@ -6305,17 +6305,17 @@ module AnalyticsEvents
   end
 
   # Tracks when user lands on page notifying them multiple profiles contain same information
-  def one_account_multiple_accounts_detected
-    track_event(:one_account_multiple_accounts_detected)
+  def one_account_duplicate_profiles_detected
+    track_event(:one_account_duplicate_profiles_detected)
   end
 
   # Tracks when user says they recognize all accounts that has same profile information.
-  def one_account_recognize_all_accounts
-    track_event(:one_account_recognize_all_accounts)
+  def one_account_recognize_all_profiles
+    track_event(:one_account_recognize_all_profiles)
   end
 
-  def one_account_unknown_account_detected
-    track_event(:one_account_unknown_account_detected)
+  def one_account_unknown_profile_detected
+    track_event(:one_account_unknown_profile_detected)
   end
 
   # Tracks when a sucessful openid authorization request is returned

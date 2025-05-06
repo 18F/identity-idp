@@ -13,11 +13,11 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def heading
-    I18n.t('multiple_accounts_detected.heading')
+    I18n.t('duplicate_profiles_detected.heading')
   end
 
   def intro
-    I18n.t('multiple_accounts_detected.intro', app_name: APP_NAME)
+    I18n.t('duplicate_profiles_detected.intro', app_name: APP_NAME)
   end
 
   def duplicate_profiles
@@ -37,17 +37,17 @@ class DuplicateProfilesDetectedPresenter
 
   def recognize_all_profiles
     if multiple_dupe_profiles?
-      I18n.t('multiple_accounts_detected.yes_many')
+      I18n.t('duplicate_profiles_detected.yes_many')
     else
-      I18n.t('multiple_accounts_detected.yes_single')
+      I18n.t('duplicate_profiles_detected.yes_single')
     end
   end
 
   def dont_recognize_some_profiles
     if multiple_dupe_profiles?
-      I18n.t('mutliple_accounts_detected.no_recognize_many')
+      I18n.t('duplicate_profiles_detected.no_recognize_many')
     else
-      I18n.t('mutliple_accounts_detected.no_recognize_single')
+      I18n.t('duplicate_profiles_detected.no_recognize_single')
     end
   end
 

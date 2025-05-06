@@ -735,6 +735,14 @@ doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
 doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: I do not recognize this account
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: 'Email not found'
 email_addresses.add.duplicate: This email address is already registered to your account.
 email_addresses.add.limit: You’ve added the maximum number of email addresses.
@@ -1464,14 +1472,6 @@ mfa.second_method_warning.link: Add a second authentication method.
 mfa.second_method_warning.text: You will have to delete your account and start over if you lose your only authentication method.
 mfa.skip: Skip for now
 mfa.webauthn_platform_message: Add another authentication method in case you lose access to your first one.
-multiple_accounts_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-multiple_accounts_detected.heading: We believe you may have another account
-multiple_accounts_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
-multiple_accounts_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-multiple_accounts_detected.yes_many: Yes, these are my accounts
-multiple_accounts_detected.yes_single: Yes, this is my account
-mutliple_accounts_detected.no_recognize_single: I do not recognize this account
-mutliple_accounts_detected.no_recognize_many: "I don't recognize these accounts"
 notices.account_reactivation: Great! You have your personal key.
 notices.authenticated_successfully: Authenticated successfully.
 notices.backup_codes_configured: Backup codes were added to your account.

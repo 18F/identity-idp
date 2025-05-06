@@ -76,7 +76,7 @@ module I18n
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
         { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
-        { key: /^multiple_accounts_detected\./, locales: %i[es fr zh] }, # This currently doesnt have translations but under feature toggle, will be addressed after initial english only launch
+        { key: /^duplicate_profiles_detected\./, locales: %i[es fr zh] }, # This currently doesnt have translations but under feature toggle, will be addressed after initial english only launch
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
