@@ -2,10 +2,7 @@ require 'rails_helper'
 require 'reporting/irs_verification_report'
 
 RSpec.describe Reporting::IrsVerificationReport do
-  let(:time_range) do
-    Time.zone.today.beginning_of_week(:sunday) - 7.days..
-      Time.zone.today.end_of_week(:saturday) - 7.days
-  end
+  let(:time_range) { previous_week_range }
   let(:issuers) { ['issuer1', 'issuer2'] }
   let(:mock_results) { [{ 'name' => 'IdV: doc auth welcome visited', 'user_id' => 'user1' }] }
 
@@ -15,13 +12,23 @@ RSpec.describe Reporting::IrsVerificationReport do
     allow_any_instance_of(Reporting::CloudwatchClient).to receive(:fetch).and_return(mock_results)
   end
 
+  def previous_week_range
+    one_week = 7.days
+    last_sunday = Time.zone.today.beginning_of_week(:sunday) - one_week
+    last_saturday = last_sunday + 6.days
+    last_sunday..last_saturday
+  end
+
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
       table = report.overview_table
 
+      # Dynamically calculate the expected "Report Generated" date
+      expected_generated_date = Time.zone.today.to_s
+
       expect(table).to include(
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', Time.zone.today.to_s],
+        ['Report Generated', expected_generated_date], # Dynamically match today's date
         ['Issuer', issuers.join(', ')],
       )
     end
@@ -54,9 +61,10 @@ RSpec.describe Reporting::IrsVerificationReport do
       csvs = report.to_csvs
 
       expect(csvs).to be_an(Array)
-      expect(csvs.size).to eq(2) # One for each table
+      expect(csvs.size).to eq(3) # One for each table
       expect(csvs.first).to include('Report Timeframe')
-      expect(csvs.last).to include('Metric,Count,Rate')
+      expect(csvs[1]).to include('Metric,Count,Rate')
+      expect(csvs.last).to include('Metric,Definition')
     end
   end
 end
