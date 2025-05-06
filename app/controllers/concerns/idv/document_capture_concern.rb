@@ -60,6 +60,14 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
+    def upload_enabled?
+      !resolved_authn_context_result.facial_match? || !upload_disabled_bucket
+    end
+
+    def upload_disabled_bucket
+      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled
+    end
+
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
