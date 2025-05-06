@@ -258,7 +258,7 @@ class ApplicationController < ActionController::Base
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
-    return multiple_accounts_detected_url if user_multiple_accounts_detected?
+    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
@@ -520,7 +520,7 @@ class ApplicationController < ActionController::Base
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
   end
 
-  def user_multiple_accounts_detected?
+  def user_duplicate_profiles_detected?
     return false unless sp_eligible_for_one_account?
     profile = current_user&.active_profile
     DuplicateProfileConfirmation.where(

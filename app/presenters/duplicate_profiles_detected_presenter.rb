@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MultipleAccountsDetectedPresenter
+class DuplicateProfilesDetectedPresenter
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user, :dupe_profile_confirmation
@@ -20,7 +20,7 @@ class MultipleAccountsDetectedPresenter
     I18n.t('multiple_accounts_detected.intro', app_name: APP_NAME)
   end
 
-  def other_accounts_detected
+  def duplicate_profiles
     profile_ids = dupe_profile_confirmation.duplicate_profile_ids
 
     profiles = Profile.where(id: profile_ids)
@@ -35,7 +35,7 @@ class MultipleAccountsDetectedPresenter
     end
   end
 
-  def recognize_all_accounts
+  def recognize_all_profiles
     if multiple_dupe_profiles?
       I18n.t('multiple_accounts_detected.yes_many')
     else
@@ -43,7 +43,7 @@ class MultipleAccountsDetectedPresenter
     end
   end
 
-  def dont_recognize_some_accounts
+  def dont_recognize_some_profiles
     if multiple_dupe_profiles?
       I18n.t('mutliple_accounts_detected.no_recognize_many')
     else

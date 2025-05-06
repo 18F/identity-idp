@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MultipleAccountsDetectedPresenter do
+RSpec.describe DuplicateProfilesDetectedPresenter do
   let(:user) { create(:user, :proofed_with_selfie) }
   let(:presenter) { described_class.new(user: user) }
   let(:profile2) { create(:profile, :facial_match_proof) }

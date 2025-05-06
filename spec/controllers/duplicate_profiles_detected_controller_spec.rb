@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MultipleAccountsDetectedController, type: :controller do
+RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   let(:user) { create(:user, :proofed_with_selfie) }
   let(:profile2) { create(:profile, :facial_match_proof) }
 
@@ -33,8 +33,8 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
         expect(response).to render_template(:show)
       end
 
-      it 'initializes the MultipleAccountsDetectedPresenter' do
-        expect(MultipleAccountsDetectedPresenter).to receive(:new).with(user: user)
+      it 'initializes the DuplicateProfilesDetectedPresenter' do
+        expect(DuplicateProfilesDetectedPresenter).to receive(:new).with(user: user)
         get :show
       end
 
@@ -48,7 +48,7 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
     end
   end
 
-  describe '#do_not_recognize' do
+  describe '#do_not_recognize_profiles' do
     before do
       @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
         profile_id: user.active_profile.id,
@@ -58,7 +58,7 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
     end
 
     it 'logs an event' do
-      post :do_not_recognize
+      post :do_not_recognize_profiles
 
       expect(@analytics).to have_logged_event(
         :one_account_unknown_account_detected,
@@ -66,13 +66,13 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
     end
 
     it 'marks some accounts as not recognized' do
-      post :do_not_recognize
+      post :do_not_recognize_profiles
       @dupe_profile_confirmation.reload
       expect(@dupe_profile_confirmation.confirmed_all).to eq(false)
     end
   end
 
-  describe '#recognize_accounts' do
+  describe '#recognize_all_profiles' do
     before do
       @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
         profile_id: user.active_profile.id,
@@ -82,12 +82,12 @@ RSpec.describe MultipleAccountsDetectedController, type: :controller do
     end
 
     it 'logs an analytics event' do
-      post :recognize_accounts
+      post :recognize_all_profiles
       expect(@analytics).to have_logged_event
     end
 
-    it 'marks all accounts as recognized' do
-      post :recognize_accounts
+    it 'marks profile dupe confirmation as recognized' do
+      post :recognize_all_profiles
 
       @dupe_profile_confirmation.reload
 
