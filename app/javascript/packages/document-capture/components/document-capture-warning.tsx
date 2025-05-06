@@ -137,6 +137,7 @@ function DocumentCaptureWarning({
             isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
+            isPassportError={passportError}
           />
         </div>
         <p>

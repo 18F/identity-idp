@@ -93,8 +93,8 @@ function GeneralError({
       </p>
     );
   }
-  if ((err && err?.field === 'passport') || isPassportError) {
-    return <p key={err?.message}>{t('doc_auth.info.review_passport')}</p>;
+  if (isPassportError) {
+    return <p>{t('doc_auth.info.review_passport')}</p>;
   }
   if (err && !hasDismissed) {
     return <p key={err.message}>{err.message}</p>;
