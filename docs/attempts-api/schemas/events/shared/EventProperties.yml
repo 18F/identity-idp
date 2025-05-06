@@ -10,9 +10,12 @@ properties:
   device_fingerprint:
     type: string
     description: Hashed cookie device UUID
+  language:
+    type: string
+    description: The locale set by the user.
   occurred_at:
-    type: integer
-    format: int64
+    type: float
+    format: float64
     description: The time when the event occurred.
   subject:
     $ref: './Subject.yml'
