@@ -21,7 +21,7 @@ RSpec.describe Idv::PersonalKeyController do
       state_id_expiration
       state_id_issued
       state_id_number
-      state_id_type
+      id_doc_type
       issuing_country_code
     ]
 

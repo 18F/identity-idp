@@ -163,7 +163,7 @@ module Idv
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
-      response.extra[:state_id_type] = pii_hash[:state_id_type]
+      response.extra[:id_doc_type] = pii_hash[:id_doc_type]
       response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
@@ -216,7 +216,7 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      id_type = client_response.pii_from_doc.state_id_type
+      id_type = client_response.pii_from_doc.id_doc_type
       unless id_type == 'passport'
         return DocAuth::Response.new(
           success: false,

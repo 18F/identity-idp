@@ -545,7 +545,7 @@ RSpec.describe Idv::ImageUploadsController do
           doc_auth_result: 'Passed',
           state: 'MT',
           country: 'US',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -598,7 +598,7 @@ RSpec.describe Idv::ImageUploadsController do
         let(:last_name) { 'MCFAKERSON' }
         let(:address1) { '123 Houston Ave' }
         let(:state) { 'ND' }
-        let(:state_id_type) { 'drivers_license' }
+        let(:id_doc_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
         let(:state_id_expiration) { Time.zone.today.to_s }
         let(:jurisdiction) { 'ND' }
@@ -633,7 +633,7 @@ RSpec.describe Idv::ImageUploadsController do
                 name_suffix: nil,
                 address1: address1,
                 state: state,
-                state_id_type: state_id_type,
+                id_doc_type: id_doc_type,
                 dob: dob,
                 sex: nil,
                 height: nil,
@@ -682,7 +682,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -762,7 +762,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'Maryland',
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -842,7 +842,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -919,7 +919,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -995,7 +995,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,

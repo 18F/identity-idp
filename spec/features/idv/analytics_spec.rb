@@ -77,7 +77,7 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:state_id_resolution_with_id_type) do
-    state_id_resolution.merge(state_id_type: 'drivers_license')
+    state_id_resolution.merge(id_doc_type: 'drivers_license')
   end
 
   let(:resolution_block) do

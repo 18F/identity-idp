@@ -8,7 +8,7 @@ RSpec.describe Proofing::Aamva::Proofer do
     {
       state_id_number: '1234567890',
       state_id_jurisdiction: 'VA',
-      state_id_type: 'drivers_license',
+      id_doc_type: 'drivers_license',
       state_id_issued: '2024-05-06',
       state_id_expiration: '2034-10-29',
     }
@@ -316,8 +316,8 @@ RSpec.describe Proofing::Aamva::Proofer do
         end
       end
 
-      describe '#state_id_type' do
-        let(:attribute) { :state_id_type }
+      describe '#id_doc_type' do
+        let(:attribute) { :id_doc_type }
         let(:match_indicator_name) { 'DocumentCategoryMatchIndicator' }
 
         when_unverified do
@@ -488,7 +488,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_issued
             state_id_expiration
             state_id_number
-            state_id_type
+            id_doc_type
             last_name
             first_name
             middle_name
@@ -510,7 +510,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_issued: 1,
             state_id_expiration: 1,
             state_id_number: 1,
-            state_id_type: 1,
+            id_doc_type: 1,
             state_id_jurisdiction: 1,
             last_name: 1,
             first_name: 1,
@@ -550,7 +550,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             last_name
             first_name
             middle_name
@@ -573,7 +573,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_issued: 1,
             state_id_jurisdiction: 1,
             state_id_number: 1,
-            state_id_type: 1,
+            id_doc_type: 1,
             last_name: 1,
             first_name: 1,
             middle_name: 1,
@@ -611,7 +611,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             last_name
             first_name
             middle_name
@@ -633,7 +633,7 @@ RSpec.describe Proofing::Aamva::Proofer do
             state_id_issued: 1,
             state_id_jurisdiction: 1,
             state_id_number: 1,
-            state_id_type: 1,
+            id_doc_type: 1,
             last_name: 1,
             first_name: 1,
             middle_name: 1,

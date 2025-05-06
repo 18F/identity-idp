@@ -123,7 +123,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -218,7 +218,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -283,7 +283,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         expect(result[:success]).to be false
         expect(result[:errors]).to include(
-          :state_id_number, :state_id_type, :dob, :last_name, :first_name, :address1, :address2,
+          :state_id_number, :id_doc_type, :dob, :last_name, :first_name, :address1, :address2,
           :city, :state, :zipcode
         )
         expect(result[:exception]).to be_nil
@@ -293,7 +293,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
         expect(result_context_stages_state_id[:success]).to eq(false)
         expect(result_context_stages_state_id[:errors]).to include(
-          :state_id_number, :state_id_type, :dob, :last_name, :first_name, :address1, :address2,
+          :state_id_number, :id_doc_type, :dob, :last_name, :first_name, :address1, :address2,
           :city, :state, :zipcode
         )
         expect(result_context_stages_state_id[:exception]).to eq(nil)
@@ -454,7 +454,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -612,7 +612,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                     state_id_expiration: '2099-12-31',
                     state_id_issued: '2019-12-31',
                     state_id_number: '1111111111111',
-                    state_id_type: 'drivers_license',
+                    id_doc_type: 'drivers_license',
                   },
                 )
               end,

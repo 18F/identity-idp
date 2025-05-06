@@ -26,7 +26,7 @@ module Proofing
       self::StateIdData = RedactedStruct.new(
         :state_id_number,
         :state_id_jurisdiction,
-        :state_id_type,
+        :id_doc_type,
         :state_id_issued,
         :state_id_expiration,
         keyword_init: true,
@@ -50,7 +50,7 @@ module Proofing
       # @option applicant [String, nil] :zipcode
       # @option applicant [String, nil] :state_id_number
       # @option applicant [String, nil] :state_id_jurisdiction
-      # @option applicant [String, nil] :state_id_type
+      # @option applicant [String, nil] :id_doc_type
       # @option applicant [String, nil] :state_id_issued
       # @option applicant [String, nil] :state_id_expiration
       # @return [Applicant]
@@ -98,7 +98,7 @@ module Proofing
         self::StateIdData.new(
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
-          state_id_type: applicant[:state_id_type],
+          id_doc_type: applicant[:id_doc_type],
           state_id_issued: applicant[:state_id_issued],
           state_id_expiration: applicant[:state_id_expiration],
         )
