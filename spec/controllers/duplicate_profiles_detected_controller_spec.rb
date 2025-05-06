@@ -61,7 +61,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       post :do_not_recognize_profiles
 
       expect(@analytics).to have_logged_event(
-        :one_account_unknown_account_detected,
+        :one_account_unknown_profile_detected,
       )
     end
 

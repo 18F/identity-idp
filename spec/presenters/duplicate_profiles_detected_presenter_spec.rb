@@ -80,14 +80,14 @@ RSpec.describe DuplicateProfilesDetectedPresenter do
 
       it 'should return multiple text' do
         expect(presenter.dont_recognize_some_profiles)
-          .to eq(I18n.t('mutliple_accounts_detected.no_recognize_many'))
+          .to eq(I18n.t('duplicate_profiles_detected.no_recognize_many'))
       end
     end
 
     context 'when a single duplicate profiles were found for user' do
       it 'should return singular text' do
         expect(presenter.dont_recognize_some_profiles)
-          .to eq(I18n.t('mutliple_accounts_detected.no_recognize_single'))
+          .to eq(I18n.t('duplicate_profiles_detected.no_recognize_single'))
       end
     end
   end
