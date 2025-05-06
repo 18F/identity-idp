@@ -440,7 +440,7 @@ RSpec.describe AbTests do
     let(:enable_ab_test) do
       -> {
         allow(IdentityConfig.store)
-          .to receive(:doc_auth_manual_upload_disabled_a_b_testing)
+          .to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
           .and_return(true)
         allow(IdentityConfig.store)
           .to receive(:doc_auth_manual_upload_disabled_a_b_testing_percent)
@@ -450,7 +450,7 @@ RSpec.describe AbTests do
 
     let(:disable_ab_test) do
       -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_manual_upload_disabled_a_b_testing)
+        allow(IdentityConfig.store).to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
           .and_return(false)
       }
     end

@@ -136,7 +136,7 @@ module AbTests
     ],
     buckets: {
       manual_upload_disabled:
-        IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing ?
+        IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_enabled ?
         IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
