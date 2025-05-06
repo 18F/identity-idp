@@ -11,6 +11,7 @@ interface GeneralErrorProps extends ComponentProps<'p'> {
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
+  isPassportError?: boolean;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -45,6 +46,7 @@ function GeneralError({
   isFailedDocType = false,
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
+  isPassportError = false,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
@@ -90,6 +92,9 @@ function GeneralError({
         )}
       </p>
     );
+  }
+  if ((err && err?.field === 'passport') || isPassportError) {
+    return <p key={err?.message}>{t('doc_auth.info.review_passport')}</p>;
   }
   if (err && !hasDismissed) {
     return <p key={err.message}>{err.message}</p>;
