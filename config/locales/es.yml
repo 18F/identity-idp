@@ -1290,6 +1290,8 @@ in_person_proofing.body.location.distance.other: A %{count} millas de distancia
 in_person_proofing.body.location.heading: Información de la oficina de correos
 in_person_proofing.body.location.info: No necesita hacer una cita para verificar su identidad.
 in_person_proofing.body.location.location_button: Seleccionar
+in_person_proofing.body.location.location_skipped_notice: No necesita hacer una cita para verificar su identidad. Puede visitar cualquier oficina de correos participante, pero debe buscarla antes de acudir a ella para confirmar que sea una oficina participante.
+in_person_proofing.body.location.location_skipped_notice_button_text: Buscar una oficina de correos
 in_person_proofing.body.location.po_search.address_label: Dirección
 in_person_proofing.body.location.po_search.address_search_label: Introduzca una dirección para buscar una oficina de correos cercana.
 in_person_proofing.body.location.po_search.city_label: Ciudad
