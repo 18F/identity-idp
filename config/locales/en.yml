@@ -1269,6 +1269,7 @@ in_person_proofing.body.location.distance.other: '%{count} miles away'
 in_person_proofing.body.location.heading: Post Office information
 in_person_proofing.body.location.info: No appointment is needed to verify your identity.
 in_person_proofing.body.location.location_button: Select
+in_person_proofing.body.location.location_skipped_notice_html: No appointment is needed to verify your identity. You can visit any participating Post Office but you <strong>must search for a location before visiting<strong> to confirm it is participating.
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City

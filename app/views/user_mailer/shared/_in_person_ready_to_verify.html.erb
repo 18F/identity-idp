@@ -14,6 +14,10 @@
   </h1>
 <% end %>
 
+<% if @presenter.location_search_skipped? %>
+  <%= render 'shared/location_search_skipped_notice' %>
+<% env %>
+
 <%# Tag for GSA Enhanced Pilot Barcode %>
 <% if @presenter.enhanced_ipp? %>
   <div class="text-center margin-y-4">
