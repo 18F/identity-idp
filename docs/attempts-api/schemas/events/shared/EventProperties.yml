@@ -14,7 +14,7 @@ properties:
     type: string
     description: The locale set by the user.
   occurred_at:
-    type: float
+    type: number
     format: float64
     description: The time when the event occurred.
   subject:
