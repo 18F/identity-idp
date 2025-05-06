@@ -83,8 +83,10 @@
   <%= f.submit @presenter.update_or_continue_button, class: 'display-block margin-y-5' %>
 <% end %>
 
-<% if @presenter.back_button? %>
-  <%= render 'idv/shared/back', step: 'verify' %>
+<% if @presenter.address_update_request %>
+  <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_verify_info_path %>
+<% elsif @presenter.gpo_letter_requested %>
+  <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_request_letter_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'verify' %>
 <% end %>

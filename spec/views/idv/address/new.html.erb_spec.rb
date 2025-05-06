@@ -24,10 +24,12 @@ RSpec.describe 'idv/address/new' do
         expect(parsed_page).to have_content(t('doc_auth.headings.mailing_address'))
         expect(parsed_page).to have_content(t('doc_auth.info.mailing_address'))
         expect(parsed_page).to have_content(t('forms.buttons.continue'))
+        expect(parsed_page).to have_link(t('forms.buttons.back'), href: idv_request_letter_path)
       elsif address_update_request
         expect(parsed_page).to have_content(t('doc_auth.headings.address_update'))
         expect(parsed_page).to have_content(t('doc_auth.info.address'))
         expect(parsed_page).to have_content(t('forms.buttons.submit.update'))
+        expect(parsed_page).to have_link(t('forms.buttons.back'), href: idv_verify_info_path)
       else
         expect(parsed_page).to have_content(t('doc_auth.headings.address'))
         expect(parsed_page).to have_content(t('doc_auth.info.address'))
