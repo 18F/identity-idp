@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(
-      user: user,
+      attempts_api_tracker:,
+      user:,
       pii: applicant,
       resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
       otp: entered_otp,
     )
   end
 
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { create(:user, :fully_registered) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:entered_otp) { otp }
@@ -151,6 +153,11 @@ RSpec.describe GpoVerifyForm do
           expect(result.extra).to include(fraud_check_failed: true)
         end
 
+        it 'does not track an enrollment event' do
+          expect(attempts_api_tracker).not_to receive(:idv_enrollment_complete)
+          subject.submit
+        end
+
         context 'threatmetrix is not required for verification' do
           before do
             allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
@@ -171,6 +178,20 @@ RSpec.describe GpoVerifyForm do
           it 'notes that threatmetrix failed' do
             result = subject.submit
             expect(result.extra).to include(fraud_check_failed: true)
+          end
+
+          it 'tracks an enrollment event' do
+            expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+            subject.submit
+          end
+
+          context 'the user has proofed before' do
+            before { create(:profile, :deactivated, user:) }
+
+            it 'tracks an enrollment event with reproof set to true' do
+              expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
+              subject.submit
+            end
           end
         end
       end
@@ -216,6 +237,11 @@ RSpec.describe GpoVerifyForm do
           expect(result.to_h[:which_letter]).to eq(1)
           expect(result.to_h[:letter_count]).to eq(3)
         end
+
+        it 'tracks an enrollment event' do
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+          subject.submit
+        end
       end
 
       context 'entered second code' do
@@ -227,6 +253,11 @@ RSpec.describe GpoVerifyForm do
           expect(result.to_h[:which_letter]).to eq(2)
           expect(result.to_h[:letter_count]).to eq(3)
         end
+
+        it 'tracks an enrollment event' do
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+          subject.submit
+        end
       end
 
       context 'entered third code' do
@@ -237,6 +268,11 @@ RSpec.describe GpoVerifyForm do
 
           expect(result.to_h[:which_letter]).to eq(3)
           expect(result.to_h[:letter_count]).to eq(3)
+        end
+
+        it 'tracks an enrollment event' do
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+          subject.submit
         end
       end
     end

@@ -61,6 +61,7 @@ module Idv
           issuer: current_sp&.issuer,
           doc_auth_result: document_capture_session&.last_doc_auth_result,
           sponsor_id: enrollment_sponsor_id,
+          document_type: nil,
         )
 
         render json: { success: true }, status: :ok

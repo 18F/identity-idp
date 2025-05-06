@@ -237,9 +237,11 @@ RSpec.describe ActionAccount do
       let(:user_without_profile) { create(:user) }
 
       let(:analytics) { FakeAnalytics.new }
+      let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
       before do
         allow(Analytics).to receive(:new).and_return(analytics)
+        allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
       end
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
@@ -251,6 +253,7 @@ RSpec.describe ActionAccount do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
           profile: user.pending_profile,
         )
+        expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
 
         profile_fraud_review_pending_at = user.pending_profile.fraud_review_pending_at
 
@@ -284,6 +287,15 @@ RSpec.describe ActionAccount do
           success: false,
           errors: { message: 'Error: Could not find user with that UUID' },
         )
+      end
+
+      context 'when a user has proofed before' do
+        before { create(:profile, :deactivated, user:) }
+
+        it 'creates idv_enrollment_completed_event with reproof set to true' do
+          expect(attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
+          result
+        end
       end
 
       context 'when the user has a pending review from an IPP enrollment' do

@@ -3,6 +3,7 @@
 module Idv
   class InPersonController < ApplicationController
     include Idv::AvailabilityConcern
+    include Idv::ChooseIdTypeConcern
     include RenderConditionConcern
     include IdvStepConcern
 
@@ -14,7 +15,7 @@ module Idv
     before_action :set_usps_form_presenter
 
     def index
-      if idv_session.in_person_passports_allowed?
+      if in_person_passports_allowed?
         redirect_to idv_in_person_choose_id_type_url
       else
         redirect_to idv_in_person_state_id_url
@@ -22,7 +23,7 @@ module Idv
     end
 
     def update
-      if idv_session.in_person_passports_allowed?
+      if in_person_passports_allowed?
         redirect_to idv_in_person_choose_id_type_url
       else
         redirect_to idv_in_person_state_id_url
