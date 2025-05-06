@@ -21,7 +21,7 @@
 
 <% if @presenter.location_search_skipped? %>
   <%= render 'shared/location_search_skipped_notice' %>
-<% env %>
+<% end %>
 
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= @presenter.barcode_heading_text %>
