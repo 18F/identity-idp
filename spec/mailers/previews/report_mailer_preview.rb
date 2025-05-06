@@ -143,6 +143,21 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def irs_monthly_credentials_report
+    irs_monthly_credentials_report = Reports::IRSMonthlyCredMetrics.new(Time.zone.yesterday)
+
+    #stub_cloudwatch_client(monthly_key_metrics_report.proofing_rate_report)
+    #stub_cloudwatch_client(monthly_key_metrics_report.monthly_idv_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example Credentials Report - #{Time.zone.now.to_date}",
+      message: monthly_key_metrics_report.preamble,
+      attachment_format: :xlsx,
+      reports: monthly_key_metrics_report.reports,
+    )
+  end
+
   private
 
   class FakeCloudwatchClient
@@ -167,3 +182,4 @@ class ReportMailerPreview < ActionMailer::Preview
     report
   end
 end
+

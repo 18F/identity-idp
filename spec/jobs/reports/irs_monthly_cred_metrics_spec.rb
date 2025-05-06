@@ -11,9 +11,8 @@ RSpec.describe Reports::IRSMonthlyCredMetrics do
   
   describe '#perform' do
     it 'is empty with no data' do
-      
+
       csv = CSV.parse(report.perform(Time.zone.today), headers: true)
-      binding.pry
       expect(csv).to be_empty
     end
 

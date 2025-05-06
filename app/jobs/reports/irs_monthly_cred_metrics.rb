@@ -8,31 +8,76 @@ require 'reporting/credential_report'
 module Reports
   class IRSMonthlyCredMetrics < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
-    
 
-    def perform(_date)
+    def perform(_date = Time.zone.yesterday.end_of_day)
       return unless IdentityConfig.store.s3_reports_enabled
-      iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 30.days.ago }
+      
+      issuers = Agreements::PartnerAccount.find_by(name: "IRS")&.iaa_gtcs&.flat_map(&:service_providers)&.map(&:issuer)&.compact || []
+      iaas = IaaReportingHelper.iaas.filter do |x|
+        x.end_date > 90.days.ago && (x.issuers & issuers).any?
+      end
+      #iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, _date)
       #save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
       subject = "IRS Monthly Credential Metrics"
-      # last_month_start = Date.today.last_month.beginning_of_month
-      # last_month_end = Date.today.last_month.end_of_month
-      #time_range = (last_month_start..last_month_end)
-      binding.pry
-      report_configs.each do |report_hash|
-        reports = monthly_credentials_emailable_reports(report_hash['issuers'], _date)
-        report_hash['emails'].each do |email|s
-          ReportMailer.tables_report(
-            email: email,
-            subject: subject,
-            message: message,
-            reports: reports,
-            attachment_format: :csv,
-          ).deliver_now
-        end
+
+      email_addresses = emails.select(&:present?)
+      issuer = issuers.select(&:present?)
+      #issuers = Agreements::PartnerAccount.find_by(name: "IRS").iaa_gtcs.flat_map(&:service_providers).map(&:issuer)
+      
+
+      #report_configs.each do |report_hash|
+        # Check if any emails are found
+      if email_addresses.empty?
+        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+        return false
       end
+      binding.pry
+      report = as_emailable_reports(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: _date).first
+      upload_to_s3(report.table, _date, report_name: REPORT_NAME)
+
+      ReportMailer.tables_report(
+        email: email_addresses,
+        subject: subject,
+        message: message,
+        reports: report,
+        attachment_format: :csv,
+      )
+        #end
+     # end
+    end
+
+    def as_emailable_reports(iaas:, partner_accounts:, date:)
+      [
+        Reporting::EmailableReport.new(
+          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: build_csv(iaas, partner_accounts, date),
+          filename: 'irs_cred_metrics',
+        )
+      ]
+    end
+
+    # @return [String]
+    def preamble(env: Identity::Hostdata.env || 'local')
+      ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
+        <% if env != 'prod' %>
+          <div class="usa-alert usa-alert--info usa-alert--email">
+            <div class="usa-alert__body">
+              <%#
+                NOTE: our AlertComponent doesn't support heading content like this uses,
+                so for a one-off outside the Rails pipeline it was easier to inline the HTML here.
+              %>
+              <h2 class="usa-alert__heading">
+                Non-Production Report
+              </h2>
+              <p class="usa-alert__text">
+                This was generated in the <strong><%= env %></strong> environment.
+              </p>
+            </div>
+          </div>
+        <% end %>
+      ERB
     end
 
     # @param [Array<IaaReportingHelper::IaaConfig>] iaas
@@ -115,13 +160,10 @@ module Reports
           'partner',
           'iaa_start_date',
           'iaa_end_date',
-
           'issuer',
           'friendly_name',
-
           'year_month',
           'year_month_readable',
-
           'credentials_authorized_requesting_agency',
           'new_identity_verification_credentials_authorized_for_partner',
           'existing_identity_verification_credentials_authorized_for_partner',
@@ -214,6 +256,37 @@ module Reports
         issuers:,
         time_range: _date.all_month.begin.beginning_of_day.._date.all_month.end.end_of_day,
       ).as_emailable_reports
+    end
+
+
+
+    def issuers
+      [*IdentityConfig.store.irs_credentials_issuers]
+    end
+
+    def emails
+      [*IdentityConfig.store.irs_credentials_emails]
+    end
+
+    # def emails
+    #   emails = [*IdentityConfig.store.irs_monthly_cred_metrics_emails]
+    #   if report_date.next_day.day == 1
+    #     emails += IdentityConfig.store.team_all_login_emails
+    #   end
+    #   emails
+    # end
+
+    def upload_to_s3(report_body,report_date,  report_name: nil)
+      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
+
+      if bucket_name.present?
+        upload_file_to_s3_bucket(
+          path: path,
+          body: csv_file(report_body),
+          content_type: 'text/csv',
+          bucket: bucket_name,
+        )
+      end
     end
 
     def report_configs
