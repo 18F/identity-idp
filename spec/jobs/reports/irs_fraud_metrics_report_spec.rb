@@ -32,7 +32,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   let(:mock_identity_verification_lg99_data) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraud Rules Catch Rate', 5, time_range.begin.to_s,
+      ['Fraud Rules Catch Count', 5, time_range.begin.to_s,
        time_range.end.to_s],
     ]
   end

@@ -85,7 +85,7 @@ module Reporting
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
-        ['Fraud Rules Catch Rate', 'Count',
+        ['Fraud Rules Catch Count', 'Count',
          'The count of unique accounts flagged for fraud review.'],
         ['Fraudulent credentials disabled', 'Count',
          'The count of unique accounts suspended due to ' + '
@@ -108,7 +108,7 @@ module Reporting
     def lg99_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Fraud Rules Catch Rate', lg99_unique_users_count.to_s, time_range.begin.to_s,
+        ['Fraud Rules Catch Count', lg99_unique_users_count.to_s, time_range.begin.to_s,
          time_range.end.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err

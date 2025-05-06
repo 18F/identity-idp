@@ -7,7 +7,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
-      ['Fraud Rules Catch Rate', 'Count',
+      ['Fraud Rules Catch Count', 'Count',
        'The count of unique accounts flagged for fraud review.'],
       ['Fraudulent credentials disabled', 'Count',
        'The count of unique accounts suspended due to ' + '
@@ -27,7 +27,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraud Rules Catch Rate', '5', time_range.begin.to_s,
+      ['Fraud Rules Catch Count', '5', time_range.begin.to_s,
        time_range.end.to_s],
     ]
   end
