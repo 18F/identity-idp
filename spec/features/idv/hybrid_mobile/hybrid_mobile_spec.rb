@@ -403,7 +403,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             submit_images
             expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
             expect_to_try_again
-            expect(page).to have_current_path(idv_document_capture_url)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
             expect_rate_limit_warning(max_attempts - 1)
           end
         end
