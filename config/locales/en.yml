@@ -1947,7 +1947,11 @@ user_mailer.in_person_failed.body.without_cta: Please try verifying your identit
 user_mailer.in_person_failed.intro: Your identity could not be verified at the %{location} Post Office on %{date}.
 user_mailer.in_person_failed.subject: Your identity could not be verified in person
 user_mailer.in_person_failed.verifying_identity: 'When verifying your identity:'
+user_mailer.in_person_failed.verifying_identity_passports_enabled: 'If you decide to try verifying your identity again:'
 user_mailer.in_person_failed.verifying_step_not_expired: Your state‑issued ID or driver’s license must not be expired. We do not currently accept any other forms of identification, such as passports and military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb1: Your ID document must not be expired.
+user_mailer.in_person_failed.verifying_step_passports_enabledb2: We only accept a state ID or U.S. passport book. We do not accept military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb3_html: You must bring the <strong>same</strong> ID document to the Post Office that you used on %{app_name} to create a barcode.
 user_mailer.in_person_ready_to_verify_reminder.greeting: Hello,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: You have %{count} day left to verify your identity in person
 user_mailer.in_person_ready_to_verify_reminder.heading.other: You have %{count} days left to verify your identity in person

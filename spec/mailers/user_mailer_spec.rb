@@ -1285,6 +1285,61 @@ RSpec.describe UserMailer, type: :mailer do
           mail.deliver_later
         end
       end
+
+      context 'when passports are enabled globally and for in-person proofing' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+        end
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed(
+            enrollment: enrollment,
+            visited_location_name: visited_location_name,
+          )
+        end
+
+        it 'renders passport related content' do
+          expect(mail.html_part.body)
+            .to have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+              ),
+            )
+          expect(mail.html_part.body)
+            .to_not have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_not_expired',
+              ),
+            )
+        end
+      end
+
+      context 'when passports are not enabled globally or for in-person proofing' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+        end
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed(
+            enrollment: enrollment,
+            visited_location_name: visited_location_name,
+          )
+        end
+        it 'renders only state id related content' do
+          expect(mail.html_part.body)
+            .to_not have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+              ),
+            )
+          expect(mail.html_part.body)
+            .to have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_not_expired',
+              ),
+            )
+        end
+      end
     end
 
     describe '#in_person_failed_fraud' do
