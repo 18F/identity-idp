@@ -1285,7 +1285,7 @@ in_person_proofing.body.location.po_search.state_label: State
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Please continue verifying your identity. You can use our <a target="_blank" href="%{link_url}"></a> to search for a participating location after you generate a barcode.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Sorry, we ran into technical difficulties and couldn’t search for a participating Post Office.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Help Center
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: Image of a map pin
 in_person_proofing.body.location.po_search.zipcode_label: ZIP Code
 in_person_proofing.body.location.retail_hours_heading: Retail Hours
 in_person_proofing.body.location.retail_hours_sat: 'Sat:'

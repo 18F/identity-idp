@@ -73,7 +73,6 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
-        { key: 'in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text' },
         { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
