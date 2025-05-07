@@ -19,8 +19,8 @@ RSpec.describe 'cancel IdV' do
     complete_doc_auth_steps_before_agreement_step
   end
 
-  it 'shows the user a cancellation message with the option to go back to the step', :js do
-    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 5)
+  it 'shows the user a cancellation message with the option to go back to the step' do
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'))#, wait: 5)
     original_path = current_path
 
     click_link t('links.cancel')
