@@ -185,7 +185,12 @@ idv_resolution_alternate_vendor_percent: 0
 idv_resolution_default_vendor: mock
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_socure_docv_flow_license_only: ''
+idv_socure_docv_flow_license_w_selfie: ''
 idv_socure_reason_code_download_enabled: false
+idv_socure_selfie_status_pass_reason_codes: '[]'
+idv_socure_selfie_status_fail_reason_codes: '[]'
+idv_socure_selfie_status_not_processed_reason_codes: '[]'
 idv_socure_shadow_mode_enabled: false
 idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false

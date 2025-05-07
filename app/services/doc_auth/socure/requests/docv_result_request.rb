@@ -4,16 +4,16 @@ module DocAuth
   module Socure
     module Requests
       class DocvResultRequest < DocAuth::Socure::Request
-        attr_reader :document_capture_session_uuid, :biometric_comparison_required
+        attr_reader :document_capture_session_uuid #, :biometric_comparison_required
 
         def initialize(
           document_capture_session_uuid:,
-          docv_transaction_token_override: nil,
-          biometric_comparison_required: false
+          docv_transaction_token_override: nil#,
+          # biometric_comparison_required: false
         )
           @document_capture_session_uuid = document_capture_session_uuid
           @docv_transaction_token_override = docv_transaction_token_override
-          @biometric_comparison_required = biometric_comparison_required
+          # @biometric_comparison_required = biometric_comparison_required
         end
 
         private
@@ -28,7 +28,7 @@ module DocAuth
         def handle_http_response(http_response)
           DocAuth::Socure::Responses::DocvResultResponse.new(
             http_response: http_response,
-            biometric_comparison_required: biometric_comparison_required,
+            # biometric_comparison_required: biometric_comparison_required,
           )
         end
 
