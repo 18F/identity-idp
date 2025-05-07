@@ -30,7 +30,7 @@ module Idv
       end
 
       def location_search_skipped?
-        enrollment.selected_location_details
+        enrollment.selected_location_details.nil?
       end
 
       def selected_location_hours(prefix)
