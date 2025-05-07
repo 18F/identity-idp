@@ -272,6 +272,55 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_content('invalid MRZ')
         expect_to_try_again
         expect(page).to have_content('invalid MRZ')
+        expect_rate_limit_warning(max_attempts - 1)
+      end
+    end
+
+    context 'with a network error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        )
+      end
+      before do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_passport_image,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+          ),
+        )
+      end
+
+      it 'shows the error message' do
+        choose_id_type(:passport)
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).to have_content(t('doc_auth.errors.general.network_error'))
+        expect_rate_limit_warning(max_attempts - 1)
+      end
+    end
+
+    context 'pii validation error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_pii_credentials.yml'
+        )
+      end
+
+      it 'fails pii check' do
+        choose_id_type(:passport)
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect_to_try_again
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect_rate_limit_warning(max_attempts - 1)
       end
     end
   end
@@ -789,16 +838,6 @@ RSpec.feature 'document capture step', :js do
   def expect_review_issues_body_message(translation_key)
     review_issues_body_message = strip_tags(t(translation_key))
     expect(page).to have_content(review_issues_body_message)
-  end
-
-  def expect_rate_limit_warning(expected_remaining_attempts)
-    review_issues_rate_limit_warning = strip_tags(
-      t(
-        'idv.failure.attempts_html',
-        count: expected_remaining_attempts,
-      ),
-    )
-    expect(page).to have_content(review_issues_rate_limit_warning)
   end
 
   def expect_resubmit_page_h1_copy

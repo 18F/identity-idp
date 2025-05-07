@@ -777,16 +777,6 @@ RSpec.feature 'document capture step', :js do
     expect(page).to have_content(review_issues_body_message)
   end
 
-  def expect_rate_limit_warning(expected_remaining_attempts)
-    review_issues_rate_limit_warning = strip_tags(
-      t(
-        'idv.failure.attempts_html',
-        count: expected_remaining_attempts,
-      ),
-    )
-    expect(page).to have_content(review_issues_rate_limit_warning)
-  end
-
   def expect_resubmit_page_h1_copy
     resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
     expect(page).to have_content(resubmit_page_h1_copy)
