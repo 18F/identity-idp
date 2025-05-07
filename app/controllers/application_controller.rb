@@ -530,8 +530,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_eligible_for_one_account?
-    sp_from_sp_session.present? &&
-      IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
+    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
   end
 
   def handle_banned_user
