@@ -26,9 +26,10 @@ class DuplicateProfilesDetectedPresenter
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|
       dupe_user = profile.user
+      email = dupe_user.last_sign_in_email_address.email
       {
-        email: dupe_user.last_sign_in_email_address.email,
-        masked_email: masked_email(dupe_user.last_sign_in_email_address.email),
+        email: email,
+        masked_email: EmailMasker.new(email: email).mask_email,
         last_sign_in: dupe_user.last_sign_in_email_address.last_sign_in_at,
         created_at: dupe_user.created_at,
       }
@@ -58,20 +59,6 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def masked_email(email)
-    email.gsub(/^(.+)@(.+)$/) do |_match|
-      local_part = $1
-      domain_part = "@#{$2}"
-      local_length = local_part.length
-      mask_char = '*'
-
-      masked_local_part = case local_length
-                          when 1 then mask_char
-                          when 2 then mask_char * 2
-                          else
-                            hidden_length = local_length - 2
-                            local_part[0] + (mask_char * hidden_length) + local_part[-1]
-                          end
-      masked_local_part + domain_part
-    end
+    
   end
 end
