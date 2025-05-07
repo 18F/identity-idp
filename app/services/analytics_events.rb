@@ -738,6 +738,10 @@ module AnalyticsEvents
     )
   end
 
+  def fingerprints_rotated
+    track_event(:fingerprints_rotated)
+  end
+
   # The user chose to "forget all browsers"
   def forget_all_browsers_submitted
     track_event('Forget All Browsers Submitted')
