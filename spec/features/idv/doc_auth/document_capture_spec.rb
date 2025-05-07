@@ -19,10 +19,6 @@ RSpec.feature 'document capture step', :js do
       attempts_api_tracker,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
-    allow_any_instance_of(Idv::WelcomeController).to receive(:dos_passport_api_healthy?)
-      .and_return(true)
-    allow_any_instance_of(Idv::ChooseIdTypeController).to receive(:dos_passport_api_healthy?)
-      .and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
   end
@@ -204,15 +200,14 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  context 'with a valid passport', allow_browser_log: true do
+  context 'Passports enabled', allow_browser_log: true do
     let(:passports_enabled) { true }
+    let(:api_status) { 'UP' }
 
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-        .to_return({ status: 200, body: { status: 'UP' }.to_json })
+        .to_return({ status: 200, body: { status: api_status }.to_json })
       reload_ab_tests
 
       visit_idp_from_oidc_sp_with_ial2
@@ -224,72 +219,60 @@ RSpec.feature 'document capture step', :js do
       reload_ab_tests
     end
 
-    it 'happy path' do
-      choose_id_type(:passport)
-      expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
-      expect(page).to have_current_path(idv_document_capture_url)
-
-      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_passport_image(
+    context 'with a valid passport' do
+      let(:passport_image) do
         Rails.root.join(
           'spec', 'fixtures',
           'passport_credential.yml'
-        ),
-      )
-      submit_images
-      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
-      fill_out_ssn_form_ok
-      click_idv_continue
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      expect(page).to have_content(t('doc_auth.headings.address'))
-      fill_in 'idv_form_address1', with: '123 Main St'
-      fill_in 'idv_form_city', with: 'Nowhere'
-      select 'Virginia', from: 'idv_form_state'
-      fill_in 'idv_form_zipcode', with: '66044'
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_current_path(idv_verify_info_path)
-      expect(page).to have_content('VA')
-      expect(page).to have_content('123 Main St')
-      expect(page).to have_content('Nowhere')
-      complete_verify_step
-      expect(page).to have_current_path(idv_phone_url)
-    end
-  end
+        )
+      end
 
-  context 'with an invalid passport', allow_browser_log: true do
-    let(:passports_enabled) { true }
+      it 'happy path' do
+        choose_id_type(:passport)
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+        expect(page).to have_current_path(idv_document_capture_url)
 
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
-      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-        .to_return({ status: 200, body: { status: 'UP' }.to_json })
-      reload_ab_tests
-      visit_idp_from_oidc_sp_with_ial2
-      sign_in_and_2fa_user(@user)
-      complete_doc_auth_steps_before_document_capture_step
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+        fill_out_ssn_form_ok
+        click_idv_continue
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+        expect(page).to have_content(t('doc_auth.headings.address'))
+        fill_in 'idv_form_address1', with: '123 Main St'
+        fill_in 'idv_form_city', with: 'Nowhere'
+        select 'Virginia', from: 'idv_form_state'
+        fill_in 'idv_form_zipcode', with: '66044'
+        click_button t('forms.buttons.submit.update')
+        expect(page).to have_current_path(idv_verify_info_path)
+        expect(page).to have_content('VA')
+        expect(page).to have_content('123 Main St')
+        expect(page).to have_content('Nowhere')
+        complete_verify_step
+        expect(page).to have_current_path(idv_phone_url)
+      end
     end
 
-    after do
-      reload_ab_tests
-    end
-
-    it 'fails due to mrz' do
-      choose_id_type(:passport)
-      expect(page).to have_current_path(idv_document_capture_url)
-      expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      attach_passport_image(
+    context 'with an invalid passport' do
+      let(:passport_image) do
         Rails.root.join(
           'spec', 'fixtures',
           'passport_bad_mrz_credential.yml'
-        ),
-      )
-      submit_images
-      expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-      expect(page).to have_content('invalid MRZ')
-      expect_to_try_again
-      expect(page).to have_content('invalid MRZ')
+        )
+      end
+
+      it 'fails due to mrz' do
+        choose_id_type(:passport)
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+        expect(page).to have_content('invalid MRZ')
+        expect_to_try_again
+        expect(page).to have_content('invalid MRZ')
+      end
     end
   end
 
