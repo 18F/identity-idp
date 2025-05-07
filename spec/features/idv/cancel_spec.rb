@@ -20,7 +20,7 @@ RSpec.describe 'cancel IdV' do
   end
 
   it 'shows the user a cancellation message with the option to go back to the step', :js do
-    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 5)
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 0.5)
     original_path = current_path
 
     click_link t('links.cancel')
@@ -39,7 +39,7 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
     click_on(t('idv.cancel.actions.keep_going'))
-    expect(page).to have_content(t('doc_auth.headings.lets_go'), wait: 5)
+    expect(page).to have_content(t('doc_auth.headings.lets_go'), wait: 0.5)
     expect(page).to have_current_path(original_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
@@ -48,7 +48,7 @@ RSpec.describe 'cancel IdV' do
   end
 
   it 'shows the user a cancellation message with the option to restart from the beginning' do
-    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 5)
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 0.5)
     click_link t('links.cancel')
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
@@ -66,7 +66,7 @@ RSpec.describe 'cancel IdV' do
 
     click_on t('idv.cancel.actions.start_over')
 
-    expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 5)
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 0.5)
     expect(page).to have_current_path(idv_welcome_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: start over',
@@ -75,7 +75,7 @@ RSpec.describe 'cancel IdV' do
   end
 
   it 'shows a cancellation message with option to cancel and reset idv', :js do
-    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 5)
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'), wait: 0.5)
     click_link t('links.cancel')
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
@@ -101,21 +101,21 @@ RSpec.describe 'cancel IdV' do
 
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
     visit idv_path
-    expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 5)
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 0.5)
     expect(page).to have_current_path(idv_welcome_path)
   end
 
   context 'when user has recorded proofing components' do
     before do
       complete_agreement_step
-      expect(page).to have_content(t('doc_auth.headings.hybrid_handoff'), wait: 5)
+      expect(page).to have_content(t('doc_auth.headings.hybrid_handoff'), wait: 0.5)
       complete_hybrid_handoff_step
-      expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 5)
+      expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 0.5)
       complete_document_capture_step
     end
 
     it 'includes proofing components in events', :js do
-      expect(page).to have_content(t('doc_auth.info.ssn'), wait: 5)
+      expect(page).to have_content(t('doc_auth.info.ssn'), wait: 0.5)
       click_link t('links.cancel')
 
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
@@ -133,7 +133,7 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
       click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_content(t('doc_auth.info.ssn'), wait: 5)
+      expect(page).to have_content(t('doc_auth.info.ssn'), wait: 0.5)
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation go back',
@@ -143,7 +143,7 @@ RSpec.describe 'cancel IdV' do
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.start_over')
-      expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 5)
+      expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 0.5)
 
       expect(fake_analytics).to have_logged_event(
         'IdV: start over',
@@ -201,7 +201,7 @@ RSpec.describe 'cancel IdV' do
       )
 
       start_idv_from_sp(sp)
-      expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 5)
+      expect(page).to have_content(t('doc_auth.instructions.getting_started'), wait: 0.5)
       expect(page).to have_current_path(idv_welcome_path)
     end
   end
