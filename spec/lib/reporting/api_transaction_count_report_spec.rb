@@ -14,20 +14,20 @@ RSpec.describe Reporting::ApiTransactionCountReport do
   let(:expected_api_transaction_count_table) do
     [
       ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
-       'Fraud Score and Attribute', 'Threat Metrix'],
-      ["#{time_range.begin.to_date} - #{time_range.end.to_date}", 10, 15, 20, 25, 30, 40],
+       'Socure (KYC)', 'Fraud Score and Attribute', 'Threat Metrix'],
+      ["#{time_range.begin.to_date} - #{time_range.end.to_date}", 10, 15, 20, 25, 30, 35, 40],
     ]
   end
 
   subject(:report) { described_class.new(time_range:) }
 
   before do
-    allow_any_instance_of(Reporting::CloudwatchClient).to receive(:fetch).and_return(mock_results)
     allow(report).to receive(:true_id_table).and_return([10, mock_results])
     allow(report).to receive(:instant_verify_table).and_return([15, mock_results])
     allow(report).to receive(:phone_finder_table).and_return([20, mock_results])
     allow(report).to receive(:socure_table).and_return([25, mock_results])
-    allow(report).to receive(:fraud_score_and_attribute_table).and_return([30, mock_results])
+    allow(report).to receive(:socure_kyc_table).and_return([30, mock_results])
+    allow(report).to receive(:fraud_score_and_attribute_table).and_return([35, mock_results])
     allow(report).to receive(:threat_metrix_table).and_return([40, mock_results])
   end
 
@@ -42,11 +42,11 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       data_row = table.last
 
       expect(header_row).to eq(
-        ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
+        ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)', 'Socure (KYC)',
          'Fraud Score and Attribute', 'Threat Metrix'],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 40])
+      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 35, 40])
     end
   end
 
@@ -60,9 +60,9 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       csv = csvs.first
       expect(csv).to match(
         /
-          Week,True\ ID,Instant\ verify,Phone\ Finder,  # Match the first part
-          Socure\ \(DocV\),Fraud\ Score\ and\ Attribute, # Match the second part
-          Threat\ Metrix                                 # Match the last part
+          Week,True\ ID,Instant\ verify,Phone\ Finder,
+          Socure\ \(DocV\), Socure\ \(KYC\), Fraud\ Score\ and\ Attribute,
+          Threat\ Metrix
         /x,
       )
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")

@@ -55,6 +55,7 @@ module Reporting
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
+          'Socure (KYC)',
           'Fraud Score and Attribute',
           'Threat Metrix',
         ],
@@ -64,6 +65,7 @@ module Reporting
           instant_verify_table.first,
           phone_finder_table.first,
           socure_table.first,
+          socure_kyc_table.first,
           fraud_score_and_attribute_table.first,
           threat_metrix_table.first,
         ],
@@ -94,6 +96,12 @@ module Reporting
 
     def socure_table
       result = fetch_results(query: socure_query)
+      socure_table_count = result.count
+      [socure_table_count, result]
+    end
+
+    def socure_kyc_table
+      result = fetch_results(query: socure_kyc_query)
       socure_table_count = result.count
       [socure_table_count, result]
     end
@@ -279,6 +287,30 @@ module Reporting
           properties.event_properties.response_body.fraudpoint.vulnerable_victim_index as vulnerable_victim_index,
           properties.event_properties.response_body.fraudpoint.risk_indicators_codes as risk_indicators_codes,
           properties.event_properties.response_body.fraudpoint.risk_indicators_descriptions as risk_indicators_descriptions
+      QUERY
+    end
+
+    def socure_kyc_query
+      <<~QUERY
+        fields 
+          properties.event_properties.socure_result.success as success,
+          properties.event_properties.socure_result.timed_out as timed_out,
+          properties.event_properties.socure_result.transaction_id as transaction_id,
+          properties.event_properties.socure_result.vendor_name as vendor_name,
+          properties.event_properties.socure_result.verified_attributes.0 as v0,
+          properties.event_properties.socure_result.verified_attributes.1 as v1,
+          properties.event_properties.socure_result.verified_attributes.2 as v2,
+          properties.event_properties.socure_result.verified_attributes.3 as v3,
+          properties.event_properties.socure_result.verified_attributes.4 as v4,
+          properties.event_properties.socure_result.verified_attributes.5 as v5,
+          properties.event_properties.socure_result.errors.I352 as I352,
+          properties.event_properties.socure_result.errors.I900 as I900,
+          properties.event_properties.socure_result.errors.I901 as I901,
+          properties.event_properties.socure_result.errors.I902 as I902,
+          properties.event_properties.socure_result.errors.I919 as I919,
+          properties.event_properties.socure_result.errors.R354 as R354
+        | filter name = "idv_socure_shadow_mode_proofing_result"
+        | stats count(*) as c
       QUERY
     end
   end
