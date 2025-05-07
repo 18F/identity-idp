@@ -133,6 +133,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    expect(page).to have_content(t('doc_auth.headings.document_capture'))
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end

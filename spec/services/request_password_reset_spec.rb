@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RequestPasswordReset do
   describe '#perform' do
+    let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
     let(:user) { create(:user) }
     let(:request_id) { SecureRandom.uuid }
     let(:email_address) { user.email_addresses.first }
@@ -26,7 +27,7 @@ RSpec.describe RequestPasswordReset do
 
     context 'when the user is found' do
       subject(:perform) do
-        described_class.new(email:).perform
+        described_class.new(email:, attempts_api_tracker:).perform
       end
 
       before do
@@ -60,6 +61,11 @@ RSpec.describe RequestPasswordReset do
         expect(PushNotification::HttpPush).to receive(:deliver)
           .with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
+        subject
+      end
+
+      it 'records the attempts api event' do
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email:)
         subject
       end
     end
@@ -124,8 +130,10 @@ RSpec.describe RequestPasswordReset do
             impl.call(user, email, **options)
           end
 
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email:)
+
         expect do
-          RequestPasswordReset.new(email:).perform
+          RequestPasswordReset.new(email:, attempts_api_tracker:).perform
         end
           .to(change { user.reload.reset_password_token })
       end
@@ -162,7 +170,8 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'always finds the user with the confirmed email address' do
-        form = RequestPasswordReset.new(**email_param)
+        form = RequestPasswordReset.new(**email_param, attempts_api_tracker:)
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email_param)
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
@@ -174,11 +183,17 @@ RSpec.describe RequestPasswordReset do
       it 'rate limits the email sending and logs a rate limit event' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent)
+          .with(email:)
+          .exactly(max_attempts - 1)
+          .times
+
         (max_attempts - 1).times do
           expect do
             RequestPasswordReset.new(
-              email: email,
-              analytics: analytics,
+              email:,
+              analytics:,
+              attempts_api_tracker:,
             ).perform
           end
             .to(change { user.reload.reset_password_token })
@@ -187,8 +202,9 @@ RSpec.describe RequestPasswordReset do
         # extra time, rate limited
         expect do
           RequestPasswordReset.new(
-            email: email,
-            analytics: analytics,
+            email:,
+            analytics:,
+            attempts_api_tracker:,
           ).perform
         end
           .to_not(change { user.reload.reset_password_token })
@@ -206,11 +222,17 @@ RSpec.describe RequestPasswordReset do
           .with(PushNotification::RecoveryActivatedEvent.new(user: user))
           .exactly(max_attempts - 1).times
 
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent)
+          .with(email:)
+          .exactly(max_attempts - 1)
+          .times
+
         (max_attempts - 1).times do
           expect do
             RequestPasswordReset.new(
-              email: email,
-              analytics: analytics,
+              email:,
+              analytics:,
+              attempts_api_tracker:,
             ).perform
           end
             .to(change { user.reload.reset_password_token })
@@ -219,8 +241,9 @@ RSpec.describe RequestPasswordReset do
         # extra time, rate limited
         expect do
           RequestPasswordReset.new(
-            email: email,
-            analytics: analytics,
+            email:,
+            analytics:,
+            attempts_api_tracker:,
           ).perform
         end
           .to_not(change { user.reload.reset_password_token })
