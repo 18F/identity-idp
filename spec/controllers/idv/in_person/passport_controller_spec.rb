@@ -103,27 +103,16 @@ RSpec.describe Idv::InPerson::PassportController do
     context 'when in person passports are allowed' do
       before do
         allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
-      end
-
-      let(:analytics_arguments) do
-        {
-          step: 'passport',
-          analytics_id: 'In Person Proofing',
-          skip_hybrid_handoff: false,
-        }
-      end
-
-      before do
-        subject.idv_session.opted_in_to_in_person_proofing =
-          analytics_arguments[:opted_in_to_in_person_proofing]
-        subject.idv_session.skip_hybrid_handoff = analytics_arguments[:skip_hybrid_handoff]
+        expect(enrollment.document_type).to eq(nil)
+        put :update
       end
 
       it 'sets the enrollment document type' do
-        expect(enrollment.document_type).to eq(nil)
-        put :update
-
         expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK)
+      end
+
+      it 'redirects to the address form' do
+        expect(response).to redirect_to(idv_in_person_address_path)
       end
     end
   end
