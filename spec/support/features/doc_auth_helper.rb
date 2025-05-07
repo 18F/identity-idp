@@ -112,7 +112,7 @@ module DocAuthHelper
     if with_selfie
       attach_liveness_images
     else
-      expect(page).to have_current_path(idv_document_capture_path, wait: 5)
+      expect(page).to have_current_path(idv_document_capture_path)#, wait: 5)
       attach_images
     end
 
