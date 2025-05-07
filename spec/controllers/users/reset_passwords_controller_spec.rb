@@ -579,7 +579,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'captures in analytics that the user was verified' do
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
-        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(email: user.email)
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent)
+          .with(email: user.email)
 
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
