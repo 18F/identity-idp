@@ -112,7 +112,7 @@ module DocAuthHelper
     if with_selfie
       attach_liveness_images
     else
-      expect(page).to have_current_path(idv_document_capture_path, wait: 5)
+      expect(page).to have_current_path(idv_document_capture_path)
       attach_images
     end
 
@@ -133,7 +133,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
-    expect(page).to have_content(t('doc_auth.headings.document_capture'), wait: 5)
+    expect(page).to have_content(t('doc_auth.headings.document_capture'))
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
