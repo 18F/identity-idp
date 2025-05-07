@@ -76,5 +76,9 @@ FactoryBot.define do
     trait :state_id do
       document_type { :state_id }
     end
+
+    trait :passport_book do
+      document_type { :passport_book }
+    end
   end
 end
