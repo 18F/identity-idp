@@ -311,7 +311,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         )
       end
 
-      it 'correctly processes invalid passport data', js: true do
+      before do
         user = nil
 
         perform_in_browser(:desktop) do
@@ -328,7 +328,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           # Confirm that Continue button is not shown when polling is enabled
           expect(page).not_to have_content(t('doc_auth.buttons.continue'))
         end
+      end
 
+      it 'correctly processes invalid passport mrz data', js: true do
         expect(@sms_link).to be_present
 
         perform_in_browser(:mobile) do
@@ -342,6 +344,66 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           expect(page).to have_content('invalid MRZ')
           expect_to_try_again(is_hybrid: true)
           expect(page).to have_content('invalid MRZ')
+        end
+      end
+
+      context 'with a network error' do
+        let(:passport_image) do
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_credential.yml'
+          )
+        end
+        before do
+          DocAuth::Mock::DocAuthMockClient.mock_response!(
+            method: :post_passport_image,
+            response: DocAuth::Response.new(
+              success: false,
+              errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+            ),
+          )
+        end
+
+        it 'shows the error message' do
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            choose_id_type(:passport)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+            attach_passport_image(passport_image)
+            submit_images
+            expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
+            expect(page).to have_content(t('doc_auth.errors.general.network_error'))
+            expect_rate_limit_warning(max_attempts - 1)
+          end
+        end
+      end
+
+      context 'pii validation error' do
+        let(:passport_image) do
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_pii_credentials.yml'
+          )
+        end
+
+        it 'fails pii check' do
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            choose_id_type(:passport)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+            attach_passport_image(passport_image)
+            submit_images
+            expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
+            expect_to_try_again
+            expect(page).to have_current_path(idv_document_capture_url)
+            expect_rate_limit_warning(max_attempts - 1)
+          end
         end
       end
     end
