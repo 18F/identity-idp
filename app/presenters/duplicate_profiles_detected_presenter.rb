@@ -29,7 +29,7 @@ class DuplicateProfilesDetectedPresenter
       email = dupe_user.last_sign_in_email_address.email
       {
         email: email,
-        masked_email: EmailMasker.new(email: email).mask_email,
+        masked_email: EmailMasker.mask(email),
         last_sign_in: dupe_user.last_sign_in_email_address.last_sign_in_at,
         created_at: dupe_user.created_at,
       }
@@ -56,9 +56,5 @@ class DuplicateProfilesDetectedPresenter
 
   def multiple_dupe_profiles?
     dupe_profile_confirmation.duplicate_profile_ids.count > 1
-  end
-
-  def masked_email(email)
-    
   end
 end

@@ -1,11 +1,7 @@
+# frozen_string_literal: true
+
 class EmailMasker
-  attr_reader :email
-
-  def initialize(email:)
-    @email = email
-  end
-
-  def mask_email
+  def self.mask(email)
     email.gsub(/^(.+)@(.+)$/) do |_match|
       local_part = $1
       domain_part = "@#{$2}"
