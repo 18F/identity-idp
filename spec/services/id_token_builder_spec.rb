@@ -6,7 +6,7 @@ RSpec.describe IdTokenBuilder do
   let(:code) { SecureRandom.hex }
   let(:user) { create(:user) }
   let(:identity) do
-    build(
+    create(
       :service_provider_identity,
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,

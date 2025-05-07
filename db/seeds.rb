@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# add config/agencies.yml
+AgencySeeder.new.run
+
 # add config/service_providers.yml
 if ENV['KUBERNETES_REVIEW_APP'] == 'true' && ENV['DASHBOARD_URL'].present?
   dashboard_url = ENV['DASHBOARD_URL']
@@ -10,9 +13,6 @@ if ENV['KUBERNETES_REVIEW_APP'] == 'true' && ENV['DASHBOARD_URL'].present?
 else
   ServiceProviderSeeder.new.run
 end
-
-# add config/agencies.yml
-AgencySeeder.new.run
 
 # add partnerships / agreements data, note that the order matters!
 if IdentityConfig.store.seed_agreements_data

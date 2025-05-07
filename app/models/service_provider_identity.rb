@@ -38,10 +38,6 @@ class ServiceProviderIdentity < ApplicationRecord
     sp_metadata[:friendly_name] || service_provider_record&.agency&.name || service_provider
   end
 
-  def agency_name
-    service_provider_record&.agency&.name || sp_metadata[:friendly_name] || service_provider
-  end
-
   def piv_cac_enabled?
     TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end

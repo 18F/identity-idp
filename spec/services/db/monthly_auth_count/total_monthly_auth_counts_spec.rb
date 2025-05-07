@@ -11,7 +11,7 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
   end
 
   it 'returns the total auth counts' do
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
+    create(:service_provider, issuer: issuer, app_id: app_id)
     7.times do
       create(
         :sp_return_log,

@@ -21,20 +21,22 @@ class ServiceProviderSeeder
         cert_path.read if cert_path.exist?
       end.compact
 
-      ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+      ServiceProvider.transaction do
+        sp = ServiceProvider.find_by(issuer: issuer) ||
+          ServiceProvider.create!(issuer: issuer, agency_id: config['agency_id'], friendly_name: config['friendly_name'])
         sp.update(
           approved: true,
           active: true,
           native: true,
-          friendly_name: config['friendly_name'],
         )
-      end.update!(config.except(
-        'agency',
-        'certs',
-        'restrict_to_deploy_env',
-        'protocol',
-        'native',
-      ).merge(certs: cert_pems))
+        sp.update!(config.except(
+          'agency',
+          'certs',
+          'restrict_to_deploy_env',
+          'protocol',
+          'native',
+        ).merge(certs: cert_pems))
+      end
     end
   end
 

@@ -16,8 +16,8 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial1 only sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
-      ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
+      create(:service_provider, issuer: issuer, app_id: 'app1')
+      create(:service_provider, issuer: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
         last_ial1_authenticated_at: now
@@ -46,8 +46,8 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial2 only sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
-      ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
+      create(:service_provider, issuer: issuer, app_id: 'app1')
+      create(:service_provider, issuer: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
         last_ial2_authenticated_at: now
@@ -76,8 +76,8 @@ RSpec.describe Db::Identity::SpActiveUserCounts do
     end
 
     it 'returns total active user counts per sp broken down by ial1 and ial2 for ial1 ial2 sps' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: 'app1')
-      ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: 'app2')
+      create(:service_provider, issuer: issuer, app_id: 'app1')
+      create(:service_provider, issuer: issuer2, app_id: 'app2')
       ServiceProviderIdentity.create(
         user_id: 1, service_provider: issuer, uuid: 'foo1',
         last_ial1_authenticated_at: now, last_ial2_authenticated_at: now

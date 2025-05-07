@@ -7,8 +7,7 @@ class AgencyIdentityLinker
   end
 
   def link_identity
-    find_or_create_agency_identity ||
-      AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
+    find_or_create_agency_identity
   end
 
   # @return [AgencyIdentity, ServiceProviderIdentity] the AgencyIdentity for this user at this
@@ -44,7 +43,6 @@ class AgencyIdentityLinker
   end
 
   def create_agency_identity_for_sp
-    return unless agency_id
     AgencyIdentity.create(
       agency_id: agency_id,
       user_id: @sp_identity.user_id,
@@ -56,7 +54,6 @@ class AgencyIdentityLinker
     ai = AgencyIdentity.find_by(uuid: @sp_identity.uuid)
     return ai if ai
     sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
-    return unless agency_id(sp)
     AgencyIdentity.find_by(agency_id: agency_id, user_id: @sp_identity.user_id)
   end
 

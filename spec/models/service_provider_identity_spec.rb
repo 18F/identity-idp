@@ -94,32 +94,6 @@ RSpec.describe ServiceProviderIdentity do
     it 'returns service provider friendly name first' do
       expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
     end
-
-    it 'returns service_provider friendly_name if agency is missing' do
-      service_provider.friendly_name = 'Only Friendly Name'
-      service_provider.agency = nil
-      service_provider.save
-      expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
-    end
-  end
-
-  describe '#agency_name' do
-    it 'returns service provider agency first' do
-      expect(identity_with_sp.agency_name).to eq(service_provider.agency.name)
-    end
-
-    it 'returns service_provider friendly_name if agency is missing' do
-      service_provider.agency = nil
-      service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
-    end
-
-    it 'returns service_provider friendly_name if agency is missing' do
-      service_provider.friendly_name = 'Only Friendly Name'
-      service_provider.agency = nil
-      service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
-    end
   end
 
   describe 'uniqueness validation for service provider per user' do

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :service_provider_identity do
     acr_values { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
     uuid { SecureRandom.uuid }
-    service_provider { 'https://serviceprovider.com' }
+    service_provider { create(:service_provider).issuer }
   end
 
   trait :active do

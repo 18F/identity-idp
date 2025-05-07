@@ -14,8 +14,8 @@ RSpec.describe Db::Identity::SpUserCounts do
     end
 
     it 'returns the total user counts per sp broken down by ial1 and ial2' do
-      ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-      ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: app_id2)
+      create(:service_provider, issuer: issuer, app_id: app_id)
+      create(:service_provider, issuer: issuer2, app_id: app_id2)
       ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
       ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
       ServiceProviderIdentity.create(

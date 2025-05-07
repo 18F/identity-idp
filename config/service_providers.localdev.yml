@@ -1,5 +1,6 @@
 test:
   'saml_sp':
+    agency_id: 9
     acs_url: 'http://example.com/test/saml/decode_assertion'
     allow_prompt_login: true
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
@@ -9,6 +10,7 @@ test:
     friendly_name: 'Test SP'
 
   'saml_sp_ial2':
+    agency_id: 9
     acs_url: 'http://example.com/test/saml/decode_assertion'
     allow_prompt_login: true
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
@@ -133,6 +135,7 @@ test:
     signed_response_message_requested: true
 
   'https://rp2.serviceprovider.com/auth/saml/metadata':
+    agency_id: 9
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
@@ -142,6 +145,7 @@ test:
     allow_prompt_login: true
 
   'https://rp3.serviceprovider.com/auth/saml/metadata':
+    agency_id: 9
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
@@ -152,6 +156,7 @@ test:
     allow_prompt_login: true
 
   'http://test.host':
+    agency_id: 9
     acs_url: 'http://test.host/test/saml/decode_assertion'
     block_encryption: 'aes256-cbc'
     metadata_url: 'http://test.host/test/saml/metadata'
@@ -331,7 +336,6 @@ test:
     block_encryption: 'none'
     certs:
       - 'saml_test_sp'
-    agency: 'Test Government Agency'
     agency_id: 1
     friendly_name: 'Your friendly Government Agency (inactive)'
     logo: 'generic.svg'
@@ -351,7 +355,6 @@ test:
     certs:
       - 'saml_test_sp'
     friendly_name: 'Example iOS App (inactive)'
-    agency: '18F'
     agency_id: 1
     logo: 'generic.svg'
     ial: 2
@@ -387,6 +390,7 @@ development:
       - email
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
+    agency_id: 9
     acs_url: 'http://localhost:3000/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
     sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
@@ -467,7 +471,7 @@ development:
     pkce: true
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
-    agency: 'GSA'
+    agency_id: 9
     certs:
       - 'sp_expressjs_demo'
     friendly_name: 'Example OIDC Client (Express.js)'
@@ -477,7 +481,7 @@ development:
       - 'http://localhost:9393/auth/login-gov/callback'
 
   'urn:gov:gsa:openidconnect:sp:gin':
-    agency: 'GSA'
+    agency_id: 9
     certs:
       - 'sp_gin_demo'
     friendly_name: 'Example OIDC Client (Gin)'
@@ -487,7 +491,7 @@ development:
       - 'http://localhost:8080/auth/login-gov/callback'
 
   'urn:gov:gsa:openidconnect:sp:phoenix':
-    agency: 'GSA'
+    agency_id: 9
     certs:
       - 'sp_phoenix_demo'
     friendly_name: 'Example OIDC Client (Phoenix)'
@@ -517,17 +521,21 @@ development:
 production:
 
   'urn:gov:login:test-providers:fake-prod-sp':
+    agency_id: 9
     friendly_name: 'Fake/Test stub SP for prod'
     restrict_to_deploy_env: 'prod'
 
   'urn:gov:login:test-providers:fake-staging-sp':
+    agency_id: 9
     friendly_name: 'Fake/Test stub SP for staging'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:login:test-providers:fake-unrestricted-sp':
+    agency_id: 9
     friendly_name: 'Fake/Test stub SP, env unrestricted'
 
   'urn:gov:login:test-providers:fake-sandbox-sp':
+    agency_id: 9
     friendly_name: 'Fake/Test stub SP, sandbox SP with env-specific hostname'
     redirect_uris:
       - 'https://%{env}.example.com'
