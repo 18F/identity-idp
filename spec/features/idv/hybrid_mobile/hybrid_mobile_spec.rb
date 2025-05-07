@@ -219,22 +219,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: api_status }.to_json })
       reload_ab_tests
-      user = nil
-
-      perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
-
-        complete_doc_auth_steps_before_hybrid_handoff_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
-        click_send_link
-
-        expect(page).to have_content(t('doc_auth.headings.text_message'))
-        expect(page).to have_content(t('doc_auth.info.you_entered'))
-        expect(page).to have_content('+1 415-555-0199')
-
-        # Confirm that Continue button is not shown when polling is enabled
-        expect(page).not_to have_content(t('doc_auth.buttons.continue'))
-      end
     end
 
     after do
@@ -250,6 +234,23 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       it 'works with valid passport data' do
+        user = nil
+
+        perform_in_browser(:desktop) do
+          user = sign_in_and_2fa_user
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+          expect(page).to have_content(t('doc_auth.info.you_entered'))
+          expect(page).to have_content('+1 415-555-0199')
+
+          # Confirm that Continue button is not shown when polling is enabled
+          expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+        end
+
         expect(@sms_link).to be_present
 
         perform_in_browser(:mobile) do
@@ -311,6 +312,23 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       it 'correctly processes invalid passport data', js: true do
+        user = nil
+
+        perform_in_browser(:desktop) do
+          user = sign_in_and_2fa_user
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+          expect(page).to have_content(t('doc_auth.info.you_entered'))
+          expect(page).to have_content('+1 415-555-0199')
+
+          # Confirm that Continue button is not shown when polling is enabled
+          expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+        end
+
         expect(@sms_link).to be_present
 
         perform_in_browser(:mobile) do
