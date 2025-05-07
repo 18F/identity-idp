@@ -495,12 +495,14 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   end
 
   describe '#create' do
+    before do
+      stub_analytics
+      stub_attempts_tracker
+    end
     context 'no user matches email' do
       let(:email) { 'nonexistent@example.com' }
 
       it 'send an email to tell the user they do not have an account yet' do
-        stub_analytics
-
         expect do
           put :create, params: {
             password_reset_email_form: { email: email },
@@ -525,11 +527,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let(:email_param) { { email: email } }
       let!(:user) { create(:user, :fully_registered, **email_param) }
 
-      before do
-        stub_analytics
-      end
-
       it 'sends password reset email to user and tracks event' do
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(email_param)
+
         expect do
           put :create, params: { password_reset_email_form: email_param }
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
@@ -555,11 +555,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
       end
 
-      before do
-        stub_analytics
-      end
-
       it 'sends missing user email and tracks event' do
+        expect(@attempts_api_tracker).not_to receive(:forgot_password_email_sent)
+
         expect { put :create, params: params }
           .to change { ActionMailer::Base.deliveries.count }.by(1)
 
@@ -579,9 +577,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
     context 'user is verified' do
       it 'captures in analytics that the user was verified' do
-        stub_analytics
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(email: user.email)
 
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
@@ -598,7 +596,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
     context 'email is invalid' do
       it 'displays an error and tracks event' do
-        stub_analytics
+        expect(@attempts_api_tracker).not_to receive(:forgot_password_email_sent)
 
         params = { password_reset_email_form: { email: 'foo' } }
         expect { put :create, params: params }
@@ -617,6 +615,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     it 'renders new if email is nil' do
+      expect(@attempts_api_tracker).not_to receive(:forgot_password_email_sent)
+
       expect do
         post :create, params: { password_reset_email_form: { resend: false } }
       end.to change { ActionMailer::Base.deliveries.count }.by(0)
@@ -625,6 +625,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     it 'renders new if email is a Hash' do
+      expect(@attempts_api_tracker).not_to receive(:forgot_password_email_sent)
+
       post :create, params: { password_reset_email_form: { email: { foo: 'bar' } } }
 
       expect(response).to render_template(:new)
