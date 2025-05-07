@@ -43,6 +43,7 @@ interface AppRootData {
   previousStepUrl: string;
   docAuthPassportsEnabled: string;
   docAuthSelfieDesktopTestMode: string;
+  docAuthUploadEnabled: string;
   accountUrl: string;
   locationsUrl: string;
   sessionsUrl: string;
@@ -62,6 +63,11 @@ function getServiceProvider() {
 function getSelfieCaptureEnabled() {
   const { docAuthSelfieCapture } = appRoot.dataset;
   return docAuthSelfieCapture === 'true';
+}
+
+function getUploadEnabled() {
+  const { docAuthUploadEnabled } = appRoot.dataset;
+  return docAuthUploadEnabled === 'true';
 }
 
 function getMetaContent(name): string | null {
@@ -171,6 +177,7 @@ render(
               statusEndpoint={String(appRoot.getAttribute('data-status-endpoint'))}
               statusPollInterval={Number(appRoot.getAttribute('data-status-poll-interval-ms'))}
               isMockClient={isMockClient}
+              isUploadEnabled={getUploadEnabled()}
               formData={formData}
               flowPath={flowPath}
               idType={idType}

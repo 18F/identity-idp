@@ -60,7 +60,7 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
-    def upload_enabled?
+    def doc_auth_upload_enabled?
       !resolved_authn_context_result.facial_match? || !upload_disabled_bucket
     end
 
