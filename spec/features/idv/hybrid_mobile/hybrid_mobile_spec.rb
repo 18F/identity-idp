@@ -10,9 +10,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   let(:phone_number) { '415-555-0199' }
   let(:sp) { :oidc }
   let(:passports_enabled) { false }
+  let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
     allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
