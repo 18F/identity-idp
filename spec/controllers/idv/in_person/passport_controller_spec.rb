@@ -97,4 +97,15 @@ RSpec.describe Idv::InPerson::PassportController do
       end
     end
   end
+
+  describe '#update' do
+    before do
+      allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+      put :update
+    end
+
+    it 'redirects to the address form' do
+      expect(response).to redirect_to(idv_in_person_address_path)
+    end
+  end
 end

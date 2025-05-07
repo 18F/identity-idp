@@ -13,6 +13,10 @@ module Idv
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
       end
 
+      def update
+        redirect_to idv_in_person_address_path
+      end
+
       def extra_view_variables
         {
           form:,
