@@ -122,7 +122,7 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: irs_authentication_report.reports,
     )
   end
-  
+
   def irs_fraud_metrics_report
     irs_fraud_metrics_report = Reports::IrsFraudMetricsReport.new(Time.zone.yesterday)
 
