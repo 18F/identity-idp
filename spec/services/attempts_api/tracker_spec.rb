@@ -83,6 +83,71 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
+    context 'user has existing Agency UUID' do
+      context 'for event that skips UUID creation' do
+        it 'returns Agency UUID in event' do
+          identity = create(
+            :agency_identity,
+            user_id: user.id,
+            agency_id: service_provider.agency.id,
+          )
+
+          event = subject.track_event(
+            AttemptsApi::Tracker::SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.sample,
+          )
+
+          expect(event.event_metadata[:user_uuid]).to eq(identity.uuid)
+        end
+      end
+
+      context 'for event that does not skip UUID creation' do
+        it 'returns Agency UUID in event' do
+          identity = create(
+            :agency_identity,
+            user_id: user.id,
+            agency_id: service_provider.agency.id,
+          )
+
+          event = subject.track_event(
+            'my-fake-event',
+          )
+
+          expect(event.event_metadata[:user_uuid]).to eq(identity.uuid)
+        end
+      end
+    end
+
+    context 'user does not have existing Agency UUID' do
+      context 'for event that skips UUID creation' do
+        it 'returns nil UUID in event and does not create identity' do
+          event = subject.track_event(
+            AttemptsApi::Tracker::SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.sample,
+          )
+
+          identity = AgencyIdentity.find_by(
+            user_id: user.id,
+            agency_id: service_provider.agency.id,
+          )
+          expect(event.event_metadata[:user_uuid]).to eq(nil)
+          expect(identity).to eq(nil)
+        end
+      end
+
+      context 'for event that does not skip UUID creation' do
+        it 'creates new Agency UUID and returns Agency UUID in event' do
+          event = subject.track_event(
+            'my-fake-event',
+          )
+          identity = AgencyIdentity.find_by(
+            user_id: user.id,
+            agency_id: service_provider.agency.id,
+          )
+          expect(identity).to_not be_nil
+          expect(event.event_metadata[:user_uuid]).to eq(identity.uuid)
+        end
+      end
+    end
+
     context 'the current session is not an attempts API session' do
       let(:enabled_for_session) { false }
 
