@@ -48,6 +48,8 @@ module Idv
       if form_response.success?
         idv_session.previous_ssn = idv_session.ssn
         idv_session.ssn = SsnFormatter.normalize(params[:doc_auth][:ssn])
+        idv_session_ssn_signature = Pii::Fingerprinter.fingerprint(idv_session.ssn)
+        check_for_pending_duplicate_profile
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
@@ -90,6 +92,14 @@ module Idv
         analytics_id: 'Doc Auth',
         previous_ssn_edit_distance: previous_ssn_edit_distance,
       }.merge(ab_test_analytics_buckets)
+    end
+
+    def check_for_pending_duplicate_profile
+      DuplicateProfileChecker.new(
+        user: current_user,
+        user_session: user_session,
+        sp: sp_from_sp_session
+      ).check_for_pending_duplicate_profile
     end
   end
 end

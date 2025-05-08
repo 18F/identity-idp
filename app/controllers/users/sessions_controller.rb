@@ -319,7 +319,8 @@ module Users
     def check_for_duplicate_profiles
       DuplicateProfileChecker.new(
         user: current_user,
-        user_session: user_session, sp: sp_from_sp_session
+        user_session: user_session,
+        sp: sp_from_sp_session,
       ).check_for_duplicate_profiles
     end
 

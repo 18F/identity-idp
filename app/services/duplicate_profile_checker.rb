@@ -38,6 +38,19 @@ class DuplicateProfileChecker
     end
   end
 
+  def check_for_pending_duplicate_profile
+    return unless sp_eligible_for_one_account?
+    cacher = Pii::Cacher.new(user, user_session)
+    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: cacher.user_session["idv"]["ssn"])
+    associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
+    if associated_profiles.present? && !user_session[:duplicate_profile].present?
+      user_session[:duplicate_profile] = true
+      redirect_to duplicate_profiles_detected_url
+    end
+    binding.pry
+    puts 'check for pending'
+  end
+
   private
 
   def sp_eligible_for_one_account?
