@@ -22,7 +22,7 @@ interface SelfieCaptureProps {
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
-  isUploadEnabled: false,
+  isUploadEnabled: true,
   isSelfieDesktopTestMode: false,
   showHelpInitially: true,
 });
