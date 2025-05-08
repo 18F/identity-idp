@@ -5,20 +5,20 @@ class SignInRecaptchaForm
 
   RECAPTCHA_ACTION = 'sign_in'
 
-  attr_reader :form_class, :form_args, :email, :recaptcha_token, :device_cookie, :ab_test_bucket,
+  attr_reader :form_class, :form_args, :recaptcha_token, :ab_test_bucket,
               :assessment_id
+
+  attr_writer :existing_device
 
   validate :validate_recaptcha_result
 
   def initialize(
-    email:,
-    device_cookie:,
+    existing_device:,
     ab_test_bucket:,
     form_class: RecaptchaForm,
     **form_args
   )
-    @email = email
-    @device_cookie = device_cookie
+    @existing_device = existing_device
     @ab_test_bucket = ab_test_bucket
     @form_class = form_class
     @form_args = form_args
@@ -34,7 +34,7 @@ class SignInRecaptchaForm
   def exempt?
     IdentityConfig.store.sign_in_recaptcha_score_threshold.zero? ||
       ab_test_bucket != :sign_in_recaptcha ||
-      device.present?
+      @existing_device
   end
 
   private
@@ -42,10 +42,6 @@ class SignInRecaptchaForm
   def validate_recaptcha_result
     recaptcha_response, @assessment_id = recaptcha_form.submit(recaptcha_token)
     errors.merge!(recaptcha_form) if !recaptcha_response.success?
-  end
-
-  def device
-    User.find_with_confirmed_email(email)&.devices&.find_by(cookie_uuid: device_cookie)
   end
 
   def score_threshold

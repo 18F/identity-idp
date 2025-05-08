@@ -24,9 +24,10 @@ module Idv
     def reset_password(email, request_id)
       sign_out
       RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
+        email:,
+        request_id:,
+        analytics:,
+        attempts_api_tracker:,
       ).perform
       # The user/email is always found so...
       session[:email] = email

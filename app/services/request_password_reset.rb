@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RequestPasswordReset = RedactedStruct.new(
-  :email, :request_id, :analytics,
+  :email, :request_id, :analytics, :attempts_api_tracker,
   keyword_init: true,
   allowed_members: [:request_id]
 ) do
@@ -26,6 +26,8 @@ RequestPasswordReset = RedactedStruct.new(
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
+
+      attempts_api_tracker.forgot_password_email_sent(email:)
     end
   end
 

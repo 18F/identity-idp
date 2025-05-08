@@ -433,4 +433,28 @@ RSpec.describe AbTests do
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
+
+  describe 'DOC_AUTH_MANUAL_UPLOAD_DISABLED' do
+    let(:ab_test) { :DOC_AUTH_MANUAL_UPLOAD_DISABLED }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_manual_upload_disabled_a_b_testing_percent)
+          .and_return(50)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
 end

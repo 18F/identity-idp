@@ -608,7 +608,8 @@ doc_auth.headers.low_resolution: 你设备的相机可能不受支持
 doc_auth.headers.unaccepted_id_type: 使用驾驶执照或州颁发的身份证件
 doc_auth.headers.underage: 不符合年龄规定
 doc_auth.headers.unreadable_id: 我们无法读取你的身份证件
-doc_auth.headings.address: 更新你当前的居住地址
+doc_auth.headings.address: 输入你当前的居住地址
+doc_auth.headings.address_update: 更新你当前的居住地址
 doc_auth.headings.back: 驾照或州政府颁发身份证件的背面。
 doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请把你身份证件的%{link_html}。
@@ -1297,7 +1298,7 @@ in_person_proofing.body.location.po_search.state_label: 州
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: 请继续验证你的身份。生成条形码后，你可以使用我们的<a target="_blank" href="%{link_url}"></a>搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: 抱歉，我们遇到了技术困难，无法搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: 帮助中心
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: 地图图钉图像
 in_person_proofing.body.location.po_search.zipcode_label: 邮编
 in_person_proofing.body.location.retail_hours_heading: 营业时间
 in_person_proofing.body.location.retail_hours_sat: 周六：

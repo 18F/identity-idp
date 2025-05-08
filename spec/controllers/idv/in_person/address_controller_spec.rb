@@ -35,8 +35,64 @@ RSpec.describe Idv::InPerson::AddressController do
         state: state,
       } }
     end
+
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::AddressController.step_info).to be_valid
+    end
+
+    context 'preconditions' do
+      context 'when ipp_state_id steps have been completed' do
+        before do
+          allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(
+            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+          ).to be(true)
+        end
+      end
+
+      context 'when ipp_state_id steps have not been completed' do
+        before do
+          allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(false)
+        end
+
+        context 'when in_person passports are allowed' do
+          before do
+            allow(subject.idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+          end
+
+          it 'returns true' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(true)
+          end
+        end
+
+        context 'when in_person passports are not allowed' do
+          before do
+            allow(subject.idv_session).to receive(:in_person_passports_allowed?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(false)
+          end
+        end
+      end
+    end
+
+    context 'undo_step' do
+      before do
+        allow(subject.idv_session).to receive(:invalidate_in_person_address_step!)
+        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+      end
+
+      it 'invalidates the ipp_address step' do
+        expect(subject.idv_session).to have_received(:invalidate_in_person_address_step!)
+      end
     end
   end
 

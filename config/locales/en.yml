@@ -597,7 +597,8 @@ doc_auth.headers.low_resolution: Your device’s camera may not be supported.
 doc_auth.headers.unaccepted_id_type: Use a driver’s license or a state ID
 doc_auth.headers.underage: Age requirement not met
 doc_auth.headers.unreadable_id: We could not read your ID
-doc_auth.headings.address: Update your current residential address
+doc_auth.headings.address: Enter your current residential address
+doc_auth.headings.address_update: Update your current residential address
 doc_auth.headings.back: Back of your driver’s license or state ID
 doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your ID.
@@ -1284,7 +1285,7 @@ in_person_proofing.body.location.po_search.state_label: State
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Please continue verifying your identity. You can use our <a target="_blank" href="%{link_url}"></a> to search for a participating location after you generate a barcode.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Sorry, we ran into technical difficulties and couldn’t search for a participating Post Office.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Help Center
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: Image of a map pin
 in_person_proofing.body.location.po_search.zipcode_label: ZIP Code
 in_person_proofing.body.location.retail_hours_heading: Retail Hours
 in_person_proofing.body.location.retail_hours_sat: 'Sat:'

@@ -65,6 +65,15 @@ module AttemptsApi
       )
     end
 
+    # @param [String] email The user's email address
+    #  A user has requested a password reset.
+    def forgot_password_email_sent(email:)
+      track_event(
+        :forgot_password_email_sent,
+        email:,
+      )
+    end
+
     # @param [Boolean] success True if new password was successfully submitted
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user submits a new password have requesting a password reset
@@ -73,6 +82,15 @@ module AttemptsApi
         'forgot-password-new-password-submitted',
         success:,
         failure_reason:,
+      )
+    end
+
+    # @param [Boolean] reproof True indicates that the user has proofed previously
+    # A user has completed the identity verification process and has an active profile
+    def idv_enrollment_complete(reproof:)
+      track_event(
+        'idv-enrollment-complete',
+        reproof:,
       )
     end
 

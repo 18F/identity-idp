@@ -41,7 +41,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
 
   context 'when initialized from a successful general health check response' do
     before do
-      stub_health_check_endpoints
+      stub_health_check_endpoints_success
     end
 
     let(:faraday_response) do
@@ -61,7 +61,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
 
   context 'when initialized from a successful composite health check response' do
     before do
-      stub_health_check_endpoints
+      stub_health_check_endpoints_success
     end
 
     let(:faraday_response) do

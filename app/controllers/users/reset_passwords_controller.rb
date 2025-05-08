@@ -93,9 +93,10 @@ module Users
 
     def handle_valid_email
       RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
+        email:,
+        request_id:,
+        analytics:,
+        attempts_api_tracker:,
       ).perform
 
       session[:email] = email

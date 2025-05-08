@@ -115,9 +115,13 @@ module Users
     end
 
     def recaptcha_form
+      return @recaptcha_form if defined?(@recaptcha_form)
+      existing_device = User.find_with_confirmed_email(auth_params[:email])&.devices&.exists?(
+        cookie_uuid: cookies[:device],
+      )
+
       @recaptcha_form ||= SignInRecaptchaForm.new(
-        email: auth_params[:email],
-        device_cookie: cookies[:device],
+        existing_device: existing_device,
         ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )

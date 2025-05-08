@@ -17,6 +17,7 @@ export default function FullAddressSearchInput({
   registerField = () => undefined,
   usStatesTerritories,
   uspsApiError,
+  usesErrorComponent,
 }: FullAddressSearchInputProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -175,12 +176,12 @@ export default function FullAddressSearchInput({
           isBig
           ref={spinnerButtonRef}
           type="submit"
-          onClick={uspsApiError ? handleContinue : handleSearch}
+          onClick={usesErrorComponent && uspsApiError ? handleContinue : handleSearch}
           spinOnClick={false}
           actionMessage={t('in_person_proofing.body.location.po_search.is_searching_message')}
           longWaitDurationMs={1}
         >
-          {uspsApiError
+          {usesErrorComponent && uspsApiError
             ? t('in_person_proofing.body.location.po_search.continue_button')
             : t('in_person_proofing.body.location.po_search.search_button')}
         </SpinnerButton>

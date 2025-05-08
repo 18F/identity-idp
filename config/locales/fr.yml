@@ -597,7 +597,8 @@ doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne 
 doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État
 doc_auth.headers.underage: Condition d’âge non remplie
 doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
-doc_auth.headings.address: Mettre à jour votre adresse personnelle
+doc_auth.headings.address: Saisir votre adresse personnelle actuelle
+doc_auth.headings.address_update: Mettre à jour votre adresse personnelle
 doc_auth.headings.back: Verso de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identité
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous sont incorrectes, veuillez %{link_html} de votre pièce d’identité.
@@ -1284,7 +1285,7 @@ in_person_proofing.body.location.po_search.state_label: État
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Veuillez poursuivre la procédure de vérification d’identité. Vous pouvez recourir au <a target="_blank" href="%{link_url}"></a> pour rechercher un bureau participant après avoir généré un code-barres.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Nous n’avons pas pu rechercher de bureau de poste participant pour des raisons techniques et nous en excusons.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centre d’aide
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: Image d’une épingle sur une carte
 in_person_proofing.body.location.po_search.zipcode_label: Code postal
 in_person_proofing.body.location.retail_hours_heading: Heures d’ouverture
 in_person_proofing.body.location.retail_hours_sat: 'Sam :'

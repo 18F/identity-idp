@@ -127,4 +127,19 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  DOC_AUTH_MANUAL_UPLOAD_DISABLED = AbTest.new(
+    experiment_name: 'Doc Auth Manual Upload Disabled',
+    should_log: [
+      'Idv: doc auth hybrid handoff visited',
+      'IdV: doc auth document_capture visited',
+    ],
+    buckets: {
+      manual_upload_disabled:
+        IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_enabled ?
+        IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_percent : 0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end
