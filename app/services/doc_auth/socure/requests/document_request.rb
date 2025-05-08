@@ -80,9 +80,9 @@ module DocAuth
 
         def use_case_key
           if liveness_checking_required
-            IdentityConfig.store.idv_socure_docv_flow_license_w_selfie
+            IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
           else
-            IdentityConfig.store.idv_socure_docv_flow_license_only
+            IdentityConfig.store.idv_socure_docv_flow_id_only
           end
         end
       end
