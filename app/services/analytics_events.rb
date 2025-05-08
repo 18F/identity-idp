@@ -6003,48 +6003,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
-  # Tracks when the user has added the MFA method piv_cac to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['piv_cac'] method_name Authentication method added
-  # @param [Integer] attempts number of MFA setup attempts
-  def multi_factor_auth_added_piv_cac(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :piv_cac,
-    attempts: nil,
-    **extra
-  )
-    track_event(
-      :multi_factor_auth_added_piv_cac,
-      method_name:,
-      enabled_mfa_methods_count:,
-      in_account_creation_flow:,
-      attempts:,
-      **extra,
-    )
-  end
-
-  # Tracks when the user has added the MFA method TOTP to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['totp'] method_name Authentication method added
-  def multi_factor_auth_added_totp(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :totp,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added TOTP',
-      method_name:,
-      in_account_creation_flow:,
-      enabled_mfa_methods_count:,
-      **extra,
-    )
-  end
-
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
