@@ -236,6 +236,12 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Send previous week's authentication reports to irs
+      irs_weekly_authentication_report: {
+        class: 'Reports::IrsAuthenticationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',
