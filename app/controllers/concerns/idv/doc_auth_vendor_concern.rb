@@ -6,17 +6,20 @@ module Idv
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
-      # if resolved_authn_context_result.facial_match? &&
-      #    idv_session.bucketed_doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-      #   idv_session.bucketed_doc_auth_vendor = nil
-      # end
+      if resolved_authn_context_result.facial_match? &&
+         !IdentityConfig.store.socure_docv_selfie_enabled &&
+         idv_session.bucketed_doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+        idv_session.bucketed_doc_auth_vendor = nil
+      end
 
       idv_session.bucketed_doc_auth_vendor ||= begin
-        # if resolved_authn_context_result.facial_match? || socure_user_set.maxed_users?
-        #   bucket = choose_non_socure_bucket
-        # else
+        if (resolved_authn_context_result.facial_match? &&
+           !IdentityConfig.store.socure_docv_selfie_enabled) ||
+           socure_user_set.maxed_users?
+          bucket = choose_non_socure_bucket
+        else
           bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
-        # end
+        end
 
         if bucket == :socure
           if !add_user_to_socure_set
