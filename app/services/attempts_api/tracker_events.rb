@@ -101,6 +101,48 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # @param [String<':sms',':voice'>] otp_delivery_method
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # OTP is sent and what method chosen during idv flow.
+    def idv_phone_otp_sent(success:, phone_number:,
+                           otp_delivery_method:, failure_reason: nil)
+      track_event(
+        'idv-phone-otp-sent',
+        success:,
+        phone_number:,
+        otp_delivery_method:,
+        failure_reason:,
+      )
+    end
+
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # User submits OTP code sent to their phone
+    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        'idv-phone-otp-submitted',
+        phone_number:,
+        success:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # The user provides their phone number for identity verification
+    def idv_phone_submitted(success:, phone_number:, failure_reason: nil)
+      track_event(
+        'idv-phone-submitted',
+        success:,
+        phone_number:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] resend False indicates this is the initial request
     # User has requested the Address validation letter
     def idv_verify_by_mail_letter_requested(resend:)
