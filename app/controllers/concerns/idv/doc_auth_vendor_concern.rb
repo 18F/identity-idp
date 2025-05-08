@@ -7,16 +7,16 @@ module Idv
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
       if resolved_authn_context_result.facial_match? &&
-         !IdentityConfig.store.socure_docv_selfie_enabled &&
-         idv_session.bucketed_doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+         !doc_auth_selfie_vendor_enabled?(idv_session.bucketed_doc_auth_vendor)
         idv_session.bucketed_doc_auth_vendor = nil
       end
 
       idv_session.bucketed_doc_auth_vendor ||= begin
-        if (resolved_authn_context_result.facial_match? &&
-           !IdentityConfig.store.socure_docv_selfie_enabled) ||
-           socure_user_set.maxed_users?
+        bucket = nil
+        if socure_user_set.maxed_users?
           bucket = choose_non_socure_bucket
+        elsif resolved_authn_context_result.facial_match?
+          bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR)
         else
           bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
         end
@@ -27,7 +27,10 @@ module Idv
           end
         end
 
-        DocAuthRouter.doc_auth_vendor_for_bucket(bucket)
+        DocAuthRouter.doc_auth_vendor_for_bucket(
+          bucket,
+          selfie: resolved_authn_context_result.facial_match?,
+        )
       end
     end
 
@@ -40,6 +43,20 @@ module Idv
         IdentityConfig.store.doc_auth_vendor_socure_percent > 0
       when Idp::Constants::Vendors::LEXIS_NEXIS
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent > 0
+      else
+        false
+      end
+    end
+
+    def doc_auth_selfie_vendor_enabled?(vendor)
+      return true if IdentityConfig.store.doc_auth_selfie_vendor_default == vendor
+      return false unless IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled
+
+      case vendor
+      when Idp::Constants::Vendors::SOCURE
+        IdentityConfig.store.doc_auth_selfie_vendor_socure_percent > 0
+      when Idp::Constants::Vendors::LEXIS_NEXIS
+        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_percent > 0
       else
         false
       end
