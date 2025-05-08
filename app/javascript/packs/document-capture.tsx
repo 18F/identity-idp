@@ -177,7 +177,6 @@ render(
               statusEndpoint={String(appRoot.getAttribute('data-status-endpoint'))}
               statusPollInterval={Number(appRoot.getAttribute('data-status-poll-interval-ms'))}
               isMockClient={isMockClient}
-              isUploadEnabled={getUploadEnabled()}
               formData={formData}
               flowPath={flowPath}
               idType={idType}
@@ -193,6 +192,7 @@ render(
                   <SelfieCaptureContext.Provider
                     value={{
                       isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+                      isUploadEnabled: getUploadEnabled(),
                       isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
                       showHelpInitially: true,
                     }}
