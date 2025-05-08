@@ -146,6 +146,7 @@ describe('document-capture/components/documents-step', () => {
       <SelfieCaptureContext.Provider
         value={{
           isSelfieCaptureEnabled: true,
+          isUploadEnabled: false,
           isSelfieDesktopTestMode: false,
           showHelpInitially: true,
         }}
