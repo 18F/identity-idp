@@ -6,11 +6,6 @@ module Idv
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def doc_auth_vendor
-      if resolved_authn_context_result.facial_match? &&
-         !doc_auth_selfie_vendor_enabled?(idv_session.bucketed_doc_auth_vendor)
-        idv_session.bucketed_doc_auth_vendor = nil
-      end
-
       idv_session.bucketed_doc_auth_vendor ||= begin
         bucket = nil
         if socure_user_set.maxed_users?
