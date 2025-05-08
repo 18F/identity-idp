@@ -66,7 +66,7 @@ RSpec.describe Reports::IrsAuthenticationReport do
       subject: 'Authentication Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
-      attachment_format: :xlsx,
+      attachment_format: :csv,
     ).and_call_original
 
     report.perform(report_date)

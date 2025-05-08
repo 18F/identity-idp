@@ -118,7 +118,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: "Example Authentication Report - #{Time.zone.now.to_date}",
       message: irs_authentication_report.preamble,
-      attachment_format: :xlsx,
+      attachment_format: :csv,
       reports: irs_authentication_report.reports,
     )
   end
