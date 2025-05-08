@@ -608,7 +608,8 @@ doc_auth.headers.low_resolution: Es posible que la cámara de su dispositivo no 
 doc_auth.headers.unaccepted_id_type: Use una licencia de conducir o una identificación estatal
 doc_auth.headers.underage: No se cumplió con el requisito de edad
 doc_auth.headers.unreadable_id: No pudimos leer su identificación
-doc_auth.headings.address: Actualice su domicilio actual
+doc_auth.headings.address: Ingrese su domicilio actual
+doc_auth.headings.address_update: Actualice su domicilio actual
 doc_auth.headings.back: Reverso de su licencia de conducir o identificación estatal
 doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras de su identificación. Si la información siguiente es incorrecta, %{link_html} de su identificación.
@@ -626,6 +627,7 @@ doc_auth.headings.hybrid_handoff: '¿Cómo desea añadir su identificación?'
 doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cambiar dispositivos
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
+doc_auth.headings.mailing_address: Ingrese su dirección postal
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
@@ -681,6 +683,7 @@ doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
 doc_auth.info.login_access_sp: Está usando %{app_name} para acceder a %{sp_name}.
+doc_auth.info.mailing_address: Enviaremos la carta con un código de verificación a esta dirección.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
 doc_auth.info.passport_capture_help_1: Alinee la página de datos de su pasaporte con las líneas de guía.
@@ -1184,9 +1187,9 @@ idv.messages.gpo.info_alert: Tendrá que esperar hasta que reciba su carta para 
 idv.messages.gpo.learn_more_verify_by_mail: Obtenga más información sobre la verificación de su dirección por correo
 idv.messages.gpo.letter_on_the_way: Le enviaremos una carta
 idv.messages.gpo.resend: Envíenme otra carta
-idv.messages.gpo.start_over_html: Si esta no es la dirección correcta, tendrá que %{start_over_link_html}.
-idv.messages.gpo.start_over_link_text: empezar de nuevo y verificar con su nueva dirección
 idv.messages.gpo.timeframe_html: Recibirá una carta con un <strong>código de verificación</strong> en un plazo de <strong>5 a 10 días</strong>.
+idv.messages.gpo.verify_address_again_html: Si no puede recibir correspondencia en esa dirección, tendrá que %{verify_address_again_link_html}.
+idv.messages.gpo.verify_address_again_link_text: volver a verificar su dirección
 idv.messages.otp_delivery_method_description: Si introdujo un teléfono fijo arriba, seleccione “Llamada telefónica” a continuación.
 idv.messages.phone.alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
 idv.messages.phone.description: Revisaremos los registros para verificar que su número de teléfono coincida con su información verificada, y enviaremos un código de un solo uso.
@@ -1280,6 +1283,7 @@ in_person_proofing.body.location.location_button: Seleccionar
 in_person_proofing.body.location.po_search.address_label: Dirección
 in_person_proofing.body.location.po_search.address_search_label: Introduzca una dirección para buscar una oficina de correos cercana.
 in_person_proofing.body.location.po_search.city_label: Ciudad
+in_person_proofing.body.location.po_search.continue_button: Continuar
 in_person_proofing.body.location.po_search.is_searching_message: Buscando oficinas de correos…
 in_person_proofing.body.location.po_search.none_found: Lo sentimos, no hay oficinas de correos participantes a menos de 50 millas de %{address}.
 in_person_proofing.body.location.po_search.none_found_tip: Puede buscar usando una dirección diferente, o agregue fotos de su identificación para intentar verificar su identidad en línea de nuevo.
@@ -1289,12 +1293,17 @@ in_person_proofing.body.location.po_search.results_description.other: Hay %{coun
 in_person_proofing.body.location.po_search.results_instructions: Seleccione una oficina de correos a continuación, o busque de nuevo usando una dirección diferente.
 in_person_proofing.body.location.po_search.search_button: Buscar
 in_person_proofing.body.location.po_search.state_label: Estado
+in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Siga verificando su identidad. Después de generar un código de barras, puede usar nuestro <a target="_blank" href="%{link_url}"></a> para buscar un lugar participante.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Lo sentimos, tuvimos problemas técnicos y no pudimos buscar una oficina de correos participante.
+in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centro de ayuda
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: Imagen de un marcador de mapa
 in_person_proofing.body.location.po_search.zipcode_label: Código postal
 in_person_proofing.body.location.retail_hours_heading: Horario de atención al público
 in_person_proofing.body.location.retail_hours_sat: 'Sábado:'
 in_person_proofing.body.location.retail_hours_sun: 'Domingo:'
 in_person_proofing.body.location.retail_hours_weekday: 'De lunes a viernes:'
 in_person_proofing.body.location.selection: 'Esta es la oficina que seleccionó:'
+in_person_proofing.body.passport.info: We will verify this information against records. Your passport book must not be expired.
 in_person_proofing.body.prepare.privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y el Servicio Postal de los EE. UU. utilizamos sus datos para verificar su identidad.'
 in_person_proofing.body.prepare.privacy_disclaimer_link: Obtenga más información sobre la privacidad y la seguridad.
 in_person_proofing.body.prepare.privacy_disclaimer_questions: '¿Tiene alguna pregunta?'
@@ -1307,6 +1316,15 @@ in_person_proofing.body.state_id.alert_text: No se aceptan los pasaportes para l
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
+in_person_proofing.form.passport.dob: Date of birth
+in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.expiration_date: Expiration date
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.first_name: First name
+in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
+in_person_proofing.form.passport.passport_number: Passport number
+in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
+in_person_proofing.form.passport.surname: Surname
 in_person_proofing.form.state_id.address1: Línea de dirección 1
 in_person_proofing.form.state_id.address1_hint: 'Ejemplo: 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Línea de dirección 2
@@ -1346,6 +1364,7 @@ in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los doc
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
 in_person_proofing.headings.id_address: Domicilio que figura en su identificación
+in_person_proofing.headings.passport: Enter the information on your U.S. passport book
 in_person_proofing.headings.po_search.location: Busque una oficina de correos participante
 in_person_proofing.headings.prepare: Verifique su identidad en persona
 in_person_proofing.headings.state_id_milestone_2: Ingrese la información de su identificación emitida por el estado

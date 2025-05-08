@@ -1,24 +1,12 @@
 properties:
-  mfa-enroll-backup-code:
-    $ref: './registration/MfaEnrollBackupCode.yml'
   mfa-enroll-phone-otp-sent:
     $ref: './registration/MfaEnrollPhoneOtpSent.yml'
   mfa-enroll-code-rate-limited:
     $ref: './registration/MfaEnrollCodeRateLimited.yml'
   mfa-enroll-phone-otp-sent-rate-limited:
     $ref: './registration/MfaEnrollPhoneOtpSentRateLimited.yml'
-  mfa-enroll-phone-otp-submitted:
-    # note: should this event not include "submitted" for consistency?
-    # Or is that confusing with the "sent" event?
-    $ref: './registration/MfaEnrollPhoneOtpSubmitted.yml'
-  mfa-enroll-piv-cac:
-    $ref: './registration/MfaEnrollPivCac.yml'
-  mfa-enroll-totp:
-    $ref: './registration/MfaEnrollTotp.yml'
-  mfa-enroll-webauthn-platform:
-    $ref: './registration/MfaEnrollWebauthnPlatform.yml'
-  mfa-enroll-webauthn-roaming:
-    $ref: './registration/MfaEnrollWebauthnRoaming.yml'
+  mfa-enrolled:
+    $ref: './registration/MfaEnrolled.yml'
   user-registration-email-confirmed:
     $ref: './registration/UserRegistrationEmailConfirmed.yml'
   user-registration-email-submission-rate-limited:

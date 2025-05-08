@@ -1,0 +1,27 @@
+description: The user has set up multi-factor authentication 
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      success:
+        type: boolean
+        description: |
+          Indicates whether the MFA setup was successful.
+      mfa_device_type:
+        type: string
+        enum:
+          - backup_code
+          - otp
+          - piv_cac
+          - totp
+          - webauthn
+          - webauthn_platform
+      phone_number:
+        type: string
+        description: OPTIONAL UNLESS mfa_device_type is phone. The enrolled phone number.
+      otp_delivery_method:
+        type: string
+        enum: 
+          - sms
+          - voice
+        description: OPTIONAL UNLESS mfa_device_type is phone. The `otp_delivery_method` is included. 

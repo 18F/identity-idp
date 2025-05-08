@@ -1,9 +1,0 @@
-description: The user has enrolled a TOTP device for MFA.
-allOf:
-  - $ref: '../shared/EventProperties.yml'
-  - type: object
-    properties:
-      success:
-        type: boolean
-        description: |
-          Indicates whether the entered code matched what was sent AND was not expired.

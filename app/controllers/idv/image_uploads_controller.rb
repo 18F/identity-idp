@@ -23,9 +23,9 @@ module Idv
         acuant_sdk_upgrade_ab_test_bucket: ab_test_bucket(:ACUANT_SDK),
         analytics:,
         attempts_api_tracker:,
+        liveness_checking_required: resolved_authn_context_result.facial_match?,
         service_provider: current_sp,
         uuid_prefix: current_sp&.app_id,
-        liveness_checking_required: resolved_authn_context_result.facial_match?,
       )
     end
   end

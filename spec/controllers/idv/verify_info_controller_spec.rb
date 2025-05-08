@@ -577,7 +577,7 @@ RSpec.describe Idv::VerifyInfoController do
           state_id = event.dig(:proofing_results, :context, :stages, :state_id)
           expect(state_id).to match(
             hash_including(
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               vendor_name: 'aamva_placeholder',
             ),
           )

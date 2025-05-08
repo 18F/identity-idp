@@ -32,6 +32,10 @@ module InPersonHelper
   GOOD_IDENTITY_DOC_ZIPCODE =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode].freeze
 
+  GOOD_PASSPORT_NUMBER = Idp::Constants::MOCK_IPP_PASSPORT_APPLICANT[:passport_number].freeze
+  GOOD_PASSPORT_EXPIRATION_DATE =
+    Idp::Constants::MOCK_IPP_PASSPORT_APPLICANT[:passport_expiration_date].freeze
+
   def fill_out_state_id_form_ok(same_address_as_id: false, first_name: GOOD_FIRST_NAME)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
@@ -99,6 +103,17 @@ module InPersonHelper
             with: GOOD_ZIPCODE
     click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
     expect(page).to have_css('.location-collection-item')
+  end
+
+  # Fills in a memorable date component input
+  #
+  # @param [String] field_name Name of the form plus the component name. e.g. `test_form[test_dob]`
+  # @param [String] date The date to enter into the input. `Format: YYYY-MM-DD`
+  def fill_in_memorable_date(field_name, date)
+    year, month, day = date.split('-')
+    fill_in "#{field_name}[month]", with: month
+    fill_in "#{field_name}[day]", with: day
+    fill_in "#{field_name}[year]", with: year
   end
 
   def complete_location_step(_user = nil)
@@ -218,9 +233,10 @@ module InPersonHelper
     end
   end
 
-  def mark_in_person_enrollment_passed(user)
+  def mark_in_person_enrollment_passed(user, document_type = :state_id)
     enrollment = user.in_person_enrollments.last
     expect(enrollment).to_not be_nil
+    expect(enrollment.document_type&.to_sym).to eq(document_type)
     enrollment.profile.activate_after_passing_in_person
     enrollment.update(status: :passed)
   end

@@ -39,6 +39,7 @@ class SocureDocvResultsJob < ApplicationJob
           errors: { pii_validation: 'failed' },
           front_image_fingerprint: nil,
           back_image_fingerprint: nil,
+          passport_image_fingerprint: nil,
           selfie_image_fingerprint: nil,
         )
         return

@@ -14,6 +14,7 @@ module DocAuth
         attr_reader :response_mocks
         attr_accessor :last_uploaded_front_image
         attr_accessor :last_uploaded_back_image
+        attr_accessor :last_uploaded_passport_image
       end
 
       def self.mock_response!(method:, response:)
@@ -25,6 +26,7 @@ module DocAuth
         @response_mocks = {}
         @last_uploaded_front_image = nil
         @last_uploaded_back_image = nil
+        @last_uploaded_passport_image = nil
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
@@ -44,9 +46,18 @@ module DocAuth
         DocAuth::Response.new(success: true)
       end
 
+      def post_passport_image(image:, instance_id:)
+        return mocked_response_for_method(__method__) if method_mocked?(__method__)
+        self.class.last_uploaded_passport_image = image
+        error_response = http_error_response(image, 'passport')
+        return error_response if error_response
+        DocAuth::Response.new(success: true)
+      end
+
       def post_images(
-        front_image:,
-        back_image:,
+        front_image: nil,
+        back_image: nil,
+        passport_image: nil,
         document_type: nil,
         selfie_image: nil,
         image_source: nil,
@@ -58,21 +69,32 @@ module DocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
-        front_image_response = post_front_image(image: front_image, instance_id: instance_id)
-        return front_image_response unless front_image_response.success?
+        if document_type == 'Passport'
+          passport_image_response = post_passport_image(
+            image: passport_image,
+            instance_id: instance_id,
+          )
+          return passport_image_response unless passport_image_response.success?
+        else
+          front_image_response = post_front_image(image: front_image, instance_id: instance_id)
+          return front_image_response unless front_image_response.success?
 
-        back_image_response = post_back_image(image: back_image, instance_id: instance_id)
-        return back_image_response unless back_image_response.success?
+          back_image_response = post_back_image(image: back_image, instance_id: instance_id)
+          return back_image_response unless back_image_response.success?
+        end
 
         get_results(
           instance_id: instance_id,
           selfie_required: liveness_checking_required,
+          passport_submittal: passport_image.present?,
         )
       end
 
-      def get_results(instance_id:, selfie_required: false)
+      def get_results(instance_id:, selfie_required: false, passport_submittal: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        error_response = http_error_response(self.class.last_uploaded_back_image, 'result')
+        last_image = passport_submittal ?
+                       self.class.last_uploaded_passport_image : self.class.last_uploaded_back_image
+        error_response = http_error_response(last_image, 'result')
         return error_response if error_response
         overriden_config = config.dup.tap do |c|
           c.dpi_threshold = 290
@@ -81,7 +103,7 @@ module DocAuth
         end
 
         ResultResponse.new(
-          self.class.last_uploaded_back_image,
+          last_image,
           overriden_config,
           selfie_required,
         )

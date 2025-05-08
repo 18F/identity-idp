@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPersonController do
+  include PassportApiHelpers
+
   let(:in_person_proofing_enabled) { false }
   let(:sp) { nil }
   let(:user) { build(:user) }
@@ -59,51 +61,54 @@ RSpec.describe Idv::InPersonController do
           end
 
           context 'when user has an establishing in-person enrollment' do
+            let(:document_capture_session) do
+              DocumentCaptureSession.create(user: user, requested_at: Time.zone.now)
+            end
+            let(:document_capture_session_uuid) { document_capture_session&.uuid }
             before do
+              idv_session.document_capture_session_uuid = document_capture_session_uuid
               create(:in_person_enrollment, :establishing, user: user)
             end
 
-            it 'initializes the in-person session' do
-              get :index
-
-              expect(controller.user_session['idv/in_person']).to include(
-                pii_from_user: { uuid: user.uuid },
-              )
-            end
-
-            it 'redirects to the first step' do
-              get :index
-
-              expect(response).to redirect_to idv_in_person_state_id_path
-            end
-
-            it 'has non-nil presenter' do
-              get :index
-
-              expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
-            end
-
-            context 'when in person passports are allowed' do
-              before do
-                allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
-              end
-
-              it 'redirects to the choose ID type page' do
+            context 'when passports are not allowed' do
+              it 'initializes the in-person session' do
                 get :index
 
-                expect(response).to redirect_to idv_in_person_choose_id_type_path
-              end
-            end
-
-            context 'when passports are not allowed' do
-              before do
-                allow(idv_session).to receive(:in_person_passports_allowed?).and_return(false)
+                expect(controller.user_session['idv/in_person']).to include(
+                  pii_from_user: { uuid: user.uuid },
+                )
               end
 
-              it 'redirects to the state ID page' do
+              it 'redirects to the first step' do
                 get :index
 
                 expect(response).to redirect_to idv_in_person_state_id_path
+              end
+
+              it 'has non-nil presenter' do
+                get :index
+
+                expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+              end
+            end
+
+            context 'when passports are allowed' do
+              let(:document_capture_session) do
+                DocumentCaptureSession.create(
+                  user: user, requested_at: Time.zone.now,
+                  passport_status: 'allowed'
+                )
+              end
+              let(:document_capture_session_uuid) { document_capture_session&.uuid }
+              before do
+                idv_session.document_capture_session_uuid = document_capture_session_uuid
+                create(:in_person_enrollment, :establishing, user: user)
+              end
+
+              it 'redirects to the choose id page' do
+                get :index
+
+                expect(response).to redirect_to idv_in_person_choose_id_type_path
               end
             end
           end
@@ -150,8 +155,17 @@ RSpec.describe Idv::InPersonController do
           end
 
           context 'with establishing in-person enrollment' do
+            let(:document_capture_session) do
+              DocumentCaptureSession.create(
+                user: user, requested_at: Time.zone.now,
+                passport_status: 'allowed'
+              )
+            end
+            let(:document_capture_session_uuid) { document_capture_session&.uuid }
             before do
+              idv_session.document_capture_session_uuid = document_capture_session_uuid
               create(:in_person_enrollment, :establishing, user: user)
+              allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
             end
 
             it 'initializes the in-person session' do
@@ -176,7 +190,8 @@ RSpec.describe Idv::InPersonController do
 
             context 'when in person passports are allowed' do
               before do
-                allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+                allow(IdentityConfig.store).to receive(:in_person_passports_enabled)
+                  .and_return(true)
               end
 
               it 'redirects to the choose ID type page' do
@@ -188,7 +203,8 @@ RSpec.describe Idv::InPersonController do
 
             context 'when passports are not allowed' do
               before do
-                allow(idv_session).to receive(:in_person_passports_allowed?).and_return(false)
+                allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+                  .and_return(false)
               end
 
               it 'redirects to the state ID page' do

@@ -38,11 +38,11 @@ module Idv
       response.success?
     end
 
-    def locals_attrs(analytics:, presenter:, url_for: nil)
+    def locals_attrs(analytics:, presenter:, form_submit_url: nil)
       dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
       {
         presenter:,
-        url_for:,
+        form_submit_url:,
         dos_passport_api_down:,
         auto_check_value: dos_passport_api_down ? :drivers_license : selected_id_type,
       }

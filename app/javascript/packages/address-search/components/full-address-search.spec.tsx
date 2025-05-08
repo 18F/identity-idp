@@ -28,6 +28,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={onSelect}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -55,6 +56,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={null}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -81,6 +83,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={onSelect}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -100,6 +103,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={null}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -123,6 +127,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={undefined}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -157,6 +162,7 @@ describe('FullAddressSearch', () => {
               registerField={() => undefined}
               handleLocationSelect={undefined}
               disabled={false}
+              usesErrorComponent
             />
           </SWRConfig>
           ,
@@ -202,6 +208,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={undefined}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -241,6 +248,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={undefined}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -269,6 +277,98 @@ describe('FullAddressSearch', () => {
     });
   });
 
+  context('when address search errors', () => {
+    let server: SetupServer;
+    before(() => {
+      server = setupServer(http.post(locationsURL, () => HttpResponse.error()));
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('shows error component', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const { findByText, getByText, getByLabelText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={undefined}
+            disabled={false}
+            usesErrorComponent
+          />
+        </SWRConfig>,
+      );
+
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.address_label'),
+        '200 main',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.city_label'),
+        'Endeavor',
+      );
+      await userEvent.selectOptions(
+        getByLabelText('in_person_proofing.body.location.po_search.state_label'),
+        'DE',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+        '17201',
+      );
+      await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
+
+      const errorComponent = await findByText(
+        'in_person_proofing.body.location.po_search.usps_facilities_api_error_header',
+      );
+      expect(errorComponent).to.exist();
+    });
+
+    it('shows continue button', async () => {
+      const handleLocationsFound = sandbox.stub();
+      const { findByText, getByText, getByLabelText } = render(
+        <SWRConfig value={{ provider: () => new Map() }}>
+          <FullAddressSearch
+            usStatesTerritories={usStatesTerritories}
+            onFoundLocations={handleLocationsFound}
+            locationsURL={locationsURL}
+            registerField={() => undefined}
+            handleLocationSelect={undefined}
+            disabled={false}
+            usesErrorComponent
+          />
+        </SWRConfig>,
+      );
+
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.address_label'),
+        '200 main',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.city_label'),
+        'Endeavor',
+      );
+      await userEvent.selectOptions(
+        getByLabelText('in_person_proofing.body.location.po_search.state_label'),
+        'DE',
+      );
+      await userEvent.type(
+        getByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+        '17201',
+      );
+      await userEvent.click(getByText('in_person_proofing.body.location.po_search.search_button'));
+
+      const errorBtn = await findByText(
+        'in_person_proofing.body.location.po_search.continue_button',
+      );
+      expect(errorBtn).to.exist();
+    });
+  });
+
   context('when an address is found', () => {
     let server: SetupServer;
     before(() => {
@@ -293,6 +393,7 @@ describe('FullAddressSearch', () => {
             registerField={() => undefined}
             handleLocationSelect={undefined}
             disabled={false}
+            usesErrorComponent
           />
         </SWRConfig>,
       );
@@ -348,6 +449,7 @@ describe('FullAddressSearch', () => {
             handleLocationSelect={onSelect}
             disabled={false}
             resultsSectionHeading={() => <h2>{resultsSectionHeadingText}</h2>}
+            usesErrorComponent
           />
         </SWRConfig>,
       );

@@ -41,7 +41,7 @@
 
 <%= simple_form_for(
       :doc_auth,
-      url: url_for,
+      url: form_submit_url,
       method: :put,
     ) do |f| %>
       <%= render ValidatedFieldComponent.new(

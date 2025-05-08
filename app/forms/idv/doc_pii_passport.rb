@@ -18,7 +18,7 @@ module Idv
 
     validate :passport_expired?
 
-    attr_reader :birth_place, :passport_expiration, :passport_issued, :state_id_type,
+    attr_reader :birth_place, :passport_expiration, :passport_issued,
                 :issuing_country_code, :nationality_code, :mrz
 
     def initialize(pii:)

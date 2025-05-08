@@ -153,7 +153,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: 'USA',
       )
@@ -244,7 +244,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.doc_type_supported?).to eq(true)
     end
 
-    context 'when identification card issued by a country' do
+    context 'when identification card issued by a library' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
           doc_class_node = json['Products'].first['ParameterDetails']
@@ -252,7 +252,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'Library'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
       end
@@ -321,7 +321,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         nationality_code: 'USA',
         issuing_country_code: 'USA',
         mrz: mrz,
-        state_id_type: 'passport',
+        id_doc_type: 'passport',
         document_number: 'Z12345678',
       )
 
@@ -518,7 +518,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: nil,
       )
@@ -885,7 +885,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'National'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
       end
@@ -902,7 +902,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'National'
 
           image_metric_resolution = json['Products'].first['ParameterDetails']
             .select do |f|

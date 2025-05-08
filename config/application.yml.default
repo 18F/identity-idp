@@ -104,6 +104,8 @@ doc_auth_client_sharpness_threshold: 50
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+doc_auth_manual_upload_disabled_a_b_testing_enabled: false
+doc_auth_manual_upload_disabled_a_b_testing_percent: 0
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
@@ -122,6 +124,8 @@ doc_auth_vendor_socure_percent: 0
 doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
+doc_escrow_enabled: false
+doc_escrow_s3_storage_enabled: false
 domain_name: login.gov
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
@@ -216,6 +220,8 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
+irs_authentication_emails: '[]'
+irs_authentication_issuers: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
 # LexisNexis #####################################################
@@ -582,6 +588,8 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  irs_authentication_emails: '["g@example.com", "h@example.com"]'
+  irs_authentication_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'

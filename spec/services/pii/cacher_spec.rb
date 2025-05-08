@@ -4,6 +4,7 @@ RSpec.describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
   let(:user) { create(:user, :with_phone, password: password) }
   let(:user_session) { {}.with_indifferent_access }
+  let(:ssn) { '123456789' }
 
   let(:active_pii) do
     Pii::Attributes.new(
@@ -11,7 +12,7 @@ RSpec.describe Pii::Cacher do
       last_name: 'Testerson',
       dob: '2023-01-01',
       zipcode: '10000',
-      ssn: '123-45-6789',
+      ssn: ssn,
     )
   end
   let(:active_profile) do
@@ -26,7 +27,7 @@ RSpec.describe Pii::Cacher do
       last_name: 'Testerson2',
       dob: '2023-01-01',
       zipcode: '10000',
-      ssn: '999-99-9999',
+      ssn: '999999999',
     )
   end
   let(:pending_profile) do
@@ -54,6 +55,32 @@ RSpec.describe Pii::Cacher do
         encrypted_pending_session_pii,
       )
       expect(decrypted_pending_session_pii).to eq(pending_pii.to_json)
+    end
+
+    context 'when the original signature was based on an unnormalized SSN' do
+      before do
+        stub_analytics
+      end
+
+      let(:ssn) { '123-45-6789' }
+
+      it 'updates the ssn_signature based on the normalized form' do
+        old_ssn_signature = active_profile.ssn_signature
+
+        # Create a new user object to drop the memoized encrypted attributes
+        reloaded_user = User.find(user.id)
+
+        described_class.new(reloaded_user, user_session, analytics: @analytics)
+          .save(password, active_profile)
+
+        active_profile.reload
+
+        expect(active_profile.ssn_signature).to_not eq(old_ssn_signature)
+        expect(active_profile.ssn_signature).to eq(Pii::Fingerprinter.fingerprint('123456789'))
+        expect(@analytics).to have_logged_event(
+          :fingerprints_rotated,
+        )
+      end
     end
 
     it 'updates PII bundle fingerprints when keys are rotated' do

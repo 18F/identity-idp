@@ -9,6 +9,7 @@ module Idv
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
   # @attr gpo_code_verified [Boolean, nil]
+  # @attr gpo_letter_requested [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
   # @attr idv_consent_given [Boolean, nil]
@@ -56,6 +57,7 @@ module Idv
       flow_path
       go_back_path
       gpo_code_verified
+      gpo_letter_requested
       had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
@@ -238,7 +240,7 @@ module Idv
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
 
-      if session[:pii_from_doc][:state_id_type] == 'passport'
+      if session[:pii_from_doc][:id_doc_type] == 'passport'
         passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
         Pii::Passport.new(**passport_data)
       else
