@@ -32,7 +32,7 @@ module Reports
         subject: "Fraud Metrics Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
-        attachment_format: :xlsx,
+        attachment_format: :csv,
       ).deliver_now
     end
 

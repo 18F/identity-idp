@@ -118,7 +118,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: "Example Fraud Key Metrics Report - #{Time.zone.now.to_date}",
       message: irs_fraud_metrics_report.preamble,
-      attachment_format: :xlsx,
+      attachment_format: :csv,
       reports: irs_fraud_metrics_report.reports,
     )
   end

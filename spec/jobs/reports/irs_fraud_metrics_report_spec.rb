@@ -92,7 +92,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       subject: 'Fraud Metrics Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
-      attachment_format: :xlsx,
+      attachment_format: :csv,
     ).and_call_original
 
     report.perform(report_date)
@@ -107,7 +107,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
         subject: 'Fraud Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,
-        attachment_format: :xlsx,
+        attachment_format: :csv,
       ).and_call_original
 
       report.perform(report_date)
