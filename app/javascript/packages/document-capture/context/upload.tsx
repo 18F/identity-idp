@@ -9,7 +9,6 @@ const UploadContext = createContext({
   getStatus: () => Promise.resolve({} as UploadSuccessResponse),
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
-  isUploadEnabled: false,
   flowPath: 'standard' as FlowPath,
   idType: 'state_id',
   formData: {} as Record<string, any>,
@@ -151,11 +150,6 @@ interface UploadContextProviderProps {
   isMockClient?: boolean;
 
   /**
-   * Whether to enable manual upload.
-   */
-  isUploadEnabled?: boolean;
-
-  /**
    * Endpoint to which payload should be sent.
    */
   endpoint: string;
@@ -200,7 +194,6 @@ const DEFAULT_FORM_DATA = {};
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
-  isUploadEnabled = false,
   endpoint,
   statusEndpoint,
   statusPollInterval,
@@ -233,7 +226,6 @@ function UploadContextProvider({
     getStatus,
     statusPollInterval,
     isMockClient,
-    isUploadEnabled,
     flowPath,
     idType,
     formData,
