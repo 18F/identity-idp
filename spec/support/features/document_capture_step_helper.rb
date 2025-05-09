@@ -38,6 +38,18 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
   end
 
+  def choose_id_type(id_type)
+    case id_type
+    when :passport
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+    when :state_id
+      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+    else
+      raise "choose_id_type: unsupported id type: #{id_type}"
+    end
+    click_continue
+  end
+
   def document_capture_form
     page.find('#document-capture-form')
   end
