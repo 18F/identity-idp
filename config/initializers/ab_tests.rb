@@ -140,6 +140,6 @@ module AbTests
         IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
-    user&.uuid
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 end

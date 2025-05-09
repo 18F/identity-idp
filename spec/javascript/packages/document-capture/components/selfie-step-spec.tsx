@@ -33,6 +33,7 @@ describe('document-capture/components/selfie-step', () => {
         <SelfieCaptureContext.Provider
           value={{
             isSelfieCaptureEnabled: false,
+            isUploadEnabled: false,
             isSelfieDesktopTestMode: false,
             showHelpInitially: false,
           }}
@@ -73,6 +74,7 @@ describe('document-capture/components/selfie-step', () => {
         <SelfieCaptureContext.Provider
           value={{
             isSelfieCaptureEnabled: false,
+            isUploadEnabled: true,
             isSelfieDesktopTestMode: false,
             showHelpInitially: false,
           }}

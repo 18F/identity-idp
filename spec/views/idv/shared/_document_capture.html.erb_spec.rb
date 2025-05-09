@@ -14,6 +14,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:selfie_capture_enabled) { true }
+  let(:upload_enabled) { true }
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth_from_how_to_verify) { false }
@@ -55,6 +56,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
+      doc_auth_upload_enabled: upload_enabled,
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       skip_doc_auth_from_socure: skip_doc_auth_from_socure,
@@ -145,6 +147,16 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         render_partial
         expect(rendered).to have_css(
           "#document-capture-form[data-doc-auth-selfie-capture='false']",
+        )
+      end
+    end
+
+    context 'when doc_auth_upload_enabled is false' do
+      let(:upload_enabled) { false }
+      it 'does not send doc_auth_upload_enabled to the FE' do
+        render_partial
+        expect(rendered).to have_css(
+          "#document-capture-form[data-doc-auth-upload-enabled='false']",
         )
       end
     end

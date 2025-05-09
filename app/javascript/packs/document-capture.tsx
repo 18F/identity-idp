@@ -43,6 +43,7 @@ interface AppRootData {
   previousStepUrl: string;
   docAuthPassportsEnabled: string;
   docAuthSelfieDesktopTestMode: string;
+  docAuthUploadEnabled: string;
   accountUrl: string;
   locationsUrl: string;
   sessionsUrl: string;
@@ -62,6 +63,11 @@ function getServiceProvider() {
 function getSelfieCaptureEnabled() {
   const { docAuthSelfieCapture } = appRoot.dataset;
   return docAuthSelfieCapture === 'true';
+}
+
+function getUploadEnabled() {
+  const { docAuthUploadEnabled } = appRoot.dataset;
+  return docAuthUploadEnabled === 'true';
 }
 
 function getMetaContent(name): string | null {
@@ -119,6 +125,7 @@ const {
   previousStepUrl,
   docAuthPassportsEnabled,
   docAuthSelfieDesktopTestMode,
+  docAuthUploadEnabled,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -186,6 +193,7 @@ render(
                   <SelfieCaptureContext.Provider
                     value={{
                       isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+                      isUploadEnabled: getUploadEnabled(),
                       isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
                       showHelpInitially: true,
                     }}
