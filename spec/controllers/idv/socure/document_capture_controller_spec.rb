@@ -12,6 +12,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:socure_docv_verification_data_test_mode) { false }
   let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
   let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
+  let(:idv_socure_docv_flow_id_only) { 'id only flow' }
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -39,6 +41,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_switching_enabled)
+      .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
+      .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
+      .and_return(idv_socure_docv_flow_id_only)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -118,31 +127,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
         end
       end
-
-      context 'when facial match is required' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-
-        before do
-          resolved_authn_context = AuthnContextResolver.new(
-            user: user,
-            service_provider: nil,
-            vtr: nil,
-            acr_values: acr_values,
-          ).result
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-        end
-
-        it 'redirects to the LN/mock controller' do
-          get :show
-          expect(response).to redirect_to idv_document_capture_url
-        end
-      end
     end
 
     context 'happy path' do
@@ -173,6 +157,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           .with(
             redirect_url: idv_socure_document_capture_update_url,
             language: expected_language,
+            liveness_checking_required: false,
           )
       end
 
@@ -206,6 +191,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       url: idv_socure_document_capture_update_url,
                     },
                     language: :en,
+                    useCaseKey: idv_socure_docv_flow_id_only,
                   },
                 },
               ),
@@ -228,6 +214,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       url: idv_socure_document_capture_update_url,
                     },
                     language: 'zh-cn',
+                    useCaseKey: idv_socure_docv_flow_id_only,
                   },
                 },
               ),

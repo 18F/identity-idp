@@ -5402,6 +5402,7 @@ module AnalyticsEvents
   # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
+  # @param [String] use_case_key name of requested DocV flow
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -5426,6 +5427,7 @@ module AnalyticsEvents
     flow_path: nil,
     socure_status: nil,
     socure_msg: nil,
+    use_case_key: nil,
     **extra
   )
     track_event(
@@ -5452,6 +5454,7 @@ module AnalyticsEvents
       flow_path:,
       socure_status:,
       socure_msg:,
+      use_case_key:,
       **extra,
     )
   end
