@@ -240,6 +240,15 @@ module AttemptsApi
       )
     end
 
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP sends during mfa enrollment.
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
+      track_event(
+        'mfa-enroll-phone-otp-sent-rate-limited',
+        phone_number:,
+      )
+    end
+
     # Tracks when user submits a verification attempt using their MFA.
     # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
     # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
@@ -253,6 +262,15 @@ module AttemptsApi
         reauthentication:,
         success:,
         failure_reason:,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP sends during login attempt.
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:)
+      track_event(
+        'mfa-enroll-phone-otp-sent-rate-limited',
+        phone_number:,
       )
     end
 

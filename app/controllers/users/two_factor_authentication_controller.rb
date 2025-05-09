@@ -176,11 +176,17 @@ module Users
       otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
 
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends
+        return handle_too_many_otp_sends(
+          phon_number: parsed_phone.e164,
+          context:,
+        )
       end
       otp_rate_limiter.increment
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends
+        return handle_too_many_otp_sends(
+          phone_number: parsed_phone.e164,
+          context:,
+        )
       end
 
       if exceeded_short_term_otp_rate_limit?

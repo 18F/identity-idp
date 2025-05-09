@@ -378,6 +378,11 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?)
           .and_return(true)
 
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).with(
+          phone_number: Phonelib.parse(MfaContext.new(@user).phone_configurations.first.phone).e164,
+        )
+
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
             get :send_code, params: {
@@ -660,6 +665,10 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?)
           .and_return(true)
+
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited)
+          .with(phone_number: Phonelib.parse(subject.user_session[:unconfirmed_phone]).e164)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
