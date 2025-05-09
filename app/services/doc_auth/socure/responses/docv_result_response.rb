@@ -64,10 +64,10 @@ module DocAuth
         end
 
         def selfie_status
-          return :not_processed if reason_codes.intersect? reason_codes_selfie_not_processed
-          return :fail if reason_codes.intersect? reason_codes_selfie_fail
+          return :not_processed if reason_codes&.intersect? reason_codes_selfie_not_processed
+          return :fail if reason_codes&.intersect? reason_codes_selfie_fail
 
-          if reason_codes.intersect? reason_codes_selfie_pass
+          if reason_codes&.intersect? reason_codes_selfie_pass
             # are all codes req'd for now only getting image matches but not liveness
             # if (reason_codes & reason_codes_selfie_pass).sort == reason_codes_selfie_pass.sort
             return :success
