@@ -95,11 +95,20 @@ RSpec.feature 'Sign Up' do
 
   context 'User in account creation logs in_account_creation_flow for proper analytic events' do
     let(:fake_analytics) { FakeAnalytics.new }
+    let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
     before do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+        attempts_api_tracker,
+      )
     end
+
     it 'logs analytic events for MFA selected with in account creation flow' do
       sign_up_and_set_password
+      expect(attempts_api_tracker).to receive(:mfa_enrolled).with(
+        success: true,
+        mfa_device_type: 'backup_code',
+      )
       click_2fa_option('phone')
       click_2fa_option('backup_code')
 
