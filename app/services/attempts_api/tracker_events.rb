@@ -124,8 +124,8 @@ module AttemptsApi
     def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
       track_event(
         'idv-phone-otp-submitted',
-        phone_number:,
         success:,
+        phone_number:,
         failure_reason:,
       )
     end
