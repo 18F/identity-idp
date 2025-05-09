@@ -56,6 +56,13 @@ module Idv
         .call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result, **ab_test_analytics_buckets)
+
+      attempts_api_tracker.idv_phone_submitted(
+        phone_number: Phonelib.parse(step_params[:phone]).e164,
+        success: result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
+
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
@@ -114,6 +121,14 @@ module Idv
       analytics.idv_phone_confirmation_otp_sent(
         **result.to_h.merge(adapter: Telephony.config.adapter),
       )
+
+      attempts_api_tracker.idv_phone_otp_sent(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        otp_delivery_method: result.extra[:otp_delivery_preference],
+        failure_reason: result.success? ? nil : otp_sent_tracker_error(result),
+      )
+
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -226,10 +241,14 @@ module Idv
     # Migrated from otp_delivery_method_controller
     def otp_sent_tracker_error(result)
       if send_phone_confirmation_otp_rate_limited?
-        { rate_limited: true }
+        { telephony_error: ['rate_limited'] }
       else
-        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+        error = result.to_h[:telephony_response].error.friendly_error_message_key.split('.').last
+        { telephony_error: [error] }
       end
+    end
+
+    def otp_submitted_tracker_error(result)
     end
 
     # Migrated from otp_delivery_method_controller

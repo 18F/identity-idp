@@ -29,6 +29,7 @@ allOf:
                 - invalid_phone_number
                 - opt_out
                 - permanent_failure
+                - rate_limited
                 - sms_unsupported
                 - temporary_failure
                 - throttled

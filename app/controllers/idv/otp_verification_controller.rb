@@ -24,6 +24,12 @@ module Idv
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.idv_phone_confirmation_otp_submitted(**result, **ab_test_analytics_buckets)
 
+      attempts_api_tracker.idv_phone_otp_submitted(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        failure_reason: result.success? ? nil : failure_reason(result.to_h),
+      )
+
       if result.success?
         idv_session.mark_phone_step_complete!
         save_in_person_notification_phone
@@ -98,6 +104,14 @@ module Idv
         TwoFactorAuthenticatable::PROOFING_VOICE_DIRECT_OTP_LENGTH
       else
         TwoFactorAuthenticatable::PROOFING_SMS_DIRECT_OTP_LENGTH
+      end
+    end
+
+    def failure_reason(result)
+      if !result[:code_matches]
+        { code: ['does_not_match'] }
+      elsif result[:code_expired]
+        { code: ['expired'] }
       end
     end
   end
