@@ -13,9 +13,19 @@
     <%= t('user_mailer.in_person_failed.body.without_cta', sp_name: @presenter.service_provider.friendly_name) %>
   <% end %>
 </p>
-<p><strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong></p>
-<ul class="usa-list">
-  <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
-</ul>
+
+<% if @presenter.passports_enabled? %>
+    <p><strong><%= t('user_mailer.in_person_failed.verifying_identity_passports_enabled') %></strong></p>
+    <ul class="usa-list"> 
+      <li><%= t('user_mailer.in_person_failed.verifying_step_passports_enabledb1') %> </li>
+      <li><%= t('user_mailer.in_person_failed.verifying_step_passports_enabledb2') %> </li>
+      <li><%= t('user_mailer.in_person_failed.verifying_step_passports_enabledb3_html', app_name: APP_NAME) %> </li>
+    </ul>
+<% else %>
+    <p><strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong></p>
+    <ul class="usa-list"> 
+      <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li> 
+    </ul>
+<% end %>
 
 <%= render 'shared/in-person-verification-results-email-lower' %>
