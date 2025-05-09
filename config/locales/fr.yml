@@ -622,6 +622,7 @@ doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
 doc_auth.headings.passport_instructions.howto: 'Comment vous prendre en photo :'
 doc_auth.headings.review_issues: Vérifiez vos images et essayez à nouveau
+doc_auth.headings.review_issues_passport: Vérifiez votre photo et essayez à nouveau
 doc_auth.headings.secure_account: Sécuriser votre compte
 doc_auth.headings.selfie: Photo de votre visage
 doc_auth.headings.selfie_capture: Prenez-vous en photo
@@ -678,6 +679,7 @@ doc_auth.info.passport_capture: Prenez une photo de la page d’informations de 
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
 doc_auth.info.passport_capture_help_2: Ne bougez pas et attendez que l’appareil se déclenche.
 doc_auth.info.review_examples_of_photos: Voir des exemples qui montrent comment prendre des photos nettes de votre pièce d’identité.
+doc_auth.info.review_passport: Nous n’avons pas trouvé dans nos données enregistrées d’informations correspondant aux informations figurant sur votre passeport. Ajouter une nouvelle photo de votre pièce d’identité au cas où les informations figurant sur votre passeport auraient été lues de façon incorrecte.
 doc_auth.info.secure_account: Nous chiffrons votre compte lorsque vous ressaisissez votre mot de passe. Avec le chiffrement, vos données sont protégées et vous seul pouvez modifier vos informations.
 doc_auth.info.selfie_capture_content: Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
 doc_auth.info.selfie_capture_help_1: Placez votre visage à l’intérieur du cercle vert. Ne bougez pas et attendez que l’appareil se déclenche.

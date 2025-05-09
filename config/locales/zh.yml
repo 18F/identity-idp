@@ -633,6 +633,7 @@ doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
 doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
+doc_auth.headings.review_issues_passport: 检查一下你的照片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
 doc_auth.headings.selfie_capture: 拍你本人照片
@@ -689,6 +690,7 @@ doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。
 doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
 doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
+doc_auth.info.review_passport: 我们找不到与你护照信息匹配的记录。添加你ID的新照片，以防你护照信息没被正确读取。
 doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
 doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
