@@ -218,7 +218,7 @@ module AttemptsApi
     # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
     # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
     # @param [String<'sms','voice'>] otp_delivery_method
-    # @param [String] phone Enrolled phone number
+    # @param [String] phone_number Enrolled phone number
     def mfa_enrolled(success:, mfa_device_type:, otp_delivery_method: nil, phone_number: nil)
       track_event(
         'mfa-enrolled',

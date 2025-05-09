@@ -113,6 +113,14 @@ RSpec.feature 'Sign Up' do
       click_2fa_option('backup_code')
 
       click_continue
+
+      expect(attempts_api_tracker).to receive(:mfa_enrolled).with(
+        success: true,
+        mfa_device_type: 'phone',
+        otp_delivery_method: 'sms',
+        phone_number: Phonelib.parse('703-555-1212').e164,
+      )
+
       fill_in 'new_phone_form_phone', with: '703-555-1212'
       click_send_one_time_code
 
