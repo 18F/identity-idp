@@ -83,6 +83,15 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
+    context 'with nil user' do
+      let(:user) { nil }
+
+      it 'logs nil user_uuid' do
+        event = subject.track_event(:test_event)
+        expect(event.event_metadata[:user]).to be_nil
+      end
+    end
+
     context 'user has existing Agency UUID' do
       context 'for event that skips UUID creation' do
         it 'returns Agency UUID in event' do
