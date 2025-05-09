@@ -214,11 +214,18 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
-    # A user has attempted to enroll the Backup Codes MFA method to their account
-    def mfa_enroll_backup_code(success:)
+    # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
+    # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
+    # @param [String<'sms','voice'>] otp_delivery_method
+    # @param [String] phone Enrolled phone number
+    # Tracks when user enrolls their MFA device.
+    def mfa_enrolled(success:, mfa_device_type:, otp_delivery_method: nil, phone: nil)
       track_event(
-        'mfa-enroll-backup-code',
+        'mfa-enrolled',
         success:,
+        mfa_device_type:,
+        otp_delivery_method:,
+        phone:,
       )
     end
 
