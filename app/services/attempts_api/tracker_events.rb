@@ -117,8 +117,8 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
     # @param [String] phone_number
-    # param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # User submits OTP code sent to their phone
     def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
