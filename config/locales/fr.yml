@@ -1350,6 +1350,7 @@ in_person_proofing.form.state_id.zipcode: Code postal
 in_person_proofing.headings.address: Saisissez votre adresse résidentielle actuelle
 in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité l’État à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
+in_person_proofing.headings.barcode_passport: Show this barcode and your U.S. passport book at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: À apporter au bureau de poste
 in_person_proofing.headings.cta: Essayez de confirmer votre identité en personne
 in_person_proofing.headings.id_address: Adresse sur votre pièce d’identité
@@ -1387,6 +1388,8 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Carte d’immatriculation d’un véhicule
   - Attestation d’assurance habitation
   - Attestation d’assurance automobile/deux roues
+in_person_proofing.process.passport.heading: Show your U.S. passport book
+in_person_proofing.process.passport.info: We do not currently accept any other forms of identification, such as military IDs.
 in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + de deux documents complémentaires
 in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID et deux documents
 in_person_proofing.process.real_id_and_supporting_docs.info: 'Si l’adresse figurant sur votre REAL ID n’est pas votre adresse actuelle, veuillez présenter le document REAL ID accompagné de deux documents complémentaires parmi ceux de la liste ci-dessous :'
