@@ -5,7 +5,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
-  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie_flow'}
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie_flow' }
   let(:use_case_key) { idv_socure_docv_flow_id_only }
 
   subject(:document_request) do
