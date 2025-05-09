@@ -24,12 +24,18 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:timeout_socure_route) do
     idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
   end
+  let(:idv_socure_docv_flow_id_only) { 'id only flow' }
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
       .and_return(fake_socure_endpoint)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
+      .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
+      .and_return(idv_socure_docv_flow_id_only)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -127,6 +133,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           .with(
             redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: expected_language,
+            liveness_checking_required: false,
           )
       end
 
@@ -160,6 +167,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: expected_language,
+                    useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
                   },
                 },
               ),
@@ -182,6 +190,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: 'zh-cn',
+                    useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
                   },
                 },
               ),
