@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response #, :biometric_comparison_required
+        attr_reader :http_response
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -39,7 +39,6 @@ module DocAuth
 
         def initialize(http_response:)
           @http_response = http_response
-          # @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
 
           super(
@@ -83,7 +82,6 @@ module DocAuth
             vendor_status: get_data(DATA_PATHS[:status]),
             vendor_status_message: get_data(DATA_PATHS[:msg]),
             decision: get_data(DATA_PATHS[:decision]),
-            biometric_comparison_required: liveness_enabled, # delete this attr
             customer_profile: get_data(DATA_PATHS[:customer_profile]),
             reason_codes:,
             document_type: get_data(DATA_PATHS[:document_type]),
