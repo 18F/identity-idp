@@ -177,7 +177,7 @@ module Users
 
       if exceeded_otp_send_limit?
         return handle_too_many_otp_sends(
-          phon_number: parsed_phone.e164,
+          phone_number: parsed_phone.e164,
           context:,
         )
       end
