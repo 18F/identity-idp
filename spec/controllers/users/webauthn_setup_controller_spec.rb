@@ -119,8 +119,9 @@ RSpec.describe Users::WebauthnSetupController do
 
       it 'tracks the submission' do
         Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-        expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_roaming).with(
+        expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
           success: true,
+          mfa_device_type: 'webauthn',
         )
 
         patch :confirm, params: params
@@ -244,8 +245,9 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'logs setup event with session value' do
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_roaming).with(
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
             success: true,
+            mfa_device_type: 'webauthn',
           )
 
           patch :confirm, params: params
@@ -370,8 +372,9 @@ RSpec.describe Users::WebauthnSetupController do
 
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_roaming).with(
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
             success: true,
+            mfa_device_type: 'webauthn',
           )
 
           patch :confirm, params: params
@@ -427,9 +430,11 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log expected events' do
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_platform).with(
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
             success: true,
+            mfa_device_type: 'webauthn_platform',
           )
+
           patch :confirm, params: params
 
           expect(@analytics).to have_logged_event(
@@ -460,8 +465,9 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log submitted failure' do
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_platform).with(
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
             success: false,
+            mfa_device_type: 'webauthn_platform',
           )
 
           get :new, params: { platform: true, error: 'NotAllowedError' }
@@ -491,8 +497,9 @@ RSpec.describe Users::WebauthnSetupController do
         it 'should log expected events' do
           allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
           allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_platform).with(
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
             success: false,
+            mfa_device_type: 'webauthn_platform',
           )
 
           patch :confirm, params: params
@@ -543,8 +550,9 @@ RSpec.describe Users::WebauthnSetupController do
 
       it 'tracks the submission' do
         Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-        expect(@attempts_api_tracker).to receive(:mfa_enroll_webauthn_roaming).with(
+        expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
           success: true,
+          mfa_device_type: 'webauthn',
         )
 
         patch :confirm, params: params

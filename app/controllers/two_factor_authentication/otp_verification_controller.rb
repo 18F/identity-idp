@@ -158,6 +158,12 @@ module TwoFactorAuthentication
     def log_confirmation_analytics(result)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: 'phone',
+        otp_delivery_method: otp_auth_method,
+        phone_number: Phonelib.parse(phone).e164,
+      )
     end
 
     def analytics_properties

@@ -102,8 +102,16 @@ module TwoFactorAuthenticatableMethods
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends
+  def handle_too_many_otp_sends(context: nil, phone_number: nil)
     analytics.multi_factor_auth_max_sends
+    if context && phone_number
+      if UserSessionContext.authentication_context?(context)
+        attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(phone_number:)
+      elsif UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
+      end
+    end
+
     handle_max_attempts('otp_requests')
   end
 
