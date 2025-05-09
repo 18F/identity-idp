@@ -189,7 +189,7 @@ RSpec.feature 'document capture step', :js do
         before do
           stub_docv_verification_data_fail_with(
             docv_transaction_token: @docv_transaction_token,
-            errors: ['XXXX'],
+            reason_codes: ['XXXX'],
           )
         end
 
@@ -475,7 +475,7 @@ RSpec.feature 'document capture step', :js do
     before do
       stub_docv_verification_data_fail_with(
         docv_transaction_token: @docv_transaction_token,
-        errors: [socure_error_code],
+        reason_codes: [socure_error_code],
       )
 
       visit_idp_from_oidc_sp_with_ial2

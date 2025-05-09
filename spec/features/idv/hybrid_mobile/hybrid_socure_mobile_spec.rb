@@ -256,7 +256,7 @@ RSpec.describe 'Hybrid Flow' do
         remove_request_stub(@pass_stub)
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
-          errors: ['R827'],
+          reason_codes: ['R827'],
         )
       end
 
@@ -534,7 +534,7 @@ RSpec.describe 'Hybrid Flow' do
 
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
-          errors: [socure_error_code],
+          reason_codes: [socure_error_code],
         )
 
         click_idv_continue
