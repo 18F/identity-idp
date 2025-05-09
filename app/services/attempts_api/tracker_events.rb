@@ -213,19 +213,19 @@ module AttemptsApi
       )
     end
 
+    # Tracks when user enrolls their MFA device.
     # @param [Boolean] success
     # @param mfa_device_type [String<'backup_code', 'otp', 'personal_key', 'piv_cac',
     # 'remember_device', 'totp', 'webauthn', 'webauthn_platform'>]
     # @param [String<'sms','voice'>] otp_delivery_method
     # @param [String] phone Enrolled phone number
-    # Tracks when user enrolls their MFA device.
-    def mfa_enrolled(success:, mfa_device_type:, otp_delivery_method: nil, phone: nil)
+    def mfa_enrolled(success:, mfa_device_type:, otp_delivery_method: nil, phone_number: nil)
       track_event(
         'mfa-enrolled',
         success:,
         mfa_device_type:,
         otp_delivery_method:,
-        phone:,
+        phone_number:,
       )
     end
 
@@ -269,7 +269,7 @@ module AttemptsApi
     # The user has exceeded the rate limit for SMS OTP sends during login attempt.
     def mfa_login_phone_otp_sent_rate_limited(phone_number:)
       track_event(
-        'mfa-enroll-phone-otp-sent-rate-limited',
+        'mfa-login-phone-otp-sent-rate-limited',
         phone_number:,
       )
     end
