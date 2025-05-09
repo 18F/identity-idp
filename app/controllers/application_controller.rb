@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
     @attempts_api_tracker ||= AttemptsApi::Tracker.new(
       session_id: attempts_api_session_id,
       request:,
-      user: current_user,
+      user: analytics_user,
       sp: current_sp,
       cookie_device_uuid: cookies[:device],
       # this only works for oidc
