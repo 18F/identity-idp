@@ -125,6 +125,7 @@ const {
   previousStepUrl,
   docAuthPassportsEnabled,
   docAuthSelfieDesktopTestMode,
+  docAuthUploadEnabled,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
