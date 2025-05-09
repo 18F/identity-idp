@@ -1361,6 +1361,7 @@ in_person_proofing.form.state_id.zipcode: Código postal
 in_person_proofing.headings.address: Ingrese su domicilio actual
 in_person_proofing.headings.barcode: Muestre este código de barras y su identificación el estado en una oficina de correos para terminar de verificar su identidad.
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
+in_person_proofing.headings.barcode_passport: Show this barcode and your U.S. passport book at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
 in_person_proofing.headings.id_address: Domicilio que figura en su identificación
@@ -1398,6 +1399,8 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Tarjeta de registro de su vehículo
   - Póliza de seguro de su vivienda
   - Póliza de seguro de su vehículo
+in_person_proofing.process.passport.heading: Show your U.S. passport book
+in_person_proofing.process.passport.info: We do not currently accept any other forms of identification, such as military IDs.
 in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + dos documentos comprobatorios
 in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID y dos documentos
 in_person_proofing.process.real_id_and_supporting_docs.info: 'Si la dirección que figura en su REAL ID no es su dirección actual, presente un REAL ID, junto con dos documentos comprobatorios de esta lista:'
