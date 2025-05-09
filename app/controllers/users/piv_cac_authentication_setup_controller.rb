@@ -75,6 +75,12 @@ module Users
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: 'piv_cac',
+      )
+
       if result.success?
         process_valid_submission
         user_session.delete(:mfa_attempts)
