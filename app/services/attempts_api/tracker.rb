@@ -4,7 +4,7 @@ module AttemptsApi
   class Tracker
     SKIP_AGENCY_UUID_CREATION_EVENT_TYPES = [
       'login-email-and-password-auth',
-      'login-email-and-password-auth',
+      'forgot-password-email-sent',
     ].freeze
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_request_uri
@@ -81,7 +81,7 @@ module AttemptsApi
     private
 
     def agency_uuid(event_type:)
-      return nil unless sp
+      return nil unless user&.id && sp
       skip_create = SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.include?(event_type)
 
       if skip_create

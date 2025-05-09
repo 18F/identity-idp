@@ -69,7 +69,7 @@ module AttemptsApi
     #  A user has requested a password reset.
     def forgot_password_email_sent(email:)
       track_event(
-        :forgot_password_email_sent,
+        'forgot-password-email-sent',
         email:,
       )
     end
