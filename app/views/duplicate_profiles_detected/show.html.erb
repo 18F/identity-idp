@@ -1,0 +1,51 @@
+<% self.title = @dupe_profiles_detected_presenter.heading %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { @dupe_profiles_detected_presenter.heading } %>
+
+  <p><%= @dupe_profiles_detected_presenter.intro %></p>
+
+  <div class="cardborder-primary-light">
+  <ul class="add-list-reset border-bottom border-primary-light">
+      <% @dupe_profiles_detected_presenter.duplicate_profiles.each do |dupe_profile| %>
+        <li>
+          <div class="padding-1 border-top border-left border-right border-primary-light">
+            <p> <%= render(
+                      'shared/masked_text',
+                      text: dupe_profile[:email],
+                      masked_text: dupe_profile[:masked_email],
+                      accessible_masked_text: dupe_profile[:email],
+                    ) %></p> 
+            <p> <%= t(
+                      'duplicate_profiles_detected.created_at_html',
+                      timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+                    ) %>
+            </p>
+            <p> <%= t(
+                      'duplicate_profiles_detected.last_sign_in_at_html',
+                      timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
+                    ) %>
+            </p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="margin-top-4 grid-col-5">
+    <%= render ButtonComponent.new(
+          url: duplicate_profiles_detected_recognize_all_profiles_url,
+          method: :post,
+        ).with_content(@dupe_profiles_detected_presenter.recognize_all_profiles) %>
+  </div>
+
+  <div class="margin-top-3 grid-col-5">
+    <%= render ButtonComponent.new(
+          url: duplicate_profiles_detected_do_not_recognize_profiles_url,
+          outline: true,
+          method: :post,
+        ).with_content(@dupe_profiles_detected_presenter.dont_recognize_some_profiles) %>
+  </div>
+  
+<% end %>
+
