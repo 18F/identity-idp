@@ -56,7 +56,7 @@ module Idv
     end
 
     def selfie_requirement_met?
-      !facial_match_required? ||
+      !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
     end
 
@@ -125,10 +125,6 @@ module Idv
         )
         .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
-    end
-
-    def facial_match_required?
-      resolved_authn_context_result.facial_match?
     end
 
     private

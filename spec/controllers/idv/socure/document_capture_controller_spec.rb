@@ -241,11 +241,12 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       context 'selfie required' do
         before do
-          allow(subject).to receive(:facial_match_required?).and_return(true)
+          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
           get(:show)
         end
 
-        it 'does the correct POST to Socure' do
+        it 'request the flow for selfie' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
