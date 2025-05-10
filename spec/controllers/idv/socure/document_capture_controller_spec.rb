@@ -148,36 +148,102 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
-
-        get(:show)
       end
 
-      it 'creates a DocumentRequest' do
-        expect(request_class).to have_received(:new)
-          .with(
-            redirect_url: idv_socure_document_capture_update_url,
-            language: expected_language,
-            liveness_checking_required: false,
+      context 'selfie not required' do
+        before do
+          get(:show)
+        end
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              redirect_url: idv_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: false,
+            )
+        end
+
+        it 'sets any docv timeouts to nil' do
+          expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
+        end
+
+        it 'logs correct info' do
+          expect(@analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
           )
+        end
+
+        it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+          expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
+            .to eq(socure_capture_app_url)
+        end
+
+        context 'language is english' do
+          let(:expected_language) { :en }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'language is chinese and language should be zn-ch' do
+          let(:expected_language) { :zh }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: 'zh-cn',
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'renders the interstital page' do
+          render_views
+
+          it 'response includes the socure capture app url' do
+            expect(response).to have_http_status 200
+            expect(response.body).to have_link(href: socure_capture_app_url)
+          end
+
+          it 'puts the docvTransactionToken into the document capture session' do
+            expect(subject.document_capture_session.reload.socure_docv_transaction_token)
+              .to eq(docv_transaction_token)
+          end
+        end
       end
 
-      it 'sets any docv timeouts to nil' do
-        expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
-      end
-
-      it 'logs correct info' do
-        expect(@analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
-        )
-      end
-
-      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
-        expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
-          .to eq(socure_capture_app_url)
-      end
-
-      context 'language is english' do
-        let(:expected_language) { :en }
+      context 'selfie required' do
+        before do
+          allow(subject).to receive(:facial_match_required?).and_return(true)
+          get(:show)
+        end
 
         it 'does the correct POST to Socure' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
@@ -191,48 +257,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       url: idv_socure_document_capture_update_url,
                     },
                     language: :en,
-                    useCaseKey: idv_socure_docv_flow_id_only,
+                    useCaseKey: idv_socure_docv_flow_id_w_selfie,
                   },
                 },
               ),
             )
-        end
-      end
-
-      context 'language is chinese and language should be zn-ch' do
-        let(:expected_language) { :zh }
-
-        it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
-            .with(
-              body: JSON.generate(
-                {
-                  config: {
-                    documentType: 'license',
-                    redirect: {
-                      method: 'GET',
-                      url: idv_socure_document_capture_update_url,
-                    },
-                    language: 'zh-cn',
-                    useCaseKey: idv_socure_docv_flow_id_only,
-                  },
-                },
-              ),
-            )
-        end
-      end
-
-      context 'renders the interstital page' do
-        render_views
-
-        it 'response includes the socure capture app url' do
-          expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: socure_capture_app_url)
-        end
-
-        it 'puts the docvTransactionToken into the document capture session' do
-          expect(subject.document_capture_session.reload.socure_docv_transaction_token)
-            .to eq(docv_transaction_token)
         end
       end
     end
