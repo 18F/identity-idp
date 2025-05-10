@@ -63,7 +63,7 @@ module Idv
           mock_client: document_capture_session.doc_auth_vendor == 'mock',
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-          doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+          doc_auth_selfie_capture: facial_match_required?,
           skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
           socure_errors_timeout_url: idv_hybrid_mobile_socure_document_capture_errors_url(
             error_code: :timeout,
@@ -80,8 +80,8 @@ module Idv
           flow_path: 'hybrid',
           step: 'document_capture',
           analytics_id: 'Doc Auth',
-          liveness_checking_required: resolved_authn_context_result.facial_match?,
-          selfie_check_required: resolved_authn_context_result.facial_match?,
+          liveness_checking_required: facial_match_required?,
+          selfie_check_required: facial_match_required?,
           pii_like_keypaths: [[:pii]],
         }.merge(
           ab_test_analytics_buckets,

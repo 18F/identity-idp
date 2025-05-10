@@ -96,7 +96,7 @@ module Idv
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
-        doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+        doc_auth_selfie_capture: facial_match_required?,
         socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
@@ -110,8 +110,8 @@ module Idv
         analytics_id: 'Doc Auth',
         redo_document_capture: idv_session.redo_document_capture,
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
-        liveness_checking_required: resolved_authn_context_result.facial_match?,
-        selfie_check_required: resolved_authn_context_result.facial_match?,
+        liveness_checking_required: facial_match_required?,
+        selfie_check_required: facial_match_required?,
         pii_like_keypaths: [[:pii]],
       }.merge(ab_test_analytics_buckets)
     end

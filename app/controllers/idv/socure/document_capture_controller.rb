@@ -37,7 +37,7 @@ module Idv
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
-          liveness_checking_required: resolved_authn_context_result.facial_match?,
+          liveness_checking_required: facial_match_required?,
         )
         timer = JobHelpers::Timer.new
         document_response = timer.time('vendor_request') do
@@ -144,8 +144,8 @@ module Idv
           analytics_id: 'Doc Auth',
           redo_document_capture: idv_session.redo_document_capture,
           skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
-          liveness_checking_required: resolved_authn_context_result.facial_match?,
-          selfie_check_required: resolved_authn_context_result.facial_match?,
+          liveness_checking_required: facial_match_required?,
+          selfie_check_required: facial_match_required?,
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end
