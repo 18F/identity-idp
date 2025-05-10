@@ -251,21 +251,21 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
 
         it 'request the flow for selfie' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
-              .with(
-                body: JSON.generate(
-                  {
-                    config: {
-                      documentType: 'license',
-                      redirect: {
-                        method: 'GET',
-                        url: idv_hybrid_mobile_socure_document_capture_update_url,
-                      },
-                      language: expected_language,
-                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_w_selfie,
+            .with(
+              body: JSON.generate(
+                {
+                  config: {
+                    documentType: 'license',
+                    redirect: {
+                      method: 'GET',
+                      url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
+                    language: expected_language,
+                    useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_w_selfie,
                   },
-                ),
-              )
+                },
+              ),
+            )
         end
       end
     end
