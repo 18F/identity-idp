@@ -38,6 +38,7 @@ module Idv
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
             redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: I18n.locale,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
           )
           timer = JobHelpers::Timer.new
           document_response = timer.time('vendor_request') do

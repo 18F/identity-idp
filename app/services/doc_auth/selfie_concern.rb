@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# update namespace to LN/TrueID specific
 module DocAuth
   module SelfieConcern
     extend ActiveSupport::Concern

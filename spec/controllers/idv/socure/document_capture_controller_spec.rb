@@ -12,6 +12,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:socure_docv_verification_data_test_mode) { false }
   let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
   let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
+  let(:idv_socure_docv_flow_id_only) { 'id only flow' }
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -39,6 +41,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_switching_enabled)
+      .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
+      .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
+      .and_return(idv_socure_docv_flow_id_only)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -118,31 +127,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
         end
       end
-
-      context 'when facial match is required' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-
-        before do
-          resolved_authn_context = AuthnContextResolver.new(
-            user: user,
-            service_provider: nil,
-            vtr: nil,
-            acr_values: acr_values,
-          ).result
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-        end
-
-        it 'redirects to the LN/mock controller' do
-          get :show
-          expect(response).to redirect_to idv_document_capture_url
-        end
-      end
     end
 
     context 'happy path' do
@@ -164,37 +148,105 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
-
-        get(:show)
       end
 
-      it 'creates a DocumentRequest' do
-        expect(request_class).to have_received(:new)
-          .with(
-            redirect_url: idv_socure_document_capture_update_url,
-            language: expected_language,
+      context 'selfie not required' do
+        before do
+          get(:show)
+        end
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              redirect_url: idv_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: false,
+            )
+        end
+
+        it 'sets any docv timeouts to nil' do
+          expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
+        end
+
+        it 'logs correct info' do
+          expect(@analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
           )
+        end
+
+        it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+          expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
+            .to eq(socure_capture_app_url)
+        end
+
+        context 'language is english' do
+          let(:expected_language) { :en }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'language is chinese and language should be zn-ch' do
+          let(:expected_language) { :zh }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: 'zh-cn',
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'renders the interstital page' do
+          render_views
+
+          it 'response includes the socure capture app url' do
+            expect(response).to have_http_status 200
+            expect(response.body).to have_link(href: socure_capture_app_url)
+          end
+
+          it 'puts the docvTransactionToken into the document capture session' do
+            expect(subject.document_capture_session.reload.socure_docv_transaction_token)
+              .to eq(docv_transaction_token)
+          end
+        end
       end
 
-      it 'sets any docv timeouts to nil' do
-        expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
-      end
+      context 'selfie required' do
+        before do
+          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
+          get(:show)
+        end
 
-      it 'logs correct info' do
-        expect(@analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
-        )
-      end
-
-      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
-        expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
-          .to eq(socure_capture_app_url)
-      end
-
-      context 'language is english' do
-        let(:expected_language) { :en }
-
-        it 'does the correct POST to Socure' do
+        it 'request the flow for selfie' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
@@ -206,46 +258,11 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       url: idv_socure_document_capture_update_url,
                     },
                     language: :en,
+                    useCaseKey: idv_socure_docv_flow_id_w_selfie,
                   },
                 },
               ),
             )
-        end
-      end
-
-      context 'language is chinese and language should be zn-ch' do
-        let(:expected_language) { :zh }
-
-        it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
-            .with(
-              body: JSON.generate(
-                {
-                  config: {
-                    documentType: 'license',
-                    redirect: {
-                      method: 'GET',
-                      url: idv_socure_document_capture_update_url,
-                    },
-                    language: 'zh-cn',
-                  },
-                },
-              ),
-            )
-        end
-      end
-
-      context 'renders the interstital page' do
-        render_views
-
-        it 'response includes the socure capture app url' do
-          expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: socure_capture_app_url)
-        end
-
-        it 'puts the docvTransactionToken into the document capture session' do
-          expect(subject.document_capture_session.reload.socure_docv_transaction_token)
-            .to eq(docv_transaction_token)
         end
       end
     end
