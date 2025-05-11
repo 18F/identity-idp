@@ -469,6 +469,106 @@ RSpec.feature 'document capture step', :js do
         end
       end
     end
+
+    context 'selfie required' do
+      let(:max_attempts) { 5 }
+      before do
+        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
+          .and_return(['pass'])
+        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
+          .and_return(['fail'])
+        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
+          .and_return(['not_processed'])
+        allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
+          .and_return(0)
+        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+        visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+        @user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_document_capture_step
+      end
+
+      it 'proceeds to the next page with valid info' do
+        expect(page).to have_current_path(idv_socure_document_capture_url)
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+        click_idv_continue
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_content(t('idv.errors.try_again_later'))
+
+        click_on t('idv.failure.button.warning')
+
+        remove_request_stub(@pass_stub)
+        @pass_stub = stub_docv_verification_data_pass(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: ['not_processed'],
+        )
+
+        click_idv_continue
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+          webhooks: selfie_webhook_list,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_content(t('idv.errors.try_again_later'))
+
+        click_on t('idv.failure.button.warning')
+
+        remove_request_stub(@pass_stub)
+        @pass_stub = stub_docv_verification_data_pass(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: ['not_processed'], # reason_codes: ['fail'],
+        )
+
+        click_idv_continue
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+          webhooks: selfie_webhook_list,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_content(t('idv.errors.try_again_later'))
+
+        click_on t('idv.failure.button.warning')
+
+        remove_request_stub(@pass_stub)
+        @pass_stub = stub_docv_verification_data_pass(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: ['pass'],
+        )
+
+        click_idv_continue
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+          webhooks: selfie_webhook_list,
+        )
+
+        visit idv_socure_document_capture_update_path
+
+        expect(page).to have_current_path(idv_ssn_url)
+
+        expect(fake_analytics).to have_logged_event(
+          :idv_socure_document_request_submitted,
+        )
+        expect(fake_analytics).to have_logged_event(
+          :idv_socure_verification_data_requested,
+        )
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor pii validation',
+        )
+
+        fill_out_ssn_form_ok
+        click_idv_continue
+        complete_verify_step
+        expect(page).to have_current_path(idv_phone_url)
+      end
+    end
   end
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|

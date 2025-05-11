@@ -91,6 +91,18 @@ module DocumentCaptureStepHelper
     ]
   end
 
+  def selfie_webhook_list
+    %w[
+      WAITING_FOR_USER_TO_REDIRECT
+      APP_OPENED
+      DOCUMENT_FRONT_UPLOADED
+      DOCUMENT_BACK_UPLOADED
+      DOCUMENT_SELFIE_UPLOADED
+      DOCUMENTS_UPLOADED
+      SESSION_COMPLETE
+    ]
+  end
+
   def socure_docv_send_webhook(
     docv_transaction_token:,
     event_type: 'DOCUMENTS_UPLOADED'
