@@ -98,7 +98,8 @@ module Idv
         private
 
         def validate_step_not_completed
-          return if stored_result.blank? || !stored_result.success?
+          return if stored_result.blank? || !stored_result.success? || !selfie_requirement_met?
+
           redirect_to idv_hybrid_mobile_capture_complete_url
         end
 
