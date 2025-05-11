@@ -520,6 +520,24 @@ RSpec.feature 'document capture step', :js do
         click_on t('idv.failure.button.warning')
 
         remove_request_stub(@pass_stub)
+        @pass_stub = stub_docv_verification_data_fail_with(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: ['pass'],
+        )
+
+        click_idv_continue
+        socure_docv_upload_documents(
+          docv_transaction_token: @docv_transaction_token,
+          webhooks: selfie_webhook_list,
+        )
+
+        visit idv_socure_document_capture_update_path
+        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
+
+        click_on t('idv.failure.button.warning')
+
+        remove_request_stub(@pass_stub)
         @pass_stub = stub_docv_verification_data_pass(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['fail'],
