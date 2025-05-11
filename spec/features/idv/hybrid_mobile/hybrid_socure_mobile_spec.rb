@@ -545,30 +545,6 @@ RSpec.describe 'Hybrid Flow' do
         perform_in_browser(:mobile) do
           visit @sms_link
 
-          # Confirm that jumping to LinkSent page does not cause errors
-          # visit idv_link_sent_url
-          # expect(page).to have_current_path(root_url)
-
-          # Confirm that we end up on the Socure page even if we try to
-          # go to the LN / Mock one.
-          # visit idv_hybrid_mobile_document_capture_url
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-
-          # # Confirm that clicking cancel and then coming back doesn't cause errors
-          # click_link 'Cancel'
-          # visit idv_hybrid_mobile_socure_document_capture_url
-
-          # # Confirm that jumping to Phone page does not cause errors
-          # visit idv_phone_url
-          # expect(page).to have_current_path(root_url)
-          # visit idv_hybrid_mobile_socure_document_capture_url
-
-          # # Confirm that jumping to Welcome page does not cause errors
-          # visit idv_welcome_url
-          # expect(page).to have_current_path(root_url)
-          # visit idv_hybrid_mobile_socure_document_capture_url
-
-          # expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_urlfur)
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
