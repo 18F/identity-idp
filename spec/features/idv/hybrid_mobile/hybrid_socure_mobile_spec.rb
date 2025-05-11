@@ -507,8 +507,8 @@ RSpec.describe 'Hybrid Flow' do
     end
 
     context 'selfie is required' do
-      let(:max_attempts) { 5 }
       before do
+        allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(6)
         allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
           .and_return(['pass'])
         allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
@@ -571,6 +571,24 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
           expect(page).to have_content(t('idv.errors.try_again_later'))
+
+          click_on t('idv.failure.button.warning')
+          remove_request_stub(@pass_stub)
+          @pass_stub = stub_docv_verification_data_fail_with(
+            docv_transaction_token: @docv_transaction_token,
+            reason_codes: ['pass'],
+          )
+
+          click_idv_continue
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+            webhooks: selfie_webhook_list,
+          )
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
           click_on t('idv.failure.button.warning')
           remove_request_stub(@pass_stub)
