@@ -524,7 +524,6 @@ RSpec.describe 'Hybrid Flow' do
         user = nil
 
         perform_in_browser(:desktop) do
-
           visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
           user = sign_in_and_2fa_user
 
