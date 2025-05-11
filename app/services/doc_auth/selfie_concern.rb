@@ -28,6 +28,10 @@ module DocAuth
       SELFIE_PERFORMED_STATUSES.include?(selfie_status)
     end
 
+    def selfie_check_passed?
+      selfie_status == :success
+    end
+
     private
 
     SELFIE_PERFORMED_STATUSES = %i[success fail].freeze

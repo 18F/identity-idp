@@ -57,7 +57,7 @@ module Idv
 
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
-        stored_result.selfie_check_performed? # to be updated to selfie_check_passed?
+        stored_result.selfie_check_passed?
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)

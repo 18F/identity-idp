@@ -576,7 +576,7 @@ RSpec.describe 'Hybrid Flow' do
           remove_request_stub(@pass_stub)
           @pass_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
-            reason_codes: ['not_processed'], # reason_codes: ['fail'],
+            reason_codes: ['fail'],
           )
 
           click_idv_continue
