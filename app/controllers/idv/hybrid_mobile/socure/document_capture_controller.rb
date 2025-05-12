@@ -148,8 +148,8 @@ module Idv
             flow_path: 'hybrid',
             step: 'socure_document_capture',
             analytics_id: 'Doc Auth',
-            liveness_checking_required: false,
-            selfie_check_required: false,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
+            selfie_check_required: resolved_authn_context_result.facial_match?,
             pii_like_keypaths: [[:pii]],
           }
         end
