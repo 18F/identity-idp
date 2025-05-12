@@ -125,7 +125,6 @@ const {
   previousStepUrl,
   docAuthPassportsEnabled,
   docAuthSelfieDesktopTestMode,
-  docAuthUploadEnabled,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -133,7 +132,7 @@ const {
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch (e) {}
+} catch (e) { }
 
 render(
   <MarketingSiteContextProvider
