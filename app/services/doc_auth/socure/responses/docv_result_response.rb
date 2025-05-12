@@ -68,8 +68,6 @@ module DocAuth
           return :fail if reason_codes&.intersect? reason_codes_selfie_fail
 
           if reason_codes&.intersect? reason_codes_selfie_pass
-            # are all codes req'd for now only getting image matches but not liveness
-            # if (reason_codes & reason_codes_selfie_pass).sort == reason_codes_selfie_pass.sort
             return :success
           end
 
