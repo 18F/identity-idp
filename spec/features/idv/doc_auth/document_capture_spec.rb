@@ -244,7 +244,7 @@ RSpec.feature 'document capture step', :js do
         fill_in 'idv_form_city', with: 'Nowhere'
         select 'Virginia', from: 'idv_form_state'
         fill_in 'idv_form_zipcode', with: '66044'
-        click_button t('forms.buttons.submit.update')
+        click_idv_continue
         expect(page).to have_current_path(idv_verify_info_path)
         expect(page).to have_content('VA')
         expect(page).to have_content('123 Main St')
@@ -269,9 +269,9 @@ RSpec.feature 'document capture step', :js do
         attach_passport_image(passport_image)
         submit_images
         expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-        expect(page).to have_content('invalid MRZ')
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
         expect_to_try_again
-        expect(page).to have_content('invalid MRZ')
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
         expect_rate_limit_warning(max_attempts - 1)
       end
     end
@@ -340,7 +340,7 @@ RSpec.feature 'document capture step', :js do
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image
         submit_images
-        expect(page).to have_content(t('doc_auth.headings.review_issues'))
+        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
         expect(page).to have_current_path(idv_document_capture_url)
       end
     end
@@ -361,7 +361,7 @@ RSpec.feature 'document capture step', :js do
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image
         submit_images
-        expect(page).to have_content(t('doc_auth.headings.review_issues'))
+        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
         expect(page).to have_current_path(idv_document_capture_url)
       end
     end

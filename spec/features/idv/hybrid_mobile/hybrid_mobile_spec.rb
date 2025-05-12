@@ -284,7 +284,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           fill_in 'idv_form_city', with: 'Nowhere'
           select 'Virginia', from: 'idv_form_state'
           fill_in 'idv_form_zipcode', with: '66044'
-          click_button t('forms.buttons.submit.update')
+          click_idv_continue
           expect(page).to have_current_path(idv_verify_info_path)
           expect(page).to have_content('VA')
           expect(page).to have_content('123 Main St')
@@ -343,9 +343,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           attach_passport_image(passport_image)
           submit_images
           expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
-          expect(page).to have_content('invalid MRZ')
+          expect(page).to have_content(t('doc_auth.info.review_passport'))
           expect_to_try_again(is_hybrid: true)
-          expect(page).to have_content('invalid MRZ')
+          expect(page).to have_content(t('doc_auth.info.review_passport'))
         end
       end
 
