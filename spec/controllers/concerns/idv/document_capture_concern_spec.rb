@@ -18,9 +18,19 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     context 'selfie checks enabled' do
+      let(:selfie_status) { :not_processed }
       before do
-        stored_result = instance_double(DocumentCaptureSessionResult)
-        allow(stored_result).to receive(:selfie_check_performed?).and_return(selfie_check_performed)
+        id = SecureRandom.hex
+        result = DocumentCaptureSessionResult.new(
+          id:,
+          success: true,
+          doc_auth_success: true,
+          selfie_status:,
+          pii: {},
+          attention_with_barcode: false,
+        )
+        EncryptedRedisStructStorage.store(result)
+        stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
         allow(controller).to receive(:stored_result).and_return(stored_result)
 
         resolution_result = Vot::Parser.new(vector_of_trust: vot).parse
@@ -30,16 +40,22 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'SP requires facial_match' do
         let(:vot) { 'Pb' }
 
-        context 'selfie check performed' do
-          let(:selfie_check_performed) { true }
+        context 'selfie check not processed' do
+          it 'returns false' do
+            expect(controller.selfie_requirement_met?).to eq(false)
+          end
+        end
+
+        context 'selfie check pass' do
+          let(:selfie_status) { :success }
 
           it 'returns true' do
             expect(controller.selfie_requirement_met?).to eq(true)
           end
         end
 
-        context 'selfie check not performed' do
-          let(:selfie_check_performed) { false }
+        context 'selfie check fail' do
+          let(:selfie_status) { :fail }
 
           it 'returns false' do
             expect(controller.selfie_requirement_met?).to eq(false)
@@ -50,16 +66,23 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'SP does not require facial_match' do
         let(:vot) { 'P1' }
 
-        context 'selfie check performed' do
-          let(:selfie_check_performed) { true }
+        context 'selfie check not processed' do
+          it 'returns true' do
+            expect(controller.selfie_requirement_met?).to eq(true)
+          end
+        end
+
+        context 'selfie check pass' do
+          let(:selfie_status) { :success }
 
           it 'returns true' do
             expect(controller.selfie_requirement_met?).to eq(true)
           end
         end
 
-        context 'selfie check not performed' do
-          let(:selfie_check_performed) { false }
+        context 'selfie check fail' do
+          let(:selfie_status) { :fail }
+
           it 'returns true' do
             expect(controller.selfie_requirement_met?).to eq(true)
           end
