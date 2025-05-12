@@ -21,7 +21,7 @@ module Reports
     end
 
     def self.data_warehouse_transaction_with_timeout
-      original_connection = ActiveRecord::Base.connection_pool
+      original_config = ActiveRecord::Base.connection_pool.db_config.configuration_hash
       ActiveRecord::Base.establish_connection(:data_warehouse)
       ActiveRecord::Base.transaction do
         quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
@@ -29,7 +29,7 @@ module Reports
         yield
       end
     ensure
-      ActiveRecord::Base.establish_connection(original_connection)
+      ActiveRecord::Base.establish_connection(original_config)
     end
 
     private
