@@ -117,7 +117,6 @@ module Users
     end
 
     def track_mfa_method_added
-      analytics.multi_factor_auth_added_piv_cac(**analytics_properties)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics, threatmetrix_attrs)
     end
 
