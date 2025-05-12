@@ -114,8 +114,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def user_doesnt_have_required_mfa?
     mfa = MfaContext.new(user)
-    if (piv_cac_required? && !mfa.piv_cac_configurations.any?) || 
-      (phishing_resistant_required? && !mfa.phishing_resistant_configurations.any?)
+    if (piv_cac_required? && !mfa.piv_cac_configurations.any?) ||
+       (phishing_resistant_required? && !mfa.phishing_resistant_configurations.any?)
       return true
     end
   end

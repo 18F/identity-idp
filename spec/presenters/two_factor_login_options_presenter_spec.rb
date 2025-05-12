@@ -160,7 +160,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
       end
 
       context 'with no piv cac mfa yet' do
-
         let(:user) do
           create(
             :user,
@@ -173,7 +172,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             :with_authentication_app,
           )
         end
-    
+
         it 'returns all mfas associated with account' do
           expect(options_classes).to eq(
             [
@@ -237,9 +236,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         end
       end
 
-
       context 'with no phishing resistant mfa' do
-
         let(:user) do
           create(
             :user,
@@ -252,7 +249,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
             :with_authentication_app,
           )
         end
-    
+
         it 'returns all mfas associated with account' do
           expect(options_classes).to eq(
             [
