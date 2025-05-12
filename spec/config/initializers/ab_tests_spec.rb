@@ -455,6 +455,6 @@ RSpec.describe AbTests do
       }
     end
 
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+    it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
   end
 end
