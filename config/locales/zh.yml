@@ -751,6 +751,14 @@ doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
