@@ -40,11 +40,12 @@ class DuplicateProfileChecker
 
   def check_for_idv_setup_duplicate_profile?
     return unless sp_eligible_for_one_account?
+    return unless user_has_ial2_profile?
     cacher = Pii::Cacher.new(user, user_session)
-    pii = cacher.fetch(profile_id)
-    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii['idv']['ssn'])
-    associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
     profile_id = user&.active_profile&.id
+    pii = cacher.fetch(profile_id)
+    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
+    associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
     if associated_profiles.present? && !user_session[:duplicate_profile].present?
       confirmation = DuplicateProfileConfirmation.find_by(profile_id:)
       if confirmation

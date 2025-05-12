@@ -28,7 +28,7 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        if check_for_for_idv_setup_duplicate_profile? && !user_session[:duplicate_profile].present?
+        if check_for_idv_setup_duplicate_profile? && !user_session[:duplicate_profile].present?
           flash[:info] = 'duplicate profile alert'
           # redirect to duplicate profile page
         end
@@ -136,12 +136,12 @@ module SignUp
       )
     end
 
-    def check_for_for_idv_setup_duplicate_profile?
+    def check_for_idv_setup_duplicate_profile?
       DuplicateProfileChecker.new(
         user: current_user,
         user_session: user_session,
         sp: sp_from_sp_session,
-      ).check_for_for_idv_setup_duplicate_profile?
+      ).check_for_idv_setup_duplicate_profile?
     end
   end
 end
