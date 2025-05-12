@@ -284,6 +284,7 @@ module AttemptsApi
     # @param [Boolean] success
     # @param [String<'sms','voice'>] otp_delivery_method
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] reauthentication
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # During a login attempt, an OTP code has been sent to sms or voice.
     def mfa_login_phone_otp_sent(success:, otp_delivery_method:, phone_number:, reauthentication:,
