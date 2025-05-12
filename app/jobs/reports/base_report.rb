@@ -50,6 +50,10 @@ module Reports
       self.class.transaction_with_timeout(...)
     end
 
+    def data_warehouse_transaction_with_timeout(...)
+      self.class.data_warehouse_transaction_with_timeout(...)
+    end
+
     def save_report(report_name, body, extension:)
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
