@@ -20,6 +20,16 @@ module Reports
       end
     end
 
+    def self.data_warehouse_transaction_with_timeout
+      ActiveRecord::Base.connected_to(role: :data_warehouse) do
+        ActiveRecord::Base.transaction do
+          quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+          yield
+        end
+      end
+    end
+
     private
 
     def public_bucket_name
