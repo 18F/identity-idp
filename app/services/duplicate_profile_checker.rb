@@ -38,17 +38,33 @@ class DuplicateProfileChecker
     end
   end
 
-  def check_for_pending_duplicate_profile
+  def check_for_idv_setup_duplicate_profile?
     return unless sp_eligible_for_one_account?
     cacher = Pii::Cacher.new(user, user_session)
-    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: cacher.user_session["idv"]["ssn"])
+    pii = cacher.fetch(profile_id)
+    duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii['idv']['ssn'])
     associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
+    profile_id = user&.active_profile&.id
     if associated_profiles.present? && !user_session[:duplicate_profile].present?
+      confirmation = DuplicateProfileConfirmation.find_by(profile_id:)
+      if confirmation
+        if !(confirmation.duplicate_profile_ids == associated_profiles.map(&:id))
+          confirmation.update(
+            confirmed_at: Time.zone.now,
+            confirmed_all: false,
+            duplicate_profile_ids: associated_profiles.map(&:id),
+          )
+        end
+      else
+        DuplicateProfileConfirmation.create(
+          profile_id: profile_id,
+          confirmed_at: Time.zone.now,
+          duplicate_profile_ids: associated_profiles.map(&:id),
+        )
+      end
       user_session[:duplicate_profile] = true
-      redirect_to duplicate_profiles_detected_url
+      return true
     end
-    binding.pry
-    puts 'check for pending'
   end
 
   private
