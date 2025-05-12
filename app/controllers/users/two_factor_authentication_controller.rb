@@ -236,6 +236,24 @@ module Users
           reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
         ),
       )
+
+      if UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_phone_otp_sent(
+          success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+        )
+      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
+        attempts_api_tracker.mfa_login_phone_otp_sent(
+          success: @telephony_result.success?,
+          reauthentication: UserSessionContext.reauthentication_context?(context),
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+        )
+
+      end
     end
 
     def exceeded_otp_send_limit?

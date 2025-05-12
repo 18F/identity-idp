@@ -336,6 +336,16 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
       it 'tracks the analytics events' do
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).not_to receive(:mfa_enroll_phone_otp_sent)
+        expect(@attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).with(
+          phone_number: Phonelib.parse(valid_phone_number).e164,
+          reauthentication: false,
+          success: true,
+          otp_delivery_method: 'sms',
+          failure_reason: nil,
+        )
 
         get :send_code, params: {
           otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
@@ -357,6 +367,28 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             adapter: :test
           ),
         )
+      end
+
+      context 'when the user session context is reauthentication' do
+        before do
+          subject.user_session[:context] = UserSessionContext::REAUTHENTICATION_CONTEXT
+        end
+
+        it 'tracks the attempts event' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).not_to receive(:mfa_enroll_phone_otp_sent)
+          expect(@attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).with(
+            phone_number: Phonelib.parse(valid_phone_number).e164,
+            reauthentication: true,
+            success: true,
+            otp_delivery_method: 'sms',
+            failure_reason: nil,
+          )
+          get :send_code, params: {
+            otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
+          }
+        end
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -476,11 +508,22 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via voice' do
+        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
+        parsed_phone = Phonelib.parse(phone)
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).not_to receive(:mfa_enroll_phone_otp_sent)
+        expect(@attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).with(
+          phone_number: parsed_phone.e164,
+          reauthentication: false,
+          success: true,
+          otp_delivery_method: 'voice',
+          failure_reason: nil,
+        )
+
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
         }
-        phone = MfaContext.new(subject.current_user).phone_configurations.first.phone
-        parsed_phone = Phonelib.parse(phone)
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: subject.current_user.direct_otp,
@@ -553,24 +596,32 @@ RSpec.describe Users::TwoFactorAuthenticationController do
     end
 
     context 'phone is not confirmed' do
+      let(:unconfirmed_phone) { '+1 (202) 555-1213' }
+      let(:parsed_phone) { Phonelib.parse(unconfirmed_phone) }
       before do
         @user = create(:user)
-        @unconfirmed_phone = '+1 (202) 555-1213'
       end
 
       it 'sends OTP inline when confirming phone' do
+        stub_attempts_tracker
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-        parsed_phone = Phonelib.parse(@unconfirmed_phone)
+        subject.user_session[:unconfirmed_phone] = unconfirmed_phone
 
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+
+        expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).with(
+          success: true,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: 'sms',
+          failure_reason: nil,
+        )
 
         get :send_code, params: otp_delivery_form_sms
 
         expect(Telephony).to have_received(:send_confirmation_otp).with(
           otp: subject.current_user.direct_otp,
-          to: @unconfirmed_phone,
+          to: unconfirmed_phone,
           expiration: 10,
           channel: :sms,
           otp_format: 'digit',
@@ -586,7 +637,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
 
       it 'rate limits confirmation OTPs on sign up' do
-        parsed_phone = Phonelib.parse(@unconfirmed_phone)
         stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
@@ -594,7 +644,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         freeze_time do
           IdentityConfig.store.phone_confirmation_max_attempts.times do
-            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+            subject.user_session[:unconfirmed_phone] = unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
@@ -619,7 +669,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       end
 
       it 'rate limits between OTPs' do
-        parsed_phone = Phonelib.parse(@unconfirmed_phone)
         stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
@@ -629,7 +678,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         freeze_time do
           IdentityConfig.store.short_term_phone_otp_max_attempts.times do
-            subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+            subject.user_session[:unconfirmed_phone] = unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
@@ -668,7 +717,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         stub_attempts_tracker
         expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited)
-          .with(phone_number: Phonelib.parse(subject.user_session[:unconfirmed_phone]).e164)
+          .with(phone_number: parsed_phone.e164)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
@@ -691,7 +740,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         freeze_time do
           (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
-            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+            subject.user_session[:unconfirmed_phone] = unconfirmed_phone
             get :send_code, params: otp_delivery_form_sms
           end
 
@@ -709,15 +758,77 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         end
       end
 
-      it 'flashes an sms error when the telephony gem responds with an sms error' do
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-        subject.user_session[:unconfirmed_phone] = '+1 (225) 555-1000'
+      context 'when telephony gem responds with an sms error' do
+        let(:unconfirmed_phone) { '+1 (225) 555-1000' }
 
-        get :send_code, params: otp_delivery_form_sms
+        before do
+          sign_in_before_2fa(@user)
+          subject.user_session[:context] = 'confirmation'
+          subject.user_session[:unconfirmed_phone] = unconfirmed_phone
+        end
 
-        expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.generic'))
+        it 'flashes an sms error' do
+          get :send_code, params: otp_delivery_form_sms
+
+          expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.generic'))
+        end
+
+        it 'records an unsuccessful attempts event' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).with(
+            success: false,
+            phone_number: Phonelib.parse(unconfirmed_phone).e164,
+            otp_delivery_method: 'sms',
+            failure_reason: { telephony: 'Telephony::TelephonyError - Simulated telephony error' },
+          )
+          get :send_code, params: otp_delivery_form_sms
+        end
+      end
+
+      context 'when the phone is an opt out phone number' do
+        let(:unconfirmed_phone) { '+1 (225) 555-9999' }
+
+        before do
+          sign_in_before_2fa(@user)
+          subject.user_session[:context] = 'confirmation'
+          subject.user_session[:unconfirmed_phone] = unconfirmed_phone
+          allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+        end
+
+        it 'records an unsuccessful attempts event' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).with(
+            success: false,
+            phone_number: Phonelib.parse(unconfirmed_phone).e164,
+            otp_delivery_method: 'sms',
+            failure_reason: { telephony: 'Telephony::OptOutError - Simulated opt out error' },
+          )
+
+          get :send_code, params: otp_delivery_form_sms
+        end
+
+        context 'when the number has already been marked as opt out' do
+          before do
+            PhoneNumberOptOut.mark_opted_out(unconfirmed_phone)
+          end
+
+          it 'does not attempt to send the otp but records the attempt' do
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).with(
+              success: false,
+              phone_number: Phonelib.parse(unconfirmed_phone).e164,
+              otp_delivery_method: 'sms',
+              failure_reason: { telephony: 'Telephony::OptOutError - Telephony::OptOutError' },
+            )
+
+            get :send_code, params: otp_delivery_form_sms
+
+            expect(Telephony).not_to receive(:send_confirmation_otp)
+          end
+        end
       end
     end
 
