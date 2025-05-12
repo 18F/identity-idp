@@ -7,15 +7,18 @@ RSpec.describe Reports::IrsVerificationReport do
   let(:mock_report_object) do
     instance_double(
       Reporting::IrsVerificationReport, as_emailable_reports: [
-        OpenStruct.new(table: dummy_report_data, filename: 'dummy.csv'),
+        Struct.new(:table, :filename).new(dummy_report_data, 'dummy.csv'),
       ]
     )
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:irs_verification_report_config).and_return(['test@example.com'])
-    allow(IdentityConfig.store).to receive(:irs_verification_report_issuers).and_return(['issuer1'])
-    allow(IdentityConfig.store).to receive(:team_all_login_emails).and_return(['team@example.com'])
+    allow(IdentityConfig.store).to receive(:irs_verification_report_config)
+      .and_return(['test@example.com'])
+    allow(IdentityConfig.store).to receive(:irs_verification_report_issuers)
+      .and_return(['issuer1'])
+    allow(IdentityConfig.store).to receive(:team_all_login_emails)
+      .and_return(['team@example.com'])
     allow(Reporting::IrsVerificationReport).to receive(:new).and_return(mock_report_object)
     allow(report).to receive(:upload_file_to_s3_bucket).and_return(true)
     allow(report).to receive(:bucket_name).and_return('my-test-bucket')
