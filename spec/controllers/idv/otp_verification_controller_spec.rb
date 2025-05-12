@@ -93,7 +93,7 @@ RSpec.describe Idv::OtpVerificationController do
     it 'invalidates future steps' do
       expect(subject).to receive(:clear_future_steps!)
       expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-        phone_number: PhoneFormatter.format(phone),
+        phone_number: Phonelib.parse(phone).e164,
         success: true,
         failure_reason: nil,
       )
@@ -106,7 +106,7 @@ RSpec.describe Idv::OtpVerificationController do
 
       it 'redirects to the review step' do
         expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-          phone_number: PhoneFormatter.format(phone),
+          phone_number: Phonelib.parse(phone).e164,
           success: true,
           failure_reason: nil,
         )
@@ -170,7 +170,7 @@ RSpec.describe Idv::OtpVerificationController do
 
       it 'tracks the event' do
         expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-          phone_number: PhoneFormatter.format(phone),
+          phone_number: Phonelib.parse(phone).e164,
           success: false,
           failure_reason: { code: ['does_not_match'] },
         )
@@ -186,7 +186,7 @@ RSpec.describe Idv::OtpVerificationController do
 
       it 'tracks the event' do
         expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-          phone_number: PhoneFormatter.format(phone),
+          phone_number: Phonelib.parse(phone).e164,
           success: false,
           failure_reason: { code: ['expired'] },
         )
@@ -197,7 +197,7 @@ RSpec.describe Idv::OtpVerificationController do
 
     it 'tracks an analytics event' do
       expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-        phone_number: PhoneFormatter.format(phone),
+        phone_number: Phonelib.parse(phone).e164,
         success: true,
         failure_reason: nil,
       )
