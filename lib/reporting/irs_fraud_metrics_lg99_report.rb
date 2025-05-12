@@ -11,10 +11,10 @@ rescue LoadError => e
 end
 
 module Reporting
-  class FraudMetricsLg99Report
+  class IrsFraudMetricsLg99Report
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :time_range
+    attr_reader :issuers, :time_range
 
     module Events
       IDV_FINAL_RESOLUTION = 'IdV: Final Resolution'
@@ -26,14 +26,17 @@ module Reporting
       end
     end
 
+    # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
     def initialize(
+      issuers:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 6.hours,
       threads: 1
     )
+      @issuers = issuers
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -52,7 +55,17 @@ module Reporting
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: "Monthly LG-99 Metrics #{stats_month}",
+          title: 'Definitions',
+          table: definitions_table,
+          filename: 'definitions',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+          filename: 'overview',
+        ),
+        Reporting::EmailableReport.new(
+          title: "Monthly Fraud Metrics #{stats_month}",
           table: lg99_metrics_table,
           filename: 'lg99_metrics',
         ),
@@ -69,10 +82,33 @@ module Reporting
       ]
     end
 
+    def definitions_table
+      [
+        ['Metric', 'Unit', 'Definition'],
+        ['Fraud Rules Catch Count', 'Count',
+         'The count of unique accounts flagged for fraud review.'],
+        ['Fraudulent credentials disabled', 'Count',
+         'The count of unique accounts suspended due to ' + '
+         suspected fraudulent activity within the reporting month.'],
+        ['Fraudulent credentials reinstated', 'Count',
+         'The count of unique suspended accounts ' + '
+         that are reinstated within the reporting month.'],
+      ]
+    end
+
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        # This needs to be Date.today so it works when run on the command line
+        ['Report Generated', Time.zone.today.to_s],
+        ['Issuer', issuers.present? ? issuers.join(', ') : 'All Issuers'],
+      ]
+    end
+
     def lg99_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Unique users seeing LG-99', lg99_unique_users_count.to_s, time_range.begin.to_s,
+        ['Fraud Rules Catch Count', lg99_unique_users_count.to_s, time_range.begin.to_s,
          time_range.end.to_s],
       ]
     rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
@@ -86,7 +122,7 @@ module Reporting
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Unique users suspended',
+          'Fraudulent credentials disabled',
           unique_suspended_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
@@ -110,7 +146,7 @@ module Reporting
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Unique users reinstated',
+          'Fraudulent credentials reinstated',
           unique_reinstated_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
@@ -150,6 +186,7 @@ module Reporting
 
     def query
       params = {
+        issuers: quote(issuers),
         event_names: quote(Events.all_events),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
@@ -158,7 +195,8 @@ module Reporting
         fields
             name
           , properties.user_id as user_id
-         | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
+        | filter properties.service_provider IN %{issuers}
+        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
                  or (name != %{idv_final_resolution})
         | filter name in %{event_names}
         | limit 10000
