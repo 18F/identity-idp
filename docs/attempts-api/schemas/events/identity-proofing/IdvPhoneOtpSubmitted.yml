@@ -11,19 +11,13 @@ allOf:
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false
         properties:
-          # these are true/false bools rather than arrays of strings.
-          # can we update this to be something like:
-          # code:
-          #   type: array
-          #   items:
-          #     type: string
-          #     enum: ['code_matches', 'code_expired']
-          code_matches:
-            type: boolean
-            description: An OPTIONAL key if the code does not match
-          code_expired:
-            type: boolean
-            description: An OPTIONAL key if the code has expired
+          code:
+            type: array
+            items:
+              type: string
+              enum: 
+                - expired
+                - does_not_match
       success:
         type: boolean
         description: |

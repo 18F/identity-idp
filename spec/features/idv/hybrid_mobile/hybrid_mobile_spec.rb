@@ -4,6 +4,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
+  include AbTestsHelper
 
   let(:phone_number) { '415-555-0199' }
   let(:sp) { :oidc }
@@ -282,6 +283,54 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:desktop) do
         expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+      end
+    end
+  end
+
+  context 'passport hybrid flow', allow_net_connect_on_start: false do
+    before do
+      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+      allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
+      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: 'UP' }.to_json })
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
+    end
+
+    it 'review step shows one image if passport selected', js: true do
+      perform_in_browser(:desktop) do
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        attach_passport_image(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_mrz_credential.yml'
+          ),
+        )
+        submit_images
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        click_on t('idv.failure.button.warning')
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
+        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
       end
     end
   end

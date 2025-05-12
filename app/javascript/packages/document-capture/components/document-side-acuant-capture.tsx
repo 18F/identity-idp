@@ -62,6 +62,7 @@ function DocumentSideAcuantCapture({
   const { isSelfieCaptureEnabled, isSelfieDesktopTestMode } = useContext(SelfieCaptureContext);
   const isUploadAllowed = isSelfieDesktopTestMode || !isSelfieCaptureEnabled;
   const stepCanComplete = !isReviewStep ? undefined : true;
+
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}

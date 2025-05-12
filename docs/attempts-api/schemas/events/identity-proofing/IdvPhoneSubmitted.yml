@@ -18,8 +18,15 @@ allOf:
               type: string
               enum:
                 - improbable_phone
-                - We are unable to call phone numbers in {Country Name}
-                - We are unable to send text messages to phone numbers in {Country Name}
+                - voice_unsupported
+                - sms_unsupported
+          otp_delivery_preference:
+            type: array
+            description: An OPTIONAL key that describes errors with the delivery method
+            items:
+              type: string
+              enum:
+                - inclusion
       success:
         type: boolean
         description: |
