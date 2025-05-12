@@ -241,8 +241,6 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
           create(
             :user,
             :fully_registered,
-            :with_webauthn,
-            :with_webauthn_platform,
             :with_phone,
             :with_personal_key,
             :with_backup_code,
@@ -289,6 +287,16 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     it { should be_nil }
 
     context 'phishing resistant required' do
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
+
       let(:phishing_resistant_required) { true }
 
       it 'returns phishing resistant required warning text for app' do
@@ -325,6 +333,15 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'piv cac required' do
       let(:piv_cac_required) { true }
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
 
       it 'returns piv cac required warning text for app' do
         expect(restricted_options_warning_text).to eq(
