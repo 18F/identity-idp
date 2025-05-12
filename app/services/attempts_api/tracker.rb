@@ -92,7 +92,8 @@ module AttemptsApi
     end
 
     def hashed_session_id
-      return nil unless user&.unique_session_id
+      return nil unless user&.unique_session_id.present?
+
       Digest::SHA1.hexdigest(user&.unique_session_id)
     end
 
