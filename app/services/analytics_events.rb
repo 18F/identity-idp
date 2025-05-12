@@ -5530,14 +5530,12 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
   # @param [String] zip_code zip code from state issued ID
   # @param [String] birth_year Birth year from document
   # @param [Integer] issue_year Year document was issued
-  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
   # @param [String] vendor_status Socure's request status (used for errors)
   # @param [String] vendor_status_message socure's error message (used for errors)
   # The request for socure verification was sent
@@ -5563,7 +5561,6 @@ module AnalyticsEvents
     zip_code: nil,
     birth_year: nil,
     liveness_enabled: nil,
-    biometric_comparison_required: nil,
     customer_profile: nil,
     docv_transaction_token: nil,
     user_id: nil,
@@ -5593,7 +5590,6 @@ module AnalyticsEvents
       submit_attempts:,
       remaining_submit_attempts:,
       flow_path:,
-      liveness_checking_required:,
       vendor_request_time_in_ms:,
       doc_type_supported:,
       doc_auth_success:,
@@ -5603,7 +5599,6 @@ module AnalyticsEvents
       birth_year:,
       issue_year:,
       liveness_enabled:,
-      biometric_comparison_required:,
       vendor_status:,
       vendor_status_message:,
       **extra,
