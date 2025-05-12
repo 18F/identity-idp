@@ -51,9 +51,13 @@ module Users
           success: false,
         )
 
+        mfa_device_type = @platform_authenticator.present? ?
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
         attempts_api_tracker.mfa_enrolled(
           success: false,
-          mfa_device_type: @platform_authenticator.present? ? 'webauthn_platform' : 'webauthn',
+          mfa_device_type:,
         )
 
       end
@@ -81,9 +85,13 @@ module Users
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
+      mfa_device_type = @platform_authenticator.present? ?
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
       attempts_api_tracker.mfa_enrolled(
         success: result.success?,
-        mfa_device_type: @platform_authenticator.present? ? 'webauthn_platform' : 'webauthn',
+        mfa_device_type:,
       )
 
       if result.success?

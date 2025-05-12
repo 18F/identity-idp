@@ -23,7 +23,10 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
       analytics.backup_code_setup_visit(**visit_result)
-      attempts_api_tracker.mfa_enrolled(success: result.success?, mfa_device_type: 'backup_code')
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
 
       generate_codes
       track_backup_codes_created
@@ -36,7 +39,10 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
       analytics.backup_code_setup_visit(**visit_result)
-      attempts_api_tracker.mfa_enrolled(success: result.success?, mfa_device_type: 'backup_code')
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
 
       generate_codes
       track_backup_codes_created

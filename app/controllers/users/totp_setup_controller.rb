@@ -30,7 +30,10 @@ module Users
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
-      attempts_api_tracker.mfa_enrolled(success: result.success?, mfa_device_type: 'totp')
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::TOTP,
+      )
 
       if result.success?
         process_valid_code

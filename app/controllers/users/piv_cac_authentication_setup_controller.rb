@@ -78,7 +78,7 @@ module Users
 
       attempts_api_tracker.mfa_enrolled(
         success: result.success?,
-        mfa_device_type: 'piv_cac',
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
 
       if result.success?
