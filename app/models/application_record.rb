@@ -16,14 +16,8 @@ class ApplicationRecord < ActiveRecord::Base
   }
 
   def self.table_name_prefix
-    if connection.current_database == :data_warehouse
+    if connection.current_database == 'analytics'
       'idp.'
-    end
-  end
-
-  def self.with_data_warehouse
-    connected_to(role: :data_warehouse) do
-      yield
     end
   end
 end

@@ -21,13 +21,15 @@ module Reports
     end
 
     def self.data_warehouse_transaction_with_timeout
-      ActiveRecord::Base.connected_to(role: :data_warehouse) do
-        ActiveRecord::Base.transaction do
-          quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
-          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
-          yield
-        end
+      original_connection = ActiveRecord::Base.connection_pool
+      ActiveRecord::Base.establish_connection(:data_warehouse)
+      ActiveRecord::Base.transaction do
+        quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
+        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+        yield
       end
+    ensure
+      ActiveRecord::Base.establish_connection(original_connection)
     end
 
     private
