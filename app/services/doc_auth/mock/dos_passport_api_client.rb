@@ -11,7 +11,7 @@ module DocAuth
         if mock_client_response&.passport_check_result&.dig(:PassportCheckResult) == 'Fail'
           DocAuth::Response.new(
             success: false,
-            errors: { passport: 'invalid MRZ' },
+            errors: { passport: I18n.t('doc_auth.errors.general.fallback_field_level') },
           )
         else
           DocAuth::Response.new(success: true)

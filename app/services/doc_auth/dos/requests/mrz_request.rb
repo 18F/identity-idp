@@ -38,7 +38,7 @@ module DocAuth
           when 'NO'
             DocAuth::Response.new(
               success: false,
-              errors: { passport: 'invalid MRZ' },
+              errors: { passport: I18n.t('doc_auth.errors.general.fallback_field_level') },
               exception: nil,
               extra:,
             )
