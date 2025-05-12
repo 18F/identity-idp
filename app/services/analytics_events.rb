@@ -5555,7 +5555,6 @@ module AnalyticsEvents
     decision: nil,
     state: nil,
     id_doc_type: nil,
-    liveness_checking_required: nil,
     issue_year: nil,
     address_line2_present: nil,
     zip_code: nil,
