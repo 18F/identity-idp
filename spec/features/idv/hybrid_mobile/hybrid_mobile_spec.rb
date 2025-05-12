@@ -408,6 +408,56 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           end
         end
       end
+
+      context 'api 400 error' do
+        let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+            .and_return(fake_dos_api_endpoint)
+          stub_request(:post, fake_dos_api_endpoint)
+            .to_return(status: 400, body: '{}', headers: {})
+        end
+        it 'shows the error message' do
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            choose_id_type(:passport)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+            attach_passport_image
+            submit_images
+            expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+          end
+        end
+      end
+
+      context 'api 500 error' do
+        let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+            .and_return(fake_dos_api_endpoint)
+          stub_request(:post, fake_dos_api_endpoint)
+            .to_return(status: 500, body: '{}', headers: {})
+        end
+        it 'shows the error message' do
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            choose_id_type(:passport)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+            attach_passport_image
+            submit_images
+            expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+          end
+        end
+      end
     end
   end
 
