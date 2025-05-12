@@ -86,10 +86,10 @@ module DocAuth
             state: state,
             id_doc_type:,
             flow_path: nil,
-            liveness_checking_required: liveness_enabled, # delete this attr
+            liveness_checking_required: liveness_enabled,
             issue_year: state_id_issued&.year,
             doc_auth_success: doc_auth_success?,
-            vendor: 'Socure', # TODO: Replace with Idp::Constants::Vendors::SOCURE
+            vendor: 'Socure',
             address_line2_present: address2.present?,
             zip_code: zipcode,
             birth_year: dob&.year,
