@@ -67,4 +67,48 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
     end
   end
+
+  describe '#doc_auth_upload_enabled?' do
+    controller(idv_document_capture_controller_class) do
+    end
+
+    before do
+      resolution_result = Vot::Parser.new(vector_of_trust: vot).parse
+      allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
+    end
+
+    context 'selfie is enabled' do
+      let(:vot) { 'Pb' }
+
+      it 'returns false' do
+        expect(controller.doc_auth_upload_enabled?).to eq(false)
+      end
+    end
+
+    context 'manual upload from a/b test bucket is disabled' do
+      let(:vot) { 'P1' }
+
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
+          .and_return(:manual_upload_disabled)
+      end
+
+      it 'returns false' do
+        expect(controller.doc_auth_upload_enabled?).to eq(false)
+      end
+    end
+
+    context 'selfie is not enabled and manual upload from a/b test bucket is enabled' do
+      let(:vot) { 'P1' }
+
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
+          .and_return(nil)
+      end
+
+      it 'returns true' do
+        expect(controller.doc_auth_upload_enabled?).to eq(true)
+      end
+    end
+  end
 end
