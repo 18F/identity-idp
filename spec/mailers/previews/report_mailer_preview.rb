@@ -116,7 +116,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example Authentication Report - #{Time.zone.now.to_date}",
+      subject: "Example IRS Authentication Report - #{Time.zone.now.to_date}",
       message: irs_authentication_report.preamble,
       attachment_format: :csv,
       reports: irs_authentication_report.reports,
@@ -130,7 +130,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example Fraud Key Metrics Report - #{Time.zone.now.to_date}",
+      subject: "Example IRS Fraud Key Metrics Report - #{Time.zone.now.to_date}",
       message: irs_fraud_metrics_report.preamble,
       attachment_format: :csv,
       reports: irs_fraud_metrics_report.reports,
