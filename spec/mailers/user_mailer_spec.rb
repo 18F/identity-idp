@@ -1286,10 +1286,9 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      context 'when passports are enabled globally and for in-person proofing' do
+      context 'when passports are enabled globally' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
         end
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_failed(
@@ -1298,19 +1297,46 @@ RSpec.describe UserMailer, type: :mailer do
           )
         end
 
-        it 'renders passport related content' do
-          expect(mail.html_part.body)
-            .to have_content(
-              t(
-                'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
-              ),
-            )
-          expect(mail.html_part.body)
-            .to_not have_content(
-              t(
-                'user_mailer.in_person_failed.verifying_step_not_expired',
-              ),
-            )
+        context 'when passports are enabled for in-person proofing' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+          end
+
+          it 'renders passport related content' do
+            expect(mail.html_part.body)
+              .to have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+                ),
+              )
+            expect(mail.html_part.body)
+              .to_not have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_not_expired',
+                ),
+              )
+          end
+        end
+
+        context 'when passports are not enabled for in-person proofing' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+          end
+
+          it 'renders only state id related content' do
+            expect(mail.html_part.body)
+              .to_not have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+                ),
+              )
+            expect(mail.html_part.body)
+              .to have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_not_expired',
+                ),
+              )
+          end
         end
       end
 
