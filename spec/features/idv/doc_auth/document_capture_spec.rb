@@ -203,14 +203,25 @@ RSpec.feature 'document capture step', :js do
   context 'Passports enabled', allow_browser_log: true do
     let(:passports_enabled) { true }
     let(:api_status) { 'UP' }
+    let(:ipp_service_provider) do
+      create(:service_provider, :active, :in_person_proofing_enabled)
+    end
 
     before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      allow_any_instance_of(ServiceProvider).to receive(
+        :in_person_proofing_enabled,
+      ).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: api_status }.to_json })
       reload_ab_tests
 
-      visit_idp_from_oidc_sp_with_ial2
+      visit_idp_from_sp_with_ial2(
+        :oidc,
+        **{ client_id: ipp_service_provider.issuer },
+      )
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_document_capture_step
     end
@@ -270,6 +281,7 @@ RSpec.feature 'document capture step', :js do
         submit_images
         expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
         expect(page).to have_content(t('doc_auth.info.review_passport'))
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
         expect_to_try_again
         expect(page).to have_content(t('doc_auth.info.review_passport'))
         expect_rate_limit_warning(max_attempts - 1)
@@ -300,6 +312,7 @@ RSpec.feature 'document capture step', :js do
         attach_passport_image(passport_image)
         submit_images
         expect(page).to have_content(t('doc_auth.errors.general.network_error'))
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
         expect_rate_limit_warning(max_attempts - 1)
       end
     end
@@ -318,6 +331,7 @@ RSpec.feature 'document capture step', :js do
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
         submit_images
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
         expect_to_try_again
         expect(page).to have_current_path(idv_document_capture_url)
         expect_rate_limit_warning(max_attempts - 1)
