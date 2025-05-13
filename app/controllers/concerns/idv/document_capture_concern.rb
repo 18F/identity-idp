@@ -2,7 +2,6 @@
 
 module Idv
   module DocumentCaptureConcern
-    include AbTestingConcern
     extend ActiveSupport::Concern
 
     def handle_stored_result(user: current_user, store_in_session: true)
@@ -59,10 +58,6 @@ module Idv
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
-    end
-
-    def doc_auth_upload_enabled?
-      !(resolved_authn_context_result.facial_match? || manual_upload_disabled?)
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
@@ -131,10 +126,6 @@ module Idv
     end
 
     private
-
-    def manual_upload_disabled?
-      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled
-    end
 
     def track_document_issuing_state(user, state)
       return unless IdentityConfig.store.state_tracking_enabled && state
