@@ -36,7 +36,6 @@ class DuplicateProfileChecker
           duplicate_profile_ids: associated_profiles.map(&:id),
         )
       end
-      user_session[:duplicate_profile] = true
     end
   end
 
