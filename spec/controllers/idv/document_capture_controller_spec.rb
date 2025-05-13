@@ -256,7 +256,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'when manual upload is disabled' do
-      let (:upload_disabled) { :manual_upload_disabled }
+      let(:upload_disabled) { :manual_upload_disabled }
 
       it 'does not allow manual upload' do
         expect(subject).to receive(:render).with(
