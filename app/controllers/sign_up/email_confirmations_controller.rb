@@ -22,6 +22,13 @@ module SignUp
 
     def log_validator_result
       analytics.user_registration_email_confirmation(**email_confirmation_token_validator_result)
+      attempts_api_tracker.user_registration_email_confirmed(
+        success: email_confirmation_token_validator_result.success?,
+        email: @email_address&.email || '',
+        failure_reason: attempts_api_tracker.parse_failure_reason(
+          email_confirmation_token_validator_result,
+        ),
+      )
     end
 
     def clear_setup_piv_cac_from_sign_in

@@ -332,6 +332,19 @@ module AttemptsApi
     # @param [Boolean] success
     # @param [String] email
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user clicks on the confirmation link sent to their provided email address
+    def user_registration_email_confirmed(success:, email:, failure_reason: nil)
+      track_event(
+        'user-registration-email-confirmed',
+        success:,
+        email:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits email address to create a new account
     def user_registration_email_submitted(success:, email:, failure_reason: nil)
       track_event(

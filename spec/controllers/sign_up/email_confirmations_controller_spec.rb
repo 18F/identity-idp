@@ -11,9 +11,15 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     before do
       stub_analytics
+      stub_attempts_tracker
     end
 
     it 'tracks nil email confirmation token' do
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: '',
+        success: false,
+        failure_reason: { confirmation_token: [:not_found] },
+      )
       get :create, params: { confirmation_token: nil }
 
       expect(@analytics).to have_logged_event(
@@ -25,6 +31,11 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks blank email confirmation token' do
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: '',
+        success: false,
+        failure_reason: { confirmation_token: [:not_found] },
+      )
       get :create, params: { confirmation_token: '' }
 
       expect(@analytics).to have_logged_event(
@@ -36,6 +47,11 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: '',
+        success: false,
+        failure_reason: { confirmation_token: [:not_found] },
+      )
       get :create, params: { confirmation_token: "''" }
 
       expect(@analytics).to have_logged_event(
@@ -47,6 +63,11 @@ RSpec.describe SignUp::EmailConfirmationsController do
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: '',
+        success: false,
+        failure_reason: { confirmation_token: [:not_found] },
+      )
       get :create, params: { confirmation_token: '""' }
 
       expect(@analytics).to have_logged_event(
@@ -59,6 +80,11 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks already confirmed token' do
       email_address = create(:email_address, confirmation_token: 'foo')
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: email_address.email,
+        success: false,
+        failure_reason: { email: [:already_confirmed] },
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -79,6 +105,12 @@ RSpec.describe SignUp::EmailConfirmationsController do
         confirmation_token: 'foo',
         confirmation_sent_at: invalid_confirmation_sent_at,
         user: build(:user, email: nil),
+      )
+
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: email_address.email,
+        success: false,
+        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -102,6 +134,11 @@ RSpec.describe SignUp::EmailConfirmationsController do
         user: build(:user, email: nil),
       )
       user = email_address.user
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: email_address.email,
+        success: false,
+        failure_reason: { confirmation_token: [:expired] },
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -165,6 +202,13 @@ RSpec.describe SignUp::EmailConfirmationsController do
       )
       user = email_address.user
       stub_analytics
+      stub_attempts_tracker
+
+      expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+        email: email_address.email,
+        success: true,
+        failure_reason: nil,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 

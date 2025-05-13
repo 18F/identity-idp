@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.feature 'Email confirmation during sign up' do
+  before { stub_attempts_tracker }
+
   it 'requires user to accept rules of use when registering email' do
     visit sign_up_email_path
     fill_in t('forms.registration.labels.email'), with: 'test@example.com'
@@ -19,8 +21,15 @@ RSpec.feature 'Email confirmation during sign up' do
 
   scenario 'confirms valid email and sets valid password' do
     stub_analytics
-    reset_email
+
     email = 'test@example.com'
+    expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
+      email:,
+      success: true,
+      failure_reason: nil,
+    )
+
+    reset_email
     sign_up_with(email)
     open_email(email)
     visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))

@@ -27,6 +27,11 @@ module UnconfirmedUserConcern
       errors: { email: [t('errors.messages.already_confirmed')] },
       user_id: @user.uuid,
     )
+    attempts_api_tracker.user_registration_email_confirmed(
+      success: false,
+      email: @email_address.email,
+      failure_reason: { email: [:already_confirmed] },
+    )
   end
 
   def stop_if_invalid_token
