@@ -96,6 +96,10 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
+        { key: 'user_mailer.in_person_failed.verifying_identity_passports_enabled' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb1' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb2' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb3_html' }, # for failed proofing emails
       ].freeze
       # rubocop:enable Layout/LineLength
 

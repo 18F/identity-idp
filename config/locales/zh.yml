@@ -1960,7 +1960,11 @@ user_mailer.in_person_failed.body.without_cta: 请尝试从 %{sp_name}的网站�
 user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
+user_mailer.in_person_failed.verifying_identity_passports_enabled: 'If you decide to try verifying your identity again:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
+user_mailer.in_person_failed.verifying_step_passports_enabledb1: Your ID document must not be expired.
+user_mailer.in_person_failed.verifying_step_passports_enabledb2: We only accept a state ID or U.S. passport book. We do not accept military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb3_html: You must bring the <strong>same</strong> ID document to the Post Office that you used on %{app_name} to create a barcode.
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天
