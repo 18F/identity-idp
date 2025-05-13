@@ -90,6 +90,7 @@ module I18n
         { key: 'in_person_proofing.process.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: /^duplicate_profiles_detected\./, locales: %i[es fr zh] }, # This currently doesnt have translations but under feature toggle, will be addressed after initial english only launch
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'telephony.format_length.six', locales: %i[zh] }, # numeral is not translated
@@ -98,6 +99,10 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
+        { key: 'user_mailer.in_person_failed.verifying_identity_passports_enabled' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb1' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb2' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb3_html' }, # for failed proofing emails
       ].freeze
       # rubocop:enable Layout/LineLength
 

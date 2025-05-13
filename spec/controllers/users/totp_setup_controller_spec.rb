@@ -88,7 +88,10 @@ RSpec.describe Users::TotpSetupController, devise: true do
     before do
       stub_analytics
       stub_attempts_tracker
-      expect(@attempts_api_tracker).to receive(:mfa_enroll_totp).with(success:)
+      expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+        success:,
+        mfa_device_type: 'totp',
+      )
     end
 
     context 'user is already signed up' do
@@ -160,7 +163,10 @@ RSpec.describe Users::TotpSetupController, devise: true do
           subject.user_session[:new_totp_secret] = secret
 
           # calls the tracker again with success: true
-          expect(@attempts_api_tracker).to receive(:mfa_enroll_totp).with(success: true)
+          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+            success: true,
+            mfa_device_type: 'totp',
+          )
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
 

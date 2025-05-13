@@ -6,6 +6,10 @@ interface SelfieCaptureProps {
    */
   isSelfieCaptureEnabled: boolean;
   /**
+   * Specify whether to allow manual uploads for document capture.
+   */
+  isUploadEnabled: boolean;
+  /**
    * Specify whether to allow uploads for selfie when in test mode.
    */
   isSelfieDesktopTestMode: boolean;
@@ -18,6 +22,7 @@ interface SelfieCaptureProps {
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
+  isUploadEnabled: true,
   isSelfieDesktopTestMode: false,
   showHelpInitially: true,
 });

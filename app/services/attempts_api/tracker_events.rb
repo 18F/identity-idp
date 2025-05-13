@@ -213,21 +213,19 @@ module AttemptsApi
       )
     end
 
+    # Tracks when user enrolls their MFA device.
     # @param [Boolean] success
-    # A user has attempted to enroll the Backup Codes MFA method to their account
-    def mfa_enroll_backup_code(success:)
+    # @param mfa_device_type [String<'backup_code', 'otp', 'piv_cac',
+    # 'totp', 'webauthn', 'webauthn_platform'>]
+    # @param [String<'sms','voice'>] otp_delivery_method
+    # @param [String] phone_number Enrolled phone number
+    def mfa_enrolled(success:, mfa_device_type:, otp_delivery_method: nil, phone_number: nil)
       track_event(
-        'mfa-enroll-backup-code',
+        'mfa-enrolled',
         success:,
-      )
-    end
-
-    # @param [Boolean] success
-    # A user has attempted to enroll the TOTP MFA method to their account
-    def mfa_enroll_totp(success:)
-      track_event(
-        'mfa-enroll-totp',
-        success:,
+        mfa_device_type:,
+        otp_delivery_method:,
+        phone_number:,
       )
     end
 
@@ -243,20 +241,27 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
-    def mfa_enroll_webauthn_platform(success:)
+    # @param [String<'sms','voice'>] otp_delivery_method
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # During an MFA enrollment attempt, an OTP code has been sent to sms or voice.
+    def mfa_enroll_phone_otp_sent(success:, otp_delivery_method:, phone_number:,
+                                  failure_reason: nil)
       track_event(
-        'mfa-enroll-webauthn-platform',
+        'mfa-enroll-phone-otp-sent',
         success:,
+        otp_delivery_method:,
+        phone_number:,
+        failure_reason:,
       )
     end
 
-    # @param [Boolean] success
-    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
-    def mfa_enroll_webauthn_roaming(success:)
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP sends during mfa enrollment.
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
       track_event(
-        'mfa-enroll-webauthn-roaming',
-        success:,
+        'mfa-enroll-phone-otp-sent-rate-limited',
+        phone_number:,
       )
     end
 
@@ -273,6 +278,33 @@ module AttemptsApi
         reauthentication:,
         success:,
         failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String<'sms','voice'>] otp_delivery_method
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] reauthentication
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # During a login attempt, an OTP code has been sent to sms or voice.
+    def mfa_login_phone_otp_sent(success:, otp_delivery_method:, phone_number:, reauthentication:,
+                                 failure_reason: nil)
+      track_event(
+        'mfa-login-phone-otp-sent',
+        success:,
+        otp_delivery_method:,
+        phone_number:,
+        reauthentication:,
+        failure_reason:,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP sends during login attempt.
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:)
+      track_event(
+        'mfa-login-phone-otp-sent-rate-limited',
+        phone_number:,
       )
     end
 

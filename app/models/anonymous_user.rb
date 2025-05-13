@@ -64,4 +64,12 @@ class AnonymousUser
   def active_profile
     nil
   end
+
+  def unique_session_id
+    nil
+  end
+
+  def id
+    nil
+  end
 end

@@ -63,7 +63,7 @@ RSpec.describe Reports::IrsAuthenticationReport do
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'Authentication Report - 2021-03-02',
+      subject: 'IRS Authentication Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,

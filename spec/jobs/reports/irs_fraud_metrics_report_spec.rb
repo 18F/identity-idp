@@ -89,7 +89,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'Fraud Metrics Report - 2021-03-02',
+      subject: 'IRS Fraud Metrics Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
@@ -104,7 +104,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: anything,
-        subject: 'Fraud Metrics Report - 2021-02-28',
+        subject: 'IRS Fraud Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
