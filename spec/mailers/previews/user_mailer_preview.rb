@@ -369,7 +369,7 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
-        document_type: 'state_id',
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
       ),
     )
   end
@@ -398,7 +398,7 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
-        document_type: 'passport_book',
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK,
       ),
     )
   end
