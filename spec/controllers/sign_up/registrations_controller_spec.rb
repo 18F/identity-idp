@@ -63,11 +63,19 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
     let(:email_language) { 'es' }
     let(:params) { { user: { email:, terms_accepted: '1', email_language: } } }
 
+    before do
+      stub_analytics
+      stub_attempts_tracker
+    end
+
     context 'when registering with a new email' do
       it 'tracks successful user registration' do
-        stub_analytics
-
         allow(subject).to receive(:create_user_event)
+        expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email:,
+          success: true,
+          failure_reason: nil,
+        )
 
         post :create, params: params
 
@@ -114,60 +122,93 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       end
     end
 
-    it 'tracks successful user registration with existing email' do
-      existing_user = create(:user, email: 'test@example.com')
+    context 'with existing email' do
+      let(:existing_user) { create(:user, email: 'test@example.com') }
+      let(:email) { existing_user.email }
 
-      stub_analytics
+      it 'tracks successful user registration with existing email' do
+        expect(subject).to_not receive(:create_user_event)
+        expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email:,
+          success: true,
+          failure_reason: nil,
+        )
 
-      expect(subject).to_not receive(:create_user_event)
+        post :create, params: params
 
-      post :create, params: params.deep_merge(user: { email: 'test@example.com' })
-
-      expect(subject.session[:sign_in_flow]).to eq(:create_account)
-      expect(@analytics).to have_logged_event(
-        'User Registration: Email Submitted',
-        success: true,
-        rate_limited: false,
-        email_already_exists: true,
-        user_id: existing_user.uuid,
-        domain_name: 'example.com',
-        email_language:,
-      )
+        expect(subject.session[:sign_in_flow]).to eq(:create_account)
+        expect(@analytics).to have_logged_event(
+          'User Registration: Email Submitted',
+          success: true,
+          rate_limited: false,
+          email_already_exists: true,
+          user_id: existing_user.uuid,
+          domain_name: 'example.com',
+          email_language:,
+        )
+      end
     end
 
-    it 'tracks unsuccessful user registration' do
-      stub_analytics
+    context 'when the email is invalid' do
+      let(:email) { 'invalid@' }
 
-      post :create, params: params.deep_merge(user: { email: 'invalid@' })
+      it 'tracks unsuccessful user registration' do
+        expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email:,
+          success: false,
+          failure_reason: { email: [:invalid] },
+        )
 
-      expect(@analytics).to have_logged_event(
-        'User Registration: Email Submitted',
-        success: false,
-        rate_limited: false,
-        error_details: { email: { invalid: true } },
-        email_already_exists: false,
-        user_id: 'anonymous-uuid',
-        domain_name: 'invalid',
-        email_language:,
-      )
+        post :create, params: params
+
+        expect(@analytics).to have_logged_event(
+          'User Registration: Email Submitted',
+          success: false,
+          rate_limited: false,
+          error_details: { email: { invalid: true } },
+          email_already_exists: false,
+          user_id: 'anonymous-uuid',
+          domain_name: 'invalid',
+          email_language:,
+        )
+      end
+
+      it 'renders new' do
+        post :create, params: params
+
+        expect(response).to render_template(:new)
+      end
     end
 
-    it 'renders new if email is nil' do
-      post :create, params: params.deep_merge(user: { email: nil })
+    context 'when the email is nil' do
+      let(:email) { nil }
+      it 'renders new' do
+        expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email: '',
+          success: false,
+          failure_reason: { email: [:invalid] },
+        )
 
-      expect(response).to render_template(:new)
+        post :create, params: params
+
+        expect(response).to render_template(:new)
+      end
     end
 
-    it 'renders new if email is a Hash' do
-      put :create, params: params.deep_merge(user: { email: { foo: 'bar' } })
+    context 'when the email is a Hash' do
+      let(:email) { { foo: 'bar' } }
 
-      expect(response).to render_template(:new)
-    end
+      it 'renders new' do
+        expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
+          email: '',
+          success: false,
+          failure_reason: { email: [:invalid] },
+        )
 
-    it 'renders new if request_id is blank' do
-      post :create, params: params.deep_merge(user: { email: 'invalid@' })
+        post :create, params: params
 
-      expect(response).to render_template(:new)
+        expect(response).to render_template(:new)
+      end
     end
   end
 end

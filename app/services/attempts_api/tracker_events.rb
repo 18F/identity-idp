@@ -330,12 +330,36 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user submits email address to create a new account
+    def user_registration_email_submitted(success:, email:, failure_reason: nil)
+      track_event(
+        'user-registration-email-submitted',
+        success:,
+        email:,
+        failure_reason:,
+      )
+    end
+
+    # Tracks when user is rate limited for submitting registration email
+    # @param [String] email
+    # @param [Boolean] email_already_registered
+    def user_registration_email_submission_rate_limited(
+      email:,
+      email_already_registered:
+    )
+      track_event(
+        'user-registration-email-submission-rate-limited',
+        email:,
+        email_already_registered:,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits registration password
-    def user_registration_password_submitted(
-      success:,
-      failure_reason: nil
-    )
+    def user_registration_password_submitted(success:, failure_reason: nil)
       track_event(
         'user-registration-password-submitted',
         success:,
