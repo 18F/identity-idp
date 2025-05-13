@@ -220,12 +220,12 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
-irs_verification_report_config: '[]'
-irs_verification_report_issuers: '[]'
 irs_authentication_emails: '[]'
 irs_authentication_issuers: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
+irs_verification_report_config: '[]'
+irs_verification_report_issuers: '[]'
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
