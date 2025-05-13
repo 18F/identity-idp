@@ -206,6 +206,9 @@ Rails.application.routes.draw do
     end
 
     get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+    get '/duplicate_profiles_detected' => 'duplicate_profiles_detected#show'
+    post '/duplicate_profiles_detected/recognize_all_profiles' => 'duplicate_profiles_detected#recognize_all_profiles'
+    post '/duplicate_profiles_detected/do_not_recognize_profiles' => 'duplicate_profiles_detected#do_not_recognize_profiles'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'

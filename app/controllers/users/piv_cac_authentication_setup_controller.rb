@@ -75,6 +75,12 @@ module Users
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
+
       if result.success?
         process_valid_submission
         user_session.delete(:mfa_attempts)
@@ -111,7 +117,6 @@ module Users
     end
 
     def track_mfa_method_added
-      analytics.multi_factor_auth_added_piv_cac(**analytics_properties)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics, threatmetrix_attrs)
     end
 

@@ -740,6 +740,14 @@ doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit 
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 doc_auth.tips.mobile_phone_required: Téléphone mobile nécessaire
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
@@ -1939,7 +1947,11 @@ user_mailer.in_person_failed.body.without_cta: Veuillez réessayer de confirmer 
 user_mailer.in_person_failed.intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
 user_mailer.in_person_failed.subject: Votre identité n’a pas pu être vérifiée en personne
 user_mailer.in_person_failed.verifying_identity: 'Lors de la vérification de votre identité :'
+user_mailer.in_person_failed.verifying_identity_passports_enabled: 'If you decide to try verifying your identity again:'
 user_mailer.in_person_failed.verifying_step_not_expired: Votre carte d’identité délivrée par l’État ou votre permis de conduire ne doit pas être périmé. Nous n’acceptons actuellement aucune autre pièce d’identité, comme les passeports et les cartes d’identité militaires.
+user_mailer.in_person_failed.verifying_step_passports_enabledb1: Your ID document must not be expired.
+user_mailer.in_person_failed.verifying_step_passports_enabledb2: We only accept a state ID or U.S. passport book. We do not accept military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb3_html: You must bring the <strong>same</strong> ID document to the Post Office that you used on %{app_name} to create a barcode.
 user_mailer.in_person_ready_to_verify_reminder.greeting: Bonjour,
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Il vous reste %{count} jour pour vérifier votre identité en personne
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Il vous reste %{count} jours pour vérifier votre identité en personne
