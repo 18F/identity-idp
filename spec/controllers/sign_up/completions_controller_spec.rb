@@ -355,6 +355,67 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
 
+      context 'with OneAccount matching' do
+        let(:user) { create(:user, :fully_registered) }
+        let(:session) { {} }
+        let(:active_pii) do
+          Pii::Attributes.new(
+            ssn: '666339999',
+          )
+        end
+        let(:sp) { create(:service_provider) }
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+            :facial_match_proof,
+            user: user,
+            initiating_service_provider_issuer: sp.issuer,
+          )
+        end
+        let(:issuer) { sp.issuer }
+
+        before do
+          profile.encrypt_pii(active_pii, user.password)
+          profile.save
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+            .and_return([sp.issuer])
+
+          session[:encrypted_profiles] = {
+            profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
+          }
+        end
+        context 'when user has accounts with matching profile' do
+          let(:user2) { create(:user, :fully_registered) }
+          let!(:profile2) do
+            profile = create(
+              :profile,
+              :active,
+              :facial_match_proof,
+              user: user2,
+              initiating_service_provider_issuer: sp.issuer,
+            )
+            profile.encrypt_pii(active_pii, user2.password)
+            profile.save
+          end
+
+          before do
+            session[:encrypted_profiles] = {
+              profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
+            }
+          end
+
+          it 'creates a new duplicate profile confirmation entry' do
+            patch :update
+
+            expect(response).to redirect_to duplicate_profiles_detected_url
+          end
+        end
+      end
+
       context 'in person completion survey delievery enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
