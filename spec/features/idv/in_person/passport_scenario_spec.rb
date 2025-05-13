@@ -148,6 +148,24 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_in_person_passport_path)
           expect(page).to have_content t('in_person_proofing.headings.passport')
           expect(page).to have_content t('in_person_proofing.body.passport.info')
+
+          fill_in_passport_form
+
+          click_on t('forms.buttons.submit.default')
+
+          expect(page).to have_current_path(idv_in_person_address_path)
+
+          fill_out_address_form_ok
+
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_in_person_ssn_path)
+
+          fill_out_ssn_form_ok
+
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_in_person_verify_info_path)
         end
       end
 
@@ -322,5 +340,25 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         expect(page).to have_current_path(idv_in_person_state_id_path)
       end
     end
+  end
+
+  def fill_in_passport_form
+    fill_in t('in_person_proofing.form.passport.surname'),
+            with: InPersonHelper::GOOD_LAST_NAME
+    fill_in t('in_person_proofing.form.passport.first_name'),
+            with: InPersonHelper::GOOD_FIRST_NAME
+
+    fill_in_memorable_date(
+      'idv_in_person_passport_form[passport_dob]',
+      InPersonHelper::GOOD_DOB,
+    )
+
+    fill_in t('in_person_proofing.form.passport.passport_number'),
+            with: InPersonHelper::GOOD_PASSPORT_NUMBER
+
+    fill_in_memorable_date(
+      'idv_in_person_passport_form[passport_expiration]',
+      InPersonHelper::GOOD_PASSPORT_EXPIRATION_DATE,
+    )
   end
 end

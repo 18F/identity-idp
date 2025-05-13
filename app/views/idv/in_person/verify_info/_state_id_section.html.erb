@@ -1,0 +1,56 @@
+<div class="grid-row grid-gap grid-gap-2 padding-bottom-1 border-bottom border-primary-light">
+  <dl class="grid-col-fill margin-y-0">
+    <div class="padding-y-1">
+      <h2 class="h4 margin-y-0"><%= t('headings.state_id') %></h2>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:first_name] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.last_name') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:last_name] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
+      <dd class="display-inline margin-left-0">
+        <%= I18n.l(Date.parse(@pii[:dob]), format: I18n.t('time.formats.event_date')) %>
+      </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.issuing_state') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:state_id_jurisdiction] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:state_id_number] %> </dd>
+    </div>
+    <div class="margin-top-105">
+      <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_address1] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_address2].presence %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_city] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_address_state] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= @pii[:identity_doc_zipcode] %> </dd>
+    </div>
+  </dl>
+  <div class='grid-auto'>
+    <%= link_to(
+          idv_in_person_state_id_url,
+          class: 'usa-button usa-button--unstyled padding-y-1',
+          'aria-label': t('idv.buttons.change_state_id_label'),
+        ) { t('idv.buttons.change_label') } %>
+  </div>
+</div>

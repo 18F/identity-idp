@@ -13,6 +13,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
     )
   end
 
+  let(:upload_disabled) { :default }
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:document_capture_session_requested_at) { Time.zone.now }
@@ -24,6 +25,10 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+
+    allow(subject).to receive(:ab_test_bucket).and_call_original
+    allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED, user: user)
+      .and_return(upload_disabled)
 
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
@@ -89,6 +94,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           :show,
           locals: hash_including(
             document_capture_session_uuid: document_capture_session_uuid,
+            doc_auth_upload_enabled: true,
           ),
         ).and_call_original
 
@@ -109,6 +115,24 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
             locals: hash_including(
               document_capture_session_uuid: document_capture_session_uuid,
               doc_auth_selfie_capture: true,
+            ),
+          ).and_call_original
+
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'when manual upload is disabled' do
+        let(:upload_disabled) { :manual_upload_disabled }
+
+        it 'does not allow manual upload' do
+          expect(subject).to receive(:render).with(
+            :show,
+            locals: hash_including(
+              document_capture_session_uuid: document_capture_session_uuid,
+              doc_auth_upload_enabled: false,
             ),
           ).and_call_original
 

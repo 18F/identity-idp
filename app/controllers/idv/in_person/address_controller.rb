@@ -50,7 +50,9 @@ module Idv
           controller: self,
           next_steps: [:ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-            idv_session.ipp_state_id_complete?
+            # Handling passport navigation with checking in_person_passports_allowed? since passport
+            # form is not setup yet. This should be updated during LG-15985 implmentation.
+            idv_session.ipp_state_id_complete? || idv_session.in_person_passports_allowed?
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_address_step!

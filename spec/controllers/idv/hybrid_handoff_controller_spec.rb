@@ -75,6 +75,12 @@ RSpec.describe Idv::HybridHandoffController do
       expect(response).to render_template :show
     end
 
+    it 'defaults to upload disabled being false' do
+      get :show
+
+      expect(assigns(:upload_disabled)).to be false
+    end
+
     it 'sends analytics_visited event' do
       get :show
 
@@ -98,6 +104,32 @@ RSpec.describe Idv::HybridHandoffController do
         get :show
 
         expect(response).to redirect_to(idv_agreement_url)
+      end
+    end
+
+    context '@upload_disabled is true' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+        allow(subject).to receive(:ab_test_bucket).and_call_original
+        allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
+          .and_return(:manual_upload_disabled)
+      end
+
+      context 'selfie check required is true' do
+        let(:sp_selfie_enabled) { true }
+        it 'returns true' do
+          get :show
+
+          expect(assigns(:upload_disabled)).to be true
+        end
+      end
+
+      context 'doc_auth_upload_disabled? is true' do
+        it 'returns true' do
+          get :show
+
+          expect(assigns(:upload_disabled)).to be true
+        end
       end
     end
 

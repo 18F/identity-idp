@@ -136,6 +136,11 @@ module Idp
       same_address_as_id: 'true',
     }.freeze
 
+    MOCK_IPP_PASSPORT_APPLICANT = {
+      passport_number: '123456789',
+      passport_expiration_date: (DateTime.now.utc + 1.year).to_s,
+    }.freeze
+
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(

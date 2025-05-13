@@ -633,6 +633,7 @@ doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
 doc_auth.headings.passport_instructions.howto: '如何拍摄你本人的照片：'
 doc_auth.headings.review_issues: 检查一下你的图片并再试一次
+doc_auth.headings.review_issues_passport: 检查一下你的照片并再试一次
 doc_auth.headings.secure_account: 保护你的账户安全
 doc_auth.headings.selfie: 照片
 doc_auth.headings.selfie_capture: 拍你本人照片
@@ -689,6 +690,7 @@ doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。
 doc_auth.info.passport_capture_help_1: 将护照本的数据页与各个引导线对齐。
 doc_auth.info.passport_capture_help_2: 拿稳相机，等待工具拍照。
 doc_auth.info.review_examples_of_photos: 查看如何拍出身份证件清晰照片的示例。
+doc_auth.info.review_passport: 我们找不到与你护照信息匹配的记录。添加你ID的新照片，以防你护照信息没被正确读取。
 doc_auth.info.secure_account: 你重输密码时我们会对你的账户加密。加密意味着你的数据受到保护，只有你才能更改你的信息。
 doc_auth.info.selfie_capture_content: 我们会查看你是身份证件上的人。
 doc_auth.info.selfie_capture_help_1: 把你的面部放在绿色圆圈里。请保持静止，等待工具拍照。
@@ -749,6 +751,14 @@ doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
 email_addresses.add.limit: 你添加的电邮地址数目已达最多。
@@ -1298,7 +1308,7 @@ in_person_proofing.body.location.po_search.state_label: 州
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: 请继续验证你的身份。生成条形码后，你可以使用我们的<a target="_blank" href="%{link_url}"></a>搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: 抱歉，我们遇到了技术困难，无法搜索参与本项目的邮局。
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: 帮助中心
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: 地图图钉图像
 in_person_proofing.body.location.po_search.zipcode_label: 邮编
 in_person_proofing.body.location.retail_hours_heading: 营业时间
 in_person_proofing.body.location.retail_hours_sat: 周六：
@@ -1950,7 +1960,11 @@ user_mailer.in_person_failed.body.without_cta: 请尝试从 %{sp_name}的网站�
 user_mailer.in_person_failed.intro: 你的身份于 %{date}在 %{location} 邮局未能得到验证。
 user_mailer.in_person_failed.subject: 你的身份未能亲身被验证。
 user_mailer.in_person_failed.verifying_identity: '验证你的身份时:'
+user_mailer.in_person_failed.verifying_identity_passports_enabled: 'If you decide to try verifying your identity again:'
 user_mailer.in_person_failed.verifying_step_not_expired: 你的州政府颁发的身份证件或驾照绝对没有过期。我们目前不接受任何其他形式的身份证件，比如护照和军队身份证件。
+user_mailer.in_person_failed.verifying_step_passports_enabledb1: Your ID document must not be expired.
+user_mailer.in_person_failed.verifying_step_passports_enabledb2: We only accept a state ID or U.S. passport book. We do not accept military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb3_html: You must bring the <strong>same</strong> ID document to the Post Office that you used on %{app_name} to create a barcode.
 user_mailer.in_person_ready_to_verify_reminder.greeting: 你好，
 user_mailer.in_person_ready_to_verify_reminder.heading.one: 你距离亲身验证身份截止日期还有 %{count} 天
 user_mailer.in_person_ready_to_verify_reminder.heading.other: 你距离亲身验证身份截止日期还有 %{count} 天

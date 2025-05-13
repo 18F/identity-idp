@@ -2,6 +2,10 @@
 
 module AttemptsApi
   class Tracker
+    SKIP_AGENCY_UUID_CREATION_EVENT_TYPES = [
+      'login-email-and-password-auth',
+      'forgot-password-email-sent',
+    ].freeze
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_request_uri
 
@@ -31,7 +35,7 @@ module AttemptsApi
       event_metadata = {
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
-        user_uuid: sp && AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
+        user_uuid: agency_uuid(event_type: event_type),
         device_fingerprint: hashed_cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         application_url: sp_request_uri,
@@ -76,8 +80,20 @@ module AttemptsApi
 
     private
 
+    def agency_uuid(event_type:)
+      return nil unless user&.id && sp
+      skip_create = SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.include?(event_type)
+
+      if skip_create
+        AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: true)&.uuid
+      else
+        AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: false).uuid
+      end
+    end
+
     def hashed_session_id
-      return nil unless user&.unique_session_id
+      return nil unless user&.unique_session_id.present?
+
       Digest::SHA1.hexdigest(user&.unique_session_id)
     end
 

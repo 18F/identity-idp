@@ -12,19 +12,25 @@ class AgencyIdentityLinker
   end
 
   # @return [AgencyIdentity, ServiceProviderIdentity] the AgencyIdentity for this user at this
-  #   service provider or falls back to the ServiceProviderIdentity if one does not exist.
-  def self.for(user:, service_provider:)
+  #   service provider if one exists, otherwise creates one.
+  def self.for(user:, service_provider:, skip_create:)
     agency = service_provider.agency
 
     ai = AgencyIdentity.find_by(user: user, agency: agency)
-    return ai if ai.present?
+    return ai if ai.present? || skip_create
+    # This should never be the case and we should fail loudly if it is
+    raise "nil agency_id for #{service_provider.issuer}" unless service_provider.agency_id
 
     spi = ServiceProviderIdentity.find_by(
       user: user, service_provider: service_provider.issuer,
     )
 
-    return nil unless spi.present?
-    new(spi).link_identity
+    uuid = spi&.uuid || SecureRandom.uuid
+    AgencyIdentity.create(
+      agency_id: service_provider.agency_id,
+      user_id: user.id,
+      uuid: uuid,
+    )
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
