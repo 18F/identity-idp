@@ -157,6 +157,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         it 'creates a DocumentRequest' do
           expect(request_class).to have_received(:new)
             .with(
+              customer_user_id: user.uuid,
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
@@ -195,6 +196,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       language: :en,
                       useCaseKey: idv_socure_docv_flow_id_only,
                     },
+                    customerUserId: user.uuid,
                   },
                 ),
               )
@@ -218,6 +220,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       language: 'zh-cn',
                       useCaseKey: idv_socure_docv_flow_id_only,
                     },
+                    customerUserId: user.uuid,
                   },
                 ),
               )
@@ -260,6 +263,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                     language: :en,
                     useCaseKey: idv_socure_docv_flow_id_w_selfie,
                   },
+                  customerUserId: user.uuid,
                 },
               ),
             )

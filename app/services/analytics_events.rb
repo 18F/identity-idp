@@ -5389,6 +5389,7 @@ module AnalyticsEvents
   # @param [String] exception any exceptions thrown during request
   # @param [String] docv_transaction_token socure transaction token
   # @param [String] reference_id socure interal id for transaction
+  # @param [String] customer_user_id user uuid sent to socure
   # @param [String] language lagnuage presented to user
   # @param [String] step current step of idv to user
   # @param [String] analytics_id id of analytics
@@ -5425,6 +5426,7 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     reference_id: nil,
+    customer_user_id: nil,
     liveness_enabled: nil,
     document_type: nil,
     docv_transaction_token: nil,
@@ -5451,6 +5453,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       reference_id:,
+      customer_user_id:,
       response_body:,
       liveness_enabled:,
       document_type:,

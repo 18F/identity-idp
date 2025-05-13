@@ -4,14 +4,16 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :document_type, :redirect_url, :language, :liveness_checking_required
+        attr_reader :customer_user_id, :document_type, :redirect_url, :language, :liveness_checking_required
 
         def initialize(
+          customer_user_id:,
           redirect_url:,
           language:,
           document_type: 'license',
           liveness_checking_required: false
         )
+          @customer_user_id = customer_user_id
           @redirect_url = redirect_url
           @document_type = document_type
           @language = language
@@ -33,6 +35,7 @@ module DocAuth
               language: lang(language),
               useCaseKey: use_case_key,
             },
+            customerUserId: customer_user_id,
           }.to_json
         end
 
