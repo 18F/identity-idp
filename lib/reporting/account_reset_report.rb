@@ -50,7 +50,7 @@ module Reporting
 
     def as_tables
       [
-        account_reset_table
+        account_reset_table,
       ]
     end
 
