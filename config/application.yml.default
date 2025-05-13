@@ -583,7 +583,7 @@ test:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
   irs_credentials_emails: '["g@example.com", "h@example.com"]'
-  irs_credentials_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  #irs_credentials_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

@@ -1,8 +1,8 @@
 require 'rails_helper'
-require_relative '/Users/jabariamyles/identity-idp/app/jobs/reports/irs_monthly_cred_metrics.rb'
+require_relative '/Users/jabariamyles/identity-idp/app/jobs/reports/irs_monthly_cred_metrics_report.rb'
 
-RSpec.describe Reports::IRSMonthlyCredMetrics do
-  subject(:report) { Reports::IRSMonthlyCredMetrics.new }
+RSpec.describe Reports::IrsMonthlyCredMetricsReport do
+  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new }
 
   # before do
   #   clear_agreements_data
@@ -105,7 +105,7 @@ RSpec.describe Reports::IRSMonthlyCredMetrics do
             expect(row['credentials_authorized_requesting_agency'].to_i).to eq(9)
             expect(row['new_identity_verification_credentials_authorized_for_partner'].to_i).to eq(2)
             expect(row['existing_identity_verification_credentials_authorized_for_partner'].to_i).to eq(0)
-            binding.pry
+            #binding.pry
           end
         end
 

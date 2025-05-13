@@ -144,19 +144,33 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_monthly_credentials_report
-    irs_monthly_credentials_report = Reports::IRSMonthlyCredMetrics.new(Time.zone.yesterday)
-
-    #stub_cloudwatch_client(monthly_key_metrics_report.proofing_rate_report)
-    #stub_cloudwatch_client(monthly_key_metrics_report.monthly_idv_report)
-
+    report_date = Time.zone.yesterday
+    report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
+  
+    # Build emailable report
+    emailable_report = report.as_emailable_irs_report(
+      iaas: IaaReportingHelper.iaas,
+      partner_accounts: IaaReportingHelper.partner_accounts,
+      date: report_date
+    )
+  
     ReportMailer.tables_report(
       email: 'test@example.com',
       subject: "Example Credentials Report - #{Time.zone.now.to_date}",
-      message: monthly_key_metrics_report.preamble,
-      attachment_format: :xlsx,
-      reports: monthly_key_metrics_report.reports,
-    )
+      message: report.preamble,
+      reports: [emailable_report], #[emailable_report],
+      attachment_format: :csv
+    ).deliver_now
+  
+    render plain: 'Report has been sent!'
   end
+  
+  
+  
+  
+  
+  
+  
 
   private
 
