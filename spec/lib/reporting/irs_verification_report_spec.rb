@@ -21,14 +21,14 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      table = report.overview_table
-
       # Dynamically calculate the expected "Report Generated" date
-      expected_generated_date = Time.zone.today.to_s
+      expected_generated_date = Time.zone.today.to_date.to_s # Adjust this if the method uses a different logic
+
+      table = report.overview_table
 
       expect(table).to include(
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', expected_generated_date], # Dynamically match today's date
+        ['Report Generated', expected_generated_date], # Dynamically match the generated date
         ['Issuer', issuers.join(', ')],
       )
     end
