@@ -27,6 +27,7 @@ describe('DocumentSideAcuantCapture', () => {
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: false,
+                  isUploadEnabled: true,
                   isSelfieDesktopTestMode: false,
                   showHelpInitially: false,
                 }}
@@ -51,6 +52,7 @@ describe('DocumentSideAcuantCapture', () => {
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: false,
+                  isUploadEnabled: true,
                   isSelfieDesktopTestMode: true,
                   showHelpInitially: false,
                 }}
@@ -67,6 +69,31 @@ describe('DocumentSideAcuantCapture', () => {
           expect(takeOrUploadPictureText).to.have.lengthOf(2);
         });
       });
+
+      context('and doc_auth_upload_enabled is false', () => {
+        it('_does_ not display a photo upload button', () => {
+          const { queryAllByText } = render(
+            <DeviceContext.Provider value={{ isMobile: true }}>
+              <SelfieCaptureContext.Provider
+                value={{
+                  isSelfieCaptureEnabled: false,
+                  isUploadEnabled: false,
+                  isSelfieDesktopTestMode: false,
+                  showHelpInitially: false,
+                }}
+              >
+                <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="front" />
+                <DocumentSideAcuantCapture {...DEFAULT_PROPS} side="back" />
+              </SelfieCaptureContext.Provider>
+            </DeviceContext.Provider>,
+          );
+
+          const takeOrUploadPictureText = queryAllByText(
+            'doc_auth.buttons.take_or_upload_picture_html',
+          );
+          expect(takeOrUploadPictureText).to.have.lengthOf(0);
+        });
+      });
     });
 
     context('and using desktop', () => {
@@ -79,6 +106,7 @@ describe('DocumentSideAcuantCapture', () => {
                 <SelfieCaptureContext.Provider
                   value={{
                     isSelfieCaptureEnabled: false,
+                    isUploadEnabled: true,
                     isSelfieDesktopTestMode: false,
                     showHelpInitially: false,
                   }}
@@ -100,6 +128,7 @@ describe('DocumentSideAcuantCapture', () => {
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: false,
+                  isUploadEnabled: true,
                   isSelfieDesktopTestMode: false,
                   showHelpInitially: false,
                 }}
@@ -122,6 +151,7 @@ describe('DocumentSideAcuantCapture', () => {
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: false,
+                  isUploadEnabled: false,
                   isSelfieDesktopTestMode: true,
                   showHelpInitially: false,
                 }}
@@ -149,6 +179,7 @@ describe('DocumentSideAcuantCapture', () => {
                 value={{
                   isSelfieCaptureEnabled: true,
                   isSelfieDesktopTestMode: false,
+                  isUploadEnabled: false,
                   showHelpInitially: false,
                 }}
               >
@@ -170,12 +201,13 @@ describe('DocumentSideAcuantCapture', () => {
       });
 
       context('and doc_auth_selfie_desktop_test_mode is true', () => {
-        it('does _not_ display a photo upload button', () => {
+        it('does display a photo upload button', () => {
           const { queryAllByText } = render(
             <DeviceContext.Provider value={{ isMobile: true }}>
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: true,
+                  isUploadEnabled: false,
                   isSelfieDesktopTestMode: true,
                   showHelpInitially: false,
                 }}
@@ -212,6 +244,7 @@ describe('DocumentSideAcuantCapture', () => {
               <SelfieCaptureContext.Provider
                 value={{
                   isSelfieCaptureEnabled: true,
+                  isUploadEnabled: true,
                   isSelfieDesktopTestMode: true,
                   showHelpInitially: false,
                 }}

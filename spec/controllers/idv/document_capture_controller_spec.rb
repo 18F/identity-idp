@@ -12,6 +12,7 @@ RSpec.describe Idv::DocumentCaptureController do
   let(:facial_match_required) { false }
   let(:flow_path) { 'standard' }
   let(:doc_auth_selfie_desktop_test_mode) { false }
+  let(:upload_disabled) { :default }
 
   # document capture setup
   let(:doc_auth_success) { true }
@@ -54,7 +55,9 @@ RSpec.describe Idv::DocumentCaptureController do
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
     allow(controller).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context)
-
+    allow(subject).to receive(:ab_test_bucket).and_call_original
+    allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
+      .and_return(upload_disabled)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
 
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
@@ -63,7 +66,6 @@ RSpec.describe Idv::DocumentCaptureController do
       .and_return(vendor_switching_enabled)
     allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
       .and_return(doc_auth_selfie_desktop_test_mode)
-
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
@@ -154,6 +156,7 @@ RSpec.describe Idv::DocumentCaptureController do
         locals: hash_including(
           document_capture_session_uuid: document_capture_session_uuid,
           doc_auth_selfie_capture: false,
+          doc_auth_upload_enabled: true,
         ),
       ).and_call_original
 
@@ -223,6 +226,7 @@ RSpec.describe Idv::DocumentCaptureController do
             locals: hash_including(
               document_capture_session_uuid: document_capture_session_uuid,
               doc_auth_selfie_capture: true,
+              doc_auth_upload_enabled: false,
             ),
           ).and_call_original
 
@@ -241,12 +245,31 @@ RSpec.describe Idv::DocumentCaptureController do
             locals: hash_including(
               document_capture_session_uuid: document_capture_session_uuid,
               doc_auth_selfie_capture: true,
+              doc_auth_upload_enabled: false,
             ),
           ).and_call_original
 
           get :show
           expect(response).to render_template :show
         end
+      end
+    end
+
+    context 'when manual upload is disabled' do
+      let(:upload_disabled) { :manual_upload_disabled }
+
+      it 'does not allow manual upload' do
+        expect(subject).to receive(:render).with(
+          :show,
+          locals: hash_including(
+            document_capture_session_uuid: document_capture_session_uuid,
+            doc_auth_selfie_capture: false,
+            doc_auth_upload_enabled: false,
+          ),
+        ).and_call_original
+
+        get :show
+        expect(response).to render_template :show
       end
     end
 

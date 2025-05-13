@@ -84,6 +84,11 @@ module Idv
 
     private
 
+    def doc_auth_upload_enabled?
+      !(resolved_authn_context_result.facial_match? ||
+        ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled)
+    end
+
     def extra_view_variables
       {
         id_type:,
@@ -97,6 +102,7 @@ module Idv
         skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+        doc_auth_upload_enabled: doc_auth_upload_enabled?,
         socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
