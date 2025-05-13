@@ -29,7 +29,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "Authentication Report - #{report_date.to_date}",
+        subject: "IRS Authentication Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
