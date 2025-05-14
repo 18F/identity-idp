@@ -234,7 +234,7 @@
   </section>
 <% end %>
 
-<% if !@presenter.enhanced_ipp? %>
+<% unless @presenter.location_search_skipped? || @presenter.enhanced_ipp? &&%>
   <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
   <p class="margin-bottom-4">
     <%= t(
