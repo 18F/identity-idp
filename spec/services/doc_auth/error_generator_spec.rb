@@ -59,7 +59,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       reference: 'Reference1',
       liveness_enabled: liveness_enabled,
       vendor: 'Test',
-      transaction_status: transaction_status,
+      transaction_status:,
       transaction_reason_code: 'testing',
       doc_auth_result: doc_result,
       processed_alerts: {

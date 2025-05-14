@@ -210,22 +210,22 @@ module DocAuth
 
       def doc_auth_result_from_success
         if doc_auth_success?
-          DocAuth::LexisNexis::ResultCodes::PASSED.name
+          LexisNexis::ResultCodes::PASSED.name
         else
-          DocAuth::LexisNexis::ResultCodes::CAUTION.name
+          LexisNexis::ResultCodes::CAUTION.name
         end
       end
 
       def transaction_status_from_success
         if doc_auth_success?
-          'passed'
+          LexisNexis::TransactionCodes::PASSED.name
         else
-          'failed'
+          LexisNexis::TransactionCodes::FAILED.name
         end
       end
 
       def all_doc_capture_values_passing?(transaction_status, id_type_supported)
-        transaction_status == LexisNexis::TransctionCodes::PASSED.name &&
+        transaction_status == LexisNexis::TransactionCodes::PASSED.name &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
       end
@@ -275,16 +275,16 @@ module DocAuth
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
           vendor: 'Mock',
-          transaction_status: transaction_status,
-          doc_auth_result: doc_auth_result,
+          transaction_status:,
+          doc_auth_result:,
           processed_alerts: {
             passed: passed,
             failed: failed,
           },
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
-          liveness_enabled: liveness_enabled,
-          classification_info: classification_info,
+          liveness_enabled:,
+          classification_info:,
           portrait_match_results: selfie_check_performed? ? portrait_match_results : nil,
           passport_check_result:,
         }
