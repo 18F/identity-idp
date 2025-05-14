@@ -40,6 +40,14 @@ module Reporting
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
+          title: 'Metrics Definitions',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: data_definition_table,
+          filename: 'Metric Definitions',
+        ),
+        Reporting::EmailableReport.new(
           title: 'Overview',
           subtitle: '',
           float_as_percent: true,
@@ -55,15 +63,6 @@ module Reporting
           table: funnel_table,
           filename: 'Funnel Metrics',
         ),
-        Reporting::EmailableReport.new(
-          title: 'Metrics Definitions',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: data_definition_table,
-          filename: 'Metric Definitions',
-        ),
-
       ]
     end
 
