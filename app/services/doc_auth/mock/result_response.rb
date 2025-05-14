@@ -103,8 +103,8 @@ module DocAuth
       end
 
       def attention_with_barcode?
-        !!parsed_alerts&.
-          any? { |alert| alert['name'] == '2D Barcode Read' && alert['result'] == 'Attention' }
+        !!parsed_alerts
+          &.any? { |alert| alert['name'] == '2D Barcode Read' && alert['result'] == 'Attention' }
       end
 
       def self.create_network_error_response
