@@ -22,6 +22,7 @@ module DocAuth
           selfie_quality_good: selfie_quality_good?,
           selfie_status: selfie_status,
           extra: {
+            transaction_status:,
             doc_auth_result:,
             passport_check_result:,
             portrait_match_results:,
@@ -41,6 +42,7 @@ module DocAuth
           if file_data.blank?
             {}
           else
+            transaction_status = file_data.dig('transaction_status')
             doc_auth_result = file_data.dig('doc_auth_result')
             image_metrics = file_data.dig('image_metrics')
             failed = file_data.dig('failed_alerts')&.dup
@@ -50,6 +52,7 @@ module DocAuth
             passport_check_result = file_data.dig('passport_check_result', 'PassportCheckResult')
             # Pass and doc type is ok
             has_fields = [
+              transaction_status,
               doc_auth_result,
               image_metrics,
               failed,
@@ -63,10 +66,11 @@ module DocAuth
               # Error generator is not to be called when it's not failure
               # allows us to test successful results
               return {} if all_doc_capture_values_passing?(
-                doc_auth_result, id_type_supported?
+                transaction_status, doc_auth_result, id_type_supported?
               )
 
               mock_args = {}
+              mock_args[:transaction_status] = transaction_status if transaction_status.present?
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) unless failed.nil?
@@ -182,6 +186,10 @@ module DocAuth
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
+      def transaction_status
+        transaction_status_from_uploaded_file || transaction_status_from_success
+      end
+
       def transaction_status_from_uploaded_file
         parsed_data_from_uploaded_file&.[]('transaction_status')
       end
@@ -205,8 +213,16 @@ module DocAuth
         end
       end
 
-      def all_doc_capture_values_passing?(doc_auth_result, id_type_supported)
-        doc_auth_result == 'Passed' &&
+      def transaction_status_from_success
+        if success?
+          'passed'
+        else
+          'failed'
+        end
+      end
+
+      def all_doc_capture_values_passing?(transaction_status, doc_auth_result, id_type_supported)
+        (transaction_status == 'passed' || doc_auth_result == 'Passed') &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
       end
@@ -244,6 +260,7 @@ module DocAuth
       }.freeze
 
       def create_response_info(
+            transaction_status: 'failed',
             doc_auth_result: 'Failed',
             passed: [],
             failed: DEFAULT_FAILED_ALERTS,
@@ -255,6 +272,7 @@ module DocAuth
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
           vendor: 'Mock',
+          transaction_status: transaction_status,
           doc_auth_result: doc_auth_result,
           processed_alerts: {
             passed: passed,
