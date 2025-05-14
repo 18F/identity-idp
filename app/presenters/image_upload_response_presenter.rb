@@ -79,7 +79,7 @@ class ImageUploadResponsePresenter
   end
 
   def doc_auth_failed?
-    @form_response.to_h[:transaction_status] == LexisNexis::TransactionCodes::FAILED.name
+    @form_response.to_h[:transaction_status] == DocAuth::LexisNexis::TransactionCodes::FAILED.name
   end
 
   def show_hints?
