@@ -372,46 +372,75 @@ RSpec.describe SignUp::CompletionsController do
             initiating_service_provider_issuer: sp.issuer,
           )
         end
-        let(:user2) { create(:user, :fully_registered) }
-        let!(:profile2) do
-          profile = create(
-            :profile,
-            :active,
-            :facial_match_proof,
-            user: user2,
-            initiating_service_provider_issuer: sp.issuer,
-          )
-          profile.encrypt_pii(active_pii, user2.password)
-          profile.save
-        end
 
         before do
           allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
             .and_return([sp.issuer])
         end
 
-        it 'redirects to show duplicate profiles detected page' do
-          profile.encrypt_pii(active_pii, user.password)
-          profile[:encrypted_pii] = SessionEncryptor.new.kms_encrypt(active_pii.to_json)
-          profile.save
-          stub_sign_in(user)
-          subject.session[:sp] = {
-            issuer: sp.issuer,
-            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            request_url: 'http://example.com',
-            requested_attributes: %w[email first_name verified_at ssn],
-          }
+        context 'with two matching profiles' do
+          let(:user2) { create(:user, :fully_registered) }
+          let!(:profile2) do
+            profile = create(
+              :profile,
+              :active,
+              :facial_match_proof,
+              user: user2,
+              initiating_service_provider_issuer: sp.issuer,
+            )
+            profile.encrypt_pii(active_pii, user2.password)
+            profile.save
+          end
 
-          subject.user_session[:encrypted_profiles] = {
-            profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
-          }
-          subject.user_session[:sp] = {
-            issuer: sp.issuer,
-            request_url: 'http://example.com',
-          }
-          patch :update
+          it 'redirects to show duplicate profiles detected page' do
+            profile.encrypt_pii(active_pii, user.password)
+            profile[:encrypted_pii] = SessionEncryptor.new.kms_encrypt(active_pii.to_json)
+            profile.save
+            stub_sign_in(user)
+            subject.session[:sp] = {
+              issuer: sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              request_url: 'http://www.example.com/',
+              requested_attributes: %w[email first_name verified_at ssn],
+            }
 
-          expect(response).to redirect_to duplicate_profiles_detected_url
+            subject.user_session[:encrypted_profiles] = {
+              profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
+            }
+            subject.user_session[:sp] = {
+              issuer: sp.issuer,
+              request_url: 'http://www.example.com/',
+            }
+            patch :update
+
+            expect(response).to redirect_to duplicate_profiles_detected_url
+          end
+        end
+
+        context 'with no matching profiles' do
+          it 'redirects to show duplicate profiles detected page' do
+            profile.encrypt_pii(active_pii, user.password)
+            profile[:encrypted_pii] = SessionEncryptor.new.kms_encrypt(active_pii.to_json)
+            profile.save
+            stub_sign_in(user)
+            subject.session[:sp] = {
+              issuer: sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              request_url: 'http://www.example.com/',
+              requested_attributes: %w[email first_name verified_at ssn],
+            }
+
+            subject.user_session[:encrypted_profiles] = {
+              profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
+            }
+            subject.user_session[:sp] = {
+              issuer: sp.issuer,
+              request_url: 'http://www.example.com/',
+            }
+            patch :update
+
+            expect(response).to redirect_to root_url
+          end
         end
       end
 
