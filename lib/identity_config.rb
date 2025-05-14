@@ -248,6 +248,8 @@ module IdentityConfig
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:invalid_gpo_confirmation_zipcode, type: :string)
+    config.add(:irs_verification_report_issuers, type: :json)
+    config.add(:irs_verification_report_config, type: :json)
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_threatmetrix_authentication_policy, type: :string)
     config.add(:lexisnexis_base_url, type: :string)
