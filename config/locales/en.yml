@@ -1359,6 +1359,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: forward s
 in_person_proofing.form.state_id.state_id_number_hint_spaces: spaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field.
 in_person_proofing.form.state_id.zipcode: ZIP Code
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: Enter your current residential address
 in_person_proofing.headings.barcode: Show this barcode and your state ID at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
