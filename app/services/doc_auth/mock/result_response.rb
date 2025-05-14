@@ -119,11 +119,11 @@ module DocAuth
 
       def doc_auth_success?
         return false unless id_type_supported?
-        return false if transaction_status_from_uploaded_file == 'failed'
-        return true if transaction_status_from_uploaded_file == 'passed'
-        return false if doc_auth_result_from_uploaded_file == 'Failed'
+        return false if transaction_status_from_uploaded_file == LexisNexis::TransactionCodes::FAILED.name
+        return true if transaction_status_from_uploaded_file == LexisNexis::TransactionCodes::PASSED.name
+        return false if doc_auth_result_from_uploaded_file == LexisNexis::ResultCodes::FAILED.name
 
-        doc_auth_result_from_uploaded_file == 'Passed' ||
+        doc_auth_result_from_uploaded_file == LexisNexis::ResultCodes::PASSED.name ||
           errors.blank? ||
           (attention_with_barcode? && parsed_alerts.length == 1)
       end
@@ -223,7 +223,7 @@ module DocAuth
       end
 
       def all_doc_capture_values_passing?(transaction_status, id_type_supported)
-        transaction_status == 'passed' &&
+        transaction_status == LexisNexis::TransctionCodes::PASSED.name &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
       end
@@ -261,8 +261,8 @@ module DocAuth
       }.freeze
 
       def create_response_info(
-            transaction_status: 'failed',
-            doc_auth_result: 'Failed',
+            transaction_status: LexisNexis::TransactionCodes::FAILED.name,
+            doc_auth_result: LexisNexis::ResultCodes::FAILED.name,
             passed: [],
             failed: DEFAULT_FAILED_ALERTS,
             liveness_enabled: false,
