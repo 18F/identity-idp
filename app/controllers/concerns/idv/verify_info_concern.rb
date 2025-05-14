@@ -79,64 +79,22 @@ module Idv
       )
     end
 
-    def address_exception?(result)
-      result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :resolution,
-        :exception,
-      ).present? &&
-        result.extra.dig(
-          :proofing_results,
-          :context,
-          :stages,
-          :resolution,
-          :attributes_requiring_additional_verification,
-        ) == ['address']
-    end
-
-    def idv_failure(result)
-      proofing_results_exception = result.extra.dig(:proofing_results, :exception)
-      has_exception = proofing_results_exception.present?
-      is_mva_exception = result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :state_id,
-        :mva_exception,
-      ).present?
-      is_address_exception = address_exception?(result)
-      is_threatmetrix_exception = result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :threatmetrix,
-        :exception,
-      ).present?
-      resolution_failed = !result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :resolution,
-        :success,
-      )
-
+    def idv_failure(failures)
       if ssn_rate_limiter.limited?
         rate_limit_redirect!(:proof_ssn, step_name: STEP_NAME)
       elsif resolution_rate_limiter.limited?
         rate_limit_redirect!(:idv_resolution, step_name: STEP_NAME)
-      elsif has_exception && is_mva_exception
+      elsif failures.has_exception? && failures.mva_exception?
         idv_failure_log_warning
         redirect_to state_id_warning_url
-      elsif has_exception && is_address_exception
+      elsif failures.has_exception? && failures.address_exception?
         idv_failure_log_address_warning
         redirect_to address_warning_url
-      elsif (has_exception && is_threatmetrix_exception) ||
-            (!has_exception && resolution_failed)
+      elsif (failures.has_exception? && failures.threatmetrix_exception?) ||
+            (!failures.has_exception? && failures.resolution_failed?)
         idv_failure_log_warning
         redirect_to warning_url
-      elsif has_exception
+      elsif failures.has_exception?
         idv_failure_log_error
         redirect_to exception_url
       else
@@ -310,7 +268,7 @@ module Idv
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
       if !summary_result.success?
-        idv_failure(summary_result)
+        idv_failure(VerificationFailures.new(result: summary_result))
       end
     end
 
@@ -413,6 +371,95 @@ module Idv
 
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
+    end
+
+    def log_verification_attempt(success:, failure_reason: nil)
+      pii_from_doc = pii || {}
+
+      attempts_api_tracker.idv_verification_submitted(
+        success: success,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address: pii_from_doc[:address1],
+        social_security: idv_session.ssn,
+        failure_reason:,
+      )
+    end
+
+    VerificationFailures = Struct.new(
+      :result,
+      keyword_init: true,
+    ) do
+      def address_exception?
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :resolution,
+          :exception,
+        ).present? &&
+          result.extra.dig(
+            :proofing_results,
+            :context,
+            :stages,
+            :resolution,
+            :attributes_requiring_additional_verification,
+          ) == ['address']
+      end
+
+      def has_exception?
+        result.extra.dig(:proofing_results, :exception).present?
+      end
+
+      def mva_exception?
+        mva_exception.present?
+      end
+
+      def mva_exception
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :state_id,
+          :mva_exception,
+        )
+      end
+
+      def threatmetrix_exception?
+        threatmetrix_exception.present?
+      end
+
+      def threatmetrix_exception
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :threatmetrix,
+          :exception,
+        )
+      end
+
+      def resolution_failed?
+        !resolution_value
+      end
+
+      def resolution_value
+        result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+          :resolution,
+          :success,
+        )
+      end
+
+      def formatted_failure_reasons
+      end
     end
   end
 end

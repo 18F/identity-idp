@@ -287,7 +287,6 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'tracks the attempts event' do
-          stub_attempts_tracker
           expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
             failure_reason: nil,
@@ -306,7 +305,6 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'tracks a failed tmx fraud check' do
-          stub_attempts_tracker
           expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
             failure_reason: { tmx_summary_reason_code: ['Identity_Negative_History'] },
