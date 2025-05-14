@@ -255,13 +255,15 @@
   <% end %>
 </div>
 
-<h2 class="font-heading-lg text-bold margin-top-2"><%= t('in_person_proofing.body.location.heading') %></h2>
-<p class="margin-bottom-0">
-  <%= t('in_person_proofing.body.location.info') %>
-  <% if @presenter.selected_location_details.present? %>
-    <%= t('in_person_proofing.body.location.selection') %>
-  <% end %>
-</p>
+<% unless @presenter.location_search_skipped? %>
+  <h2 class="font-heading-lg text-bold margin-top-2"><%= t('in_person_proofing.body.location.heading') %></h2>
+  <p class="margin-bottom-0">
+    <%= t('in_person_proofing.body.location.info') %>
+    <% if @presenter.selected_location_details.present? %>
+      <%= t('in_person_proofing.body.location.selection') %>
+    <% end %>
+  </p>
+<% end %>
 
 <% if @presenter.selected_location_details.present? %>
   <div class="margin-y-4">
