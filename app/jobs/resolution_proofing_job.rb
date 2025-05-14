@@ -114,7 +114,7 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:,
     current_sp:
   )
-    result = progressive_proofer.proof(
+    result = progressive_proofer(user:).proof(
       applicant_pii: applicant_pii,
       user_email: user_email_for_proofing(user),
       threatmetrix_session_id: threatmetrix_session_id,
@@ -154,8 +154,8 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer
-    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+  def progressive_proofer(user:)
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(user_uuid: user.uuid)
   end
 
   def shadow_mode_ab_test_bucket(user:)

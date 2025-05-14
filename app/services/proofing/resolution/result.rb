@@ -8,6 +8,7 @@ module Proofing
                   :success,
                   :vendor_name,
                   :transaction_id,
+                  :customer_user_id,
                   :verified_attributes,
                   :failed_result_can_pass_with_additional_verification,
                   :attributes_requiring_additional_verification,
@@ -19,6 +20,7 @@ module Proofing
         exception: nil,
         vendor_name: nil,
         transaction_id: '',
+        customer_user_id: '',
         reference: '',
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
@@ -30,6 +32,7 @@ module Proofing
         @exception = exception
         @vendor_name = vendor_name
         @transaction_id = transaction_id
+        @customer_user_id = customer_user_id
         @reference = reference
         @failed_result_can_pass_with_additional_verification =
           failed_result_can_pass_with_additional_verification
@@ -54,6 +57,7 @@ module Proofing
           exception: exception,
           timed_out: timed_out?,
           transaction_id: transaction_id,
+          customer_user_id: customer_user_id,
           reference: reference,
           can_pass_with_additional_verification:
             failed_result_can_pass_with_additional_verification,
