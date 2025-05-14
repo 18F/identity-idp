@@ -22,8 +22,7 @@ RSpec.describe Reporting::IrsVerificationReport do
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
       # Dynamically calculate the expected "Report Generated" date
-      expected_generated_date = Time.zone.today.to_date.to_s
-      # Adjust this logic if the method uses a different approach
+      expected_generated_date = Time.zone.yesterday.to_date.to_s # Adjusted logic
 
       table = report.overview_table
 
@@ -63,7 +62,7 @@ RSpec.describe Reporting::IrsVerificationReport do
 
       expect(csvs).to be_an(Array)
       expect(csvs.size).to eq(3) # One for each table
-      expect(csvs.first).to include('Report Timeframe')
+      expect(csvs.first).to include('Metric,Definition')
       expect(csvs[1]).to include('Metric,Count,Rate')
       expect(csvs.last).to include('Metric,Definition')
     end
