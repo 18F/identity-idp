@@ -40,12 +40,12 @@ module Reporting
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: 'Metrics Definitions',
+          title: 'Definitions',
           subtitle: '',
           float_as_percent: true,
           precision: 2,
           table: data_definition_table,
-          filename: 'Metric Definitions',
+          filename: 'Definitions',
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
