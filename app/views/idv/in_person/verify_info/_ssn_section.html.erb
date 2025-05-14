@@ -6,12 +6,12 @@
     <%= t('idv.form.ssn') %>:
     <%= render(
           'shared/masked_text',
-          text: SsnFormatter.format(@ssn),
-          masked_text: SsnFormatter.format_masked(@ssn),
+          text: SsnFormatter.format(ssn),
+          masked_text: SsnFormatter.format_masked(ssn),
           accessible_masked_text: t(
             'idv.accessible_labels.masked_ssn',
-            first_number: @ssn[0],
-            last_number: @ssn[-1],
+            first_number: ssn[0],
+            last_number: ssn[-1],
           ),
           toggle_label: t('forms.ssn.show'),
         ) %>

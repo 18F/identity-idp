@@ -1372,6 +1372,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: 前斜杠
 in_person_proofing.form.state_id.state_id_number_hint_spaces: 空格
 in_person_proofing.form.state_id.state_id_number_texas_hint: 这是你身份证件上的8位数在这一字段中只输入数字
 in_person_proofing.form.state_id.zipcode: 邮编
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: 输入你当前住宅地址
 in_person_proofing.headings.barcode: 到邮局出示这一条形码和你政府颁发的身份证件来完成验证身份。
 in_person_proofing.headings.barcode_eipp: 携带该条形码和支持性文件到邮局去完成验证身份。

@@ -21,6 +21,7 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city].freeze
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode].freeze
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
+  GOOD_STATE_ABBR = Idp::Constants::MOCK_IDV_APPLICANT_STATE
   GOOD_IDENTITY_DOC_ADDRESS1 =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1].freeze
   GOOD_IDENTITY_DOC_ADDRESS2 =
