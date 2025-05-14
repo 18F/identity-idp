@@ -21,16 +21,19 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      # Dynamically calculate the expected "Report Generated" date
-      expected_generated_date = Time.zone.yesterday.to_date.to_s # Adjusted logic
+      # Mock the current date to ensure consistency
+      travel_to Date.new(2025, 5, 14) do
+        # Use Time.zone.today for time zone consistency
+        expected_generated_date = Time.zone.today.to_s
 
-      table = report.overview_table
+        table = report.overview_table
 
-      expect(table).to include(
-        ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', expected_generated_date], # Dynamically match the generated date
-        ['Issuer', issuers.join(', ')],
-      )
+        expect(table).to include(
+          ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
+          ['Report Generated', expected_generated_date], # Dynamically match the generated date
+          ['Issuer', issuers.join(', ')],
+        )
+      end
     end
   end
 
@@ -62,9 +65,17 @@ RSpec.describe Reporting::IrsVerificationReport do
 
       expect(csvs).to be_an(Array)
       expect(csvs.size).to eq(3) # One for each table
+
+      # First CSV: Definitions
       expect(csvs.first).to include('Metric,Definition')
-      expect(csvs[1]).to include('Metric,Count,Rate')
-      expect(csvs.last).to include('Metric,Definition')
+
+      # Second CSV: Overview table
+      expect(csvs[1]).to include('Report Timeframe')
+      expect(csvs[1]).to include('Report Generated')
+      expect(csvs[1]).to include('Issuer')
+
+      # Third CSV: Funnel table
+      expect(csvs.last).to include('Metric,Count,Rate')
     end
   end
 end
