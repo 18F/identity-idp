@@ -4,7 +4,6 @@ module DocAuth
   module LexisNexis
     module TransactionCodes
       TransactionCode = Struct.new(:code, :name) do
-        alias_method :billed?, :billed
       end
 
       # The authentication test errored (ie: network error)
