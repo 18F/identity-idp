@@ -119,8 +119,10 @@ module DocAuth
 
       def doc_auth_success?
         return false unless id_type_supported?
-        return false if transaction_status_from_uploaded_file == LexisNexis::TransactionCodes::FAILED.name
-        return true if transaction_status_from_uploaded_file == LexisNexis::TransactionCodes::PASSED.name
+        return false if transaction_status_from_uploaded_file ==
+                        LexisNexis::TransactionCodes::FAILED.name
+        return true if transaction_status_from_uploaded_file ==
+                       LexisNexis::TransactionCodes::PASSED.name
         return false if doc_auth_result_from_uploaded_file == LexisNexis::ResultCodes::FAILED.name
 
         doc_auth_result_from_uploaded_file == LexisNexis::ResultCodes::PASSED.name ||
