@@ -355,9 +355,8 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
 
-      context 'with OneAccount matching' do
-        let(:user) { create(:user, :fully_registered) }
-        let(:session) { {} }
+      context 'OneAccount checking for duplicate profiles' do
+        let(:user) { create(:user) }
         let(:active_pii) do
           Pii::Attributes.new(
             ssn: '666339999',
@@ -373,46 +372,46 @@ RSpec.describe SignUp::CompletionsController do
             initiating_service_provider_issuer: sp.issuer,
           )
         end
-        let(:issuer) { sp.issuer }
-
-        before do
-          profile.encrypt_pii(active_pii, user.password)
+        let(:user2) { create(:user, :fully_registered) }
+        let!(:profile2) do
+          profile = create(
+            :profile,
+            :active,
+            :facial_match_proof,
+            user: user2,
+            initiating_service_provider_issuer: sp.issuer,
+          )
+          profile.encrypt_pii(active_pii, user2.password)
           profile.save
         end
 
         before do
           allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
             .and_return([sp.issuer])
+        end
 
-          session[:encrypted_profiles] = {
+        it 'redirects to show duplicate profiles detected page' do
+          profile.encrypt_pii(active_pii, user.password)
+          profile[:encrypted_pii] = SessionEncryptor.new.kms_encrypt(active_pii.to_json)
+          profile.save
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at ssn],
+          }
+
+          subject.user_session[:encrypted_profiles] = {
             profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
           }
-        end
-        context 'when user has accounts with matching profile' do
-          let(:user2) { create(:user, :fully_registered) }
-          let!(:profile2) do
-            profile = create(
-              :profile,
-              :active,
-              :facial_match_proof,
-              user: user2,
-              initiating_service_provider_issuer: sp.issuer,
-            )
-            profile.encrypt_pii(active_pii, user2.password)
-            profile.save
-          end
+          subject.user_session[:sp] = {
+            issuer: sp.issuer,
+            request_url: 'http://example.com',
+          }
+          patch :update
 
-          before do
-            session[:encrypted_profiles] = {
-              profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
-            }
-          end
-
-          it 'creates a new duplicate profile confirmation entry' do
-            patch :update
-
-            expect(response).to redirect_to duplicate_profiles_detected_url
-          end
+          expect(response).to redirect_to duplicate_profiles_detected_url
         end
       end
 
