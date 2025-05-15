@@ -17,10 +17,9 @@ module Reporting
     attr_reader :issuers, :time_range
 
     VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
-    DOCUMENT_AUTHENTICATION_SUCCESS = ['IdV: doc auth image upload vendor pii validation',
-                                       'IdV: doc auth capture_complete visited'].freeze
+    DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
     INFORMATION_VALIDATION_SUCCESS = 'IdV: doc auth verify submitted'
-    PHONE_VERIFICATION_SUCCESS = 'IdV: phone confirmation vendor'
+    PHONE_VERIFICATION_SUCCESS = 'IdV: enter password visited'
     TOTAL_VERIFIED = 'User registration: complete'
 
     # @param [Array<String>] issuers
