@@ -18,8 +18,8 @@ module Reporting
 
     VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
     DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
-    INFORMATION_VALIDATION_SUCCESS = 'IdV: doc auth verify submitted'
-    PHONE_VERIFICATION_SUCCESS = 'IdV: enter password visited'
+    INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
+    PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_submitted'
     TOTAL_VERIFIED = 'User registration: complete'
 
     # @param [Array<String>] issuers
