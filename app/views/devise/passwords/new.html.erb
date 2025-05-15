@@ -20,6 +20,18 @@
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
+<%= render TroubleshootingOptionsComponent.new do |c| %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+      <% c.with_option(
+           url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-password'),
+           new_tab: false,
+         ).with_content(t('forms.passwords.reset.how_to_reset')) %>
+      <% c.with_option(
+           url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-personal-key', article_anchor: 'if-you-have-a-personal-key'),
+           new_tab: false,
+         ).with_content(t('forms.passwords.reset.how_to_reset_with_personal_key')) %>
+<% end %>
+
 <%= render(PageFooterComponent.new) do %>
   <%= link_to t('links.cancel'), decorated_sp_session.cancel_link_url %>
 <% end %>
