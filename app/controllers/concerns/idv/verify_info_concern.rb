@@ -267,8 +267,15 @@ module Idv
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
+      failures = VerificationFailures.new(result: summary_result)
+
+      log_verification_attempt(
+        success: summary_result.success?,
+        failure_reason: failures.formatted_failure_reasons,
+      )
+
       if !summary_result.success?
-        idv_failure(VerificationFailures.new(result: summary_result))
+        idv_failure(failures)
       end
     end
 
@@ -385,7 +392,8 @@ module Idv
         first_name: pii_from_doc[:first_name],
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
+        address1: pii_from_doc[:address1],
+        address2: pii_from_doc[:address2],
         social_security: idv_session.ssn,
         failure_reason:,
       )
@@ -396,20 +404,8 @@ module Idv
       keyword_init: true,
     ) do
       def address_exception?
-        result.extra.dig(
-          :proofing_results,
-          :context,
-          :stages,
-          :resolution,
-          :exception,
-        ).present? &&
-          result.extra.dig(
-            :proofing_results,
-            :context,
-            :stages,
-            :resolution,
-            :attributes_requiring_additional_verification,
-          ) == ['address']
+        resolution_failed? &&
+          resolution_stage_attributes_requiring_additional_verification == ['address']
       end
 
       def has_exception?
@@ -417,48 +413,90 @@ module Idv
       end
 
       def mva_exception?
-        mva_exception.present?
-      end
-
-      def mva_exception
-        result.extra.dig(
-          :proofing_results,
-          :context,
-          :stages,
-          :state_id,
-          :mva_exception,
-        )
+        state_id_stage[:mva_exception].present?
       end
 
       def threatmetrix_exception?
-        threatmetrix_exception.present?
-      end
-
-      def threatmetrix_exception
-        result.extra.dig(
-          :proofing_results,
-          :context,
-          :stages,
-          :threatmetrix,
-          :exception,
-        )
+        threatmetrix_stage[:exception].present?
       end
 
       def resolution_failed?
-        !resolution_value
+        !resolution_stage[:success]
       end
 
-      def resolution_value
-        result.extra.dig(
+      def state_id_stage
+        stages.dig(:state_id) || {}
+      end
+
+      def threatmetrix_stage
+        stages.dig(:threatmetrix) || {}
+      end
+
+      def resolution_stage
+        stages.dig(:resolution) || {}
+      end
+
+      def stages
+        @stages ||= result.extra.dig(
           :proofing_results,
           :context,
           :stages,
-          :resolution,
-          :success,
-        )
+        ) || {}
+      end
+
+      def resolution_stage_attributes_requiring_additional_verification
+        resolution_stage[:attributes_requiring_additional_verification]
+      end
+
+      def attributes_requiring_additional_verification
+        # grab all the attributes that require additional verification across stages
+        stages.map { |_k, v| v[:attributes_requiring_additional_verification] }.flatten.compact
+      end
+
+      def failed_vendors
+        stages.keys.select { |k| !stages[k][:success] }.map { |k| stage_to_vendor[k] }
+      end
+
+      def stage_to_vendor
+        {
+          resolution: 'InstantVerify',
+          state_id: 'AAMVA',
+          residential_address: 'InstantVerify Residential',
+          phone_precheck: 'PhoneFinder',
+          threatmetrix: 'ThreatMetrix',
+        }
+      end
+
+      def resolution_adjudication_reason
+        {
+          resolution_adjudication_reason: [
+            result.extra.dig(:proofing_results, :context, :resolution_adjudication_reason),
+          ],
+        }
+      end
+
+      def device_profiling_adjudication_reason
+        if threatmetrix_stage[:review_status] != 'pass'
+          {
+            device_profiling_adjudication_reason: [
+              result.extra.dig(:proofing_results, :context, :device_profiling_adjudication_reason),
+            ],
+          }
+        else
+          {}
+        end
       end
 
       def formatted_failure_reasons
+        return nil if result.success? && !failed_vendors.present?
+
+        {
+          failed_vendors:,
+          attributes_requiring_additional_verification:,
+        }
+          .merge(resolution_adjudication_reason)
+          .merge(device_profiling_adjudication_reason)
+          .compact_blank
       end
     end
   end

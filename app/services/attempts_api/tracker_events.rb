@@ -180,7 +180,8 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [String] address
+    # @param [String] address1
+    # @param [String] address2
     # @param [String] date_of_birth
     # @param [String] document_state
     # @param [String] document_number
@@ -193,7 +194,8 @@ module AttemptsApi
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
       success:,
-      address: nil,
+      address1: nil,
+      address2: nil,
       date_of_birth: nil,
       document_state: nil,
       document_number: nil,
@@ -207,7 +209,8 @@ module AttemptsApi
       track_event(
         'idv-verification-submitted',
         success:,
-        address:,
+        address1:,
+        address2:,
         date_of_birth:,
         document_state:,
         document_number:,
