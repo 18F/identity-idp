@@ -38,6 +38,7 @@ module Idv
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
             redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: I18n.locale,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
           )
           timer = JobHelpers::Timer.new
           document_response = timer.time('vendor_request') do
@@ -97,7 +98,8 @@ module Idv
         private
 
         def validate_step_not_completed
-          return if stored_result.blank? || !stored_result.success?
+          return if stored_result.blank? || !stored_result.success? || !selfie_requirement_met?
+
           redirect_to idv_hybrid_mobile_capture_complete_url
         end
 
@@ -146,8 +148,8 @@ module Idv
             flow_path: 'hybrid',
             step: 'socure_document_capture',
             analytics_id: 'Doc Auth',
-            liveness_checking_required: false,
-            selfie_check_required: false,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
+            selfie_check_required: resolved_authn_context_result.facial_match?,
             pii_like_keypaths: [[:pii]],
           }
         end
