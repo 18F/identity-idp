@@ -173,6 +173,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks expiration of account reset requests
+  def account_reset_request_expired
+    track_event(:account_reset_request_expired)
+  end
+
   # @identity.idp.previous_event_name Account Reset
   # @param [Integer] count number of email notifications sent
   # Account reset was performed, logs the number of email notifications sent
