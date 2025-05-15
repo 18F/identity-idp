@@ -453,18 +453,8 @@ module Idv
         stages.map { |_k, v| v[:attributes_requiring_additional_verification] }.flatten.compact
       end
 
-      def failed_vendors
-        stages.keys.select { |k| !stages[k][:success] }.map { |k| stage_to_vendor[k] }
-      end
-
-      def stage_to_vendor
-        {
-          resolution: 'InstantVerify',
-          state_id: 'AAMVA',
-          residential_address: 'InstantVerify Residential',
-          phone_precheck: 'PhoneFinder',
-          threatmetrix: 'ThreatMetrix',
-        }
+      def failed_stages
+        stages.keys.select { |k| !stages[k][:success] }
       end
 
       def resolution_adjudication_reason
@@ -488,10 +478,10 @@ module Idv
       end
 
       def formatted_failure_reasons
-        return nil if result.success? && !failed_vendors.present?
+        return nil if result.success? && !failed_stages.present?
 
         {
-          failed_vendors:,
+          failed_stages:,
           attributes_requiring_additional_verification:,
         }
           .merge(resolution_adjudication_reason)

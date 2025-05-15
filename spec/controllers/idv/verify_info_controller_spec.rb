@@ -343,7 +343,7 @@ RSpec.describe Idv::VerifyInfoController do
             address2: applicant_pii[:address2],
             social_security: applicant_pii[:ssn],
             failure_reason: {
-              failed_vendors: ['ThreatMetrix'],
+              failed_stages: [:threatmetrix],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },
@@ -430,7 +430,7 @@ RSpec.describe Idv::VerifyInfoController do
             address2: applicant_pii[:address2],
             social_security: applicant_pii[:ssn],
             failure_reason: {
-              failed_vendors: ['ThreatMetrix'],
+              failed_stages: [:threatmetrix],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
               device_profiling_adjudication_reason: ['device_profiling_exception'],
             },
@@ -481,7 +481,7 @@ RSpec.describe Idv::VerifyInfoController do
             address2: applicant_pii[:address2],
             social_security: applicant_pii[:ssn],
             failure_reason: {
-              failed_vendors: ['ThreatMetrix'],
+              failed_stages: [:threatmetrix],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },
@@ -699,7 +699,7 @@ RSpec.describe Idv::VerifyInfoController do
             address2: applicant_pii[:address2],
             social_security: applicant_pii[:ssn],
             failure_reason: {
-              failed_vendors: ['AAMVA'],
+              failed_stages: [:state_id],
               resolution_adjudication_reason: ['fail_state_id'],
               device_profiling_adjudication_reason: ['device_profiling_result_pass'],
             },
@@ -731,7 +731,7 @@ RSpec.describe Idv::VerifyInfoController do
             address2: applicant_pii[:address2],
             social_security: applicant_pii[:ssn],
             failure_reason: {
-              failed_vendors: ['AAMVA'],
+              failed_stages: [:state_id],
               resolution_adjudication_reason: ['fail_state_id'],
               device_profiling_adjudication_reason: ['device_profiling_result_pass'],
             },
@@ -824,7 +824,7 @@ RSpec.describe Idv::VerifyInfoController do
             social_security: applicant_pii[:ssn],
             failure_reason: {
               attributes_requiring_additional_verification: ['address'],
-              failed_vendors: ['InstantVerify', 'PhoneFinder'],
+              failed_stages: [:resolution, :phone_precheck],
               resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
               device_profiling_adjudication_reason: ['device_profiling_result_pass'],
             },
@@ -861,7 +861,7 @@ RSpec.describe Idv::VerifyInfoController do
             social_security: applicant_pii[:ssn],
             failure_reason: {
               attributes_requiring_additional_verification: ['address', 'dob', 'ssn'],
-              failed_vendors: ['InstantVerify', 'PhoneFinder'],
+              failed_stages: [:resolution, :phone_precheck],
               resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
               device_profiling_adjudication_reason: ['device_profiling_result_pass'],
             },
@@ -941,7 +941,7 @@ RSpec.describe Idv::VerifyInfoController do
           address2: applicant_pii[:address2],
           social_security: applicant_pii[:ssn],
           failure_reason: {
-            failed_vendors: ['InstantVerify'],
+            failed_stages: [:resolution],
             resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
             device_profiling_adjudication_reason: ['device_profiling_result_pass'],
           },
