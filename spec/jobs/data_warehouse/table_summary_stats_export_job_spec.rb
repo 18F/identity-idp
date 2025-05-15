@@ -8,19 +8,44 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   let(:s3_data_warehouse_bucket_prefix) { 'login-gov-analytics-export' }
   let(:data_warehouse_enabled) { true }
 
-  let(:expected_json) do
+  let(:expected_json_idp) do
     {
-      'agencies' => {
+      'idp.agencies' => {
         'max_id' => 19,
         'row_count' => 19,
         'timestamp_column' => nil,
       },
-      'users' => {
+      'idp.users' => {
         'max_id' => 2,
         'row_count' => 2,
         'timestamp_column' => 'created_at',
       },
     }.to_json
+  end
+
+  let(:expected_json_cloudwatch) do
+    { 'logs.events' => { 'row_count' => 999 }, 'logs.production' => { 'row_count' => 999 } }
+  end
+
+  let(:expected_json_idp_and_cloudwatch) do
+    {
+      'idp.agencies' => {
+        'max_id' => 19,
+        'row_count' => 19,
+        'timestamp_column' => nil,
+      },
+      'idp.users' => {
+        'max_id' => 2,
+        'row_count' => 2,
+        'timestamp_column' => 'created_at',
+      },
+      'logs.events' => {
+        'row_count' => 999,
+      },
+      'logs.production' => {
+        'row_count' => 999,
+      },
+    }
   end
 
   let(:s3_metadata) do
@@ -44,6 +69,9 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
         put_object: {},
       },
     }
+    stub_cloudwatch_logs(
+      [{ 'row_count' => '999' }],
+    )
   end
 
   describe '#perform' do
@@ -64,19 +92,20 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     end
 
     context 'when database tables contain data' do
-      it 'generates correct JSON from database tables' do
-        json_data = job.fetch_table_max_ids_and_counts(timestamp)
-
-        expect(json_data.to_json).to eq(expected_json)
+      it 'generates correct JSON from database tables and cloudwatch' do
+        json_data_idp = job.fetch_table_max_ids_and_counts(timestamp)
+        json_data_cloudwatch = job.fetch_log_group_counts(timestamp)
+        expect(json_data_idp.to_json).to eq(expected_json_idp)
+        expect(json_data_cloudwatch).to eq(expected_json_cloudwatch)
       end
     end
 
     context 'when tables are empty' do
       let(:test_on_tables) { ['users'] }
       let(:expected_empty_json) do
-        { 'users' => { 'max_id' => 0,
-                       'row_count' => 0,
-                       'timestamp_column' => 'created_at' } }.to_json
+        { 'idp.users' => { 'max_id' => 0,
+                           'row_count' => 0,
+                           'timestamp_column' => 'created_at' } }.to_json
       end
 
       before do
@@ -109,19 +138,19 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     end
 
     context 'pulls correct timestamp column value' do
-      let(:expected_json) do
+      let(:expected_json_idp) do
         {
-          'users' => {
+          'idp.users' => {
             'max_id' => 2,
             'row_count' => 2,
             'timestamp_column' => 'created_at',
           },
-          'sp_return_logs' => {
+          'idp.sp_return_logs' => {
             'max_id' => 1,
             'row_count' => 1,
             'timestamp_column' => 'returned_at',
           },
-          'agencies' => {
+          'idp.agencies' => {
             'max_id' => 19,
             'row_count' => 19,
             'timestamp_column' => nil,
@@ -139,15 +168,15 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       it 'generates correct values without timestamp column' do
         json_data = job.fetch_table_max_ids_and_counts(timestamp)
 
-        expect(json_data.to_json).to eq(expected_json)
+        expect(json_data.to_json).to eq(expected_json_idp)
       end
     end
 
     context 'when tables should be excluded' do
       let(:test_on_tables) { ['agency_identities', 'users'] }
-      let(:expected_json) do
+      let(:expected_json_idp) do
         {
-          'users' => {
+          'idp.users' => {
             'max_id' => 2,
             'row_count' => 2,
             'timestamp_column' => 'created_at',
@@ -162,7 +191,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
       it 'excludes tables in the exclusion list' do
         json_data = job.fetch_table_max_ids_and_counts(timestamp)
 
-        expect(json_data.to_json).to eq(expected_json)
+        expect(json_data.to_json).to eq(expected_json_idp)
         expect(json_data.keys).not_to include('agency_identities')
       end
     end
@@ -174,6 +203,9 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
           **s3_metadata,
         ).exactly(1).time.and_call_original
 
+        expect(job).to receive(:upload_to_s3).with(
+          expected_json_idp_and_cloudwatch, timestamp
+        ).and_call_original
         job.perform(timestamp)
       end
     end

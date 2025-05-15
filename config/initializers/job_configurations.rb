@@ -186,8 +186,15 @@ else
       table_summary_stats_export_job: {
         class: 'DataWarehouse::TableSummaryStatsExportJob',
         cron: gpo_cron_24h,
-        args: -> { [Time.zone.now.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday] },
       },
+      # Send previous week's verification reports to partners
+      irs_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
       # Send Duplicate SSN report to S3
       duplicate_ssn: {
         class: 'Reports::DuplicateSsnReport',

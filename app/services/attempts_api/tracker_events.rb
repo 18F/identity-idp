@@ -204,6 +204,15 @@ module AttemptsApi
       track_event('login-completed')
     end
 
+    # @param [String] email
+    # Tracks when user is rate limited for inputting bad password
+    def login_rate_limited(email:)
+      track_event(
+        'login-rate-limited',
+        email:,
+      )
+    end
+
     # @param [Boolean] success
     # A user has initiated a logout event
     def logout_initiated(success:)
@@ -327,6 +336,11 @@ module AttemptsApi
         success:,
         failure_reason:,
       )
+    end
+
+    # Tracks when a logged in user has been inactive long enough to cause a session timeout
+    def session_timeout
+      track_event('session-timeout')
     end
 
     # @param [Boolean] success

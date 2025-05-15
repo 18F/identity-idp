@@ -1360,6 +1360,7 @@ in_person_proofing.form.state_id.zipcode: ZIP Code
 in_person_proofing.headings.address: Enter your current residential address
 in_person_proofing.headings.barcode: Show this barcode and your state ID at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
+in_person_proofing.headings.barcode_passport: Show this barcode and your U.S. passport book at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: What to bring to the Post Office
 in_person_proofing.headings.cta: Try verifying your ID in person
 in_person_proofing.headings.id_address: Address on your ID
@@ -1397,6 +1398,8 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Vehicle registration card
   - Home insurance policy
   - Vehicle insurance policy
+in_person_proofing.process.passport.heading: Show your U.S. passport book
+in_person_proofing.process.passport.info: We do not currently accept any other forms of identification, such as military IDs.
 in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + two supporting documents
 in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID and two documents
 in_person_proofing.process.real_id_and_supporting_docs.info: 'If the address on your REAL ID is not your current address, present a REAL ID, along with two supporting documents from this list:'
