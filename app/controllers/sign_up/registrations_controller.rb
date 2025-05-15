@@ -22,7 +22,7 @@ module SignUp
 
       analytics.user_registration_email(**result)
       attempts_api_tracker.user_registration_email_submitted(
-        email: permitted_params[:email] || '',
+        email: permitted_params[:email].presence,
         success: result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
       )

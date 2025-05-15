@@ -16,7 +16,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks nil email confirmation token' do
       expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
-        email: '',
+        email: nil,
         success: false,
         failure_reason: { confirmation_token: [:not_found] },
       )
@@ -32,7 +32,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks blank email confirmation token' do
       expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
-        email: '',
+        email: nil,
         success: false,
         failure_reason: { confirmation_token: [:not_found] },
       )
@@ -48,7 +48,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks confirmation token as a single-quoted empty string' do
       expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
-        email: '',
+        email: nil,
         success: false,
         failure_reason: { confirmation_token: [:not_found] },
       )
@@ -64,7 +64,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
 
     it 'tracks confirmation token as a double-quoted empty string' do
       expect(@attempts_api_tracker).to receive(:user_registration_email_confirmed).with(
-        email: '',
+        email: nil,
         success: false,
         failure_reason: { confirmation_token: [:not_found] },
       )

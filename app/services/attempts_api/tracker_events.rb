@@ -346,7 +346,7 @@ module AttemptsApi
     # @param [String] email
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits email address to create a new account
-    def user_registration_email_submitted(success:, email:, failure_reason: nil)
+    def user_registration_email_submitted(success:, email: nil, failure_reason: nil)
       track_event(
         'user-registration-email-submitted',
         success:,

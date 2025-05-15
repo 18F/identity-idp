@@ -184,7 +184,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
       let(:email) { nil }
       it 'renders new' do
         expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: '',
+          email: nil,
           success: false,
           failure_reason: { email: [:invalid] },
         )
@@ -200,7 +200,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
       it 'renders new' do
         expect(@attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: '',
+          email: nil,
           success: false,
           failure_reason: { email: [:invalid] },
         )
