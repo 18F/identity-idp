@@ -210,40 +210,4 @@ module DocAuthRouter
         IdentityConfig.store.doc_auth_vendor_default
     end
   end
-
-  def self.doc_auth_vendor(
-    request:,
-    service_provider:,
-    session:,
-    user:,
-    user_session:
-  )
-    bucket = AbTests::DOC_AUTH_VENDOR.bucket(
-      request:,
-      service_provider:,
-      session:,
-      user:,
-      user_session:,
-    )
-
-    doc_auth_vendor_for_bucket(bucket)
-  end
-
-  def self.doc_auth_selfie_vendor(
-    request:,
-    service_provider:,
-    session:,
-    user:,
-    user_session:
-  )
-    bucket = AbTests::DOC_AUTH_SELFIE_VENDOR.bucket(
-      request:,
-      service_provider:,
-      session:,
-      user:,
-      user_session:,
-    )
-
-    doc_auth_vendor_for_bucket(bucket, selfie: true)
-  end
 end
