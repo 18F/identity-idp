@@ -244,6 +244,6 @@ module DocAuthRouter
       user_session:,
     )
 
-    doc_auth_vendor_for_bucket(bucket)
+    doc_auth_vendor_for_bucket(bucket, selfie: true)
   end
 end
