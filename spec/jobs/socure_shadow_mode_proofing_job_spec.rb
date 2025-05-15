@@ -287,7 +287,7 @@ RSpec.describe SocureShadowModeProofingJob do
       end
 
       it 'makes a proofing call' do
-        expect(job.proofer).to receive(:proof).and_call_original
+        expect(job.proofer(user: user)).to receive(:proof).and_call_original
         perform
       end
 
@@ -331,7 +331,7 @@ RSpec.describe SocureShadowModeProofingJob do
 
       context 'when socure proofer raises an error' do
         before do
-          allow(job.proofer).to receive(:proof).and_raise
+          allow(job.proofer(user: user)).to receive(:proof).and_raise
         end
 
         it 'does not squash the error' do
