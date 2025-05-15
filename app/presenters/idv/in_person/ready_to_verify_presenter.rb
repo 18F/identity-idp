@@ -17,6 +17,10 @@ module Idv
         @sp_name = sp_name
       end
 
+      def enrolled_with_passport_book?
+        enrollment.document_type == InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK
+      end
+
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
       def days_remaining
         enrollment.days_to_due_date - 1
@@ -71,6 +75,8 @@ module Idv
       def barcode_heading_text
         if enhanced_ipp?
           t('in_person_proofing.headings.barcode_eipp')
+        elsif enrolled_with_passport_book?
+          t('in_person_proofing.headings.barcode_passport')
         else
           t('in_person_proofing.headings.barcode')
         end
@@ -79,6 +85,8 @@ module Idv
       def state_id_heading_text
         if enhanced_ipp?
           t('in_person_proofing.process.state_id.heading_eipp')
+        elsif enrolled_with_passport_book?
+          t('in_person_proofing.process.passport.heading')
         else
           t('in_person_proofing.process.state_id.heading')
         end
@@ -87,6 +95,8 @@ module Idv
       def state_id_info
         if enhanced_ipp?
           t('in_person_proofing.process.state_id.info_eipp')
+        elsif enrolled_with_passport_book?
+          t('in_person_proofing.process.passport.info')
         else
           t('in_person_proofing.process.state_id.info')
         end

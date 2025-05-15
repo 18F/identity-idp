@@ -308,8 +308,14 @@ class UserMailer < ActionMailer::Base
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
       )
-      @header = @presenter.enhanced_ipp? ?
-      t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
+
+      if @presenter.enhanced_ipp?
+        @header = t('in_person_proofing.headings.barcode_eipp')
+      elsif @presenter.enrolled_with_passport_book?
+        @header = t('in_person_proofing.headings.barcode_passport')
+      else
+        @header = t('in_person_proofing.headings.barcode')
+      end
 
       if enrollment&.service_provider&.logo_is_email_compatible?
         @logo_url = enrollment.service_provider.logo_url

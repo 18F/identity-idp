@@ -402,6 +402,8 @@ RSpec.describe ApplicationController do
     context 'with session timeout parameter' do
       it 'logs an event' do
         stub_analytics
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:session_timeout)
 
         get :index, params: { timeout: 'session', request_id: '123' }
 

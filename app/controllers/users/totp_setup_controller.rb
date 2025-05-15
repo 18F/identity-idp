@@ -30,7 +30,10 @@ module Users
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
-      attempts_api_tracker.mfa_enroll_totp(success: result.success?)
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::TOTP,
+      )
 
       if result.success?
         process_valid_code
@@ -87,11 +90,6 @@ module Users
 
     def create_events
       create_user_event(:authenticator_enabled)
-      mfa_user = MfaContext.new(current_user)
-      analytics.multi_factor_auth_added_totp(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_account_creation_flow: in_account_creation_flow?,
-      )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 

@@ -17,8 +17,7 @@ module Reporting
     attr_reader :time_range
 
     module Events
-      IDV_PLEASE_CALL_VISITED = 'IdV: Verify please call visited'
-      IDV_SETUP_ERROR_VISITED = 'IdV: Verify setup errors visited'
+      IDV_FINAL_RESOLUTION = 'IdV: Final Resolution'
       SUSPENDED_USERS = 'User Suspension: Suspended'
       REINSTATED_USERS = 'User Suspension: Reinstated'
 
@@ -152,12 +151,15 @@ module Reporting
     def query
       params = {
         event_names: quote(Events.all_events),
+        idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
       format(<<~QUERY, params)
         fields
             name
           , properties.user_id as user_id
+         | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
+                 or (name != %{idv_final_resolution})
         | filter name in %{event_names}
         | limit 10000
       QUERY
@@ -174,8 +176,7 @@ module Reporting
     end
 
     def lg99_unique_users_count
-      @lg99_unique_users_count ||= (data[Events::IDV_PLEASE_CALL_VISITED] +
-        data[Events::IDV_SETUP_ERROR_VISITED]).count
+      @lg99_unique_users_count ||= data[Events::IDV_FINAL_RESOLUTION].count
     end
 
     def unique_suspended_users_count

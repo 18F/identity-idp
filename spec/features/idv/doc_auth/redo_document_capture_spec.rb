@@ -4,6 +4,7 @@ RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
+  include AbTestsHelper
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
@@ -269,6 +270,84 @@ RSpec.feature 'document capture step', :js do
       attach_and_submit_images
 
       expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+    end
+  end
+
+  context 'standard desktop passport flow', allow_browser_log: true do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: 'UP' }.to_json })
+      reload_ab_tests
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+    end
+
+    after do
+      reload_ab_tests
+    end
+
+    it 'shows only one image on review step if passport selected' do
+      expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+      click_on t('forms.buttons.upload_photos')
+      expect(page).to have_current_path(idv_choose_id_type_url)
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+      click_on t('forms.buttons.continue')
+      expect(page).to have_current_path(idv_document_capture_url)
+      # Attach fail images and then continue to retry
+      attach_passport_image(
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_mrz_credential.yml'
+        ),
+      )
+      submit_images
+      expect(page).to have_current_path(idv_document_capture_url)
+      click_on t('idv.failure.button.warning')
+      expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+      expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+      expect(page).to have_content(t('doc_auth.info.review_passport'))
+    end
+  end
+
+  context 'standard mobile passport flow', allow_browser_log: true do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+        .to_return({ status: 200, body: { status: 'UP' }.to_json })
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
+    end
+
+    it 'shows only one image on review step if passport selected' do
+      perform_in_browser(:mobile) do
+        sign_in_and_2fa_user(@user)
+        complete_doc_auth_steps_before_document_capture_step
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        # Attach fail images and then continue to retry
+        attach_passport_image(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'passport_bad_mrz_credential.yml'
+          ),
+        )
+        submit_images
+        expect(page).to have_current_path(idv_document_capture_url)
+        click_on t('idv.failure.button.warning')
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+        expect(page).not_to have_content(t('doc_auth.headings.document_capture_back'))
+        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
+      end
     end
   end
 
@@ -698,16 +777,6 @@ RSpec.feature 'document capture step', :js do
     expect(page).to have_content(review_issues_body_message)
   end
 
-  def expect_rate_limit_warning(expected_remaining_attempts)
-    review_issues_rate_limit_warning = strip_tags(
-      t(
-        'idv.failure.attempts_html',
-        count: expected_remaining_attempts,
-      ),
-    )
-    expect(page).to have_content(review_issues_rate_limit_warning)
-  end
-
   def expect_resubmit_page_h1_copy
     resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
     expect(page).to have_content(resubmit_page_h1_copy)
@@ -734,11 +803,6 @@ RSpec.feature 'document capture step', :js do
     else
       expect(page).not_to have_content(resubmit_page_inline_selfie_error_message)
     end
-  end
-
-  def expect_to_try_again
-    click_try_again
-    expect(page).to have_current_path(idv_document_capture_path)
   end
 
   def use_id_image(filename)

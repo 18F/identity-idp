@@ -633,6 +633,7 @@ doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
 doc_auth.headings.passport_instructions.howto: 'Cómo tomar su fotografía:'
 doc_auth.headings.review_issues: Revise sus imágenes e inténtelo de nuevo
+doc_auth.headings.review_issues_passport: Revise su foto e inténtelo de nuevo
 doc_auth.headings.secure_account: Proteja su cuenta
 doc_auth.headings.selfie: Fotografía de su cara
 doc_auth.headings.selfie_capture: Capture una foto de usted
@@ -689,6 +690,7 @@ doc_auth.info.passport_capture: Tome una fotografía de la página de datos de s
 doc_auth.info.passport_capture_help_1: Alinee la página de datos de su pasaporte con las líneas de guía.
 doc_auth.info.passport_capture_help_2: Manténgalo fijo y espere a que la cámara tome la foto.
 doc_auth.info.review_examples_of_photos: Vea ejemplos de cómo tomar fotos nítidas de su identificación.
+doc_auth.info.review_passport: No encontramos registros que coincidan con la información de su pasaporte. Agregue una nueva fotografía de su identificación en caso de que la información de su pasaporte se haya leído incorrectamente.
 doc_auth.info.secure_account: Cifraremos su cuenta cuando vuelva a ingresar su contraseña. Con el cifrado, sus datos están protegidos y solo usted puede modificar su información.
 doc_auth.info.selfie_capture_content: Revisaremos que usted sea la persona que figura en su identificación.
 doc_auth.info.selfie_capture_help_1: Alinee su cara con el círculo verde. No se mueva y espere a que la cámara capture una foto.
@@ -749,6 +751,14 @@ doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien il
 doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
+duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
+duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
@@ -1296,7 +1306,7 @@ in_person_proofing.body.location.po_search.state_label: Estado
 in_person_proofing.body.location.po_search.usps_facilities_api_error_body_html: Siga verificando su identidad. Después de generar un código de barras, puede usar nuestro <a target="_blank" href="%{link_url}"></a> para buscar un lugar participante.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_header: Lo sentimos, tuvimos problemas técnicos y no pudimos buscar una oficina de correos participante.
 in_person_proofing.body.location.po_search.usps_facilities_api_error_help_center_text: Centro de ayuda
-in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: empty location icon
+in_person_proofing.body.location.po_search.usps_facilities_api_error_icon_alt_text: Imagen de un marcador de mapa
 in_person_proofing.body.location.po_search.zipcode_label: Código postal
 in_person_proofing.body.location.retail_hours_heading: Horario de atención al público
 in_person_proofing.body.location.retail_hours_sat: 'Sábado:'
@@ -1361,6 +1371,7 @@ in_person_proofing.form.state_id.zipcode: Código postal
 in_person_proofing.headings.address: Ingrese su domicilio actual
 in_person_proofing.headings.barcode: Muestre este código de barras y su identificación el estado en una oficina de correos para terminar de verificar su identidad.
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
+in_person_proofing.headings.barcode_passport: Show this barcode and your U.S. passport book at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_what_to_bring: Lo que debe llevar a la oficina de correos
 in_person_proofing.headings.cta: Intente verificar su identidad en persona
 in_person_proofing.headings.id_address: Domicilio que figura en su identificación
@@ -1398,6 +1409,8 @@ in_person_proofing.process.eipp_state_id_supporting_docs.info_list:
   - Tarjeta de registro de su vehículo
   - Póliza de seguro de su vivienda
   - Póliza de seguro de su vehículo
+in_person_proofing.process.passport.heading: Show your U.S. passport book
+in_person_proofing.process.passport.info: We do not currently accept any other forms of identification, such as military IDs.
 in_person_proofing.process.real_id_and_supporting_docs.heading: B. REAL ID + dos documentos comprobatorios
 in_person_proofing.process.real_id_and_supporting_docs.image_alt_text: REAL ID y dos documentos
 in_person_proofing.process.real_id_and_supporting_docs.info: 'Si la dirección que figura en su REAL ID no es su dirección actual, presente un REAL ID, junto con dos documentos comprobatorios de esta lista:'
@@ -1949,7 +1962,11 @@ user_mailer.in_person_failed.body.without_cta: Vuelva a intentar verificar su id
 user_mailer.in_person_failed.intro: No se pudo verificar su identidad en la oficina de correos de %{location} el %{date}.
 user_mailer.in_person_failed.subject: No se pudo verificar su identidad en persona
 user_mailer.in_person_failed.verifying_identity: 'Cuando verifique su identidad:'
+user_mailer.in_person_failed.verifying_identity_passports_enabled: 'If you decide to try verifying your identity again:'
 user_mailer.in_person_failed.verifying_step_not_expired: Su licencia de conducir o identificación emitida por el estado debe estar vigente. Actualmente no aceptamos otras formas de identificación, como pasaportes o identificaciones militares.
+user_mailer.in_person_failed.verifying_step_passports_enabledb1: Your ID document must not be expired.
+user_mailer.in_person_failed.verifying_step_passports_enabledb2: We only accept a state ID or U.S. passport book. We do not accept military IDs.
+user_mailer.in_person_failed.verifying_step_passports_enabledb3_html: You must bring the <strong>same</strong> ID document to the Post Office that you used on %{app_name} to create a barcode.
 user_mailer.in_person_ready_to_verify_reminder.greeting: 'Hola:'
 user_mailer.in_person_ready_to_verify_reminder.heading.one: Le queda %{count} día para verificar su identidad en persona
 user_mailer.in_person_ready_to_verify_reminder.heading.other: Le quedan %{count} días para verificar su identidad en persona

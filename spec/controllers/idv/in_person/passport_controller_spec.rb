@@ -8,7 +8,7 @@ RSpec.describe Idv::InPerson::PassportController do
     create(:document_capture_session, user:, passport_status: 'requested')
   end
   let(:idv_session) { subject.idv_session }
-  let(:enrollment) { InPersonEnrollment.new }
+  let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
 
   before do
     stub_sign_in(user)
@@ -71,6 +71,7 @@ RSpec.describe Idv::InPerson::PassportController do
 
         it 'renders the passport form' do
           expect(response).to render_template 'idv/in_person/passport/show'
+          expect(enrollment.document_type).to eq(nil)
         end
 
         it 'logs the idv_in_person_proofing_passport_visited event' do
@@ -99,13 +100,20 @@ RSpec.describe Idv::InPerson::PassportController do
   end
 
   describe '#update' do
-    before do
-      allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
-      put :update
-    end
+    context 'when in person passports are allowed' do
+      before do
+        allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+        expect(enrollment.document_type).to eq(nil)
+        put :update
+      end
 
-    it 'redirects to the address form' do
-      expect(response).to redirect_to(idv_in_person_address_path)
+      it 'sets the enrollment document type' do
+        expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK)
+      end
+
+      it 'redirects to the address form' do
+        expect(response).to redirect_to(idv_in_person_address_path)
+      end
     end
   end
 end

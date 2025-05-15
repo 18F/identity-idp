@@ -94,4 +94,5 @@ interface FullAddressSearchInputProps {
   registerField?: RegisterFieldCallback;
   usStatesTerritories: string[][];
   uspsApiError: Error | null;
+  usesErrorComponent?: boolean;
 }

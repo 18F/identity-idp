@@ -82,6 +82,7 @@ module Users
     end
 
     def process_rate_limited
+      attempts_api_tracker.login_rate_limited(email: auth_params[:email])
       sign_out(:user)
       warden.lock!
 

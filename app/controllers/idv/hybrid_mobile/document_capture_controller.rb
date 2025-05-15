@@ -64,6 +64,7 @@ module Idv
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+          doc_auth_upload_enabled: doc_auth_upload_enabled?,
           skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
           socure_errors_timeout_url: idv_hybrid_mobile_socure_document_capture_errors_url(
             error_code: :timeout,
@@ -74,6 +75,12 @@ module Idv
       end
 
       private
+
+      def doc_auth_upload_enabled?
+        !(resolved_authn_context_result.facial_match? ||
+          ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED, user: document_capture_user) ==
+            :manual_upload_disabled)
+      end
 
       def analytics_arguments
         {

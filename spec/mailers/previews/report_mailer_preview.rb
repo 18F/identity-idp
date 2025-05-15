@@ -109,6 +109,34 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def irs_authentication_report
+    irs_authentication_report = Reports::IrsAuthenticationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_authentication_report.irs_authentication_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example IRS Authentication Report - #{Time.zone.now.to_date}",
+      message: irs_authentication_report.preamble,
+      attachment_format: :csv,
+      reports: irs_authentication_report.reports,
+    )
+  end
+
+  def irs_fraud_metrics_report
+    irs_fraud_metrics_report = Reports::IrsFraudMetricsReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_fraud_metrics_report.irs_fraud_metrics_lg99_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example IRS Fraud Key Metrics Report - #{Time.zone.now.to_date}",
+      message: irs_fraud_metrics_report.preamble,
+      attachment_format: :csv,
+      reports: irs_fraud_metrics_report.reports,
+    )
+  end
+
   def api_transaction_count_report
     api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
 
@@ -126,6 +154,20 @@ class ReportMailerPreview < ActionMailer::Preview
       message: api_transaction_count_report.preamble,
       attachment_format: :csv,
       reports: api_transaction_count_report.reports,
+    )
+  end
+
+  def irs_verification_report
+    irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_verification_report.irs_verification_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :xlsx,
+      reports: irs_verification_report.reports,
     )
   end
 

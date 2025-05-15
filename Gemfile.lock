@@ -469,7 +469,7 @@ GEM
     pg (1.5.9)
     pg_query (6.1.0)
       google-protobuf (>= 3.25.3)
-    phonelib (0.10.8)
+    phonelib (0.10.9)
     pkcs11 (0.3.4)
     premailer (1.27.0)
       addressable
@@ -504,7 +504,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.0.14)
+    rack (3.0.16)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -512,7 +512,8 @@ GEM
       rack (>= 1.2.0)
     rack-proxy (0.7.7)
       rack
-    rack-session (2.0.0)
+    rack-session (2.1.1)
+      base64 (>= 0.1.0)
       rack (>= 3.0.0)
     rack-test (2.2.0)
       rack (>= 1.3)

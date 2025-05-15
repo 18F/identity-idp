@@ -70,7 +70,7 @@ RSpec.describe Users::SessionsController, devise: true do
     end
   end
 
-  describe 'POST /' do
+  describe 'POST /create' do
     include AccountResetHelper
     before do
       stub_attempts_tracker
@@ -213,6 +213,20 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'when sign_in_failure_count is above the max_sign_in_failures count' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'records the attempts api login_rate_limited event' do
+        subject.session[:sign_in_failure_count] =
+          IdentityConfig.store.max_sign_in_failures + 1
+        expect(@attempts_api_tracker).to receive(:login_rate_limited).with(
+          email: user.email,
+        )
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+      end
+    end
+
     it 'prevents attempt and logs after exceeding maximum rate limit' do
       allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(10_000)
       allow(RateLimiter).to receive(:rate_limit_config).and_return(
@@ -229,6 +243,10 @@ RSpec.describe Users::SessionsController, devise: true do
       expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
         success: false,
       ).exactly(9).times
+
+      expect(@attempts_api_tracker).to receive(:login_rate_limited).with(
+        email: user.email,
+      )
 
       travel_to (3.hours + 1.minute).ago do
         2.times do

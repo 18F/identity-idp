@@ -21,6 +21,7 @@ RSpec.describe Idv::OtpVerificationController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -91,6 +92,11 @@ RSpec.describe Idv::OtpVerificationController do
 
     it 'invalidates future steps' do
       expect(subject).to receive(:clear_future_steps!)
+      expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+        phone_number: Phonelib.parse(phone).e164,
+        success: true,
+        failure_reason: nil,
+      )
 
       put :update, params: otp_code_param
     end
@@ -99,6 +105,12 @@ RSpec.describe Idv::OtpVerificationController do
       let(:user_phone_confirmation) { true }
 
       it 'redirects to the review step' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+          phone_number: Phonelib.parse(phone).e164,
+          success: true,
+          failure_reason: nil,
+        )
+
         put :update, params: otp_code_param
         expect(response).to redirect_to(idv_enter_password_path)
       end
@@ -153,7 +165,42 @@ RSpec.describe Idv::OtpVerificationController do
       end
     end
 
+    context 'when the code is wrong' do
+      let(:otp_code_param) { { code: 'wrong' } }
+
+      it 'tracks the event' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+          phone_number: Phonelib.parse(phone).e164,
+          success: false,
+          failure_reason: { code: ['does_not_match'] },
+        )
+
+        put :update, params: otp_code_param
+      end
+    end
+
+    context 'when the code is expired' do
+      let(:phone_confirmation_otp_sent_at) do
+        Time.zone.now - TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+      end
+
+      it 'tracks the event' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+          phone_number: Phonelib.parse(phone).e164,
+          success: false,
+          failure_reason: { code: ['expired'] },
+        )
+
+        put :update, params: otp_code_param
+      end
+    end
+
     it 'tracks an analytics event' do
+      expect(@attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
+        phone_number: Phonelib.parse(phone).e164,
+        success: true,
+        failure_reason: nil,
+      )
       put :update, params: otp_code_param
 
       expect(@analytics).to have_logged_event(

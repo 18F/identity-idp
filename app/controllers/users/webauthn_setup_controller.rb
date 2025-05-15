@@ -51,11 +51,15 @@ module Users
           success: false,
         )
 
-        if @platform_authenticator
-          attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
-        else
-          attempts_api_tracker.mfa_enroll_webauthn_roaming(success: false)
-        end
+        mfa_device_type = @platform_authenticator.present? ?
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
+        attempts_api_tracker.mfa_enrolled(
+          success: false,
+          mfa_device_type:,
+        )
+
       end
 
       flash_error(result.errors) unless result.success?
@@ -80,11 +84,15 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-      if @platform_authenticator
-        attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
-      else
-        attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
-      end
+
+      mfa_device_type = @platform_authenticator.present? ?
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type:,
+      )
 
       if result.success?
         process_valid_webauthn(form)
