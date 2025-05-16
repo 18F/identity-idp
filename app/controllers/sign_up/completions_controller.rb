@@ -28,10 +28,18 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        redirect_to(
-          sp_session_request_url_with_updated_params || account_url,
-          allow_other_host: true,
+        check_for_duplicate_profiles
+        confirmation = DuplicateProfileConfirmation.find_by(
+          profile_id: current_user.active_profile&.id,
         )
+        if confirmation
+          redirect_to duplicate_profiles_detected_url
+        else
+          redirect_to(
+            sp_session_request_url_with_updated_params || account_url,
+            allow_other_host: true,
+          )
+        end
       end
     end
 
@@ -130,6 +138,14 @@ module SignUp
         current_user,
         current_sp.issuer,
       )
+    end
+
+    def check_for_duplicate_profiles
+      DuplicateProfileChecker.new(
+        user: current_user,
+        user_session: user_session,
+        sp: sp_from_sp_session,
+      ).check_for_duplicate_profiles
     end
   end
 end
