@@ -7,15 +7,29 @@ RSpec.describe ExpireAccountResetRequestsJob do
 
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:expired_granted_at) { Time.zone.now - 3.days }
+    let(:requested_at) { Time.zone.now - 3.days }
     let(:account_reset_request) do
       AccountResetRequest.create(
-        user: user,
-        granted_at: expired_granted_at,
+        user_id: user.id,
+        requested_at: requested_at,
+        request_token: SecureRandom.uuid,
+        cancelled_at: nil,
+        granted_at: requested_at,
+        granted_token: SecureRandom.uuid,
+        created_at: requested_at,
+        updated_at: requested_at,
+        requesting_issuer: nil,
       )
       AccountResetRequest.create(
-        user: user2,
-        granted_at: expired_granted_at,
+        user_id: user2.id,
+        requested_at: Time.zone.now,
+        request_token: nil,
+        cancelled_at: nil,
+        granted_at: Time.zone.now,
+        granted_token: SecureRandom.uuid,
+        created_at: Time.zone.now,
+        updated_at: Time.zone.now,
+        requesting_issuer: nil,
       )
     end
     let(:job_analytics) { FakeAnalytics.new }
@@ -33,9 +47,10 @@ RSpec.describe ExpireAccountResetRequestsJob do
       notification_sent = perform
 
       expect(job_analytics).to have_logged_event(
-        'Account Reset: expired',
+        :account_reset_request_expired,
+        count: 1,
       )
-      expect(notification_sent).to eq(2)
+      expect(notification_sent).to eq(1)
     end
 
     it 'updates the request record' do
@@ -47,7 +62,7 @@ RSpec.describe ExpireAccountResetRequestsJob do
 
       perform
 
-      expect(AccountResetRequest.last.cancelled_at).to_not be(nil)
+      expect(AccountResetRequest.first.cancelled_at).to_not be(nil)
     end
   end
 end
