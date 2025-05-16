@@ -422,7 +422,7 @@ RSpec.describe SocureShadowModeProofingJob do
         first_name: 'FAKEY',
         last_name: 'MCFAKERSON',
         address1: '1 FAKE RD',
-        address2: nil,
+        address2: '',
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',

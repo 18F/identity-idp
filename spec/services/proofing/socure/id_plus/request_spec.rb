@@ -38,7 +38,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           surName: 'MCFAKERSON',
           dob: '1938-10-06',
           physicalAddress: '1 FAKE RD',
-          physicalAddress2: nil,
+          physicalAddress2: '',
           city: 'GREAT FALLS',
           state: 'MT',
           zip: '59010-1234',
