@@ -72,7 +72,6 @@ module Reports
       @irs_verification_report ||= Reporting::IrsVerificationReport.new(
         time_range: previous_week_range,
         issuers: IdentityConfig.store.irs_verification_report_issuers || [],
-        # issuers: ['urn:gov:gsa:openidconnect.profiles:sp:sso:irs:sample'], # Make dynamic
       )
     end
 
