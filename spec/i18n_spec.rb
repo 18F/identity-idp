@@ -76,10 +76,12 @@ module I18n
         { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.expiration_date' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.expiration_date_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.first_name' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.first_name_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.passport_number' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.passport_number_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.surname' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
