@@ -4,7 +4,8 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :customer_user_id, :document_type, :redirect_url, :language, :liveness_checking_required
+        attr_reader :customer_user_id, :document_type, :redirect_url, :language,
+                    :liveness_checking_required
 
         def initialize(
           customer_user_id:,
