@@ -24,7 +24,7 @@ RSpec.describe Reporting::IrsVerificationReport do
       # Mock the current date to ensure consistency
       travel_to Date.new(2025, 5, 14) do
         # Use Time.zone.today for time zone consistency
-        expected_generated_date = Time.zone.today.to_s
+        expected_generated_date = '2025-05-14'
 
         table = report.overview_table
 
