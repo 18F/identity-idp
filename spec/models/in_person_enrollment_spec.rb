@@ -610,4 +610,22 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe '#passport_book?' do
+    context 'when the enrollment is a passport book enrollment' do
+      let(:enrollment) { create(:in_person_enrollment, :passport_book) }
+
+      it 'returns true' do
+        expect(enrollment.passport_book?).to be(true)
+      end
+    end
+
+    context 'when the enrollment is not a passport book enrollment' do
+      let(:enrollment) { create(:in_person_enrollment) }
+
+      it 'returns false' do
+        expect(enrollment.passport_book?).to be(false)
+      end
+    end
+  end
 end

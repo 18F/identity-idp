@@ -1370,6 +1370,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: barras di
 in_person_proofing.form.state_id.state_id_number_hint_spaces: espacios
 in_person_proofing.form.state_id.state_id_number_texas_hint: Este es el número de 8 dígitos de su identificación. Ingrese únicamente números en este campo.
 in_person_proofing.form.state_id.zipcode: Código postal
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: Ingrese su domicilio actual
 in_person_proofing.headings.barcode: Muestre este código de barras y su identificación el estado en una oficina de correos para terminar de verificar su identidad.
 in_person_proofing.headings.barcode_eipp: Lleve este código de barras y los documentos comprobatorios a una oficina de correos para terminar de verificar su identidad
