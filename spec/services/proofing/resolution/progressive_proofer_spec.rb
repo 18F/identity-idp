@@ -1,16 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
-  subject(:progressive_proofer) { described_class.new }
+  let(:user) { build(:user) }
+
+  subject(:progressive_proofer) { described_class.new(user_uuid: user.uuid) }
 
   it 'assigns aamva_plugin' do
-    expect(described_class.new.aamva_plugin).to be_a(
+    expect(described_class.new(user_uuid: user.uuid).aamva_plugin).to be_a(
       Proofing::Resolution::Plugins::AamvaPlugin,
     )
   end
 
   it 'assigns threatmetrix_plugin' do
-    expect(described_class.new.threatmetrix_plugin).to be_a(
+    expect(described_class.new(user_uuid: user.uuid).threatmetrix_plugin).to be_a(
       Proofing::Resolution::Plugins::ThreatMetrixPlugin,
     )
   end

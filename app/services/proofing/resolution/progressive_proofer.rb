@@ -10,7 +10,8 @@ module Proofing
     class ProgressiveProofer
       class InvalidProofingVendorError; end
 
-      attr_reader :aamva_plugin,
+      attr_reader :user_uuid,
+                  :aamva_plugin,
                   :threatmetrix_plugin,
                   :phone_finder_plugin
 
@@ -20,7 +21,8 @@ module Proofing
         socure_kyc: :socure_resolution,
       }.freeze
 
-      def initialize
+      def initialize(user_uuid:)
+        @user_uuid = user_uuid
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_finder_plugin = Plugins::PhoneFinderPlugin.new
@@ -168,6 +170,7 @@ module Proofing
       def create_socure_proofer
         Proofing::Socure::IdPlus::Proofer.new(
           Proofing::Socure::IdPlus::Config.new(
+            user_uuid:,
             api_key: IdentityConfig.store.socure_idplus_api_key,
             base_url: IdentityConfig.store.socure_idplus_base_url,
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,

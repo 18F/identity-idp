@@ -111,6 +111,7 @@ module Idv
         vendor: 'Socure',
         vendor_request_time_in_ms: timer.results['vendor_request'],
         success: @url.present?,
+        customer_user_id: document_request_body[:customerUserId],
         document_type: document_request_body[:documentType],
         use_case_key: document_request_body[:useCaseKey],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),

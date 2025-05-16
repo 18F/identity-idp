@@ -135,6 +135,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         it 'creates a DocumentRequest' do
           expect(request_class).to have_received(:new)
             .with(
+              customer_user_id: user.uuid,
               redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
@@ -173,6 +174,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       language: expected_language,
                       useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
                     },
+                    customerUserId: user.uuid,
                   },
                 ),
               )
@@ -196,6 +198,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       language: 'zh-cn',
                       useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
                     },
+                    customerUserId: user.uuid,
                   },
                 ),
               )
@@ -263,6 +266,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                     language: expected_language,
                     useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_w_selfie,
                   },
+                  customerUserId: user.uuid,
                 },
               ),
             )

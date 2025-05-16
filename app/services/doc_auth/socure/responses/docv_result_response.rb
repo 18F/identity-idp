@@ -76,23 +76,24 @@ module DocAuth
 
         def extra_attributes
           {
+            address_line2_present: address2.present?,
+            birth_year: dob&.year,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+            customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
+            decision: get_data(DATA_PATHS[:decision]),
+            doc_auth_success: doc_auth_success?,
+            document_type: get_data(DATA_PATHS[:document_type]),
+            flow_path: nil,
+            id_doc_type:,
+            issue_year: state_id_issued&.year,
+            liveness_enabled:,
+            reason_codes:,
             reference_id: get_data(DATA_PATHS[:reference_id]),
+            state:,
+            vendor: 'Socure',
             vendor_status: get_data(DATA_PATHS[:status]),
             vendor_status_message: get_data(DATA_PATHS[:msg]),
-            decision: get_data(DATA_PATHS[:decision]),
-            customer_profile: get_data(DATA_PATHS[:customer_profile]),
-            reason_codes:,
-            document_type: get_data(DATA_PATHS[:document_type]),
-            state:,
-            id_doc_type:,
-            flow_path: nil,
-            issue_year: state_id_issued&.year,
-            doc_auth_success: doc_auth_success?,
-            vendor: 'Socure',
-            address_line2_present: address2.present?,
             zip_code: zipcode,
-            birth_year: dob&.year,
-            liveness_enabled:,
           }
         end
 

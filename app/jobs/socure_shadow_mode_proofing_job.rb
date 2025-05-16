@@ -37,7 +37,7 @@ class SocureShadowModeProofingJob < ApplicationJob
 
     applicant = build_applicant(encrypted_arguments:, user_email:)
 
-    socure_result = proofer.proof(applicant)
+    socure_result = proofer(user:).proof(applicant)
 
     analytics.idv_socure_shadow_mode_proofing_result(
       resolution_result: format_proofing_result_for_logs(proofing_result),
@@ -116,9 +116,10 @@ class SocureShadowModeProofingJob < ApplicationJob
     }
   end
 
-  def proofer
+  def proofer(user:)
     @proofer ||= Proofing::Socure::IdPlus::Proofer.new(
       Proofing::Socure::IdPlus::Config.new(
+        user_uuid: user.uuid,
         api_key: IdentityConfig.store.socure_idplus_api_key,
         base_url: IdentityConfig.store.socure_idplus_base_url,
         timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,

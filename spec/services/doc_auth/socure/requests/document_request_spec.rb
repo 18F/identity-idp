@@ -7,9 +7,11 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie_flow' }
   let(:use_case_key) { idv_socure_docv_flow_id_only }
+  let(:customer_user_id) { SecureRandom.uuid }
 
   subject(:document_request) do
     described_class.new(
+      customer_user_id: customer_user_id,
       redirect_url: redirect_url,
       language:,
     )
@@ -25,7 +27,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
         referenceId: 'socure-reference-id',
         data: {
           eventId: 'socure-event-id',
-          customerUserId: document_capture_session_uuid,
+          customerUserId: customer_user_id,
           docvTransactionToken: docv_transaction_token,
           qrCode: 'qr-code',
           url: fake_socure_document_capture_app_url,
@@ -46,6 +48,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           language: language,
           useCaseKey: use_case_key,
         },
+        customerUserId: customer_user_id,
       }
     end
     let(:fake_socure_status) { 200 }
@@ -135,6 +138,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
     context 'facial match is required' do
       subject(:document_request) do
         described_class.new(
+          customer_user_id: customer_user_id,
           redirect_url: redirect_url,
           language:,
           liveness_checking_required: true,

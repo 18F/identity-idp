@@ -70,7 +70,7 @@ RSpec.describe SocureDocvResultsJob do
             },
           },
           customerProfile: {
-            customerUserId: document_capture_session.uuid,
+            customerUserId: user.uuid,
             userId: 'u8JpWn4QsF3R7tA2',
           },
         }
@@ -91,6 +91,7 @@ RSpec.describe SocureDocvResultsJob do
             country: 'USA',
             state: 'NY',
           },
+          customer_user_id: user.uuid,
         }
       end
 
@@ -189,6 +190,14 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
           expect(document_capture_session.last_doc_auth_result).to eq('accept')
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_verification_data_requested,
+            hash_including(
+              :customer_user_id,
+              :decision,
+              :reference_id,
+            ),
+          )
         end
       end
 
