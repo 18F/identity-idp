@@ -925,6 +925,8 @@ forms.messages.remember_device: Recuerde este navegador
 forms.password: Contraseña
 forms.passwords.edit.buttons.submit: Cambiar contraseña
 forms.passwords.edit.labels.password: Nueva contraseña
+forms.passwords.reset.how_to_reset: Cómo restablecer su contraseña
+forms.passwords.reset.how_to_reset_with_personal_key: Cómo restablecer su contraseña si tiene una clave personal
 forms.personal_key_partial.acknowledgement.header: Necesitará su clave personal si olvida su contraseña. Consérvela en un lugar seguro y no la comparta con nadie.
 forms.personal_key_partial.acknowledgement.help_link_text: Obtenga más información sobre la clave personal
 forms.personal_key_partial.acknowledgement.text: Si restablece su contraseña y no tiene su clave personal, tendrá que verificar nuevamente su identidad.

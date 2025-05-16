@@ -925,6 +925,8 @@ forms.messages.remember_device: 记住这个浏览器
 forms.password: 密码
 forms.passwords.edit.buttons.submit: 变更密码
 forms.passwords.edit.labels.password: 新密码
+forms.passwords.reset.how_to_reset: 如何重置你的密码
+forms.passwords.reset.how_to_reset_with_personal_key: 如果你有个人密钥，如何重置密码
 forms.personal_key_partial.acknowledgement.header: 如果你忘记了密码，就需要你的个人密钥。请将其保管好，不要与任何人分享。
 forms.personal_key_partial.acknowledgement.help_link_text: 了解更多有关个人密钥的信息。
 forms.personal_key_partial.acknowledgement.text: 如果你在没有个人密钥情况下重设你的密码，将需要再次验证你的身份。

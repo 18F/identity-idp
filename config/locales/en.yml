@@ -914,6 +914,8 @@ forms.messages.remember_device: Remember this browser
 forms.password: Password
 forms.passwords.edit.buttons.submit: Change password
 forms.passwords.edit.labels.password: New password
+forms.passwords.reset.how_to_reset: How to reset your password
+forms.passwords.reset.how_to_reset_with_personal_key: How to reset your password if you have a personal key
 forms.personal_key_partial.acknowledgement.header: You need your personal key if you forget your password. Keep it safe and don’t share it with anyone.
 forms.personal_key_partial.acknowledgement.help_link_text: Learn more about the personal key
 forms.personal_key_partial.acknowledgement.text: If you reset your password without your personal key, you’ll need to verify your identity again.
