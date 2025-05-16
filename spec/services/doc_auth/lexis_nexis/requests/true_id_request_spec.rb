@@ -223,12 +223,12 @@ end
 def response_body_with_doc_auth_errors(include_liveness)
   {
     Status: {
-      TransactionStatus: 'passed',
+      TransactionStatus: 'failed',
     },
     Products: [
       {
         ProductType: 'TrueID',
-        ProductStatus: 'pass',
+        ProductStatus: 'fail',
         ParameterDetails: [
           {
             Group: 'AUTHENTICATION_RESULT',
