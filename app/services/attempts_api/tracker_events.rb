@@ -179,6 +179,50 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] address1
+    # @param [String] address2
+    # @param [String] date_of_birth
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] social_security
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The verification was submitted during the IDV process
+    def idv_verification_submitted(
+      success:,
+      address1: nil,
+      address2: nil,
+      date_of_birth: nil,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      social_security: nil,
+      failure_reason: nil
+    )
+      track_event(
+        'idv-verification-submitted',
+        success:,
+        address1:,
+        address2:,
+        date_of_birth:,
+        document_state:,
+        document_number:,
+        document_issued:,
+        document_expiration:,
+        first_name:,
+        last_name:,
+        social_security:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success True if account successfully deleted
     # A User deletes their Login.gov account
     def logged_in_account_purged(success:)
