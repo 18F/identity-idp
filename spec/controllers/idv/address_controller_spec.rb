@@ -8,6 +8,7 @@ RSpec.describe Idv::AddressController do
   before do
     stub_sign_in(user)
     stub_analytics
+    stub_attempts_tracker
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.flow_path = 'standard'
@@ -52,6 +53,32 @@ RSpec.describe Idv::AddressController do
       }
     end
 
+    context 'when the pii does not change' do
+      let(:params) do
+        {
+          idv_form: {
+            address1: pii_from_doc.address1,
+            address2: pii_from_doc.address2,
+            city: pii_from_doc.city,
+            state: pii_from_doc.state,
+            zipcode: pii_from_doc.zipcode,
+          },
+        }
+      end
+
+      it 'does not track the attempts event' do
+        expect(@attempts_api_tracker).not_to receive(:idv_address_submitted)
+
+        put :update, params: params
+
+        expect(@analytics).to have_logged_event(
+          'IdV: address submitted',
+          success: true,
+          address_edited: false,
+        )
+      end
+    end
+
     it 'redirects to verify info on success' do
       put :update, params: params
       expect(response).to redirect_to(idv_verify_info_url)
@@ -86,6 +113,16 @@ RSpec.describe Idv::AddressController do
     end
 
     it 'logs an analytics event' do
+      expect(@attempts_api_tracker).to receive(:idv_address_submitted).with(
+        success: true,
+        address1: '1234 Main St',
+        address2: 'Apt B',
+        city: 'Beverly Hills',
+        state: 'CA',
+        zip: '90210',
+        failure_reason: nil,
+      )
+
       put :update, params: params
       expect(@analytics).to have_logged_event(
         'IdV: address submitted',
@@ -99,6 +136,15 @@ RSpec.describe Idv::AddressController do
 
       it 'renders errors if they occur' do
         params[:idv_form][:zipcode] = 'this is invalid'
+        expect(@attempts_api_tracker).to receive(:idv_address_submitted).with(
+          success: false,
+          address1: '1234 Main St',
+          address2: 'Apt B',
+          city: 'Beverly Hills',
+          state: 'CA',
+          zip: 'this is invalid',
+          failure_reason: { zipcode: [:invalid] },
+        )
 
         put :update, params: params
 
