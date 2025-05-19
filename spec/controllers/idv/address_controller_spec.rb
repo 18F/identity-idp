@@ -67,7 +67,16 @@ RSpec.describe Idv::AddressController do
       end
 
       it 'does not track the attempts event' do
-        expect(@attempts_api_tracker).not_to receive(:idv_address_submitted)
+        expect(@attempts_api_tracker).to receive(:idv_address_submitted).with(
+          success: true,
+          address1: pii_from_doc.address1,
+          address2: pii_from_doc.address2,
+          address_edited: false,
+          city: pii_from_doc.city,
+          state: pii_from_doc.state,
+          zip: pii_from_doc.zipcode,
+          failure_reason: nil,
+        )
 
         put :update, params: params
 
@@ -117,6 +126,7 @@ RSpec.describe Idv::AddressController do
         success: true,
         address1: '1234 Main St',
         address2: 'Apt B',
+        address_edited: true,
         city: 'Beverly Hills',
         state: 'CA',
         zip: '90210',
@@ -140,6 +150,7 @@ RSpec.describe Idv::AddressController do
           success: false,
           address1: '1234 Main St',
           address2: 'Apt B',
+          address_edited: true,
           city: 'Beverly Hills',
           state: 'CA',
           zip: 'this is invalid',

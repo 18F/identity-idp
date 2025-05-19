@@ -88,6 +88,7 @@ module AttemptsApi
     # @param [Boolean] success
     # @param [String] address1
     # @param [String] address2
+    # @param [Boolean] address_edited True indicates that the user edited it
     # @param [String] city
     # @param [String] state
     # @param [String] zip
@@ -96,6 +97,7 @@ module AttemptsApi
     def idv_address_submitted(
       success:,
       address1:,
+      address_edited:,
       city:,
       state:,
       zip:,
@@ -107,6 +109,7 @@ module AttemptsApi
         success:,
         address1:,
         address2:,
+        address_edited:,
         city:,
         state:,
         zip:,
