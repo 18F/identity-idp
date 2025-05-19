@@ -146,10 +146,7 @@ module AbTests
 
   DOC_AUTH_MANUAL_UPLOAD_DISABLED = AbTest.new(
     experiment_name: 'Doc Auth Manual Upload Disabled',
-    should_log: [
-      'Idv: doc auth hybrid handoff visited',
-      'IdV: doc auth document_capture visited',
-    ],
+    should_log: /^idv/i,
     buckets: {
       manual_upload_disabled:
         IdentityConfig.store.doc_auth_manual_upload_disabled_a_b_testing_enabled ?
