@@ -47,6 +47,7 @@ RSpec.describe DocAuth::ErrorGenerator do
   let(:result_code_invalid) { false }
 
   def build_error_info(
+    transaction_status: nil,
     doc_result: nil,
     passed: [],
     failed: [],
@@ -58,6 +59,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       reference: 'Reference1',
       liveness_enabled: liveness_enabled,
       vendor: 'Test',
+      transaction_status:,
       transaction_reason_code: 'testing',
       doc_auth_result: doc_result,
       processed_alerts: {
@@ -83,6 +85,7 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       it 'DocAuthResult is Attention of Barcode Read and general selfie error' do
         error_info = build_error_info(
+          transaction_status: 'passed',
           doc_result: 'Attention',
           failed: [{ name: '2D Barcode Read', result: 'Attention' }],
         )
@@ -103,6 +106,7 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       it 'DocAuthResult is Attention with unknown alert' do
         error_info = build_error_info(
+          transaction_status: 'failed',
           doc_result: 'Attention',
           failed: [{ name: 'Unknown Alert', result: 'Attention' }],
         )
@@ -121,6 +125,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     end
     it 'DocAuthResult is Unknown and general selfie error' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Unknown',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -138,8 +143,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed' do
+    it 'TransactionStatus is Failed' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -153,8 +159,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with single alert with a side' do
+    it 'TransactionStatus is Failed with single alert with a side' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: 'Visible Pattern', result: 'Failed', side: 'front' }],
       )
@@ -167,8 +174,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with multiple different alerts' do
+    it 'TransactionStatus is Failed with multiple different alerts' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: '2D Barcode Read', result: 'Attention' },
@@ -185,8 +193,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with multiple id alerts' do
+    it 'TransactionStatus is Failed with multiple id alerts' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: 'Expiration Date Valid', result: 'Attention' },
@@ -203,8 +212,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with multiple front alerts' do
+    it 'TransactionStatus is Failed with multiple front alerts' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: 'Photo Printing', result: 'Attention' },
@@ -220,8 +230,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with multiple back alerts' do
+    it 'TransactionStatus is Failed with multiple back alerts' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: '2D Barcode Read', result: 'Attention' },
@@ -237,8 +248,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with an unknown alert' do
+    it 'TransactionStatus is Failed with an unknown alert' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: 'Not a known alert', result: 'Failed' }],
       )
@@ -255,8 +267,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with multiple alerts including an unknown' do
+    it 'TransactionStatus is Failed with multiple alerts including an unknown' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: 'Not a known alert', result: 'Failed' },
@@ -276,8 +289,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with an unknown passed alert' do
+    it 'TransactionStatus is Failed with an unknown passed alert' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
@@ -295,8 +309,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is failed with unsupported doc type' do
+    it 'TransactionStatus is Failed with unsupported doc type' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
@@ -315,8 +330,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with unknown alert and general selfie error' do
+    it 'TransactionStatus is Failed with unknown alert and general selfie error' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: 'Unknown alert', result: 'Failed' }],
       )
@@ -336,8 +352,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is Failed with known alert and specific selfie no liveness error' do
+    it 'TransactionStatus is Failed with known alert and specific selfie no liveness error' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -355,8 +372,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is success with unsupported doc type' do
+    it 'TransactionStatus is passed with unsupported doc type' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [],
@@ -375,8 +393,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is success with VHIC' do
+    it 'TransactionStatus is passed with VHIC' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [],
@@ -396,8 +415,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is failed with unknown doc type' do
+    it 'TransactionStatus is Failed with unknown doc type' do
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [
           { name: 'Not a known alert', result: 'Failed' },
@@ -417,8 +437,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(true)
     end
 
-    it 'DocAuthResult is success with an unknown alert' do
+    it 'TransactionStatus is passed with an unknown alert' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [{ name: 'Not a known alert', result: 'Failed' }],
       )
@@ -434,8 +455,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
     end
-    it 'DocAuthResult is success with general selfie error' do
+    it 'TransactionStatus is passed with general selfie error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [],
       )
@@ -456,8 +478,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with specific selfie no liveness error' do
+    it 'TransactionStatus is passed with specific selfie no liveness error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [],
       )
@@ -476,8 +499,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with specific selfie liveness quality error' do
+    it 'TransactionStatus is passed with specific selfie liveness quality error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [],
       )
@@ -495,8 +519,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with alert and general selfie error' do
+    it 'TransactionStatus is passed with alert and general selfie error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -516,8 +541,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with unknown alert and general selfie error' do
+    it 'TransactionStatus is passed with unknown alert and general selfie error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [{ name: 'Unknown alert', result: 'Failed' }],
       )
@@ -538,8 +564,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with alert and specific no liveness error' do
+    it 'TransactionStatus is passed with alert and specific no liveness error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -557,8 +584,9 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:hints]).to eq(false)
     end
 
-    it 'DocAuthResult is success with alert and specific liveness quality error' do
+    it 'TransactionStatus is passed with alert and specific liveness quality error' do
       error_info = build_error_info(
+        transaction_status: 'passed',
         doc_result: 'Passed',
         failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
@@ -785,7 +813,11 @@ RSpec.describe DocAuth::ErrorGenerator do
       context 'when liveness check passed' do
         let(:face_match_result) { 'Pass' }
         it 'returns a metric error with no other error' do
-          error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
+          error_info = build_error_info(
+            transaction_status: 'passed',
+            doc_result: 'Passed',
+            image_metrics: metrics,
+          )
           errors = described_class.new(config).generate_doc_auth_errors(error_info)
           expect(errors.keys).to contain_exactly(:front, :back, :general, :hints)
         end
@@ -794,7 +826,11 @@ RSpec.describe DocAuth::ErrorGenerator do
       context 'when liveness check failed' do
         let(:face_match_result) { 'Fail' }
         it 'returns a metric error without a selfie error' do
-          error_info = build_error_info(doc_result: 'Passed', image_metrics: metrics)
+          error_info = build_error_info(
+            transaction_status: 'passed',
+            doc_result: 'Passed',
+            image_metrics: metrics,
+          )
           errors = described_class.new(config).generate_doc_auth_errors(error_info)
           expect(errors.keys).to contain_exactly(:front, :back, :general, :hints)
         end
@@ -822,6 +858,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     it 'generate doc type error' do
       metrics[:front]['HorizontalResolution'] = 50
       error_info = build_error_info(
+        transaction_status: 'failed',
         doc_result: 'Failed',
         failed: [{ name: '2D Barcode Read', result: 'Attention' }],
         classification_info: { Back: vhic_classification_details,
