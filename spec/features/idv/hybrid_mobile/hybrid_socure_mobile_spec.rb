@@ -30,7 +30,6 @@ RSpec.describe 'Hybrid Flow' do
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
-      sleep 0
       impl.call(**config)
     end.at_least(1).times
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
