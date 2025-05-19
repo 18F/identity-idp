@@ -8,6 +8,7 @@ module SignUp
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
+    before_action :check_for_duplicate_profiles, only: [:show]
 
     def show
       analytics.user_registration_agency_handoff_page_visit(
@@ -28,18 +29,10 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        check_for_duplicate_profiles
-        confirmation = DuplicateProfileConfirmation.find_by(
-          profile_id: current_user.active_profile&.id,
+        redirect_to(
+          sp_session_request_url_with_updated_params || account_url,
+          allow_other_host: true,
         )
-        if confirmation
-          redirect_to duplicate_profiles_detected_url
-        else
-          redirect_to(
-            sp_session_request_url_with_updated_params || account_url,
-            allow_other_host: true,
-          )
-        end
       end
     end
 
@@ -146,6 +139,14 @@ module SignUp
         user_session: user_session,
         sp: sp_from_sp_session,
       ).check_for_duplicate_profiles
+
+      confirmation = DuplicateProfileConfirmation.find_by(
+        profile_id: current_user.active_profile&.id,
+      )
+
+      if confirmation
+        redirect_to duplicate_profiles_detected_url
+      end
     end
   end
 end
