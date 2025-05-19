@@ -26,19 +26,19 @@ module Reports
       end
       #iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
+
       #save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
       subject = "IRS Monthly Credential Metrics"
-
       email_addresses = emails.select(&:present?)
-      #issuer = issuers.select(&:present?)
-      
 
+      #issuer = issuers.select(&:present?)
       #report_configs.each do |report_hash|
         # Check if any emails are found
+      binding.pry
       if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
-        return false
+       Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+       return false
       end
       report = as_emailable_irs_report(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: report_date)
       upload_to_s3(report.table, report_date, report_name: REPORT_NAME)
@@ -49,8 +49,7 @@ module Reports
         reports: report,
         attachment_format: :csv,
       )
-        #end
-     # end
+
     end
 
     def as_emailable_irs_report(iaas:, partner_accounts:, date:)
@@ -362,7 +361,6 @@ module Reports
 
     def upload_to_s3(report_body,report_date,  report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
-
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
@@ -370,6 +368,14 @@ module Reports
           content_type: 'text/csv',
           bucket: bucket_name,
         )
+      end
+    end
+
+    def csv_file(report_array)
+      CSV.generate do |csv|
+        report_array.each do |row|
+          csv << row
+        end
       end
     end
 

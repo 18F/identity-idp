@@ -2,19 +2,19 @@ require 'rails_helper'
 
 RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date) }
+  subject(:report) { described_class.new(report_date) }
 
-  let(:name) { 'monthly-credentials-metrics-report' }
+  let(:name) { 'irs-monthly-cred-metrics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/monthly-credentials-metrics-report/2021/2021-03-02.monthly-credentials-metrics-report'
+    'int/irs-monthly-cred-metrics-report/2021/2021-03-02.irs-monthly-cred-metrics-report'
   end
 
   let(:expected_s3_paths) do
     [
-      "#{report_folder}/credentials_authorized_requesting_agency.csv",
-      "#{report_folder}/new_identity_verification_credentials_authorized.csv",
-      "#{report_folder}/existing_identity_verification_credentials_authorized.csv",
+      "#{report_folder}/irs_ial2_cred_created_by_email.csv",
+      "#{report_folder}/irs_total_active_user_cred_counts.csv",
+      "#{report_folder}/irs_ial2_cred_active_user_counts.csv",
     ]
   end
 
@@ -26,19 +26,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  let(:mock_all_login_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
-  let(:mock_daily_reports_emails) { ['mock_agnes@example.com', 'mock_daily@example.com'] }
+  let(:mock_all_login_emails) { ['irs_team@example.com'] }
+  let(:mock_daily_reports_emails) { ['irs_ops@example.com'] }
 
-  let(:mock_proofing_rate_data) do
-    [
-      ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
-    ]
-  end
-  let(:mock_monthly_idv_data) do
-    [
-      ['Metric', 'June 2024', 'July 2024', 'August 2024'],
-    ]
-  end
+  let(:mock_csv_data) { [['Metric', 'Value']] }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -53,10 +44,12 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       },
     }
 
-    allow(report.proofing_rate_report).to receive(:as_csv)
-      .and_return(mock_proofing_rate_data)
-    allow(report.monthly_idv_report).to receive(:as_csv)
-      .and_return(mock_monthly_idv_data)
+    allow(report.irs_ial2_cred_created_by_email_report).to receive(:as_csv)
+      .and_return(mock_csv_data)
+    allow(report.irs_total_active_user_cred_counts_report).to receive(:as_csv)
+      .and_return(mock_csv_data)
+    allow(report.irs_ial2_cred_active_user_counts_report).to receive(:as_csv)
+      .and_return(mock_csv_data)
 
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
       .and_return(mock_daily_reports_emails)
@@ -64,10 +57,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       .and_return(mock_all_login_emails)
   end
 
-  it 'sends out a report to just to team agnes' do
+  it 'sends out a report to just the daily team' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'Monthly Key Metrics Report - 2021-03-02',
+      subject: 'IRS Monthly Credential Metrics Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :xlsx,
@@ -82,7 +75,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: anything,
-        subject: 'Monthly Credentials Metrics Report - 2021-02-28',
+        subject: 'IRS Monthly Credential Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,
         attachment_format: :xlsx,
@@ -96,7 +89,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
 
     expect(report).to_not receive(:reports)
-
     expect(ReportMailer).not_to receive(:tables_report)
 
     report.perform(report_date)
@@ -104,7 +96,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   it 'uploads a file to S3 based on the report date' do
     expected_s3_paths.each do |path|
-      expect(subject).to receive(:upload_file_to_s3_bucket).with(
+      binding.pry
+      expect(report).to receive(:upload_file_to_s3_bucket).with(
         path: path,
         **s3_metadata,
       ).exactly(1).time.and_call_original
@@ -118,19 +111,17 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
       it 'emails the whole login team' do
-        expected_array = mock_daily_reports_emails
-        expected_array += mock_all_login_emails
-
+        expected_array = mock_daily_reports_emails + mock_all_login_emails
         expect(report.emails).to match_array(expected_array)
       end
     end
 
     context 'during the rest of the month' do
       let(:report_date) { Date.new(2021, 3, 2).prev_day }
-      it 'only emails team_daily_reports' do
-        expect(report.emails).to match_array(
-          mock_daily_reports_emails,
-        )
+
+      it 'only emails the daily report team' do
+        expect(report.emails).to match_array(mock_daily_reports_emails)
+
       end
     end
   end
@@ -141,7 +132,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'has a preamble that is valid HTML' do
       expect(preamble).to be_html_safe
-
       expect { Nokogiri::XML(preamble) { |config| config.strict } }.to_not raise_error
     end
 
@@ -150,9 +140,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
       it 'has an alert with the environment name' do
         expect(preamble).to be_html_safe
-
         doc = Nokogiri::XML(preamble)
-
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end

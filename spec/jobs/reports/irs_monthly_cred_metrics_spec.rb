@@ -4,18 +4,68 @@ require_relative '/Users/jabariamyles/identity-idp/app/jobs/reports/irs_monthly_
 RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   subject(:report) { Reports::IrsMonthlyCredMetricsReport.new }
 
-  # before do
-  #   clear_agreements_data
-  #   ServiceProvider.delete_all
-  # end
+  let(:mock_all_login_emails) { ['irs_team@example.com'] }
+  let(:mock_daily_reports_emails) { ['irs_ops@example.com'] }
+
+  let(:mock_csv_data) { [['Metric', 'Value']] }
+
+  let(:name) { 'irs-monthly-cred-metrics-report' }
+  let(:s3_report_bucket_prefix) { 'reports-bucket' }
+  let(:report_folder) do
+    'int/irs-monthly-cred-metrics-report/2021/2021-03-02.irs-monthly-cred-metrics-report'
+  end
+
+  let(:expected_s3_path) do
+    "#{report_folder}/irs_monthly_cred_metrics.csv"
+  end
+
+  let(:s3_metadata) do
+    {
+      body: anything,
+      content_type: 'text/csv',
+      bucket: 'reports-bucket.1234-us-west-1',
+    }
+  end
   
-  describe '#perform' do
-    it 'is empty with no data' do
+  
 
-      csv = CSV.parse(report.perform(Time.zone.today), headers: true)
-      expect(csv).to be_empty
+  describe Reports::IrsMonthlyCredMetricsReport do
+    describe '#perform' do
+      let(:report) { described_class.new }
+      let(:report_date) { Time.zone.yesterday.end_of_day }
+  
+
+      it 'does not send out a report with no emails' do
+        allow(IdentityConfig.store).to receive(:irs_credentials_emails).and_return('')
+
+        expect(report).to_not receive(:reports)
+        expect(ReportMailer).not_to receive(:tables_report)
+        report.perform(report_date)
+      end
+
+        before do
+      allow(Identity::Hostdata).to receive(:env).and_return('int')
+      allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
+      allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
+      allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+        .and_return(s3_report_bucket_prefix)
+
+    Aws.config[:s3] = {
+      stub_responses: {
+        put_object: {},
+      },
+    }
+
+  end
+  
+      it 'uploads a CSV report to S3' do
+        expect(report).to receive(:upload_to_s3).with('csv-data', report_date, report_name: 'irs_monthly_cred_metrics')
+        report.perform(report_date)
+      end
     end
+  end
 
+  describe '#perform' do
     context 'with data generates reports by iaa + order number, issuer and year_month' do
       context 'with an IAA with a single issuer in April 2020' do
         let(:partner_account1) { create(:partner_account) }
@@ -105,7 +155,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             expect(row['credentials_authorized_requesting_agency'].to_i).to eq(9)
             expect(row['new_identity_verification_credentials_authorized_for_partner'].to_i).to eq(2)
             expect(row['existing_identity_verification_credentials_authorized_for_partner'].to_i).to eq(0)
-            #binding.pry
           end
         end
 
