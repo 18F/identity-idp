@@ -131,6 +131,19 @@ module AttemptsApi
       track_event('idv-ipp-ready-to-verify-visit')
     end
 
+    # @param [Boolean] success
+    # @param [String] social_security
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user inputs their SSN number during Identity verification
+    def idv_ssn_submitted(success:, social_security:, failure_reason: nil)
+      track_event(
+        'idv-ssn-submitted',
+        success:,
+        social_security:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] success True if the entered code matched the sent code
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason if code did not match
     # A user that requested to verify their address by mail entered the code contained in the letter
