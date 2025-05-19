@@ -5,8 +5,8 @@ RSpec.describe 'Hybrid Flow' do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:phone_number) { '415-555-0199' }
-  let(:sp) { :oidc }
+  let(:user) { user_with_2fa }
+  let(:phone_number) { Features::SessionHelper::IAL1_USER_PHONE }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:socure_docv_verification_data_test_mode) { false }
@@ -34,22 +34,24 @@ RSpec.describe 'Hybrid Flow' do
     end.at_least(1).times
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
-    @docv_transaction_token = stub_docv_document_request
+    @docv_transaction_token = stub_docv_document_request(user:)
     stub_analytics
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(@analytics)
   end
 
   context 'happy path', allow_browser_log: true do
     before do
-      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+      @pass_stub = stub_docv_verification_data_pass(
+        docv_transaction_token: @docv_transaction_token,
+        user:,
+      )
     end
     it 'proofs and hands off to mobile', js: true do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
-      user = nil
 
       perform_in_browser(:desktop) do
-        visit_idp_from_sp_with_ial2(sp)
-        user = sign_up_and_2fa_ial1_user
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -57,7 +59,7 @@ RSpec.describe 'Hybrid Flow' do
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
         expect(page).to have_content(t('doc_auth.info.you_entered'))
-        expect(page).to have_content('+1 415-555-0199')
+        expect(page).to have_content("+1 #{phone_number}")
 
         # Confirm that Continue button is not shown when polling is enabled
         expect(page).not_to have_content(t('doc_auth.buttons.continue'))
@@ -148,10 +150,9 @@ RSpec.describe 'Hybrid Flow' do
 
     it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
-      user = nil
 
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -192,8 +193,8 @@ RSpec.describe 'Hybrid Flow' do
 
       it 'presents options to try again or try in person', js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(sp)
-          sign_up_and_2fa_ial1_user
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -257,6 +258,7 @@ RSpec.describe 'Hybrid Flow' do
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['R827'],
+          user:,
         )
       end
 
@@ -265,10 +267,8 @@ RSpec.describe 'Hybrid Flow' do
           .exactly(6 * max_attempts * socure_docv_webhook_repeat_endpoints.length)
           .times.and_call_original
 
-        user = nil
-
         perform_in_browser(:desktop) do
-          user = sign_in_and_2fa_user
+          sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
           click_send_link
@@ -303,6 +303,7 @@ RSpec.describe 'Hybrid Flow' do
     end
 
     context 'if the user has no MFA phone' do
+      let(:user) { create(:user, :with_authentication_app) }
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
@@ -318,11 +319,9 @@ RSpec.describe 'Hybrid Flow' do
           .exactly(6 * socure_docv_webhook_repeat_endpoints.length)
           .times.and_call_original
 
-        user = create(:user, :with_authentication_app)
-
         perform_in_browser(:desktop) do
-          start_idv_from_sp(facial_match_required: false)
-          sign_in_and_2fa_user(user)
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user, auth_method: 'totp')
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -376,11 +375,9 @@ RSpec.describe 'Hybrid Flow' do
       context 'when a valid test token is used' do
         it 'fetches verification data using override docvToken in request',
            js: true, allow_browser_log: true do
-          user = nil
-
           perform_in_browser(:desktop) do
-            visit_idp_from_sp_with_ial2(sp)
-            user = sign_up_and_2fa_ial1_user
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
             click_send_link
@@ -390,7 +387,7 @@ RSpec.describe 'Hybrid Flow' do
 
           perform_in_browser(:mobile) do
             remove_request_stub(@pass_stub)
-            stub_docv_verification_data_pass(docv_transaction_token: test_token)
+            stub_docv_verification_data_pass(docv_transaction_token: test_token, user:)
 
             visit @sms_link
 
@@ -423,11 +420,9 @@ RSpec.describe 'Hybrid Flow' do
           expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
             .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
 
-          user = nil
-
           perform_in_browser(:desktop) do
-            visit_idp_from_sp_with_ial2(sp)
-            user = sign_up_and_2fa_ial1_user
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
             click_send_link
@@ -459,11 +454,9 @@ RSpec.describe 'Hybrid Flow' do
 
     context 'invalid ID type' do
       it 'presents as an unaccepted ID type error', js: true do
-        user = nil
-
         perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(sp)
-          user = sign_up_and_2fa_ial1_user
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -471,7 +464,7 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
           expect(page).to have_content(t('doc_auth.info.you_entered'))
-          expect(page).to have_content('+1 415-555-0199')
+          expect(page).to have_content("+1 #{phone_number}")
 
           # Confirm that Continue button is not shown when polling is enabled
           expect(page).not_to have_content(t('doc_auth.buttons.continue'))
@@ -488,6 +481,7 @@ RSpec.describe 'Hybrid Flow' do
           stub_docv_verification_data(
             docv_transaction_token: @docv_transaction_token,
             body: body.to_json,
+            user:,
           )
 
           click_idv_continue
@@ -521,11 +515,10 @@ RSpec.describe 'Hybrid Flow' do
       end
       it 'proofs and hands off to mobile', js: true do
         expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
-        user = nil
 
         perform_in_browser(:desktop) do
           visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
-          user = sign_in_and_2fa_user
+          sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -533,7 +526,7 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
           expect(page).to have_content(t('doc_auth.info.you_entered'))
-          expect(page).to have_content('+1 415-555-0199')
+          expect(page).to have_content("+1 #{phone_number}")
 
           # Confirm that Continue button is not shown when polling is enabled
           expect(page).not_to have_content(t('doc_auth.buttons.continue'))
@@ -558,6 +551,7 @@ RSpec.describe 'Hybrid Flow' do
           @pass_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['not_processed'],
+            user:,
           )
 
           click_idv_continue
@@ -576,6 +570,7 @@ RSpec.describe 'Hybrid Flow' do
           @pass_stub = stub_docv_verification_data_fail_with(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['pass'],
+            user:,
           )
 
           click_idv_continue
@@ -595,6 +590,7 @@ RSpec.describe 'Hybrid Flow' do
           @pass_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['pass'],
+            user:,
           )
 
           click_idv_continue
@@ -657,11 +653,9 @@ RSpec.describe 'Hybrid Flow' do
 
   shared_examples 'a properly categorized Socure error' do |socure_error_code, expected_header_key|
     it 'shows the correct error page', allow_browser_log: true, js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        visit_idp_from_sp_with_ial2(sp)
-        user = sign_up_and_2fa_ial1_user
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
 
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -669,7 +663,7 @@ RSpec.describe 'Hybrid Flow' do
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
         expect(page).to have_content(t('doc_auth.info.you_entered'))
-        expect(page).to have_content('+1 415-555-0199')
+        expect(page).to have_content("+1 #{phone_number}")
 
         # Confirm that Continue button is not shown when polling is enabled
         expect(page).not_to have_content(t('doc_auth.buttons.continue'))
@@ -683,6 +677,7 @@ RSpec.describe 'Hybrid Flow' do
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: [socure_error_code],
+          user:,
         )
 
         click_idv_continue
@@ -738,8 +733,8 @@ RSpec.describe 'Hybrid Flow' do
       it 'shows the network error page on the phone and the link sent page on the desktop',
          js: true do
         perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(sp)
-          sign_up_and_2fa_ial1_user
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -775,7 +770,7 @@ RSpec.describe 'Hybrid Flow' do
     context 'invalid request (ie: wrong api key)', allow_browser_log: true do
       before do
         DocAuth::Mock::DocAuthMockClient.reset!
-        stub_docv_document_request(status: 401)
+        stub_docv_document_request(status: 401, user:)
       end
 
       it_behaves_like 'document request API failure'
@@ -787,11 +782,9 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       it 'presents as a type 1 error', js: true do
-        user = nil
-
         perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(sp)
-          user = sign_up_and_2fa_ial1_user
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -799,7 +792,7 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
           expect(page).to have_content(t('doc_auth.info.you_entered'))
-          expect(page).to have_content('+1 415-555-0199')
+          expect(page).to have_content("+1 #{phone_number}")
 
           # Confirm that Continue button is not shown when polling is enabled
           expect(page).not_to have_content(t('doc_auth.buttons.continue'))
@@ -810,7 +803,7 @@ RSpec.describe 'Hybrid Flow' do
         perform_in_browser(:mobile) do
           visit @sms_link
 
-          stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+          stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token, user:)
 
           click_idv_continue
 

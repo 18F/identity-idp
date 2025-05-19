@@ -179,8 +179,8 @@ module Features
       visit account_path
     end
 
-    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil)
-      sign_in_with_warden(user, auth_method: 'phone', issuer:)
+    def sign_in_and_2fa_user(user = user_with_2fa, issuer: nil, auth_method: 'phone')
+      sign_in_with_warden(user, auth_method:, issuer:)
       user
     end
 
