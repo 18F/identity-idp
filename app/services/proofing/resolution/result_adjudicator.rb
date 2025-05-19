@@ -96,6 +96,7 @@ module Proofing
         elsif device_profiling_result.success?
           [true, :device_profiling_result_pass]
         else
+          # a non-passing review status is handled downstream, so is considered a succcess
           [true, :device_profiling_result_review_required]
         end
       end
