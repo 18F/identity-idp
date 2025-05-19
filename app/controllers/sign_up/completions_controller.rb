@@ -19,6 +19,7 @@ module SignUp
     end
 
     def update
+      user_session.delete(:checked_for_duplicate)
       track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
@@ -134,6 +135,7 @@ module SignUp
     end
 
     def check_for_duplicate_profiles
+      return if user_session[:checked_for_duplicate]
       DuplicateProfileChecker.new(
         user: current_user,
         user_session: user_session,
@@ -143,7 +145,7 @@ module SignUp
       confirmation = DuplicateProfileConfirmation.find_by(
         profile_id: current_user.active_profile&.id,
       )
-
+      user_session[:checked_for_duplicate] = true
       if confirmation
         redirect_to duplicate_profiles_detected_url
       end

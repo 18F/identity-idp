@@ -411,7 +411,7 @@ RSpec.describe SignUp::CompletionsController do
               issuer: sp.issuer,
               request_url: 'http://www.example.com/',
             }
-            patch :update
+            get :show
 
             expect(response).to redirect_to duplicate_profiles_detected_url
           end
@@ -437,9 +437,9 @@ RSpec.describe SignUp::CompletionsController do
               issuer: sp.issuer,
               request_url: 'http://www.example.com/',
             }
-            patch :update
+            get :show
 
-            expect(response).to redirect_to root_url
+            expect(response).not_to redirect_to root_url
           end
         end
       end
