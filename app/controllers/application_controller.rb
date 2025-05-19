@@ -180,6 +180,7 @@ class ApplicationController < ActionController::Base
 
     if params[:timeout] == 'session'
       analytics.session_timed_out
+      attempts_api_tracker.session_timeout
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,

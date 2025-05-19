@@ -38,6 +38,18 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
   end
 
+  def choose_id_type(id_type)
+    case id_type
+    when :passport
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+    when :state_id
+      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+    else
+      raise "choose_id_type: unsupported id type: #{id_type}"
+    end
+    click_continue
+  end
+
   def document_capture_form
     page.find('#document-capture-form')
   end
@@ -91,6 +103,18 @@ module DocumentCaptureStepHelper
     ]
   end
 
+  def selfie_webhook_list
+    %w[
+      WAITING_FOR_USER_TO_REDIRECT
+      APP_OPENED
+      DOCUMENT_FRONT_UPLOADED
+      DOCUMENT_BACK_UPLOADED
+      DOCUMENT_SELFIE_UPLOADED
+      DOCUMENTS_UPLOADED
+      SESSION_COMPLETE
+    ]
+  end
+
   def socure_docv_send_webhook(
     docv_transaction_token:,
     event_type: 'DOCUMENTS_UPLOADED'
@@ -111,12 +135,18 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass(docv_transaction_token:)
-    stub_docv_verification_data(body: SocureDocvFixtures.pass_json, docv_transaction_token:)
+  def stub_docv_verification_data_pass(docv_transaction_token:, reason_codes: nil)
+    stub_docv_verification_data(
+      body: SocureDocvFixtures.pass_json(reason_codes:),
+      docv_transaction_token:,
+    )
   end
 
-  def stub_docv_verification_data_fail_with(docv_transaction_token:, errors:)
-    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
+  def stub_docv_verification_data_fail_with(docv_transaction_token:, reason_codes:)
+    stub_docv_verification_data(
+      body: SocureDocvFixtures.fail_json(reason_codes:),
+      docv_transaction_token:,
+    )
   end
 
   def stub_docv_verification_data(docv_transaction_token:, body:)

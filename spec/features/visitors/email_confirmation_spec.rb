@@ -19,8 +19,17 @@ RSpec.feature 'Email confirmation during sign up' do
 
   scenario 'confirms valid email and sets valid password' do
     stub_analytics
-    reset_email
     email = 'test@example.com'
+
+    expect_any_instance_of(AttemptsApi::Tracker).to receive(
+      :user_registration_email_confirmed,
+    ).with(
+      email:,
+      success: true,
+      failure_reason: nil,
+    )
+
+    reset_email
     sign_up_with(email)
     open_email(email)
     visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))

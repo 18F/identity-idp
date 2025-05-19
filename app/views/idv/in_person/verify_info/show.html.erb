@@ -1,14 +1,13 @@
 <%#
 locals:
-  @step_indicator_steps - the correct Idv::Flows variable for this flow
   @pii - user's information
   @ssn - user's ssn
-  @had_barcode_read_failure - show warning if there's a barcode read error
+  @presenter - An instance of Idv::InPerson::VerifyInfoPresenter
 %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: @step_indicator_steps,
+        steps: @presenter.step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
@@ -22,10 +21,13 @@ locals:
 <% self.title = t('titles.idv.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
+<% if @presenter.passport_flow? %>
+  <p>
+    <%= t('in_person_proofing.form.verify_info.passport_intro_text') %>
+  </p>
+<% end %>
 <div class='margin-top-4 margin-bottom-2'>
-  <% if !@pii[:state_id_number].nil? %>
-    <%= render 'state_id_section', pii: @pii %>
-  <% end %>
+  <%= render @presenter.identity_info_partial, pii: @pii %>
   <%= render 'address_section', pii: @pii %>
   <%= render 'ssn_section', ssn: @ssn %>
   <div class="margin-top-5">

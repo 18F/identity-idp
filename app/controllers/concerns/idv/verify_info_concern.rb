@@ -79,64 +79,22 @@ module Idv
       )
     end
 
-    def address_exception?(result)
-      result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :resolution,
-        :exception,
-      ).present? &&
-        result.extra.dig(
-          :proofing_results,
-          :context,
-          :stages,
-          :resolution,
-          :attributes_requiring_additional_verification,
-        ) == ['address']
-    end
-
-    def idv_failure(result)
-      proofing_results_exception = result.extra.dig(:proofing_results, :exception)
-      has_exception = proofing_results_exception.present?
-      is_mva_exception = result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :state_id,
-        :mva_exception,
-      ).present?
-      is_address_exception = address_exception?(result)
-      is_threatmetrix_exception = result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :threatmetrix,
-        :exception,
-      ).present?
-      resolution_failed = !result.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :resolution,
-        :success,
-      )
-
+    def idv_failure(failures)
       if ssn_rate_limiter.limited?
         rate_limit_redirect!(:proof_ssn, step_name: STEP_NAME)
       elsif resolution_rate_limiter.limited?
         rate_limit_redirect!(:idv_resolution, step_name: STEP_NAME)
-      elsif has_exception && is_mva_exception
+      elsif failures.has_exception? && failures.mva_exception?
         idv_failure_log_warning
         redirect_to state_id_warning_url
-      elsif has_exception && is_address_exception
+      elsif failures.has_exception? && failures.address_exception?
         idv_failure_log_address_warning
         redirect_to address_warning_url
-      elsif (has_exception && is_threatmetrix_exception) ||
-            (!has_exception && resolution_failed)
+      elsif (failures.has_exception? && failures.threatmetrix_exception?) ||
+            (!failures.has_exception? && failures.resolution_failed?)
         idv_failure_log_warning
         redirect_to warning_url
-      elsif has_exception
+      elsif failures.has_exception?
         idv_failure_log_error
         redirect_to exception_url
       else
@@ -309,8 +267,15 @@ module Idv
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
+      failures = VerificationFailures.new(result: summary_result)
+
+      log_verification_attempt(
+        success: summary_result.success?,
+        failure_reason: failures.formatted_failure_reasons,
+      )
+
       if !summary_result.success?
-        idv_failure(summary_result)
+        idv_failure(failures)
       end
     end
 
@@ -413,6 +378,116 @@ module Idv
 
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, token, transaction_id: transaction_id)
+    end
+
+    def log_verification_attempt(success:, failure_reason: nil)
+      pii_from_doc = pii || {}
+
+      attempts_api_tracker.idv_verification_submitted(
+        success: success,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address1: pii_from_doc[:address1],
+        address2: pii_from_doc[:address2],
+        social_security: idv_session.ssn,
+        failure_reason:,
+      )
+    end
+
+    VerificationFailures = Struct.new(
+      :result,
+      keyword_init: true,
+    ) do
+      def address_exception?
+        resolution_failed? &&
+          resolution_stage_attributes_requiring_additional_verification == ['address']
+      end
+
+      def has_exception?
+        result.extra.dig(:proofing_results, :exception).present?
+      end
+
+      def mva_exception?
+        state_id_stage[:mva_exception].present?
+      end
+
+      def threatmetrix_exception?
+        threatmetrix_stage[:exception].present?
+      end
+
+      def resolution_failed?
+        !resolution_stage[:success]
+      end
+
+      def state_id_stage
+        stages.dig(:state_id) || {}
+      end
+
+      def threatmetrix_stage
+        stages.dig(:threatmetrix) || {}
+      end
+
+      def resolution_stage
+        stages.dig(:resolution) || {}
+      end
+
+      def stages
+        @stages ||= result.extra.dig(
+          :proofing_results,
+          :context,
+          :stages,
+        ) || {}
+      end
+
+      def resolution_stage_attributes_requiring_additional_verification
+        resolution_stage[:attributes_requiring_additional_verification]
+      end
+
+      def attributes_requiring_additional_verification
+        # grab all the attributes that require additional verification across stages
+        stages.map { |_k, v| v[:attributes_requiring_additional_verification] }.flatten.compact
+      end
+
+      def failed_stages
+        stages.keys.select { |k| !stages[k][:success] }
+      end
+
+      def resolution_adjudication_reason
+        {
+          resolution_adjudication_reason: [
+            result.extra.dig(:proofing_results, :context, :resolution_adjudication_reason),
+          ],
+        }
+      end
+
+      def device_profiling_adjudication_reason
+        if threatmetrix_stage[:review_status] != 'pass'
+          {
+            device_profiling_adjudication_reason: [
+              result.extra.dig(:proofing_results, :context, :device_profiling_adjudication_reason),
+            ],
+          }
+        else
+          {}
+        end
+      end
+
+      def formatted_failure_reasons
+        return nil if result.success? && !failed_stages.present?
+
+        {
+          failed_stages:,
+          attributes_requiring_additional_verification:,
+        }
+          .merge(resolution_adjudication_reason)
+          .merge(device_profiling_adjudication_reason)
+          .compact_blank
+      end
     end
   end
 end

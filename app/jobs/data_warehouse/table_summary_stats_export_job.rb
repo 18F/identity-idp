@@ -21,7 +21,7 @@ module DataWarehouse
     def perform(timestamp)
       return if data_warehouse_disabled?
 
-      idp_data = fetch_table_max_ids_and_counts(timestamp)
+      idp_data = fetch_table_max_ids_and_counts(timestamp.end_of_day)
       cloudwatch_data = fetch_log_group_counts(timestamp)
       data = idp_data.merge(cloudwatch_data)
       upload_to_s3(data, timestamp)

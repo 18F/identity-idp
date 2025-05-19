@@ -18,7 +18,7 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
     expect(subject.to_h).to eql(
       {
         address1: '1 FAKE RD',
-        address2: nil,
+        address2: '',
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',

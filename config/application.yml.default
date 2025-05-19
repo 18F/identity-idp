@@ -113,6 +113,10 @@ doc_auth_passports_enabled: false
 doc_auth_passports_percent: 0
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
+doc_auth_selfie_vendor_default: 'mock'
+doc_auth_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_selfie_vendor_socure_percent: 0
+doc_auth_selfie_vendor_switching_enabled: false
 doc_auth_socure_max_allowed_users: 10_000
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
 doc_auth_socure_wait_polling_timeout_minutes: 2
@@ -185,7 +189,12 @@ idv_resolution_alternate_vendor_percent: 0
 idv_resolution_default_vendor: mock
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_socure_docv_flow_id_only: ''
+idv_socure_docv_flow_id_w_selfie: ''
 idv_socure_reason_code_download_enabled: false
+idv_socure_reason_codes_docv_selfie_fail: '[]'
+idv_socure_reason_codes_docv_selfie_not_processed: '[]'
+idv_socure_reason_codes_docv_selfie_pass: '[]'
 idv_socure_shadow_mode_enabled: false
 idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
@@ -224,6 +233,8 @@ irs_authentication_emails: '[]'
 irs_authentication_issuers: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
+irs_verification_report_config: '[]'
+irs_verification_report_issuers: '[]'
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account

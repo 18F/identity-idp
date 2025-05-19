@@ -18,7 +18,7 @@ module Idv
       end
 
       def enrolled_with_passport_book?
-        enrollment.document_type == InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK
+        enrollment.passport_book?
       end
 
       # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)

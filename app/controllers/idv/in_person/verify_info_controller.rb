@@ -13,9 +13,9 @@ module Idv
       before_action :confirm_step_allowed
 
       def show
-        @step_indicator_steps = step_indicator_steps
-        @ssn = idv_session.ssn
         @pii = pii
+        @ssn = pii[:ssn]
+        @presenter = Idv::InPerson::VerifyInfoPresenter.new(enrollment: enrollment)
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
           .call('verify', :view, true) # specify in_person?
@@ -74,6 +74,10 @@ module Idv
           consent_given_at: idv_session.idv_consent_given_at,
           ssn: idv_session.ssn,
         )
+      end
+
+      def enrollment
+        current_user.establishing_in_person_enrollment
       end
 
       # override IdvSessionConcern

@@ -11,17 +11,34 @@ module Idv
 
       def show
         analytics.idv_in_person_proofing_passport_visited(**analytics_arguments)
+
+        render :show, locals: extra_view_variables
       end
 
       def update
-        enrollment.update!(document_type: :passport_book)
-        redirect_to idv_in_person_address_path
+        form_params = allowed_params
+
+        results = form.submit(form_params)
+
+        if results.success?
+          store_pii(form_params)
+          enrollment.update!(document_type: :passport_book)
+          analytics.idv_in_person_proofing_passport_submitted(
+            **analytics_arguments,
+            **results,
+          )
+          redirect_to idv_in_person_address_path
+        else
+          render :show, locals: extra_view_variables
+        end
       end
 
       def extra_view_variables
         {
           form:,
           pii:,
+          parsed_dob:,
+          parsed_expiration:,
         }
       end
 
@@ -45,8 +62,19 @@ module Idv
 
       private
 
+      def store_pii(form_params)
+        Idv::InPerson::PassportForm::ATTRIBUTES.each do |attr|
+          if [:passport_dob, :passport_expiration].include?(attr)
+            pii_from_user[attr] = MemorableDateComponent.extract_date_param form_params[attr]
+          else
+            pii_from_user[attr] = form_params[attr]
+          end
+        end
+      end
+
       def analytics_arguments
         {
+          flow_path: flow_path,
           step: 'passport',
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
@@ -64,10 +92,48 @@ module Idv
 
       def pii
         data = pii_from_user
-        if params.has_key?(:identity_doc) || params.has_key?(:in_person_passport)
-          data = data.merge(flow_params)
-        end
+        data = data.merge(allowed_params) if params.has_key?(:in_person_passport)
         data.deep_symbolize_keys
+      end
+
+      def parsed_dob
+        parse_date(pii[:passport_dob])
+      end
+
+      def parsed_expiration
+        parse_date(pii[:passport_expiration])
+      end
+
+      def parse_date(date)
+        return nil unless date.present?
+
+        if date.instance_of?(String)
+          Date.parse(date)
+        elsif date.instance_of?(Hash)
+          Date.parse(MemorableDateComponent.extract_date_param(date))
+        end
+      rescue Date::Error
+        # Catch date parsing errors
+      end
+
+      def form
+        @form ||= Idv::InPerson::PassportForm.new
+      end
+
+      def allowed_params
+        params.require(:in_person_passport).permit(
+          *Idv::InPerson::PassportForm::ATTRIBUTES,
+          passport_dob: [
+            :month,
+            :day,
+            :year,
+          ],
+          passport_expiration: [
+            :month,
+            :day,
+            :year,
+          ],
+        )
       end
     end
   end
