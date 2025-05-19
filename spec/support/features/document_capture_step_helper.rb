@@ -135,25 +135,34 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass(docv_transaction_token:, reason_codes: nil)
+  def stub_docv_verification_data_pass(docv_transaction_token:, reason_codes: nil, user: nil)
     stub_docv_verification_data(
       body: SocureDocvFixtures.pass_json(reason_codes:),
       docv_transaction_token:,
+      user:,
     )
   end
 
-  def stub_docv_verification_data_fail_with(docv_transaction_token:, reason_codes:)
+  def stub_docv_verification_data_fail_with(docv_transaction_token:, reason_codes:, user: nil)
     stub_docv_verification_data(
       body: SocureDocvFixtures.fail_json(reason_codes:),
       docv_transaction_token:,
+      user:,
     )
   end
 
-  def stub_docv_verification_data(docv_transaction_token:, body:)
+  def stub_docv_verification_data(docv_transaction_token:, body:, user: nil)
+    if user
+      body_hash = JSON.parse(body, symbolize_names: true)
+      body_hash[:customerUserId] = user.uuid
+      body = body_hash.to_json
+    end
+
     request_body = {
       modules: ['documentverification'],
       docvTransactionToken: docv_transaction_token,
     }
+    request_body[:customerUserId] = user.uuid if user
 
     stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
       .with(body: request_body.to_json)
@@ -169,7 +178,8 @@ module DocumentCaptureStepHelper
     url: 'https://verify.fake-socure.test/something',
     status: 200,
     token: SecureRandom.hex,
-    body: nil
+    body: nil,
+    user: nil
   )
     body ||= {
       referenceId: 'socure-reference-id',
@@ -180,6 +190,7 @@ module DocumentCaptureStepHelper
         url:,
       },
     }
+    body[:customerUserId] = user.uuid if user
 
     stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint)
       .to_return(
