@@ -1,4 +1,6 @@
 class CreateDeviceProfilingResult < ActiveRecord::Migration[8.0]
+  disable_ddl_transaction!
+
   def change
     create_table :device_profiling_results do |t|
       t.references :user, null: false, foreign_key: true, comment: "sensitive=false"
@@ -13,6 +15,6 @@ class CreateDeviceProfilingResult < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     
-    add_index :device_profiling_results, :user_id,
+    add_index :device_profiling_results, :user_id, algorithm: :concurrently
   end
 end
