@@ -85,6 +85,38 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] address1
+    # @param [String] address2
+    # @param [Boolean] address_edited True indicates that the user edited it
+    # @param [String] city
+    # @param [String] state
+    # @param [String] zip
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user has manually edited their address
+    def idv_address_submitted(
+      success:,
+      address1:,
+      address_edited:,
+      city:,
+      state:,
+      zip:,
+      address2: nil,
+      failure_reason: nil
+    )
+      track_event(
+        'idv-address-submitted',
+        success:,
+        address1:,
+        address2:,
+        address_edited:,
+        city:,
+        state:,
+        zip:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] reproof True indicates that the user has proofed previously
     # A user has completed the identity verification process and has an active profile
     def idv_enrollment_complete(reproof:)
