@@ -14,23 +14,21 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   def previous_week_range
     one_week = 7.days
-    last_sunday = Time.zone.today.beginning_of_week(:sunday) - one_week
+    last_sunday = Time.current.utc.to_date.beginning_of_week(:sunday) - one_week
     last_saturday = last_sunday + 6.days
     last_sunday..last_saturday
   end
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      # Mock the current date to ensure consistency
-      travel_to Date.new(2025, 5, 14) do
-        # Use Time.zone.today for time zone consistency
-        expected_generated_date = '2025-05-14'
+      freeze_time do
+        expected_generated_date = Time.current.utc.to_date.to_s
 
         table = report.overview_table
 
         expect(table).to include(
           ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-          ['Report Generated', expected_generated_date], # Dynamically match the generated date
+          ['Report Generated', expected_generated_date],
           ['Issuer', issuers.join(', ')],
         )
       end
