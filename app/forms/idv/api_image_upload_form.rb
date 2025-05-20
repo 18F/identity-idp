@@ -5,12 +5,13 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    validates_presence_of :front, unless: :passport_submittal
-    validates_presence_of :back, unless: :passport_submittal
-    validates_presence_of :passport, if: :passport_submittal
-    validates_presence_of :selfie, if: :liveness_checking_required
+    # validates_presence_of :front, unless: :passport_submittal
+    # validates_presence_of :back, unless: :passport_submittal
+    # validates_presence_of :passport, if: :passport_submittal
+    # validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
 
+    validate :needed_images_present
     validate :validate_images
     validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
@@ -109,10 +110,6 @@ module Idv
     def track_upload_attempt(response)
       return unless doc_escrow_enabled?
 
-      back_metadata = write_image(image: readable?(:back) ? back_image_bytes : nil)
-      front_metadata = write_image(image: readable?(:front) ? front_image_bytes : nil)
-      selfie_metadata = write_image(image: readable?(:selfie) ? selfie_image_bytes : nil)
-
       attempts_api_tracker.idv_document_uploaded(
         success: response.success?,
         document_back_image_encryption_key: back_metadata.encryption_key,
@@ -123,6 +120,18 @@ module Idv
         document_selfie_image_file_id: selfie_metadata.name,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
+    end
+
+    def back_metadata
+      @back_metadata ||= write_image(image: readable?(:back) ? back_image_bytes : nil)
+    end
+
+    def front_metadata
+      @front_metadata ||= write_image(image: readable?(:front) ? front_image_bytes : nil)
+    end
+
+    def selfie_metadata
+      @selfie_metadata ||= write_image(image: readable?(:selfie) ? selfie_image_bytes : nil)
     end
 
     def write_image(image: nil)
@@ -260,10 +269,14 @@ module Idv
         flow_path: params[:flow_path],
       }
 
-      @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
-      @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
-      @extra_attributes[:passport_image_fingerprint] = passport_image_fingerprint
-      @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
+      images.each do |image|
+        @extra_attributes[image.extra_attribute_key] = image.fingerprint
+      end
+
+      # @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
+      # @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      # @extra_attributes[:passport_image_fingerprint] = passport_image_fingerprint
+      # @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes[:document_type] = document_type
       @extra_attributes
@@ -340,6 +353,22 @@ module Idv
       end
     end
 
+    def needed_images_present
+      errs = image_object.needed_images_present?(liveness_checking_required)
+
+      errs.each do |k, v|
+        errors.add(k, t('errors.messages.blank'), type: v[:type])
+      end
+    end
+
+    def images
+      image_object.list
+    end
+
+    def image_object
+      @image_object ||= IdvImages.new(params)
+    end
+
     def front
       as_readable(:front)
     end
@@ -353,7 +382,8 @@ module Idv
     end
 
     def passport_submittal
-      params['passport'].present?
+      image_object.passport_submittal
+      # params['passport'].present?
     end
 
     def selfie
@@ -367,33 +397,41 @@ module Idv
     end
 
     def validate_images
-      if passport_submittal
-        if passport.is_a? DataUrlImage::InvalidUrlFormatError
+      images.each do |image|
+        if image.value.is_a? DataUrlImage::InvalidUrlFormatError
           errors.add(
-            :passport, t('doc_auth.errors.not_a_file'),
-            type: :not_a_file
-          )
-        end
-      else
-        if front.is_a? DataUrlImage::InvalidUrlFormatError
-          errors.add(
-            :front, t('doc_auth.errors.not_a_file'),
-            type: :not_a_file
-          )
-        end
-        if back.is_a? DataUrlImage::InvalidUrlFormatError
-          errors.add(
-            :back, t('doc_auth.errors.not_a_file'),
+            image.type, t('doc_auth.errors.not_a_file'),
             type: :not_a_file
           )
         end
       end
-      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :selfie, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
+      # if passport_submittal
+      #   if passport.is_a? DataUrlImage::InvalidUrlFormatError
+      #     errors.add(
+      #       :passport, t('doc_auth.errors.not_a_file'),
+      #       type: :not_a_file
+      #     )
+      #   end
+      # else
+      #   if front.is_a? DataUrlImage::InvalidUrlFormatError
+      #     errors.add(
+      #       :front, t('doc_auth.errors.not_a_file'),
+      #       type: :not_a_file
+      #     )
+      #   end
+      #   if back.is_a? DataUrlImage::InvalidUrlFormatError
+      #     errors.add(
+      #       :back, t('doc_auth.errors.not_a_file'),
+      #       type: :not_a_file
+      #     )
+      #   end
+      # end
+      # if selfie.is_a? DataUrlImage::InvalidUrlFormatError
+      #   errors.add(
+      #     :selfie, t('doc_auth.errors.not_a_file'),
+      #     type: :not_a_file
+      #   )
+      # end
 
       if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
          liveness_checking_required && !acuant_sdk_captured?
@@ -674,5 +712,123 @@ module Idv
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
+  end
+end
+
+class IdvImages
+  attr_reader :list
+  attr_accessor :errors
+  def initialize(params)
+    @list = ['front', 'back', 'passport', 'selfie'].map do |type|
+      next unless params[type].present?
+      "#{type.capitalize}Image".constantize.new(params)
+    end.compact
+    @errors = {}
+  end
+
+  def passport_submittal
+    @passport_submittal ||= list.any? { |image| image.type == :passport }
+  end
+
+  def needed_images_present?(liveness_checking_required)
+    if liveness_checking_required && selfie.blank?
+      @errors[:selfie] = { type: 'blank' }
+    elsif !passport_submittal
+      [:front, :back].each do |image|
+        if send(image).blank?
+          @errors[image] = { type: :blank }
+        end
+      end
+    end
+
+    errors
+  end
+
+  def front
+    @list.find { |image| image.type == :front }
+  end
+
+  def back
+    @list.find { |image| image.type == :back }
+  end
+
+  def selfie
+    @list.find { |image| image.type == :selfie }
+  end
+end
+
+class IdvImage
+  attr_reader :value
+
+  def as_readable(val)
+    if val.respond_to?(:read)
+      val
+    elsif val.is_a? String
+      DataUrlImage.new(val)
+    end
+  rescue DataUrlImage::InvalidUrlFormatError => error
+    error
+  end
+
+  def blank?
+    value.blank?
+  end
+
+  def bytes
+    @bytes ||= value.read
+  end
+
+  def fingerprint
+    return @fingerprint if @fingerprint
+
+    Digest::SHA256.urlsafe_base64digest(bytes)
+  end
+
+  def readable?
+    value.present? && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
+  end
+
+  def extra_attribute_key
+    :"#{type}_image_fingerprint"
+  end
+end
+
+class BackImage < IdvImage
+  def initialize(params)
+    @value = as_readable(params[:back])
+  end
+
+  def type
+    :back
+  end
+end
+
+class FrontImage < IdvImage
+  def initialize(params)
+    @value = as_readable(params[:back])
+  end
+
+  def type
+    :front
+  end
+end
+
+class SelfieImage < IdvImage
+  def initialize(params)
+    @value = as_readable(params[:back])
+  end
+
+  def type
+    :selfie
+  end
+end
+
+class PassportImage < IdvImage
+  def initialize(params)
+    @value = as_readable(params[:passport])
+  end
+
+  def type
+    :passport
   end
 end
