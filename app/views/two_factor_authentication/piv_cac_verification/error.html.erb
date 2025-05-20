@@ -1,0 +1,15 @@
+<% self.title = @presenter.title %>
+
+<%= render PageHeadingComponent.new do %>
+  <%= @presenter.heading %>
+<% end %>
+
+<p class="margin-top-2 margin-bottom-2">
+  <%= @presenter.description %>
+</p>
+
+<%= render ButtonComponent.new(
+      url: login_two_factor_piv_cac_url,
+      class: 'margin-top-3',
+      big: true,
+    ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
