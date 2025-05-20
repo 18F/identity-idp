@@ -1,8 +1,4 @@
-# frozen_string_literal: true
-
 require 'csv'
-#require_relative 'app/jobs/reports/base_report.rb'
-
 
 module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
@@ -24,18 +20,14 @@ module Reports
       iaas = IaaReportingHelper.iaas.filter do |x|
         x.end_date > 90.days.ago && (x.issuers & issuers).any?
       end
-      #iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
 
-      #save_report(REPORT_NAME, csv, extension: 'csv')
       message = "Report: #{REPORT_NAME}"
-      subject = "IRS Monthly Credential Metrics"
+      subject = 
       email_addresses = emails.select(&:present?)
 
-      #issuer = issuers.select(&:present?)
-      #report_configs.each do |report_hash|
+
         # Check if any emails are found
-      binding.pry
       if email_addresses.empty?
        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
        return false
@@ -44,8 +36,8 @@ module Reports
       upload_to_s3(report.table, report_date, report_name: REPORT_NAME)
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: subject,
-        message: message,
+        subject: "IRS Monthly Credential Metrics - #{_date.to_date}",
+        message: preamble,
         reports: report,
         attachment_format: :csv,
       )
@@ -79,6 +71,11 @@ module Reports
             </div>
           </div>
         <% end %>
+        <p>
+          For more information on how each of these metrics are calculated, take a look at our
+          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
+          Monthly Key Metrics Report Explainer document</a>.
+        </p>
       ERB
     end
 
@@ -136,121 +133,6 @@ module Reports
       )
     end
 
-    # def combine_by_iaa_month(
-    #   by_iaa_results:,
-    #   by_issuer_results:,
-    #   by_partner_results:,
-    #   by_issuer_profile_age_results:
-    # )
-    #   by_iaa_and_year_month = by_iaa_results.group_by do |result|
-    #     [result[:key], result[:year_month]]
-    #   end
-
-    #   by_issuer_iaa_issuer_year_months = by_issuer_results
-    #     .group_by { |r| r[:iaa] }
-    #     .transform_values do |iaa|
-    #       iaa.group_by { |r| r[:issuer] }
-    #         .transform_values { |issuer| issuer.group_by { |r| r[:year_month] } }
-    #     end
-
-    #   # rubocop:disable Metrics/BlockLength
-    #   CSV.generate do |csv|
-    #     csv << [
-    #       # todo: still need to determine which of the following need to be3 removed from this report
-    #       'iaa_order_number',
-    #       'partner',
-    #       'iaa_start_date',
-    #       'iaa_end_date',
-    #       'issuer',
-    #       'friendly_name',
-    #       'year_month',
-    #       'year_month_readable',
-    #       'credentials_authorized_requesting_agency',
-    #       'new_identity_verification_credentials_authorized_for_partner',
-    #       'existing_identity_verification_credentials_authorized_for_partner',
-    #     ]
-    #     by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
-    #       issuer_year_months.each do |issuer, year_months_data|
-    #         friendly_name = ServiceProvider.find_by(issuer: issuer).friendly_name
-    #         year_months = year_months_data.keys.sort
-
-    #         year_months.each do |year_month|
-    #           iaa_results = by_iaa_and_year_month[ [iaa_key, year_month] ]
-    #           if !iaa_results
-    #             logger.warn(
-    #               {
-    #                 level: 'warning',
-    #                 name: 'missing iaa_results',
-    #                 iaa: iaa_key,
-    #                 year_month: year_month,
-    #               }.to_json,
-    #             )
-    #             next
-    #           end
-
-    #           issuer_results = year_months_data[year_month]
-    #           year_month_start = Date.strptime(year_month, '%Y%m')
-    #           iaa_start_date = Date.parse(iaa_results.first[:iaa_start_date])
-    #           iaa_end_date = Date.parse(iaa_results.first[:iaa_end_date])
-
-    #           partner_results = by_partner_results.find do |result|
-    #             result[:year_month] == year_month && result[:issuers]&.include?(issuer)
-    #           end || {}
-
-    #           issuer_profile_age_results = by_issuer_profile_age_results.find do |result|
-    #             result[:year_month] == year_month && result[:issuers]&.include?(issuer)
-    #           end || {}
-
-    #           csv << [
-    #             iaa_key,
-    #             partner_results[:partner],
-    #             iaa_start_date,
-    #             iaa_end_date,
-
-    #             issuer,
-    #             friendly_name,
-
-    #             year_month,
-    #             year_month_start.strftime('%B %Y'),
-
-    #             # todo: these new lines are NOT being written out
-    #             # additional values for IRS specifically
-    #             # this line is what we need for Credentials authorized Requesting Agency
-    #             extract(
-    #               issuer_results, :total_auth_count,
-    #               ial: 1
-    #             ) + extract(issuer_results, :total_auth_count, ial: 2),
-    #             # New identity verification/Credentials Authorized for Partner
-    #             ((partner_results[:partner_ial2_new_unique_user_events_year1] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_year2] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_year3] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_year4] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_year5] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0) +
-    #             (partner_results[:partner_ial2_new_unique_user_events_unknown] || 0)),
-
-    #             # Existing identity verification/Credentials Authorized for Partner
-    #             (((issuer_profile_age_results[:partner_ial2_unique_user_events_year1] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_year2] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_year3] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_year4] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_year5] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0)+ # rubocop:disable Layout/LineLength
-    #             (issuer_profile_age_results[:partner_ial2_unique_user_events_unknown] || 0)) -
-    #             ((issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_year2] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_year3] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_year4] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_year5] || 0) +
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_year_greater_than_5] || 0) + # rubocop:disable Layout/LineLength
-    #             (issuer_profile_age_results[:partner_ial2_new_unique_user_events_unknown] || 0))),
-    #           ]
-    #         end
-    #       end
-    #     end
-    #   end
-    #   # rubocop:enable Metrics/BlockLength
-    # end
     def combine_by_iaa_month(
       by_iaa_results:,
       by_issuer_results:,
@@ -261,15 +143,18 @@ module Reports
     
       CSV.generate do |csv|
         csv << [
-          'iaa_order_number',
-          'partner',
-          'iaa_start_date',
-          'iaa_end_date',
-          'year_month',
-          'year_month_readable',
-          'credentials_authorized_requesting_agency',
-          'new_identity_verification_credentials_authorized_for_partner',
-          'existing_identity_verification_credentials_authorized_for_partner',
+          # 'iaa_order_number',
+          # 'partner',
+          # 'iaa_start_date',
+          # 'iaa_end_date',
+          # 'year_month',
+          # 'year_month_readable',
+          'Credentials Authorized',
+          'New ID Verifications Authorized Credentials',
+          'Existing Identity Verification Credentials',
+          # 'credentials_authorized_requesting_agency',
+          # 'new_identity_verification_credentials_authorized_for_partner',
+          # 'existing_identity_verification_credentials_authorized_for_partner',
         ]
     
         by_iaa_and_year_month.each do |(iaa_key, year_month), iaa_results|
@@ -326,12 +211,12 @@ module Reports
           end
     
           csv << [
-            iaa_key,
-            partner_results.first&.[](:partner),
-            iaa_start_date,
-            iaa_end_date,
-            year_month,
-            year_month_start.strftime('%B %Y'),
+            # iaa_key,
+            # partner_results.first&.[](:partner),
+            # iaa_start_date,
+            # iaa_end_date,
+            # year_month,
+            # year_month_start.strftime('%B %Y'),
             total_auth,
             new_users,
             existing_users,
@@ -340,24 +225,9 @@ module Reports
       end
     end
 
-
-
-
-    #def issuers
-    #  [*IdentityConfig.store.irs_credentials_issuers]
-    #end
-
     def emails
       [*IdentityConfig.store.irs_credentials_emails]
     end
-
-    # def emails
-    #   emails = [*IdentityConfig.store.irs_monthly_cred_metrics_emails]
-    #   if report_date.next_day.day == 1
-    #     emails += IdentityConfig.store.team_all_login_emails
-    #   end
-    #   emails
-    # end
 
     def upload_to_s3(report_body,report_date,  report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)

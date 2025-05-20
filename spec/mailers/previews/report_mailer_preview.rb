@@ -161,9 +161,7 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: [emailable_report], #[emailable_report],
       attachment_format: :csv
     ).deliver_now
-  
-    render plain: 'Report has been sent!'
-  end
+    end
   
   
   
