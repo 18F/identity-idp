@@ -38,8 +38,8 @@ module Idv
     def update
       clear_future_steps!
       ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
-      ssn_params = params.require(:doc_auth).permit(:ssn)
-      form_response = ssn_form.submit(ssn_params)
+      form_response = ssn_form.submit(ssn: ssn_params[:ssn])
+
       @ssn_presenter = Idv::SsnPresenter.new(
         sp_name: decorated_sp_session.sp_name,
         ssn_form: ssn_form,
@@ -54,7 +54,7 @@ module Idv
 
       if form_response.success?
         idv_session.previous_ssn = idv_session.ssn
-        idv_session.ssn = SsnFormatter.normalize(params[:doc_auth][:ssn])
+        idv_session.ssn = SsnFormatter.normalize(ssn_params[:ssn])
         redirect_to next_url
       else
         flash[:error] = form_response.first_error_message
@@ -97,6 +97,10 @@ module Idv
         analytics_id: 'Doc Auth',
         previous_ssn_edit_distance: previous_ssn_edit_distance,
       }.merge(ab_test_analytics_buckets)
+    end
+
+    def ssn_params
+      params.require(:doc_auth).permit(:ssn)
     end
   end
 end
