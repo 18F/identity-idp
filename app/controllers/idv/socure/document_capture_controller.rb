@@ -37,6 +37,7 @@ module Idv
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
+          liveness_checking_required: resolved_authn_context_result.facial_match?,
         )
         timer = JobHelpers::Timer.new
         document_response = timer.time('vendor_request') do
@@ -92,8 +93,7 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-            idv_session.flow_path == 'standard' &&
-              !idv_session.selfie_check_required && (
+            idv_session.flow_path == 'standard' && (
                 # mobile
                 idv_session.skip_hybrid_handoff ||
                 idv_session.desktop_selfie_test_mode_enabled?)

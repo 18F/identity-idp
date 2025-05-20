@@ -85,6 +85,38 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] address1
+    # @param [String] address2
+    # @param [Boolean] address_edited True indicates that the user edited it
+    # @param [String] city
+    # @param [String] state
+    # @param [String] zip
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # A user has manually edited their address
+    def idv_address_submitted(
+      success:,
+      address1:,
+      address_edited:,
+      city:,
+      state:,
+      zip:,
+      address2: nil,
+      failure_reason: nil
+    )
+      track_event(
+        'idv-address-submitted',
+        success:,
+        address1:,
+        address2:,
+        address_edited:,
+        city:,
+        state:,
+        zip:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] reproof True indicates that the user has proofed previously
     # A user has completed the identity verification process and has an active profile
     def idv_enrollment_complete(reproof:)
@@ -176,6 +208,50 @@ module AttemptsApi
       track_event(
         'idv-rate-limited',
         limiter_type:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] address1
+    # @param [String] address2
+    # @param [String] date_of_birth
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] social_security
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The verification was submitted during the IDV process
+    def idv_verification_submitted(
+      success:,
+      address1: nil,
+      address2: nil,
+      date_of_birth: nil,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      social_security: nil,
+      failure_reason: nil
+    )
+      track_event(
+        'idv-verification-submitted',
+        success:,
+        address1:,
+        address2:,
+        date_of_birth:,
+        document_state:,
+        document_number:,
+        document_issued:,
+        document_expiration:,
+        first_name:,
+        last_name:,
+        social_security:,
+        failure_reason:,
       )
     end
 
@@ -344,12 +420,49 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user clicks on the confirmation link sent to their provided email address
+    def user_registration_email_confirmed(success:, email:, failure_reason: nil)
+      track_event(
+        'user-registration-email-confirmed',
+        success:,
+        email:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # Tracks when user submits email address to create a new account
+    def user_registration_email_submitted(success:, email: nil, failure_reason: nil)
+      track_event(
+        'user-registration-email-submitted',
+        success:,
+        email:,
+        failure_reason:,
+      )
+    end
+
+    # Tracks when user is rate limited for submitting registration email
+    # @param [String] email
+    # @param [Boolean] email_already_registered
+    def user_registration_email_submission_rate_limited(
+      email:,
+      email_already_registered:
+    )
+      track_event(
+        'user-registration-email-submission-rate-limited',
+        email:,
+        email_already_registered:,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks when user submits registration password
-    def user_registration_password_submitted(
-      success:,
-      failure_reason: nil
-    )
+    def user_registration_password_submitted(success:, failure_reason: nil)
       track_event(
         'user-registration-password-submitted',
         success:,

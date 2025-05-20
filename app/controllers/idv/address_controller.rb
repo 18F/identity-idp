@@ -91,6 +91,16 @@ module Idv
           address_edited: address_edited?,
         ),
       )
+      attempts_api_tracker.idv_address_submitted(
+        success: form_result.success?,
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        address_edited: address_edited?,
+        city: @address_form.city,
+        state: @address_form.state,
+        zip: @address_form.zipcode,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
     end
 
     def address_update_request?

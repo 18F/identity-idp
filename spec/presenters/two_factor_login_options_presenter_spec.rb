@@ -159,6 +159,34 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         end
       end
 
+      context 'with no piv cac mfa yet' do
+        let(:user) do
+          create(
+            :user,
+            :fully_registered,
+            :with_webauthn,
+            :with_webauthn_platform,
+            :with_phone,
+            :with_personal_key,
+            :with_backup_code,
+            :with_authentication_app,
+          )
+        end
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
+
       context 'add piv cac after 2fa' do
         let(:add_piv_cac_after_2fa) { true }
 
@@ -208,6 +236,31 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         end
       end
 
+      context 'with no phishing resistant mfa' do
+        let(:user) do
+          create(
+            :user,
+            :fully_registered,
+            :with_phone,
+            :with_personal_key,
+            :with_backup_code,
+            :with_authentication_app,
+          )
+        end
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
+
       context 'add piv cac after 2fa' do
         let(:add_piv_cac_after_2fa) { true }
 
@@ -234,6 +287,16 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     it { should be_nil }
 
     context 'phishing resistant required' do
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
+
       let(:phishing_resistant_required) { true }
 
       it 'returns phishing resistant required warning text for app' do
@@ -270,6 +333,15 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'piv cac required' do
       let(:piv_cac_required) { true }
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
 
       it 'returns piv cac required warning text for app' do
         expect(restricted_options_warning_text).to eq(

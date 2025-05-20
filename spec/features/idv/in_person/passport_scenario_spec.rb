@@ -349,7 +349,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             with: InPersonHelper::GOOD_FIRST_NAME
 
     fill_in_memorable_date(
-      'idv_in_person_passport_form[passport_dob]',
+      'in_person_passport[passport_dob]',
       InPersonHelper::GOOD_DOB,
     )
 
@@ -357,7 +357,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             with: InPersonHelper::GOOD_PASSPORT_NUMBER
 
     fill_in_memorable_date(
-      'idv_in_person_passport_form[passport_expiration]',
+      'in_person_passport[passport_expiration]',
       InPersonHelper::GOOD_PASSPORT_EXPIRATION_DATE,
     )
   end

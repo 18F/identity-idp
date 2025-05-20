@@ -140,7 +140,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     context 'reports error and returns false' do
       it 'SQS message is not JSON' do
         allow(sqs_message).to receive(:body).and_return('not json')
-        expect_error(JSON::ParserError.new("unexpected token at 'not json'"), sqs_message_id:)
+        expect_error(
+          JSON::ParserError.new("unexpected token 'not json' at line 1 column 1"),
+          sqs_message_id:,
+        )
       end
 
       it 'SQS message body is not a hash' do
@@ -174,8 +177,9 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           }.to_json,
         )
         expect_error(
-          JSON::ParserError.new("unexpected token at 'not json'"), sqs_message_id:,
-                                                                   sns_message_id:
+          JSON::ParserError.new("unexpected token 'not json' at line 1 column 1"),
+          sqs_message_id:,
+          sns_message_id:,
         )
       end
 

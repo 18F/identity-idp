@@ -2,13 +2,11 @@ require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   let(:document_capture_session_uuid) { 'fake uuid' }
-  let(:biometric_comparison_required) { false }
   let(:fake_analytics) { FakeAnalytics.new }
 
   subject(:docv_result_request) do
     described_class.new(
       document_capture_session_uuid:,
-      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
