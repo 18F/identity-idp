@@ -141,5 +141,9 @@ module Idv
     def id_type
       document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
+
+    def docv_document_type
+      document_capture_session.passport_requested? ? 'passport' : 'license'
+    end
   end
 end
