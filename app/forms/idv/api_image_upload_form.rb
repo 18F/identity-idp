@@ -154,12 +154,14 @@ module Idv
 
     def post_images_to_client
       timer = JobHelpers::Timer.new
+
+      byte_hash = images.each_with_object({}) do |image, obj|
+        obj[image.upload_key] = image.bytes
+      end
+
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
-          front_image: passport_submittal ? nil : front_image_bytes,
-          back_image: passport_submittal ? nil : back_image_bytes,
-          passport_image: passport_submittal ? passport_image_bytes : nil,
-          selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
+          **byte_hash,
           image_source: image_source,
           images_cropped: acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
@@ -732,10 +734,12 @@ module Idv
 end
 
 class IdvImages
+  TYPES = ['front', 'back', 'passport', 'selfie'].freeze
+
   attr_reader :list
   attr_accessor :errors
   def initialize(params)
-    @list = ['front', 'back', 'passport', 'selfie'].map do |type|
+    @list = TYPES.map do |type|
       next unless params[type].present?
       "#{type.capitalize}Image".constantize.new(params)
     end.compact
@@ -806,6 +810,10 @@ class IdvImage
 
   def extra_attribute_key
     :"#{type}_image_fingerprint"
+  end
+
+  def upload_key
+    :"#{type}_image"
   end
 end
 
