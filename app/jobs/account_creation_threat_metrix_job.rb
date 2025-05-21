@@ -17,6 +17,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       uuid: user_uuid,
       workflow: :auth,
     )
+    store_device_profiling_result(user_id, device_profiling_result)
   ensure
     user = User.find_by(id: user_id)
     analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
@@ -24,5 +25,21 @@ class AccountCreationThreatMetrixJob < ApplicationJob
 
   def analytics(user)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
+  private
+
+  def store_device_profiling_result(user_id, result)
+    return unless user_id.present?
+    
+    DeviceProfilingResult.create(
+      user_id: user_id,
+      success: result.success?,
+      client: result.client,
+      review_status: result.review_status,
+      transaction_id: result.transaction_id,
+      reason: result.review_status,
+      type: DeviceProfilingResult::PROFILING_TYPES[:account_creation]
+    )
   end
 end

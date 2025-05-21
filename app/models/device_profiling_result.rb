@@ -2,6 +2,10 @@
 
 class DeviceProfilingResult < ApplicationRecord
   belongs_to :user
+
+  PROFILING_TYPES= {
+    :account_creation => 'ACCOUNT_CREATION'
+  }
   
   # Check if a user has passed device profiling
   def self.passed?(user_id:, type:)
