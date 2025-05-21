@@ -36,6 +36,7 @@ module Idv
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
           customer_user_id: current_user.uuid,
+          document_type: docv_document_type,
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
           liveness_checking_required: resolved_authn_context_result.facial_match?,

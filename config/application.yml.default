@@ -112,6 +112,10 @@ doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_passports_enabled: false
 doc_auth_passports_percent: 0
 doc_auth_redirect_to_correct_vendor_disabled: false
+doc_auth_passport_vendor_default: 'mock'
+doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_passport_vendor_socure_percent: 0
+doc_auth_passport_vendor_switching_enabled: false
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_selfie_vendor_default: 'mock'
 doc_auth_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
@@ -425,6 +429,7 @@ sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
+socure_docv_passport_enabled: false
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
 socure_docv_webhook_repeat_endpoints: '[]'
