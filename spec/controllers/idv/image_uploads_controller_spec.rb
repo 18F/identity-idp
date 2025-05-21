@@ -84,13 +84,9 @@ RSpec.describe Idv::ImageUploadsController do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
-
-          # testing that the storage is happening
+          expect(EncryptedDocStorage::DocWriter).to receive(:new)
+            .and_return(writer)
           expect(writer).to receive(:write).and_return result
-          expect(writer).to receive(:write).and_call_original
-          expect(writer).to receive(:write).and_call_original
         end
 
         it 'tracks the event' do
@@ -98,10 +94,6 @@ RSpec.describe Idv::ImageUploadsController do
             success: false,
             document_back_image_encryption_key: '12345',
             document_back_image_file_id: 'name',
-            document_front_image_encryption_key: nil,
-            document_front_image_file_id: nil,
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: { front: [:blank] },
           )
           action
@@ -137,17 +129,14 @@ RSpec.describe Idv::ImageUploadsController do
       context 'when the attempts_api_tracker is enabled' do
         let(:doc_escrow_enabled) { true }
         before do
+          expect(writer).to receive(:write).with(image: nil).and_call_original
           allow(writer).to receive(:write).and_return result
         end
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
-
-          # testing that the storage is happening
-          expect(writer).to receive(:write).and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          expect(EncryptedDocStorage::DocWriter).to receive(:new)
+            .and_return(writer)
+            .exactly(2).times
         end
 
         it 'tracks the event' do
@@ -157,8 +146,6 @@ RSpec.describe Idv::ImageUploadsController do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: nil,
             document_front_image_file_id: nil,
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: { front: [:not_a_file] },
           )
 
@@ -188,13 +175,10 @@ RSpec.describe Idv::ImageUploadsController do
           end
 
           before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            allow(writer).to receive(:write).exactly(3).times
-
-            # testing that the storage is happening
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).with(image: nil).and_call_original
+            expect(EncryptedDocStorage::DocWriter).to receive(:new)
+              .and_return(writer)
+              .exactly(2).times
+            expect(writer).to receive(:write).exactly(2).times
           end
 
           it 'tracks the event' do
@@ -204,8 +188,6 @@ RSpec.describe Idv::ImageUploadsController do
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
               document_front_image_file_id: 'name',
-              document_selfie_image_encryption_key: nil,
-              document_selfie_image_file_id: nil,
               failure_reason: { document_capture_session: [:blank] },
             )
 
@@ -236,13 +218,10 @@ RSpec.describe Idv::ImageUploadsController do
           end
 
           before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            allow(writer).to receive(:write).exactly(3).times
-
-            # testing that the storage is happening
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).with(image: nil).and_call_original
+            expect(EncryptedDocStorage::DocWriter).to receive(:new)
+              .and_return(writer)
+              .exactly(2).times
+            expect(writer).to receive(:write).exactly(2).times
           end
 
           it 'tracks the event' do
@@ -252,8 +231,6 @@ RSpec.describe Idv::ImageUploadsController do
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
               document_front_image_file_id: 'name',
-              document_selfie_image_encryption_key: nil,
-              document_selfie_image_file_id: nil,
               failure_reason: { document_capture_session: [:blank] },
             )
 
@@ -330,13 +307,11 @@ RSpec.describe Idv::ImageUploadsController do
           let(:doc_escrow_enabled) { true }
 
           before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            allow(writer).to receive(:write).exactly(3).times
-
-            # testing that the storage is happening
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).and_return result
-            expect(writer).to receive(:write).and_call_original
+            allow(writer).to receive(:write).and_return result
+            expect(EncryptedDocStorage::DocWriter).to receive(:new)
+              .and_return(writer)
+              .exactly(2).times
+            expect(writer).to receive(:write).exactly(2).times
           end
 
           it 'tracks the event' do
@@ -346,8 +321,6 @@ RSpec.describe Idv::ImageUploadsController do
               document_back_image_file_id: 'name',
               document_front_image_encryption_key: '12345',
               document_front_image_file_id: 'name',
-              document_selfie_image_encryption_key: nil,
-              document_selfie_image_file_id: nil,
               failure_reason: { limit: [:rate_limited] },
             )
 
@@ -429,13 +402,11 @@ RSpec.describe Idv::ImageUploadsController do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
-
-          # testing that the storage is happening
-          expect(writer).to receive(:write).and_return result
-          expect(writer).to receive(:write).and_return result
-          expect(writer).to receive(:write).and_call_original
+          allow(writer).to receive(:write).and_return result
+          expect(EncryptedDocStorage::DocWriter).to receive(:new)
+            .and_return(writer)
+            .exactly(2).times
+          expect(writer).to receive(:write).exactly(2).times
         end
 
         it 'tracks the event' do
@@ -446,8 +417,6 @@ RSpec.describe Idv::ImageUploadsController do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
 
@@ -476,7 +445,6 @@ RSpec.describe Idv::ImageUploadsController do
             .to receive(:post_images).with(
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
-              passport_image: nil,
               selfie_image: an_instance_of(String),
               document_type: an_instance_of(String),
               image_source: :unknown,
@@ -500,8 +468,6 @@ RSpec.describe Idv::ImageUploadsController do
           .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
-            passport_image: nil,
-            selfie_image: nil,
             document_type: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
@@ -1266,7 +1232,6 @@ RSpec.describe Idv::ImageUploadsController do
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: an_instance_of(String),
-            passport_image: nil,
             document_type: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
@@ -1292,8 +1257,6 @@ RSpec.describe Idv::ImageUploadsController do
           .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
-            passport_image: nil,
-            selfie_image: nil,
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,

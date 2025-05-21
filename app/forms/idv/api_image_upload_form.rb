@@ -622,9 +622,9 @@ class IdvImage
     if val.respond_to?(:read)
       val
     elsif val.is_a? String
-      DataUrlImage.new(val)
+      Idv::DataUrlImage.new(val)
     end
-  rescue DataUrlImage::InvalidUrlFormatError => error
+  rescue Idv::DataUrlImage::InvalidUrlFormatError => error
     error
   end
 
@@ -633,17 +633,18 @@ class IdvImage
   end
 
   def bytes
-    @bytes ||= value&.read
+    @bytes ||= readable? ? value&.read : nil
   end
 
   def fingerprint
+    return nil unless readable?
     return @fingerprint if @fingerprint
 
     Digest::SHA256.urlsafe_base64digest(bytes)
   end
 
   def readable?
-    value.present? && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
+    value.present? && !value.is_a?(Idv::DataUrlImage::InvalidUrlFormatError)
   end
 
   def extra_attribute_key

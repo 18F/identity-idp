@@ -277,7 +277,9 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer).exactly(2).times
+          expect(EncryptedDocStorage::DocWriter).to receive(:new)
+            .and_return(writer)
+            .exactly(2).times
           allow(writer).to receive(:write).exactly(2).times
 
           form.send(:images).each do |image|
