@@ -277,15 +277,13 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer).exactly(2).times
+          allow(writer).to receive(:write).exactly(2).times
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+          end
         end
 
         it 'tracks the event' do
@@ -295,8 +293,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
           form.submit
@@ -420,16 +416,15 @@ RSpec.describe Idv::ApiImageUploadForm do
           let(:doc_escrow_enabled) { true }
 
           before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(EncryptedDocStorage::DocWriter).to receive(:new)
+              .and_return(writer)
+              .exactly(3).times
             allow(writer).to receive(:write).exactly(3).times
 
-            # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-              .and_return result
-            expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-              .and_return result
-            expect(writer).to receive(:write).with(image: form.send(:selfie_image_bytes))
-              .and_return result
+            form.send(:images).each do |image|
+              # testing that the storage is happening
+              expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            end
           end
 
           it 'tracks the event' do
@@ -555,14 +550,14 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
+          expect(EncryptedDocStorage::DocWriter).to receive(:new)
+            .and_return(writer)
+          allow(writer).to receive(:write)
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+          end
         end
 
         it 'tracks the event' do
@@ -570,10 +565,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             document_back_image_encryption_key: '12345',
             document_back_image_file_id: 'name',
-            document_front_image_encryption_key: nil,
-            document_front_image_file_id: nil,
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: { front: [:blank] },
           )
           form.submit
@@ -617,15 +608,13 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer).exactly(2)
+          allow(writer).to receive(:write).exactly(2).times
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+          end
         end
 
         it 'tracks the event (as a success as doc upload succeeded)' do
@@ -635,8 +624,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
           form.submit
@@ -808,6 +795,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             user_id: document_capture_session.user.uuid,
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
+            selfie_image_fingerprint: an_instance_of(String),
             liveness_checking_required: boolean,
             side: 'both',
             document_type: document_type,

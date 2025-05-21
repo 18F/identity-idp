@@ -5,10 +5,6 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    # validates_presence_of :front, unless: :passport_submittal
-    # validates_presence_of :back, unless: :passport_submittal
-    # validates_presence_of :passport, if: :passport_submittal
-    # validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
 
     validate :needed_images_present
@@ -110,46 +106,21 @@ module Idv
     def track_upload_attempt(response)
       return unless doc_escrow_enabled?
 
+      attempts_file_data = images.each_with_object({}) do |image, obj|
+        result = image.write_image
+        obj[image.attempts_tracker_file_id_key] = result.name
+        obj[image.attempts_tracker_encryption_key] = result.encryption_key
+      end
+
       attempts_api_tracker.idv_document_uploaded(
+        **attempts_file_data,
         success: response.success?,
-        document_back_image_encryption_key: back_metadata.encryption_key,
-        document_back_image_file_id: back_metadata.name,
-        document_front_image_encryption_key: front_metadata.encryption_key,
-        document_front_image_file_id: front_metadata.name,
-        document_selfie_image_encryption_key: selfie_metadata.encryption_key,
-        document_selfie_image_file_id: selfie_metadata.name,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
-      )
-    end
-
-    def back_metadata
-      @back_metadata ||= write_image(image: readable?(:back) ? back_image_bytes : nil)
-    end
-
-    def front_metadata
-      @front_metadata ||= write_image(image: readable?(:front) ? front_image_bytes : nil)
-    end
-
-    def selfie_metadata
-      @selfie_metadata ||= write_image(image: readable?(:selfie) ? selfie_image_bytes : nil)
-    end
-
-    def write_image(image: nil)
-      encrypted_document_storage_writer.write(image:)
-    end
-
-    def encrypted_document_storage_writer
-      @encrypted_document_storage_writer ||= EncryptedDocStorage::DocWriter.new(
-        s3_enabled: doc_escrow_s3_storage_enabled?,
       )
     end
 
     def doc_escrow_enabled?
       IdentityConfig.store.doc_escrow_enabled
-    end
-
-    def doc_escrow_s3_storage_enabled?
-      IdentityConfig.store.doc_escrow_s3_storage_enabled
     end
 
     def post_images_to_client
@@ -182,22 +153,6 @@ module Idv
         vendor_request_time_in_ms: timer.results['vendor_request'],
       )
       response
-    end
-
-    def front_image_bytes
-      @front_image_bytes ||= front.read
-    end
-
-    def back_image_bytes
-      @back_image_bytes ||= back.read
-    end
-
-    def passport_image_bytes
-      @passport_image_bytes ||= passport.read
-    end
-
-    def selfie_image_bytes
-      @selfie_image_bytes ||= selfie.read
     end
 
     def document_type
@@ -275,47 +230,13 @@ module Idv
         @extra_attributes[image.extra_attribute_key] = image.fingerprint
       end
 
-      # @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
-      # @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
-      # @extra_attributes[:passport_image_fingerprint] = passport_image_fingerprint
-      # @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
       @extra_attributes[:document_type] = document_type
       @extra_attributes
     end
 
-    def front_image_fingerprint
-      return @front_image_fingerprint if @front_image_fingerprint
-      if readable?(:front)
-        @front_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(front_image_bytes)
-      end
-    end
-
-    def back_image_fingerprint
-      return @back_image_fingerprint if @back_image_fingerprint
-      if readable?(:back)
-        @back_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(back_image_bytes)
-      end
-    end
-
-    def passport_image_fingerprint
-      return @passport_image_fingerprint if @passport_image_fingerprint
-      if readable?(:passport)
-        @passport_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(passport_image_bytes)
-      end
-    end
-
     def selfie_image_fingerprint
-      return unless liveness_checking_required
-      return @selfie_image_fingerprint if @selfie_image_fingerprint
-
-      if readable?(:selfie)
-        @selfie_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(selfie_image_bytes)
-      end
+      image_object.selfie&.fingerprint
     end
 
     def remaining_submit_attempts
@@ -371,25 +292,8 @@ module Idv
       @image_object ||= IdvImages.new(params)
     end
 
-    def front
-      as_readable(:front)
-    end
-
-    def back
-      as_readable(:back)
-    end
-
-    def passport
-      as_readable(:passport)
-    end
-
     def passport_submittal
       image_object.passport_submittal
-      # params['passport'].present?
-    end
-
-    def selfie
-      as_readable(:selfie)
     end
 
     def document_capture_session
@@ -407,33 +311,6 @@ module Idv
           )
         end
       end
-      # if passport_submittal
-      #   if passport.is_a? DataUrlImage::InvalidUrlFormatError
-      #     errors.add(
-      #       :passport, t('doc_auth.errors.not_a_file'),
-      #       type: :not_a_file
-      #     )
-      #   end
-      # else
-      #   if front.is_a? DataUrlImage::InvalidUrlFormatError
-      #     errors.add(
-      #       :front, t('doc_auth.errors.not_a_file'),
-      #       type: :not_a_file
-      #     )
-      #   end
-      #   if back.is_a? DataUrlImage::InvalidUrlFormatError
-      #     errors.add(
-      #       :back, t('doc_auth.errors.not_a_file'),
-      #       type: :not_a_file
-      #     )
-      #   end
-      # end
-      # if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-      #   errors.add(
-      #     :selfie, t('doc_auth.errors.not_a_file'),
-      #     type: :not_a_file
-      #   )
-      # end
 
       if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
          liveness_checking_required && !acuant_sdk_captured?
@@ -455,7 +332,7 @@ module Idv
             t('doc_auth.errors.doc.resubmit_failed_image'),
             type: :duplicate_image,
           )
-          if image.type == 'selife'
+          if image.type == :selfie
             analytics.idv_doc_auth_failed_image_resubmitted(
               side: 'selfie', **extra_attributes,
             )
@@ -464,42 +341,12 @@ module Idv
           error_sides << image.type.to_s
         end
       end
-      # if passport_submittal
-      #   if capture_result&.failed_passport_image?(passport_image_fingerprint)
-      #     errors.add(
-      #       :passport, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-      #     )
-      #     error_sides << 'passport'
-      #   end
-      # else
-      #   if capture_result&.failed_front_image?(front_image_fingerprint)
-      #     errors.add(
-      #       :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-      #     )
-      #     error_sides << 'front'
-      #   end
 
-      #   if capture_result&.failed_back_image?(back_image_fingerprint)
-      #     errors.add(
-      #       :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-      #     )
-      #     error_sides << 'back'
-      #   end
-      # end
-      # unless error_sides.empty?
-      #   analytics.idv_doc_auth_failed_image_resubmitted(
-      #     side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
-      #   )
-      # end
-
-      # if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
-      #   errors.add(
-      #     :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-      #   )
-      #   analytics.idv_doc_auth_failed_image_resubmitted(
-      #     side: 'selfie', **extra_attributes,
-      #   )
-      # end
+      unless error_sides.empty?
+        analytics.idv_doc_auth_failed_image_resubmitted(
+          side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
+        )
+      end
     end
 
     def limit_if_rate_limited
@@ -526,25 +373,6 @@ module Idv
           )
         end,
       )
-    end
-
-    def readable?(image_key)
-      value = @readable[image_key]
-      value && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
-    end
-
-    def as_readable(image_key)
-      return @readable[image_key] if readable?(image_key)
-      value = params[image_key]
-      @readable[image_key] = begin
-        if value.respond_to?(:read)
-          value
-        elsif value.is_a? String
-          DataUrlImage.new(value)
-        end
-      rescue DataUrlImage::InvalidUrlFormatError => error
-        error
-      end
     end
 
     def update_analytics(client_response:, vendor_request_time_in_ms:)
@@ -795,7 +623,7 @@ class IdvImage
   end
 
   def bytes
-    @bytes ||= value.read
+    @bytes ||= value&.read
   end
 
   def fingerprint
@@ -815,6 +643,28 @@ class IdvImage
   def upload_key
     :"#{type}_image"
   end
+
+  def attempts_tracker_file_id_key
+    :"document_#{type}_image_file_id"
+  end
+
+  def attempts_tracker_encryption_key
+    :"document_#{type}_image_encryption_key"
+  end
+
+  def write_image
+    encrypted_document_storage_writer.write(image: bytes)
+  end
+
+  def encrypted_document_storage_writer
+    @encrypted_document_storage_writer ||= EncryptedDocStorage::DocWriter.new(
+      s3_enabled: doc_escrow_s3_storage_enabled?,
+    )
+  end
+
+  def doc_escrow_s3_storage_enabled?
+    IdentityConfig.store.doc_escrow_s3_storage_enabled
+  end
 end
 
 class BackImage < IdvImage
@@ -829,7 +679,7 @@ end
 
 class FrontImage < IdvImage
   def initialize(params)
-    @value = as_readable(params[:back])
+    @value = as_readable(params[:front])
   end
 
   def type

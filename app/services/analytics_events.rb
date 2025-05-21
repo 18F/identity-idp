@@ -1522,7 +1522,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     submit_attempts:,
-    selfie_image_fingerprint:,
+    selfie_image_fingerprint: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     passport_image_fingerprint: nil,
