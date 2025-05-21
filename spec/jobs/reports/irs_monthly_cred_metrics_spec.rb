@@ -13,6 +13,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:expected_s3_paths) do
     [
       "#{report_folder}/irs_monthly_cred_metrics.csv",
+      "#{report_folder}/irs_monthly_cred_overview.csv",
+      "#{report_folder}/irs_monthly_cred_definitions.csv",
     ]
   end
   let(:s3_metadata) do
@@ -50,6 +52,30 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   context 'the beginning of the month, it sends records for previous month' do
     let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
+    it 'returns a CSV with expected headers and rows from fake iaas data' do
+      # Create a fake `iaas` object with a `.results` method
+      fake_iaas = instance_double('IrsAttemptsApiLogCollection')
+      fake_results = [
+        { user_id: 1, success: true, count: 5 },
+        { user_id: 2, success: false, count: 3 },
+      ]
+
+      allow(fake_iaas).to receive(:results).and_return(fake_results)
+
+      csv_table = report.send(:build_csv, fake_iaas, nil ,report_date)
+
+      expect(csv_table).to be_a(CSV::Table)
+
+      # Check headers
+      expect(csv_table.headers).to match_array([:user_id, :success, :count])
+
+      # Check contents
+      expect(csv_table.length).to eq(2)
+      expect(csv_table[0][:user_id]).to eq(1)
+      expect(csv_table[0][:success]).to eq(true)
+      expect(csv_table[0][:count]).to eq(5)
+    end
+
     it 'sends out a report to IRS' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_irs@example.com'],
@@ -80,6 +106,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     report.perform(report_date)
   end
+
+
 
   describe '#preamble' do
     let(:env) { 'prod' }

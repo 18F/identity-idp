@@ -11,6 +11,33 @@ module Reports
       super(*args, **rest)
     end
 
+    def definitions_table
+      [
+        ['Metric', 'Unit', 'Definition'],
+        ['Credentials authorized for Partner', 'Count',
+         'The total number of users (new and existing) that successfully signed into the applications (The combined count of the two rows below: “new identity verification + existing identity verification)'],
+        ['New identity verification/Credentials Authorized for Partner', 'Count',
+         'The number of users without existing IAL2 credentials who complete IAL2 IdV for the partner'],
+        ['Existing identity verification/Credentials Authorized for Partner', 'Count',
+         'The existing users who are already IAL2 verified and added authentication with the IRS; count of users who share credentials with these applications.'],
+      ]
+    end
+
+    def overview_table
+      [
+        ['Report Timeframe', 'Report Generated'],
+        ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s],
+      ]
+    end
+
+    def as_tables
+      [
+        definitions_table,
+        overview_table,
+        dropoff_metrics_table,
+      ]
+    end
+
 
     def perform(_date = Time.zone.yesterday.end_of_day)
       @report_date = _date
@@ -23,7 +50,6 @@ module Reports
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
 
       message = "Report: #{REPORT_NAME}"
-      subject = 
       email_addresses = emails.select(&:present?)
 
 
@@ -32,24 +58,41 @@ module Reports
        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
        return false
       end
-      report = as_emailable_irs_report(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: report_date)
-      upload_to_s3(report.table, report_date, report_name: REPORT_NAME)
+      reports = as_emailable_irs_report(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: report_date)
+      reports.each do |report|
+        upload_to_s3(report.table, report_date, report_name: report.filename)
+      end
       ReportMailer.tables_report(
         email: email_addresses,
         subject: "IRS Monthly Credential Metrics - #{_date.to_date}",
         message: preamble,
-        reports: report,
+        reports: reports,
         attachment_format: :csv,
       )
 
     end
 
     def as_emailable_irs_report(iaas:, partner_accounts:, date:)
+        [
+          Reporting::EmailableReport.new(
+            title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            table: CSV.parse(build_csv(iaas, partner_accounts, date)),
+            filename: 'irs_monthly_cred_metrics',
+          ),
         Reporting::EmailableReport.new(
-          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: CSV.parse(build_csv(iaas, partner_accounts, date)),
-          filename: 'irs_cred_metrics',
+          title: 'Definitions',
+          table: definitions_table,
+          filename: 'irs_monthly_cred_definitions',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+          filename: 'irs_monthly_cred_overview'
+
         )
+
+
+    ]
     end
 
     # @return [String]

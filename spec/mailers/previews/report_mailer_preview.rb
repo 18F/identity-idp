@@ -109,6 +109,27 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def irs_monthly_credentials_report
+    report_date = Time.zone.yesterday
+    report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
+  
+    # Build emailable report
+    emailable_report = report.as_emailable_irs_report(
+      iaas: IaaReportingHelper.iaas,
+      partner_accounts: IaaReportingHelper.partner_accounts,
+      date: report_date
+    )
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example Credentials Report - #{Time.zone.now.to_date}",
+      message: report.preamble,
+      reports: emailable_report,
+      attachment_format: :csv
+    )
+    end
+  
+
   def tables_report
     ReportMailer.tables_report(
       email: 'test@example.com',
@@ -141,34 +162,7 @@ class ReportMailerPreview < ActionMailer::Preview
         ),
       ],
     )
-  end
-
-  def irs_monthly_credentials_report
-    report_date = Time.zone.yesterday
-    report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
-  
-    # Build emailable report
-    emailable_report = report.as_emailable_irs_report(
-      iaas: IaaReportingHelper.iaas,
-      partner_accounts: IaaReportingHelper.partner_accounts,
-      date: report_date
-    )
-  
-    ReportMailer.tables_report(
-      email: 'test@example.com',
-      subject: "Example Credentials Report - #{Time.zone.now.to_date}",
-      message: report.preamble,
-      reports: [emailable_report], #[emailable_report],
-      attachment_format: :csv
-    ).deliver_now
-    end
-  
-  
-  
-  
-  
-  
-  
+  end  
 
   private
 
