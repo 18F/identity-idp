@@ -213,7 +213,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           document_type: document_type,
         )
 
@@ -258,7 +258,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           selfie_live: boolean,
           selfie_quality_good: boolean,
           doc_auth_success: boolean,
@@ -333,7 +333,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             document_type: document_type,
           )
 
@@ -374,7 +374,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             },
             doc_auth_result: 'Passed',
             errors: {},
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             portrait_match_results: anything,
             remaining_submit_attempts: 3,
             state: 'MT',
@@ -514,7 +514,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           document_type: document_type,
         )
       end
@@ -672,7 +672,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             doc_type_supported: boolean,
             doc_auth_success: boolean,
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             selfie_status: :not_processed,
             selfie_live: boolean,
             selfie_quality_good: boolean,
@@ -769,7 +769,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           side: 'both',
           document_type: document_type,
         )
@@ -798,7 +798,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             side: 'both',
             document_type: document_type,
           )
