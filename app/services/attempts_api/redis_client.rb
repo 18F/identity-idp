@@ -25,11 +25,14 @@ module AttemptsApi
     end
 
     def delete_events(issuer:, keys:)
+      total_deleted = 0
       hourly_keys(issuer).each do |hourly_key|
         REDIS_ATTEMPTS_API_POOL.with do |client|
-          client.hdel(hourly_key, keys)
+          total_deleted += client.hdel(hourly_key, keys)
         end
       end
+
+      total_deleted
     end
 
     private

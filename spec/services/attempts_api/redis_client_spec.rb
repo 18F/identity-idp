@@ -120,8 +120,9 @@ RSpec.describe AttemptsApi::RedisClient do
         event_key: event2.jti, jwe: jwe2, timestamp: event2.occurred_at, issuer: issuer,
       )
 
-      subject.delete_events(issuer:, keys: [event1.jti])
+      deleted_events_count = subject.delete_events(issuer:, keys: [event1.jti])
       expect(subject.read_events(issuer:)).to eq({ event2.jti => jwe2 })
+      expect(deleted_events_count).to eq(1)
     end
   end
 end
