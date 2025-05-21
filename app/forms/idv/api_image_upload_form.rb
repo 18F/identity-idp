@@ -446,42 +446,58 @@ module Idv
       capture_result = document_capture_session&.load_result
       return unless capture_result
       error_sides = []
-      if passport_submittal
-        if capture_result&.failed_passport_image?(passport_image_fingerprint)
+      images.each do |image|
+        if capture_result&.send(:"failed_#{image.type}_image?", image.fingerprint)
           errors.add(
-            :passport, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+            image.type,
+            t('doc_auth.errors.doc.resubmit_failed_image'),
+            type: :duplicate_image,
           )
-          error_sides << 'passport'
+          if image.type == 'selife'
+            analytics.idv_doc_auth_failed_image_resubmitted(
+              side: 'selfie', **extra_attributes,
+            )
+            next
+          end
+          error_sides << image.type.to_s
         end
-      else
-        if capture_result&.failed_front_image?(front_image_fingerprint)
-          errors.add(
-            :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-          )
-          error_sides << 'front'
-        end
+      end
+      # if passport_submittal
+      #   if capture_result&.failed_passport_image?(passport_image_fingerprint)
+      #     errors.add(
+      #       :passport, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+      #     )
+      #     error_sides << 'passport'
+      #   end
+      # else
+      #   if capture_result&.failed_front_image?(front_image_fingerprint)
+      #     errors.add(
+      #       :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+      #     )
+      #     error_sides << 'front'
+      #   end
 
-        if capture_result&.failed_back_image?(back_image_fingerprint)
-          errors.add(
-            :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-          )
-          error_sides << 'back'
-        end
-      end
-      unless error_sides.empty?
-        analytics.idv_doc_auth_failed_image_resubmitted(
-          side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
-        )
-      end
+      #   if capture_result&.failed_back_image?(back_image_fingerprint)
+      #     errors.add(
+      #       :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+      #     )
+      #     error_sides << 'back'
+      #   end
+      # end
+      # unless error_sides.empty?
+      #   analytics.idv_doc_auth_failed_image_resubmitted(
+      #     side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
+      #   )
+      # end
 
-      if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
-        errors.add(
-          :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        analytics.idv_doc_auth_failed_image_resubmitted(
-          side: 'selfie', **extra_attributes,
-        )
-      end
+      # if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
+      #   errors.add(
+      #     :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
+      #   )
+      #   analytics.idv_doc_auth_failed_image_resubmitted(
+      #     side: 'selfie', **extra_attributes,
+      #   )
+      # end
     end
 
     def limit_if_rate_limited
