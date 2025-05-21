@@ -236,7 +236,7 @@ module Idv
     end
 
     def selfie_image_fingerprint
-      image_object.selfie&.fingerprint
+      images_metadata.selfie&.fingerprint
     end
 
     def remaining_submit_attempts
@@ -277,7 +277,7 @@ module Idv
     end
 
     def needed_images_present
-      errs = image_object.needed_images_present?(liveness_checking_required)
+      errs = images_metadata.needed_images_present?(liveness_checking_required)
 
       errs.each do |k, v|
         errors.add(k, t('errors.messages.blank'), type: v[:type])
@@ -285,15 +285,15 @@ module Idv
     end
 
     def images
-      image_object.list
+      images_metadata.images
     end
 
-    def image_object
-      @image_object ||= IdvImages.new(params)
+    def images_metadata
+      @images_metadata ||= IdvImages.new(params)
     end
 
     def passport_submittal
-      image_object.passport_submittal
+      images_metadata.passport_submittal
     end
 
     def document_capture_session
@@ -562,20 +562,21 @@ module Idv
 end
 
 class IdvImages
-  TYPES = ['front', 'back', 'passport', 'selfie'].freeze
+  TYPES = %i[front back passport selfie].freeze
 
-  attr_reader :list
+  attr_reader :images
   attr_accessor :errors
+
   def initialize(params)
-    @list = TYPES.map do |type|
+    @images = TYPES.map do |type|
       next unless params[type].present?
-      "#{type.capitalize}Image".constantize.new(params)
+      IdvImage.new(type:, params:)
     end.compact
     @errors = {}
   end
 
   def passport_submittal
-    @passport_submittal ||= list.any? { |image| image.type == :passport }
+    @passport_submittal ||= images.any? { |image| image.type == :passport }
   end
 
   def needed_images_present?(liveness_checking_required)
@@ -593,20 +594,25 @@ class IdvImages
   end
 
   def front
-    @list.find { |image| image.type == :front }
+    images.find { |image| image.type == :front }
   end
 
   def back
-    @list.find { |image| image.type == :back }
+    images.find { |image| image.type == :back }
   end
 
   def selfie
-    @list.find { |image| image.type == :selfie }
+    images.find { |image| image.type == :selfie }
   end
 end
 
 class IdvImage
-  attr_reader :value
+  attr_reader :value, :type
+
+  def initialize(type:, params:)
+    @type = type
+    @value = as_readable(params[type])
+  end
 
   def as_readable(val)
     if val.respond_to?(:read)
@@ -664,45 +670,5 @@ class IdvImage
 
   def doc_escrow_s3_storage_enabled?
     IdentityConfig.store.doc_escrow_s3_storage_enabled
-  end
-end
-
-class BackImage < IdvImage
-  def initialize(params)
-    @value = as_readable(params[:back])
-  end
-
-  def type
-    :back
-  end
-end
-
-class FrontImage < IdvImage
-  def initialize(params)
-    @value = as_readable(params[:front])
-  end
-
-  def type
-    :front
-  end
-end
-
-class SelfieImage < IdvImage
-  def initialize(params)
-    @value = as_readable(params[:back])
-  end
-
-  def type
-    :selfie
-  end
-end
-
-class PassportImage < IdvImage
-  def initialize(params)
-    @value = as_readable(params[:passport])
-  end
-
-  def type
-    :passport
   end
 end
