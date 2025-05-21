@@ -183,7 +183,7 @@ class MemorableDateElement extends HTMLElement {
       parsedDate = new Date(
         `${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`,
       );
-    } catch (e) {}
+    } catch {}
 
     // Check for cases where invalid dates could be "rolled over" into the next month
     // E.g. JavaScript could roll over February 29th in a non-leap year to March 1st
@@ -357,7 +357,7 @@ class MemorableDateElement extends HTMLElement {
     let parsed: any;
     try {
       parsed = JSON.parse(errorMessageText);
-    } catch (e) {
+    } catch {
       // Invalid JSON error message text
     }
 
