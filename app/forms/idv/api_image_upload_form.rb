@@ -106,14 +106,8 @@ module Idv
     def track_upload_attempt(response)
       return unless doc_escrow_enabled?
 
-      attempts_file_data = images.each_with_object({}) do |image, obj|
-        result = image.write_image
-        obj[image.attempts_tracker_file_id_key] = result.name
-        obj[image.attempts_tracker_encryption_key] = result.encryption_key
-      end
-
       attempts_api_tracker.idv_document_uploaded(
-        **attempts_file_data,
+        **images_metadata.attempts_file_data,
         success: response.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
@@ -126,13 +120,9 @@ module Idv
     def post_images_to_client
       timer = JobHelpers::Timer.new
 
-      byte_hash = images.each_with_object({}) do |image, obj|
-        obj[image.upload_key] = image.bytes
-      end
-
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
-          **byte_hash,
+          **images_metadata.submittable_images,
           image_source: image_source,
           images_cropped: acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
@@ -573,6 +563,20 @@ class IdvImages
       IdvImage.new(type:, params:)
     end.compact
     @errors = {}
+  end
+
+  def attempts_file_data
+    images.each_with_object({}) do |image, obj|
+      result = image.write_image
+      obj[image.attempts_tracker_file_id_key] = result.name
+      obj[image.attempts_tracker_encryption_key] = result.encryption_key
+    end
+  end
+
+  def submittable_images
+    images.each_with_object({}) do |image, obj|
+      obj[image.upload_key] = image.bytes
+    end
   end
 
   def passport_submittal
