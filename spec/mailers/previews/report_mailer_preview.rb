@@ -180,7 +180,7 @@ class ReportMailerPreview < ActionMailer::Preview
       email: 'test@example.com',
       subject: "Example Monthly IRS Verification Report - #{Time.zone.now.to_date}",
       message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
-      attachment_format: :xlsx,
+      attachment_format: :csv,
       reports: monthly_irs_verification_report.reports,
     )
   end
