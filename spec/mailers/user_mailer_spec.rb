@@ -791,6 +791,16 @@ RSpec.describe UserMailer, type: :mailer do
         current_address_matches_id: current_address_matches_id,
       )
     end
+    let!(:skipped_location_enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        :with_service_provider,
+        selected_location_details: nil,
+        status_updated_at: Time.zone.now - 2.hours,
+        current_address_matches_id: current_address_matches_id,
+      )
+    end
     let(:enhanced_ipp_enrollment) do
       create(
         :in_person_enrollment,
@@ -889,6 +899,36 @@ RSpec.describe UserMailer, type: :mailer do
             .to_not have_content(
               t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
             )
+        end
+      end
+
+      context 'when selected_location_details is not present' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+            enrollment: skipped_location_enrollment,
+          )
+        end
+
+        it 'renders skipped location notice' do
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.headings.po_search.location'),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice'),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice_button_text'),
+          )
+
+          expect(mail.html_part.body).not_to have_content(
+            t('in_person_proofing.body.location.change_location_heading'),
+          )
+        end
+
+        it 'does not render a location' do
+          expect(mail.html_part.body).not_to have_content(
+            t('in_person_proofing.body.barcode.retail_hours'),
+          )
         end
       end
 
