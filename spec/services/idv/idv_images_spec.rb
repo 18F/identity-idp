@@ -167,8 +167,8 @@ RSpec.describe Idv::IdvImages do
       end
 
       context 'passport_submittal is required' do
-        # note: passport_submittal is dependent on a passport params type, so it's not really possible
-        # for it not to be present if it is necessary
+        # note: passport_submittal is dependent on a passport params type, so it's not really
+        # possible for it not to be present if it is necessary
         let(:passport_image) { DocAuthImageFixtures.document_passport_image_multipart }
         let(:front_image) { nil }
         let(:back_image) { nil }
