@@ -27,6 +27,109 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   let(:mock_daily_reports_emails) { ['mock_irs@example.com'] }
 
+  context 'with data generates reports by iaa + order number, issuer and year_month' do
+    context 'with an IAA with a single issuer in April 2020' do
+      let(:partner_account1) { create(:partner_account) }
+      let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
+
+      let(:gtc1) do
+        create(
+          :iaa_gtc,
+          gtc_number: 'gtc1234',
+          partner_account: partner_account1,
+          start_date: iaa1_range.begin,
+          end_date: iaa1_range.end,
+        )
+      end
+
+      let(:iaa1) { 'iaa1' }
+
+      let(:iaa1_sp) do
+        create(
+          :service_provider,
+          iaa: iaa1,
+          iaa_start_date: iaa1_range.begin,
+          iaa_end_date: iaa1_range.end,
+        )
+      end
+
+      let(:iaa_order1) do
+        build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
+      end
+
+      let(:inside_iaa1) { iaa1_range.begin + 1.day }
+
+      let(:user1) { create(:user, profiles: [profile1]) }
+      let(:profile1) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+
+      let(:user2) { create(:user, profiles: [profile2]) }
+      let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
+      let(:report_date) { inside_iaa1 }
+
+      let(:csv) do
+        travel_to report_date do
+          binding.pry
+          CSV.parse(report.perform(report_date), headers: true)
+        end
+      end
+
+      before do
+        iaa_order1.integrations << build_integration(
+          issuer: iaa1_sp.issuer,
+          partner_account: partner_account1,
+        )
+        iaa_order1.save
+
+        # 1 new unique user in month 1 at IAA 1 sp @ IAL 1
+        7.times do
+          create_sp_return_log(
+            user: user1,
+            issuer: iaa1_sp.issuer,
+            ial: 1,
+            returned_at: inside_iaa1,
+          )
+        end
+
+        # 2 new unique users in month 1 at IAA 1 sp @ IAL 2 with profile age 2
+        # user1 is both IAL1 and IAL2
+        [user1, user2].each do |user|
+          create_sp_return_log(
+            user: user,
+            issuer: iaa1_sp.issuer,
+            ial: 2,
+            returned_at: inside_iaa1,
+          )
+        end
+      end
+
+      it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+        expect(csv.length).to eq(1)
+        aggregate_failures do
+          row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
+          expect(row['iaa_order_number']).to eq('gtc1234-0001')
+          expect(row['partner']).to eq(partner_account1.requesting_agency)
+          expect(row['iaa_start_date']).to eq('2020-04-15')
+          expect(row['iaa_end_date']).to eq('2021-04-14')
+
+          expect(row['issuer']).to eq(iaa1_sp.issuer)
+          expect(row['friendly_name']).to eq(iaa1_sp.friendly_name)
+
+          expect(row['credentials_authorized_requesting_agency'].to_i).to eq(9)
+          expect(row['new_identity_verification_credentials_authorized_for_partner'].to_i).to eq(2)
+          expect(row['existing_identity_verification_credentials_authorized_for_partner'].to_i).to eq(0)
+        end
+      end
+
+      context 'when IAA ended more than 90 days ago' do
+        let(:report_date) { iaa1_range.end + 90.days }
+
+        it 'is excluded from the report' do
+          expect(csv.length).to eq(0)
+        end
+      end
+    end
+end
+
   before do
     # App config/environment
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -128,8 +231,35 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         expect(alert.text).to include(env)
       end
     end
+  end
 
-    
+  def build_iaa_order(order_number:, date_range:, iaa_gtc:)
+    create(
+      :iaa_order,
+      order_number: order_number,
+      start_date: date_range.begin,
+      end_date: date_range.end,
+      iaa_gtc: iaa_gtc,
+    )
+  end
 
+  def build_integration(issuer:, partner_account:)
+    create(
+      :integration,
+      issuer: issuer,
+      partner_account: partner_account,
+    )
+  end
+
+  def create_sp_return_log(user:, issuer:, ial:, returned_at:)
+    create(
+      :sp_return_log,
+      user_id: user.id,
+      issuer: issuer,
+      ial: ial,
+      returned_at: returned_at,
+      profile_verified_at: user.profiles.map(&:verified_at).max,
+      billable: true,
+    )
   end
 end
