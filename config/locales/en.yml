@@ -1659,6 +1659,7 @@ titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
 titles.confirmations.delete: Please confirm
 titles.confirmations.show: Choose a password
+titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
 titles.doc_auth.hybrid_handoff: Verify your ID
