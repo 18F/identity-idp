@@ -217,6 +217,12 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks expiration of account reset requests
+  # @param [Integer] count number of requests expired
+  def account_reset_request_expired(count:, **extra)
+    track_event(:account_reset_request_expired, count: count, **extra)
+  end
+
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
@@ -304,6 +310,33 @@ module AnalyticsEvents
       asserted_aal_value:,
       client_id:,
       response_aal_value:,
+      **extra,
+    )
+  end
+
+  # @param [String, nil] issuer
+  # @param [Integer, nil] requested_events_count
+  # @param [Integer, nil] requested_acknowledged_events_count
+  # @param [Integer, nil] returned_events_count
+  # @param [Integer, nil] acknowledged_events_count
+  # @param [Boolean] success
+  def attempts_api_poll_events_request(
+    issuer:,
+    requested_events_count:,
+    requested_acknowledged_events_count:,
+    returned_events_count:,
+    acknowledged_events_count:,
+    success:,
+    **extra
+  )
+    track_event(
+      :attempts_api_poll_events_request,
+      issuer:,
+      requested_events_count:,
+      requested_acknowledged_events_count:,
+      returned_events_count:,
+      acknowledged_events_count:,
+      success:,
       **extra,
     )
   end

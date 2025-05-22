@@ -13,7 +13,16 @@ module AttemptsApi
     validate :valid_request_token?, if: :config_data_exists?
 
     def initialize(auth_request_header)
-      @bearer, @issuer, @token = auth_request_header&.split(' ', 3)
+      case auth_request_header&.split(' ', 3)
+      in String => bearer, String => issuer, String => token
+        @bearer = bearer
+        @issuer = issuer
+        @token = token
+      else
+        @bearer = nil
+        @issuer = nil
+        @token = nil
+      end
     end
 
     private

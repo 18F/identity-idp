@@ -157,6 +157,7 @@ event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_one_verified_account_log_duplicate_profiles: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -559,6 +560,7 @@ production:
   enable_usps_verification: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
+  feature_one_verified_account_log_duplicate_profiles: false
   idv_sp_required: true
   in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''

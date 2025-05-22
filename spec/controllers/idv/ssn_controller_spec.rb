@@ -11,6 +11,7 @@ RSpec.describe Idv::SsnController do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: controller.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -163,6 +164,11 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'updates idv_session.ssn to the ssn' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: true,
+          social_security: ssn,
+          failure_reason: nil,
+        )
         expect { put :update, params: params }.to change { subject.idv_session.ssn }
           .from(nil).to(ssn)
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
@@ -273,6 +279,11 @@ RSpec.describe Idv::SsnController do
       render_views
 
       it 'renders the show template with an error message' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: false,
+          social_security: ssn,
+          failure_reason: { ssn: [:invalid] },
+        )
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')
