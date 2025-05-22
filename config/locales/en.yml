@@ -1427,8 +1427,13 @@ instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email 
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
+instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name.
+instructions.mfa.piv_cac.bullet_2: '%{sign_in} with your email address and password and using another authentication method.'
+instructions.mfa.piv_cac.bullet_3: Contacting %{app_name} support for additional help.
 instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
+instructions.mfa.piv_cac.create_account: '<strong>Don’t have a Login.gov account?</strong> %{create_account}'
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
+instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
 instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.

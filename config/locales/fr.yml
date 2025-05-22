@@ -1427,8 +1427,14 @@ instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de v
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
+instructions.mfa.piv_cac.bullet_1: Choisir un autre certificat, par exemple associé à votre nom.
+instructions.mfa.piv_cac.bullet_2: Vous connecter avec votre adresse e-mail, votre mot de passe et une autre méthode d’authentification.
+instructions.mfa.piv_cac.bullet_3: Contacter le service d’assistance de Login.gov pour obtenir une aide supplémentaire.
 instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
+instructions.mfa.piv_cac.create_account: '<strong>Vous n’avez pas de compte Login.gov ?</strong> %{create_account}'
 instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
+instructions.mfa.piv_cac.create_account: '<strong>Don’t have a Login.gov account?</strong> %{create_account}'
+instructions.mfa.piv_cac.having_trouble: 'Si vous rencontrez des difficultés pour vous connecter avec votre carte PIV/CAC, essayez de :'
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
 instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide pour ce compte. Veuillez %{please_try_again_html} avec un autre certificat. Si ce problème persiste, contactez l’administrateur de votre organisme.
