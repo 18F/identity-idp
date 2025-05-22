@@ -429,7 +429,6 @@ sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
-socure_docv_passport_enabled: false
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
 socure_docv_webhook_repeat_endpoints: '[]'
