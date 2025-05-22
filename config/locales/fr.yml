@@ -1705,6 +1705,7 @@ titles.registrations.new: Créer votre compte
 titles.revoke_consent: Révoquer le consentement
 titles.rules_of_use: Règles d’utilisation
 titles.select_email: Sélectionner l’adresse e-mail de votre choix
+titles.sign_in: Se connecter
 titles.sign_up.completion_consent_expired_ial1: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
 titles.sign_up.completion_consent_expired_ial2: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}

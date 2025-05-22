@@ -1704,6 +1704,7 @@ titles.registrations.new: Create your account
 titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
 titles.select_email: Select your preferred email
+titles.sign_in: Sign in 
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
