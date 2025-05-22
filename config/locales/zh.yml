@@ -1668,8 +1668,8 @@ titles.add_info.phone: 添加电话号码
 titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
-titles.create_account: 设立账户
 titles.confirmations.show: 选择一个密码
+titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
