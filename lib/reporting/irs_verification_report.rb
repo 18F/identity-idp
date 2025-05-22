@@ -17,10 +17,9 @@ module Reporting
     attr_reader :issuers, :time_range
 
     VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
-    DOCUMENT_AUTHENTICATION_SUCCESS = ['IdV: doc auth image upload vendor pii validation',
-                                       'IdV: doc auth capture_complete visited'].freeze
-    INFORMATION_VALIDATION_SUCCESS = 'IdV: doc auth verify submitted'
-    PHONE_VERIFICATION_SUCCESS = 'IdV: phone confirmation vendor'
+    DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
+    INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
+    PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_visited'
     TOTAL_VERIFIED = 'User registration: complete'
 
     # @param [Array<String>] issuers
@@ -40,6 +39,14 @@ module Reporting
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
+          title: 'Definitions',
+          subtitle: '',
+          float_as_percent: true,
+          precision: 2,
+          table: data_definition_table,
+          filename: 'Definitions',
+        ),
+        Reporting::EmailableReport.new(
           title: 'Overview',
           subtitle: '',
           float_as_percent: true,
@@ -55,15 +62,6 @@ module Reporting
           table: funnel_table,
           filename: 'Funnel Metrics',
         ),
-        Reporting::EmailableReport.new(
-          title: 'Metrics Definitions',
-          subtitle: '',
-          float_as_percent: true,
-          precision: 2,
-          table: data_definition_table,
-          filename: 'Metric Definitions',
-        ),
-
       ]
     end
 

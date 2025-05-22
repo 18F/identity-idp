@@ -217,6 +217,12 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks expiration of account reset requests
+  # @param [Integer] count number of requests expired
+  def account_reset_request_expired(count:, **extra)
+    track_event(:account_reset_request_expired, count: count, **extra)
+  end
+
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
@@ -5423,6 +5429,7 @@ module AnalyticsEvents
   # @param [String] exception any exceptions thrown during request
   # @param [String] docv_transaction_token socure transaction token
   # @param [String] reference_id socure interal id for transaction
+  # @param [String] customer_user_id user uuid sent to socure
   # @param [String] language lagnuage presented to user
   # @param [String] step current step of idv to user
   # @param [String] analytics_id id of analytics
@@ -5459,6 +5466,7 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     reference_id: nil,
+    customer_user_id: nil,
     liveness_enabled: nil,
     document_type: nil,
     docv_transaction_token: nil,
@@ -5485,6 +5493,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       reference_id:,
+      customer_user_id:,
       response_body:,
       liveness_enabled:,
       document_type:,
@@ -5550,62 +5559,64 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
-  # @param [Boolean] billed
-  # @param [String] docv_transaction_token socure transaction token
-  # @param [Hash] customer_profile socure customer profile
-  # @param [String] reference_id socure interal id for transaction
-  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
-  # @param [Hash] decision accept or reject of given ID
-  # @param [String] user_id internal id of socure user
-  # @param [String] state state of ID
-  # @param [String] id_doc_type type of state issued ID or passport
-  # @param [Boolean] async whether or not this worker is running asynchronously
-  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  #   "attempts")
-  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
-  # @param [Boolean] doc_type_supported
-  # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
-  # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
-  # @param [String] zip_code zip code from state issued ID
+  # @param [Boolean] async whether or not this worker is running asynchronously
+  # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] customer_user_id user uuid sent to Socure
+  # @param [Hash] decision accept or reject of given ID
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] doc_type_supported
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [String] docv_transaction_token socure transaction token
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] id_doc_type type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [String] reference_id socure internal id for transaction
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param [String] state state of ID
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # @param [String] user_id internal id of socure user
+  #   "attempts")
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] vendor_status Socure's request status (used for errors)
   # @param [String] vendor_status_message socure's error message (used for errors)
+  # @param [String] zip_code zip code from state issued ID
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
     errors:,
     async:,
-    submit_attempts:,
-    vendor_request_time_in_ms:,
     doc_type_supported:,
     doc_auth_success:,
-    vendor:,
     remaining_submit_attempts:,
-    reference_id: nil,
-    reason_codes: nil,
-    document_type: nil,
+    submit_attempts:,
+    vendor:,
+    vendor_request_time_in_ms:,
+    exception: nil,
+    address_line2_present: nil,
+    billed: nil,
+    birth_year: nil,
+    customer_profile: nil,
+    customer_user_id: nil,
     decision: nil,
-    state: nil,
+    document_type: nil,
+    docv_transaction_token: nil,
+    flow_path: nil,
     id_doc_type: nil,
     issue_year: nil,
-    address_line2_present: nil,
-    zip_code: nil,
-    birth_year: nil,
     liveness_enabled: nil,
-    customer_profile: nil,
-    docv_transaction_token: nil,
+    reference_id: nil,
+    reason_codes: nil,
+    state: nil,
     user_id: nil,
-    exception: nil,
-    flow_path: nil,
-    billed: nil,
     vendor_status: nil,
     vendor_status_message: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -5613,31 +5624,32 @@ module AnalyticsEvents
       success:,
       errors:,
       exception:,
-      billed:,
-      docv_transaction_token:,
-      customer_profile:,
-      reference_id:,
-      reason_codes:,
-      document_type:,
-      decision:,
-      user_id:,
-      state:,
-      id_doc_type:,
-      async:,
-      submit_attempts:,
-      remaining_submit_attempts:,
-      flow_path:,
-      vendor_request_time_in_ms:,
-      doc_type_supported:,
-      doc_auth_success:,
-      vendor:,
       address_line2_present:,
-      zip_code:,
+      async:,
+      billed:,
       birth_year:,
+      customer_profile:,
+      customer_user_id:,
+      decision:,
+      doc_auth_success:,
+      doc_type_supported:,
+      document_type:,
+      docv_transaction_token:,
+      flow_path:,
+      id_doc_type:,
       issue_year:,
       liveness_enabled:,
+      reason_codes:,
+      reference_id:,
+      remaining_submit_attempts:,
+      state:,
+      submit_attempts:,
+      user_id:,
+      vendor:,
+      vendor_request_time_in_ms:,
       vendor_status:,
       vendor_status_message:,
+      zip_code:,
       **extra,
     )
   end

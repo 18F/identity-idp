@@ -175,6 +175,11 @@ class InPersonEnrollment < ApplicationRecord
     profile&.deactivate_due_to_in_person_verification_cancelled
   end
 
+  # @return [Boolean] Whether the enrollment is type passport book.
+  def passport_book?
+    document_type == DOCUMENT_TYPE_PASSPORT_BOOK
+  end
+
   private
 
   def days_to_expire
