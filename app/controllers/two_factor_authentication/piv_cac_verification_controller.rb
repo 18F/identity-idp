@@ -29,14 +29,6 @@ module TwoFactorAuthentication
       ), allow_other_host: true
     end
 
-    def error
-      @presenter = PivCacErrorPresenter.new(
-        error: params[:error],
-        view: view_context,
-        try_again_url: login_two_factor_piv_cac_url,
-      )
-    end
-
     private
 
     def process_token
@@ -52,7 +44,7 @@ module TwoFactorAuthentication
       if result.success?
         handle_valid_piv_cac
       else
-        handle_invalid_piv_cac(piv_cac_verification_form.error_type)
+        handle_invalid_piv_cac
       end
     end
 
@@ -67,7 +59,7 @@ module TwoFactorAuthentication
       redirect_to after_sign_in_path_for(current_user)
     end
 
-    def handle_invalid_piv_cac(error)
+    def handle_invalid_piv_cac
       clear_piv_cac_information
       update_invalid_user
 
@@ -76,7 +68,8 @@ module TwoFactorAuthentication
       elsif redirect_for_piv_cac_mismatch_replacement?
         redirect_to login_two_factor_piv_cac_mismatch_url
       else
-        redirect_to login_two_factor_piv_cac_error_url(error: error)
+        flash[:error] = t('two_factor_authentication.invalid_piv_cac')
+        redirect_to login_two_factor_piv_cac_url
       end
     end
 
