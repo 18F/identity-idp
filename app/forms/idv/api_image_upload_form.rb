@@ -226,6 +226,8 @@ module Idv
     end
 
     def selfie_image_fingerprint
+      return unless liveness_checking_required
+
       images_metadata.selfie&.fingerprint
     end
 
@@ -548,132 +550,5 @@ module Idv
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
     end
-  end
-end
-
-class IdvImages
-  TYPES = %i[front back passport selfie].freeze
-
-  attr_reader :images
-  attr_accessor :errors
-
-  def initialize(params)
-    @images = TYPES.map do |type|
-      next unless params[type].present?
-      IdvImage.new(type:, params:)
-    end.compact
-    @errors = {}
-  end
-
-  def attempts_file_data
-    images.each_with_object({}) do |image, obj|
-      result = image.write_image
-      obj[image.attempts_tracker_file_id_key] = result.name
-      obj[image.attempts_tracker_encryption_key] = result.encryption_key
-    end
-  end
-
-  def submittable_images
-    images.each_with_object({}) do |image, obj|
-      obj[image.upload_key] = image.bytes
-    end
-  end
-
-  def passport_submittal
-    @passport_submittal ||= images.any? { |image| image.type == :passport }
-  end
-
-  def needed_images_present?(liveness_checking_required)
-    if liveness_checking_required && selfie.blank?
-      @errors[:selfie] = { type: 'blank' }
-    elsif !passport_submittal
-      [:front, :back].each do |image|
-        if send(image).blank?
-          @errors[image] = { type: :blank }
-        end
-      end
-    end
-
-    errors
-  end
-
-  def front
-    images.find { |image| image.type == :front }
-  end
-
-  def back
-    images.find { |image| image.type == :back }
-  end
-
-  def selfie
-    images.find { |image| image.type == :selfie }
-  end
-end
-
-class IdvImage
-  attr_reader :value, :type
-
-  def initialize(type:, params:)
-    @type = type
-    @value = as_readable(params[type])
-  end
-
-  def as_readable(val)
-    if val.respond_to?(:read)
-      val
-    elsif val.is_a? String
-      Idv::DataUrlImage.new(val)
-    end
-  rescue Idv::DataUrlImage::InvalidUrlFormatError => error
-    error
-  end
-
-  def blank?
-    value.blank?
-  end
-
-  def bytes
-    @bytes ||= readable? ? value&.read : nil
-  end
-
-  def fingerprint
-    return nil unless readable?
-    return @fingerprint if @fingerprint
-
-    Digest::SHA256.urlsafe_base64digest(bytes)
-  end
-
-  def readable?
-    value.present? && !value.is_a?(Idv::DataUrlImage::InvalidUrlFormatError)
-  end
-
-  def extra_attribute_key
-    :"#{type}_image_fingerprint"
-  end
-
-  def upload_key
-    :"#{type}_image"
-  end
-
-  def attempts_tracker_file_id_key
-    :"document_#{type}_image_file_id"
-  end
-
-  def attempts_tracker_encryption_key
-    :"document_#{type}_image_encryption_key"
-  end
-
-  def write_image
-    encrypted_document_storage_writer.write(image: bytes)
-  end
-
-  def encrypted_document_storage_writer
-    @encrypted_document_storage_writer ||= EncryptedDocStorage::DocWriter.new(
-      s3_enabled: doc_escrow_s3_storage_enabled?,
-    )
-  end
-
-  def doc_escrow_s3_storage_enabled?
-    IdentityConfig.store.doc_escrow_s3_storage_enabled
   end
 end

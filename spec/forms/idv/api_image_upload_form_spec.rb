@@ -277,9 +277,8 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new)
-            .and_return(writer)
-            .exactly(2).times
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+
           allow(writer).to receive(:write).exactly(2).times
 
           form.send(:images).each do |image|
@@ -418,9 +417,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           let(:doc_escrow_enabled) { true }
 
           before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new)
-              .and_return(writer)
-              .exactly(3).times
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+
             allow(writer).to receive(:write).exactly(3).times
 
             form.send(:images).each do |image|
@@ -552,8 +550,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new)
-            .and_return(writer)
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
           allow(writer).to receive(:write)
 
           form.send(:images).each do |image|
@@ -610,7 +607,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:doc_escrow_enabled) { true }
 
         before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer).exactly(2)
+          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
           allow(writer).to receive(:write).exactly(2).times
 
           form.send(:images).each do |image|
@@ -776,6 +773,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       context 'when selfie is checked for liveness' do
+        let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
