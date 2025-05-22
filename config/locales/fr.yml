@@ -1279,6 +1279,8 @@ in_person_proofing.body.location.distance.other: à %{count} miles
 in_person_proofing.body.location.heading: Informations sur les bureaux de poste
 in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité.
 in_person_proofing.body.location.location_button: Sélectionner
+in_person_proofing.body.location.location_skipped_notice: Il est inutile de prendre rendez-vous pour la vérification de votre identité. Vous pouvez vous rendre dans n’importe quel bureau de poste à condition d’avoir vérifié au préalable que c’est un bureau de poste participant.
+in_person_proofing.body.location.location_skipped_notice_button_text: Trouver un bureau de poste
 in_person_proofing.body.location.po_search.address_label: Adresse
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
