@@ -1669,6 +1669,7 @@ titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
+titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
@@ -1714,6 +1715,7 @@ titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
+titles.sign_in: 登录
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
