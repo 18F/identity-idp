@@ -132,14 +132,14 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [String] social_security
+    # @param [String] ssn Social Security Number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user inputs their SSN number during Identity verification
-    def idv_ssn_submitted(success:, social_security:, failure_reason: nil)
+    def idv_ssn_submitted(success:, ssn:, failure_reason: nil)
       track_event(
         'idv-ssn-submitted',
         success:,
-        social_security:,
+        ssn:,
         failure_reason:,
       )
     end
@@ -234,7 +234,7 @@ module AttemptsApi
     # @param [String] document_expiration
     # @param [String] first_name
     # @param [String] last_name
-    # @param [String] social_security
+    # @param [String] ssn Social Security Number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
@@ -248,7 +248,7 @@ module AttemptsApi
       document_expiration: nil,
       first_name: nil,
       last_name: nil,
-      social_security: nil,
+      ssn: nil,
       failure_reason: nil
     )
       track_event(
@@ -263,7 +263,7 @@ module AttemptsApi
         document_expiration:,
         first_name:,
         last_name:,
-        social_security:,
+        ssn:,
         failure_reason:,
       )
     end
