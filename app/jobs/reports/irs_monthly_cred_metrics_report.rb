@@ -40,10 +40,10 @@ module Reports
 
 
     def perform(_date = Time.zone.yesterday.end_of_day)
+      binding.pry
       @report_date = _date
       return unless IdentityConfig.store.s3_reports_enabled
-      
-      issuers = Agreements::PartnerAccount.find_by(name: "IRS")&.iaa_gtcs&.flat_map(&:service_providers)&.map(&:issuer)&.compact || []
+      issuers = Agreements::PartnerAccount.find_by(name: "Internal Revenue Service")&.iaa_gtcs&.flat_map(&:service_providers)&.map(&:issuer)&.compact || []
       iaas = IaaReportingHelper.iaas.filter do |x|
         x.end_date > 90.days.ago && (x.issuers & issuers).any?
       end
