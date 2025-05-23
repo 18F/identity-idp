@@ -71,6 +71,7 @@ class ResolutionProofingJob < ApplicationJob
       state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
+      user_id: user.uuid,
     )
 
     if use_shadow_mode?(user:, proofing_components:)
