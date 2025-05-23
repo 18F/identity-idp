@@ -29,6 +29,8 @@ class ResolutionProofingJob < ApplicationJob
   )
     timer = JobHelpers::Timer.new
 
+    user = User.find_by(id: user_id)
+
     raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
@@ -36,7 +38,6 @@ class ResolutionProofingJob < ApplicationJob
       symbolize_names: true,
     )
 
-    user = User.find_by(id: user_id)
     current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
 
     applicant_pii = decrypted_args[:applicant_pii]
@@ -71,7 +72,7 @@ class ResolutionProofingJob < ApplicationJob
       state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
-      user_id: user&.uuid,
+      user_id: user.uuid,
     )
 
     if use_shadow_mode?(user:, proofing_components:)
