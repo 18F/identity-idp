@@ -82,8 +82,8 @@ RSpec.describe 'state id controller enabled', :js do
         with: InPersonHelper::GOOD_LAST_NAME,
       )
       expect(page).to have_field(t('components.memorable_date.month'), with: '10')
-      expect(page).to have_field(t('components.memorable_date.day'), with: '6')
-      expect(page).to have_field(t('components.memorable_date.year'), with: '1938')
+      expect(page).to have_field(t('components.memorable_date.day'), with: '18')
+      expect(page).to have_field(t('components.memorable_date.year'), with: '1976')
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.state_id_jurisdiction'),
         with: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,

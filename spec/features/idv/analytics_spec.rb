@@ -70,7 +70,7 @@ RSpec.feature 'Analytics Regression', :js do
       transaction_id: 'state-id-mock-transaction-id-456',
       vendor_name: 'StateIdMock',
       verified_attributes: [],
-      state: 'MT',
+      state: 'WV',
       state_id_jurisdiction: 'ND',
       state_id_number: '#############',
       jurisdiction_in_maintenance_window: false }
@@ -134,9 +134,9 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
+        birth_year: 1976,
         identity_doc_address_state: nil,
-        state: 'MT',
+        state: 'WV',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
       },
@@ -189,9 +189,9 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
-        identity_doc_address_state: 'MT',
-        state: 'MT',
+        birth_year: 1976,
+        identity_doc_address_state: 'WV',
+        state: 'WV',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
       },
@@ -606,7 +606,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1976', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }

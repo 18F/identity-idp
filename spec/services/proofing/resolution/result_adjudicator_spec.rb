@@ -111,8 +111,8 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           result = subject.adjudicated_result
 
           expect(result.extra[:biographical_info]).to eq(
-            birth_year: 1938,
-            state: 'MT',
+            birth_year: 1976,
+            state: 'WV',
             identity_doc_address_state: nil,
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
@@ -128,8 +128,8 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           result = subject.adjudicated_result
 
           expect(result.extra[:biographical_info]).to eq(
-            birth_year: 1938,
-            state: 'MT',
+            birth_year: 1976,
+            state: 'WV',
             identity_doc_address_state: 'MT',
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
