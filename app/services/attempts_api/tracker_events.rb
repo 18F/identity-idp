@@ -26,8 +26,8 @@ module AttemptsApi
     # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
     # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
     # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
-    # @param [String] document_passport_image_file_id Filename in S3 w/encrypted data for front image
-    # @param [String] document_passport_image_encryption_key Base64-encoded AES key used for front
+    # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
+    # @param [String] document_passport_image_encryption_key Base64-encoded AES key for passport
     # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
     # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfie
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
