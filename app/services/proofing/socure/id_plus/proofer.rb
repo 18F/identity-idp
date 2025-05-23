@@ -42,6 +42,7 @@ module Proofing
 
           build_result_from_response(response)
         rescue Proofing::TimeoutError, Request::Error => err
+          NewRelic::Agent.notice_error(err)
           build_result_from_error(err)
         end
 
