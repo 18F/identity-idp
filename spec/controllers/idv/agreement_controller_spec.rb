@@ -167,7 +167,9 @@ RSpec.describe Idv::AgreementController do
             resolved_authn_context_result = Vot::Parser.new(
               acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
             ).parse
-            allow(subject).to receive(:resolved_authn_context_result).and_return(resolved_authn_context_result)
+            allow(subject).to receive(:resolved_authn_context_result).and_return(
+              resolved_authn_context_result,
+            )
           end
 
           it 'tracks a reproofing event upon reproofing' do
