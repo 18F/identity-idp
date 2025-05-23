@@ -223,7 +223,7 @@ RSpec.describe 'Identity verification', :js do
 
   def validate_document_capture_submit(user)
     expect_costing_for_document
-    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('WV')
   end
 
   # copied from document_capture_spec
