@@ -4,7 +4,9 @@ module Idv
   class IdvImages
     TYPES = %i[front back passport selfie].freeze
 
+    # @returns [Array<Idv::Image>] Contains 0 to 1 Idv::Image per IdvImages::TYPES item
     attr_reader :images
+    # @returns [Hash{Symbol => Hash}] errors are keyed by Idv::Image#type
     attr_accessor :errors
 
     def initialize(params)

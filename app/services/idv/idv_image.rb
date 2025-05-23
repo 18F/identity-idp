@@ -4,6 +4,8 @@ module Idv
   class IdvImage
     attr_reader :value, :type
 
+    # @param type [Symbol] image type as described by IdvImages::TYPES
+    # @param value [#read, String] an IO object or String that contains the raw image data
     def initialize(type:, value:)
       @type = type
       @value = as_readable(value)
