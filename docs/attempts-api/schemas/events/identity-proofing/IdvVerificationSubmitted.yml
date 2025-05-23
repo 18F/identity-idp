@@ -1,7 +1,7 @@
 description: |
-  When the user verifies their information when identity proofing. 
+  When the user verifies their information when identity proofing.
 allOf:
-  - $ref: '../shared/EventProperties.yml'
+  - $ref: "../shared/EventProperties.yml"
   - type: object
     properties:
       document_state:
@@ -22,18 +22,26 @@ allOf:
         type: string
       date_of_birth:
         type: string
-      address:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zip:
         type: string
       failure_reason:
-          type: object
-          description: |
-            An OPTIONAL object. An associative array of attributes and errors if success is false
-          properties:
-            pii:
-              type: array
-              # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.26slvbezaoz5
-              # They won't be very readable in this document
-              # is there a way for us to make errors out of this more in line with other failure_reasons?
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          pii:
+            type: array
+            # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.26slvbezaoz5
+            # They won't be very readable in this document
+            # is there a way for us to make errors out of this more in line with other failure_reasons?
       success:
         type: boolean
         description: |

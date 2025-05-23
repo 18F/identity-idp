@@ -48,7 +48,6 @@ module AttemptsApi
       track_event(
         'idv-document-uploaded',
         success:,
-        failure_reason:,
         document_back_image_encryption_key:,
         document_back_image_file_id:,
         document_front_image_encryption_key:,
@@ -57,6 +56,7 @@ module AttemptsApi
         document_passport_image_encryption_key:,
         document_selfie_image_encryption_key:,
         document_selfie_image_file_id:,
+        failure_reason:,
       )
     end
 
@@ -241,12 +241,14 @@ module AttemptsApi
     # @param [String] first_name
     # @param [String] last_name
     # @param [String] ssn Social Security Number
+    # @param [String] zip
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
       success:,
       address1: nil,
       address2: nil,
+      city: nil,
       date_of_birth: nil,
       document_state: nil,
       document_number: nil,
@@ -255,6 +257,8 @@ module AttemptsApi
       first_name: nil,
       last_name: nil,
       ssn: nil,
+      state: nil,
+      zip: nil,
       failure_reason: nil
     )
       track_event(
@@ -262,6 +266,7 @@ module AttemptsApi
         success:,
         address1:,
         address2:,
+        city:,
         date_of_birth:,
         document_state:,
         document_number:,
@@ -270,6 +275,8 @@ module AttemptsApi
         first_name:,
         last_name:,
         ssn:,
+        state:,
+        zip:,
         failure_reason:,
       )
     end
