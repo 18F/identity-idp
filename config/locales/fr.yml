@@ -914,6 +914,8 @@ forms.messages.remember_device: Se souvenir de ce navigateur
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
 forms.passwords.edit.labels.password: Nouveau mot de passe
+forms.passwords.reset.how_to_reset: Comment réinitialiser votre mot de passe
+forms.passwords.reset.how_to_reset_with_personal_key: Comment réinitialiser votre mot de passe si vous disposez d’une clé personnelle
 forms.personal_key_partial.acknowledgement.header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé personnelle. Gardez-la en sécurité et ne la partagez avec personne.
 forms.personal_key_partial.acknowledgement.help_link_text: En savoir plus sur la clé personnelle
 forms.personal_key_partial.acknowledgement.text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous devrez à nouveau confirmer votre identité.

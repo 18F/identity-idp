@@ -11,6 +11,8 @@ class MarketingSite
     manage-your-account/delete-your-account
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
+    trouble-signing-in/forgot-your-password
+    trouble-signing-in/forgot-your-personal-key
     trouble-signing-in/security-check-failed
     verify-your-identity/accepted-identification-documents
     verify-your-identity/how-to-add-images-of-your-state-issued-id
