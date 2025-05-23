@@ -612,7 +612,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', current_address_zip_code: '59010', proofing_components: { document_check: 'usps' }
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', current_address_zip_code: '25309', proofing_components: { document_check: 'usps' }
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', proofing_components: { document_check: 'usps' }

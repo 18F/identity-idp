@@ -130,7 +130,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           expect(result.extra[:biographical_info]).to eq(
             birth_year: 1976,
             state: 'WV',
-            identity_doc_address_state: 'MT',
+            identity_doc_address_state: 'WV',
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
             same_address_as_id: 'true',
