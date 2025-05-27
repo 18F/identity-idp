@@ -4,20 +4,18 @@ module DeviceProfilingConcern
   def process_device_profiling_result
     return unless IdentityConfig.store.account_creation_device_profiling == :enabled
     return unless user_session[:in_account_creation_flow]
+    return unless user_session[:next_mfa_selection_choice] == nil
     check_device_profiling_result(DeviceProfilingResult::PROFILING_TYPES[:account_creation])
   end
   
   def check_device_profiling_result(type)
     return unless current_user
-    binding.pry
-    # Check if the user has failed device profiling
-    if DeviceProfilingResult.failed?(user_id: current_user.id, type: type)
-      handle_failed_device_profiling
-    end
+    
+    DeviceProfilingResult.for_user(user_id: current_user.id, type: type)
   end
   
-  def handle_failed_device_profiling
-    result = DeviceProfilingResult.for_user(current_user.id)
+  def handle_failed_device_profiling(result)
+    result = DeviceProfilingResult.for_user(current_user.id).first
     
     # Log the event
     analytics.device_profiling_restriction_enforced(
@@ -27,7 +25,7 @@ module DeviceProfilingConcern
     )
     
     sign_out
-    redirect_to device_profiling_failure_path
+    @failure_path =  device_profiling_failure_path
   end
   
   # # Method to check if device profiling is still pending or has completed

@@ -496,7 +496,7 @@ module AnalyticsEvents
     track_event(
       :device_profiling_restriction_enforced,
       client:,
-      review_Status:,
+      review_status:,
       reason:,
       **extra,
     )

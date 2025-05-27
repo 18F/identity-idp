@@ -14,8 +14,7 @@ class DeviceProfilingResult < ApplicationRecord
   
   def self.failed?(user_id:, type:)
     result = find_by(user_id:, profiling_type: type)
-    binding.pry
-    result && !result.success?
+    result && (result.review_status != 'pass')
   end
 
 
