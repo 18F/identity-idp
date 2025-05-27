@@ -1006,7 +1006,7 @@ headings.piv_cac.certificate.bad: El certificado de la identificación de emplea
 headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
 headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
 headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta PIV o CAC
+headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
 headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
 headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
 headings.piv_cac.did_not_work: Su tarjeta PIV o CAC no funcionó
