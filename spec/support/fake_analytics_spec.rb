@@ -585,7 +585,7 @@ RSpec.describe FakeAnalytics do
     end
 
     it 'throws an error when it detects sample PII in the payload' do
-      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }
+      expect { analytics.track_event('Trackable Event', some_benign_key: 'MICHELE DEBAK') }
         .to raise_error(FakeAnalytics::PiiDetected)
     end
   end
