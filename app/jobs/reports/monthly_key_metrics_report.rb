@@ -100,7 +100,8 @@ module Reports
 
     def account_reset_rate_report
       @account_reset_rate_report ||= Reporting::AccountResetReport.new(
-        time_range: report_date.all_month)
+        time_range: report_date.all_month,
+      )
     end
 
     # def account_deletion_rate_report

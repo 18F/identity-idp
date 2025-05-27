@@ -50,10 +50,9 @@ module Reporting
 
     def account_reset_rate_emailable_report
       EmailableReport.new(
-          subtitle: 'Account Reset Rate',
-          table: account_reset_table,
-        )
-      
+        subtitle: 'Account Reset Rate',
+        table: account_reset_table,
+      )
     end
 
     # event name => set(user ids)

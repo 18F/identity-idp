@@ -12,12 +12,10 @@ RSpec.describe Reporting::AccountResetReport do
         # deletes account after being unable to authenticate
         { 'user_id' => 'user1', 'name' => 'Email and Password Authentication' },
         { 'user_id' => 'user1', 'name' => 'Account Reset: delete' },
-        
 
         # deletes account after being unable to authenticate
         { 'user_id' => 'user2', 'name' => 'Email and Password Authentication' },
         { 'user_id' => 'user2', 'name' => 'Account Reset: delete' },
-        
 
         # deletes account after being unable to authenticate
         { 'user_id' => 'user3', 'name' => 'Email and Password Authentication' },
@@ -34,10 +32,10 @@ RSpec.describe Reporting::AccountResetReport do
 
   describe '#account_reset_rate_emailable_report' do
     let(:expected_report) do
-        Reporting::EmailableReport.new(
-          subtitle: 'Account Reset Rate',
-          table: expected_table,
-        )
+      Reporting::EmailableReport.new(
+        subtitle: 'Account Reset Rate',
+        table: expected_table,
+      )
     end
     it 'return expected table for email' do
       expect(report.account_reset_rate_emailable_report).to eq expected_report
@@ -116,9 +114,9 @@ RSpec.describe Reporting::AccountResetReport do
   end
 
   def expected_table(strings: false)
-      [
-        ['Accounts Reset', 'Authentication Attempts', 'Account Reset Rate'],
-        [strings ? '3' : 3, strings ? '5' : 5, '60.0%'], 
-      ]
+    [
+      ['Accounts Reset', 'Authentication Attempts', 'Account Reset Rate'],
+      [strings ? '3' : 3, strings ? '5' : 5, '60.0%'],
+    ]
   end
 end
