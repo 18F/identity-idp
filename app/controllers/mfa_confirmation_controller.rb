@@ -2,6 +2,7 @@
 
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
+  include DeviceProfilingConcern
   before_action :confirm_two_factor_authenticated
   before_action :redirect_to_backup_codes_confirm, only: [:show],
                                                    if: :backup_code_confirmation_needed?
@@ -21,6 +22,7 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
+    process_device_profiling_result
     redirect_to sign_up_completed_path
   end
 

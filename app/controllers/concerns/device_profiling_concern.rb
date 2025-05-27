@@ -4,12 +4,12 @@ module DeviceProfilingConcern
   def process_device_profiling_result
     return unless IdentityConfig.store.account_creation_device_profiling == :enabled
     return unless user_session[:in_account_creation_flow]
-    check_device_profiling_result(:account_creation)
+    check_device_profiling_result(DeviceProfilingResult::PROFILING_TYPES[:account_creation])
   end
   
   def check_device_profiling_result(type)
     return unless current_user
-    
+    binding.pry
     # Check if the user has failed device profiling
     if DeviceProfilingResult.failed?(user_id: current_user.id, type: type)
       handle_failed_device_profiling

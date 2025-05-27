@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DeviceProfilingResult < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, dependent: :destroy
 
   PROFILING_TYPES= {
     :account_creation => 'ACCOUNT_CREATION'
@@ -14,6 +14,7 @@ class DeviceProfilingResult < ApplicationRecord
   
   def self.failed?(user_id:, type:)
     result = find_by(user_id:, profiling_type: type)
+    binding.pry
     result && !result.success?
   end
 

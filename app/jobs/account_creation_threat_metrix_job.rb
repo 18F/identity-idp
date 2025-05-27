@@ -39,7 +39,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       review_status: result.review_status,
       transaction_id: result.transaction_id,
       reason: result.review_status,
-      type: DeviceProfilingResult::PROFILING_TYPES[:account_creation]
+      profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation]
     )
   end
 end
