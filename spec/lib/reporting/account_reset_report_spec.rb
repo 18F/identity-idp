@@ -35,6 +35,7 @@ RSpec.describe Reporting::AccountResetReport do
       Reporting::EmailableReport.new(
         subtitle: 'Account Reset Rate',
         table: expected_table,
+        filename: 'account_reset_rate',
       )
     end
     it 'return expected table for email' do

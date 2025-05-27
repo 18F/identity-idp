@@ -52,6 +52,7 @@ module Reporting
       EmailableReport.new(
         subtitle: 'Account Reset Rate',
         table: account_reset_table,
+        filename: 'account_reset_rate',
       )
     end
 

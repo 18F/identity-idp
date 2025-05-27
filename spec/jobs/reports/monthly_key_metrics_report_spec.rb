@@ -14,7 +14,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
     [
       "#{report_folder}/condensed_idv.csv",
       "#{report_folder}/account_reuse.csv",
-      "#{report_folder}/account_deletion_rate.csv",
+      "#{report_folder}/account_reset_rate.csv",
       "#{report_folder}/total_user_count.csv",
       "#{report_folder}/active_users_count.csv",
       "#{report_folder}/proofing_rate_metrics.csv",
@@ -44,6 +44,11 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       ['Metric', 'June 2024', 'July 2024', 'August 2024'],
     ]
   end
+   let(:mock_account_reset_data) do
+    [
+      ['Accounts Reset', 'Authentication Attempts', 'Account Reset Rate'],
+    ]
+  end
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -62,7 +67,8 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       .and_return(mock_proofing_rate_data)
     allow(report.monthly_idv_report).to receive(:as_csv)
       .and_return(mock_monthly_idv_data)
-
+    allow(report.account_reset_rate_report).to receive(:account_reset_table)
+      .and_return(mock_account_reset_data)
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
       .and_return(mock_daily_reports_emails)
     allow(IdentityConfig.store).to receive(:team_all_login_emails)
