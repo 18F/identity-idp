@@ -1,7 +1,7 @@
 description: |
   The document was uploaded during identity proofing and authenticated by the vendor.
 allOf:
-  - $ref: '../shared/EventProperties.yml'
+  - $ref: "../shared/EventProperties.yml"
   - type: object
     properties:
       document_state:
@@ -28,7 +28,7 @@ allOf:
         type: string
       city:
         type: string
-      state: 
+      state:
         type: string
       country:
         type: string
@@ -37,10 +37,10 @@ allOf:
       document_front_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
-      document_back_image_file_id: 
+      document_back_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
-      document_selfie_image_file_id: 
+      document_selfie_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
       document_front_image_encryption_key:
@@ -57,55 +57,9 @@ allOf:
         description: |
           Indicates whether liveness checking is required
       failure_reason:
-          type: object
-          description: |
-            An OPTIONAL object. An associative array of attributes and errors if success is false
-          properties:
-            pii:
-              type: array
-              description: | 
-                Errors that describe the failure
-              items: 
-                type: string
-                enum: 
-                  - We couldn't read the barcode on the back of your ID. It could be because of a problem with the barcode, or the barcode is a new type that we don't recognize yet. Use another state-issued ID if you have one.
-                  - We couldn't read the barcode on the back of your ID. Try taking a new picture.
-                  - We couldn't read the birth date on your ID. Try taking new pictures.
-                  - We couldn't read the reference number on the back of your ID. Try taking a new picture.
-                  - We couldn't recognize your ID. It may be worn or damaged, or the front and the back of the ID don't match. Try taking new pictures.
-                  - We couldn't read the document number on your ID. Try taking new pictures.
-                  - The document has expired, or we couldn't read the expiration date on your ID. If your ID is not expired, try taking new pictures.
-                  - We couldn't read the full name on your ID. Try taking new pictures.
-                  - We couldn't recognize your ID. It may be worn, damaged, or a type of ID that we don't recognize. Try taking new pictures.
-                  - We couldn't verify your ID. It might have moved when you took the picture. Try taking new pictures.
-                  - We couldn't read the issue date on your ID. Try taking new pictures.
-                  - We couldn't read the control number barcode. Try taking new pictures.
-                  - We couldn't read the sex on your ID. Try taking new pictures.
-                  - We couldn't verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
-                  - We couldn't verify the photo on your ID. Try taking new pictures.
-                  - If the information below is incorrect, please upload new photos of your state-issued ID.
-                  - We couldn't read the barcode on your ID.
-                  - Your camera is blocked
-                  - We don't have permission to access the camera. Please check your browser or system settings, reload this page, or upload a photo instead.
-                  - Camera failed to start, please try again.
-                  - Image is too small or blurry, please try again.
-                  - We couldn't read your ID. Your image sizes may be too small, or your ID is too small or blurry in the photos. Make sure your ID is large within the image frame and try taking new pictures.
-                  - This file type is not accepted, please choose a JPG or PNG file.
-                  - Please add a new image
-                  - We couldn't verify the back of your ID. Try taking a new picture.
-                  - We couldn't verify the front of your ID. Try taking a new picture.
-                  - We are having technical difficulties on our end. Please try to submit your images again later.
-                  - Try taking new pictures.
-                  - Image has glare, please try again.
-                  - We couldn't read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
-                  - The image file that you added is not supported. Please take new photos of your ID and try again.
-                  - Your image size is too large or too small. Please add images of your ID that are about 2025 x 1275 pixels.
-                  - The pixel depth of your image file is not supported. Please take new photos of your ID and try again. Supported image pixel depth is 24-bit RGB.
-                  - To continue, sign in to your Login.gov account on any device that has a camera, like a mobile phone, tablet or computer with a webcam.
-                  - The selection was not a valid file.
-                  - Your birthday does not meet the minimum age requirement.
-                  - Image is blurry, please try again.
-                  - We couldn't read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
       success:
         type: boolean
         description: |

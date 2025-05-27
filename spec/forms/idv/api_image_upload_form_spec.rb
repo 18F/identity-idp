@@ -84,6 +84,8 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
@@ -279,11 +281,11 @@ RSpec.describe Idv::ApiImageUploadForm do
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-          allow(writer).to receive(:write).exactly(2).times
+          allow(writer).to receive(:write).and_return result
 
           form.send(:images).each do |image|
             # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
           end
         end
 
@@ -294,6 +296,27 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
+            failure_reason: nil,
+          )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: pii_from_doc[:state],
+            document_number: pii_from_doc[:state_id_number],
+            document_issued: pii_from_doc[:state_id_issued],
+            document_expiration: pii_from_doc[:state_id_expiration],
+            first_name: pii_from_doc[:first_name],
+            last_name: pii_from_doc[:last_name],
+            date_of_birth: pii_from_doc[:dob],
+            address1: pii_from_doc[:address1],
+            address2: pii_from_doc[:address2],
+            city: pii_from_doc[:city],
+            state: pii_from_doc[:state],
+            zip: pii_from_doc[:zip],
             failure_reason: nil,
           )
           form.submit
@@ -419,11 +442,11 @@ RSpec.describe Idv::ApiImageUploadForm do
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-            allow(writer).to receive(:write).exactly(3).times
+            allow(writer).to receive(:write).and_return result
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).and_return result
+              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
             end
           end
 
@@ -436,6 +459,29 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_front_image_file_id: 'name',
               document_selfie_image_encryption_key: '12345',
               document_selfie_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
+              document_state: pii_from_doc[:state],
+              document_number: pii_from_doc[:state_id_number],
+              document_issued: pii_from_doc[:state_id_issued],
+              document_expiration: pii_from_doc[:state_id_expiration],
+              first_name: pii_from_doc[:first_name],
+              last_name: pii_from_doc[:last_name],
+              date_of_birth: pii_from_doc[:dob],
+              address1: pii_from_doc[:address1],
+              address2: pii_from_doc[:address2],
+              city: pii_from_doc[:city],
+              state: pii_from_doc[:state],
+              zip: pii_from_doc[:zip],
               failure_reason: nil,
             )
             form.submit
@@ -566,6 +612,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             failure_reason: { front: [:blank] },
           )
+
+          expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
           form.submit
         end
       end
@@ -573,7 +621,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'posting images to client fails' do
       let(:errors) do
-        { front: 'glare' }
+        { front: [:glare] }
       end
 
       let(:failed_response) do
@@ -608,11 +656,11 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(2).times
+          allow(writer).to receive(:write).and_return result
 
           form.send(:images).each do |image|
             # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            expect(writer).to receive(:write).with(image: image.bytes)
           end
         end
 
@@ -625,6 +673,28 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_front_image_file_id: 'name',
             failure_reason: nil,
           )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: nil,
+            document_number: nil,
+            document_issued: nil,
+            document_expiration: nil,
+            first_name: nil,
+            last_name: nil,
+            date_of_birth: nil,
+            address1: nil,
+            address2: nil,
+            city: nil,
+            state: nil,
+            zip: nil,
+            failure_reason: { front: [:glare] },
+          )
+
           form.submit
         end
       end
@@ -646,7 +716,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'includes client response errors' do
         response = form.submit
-        expect(response.errors[:front]).to eq('glare')
+        expect(response.errors[:front]).to eq([:glare])
       end
 
       it 'keeps fingerprints of failed image and triggers error when submit same image' do
@@ -665,7 +735,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           'IdV: doc auth image upload vendor submitted',
           hash_including(
             doc_auth_result: 'Failed',
-            errors: { front: 'glare' },
+            errors: { front: [:glare] },
             success: false,
             doc_type_supported: boolean,
             doc_auth_success: boolean,
@@ -681,7 +751,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:errors) do
-          { selfie: 'glare' }
+          { selfie: [:glare] }
         end
         let(:back_image) { DocAuthImageFixtures.portrait_match_fail_yaml }
 
@@ -694,7 +764,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           response = form.submit
           expect(response.errors[:front]).to be_nil
           expect(response.errors[:back]).to be_nil
-          expect(response.errors[:selfie]).to eq('glare')
+          expect(response.errors[:selfie]).to eq([:glare])
         end
 
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
