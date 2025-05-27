@@ -44,7 +44,7 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
       ['Metric', 'June 2024', 'July 2024', 'August 2024'],
     ]
   end
-   let(:mock_account_reset_data) do
+  let(:mock_account_reset_data) do
     [
       ['Accounts Reset', 'Authentication Attempts', 'Account Reset Rate'],
     ]
