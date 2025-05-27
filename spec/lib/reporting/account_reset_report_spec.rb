@@ -2,39 +2,45 @@ require 'rails_helper'
 require 'reporting/account_reset_report'
 
 RSpec.describe Reporting::AccountResetReport do
-  let(:time_range) { Date.new(2022, 1, 1).all_day }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
 
   subject(:report) { Reporting::AccountResetReport.new(time_range:) }
 
-  describe '#as_tables' do
-    it 'generates the tabular csv data' do
-      expect(report.as_tables).to eq expected_table
-    end
+  before do
+    stub_cloudwatch_logs(
+      [
+        # deletes account after being unable to authenticate
+        { 'user_id' => 'user1', 'name' => 'Email and Password Authentication' },
+        { 'user_id' => 'user1', 'name' => 'Account Reset: delete' },
+        
+
+        # deletes account after being unable to authenticate
+        { 'user_id' => 'user2', 'name' => 'Email and Password Authentication' },
+        { 'user_id' => 'user2', 'name' => 'Account Reset: delete' },
+        
+
+        # deletes account after being unable to authenticate
+        { 'user_id' => 'user3', 'name' => 'Email and Password Authentication' },
+        { 'user_id' => 'user3', 'name' => 'Account Reset: delete' },
+
+        # unable to authenticate, but does not delete account
+        { 'user_id' => 'user4', 'name' => 'Email and Password Authentication' },
+
+        # unable to authenticate, but does not delete account
+        { 'user_id' => 'user5', 'name' => 'Email and Password Authentication' },
+      ],
+    )
   end
 
   describe '#account_reset_rate_emailable_report' do
-    it 'adds a "first row" hash with a title for tables_report mailer' do
-      reports = report.account_reset_rate_emailable_report
-      aggregate_failures do
-        reports.each do |report|
-          expect(report.subtitle).to be_present
-        end
-      end
+    let(:expected_report) do
+        Reporting::EmailableReport.new(
+          subtitle: 'Account Reset Rate',
+          table: expected_table,
+        )
     end
-  end
-
-  describe '#to_csvs' do
-    it 'generates a csv' do
-      csv_string_list = report.to_csvs
-      expect(csv_string_list.count).to be 1
-
-      csvs = csv_string_list.map { |csv| CSV.parse(csv) }
-
-      aggregate_failures do
-        csvs.map(&:to_a).zip(expected_table(strings: true)).each do |actual, expected|
-          expect(actual).to eq(expected)
-        end
-      end
+    it 'return expected table for email' do
+      expect(report.account_reset_rate_emailable_report).to eq expected_report
     end
   end
 
@@ -110,11 +116,9 @@ RSpec.describe Reporting::AccountResetReport do
   end
 
   def expected_table(strings: false)
-    [
       [
         ['Accounts Reset', 'Authentication Attempts', 'Account Reset Rate'],
-        [strings ? '2' : 2, strings ? '4' : 4, '50.0%'], 
-      ],
-    ]
+        [strings ? '3' : 3, strings ? '5' : 5, '60.0%'], 
+      ]
   end
 end

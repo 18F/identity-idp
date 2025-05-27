@@ -17,7 +17,7 @@ module Reporting
     attr_reader :time_range
 
     module Events
-      EMAIL_PASSWORD_AUTH = 'Email and Password Authenication'
+      EMAIL_PASSWORD_AUTH = 'Email and Password Authentication'
       ACCOUNT_RESET_DELETE = 'Account Reset: delete'
 
       def self.all_events
@@ -48,28 +48,12 @@ module Reporting
       @progress
     end
 
-    def as_tables
-      [
-        account_reset_table,
-      ]
-    end
-
     def account_reset_rate_emailable_report
       EmailableReport.new(
           subtitle: 'Account Reset Rate',
           table: account_reset_table,
         )
       
-    end
-    
-    def to_csvs
-      as_tables.map do |table|
-        CSV.generate do |csv|
-          table.each do |row|
-            csv << row
-          end
-        end
-      end
     end
 
     # event name => set(user ids)
@@ -142,13 +126,5 @@ module Reporting
     def format_as_percent(numerator:, denominator:)
       (100 * numerator.to_f / denominator.to_f).round(2).to_s + '%'
     end
-  end
-end
-
-if __FILE__ == $PROGRAM_NAME
-  options = Reporting::CommandLineOptions.new.parse!(ARGV)
-
-  Reporting::AccountResetReport.new(**options).to_csvs.each do |csv|
-    puts csv
   end
 end
