@@ -29,6 +29,7 @@ module Users
       if opted_to_add?
         webauthn_setup_path(platform: true)
       else
+        process_device_profiling_result
         after_mfa_setup_path
       end
     end

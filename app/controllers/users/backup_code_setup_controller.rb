@@ -55,6 +55,7 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
+      process_device_profiling_result
       redirect_to next_setup_path || after_mfa_setup_path
     end
 

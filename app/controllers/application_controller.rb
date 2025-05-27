@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
+  include DeviceProfilingConcern
   include AbTestingConcern
 
   # Prevent CSRF attacks by raising an exception.
@@ -515,6 +516,7 @@ class ApplicationController < ActionController::Base
   def mobile?
     BrowserCache.parse(request.user_agent).mobile?
   end
+
 
   def user_is_banned?
     return false unless user_signed_in?

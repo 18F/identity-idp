@@ -82,6 +82,7 @@ module TwoFactorAuthentication
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled? &&
             !FeatureManagement.enable_additional_mfa_redirect_for_personal_key_mfa?
+        process_device_profiling_result
         redirect_to after_mfa_setup_path
       else
         redirect_to authentication_methods_setup_url

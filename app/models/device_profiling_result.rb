@@ -6,22 +6,20 @@ class DeviceProfilingResult < ApplicationRecord
   PROFILING_TYPES= {
     :account_creation => 'ACCOUNT_CREATION'
   }
-  
-  # Check if a user has passed device profiling
+
   def self.passed?(user_id:, type:)
-    result = find_by(user_id: user_id)
+    result = find_by(user_id:, profiling_type: type)
     result && result.success?
   end
   
-  # Check if a user has failed device profiling
   def self.failed?(user_id:, type:)
-    result = find_by(user_id: user_id)
+    result = find_by(user_id:, profiling_type: type)
     result && !result.success?
   end
-  
-  # Check if a user has been automatically rejected
+
+
   def self.auto_rejected?(user_id:, type:)
-    result = find_by(user_id: user_id)
+    result = find_by(user_id:, profiling_type: type)
     result && result.review_status == 'reject'
   end
   

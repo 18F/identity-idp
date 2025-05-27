@@ -95,7 +95,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
     t.string "transaction_id", comment: "sensitive=false"
     t.string "reason", comment: "sensitive=false"
     t.datetime "processed_at", comment: "sensitive=false"
-    t.string "type", comment: "sensitive=false"
+    t.string "profiling_type", comment: "sensitive=false"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_device_profiling_results_on_user_id"
@@ -361,7 +361,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
     t.datetime "last_batch_claimed_at", comment: "sensitive=false"
     t.string "sponsor_id", null: false, comment: "sensitive=false"
     t.string "doc_auth_result", comment: "sensitive=false"
-    t.integer "document_type", comment: "sensitive=false"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
@@ -706,7 +705,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
 
   add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_capture_sessions", "users"
-  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"

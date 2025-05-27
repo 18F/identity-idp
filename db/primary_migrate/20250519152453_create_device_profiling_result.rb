@@ -10,7 +10,7 @@ class CreateDeviceProfilingResult < ActiveRecord::Migration[8.0]
       t.string :transaction_id, comment: "sensitive=false"
       t.string :reason, comment: "sensitive=false"
       t.datetime :processed_at, comment: "sensitive=false"
-      t.string :type, comment: "sensitive=false"
+      t.string :profiling_type, comment: "sensitive=false"
 
       t.timestamps
     end
