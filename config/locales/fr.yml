@@ -992,7 +992,7 @@ headings.piv_cac_login.success: Votre carte PIV/CAC a bien été configurée com
 headings.piv_cac_setup.already_associated: La carte PIV/CAC que vous avez présentée est associée à un autre utilisateur.
 headings.piv_cac_setup.new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
 headings.piv_cac.certificate.bad: Le certificat de la carte d’employé fédéral que vous avez sélectionné n’est pas valide.
-headings.piv_cac.certificate.expired: Le certificat PIV/CAC sélectionné a expiré.
+headings.piv_cac.certificate.expired: Le certificat de la carte d’employé fédéral que vous avez sélectionné a expiré.
 headings.piv_cac.certificate.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
 headings.piv_cac.certificate.none: Nous ne détectons pas de certificat sur votre carte d’employé fédéral.
 headings.piv_cac.certificate.not_auth_cert: Veuillez choisir un autre certificat pour votre carte PIV/CAC.
