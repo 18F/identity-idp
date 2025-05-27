@@ -29,6 +29,14 @@ module TwoFactorAuthentication
       ), allow_other_host: true
     end
 
+    def error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: login_two_factor_piv_cac_url,
+      )
+    end
+
     private
 
     def process_token
@@ -46,14 +54,6 @@ module TwoFactorAuthentication
       else
         handle_invalid_piv_cac(piv_cac_verification_form.error_type)
       end
-    end
-
-    def error
-      @presenter = PivCacErrorPresenter.new(
-        error: params[:error],
-        view: view_context,
-        try_again_url: login_two_factor_piv_cac_url,
-      )
     end
 
     def handle_valid_piv_cac
