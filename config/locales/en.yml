@@ -991,7 +991,7 @@ headings.piv_cac_login.new: Sign in with your government employee ID
 headings.piv_cac_login.success: You successfully set up PIV/CAC as an authentication method.
 headings.piv_cac_setup.already_associated: The PIV/CAC you presented is associated with another user.
 headings.piv_cac_setup.new: Use your PIV/CAC card to secure your account
-headings.piv_cac.certificate.bad: The PIV/CAC certificate you selected is invalid
+headings.piv_cac.certificate.bad: The government employee ID certificate you selected is invalid
 headings.piv_cac.certificate.expired: The PIV/CAC certificate you selected has expired
 headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
 headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID

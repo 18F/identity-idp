@@ -1002,7 +1002,7 @@ headings.piv_cac_login.new: Inicie sesión con su identificación de empleado de
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-headings.piv_cac.certificate.bad: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
+headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
 headings.piv_cac.certificate.expired: El certificado de la tarjeta PIV o CAC que seleccionó ya venció
 headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
 headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
