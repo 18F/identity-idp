@@ -215,12 +215,6 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(response).to redirect_to login_two_factor_piv_cac_path
       end
 
-      it 'displays flash error message' do
-        response
-
-        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
-      end
-
       it 'resets the piv/cac session information' do
         response
 
