@@ -188,6 +188,12 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_ready_to_verify_skipped_location
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
+    )
+  end
+
   def in_person_ready_to_verify_passport
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_passport,
@@ -206,6 +212,15 @@ class UserMailerPreview < ActionMailer::Preview
       email_address: email_address_record,
     ).in_person_ready_to_verify_reminder(
       enrollment: in_person_enrollment_id_ipp,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_skipped_location
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
     )
   end
 
@@ -343,6 +358,27 @@ class UserMailerPreview < ActionMailer::Preview
 
   def in_person_visited_location_name
     'ACQUAINTANCESHIP'
+  end
+
+  def in_person_enrollment_id_ipp_skipped_location
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+          logo: 'gsa.png',
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: nil,
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+      ),
+    )
   end
 
   def in_person_enrollment_id_ipp

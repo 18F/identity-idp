@@ -422,7 +422,7 @@ describe('document-capture/components/review-issues-step', () => {
       async () => {
         const { getByRole, getByText } = render(
           <ReviewIssuesStep
-            pii={{ first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' }}
+            pii={{ first_name: 'Michele', last_name: 'Debak', dob: '1976-10-18' }}
           />,
         );
 

@@ -291,6 +291,12 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Previous months's irs verification report
+      monthly_irs_verification_report: {
+        class: 'Reports::MonthlyIrsVerificationReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',

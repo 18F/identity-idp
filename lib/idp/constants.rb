@@ -95,31 +95,31 @@ module Idp
     AAL2 = 2
     AAL3 = 3
 
-    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+    MOCK_IDV_APPLICANT_FULL_STATE = 'West Virginia'
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
-    MOCK_IDV_APPLICANT_STATE = 'MT'
+    MOCK_IDV_APPLICANT_STATE = 'WV'
     MOCK_IDV_APPLICANT = {
-      address1: '1 FAKE RD',
+      address1: '514 EAST AVE',
       address2: '',
-      city: 'GREAT FALLS',
-      dob: '1938-10-06',
+      city: 'SOUTH CHARLESTON',
+      dob: '1976-10-18',
       eye_color: nil,
-      first_name: 'FAKEY',
+      first_name: 'MICHELE',
       height: 72,
       issuing_country_code: 'US',
-      last_name: 'MCFAKERSON',
+      last_name: 'DEBAK',
       middle_name: nil,
-      name_suffix: 'JR',
+      name_suffix: '',
       state: MOCK_IDV_APPLICANT_STATE,
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
       id_doc_type: 'drivers_license',
-      sex: 'male',
+      sex: 'female',
       weight: nil,
-      zipcode: '59010-1234',
+      zipcode: '25309-1104',
     }.freeze
 
     MOCK_IPP_APPLICANT = {

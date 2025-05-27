@@ -35,6 +35,10 @@ module Idv
         **analytics_arguments.merge(result.to_h),
       )
 
+      if current_user.has_proofed_before?
+        attempts_api_tracker.idv_reproof
+      end
+
       if result.success?
         idv_session.idv_consent_given_at = Time.zone.now
 

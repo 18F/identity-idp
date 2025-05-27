@@ -1279,6 +1279,8 @@ in_person_proofing.body.location.distance.other: '%{count} miles away'
 in_person_proofing.body.location.heading: Post Office information
 in_person_proofing.body.location.info: No appointment is needed to verify your identity.
 in_person_proofing.body.location.location_button: Select
+in_person_proofing.body.location.location_skipped_notice: No appointment is needed to verify your identity. You can visit any participating Post Office but you must search for a location before visiting to confirm it is participating.
+in_person_proofing.body.location.location_skipped_notice_button_text: Find a Post Office
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City
@@ -1654,6 +1656,7 @@ titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
 titles.confirmations.delete: Please confirm
 titles.confirmations.show: Choose a password
+titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
 titles.doc_auth.hybrid_handoff: Verify your ID
@@ -1699,6 +1702,7 @@ titles.registrations.new: Create your account
 titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
 titles.select_email: Select your preferred email
+titles.sign_in: Sign in
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
