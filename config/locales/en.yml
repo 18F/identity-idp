@@ -996,7 +996,7 @@ headings.piv_cac.certificate.expired: The government employee ID certificate you
 headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
 headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID
 headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your PIV/CAC card
-headings.piv_cac.certificate.revoked: The PIV/CAC certificate you selected has been revoked from your card
+headings.piv_cac.certificate.revoked: The government employee ID certificate you selected has been revoked from your card
 headings.piv_cac.certificate.unverified: The PIV/CAC certificate you selected is invalid
 headings.piv_cac.did_not_work: Your PIV/CAC did not work
 headings.piv_cac.token.bad: Internal error.
