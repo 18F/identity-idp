@@ -1009,7 +1009,7 @@ headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarj
 headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
 headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
 headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.did_not_work: Su tarjeta PIV o CAC no funcionó
+headings.piv_cac.did_not_work: Error interno.
 headings.piv_cac.token.bad: Error interno
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
 headings.piv_cac.token.missing: Error interno

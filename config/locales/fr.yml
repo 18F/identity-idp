@@ -998,7 +998,7 @@ headings.piv_cac.certificate.none: Nous ne détectons pas de certificat sur votr
 headings.piv_cac.certificate.not_auth_cert: Veuillez choisir un autre certificat pour votre carte d’employé fédéral.
 headings.piv_cac.certificate.revoked: Le certificat de la carte d’employé fédéral que vous avez sélectionné a été révoqué.
 headings.piv_cac.certificate.unverified: Le certificat PIV/CAC sélectionné n’est pas valide.
-headings.piv_cac.did_not_work: Votre PIV/CAC n’a pas fonctionné
+headings.piv_cac.did_not_work: Erreur interne.
 headings.piv_cac.token.bad: Erreur interne.
 headings.piv_cac.token.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
 headings.piv_cac.token.missing: Erreur interne.
