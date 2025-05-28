@@ -125,4 +125,6 @@ production:
     database_tasks: false
     replica: true
     sslmode: <%= IdentityConfig.store.database_sslmode %>
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    schema_search_path: "idp, logs"
 <% end %>
