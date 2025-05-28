@@ -752,10 +752,10 @@ doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profile_detected.heading: Creemos que es posible que tenga otra cuenta
-duplicate_profiles_detected.heading: Creemos que es posible que tenga otras cuentas
-duplicate_profile_detected.intro: Encontramos otra cuenta de %{app_name} que creemos que pueda ser suya. ¿Reconoce como suyas las cuentas siguientes?
-duplicate_profiles_detected.intro: Encontramos otras cuentas de %{app_name} que creemos que puedan ser suyas. ¿Reconoce como suyas las cuentas siguientes?
+duplicate_profiles_detected.heading_single: Creemos que es posible que tenga otra cuenta
+duplicate_profiles_detected.heading_many: Creemos que es posible que tenga otras cuentas
+duplicate_profiles_detected.intro_single: Encontramos otra cuenta de %{app_name} que creemos que pueda ser suya. ¿Reconoce como suyas las cuentas siguientes?
+duplicate_profiles_detected.intro_many: Encontramos otras cuentas de %{app_name} que creemos que puedan ser suyas. ¿Reconoce como suyas las cuentas siguientes?
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.no_recognize_many: 'No, no reconozco una de estas cuentas'
 duplicate_profiles_detected.no_recognize_single: 'No, no reconozco esta cuenta'

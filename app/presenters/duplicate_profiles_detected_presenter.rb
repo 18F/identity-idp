@@ -14,17 +14,17 @@ class DuplicateProfilesDetectedPresenter
 
   def heading
     if multiple_dupe_profiles?
-      I18n.t('duplicate_profiles_detected.heading')
+      I18n.t('duplicate_profiles_detected.heading_many')
     else
-      I18n.t('duplicate_profile_detected.heading')
+      I18n.t('duplicate_profiles_detected.heading_single')
     end
   end
 
   def intro
     if multiple_dupe_profiles?
-      I18n.t('duplicate_profiles_detected.intro', app_name: APP_NAME)
+      I18n.t('duplicate_profiles_detected.intro_many', app_name: APP_NAME)
     else
-      I18n.t('duplicate_profile_detected.intro', app_name: APP_NAME)
+      I18n.t('duplicate_profiles_detected.intro_single', app_name: APP_NAME)
     end
   end
 

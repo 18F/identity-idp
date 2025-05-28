@@ -752,10 +752,10 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 doc_auth.tips.mobile_phone_required: 要求有手机
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profile_detected.heading: 我们认为你可能还有另一个帐户
-duplicate_profiles_detected.heading: 我们认为你可能还有其他帐户
-duplicate_profile_detected.intro: 我们发现了另一个 %{app_name} 帐户，我们认为这个账户可能是你的。下面这些帐户是你的吗？
-duplicate_profiles_detected.intro: 我们发现了其他 %{app_name} 帐户，这几个账户我们认为可能是你的。下面这些帐户是你的吗？
+duplicate_profiles_detected.heading_single: 我们认为你可能还有另一个帐户
+duplicate_profiles_detected.heading_many: 我们认为你可能还有其他帐户
+duplicate_profiles_detected.intro_single: 我们发现了另一个 %{app_name} 帐户，我们认为这个账户可能是你的。下面这些帐户是你的吗？
+duplicate_profiles_detected.intro_many: 我们发现了其他 %{app_name} 帐户，这几个账户我们认为可能是你的。下面这些帐户是你的吗？
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.no_recognize_many: '我不认识上面的一个帐户'
 duplicate_profiles_detected.no_recognize_single: '我不认识这个帐户'
