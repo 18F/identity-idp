@@ -13,7 +13,8 @@ module Proofing
       attr_reader :user_uuid,
                   :aamva_plugin,
                   :threatmetrix_plugin,
-                  :phone_finder_plugin
+                  :phone_finder_plugin,
+                  :proofing_vendor
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,

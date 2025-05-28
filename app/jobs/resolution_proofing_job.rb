@@ -159,8 +159,10 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:)
-    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(user_uuid: user.uuid)
+  def progressive_proofer(user:, proofing_vendor:)
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
+      user_uuid: user.uuid, proofing_vendor:
+    )
   end
 
   def shadow_mode_ab_test_bucket(user:)
