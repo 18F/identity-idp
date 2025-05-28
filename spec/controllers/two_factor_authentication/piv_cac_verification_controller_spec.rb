@@ -276,7 +276,9 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         end
 
         it 'redirects to error page with a mismatch error' do
-          expect(response).to redirect_to redirect_to login_two_factor_piv_cac_error_url(error: 'user.piv_cac_mismatch')
+          expect(response).to redirect_to redirect_to login_two_factor_piv_cac_error_url(
+            error: 'user.piv_cac_mismatch',
+          )
         end
       end
     end
