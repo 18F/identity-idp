@@ -124,7 +124,5 @@ production:
     encoding: utf8
     database_tasks: false
     replica: true
-    sslmode: <%= IdentityConfig.store.database_sslmode %>
-    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
-    schema_search_path: "idp, logs"
+    schema_search_path: "idp,logs"
 <% end %>
