@@ -124,4 +124,5 @@ production:
     encoding: utf8
     database_tasks: false
     replica: true
+    sslmode: <%= IdentityConfig.store.database_sslmode %>
 <% end %>
