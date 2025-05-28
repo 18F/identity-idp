@@ -1428,12 +1428,14 @@ instructions.mfa.authenticator.manual_entry: Or enter this code manually into yo
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
+instructions.mfa.piv_cac.another_method_text: another authentication method.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
 instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name.
-instructions.mfa.piv_cac.bullet_2: 'Signing in with your email address and password and using another authentication method.'
-instructions.mfa.piv_cac.bullet_3: Contacting %{app_name} support for additional help.
+instructions.mfa.piv_cac.bullet_2_html: '%{link_html} in with your email address and password and using %{auth_method_link}'
+instructions.mfa.piv_cac.bullet_3_html: Contacting %{app_name} support for additional help.
 instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
-instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong> Create an account.'
+instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong> %{create_account_link}'
+instructions.mfa.piv_cac.create_account_text: Create an account.
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
@@ -1441,6 +1443,7 @@ instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is p
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
 instructions.mfa.piv_cac.sign_in: Make sure you have a %{app_name} account and you’ve set up your Personal Identity Verification (PIV) or Common Access Card (CAC) as a two-factor authentication method.
+instructions.mfa.piv_cac.signing_in.text: Signing in
 instructions.mfa.piv_cac.step_1: Give it a nickname
 instructions.mfa.piv_cac.step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
 instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader

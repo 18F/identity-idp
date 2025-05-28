@@ -9,15 +9,36 @@
 
   <ul>
     <li><%= t('instructions.mfa.piv_cac.bullet_1') %></li>
-    <li><%= t('instructions.mfa.piv_cac.bullet_2') %></li>
-    <li><%= t('instructions.mfa.piv_cac.bullet_3', app_name: APP_NAME) %></li>
+    <li>
+      <%= t(
+            'instructions.mfa.piv_cac.bullet_2_html',
+            link_html: link_to(
+              t('instructions.mfa.piv_cac.signing_in.text'),
+              sign_out_url,
+            ),
+            auth_method_link: link_to(
+              t('instructions.mfa.piv_cac.another_method_text'),
+              login_two_factor_options_url,
+            ),
+          ) %>
+    </li>
+    <li><%= link_to(
+              t('instructions.mfa.piv_cac.bullet_3_html', app_name: APP_NAME),
+              sign_up_email_url,
+            ) %>
+    </li>
   </ul>
 
-  <p><%= t('instructions.mfa.piv_cac.create_account_html', app_name: APP_NAME)%></p>
+  <p><%= t('instructions.mfa.piv_cac.create_account_html',
+            app_name: APP_NAME,
+            create_account_link: link_to(
+              t('instructions.mfa.piv_cac.create_account_text'),
+              sign_out_url,
+            ))%></p>
 
   <%= render ButtonComponent.new(
-      url: login_two_factor_piv_cac_url,
-      class: 'margin-top-3',
-      big: true,
-    ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+        url: login_two_factor_piv_cac_url,
+        class: 'margin-top-3',
+        big: true,
+      ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
 <% end %>
