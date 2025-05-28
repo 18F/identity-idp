@@ -654,9 +654,9 @@ doc_auth.hybrid_flow_warning.only_add_own_account: Está usando su propia cuenta
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Usted solicitó a %{app_name} que verificara su identificación con su teléfono
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Está tratando de acceder a los servicios de <strong>%{service_provider_name}</strong>
 doc_auth.info.add_id_consent_with_phone: Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
-doc_auth.info.socure_basic_idv: '%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación con Socure.'
+doc_auth.info.socure_basic_idv: "%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación con Socure."
 doc_auth.info.socure_basic_idv_finish: Cuando acabe de tomar las fotos, %{app_name} terminará de verificar su información.
-doc_auth.info.socure_ial2_idv: '%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación y una foto suya con Socure.'
+doc_auth.info.socure_ial2_idv: "%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación y una foto suya con Socure."
 doc_auth.info.socure_ial2_idv_finish: Cuando acabe de tomar las fotos, %{app_name} terminará de verificar su información.
 doc_auth.info.socure_hybrid_flow: Está usando %{app_name} para verificar su identidad y acceder a %{sp_name}.
 doc_auth.info.address: Si su domicilio y su dirección postal no son iguales, también puede intentar verificar su dirección postal.

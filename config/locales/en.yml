@@ -643,9 +643,9 @@ doc_auth.hybrid_flow_warning.only_add_own_account: You are using your own %{app_
 doc_auth.hybrid_flow_warning.only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: You are trying to access <strong>%{service_provider_name}</strong> services
 doc_auth.info.add_id_consent_with_phone: Only add your ID if you asked %{app_name} to verify your ID using your phone.
-doc_auth.info.socure_basic_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID with Socure.'
+doc_auth.info.socure_basic_idv: "%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID with Socure."
 doc_auth.info.socure_basic_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
-doc_auth.info.socure_ial2_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID and a photo of yourself with Socure.'
+doc_auth.info.socure_ial2_idv: "%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID and a photo of yourself with Socure."
 doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.socure_hybrid_flow: You are using %{app_name} to verify your identity and access %{sp_name}.
 doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.

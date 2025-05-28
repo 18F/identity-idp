@@ -654,9 +654,9 @@ doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_n
 doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
 doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
-doc_auth.info.socure_basic_idv: '%{app_name}会使用一家受信任的服务提供商 - Socure – 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID的照片。'
+doc_auth.info.socure_basic_idv: "%{app_name}会使用一家受信任的服务提供商 - Socure – 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID的照片。"
 doc_auth.info.socure_basic_idv_finish: 你拍完照片后，%{app_name} 会完成你的信息验证。
-doc_auth.info.socure_ial2_idv: '%{app_name} 会使用一家受信任的服务提供商 - Socure - 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID以及自己的照片。'
+doc_auth.info.socure_ial2_idv: "%{app_name} 会使用一家受信任的服务提供商 - Socure - 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID以及自己的照片。"
 doc_auth.info.socure_ial2_idv_finish: 拍完照片后，%{app_name} 会完成你的信息验证。
 doc_auth.info.socure_hybrid_flow: 你正在使用 %{app_name} 验证你的身份并访问 %{sp_name}。
 doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
