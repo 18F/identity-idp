@@ -207,11 +207,6 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(
-      :idv_resolution_alternate_vendor,
-      type: :symbol,
-      enum: [:instant_verify, :socure_kyc, :mock, :none],
-    )
-    config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
       enum: [:instant_verify, :socure_kyc, :mock],
