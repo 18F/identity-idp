@@ -85,7 +85,6 @@ module Reports
       @irs_credential_tenure_report ||= Reporting::IrsCredentialTenureReport.new(report_date)
     end
 
-
     def irs_credential_tenure_definition
       @irs_credential_tenure_definition ||= Reporting::IrsCredentialTenureReport.new(report_date)
     end
