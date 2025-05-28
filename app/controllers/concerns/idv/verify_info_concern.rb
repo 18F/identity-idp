@@ -61,6 +61,14 @@ module Idv
       end
     end
 
+    def proofing_vendor
+      # nil is returned when AB test is inactive ... to be fixed in LG-16289
+      # to do provide fall back bucket
+      @proofing_vendor ||= begin
+        ab_test_bucket(:PROOFING_VENDOR) || IdentityConfig.store.idv_resolution_default_vendor
+      end
+    end
+
     private
 
     def ipp_enrollment_in_progress?
@@ -490,10 +498,6 @@ module Idv
           .merge(resolution_adjudication_reason)
           .merge(device_profiling_adjudication_reason)
           .compact_blank
-      end
-
-      def proofing_vendor
-        @proofing_vendor ||= ab_test_bucket(:PROOFING_VENDOR)
       end
     end
   end
