@@ -10,13 +10,13 @@ module Reporting
 
     def irs_credential_tenure_report_definition
       table = []
-      table << ['Metric ', 'Definition']
+      table << ['Metric', 'Definition']
       table << ['Credential Tenure", "The average age, in months, of all accounts']
     end
 
     def irs_credential_tenure_report_report
       table = []
-      table << ['Metric ', 'Value']
+      table << ['Metric', 'Value']
       table << ['Total Users', total_user_count]
       table << ['Credential Tenure', average_credential_tenure_months]
       table
