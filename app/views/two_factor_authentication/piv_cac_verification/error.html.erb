@@ -1,23 +1,23 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new do %>
-  <%= @presenter.heading %>
-<% end %>
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <% c.with_header { @presenter.heading } %>
 
-<p>
-  <%= t('instructions.mfa.piv_cac.having_trouble') %>
-</p>
+  <p>
+    <%= t('instructions.mfa.piv_cac.having_trouble') %>
+  </p>
 
-<ul>
-  <li>lorem ipusum</li>
-  <li>lorem ipusum</li>
-  <li>lorem ipusum</li>
-</ul>
+  <ul>
+    <li><%= t('instructions.mfa.piv_cac.bullet_1') %></li>
+    <li><%= t('instructions.mfa.piv_cac.bullet_2') %></li>
+    <li><%= t('instructions.mfa.piv_cac.bullet_3', app_name: APP_NAME) %></li>
+  </ul>
 
-<p>lorem ipsum sit dolor?</p>
+  <p><%= t('instructions.mfa.piv_cac.create_account_html', app_name: APP_NAME)%></p>
 
-<%= render ButtonComponent.new(
+  <%= render ButtonComponent.new(
       url: login_two_factor_piv_cac_url,
       class: 'margin-top-3',
       big: true,
     ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+<% end %>

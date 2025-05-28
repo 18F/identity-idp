@@ -1444,9 +1444,11 @@ instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
 instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
 instructions.mfa.piv_cac.did_not_work_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{please_try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
-instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name
-instructions.mfa.piv_cac.create_account: '<strong>Don’t have a Login.gov account?</strong> %{create_account}'
-instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
+instructions.mfa.piv_cac.bullet_1: 选择一个不同的证书，例如与您姓名相关联的证书。
+instructions.mfa.piv_cac.bullet_2: '[使用]您的电邮地址和密码并使用[另一种身份证实方法登录。]'
+instructions.mfa.piv_cac.bullet_3: '联系 %{app_name} 支持以获得更多帮助。'
+instructions.mfa.piv_cac.create_account_html: '<strong>没有 %{app_name} 帐户？</strong>[设立一个帐户]'
+instructions.mfa.piv_cac.having_trouble: 如果您在使用 PIV/CAC 登录时遇到问题，请尝试：
 instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试一次。
 instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
