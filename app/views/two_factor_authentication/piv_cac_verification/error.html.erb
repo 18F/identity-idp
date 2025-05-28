@@ -29,12 +29,14 @@
     </li>
   </ul>
 
-  <p><%= t('instructions.mfa.piv_cac.create_account_html',
-            app_name: APP_NAME,
-            create_account_link: link_to(
-              t('instructions.mfa.piv_cac.create_account_text'),
-              sign_out_url,
-            ))%></p>
+  <p><%= t(
+           'instructions.mfa.piv_cac.create_account_html',
+           app_name: APP_NAME,
+           create_account_link: link_to(
+             t('instructions.mfa.piv_cac.create_account_text'),
+             sign_out_url,
+           ),
+         ) %></p>
 
   <%= render ButtonComponent.new(
         url: login_two_factor_piv_cac_url,
