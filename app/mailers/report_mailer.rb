@@ -42,7 +42,6 @@ class ReportMailer < ActionMailer::Base
     @message = message
 
     @reports = reports.map(&:dup).each_with_index do |report, index|
-      print(report)
       report.title ||= report.subtitle || "Table #{index + 1}"
     end
 

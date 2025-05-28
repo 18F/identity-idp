@@ -40,12 +40,14 @@ module Reports
 
 
     def perform(_date = Time.zone.yesterday.end_of_day)
-      binding.pry
       @report_date = _date
       return unless IdentityConfig.store.s3_reports_enabled
-      issuers = Agreements::PartnerAccount.find_by(name: "Internal Revenue Service")&.iaa_gtcs&.flat_map(&:service_providers)&.map(&:issuer)&.compact || []
-      iaas = IaaReportingHelper.iaas.filter do |x|
-        x.end_date > 90.days.ago && (x.issuers & issuers).any?
+      issuers = IaaReportingHelper.partner_accounts.select { |pc| pc.partner == "IRS" }.flat_map(&:issuers)    
+      iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
+
+      iaas = IaaReportingHelper.iaas.filter do |iaa|
+        iaa.end_date > 90.days.ago &&
+          (iaa.issuers & issuers).any?  # intersection: at least one issuer matches
       end
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
 
@@ -69,7 +71,7 @@ module Reports
         reports: reports,
         attachment_format: :csv,
       )
-
+      csv
     end
 
     def as_emailable_irs_report(iaas:, partner_accounts:, date:)
