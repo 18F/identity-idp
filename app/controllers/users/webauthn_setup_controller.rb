@@ -182,7 +182,6 @@ module Users
         user_session[:webauthn_mismatch_id] = form.webauthn_configuration.id
         redirect_to webauthn_setup_mismatch_path
       else
-        process_device_profiling_result
         redirect_to next_setup_path || after_mfa_setup_path
       end
     end

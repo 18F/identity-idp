@@ -73,7 +73,6 @@ module TwoFactorAuthentication
         auth_method: params[:otp_delivery_preference],
       )
       flash[:success] = t('notices.phone_confirmed')
-      process_device_profiling_result
       redirect_to next_setup_path || after_mfa_setup_path
     end
 

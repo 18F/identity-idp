@@ -27,4 +27,9 @@ class DeviceProfilingResult < ApplicationRecord
   def self.for_user(user_id)
     where(user_id: user_id)
   end
+
+
+  def failed?
+    review_status != 'pass'
+  end
 end
