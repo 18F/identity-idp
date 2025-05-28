@@ -741,12 +741,14 @@ doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 doc_auth.tips.mobile_phone_required: Mobile Phone Required
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.heading: We believe you may have another account
+duplicate_profile_detected.heading: We believe you may have another account
+duplicate_profiles_detected.heading: We believe you may have other accounts
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profiles_detected.intro: We have found other %{app_name} accounts that we believe may be yours. Do you recognize the following accounts as yours?
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
+duplicate_profiles_detected.no_recognize_many: 'I don’t recognize an account above'
 duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
-duplicate_profiles_detected.yes_many: Yes, these are my accounts
+duplicate_profiles_detected.yes_many: Yes, these accounts are mine
 duplicate_profiles_detected.yes_single: Yes, this is my account
 email_address.not_found: 'Email not found'
 email_addresses.add.duplicate: This email address is already registered to your account.

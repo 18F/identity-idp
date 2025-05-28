@@ -741,13 +741,15 @@ doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 doc_auth.tips.mobile_phone_required: Téléphone mobile nécessaire
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.heading: We believe you may have another account
-duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
+duplicate_profile_detected.heading: Nous pensons que vous avez peut-être un autre compte
+duplicate_profiles_detected.heading: Nous pensons que vous avez peut-être d’autres comptes
+duplicate_profile_detected.intro: Nous avons trouvé un autre compte %{app_name} susceptible de vous appartenir. Reconnaissez-vous les comptes suivants comme étant les vôtres ?
+duplicate_profiles_detected.intro: Nous avons trouvé d'autres comptes %{app_name} susceptibles de vous appartenir. Reconnaissez-vous les comptes suivants comme étant les vôtres ?
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.no_recognize_many: 'I don’t recognize these accounts'
-duplicate_profiles_detected.no_recognize_single: 'I don’t recognize this account'
-duplicate_profiles_detected.yes_many: Yes, these are my accounts
-duplicate_profiles_detected.yes_single: Yes, this is my account
+duplicate_profiles_detected.no_recognize_many: 'Je ne reconnais pas l’un des comptes ci-dessus'
+duplicate_profiles_detected.no_recognize_single: 'Je ne reconnais pas ce compte'
+duplicate_profiles_detected.yes_many: Oui, ces comptes sont les miens
+duplicate_profiles_detected.yes_single: Oui, c’est mon compte
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
