@@ -307,7 +307,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: nil,
           )
 
@@ -341,7 +341,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               failed_stages: [:threatmetrix],
               device_profiling_adjudication_reason: ['device_profiling_result'],
@@ -428,7 +428,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               failed_stages: [:threatmetrix],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
@@ -479,7 +479,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               failed_stages: [:threatmetrix],
               device_profiling_adjudication_reason: ['device_profiling_result'],
@@ -675,7 +675,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: nil,
           )
           get :show
@@ -697,7 +697,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               failed_stages: [:state_id],
               resolution_adjudication_reason: ['fail_state_id'],
@@ -729,7 +729,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               failed_stages: [:state_id],
               resolution_adjudication_reason: ['fail_state_id'],
@@ -821,7 +821,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               attributes_requiring_additional_verification: ['address'],
               failed_stages: [:resolution, :phone_precheck],
@@ -858,7 +858,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            social_security: applicant_pii[:ssn],
+            ssn: applicant_pii[:ssn],
             failure_reason: {
               attributes_requiring_additional_verification: ['address', 'dob', 'ssn'],
               failed_stages: [:resolution, :phone_precheck],
@@ -939,7 +939,7 @@ RSpec.describe Idv::VerifyInfoController do
           date_of_birth: applicant_pii[:dob],
           address1: applicant_pii[:address1],
           address2: applicant_pii[:address2],
-          social_security: applicant_pii[:ssn],
+          ssn: applicant_pii[:ssn],
           failure_reason: {
             failed_stages: [:resolution],
             resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],

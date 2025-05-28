@@ -394,7 +394,7 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address1: pii_from_doc[:address1],
         address2: pii_from_doc[:address2],
-        social_security: idv_session.ssn,
+        ssn: idv_session.ssn,
         failure_reason:,
       )
     end

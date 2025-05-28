@@ -39,6 +39,7 @@ module AttemptsApi
         device_fingerprint: hashed_cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         application_url: sp_request_uri,
+        language: user&.email_language || I18n.locale.to_s,
         client_port: CloudFrontHeaderParser.new(request).client_port,
       }
 

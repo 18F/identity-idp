@@ -166,7 +166,7 @@ RSpec.describe Idv::SsnController do
       it 'updates idv_session.ssn to the ssn' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: true,
-          social_security: ssn,
+          ssn:,
           failure_reason: nil,
         )
         expect { put :update, params: params }.to change { subject.idv_session.ssn }
@@ -281,7 +281,7 @@ RSpec.describe Idv::SsnController do
       it 'renders the show template with an error message' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: false,
-          social_security: ssn,
+          ssn:,
           failure_reason: { ssn: [:invalid] },
         )
         put :update, params: params

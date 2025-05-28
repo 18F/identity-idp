@@ -930,6 +930,8 @@ forms.messages.remember_device: 记住这个浏览器
 forms.password: 密码
 forms.passwords.edit.buttons.submit: 变更密码
 forms.passwords.edit.labels.password: 新密码
+forms.passwords.reset.how_to_reset: 如何重置你的密码
+forms.passwords.reset.how_to_reset_with_personal_key: 如果你有个人密钥，如何重置密码
 forms.personal_key_partial.acknowledgement.header: 如果你忘记了密码，就需要你的个人密钥。请将其保管好，不要与任何人分享。
 forms.personal_key_partial.acknowledgement.help_link_text: 了解更多有关个人密钥的信息。
 forms.personal_key_partial.acknowledgement.text: 如果你在没有个人密钥情况下重设你的密码，将需要再次验证你的身份。
@@ -1674,6 +1676,7 @@ titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
+titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
@@ -1719,6 +1722,7 @@ titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
+titles.sign_in: 登录
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}

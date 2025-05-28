@@ -238,7 +238,7 @@ module Users
         remember_device: remember_device_cookie.present?,
         new_device: success ? new_device? : nil,
       )
-      attempts_api_tracker.email_and_password_auth(success:)
+      attempts_api_tracker.login_email_and_password_auth(success:)
     end
 
     def user_locked_out?(user)

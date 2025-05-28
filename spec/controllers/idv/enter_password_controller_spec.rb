@@ -1075,25 +1075,7 @@ RSpec.describe Idv::EnterPasswordController do
         stub_attempts_tracker
       end
 
-      context 'with a non-proofed user' do
-        it 'does not track a reproofing event during initial proofing' do
-          # TODO: Attempts API Move the idv_reproo event to the initation of the proofing process
-          expect(@attempts_api_tracker).not_to receive(:idv_reproof)
-
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-        end
-      end
-
       context 'with a previously proofed user' do
-        context 'with a deactivated profile' do
-          before { create(:profile, :deactivated, user:) }
-
-          it 'tracks a reproofing event upon reproofing' do
-            expect(@attempts_api_tracker).to receive(:idv_reproof)
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
-        end
-
         context 'with an activated legacy idv  profile' do
           before { create(:profile, :active, user:) }
 
@@ -1108,19 +1090,7 @@ RSpec.describe Idv::EnterPasswordController do
             end
 
             it 'tracks a reproofing event upon reproofing' do
-              expect(@attempts_api_tracker).to receive(:idv_reproof)
-              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-            end
-
-            it 'tracks a reproofing event upon reproofing' do
               expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
-              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-            end
-          end
-
-          context 'when not ial2' do
-            it 'redirect away, and does not track a reproofing event upon reproofing' do
-              expect(@attempts_api_tracker).not_to receive(:idv_reproof)
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
           end

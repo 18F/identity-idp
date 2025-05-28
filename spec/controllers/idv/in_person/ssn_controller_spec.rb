@@ -143,7 +143,7 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'sends analytics_submitted event' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: true,
-          social_security: ssn,
+          ssn:,
           failure_reason: nil,
         )
         put :update, params: params
@@ -220,7 +220,7 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'renders the show template with an error message' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: false,
-          social_security: ssn,
+          ssn:,
           failure_reason: { ssn: [:invalid] },
         )
         put :update, params: params
