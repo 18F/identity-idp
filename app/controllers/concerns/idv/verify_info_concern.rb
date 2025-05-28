@@ -27,6 +27,7 @@ module Idv
         issuer: sp_session[:issuer],
       )
       document_capture_session.requested_at = Time.zone.now
+      document_capture_session.doc_auth_vendor = proofing_vendor
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
 
@@ -41,6 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_components: ProofingComponents.new(idv_session:),
+        proofing_vendor:,
       )
 
       return true
@@ -281,8 +283,9 @@ module Idv
 
     def load_async_state
       dcs_uuid = idv_session.verify_info_step_document_capture_session_uuid
-      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.none if dcs_uuid.nil?
+
+      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.missing if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
@@ -487,6 +490,10 @@ module Idv
           .merge(resolution_adjudication_reason)
           .merge(device_profiling_adjudication_reason)
           .compact_blank
+      end
+
+      def proofing_vendor
+        @proofing_vendor ||= ab_test_bucket(:PROOFING_VENDOR)
       end
     end
   end
