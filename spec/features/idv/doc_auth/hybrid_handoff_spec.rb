@@ -276,10 +276,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
   def verify_handoff_page_non_selfie_version_content(page)
     expect(page).to have_current_path(idv_hybrid_handoff_path)
-    expect(page).to_not have_selector(
-      'h1',
-      text: t('doc_auth.headings.how_to_verify'),
-    )
     expect(page).to have_selector(
       'h1',
       text: t('doc_auth.headings.how_to_verify'),

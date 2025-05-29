@@ -623,8 +623,6 @@ doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
-doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
-doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.mailing_address: 输入你的邮寄地址
@@ -669,7 +667,6 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.hybrid_handoff: 我们会通过读取你的身份证件来收集你的信息。
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.hybrid_handoff_no_selfie: 你将用手机拍摄你的身份证件照片。你不必重新登录，而且拍完照后可以转回到该电脑。
 doc_auth.info.hybrid_handoff_selfie: 你将用手机拍摄自己身份证件和你本人的照片。你不必重新登录，而且拍完照后可以转回到该电脑。
@@ -708,9 +705,7 @@ doc_auth.info.selfie_capture.action.submit: 照片拍摄完毕。提交照片。
 doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
-doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
-doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能使用美国驾照或州身份证件。</strong>就这一选项你不能使用美国护照。
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
@@ -1684,7 +1679,6 @@ titles.confirmations.show: 选择一个密码
 titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
-titles.doc_auth.hybrid_handoff: 验证你的身份证件
 titles.doc_auth.link_sent: 链接已发送
 titles.doc_auth.processing_images: 正在处理你的图像
 titles.doc_auth.ssn: 输入你的社会保障号码

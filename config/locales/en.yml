@@ -612,8 +612,6 @@ doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
-doc_auth.headings.hybrid_handoff: How would you like to add your ID?
-doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
@@ -658,7 +656,6 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your ID.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
 doc_auth.info.hybrid_handoff_no_selfie: You’ll take photos of your ID using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
 doc_auth.info.hybrid_handoff_selfie: You’ll take photos of your ID and yourself using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
@@ -697,9 +694,7 @@ doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
-doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
-doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can only use a U.S. driver’s license or state ID.</strong> You cannot use a U.S. passport book for this option.
 doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
@@ -1671,7 +1666,6 @@ titles.confirmations.show: Choose a password
 titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
-titles.doc_auth.hybrid_handoff: Verify your ID
 titles.doc_auth.link_sent: Link sent
 titles.doc_auth.processing_images: Processing your images
 titles.doc_auth.ssn: Enter your Social Security number
