@@ -491,7 +491,6 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
-
   def device_profiling_restriction_enforced(client:, review_status:, reason:, **extra)
     track_event(
       :device_profiling_restriction_enforced,

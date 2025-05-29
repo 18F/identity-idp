@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
-  include DeviceProfilingConcern
   include AbTestingConcern
 
   # Prevent CSRF attacks by raising an exception.
@@ -250,6 +249,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
+    return profiling_failed_url if user_account_creation_device_profile_failed?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
@@ -271,9 +271,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_mfa_setup_path
-
-    if  user_account_creation_device_profile_failed?
-      return device_profiling_failure_path
+    if user_account_creation_device_profile_failed?
+      return profiling_failed_url
     elsif needs_completion_screen_reason
       sign_up_completed_url
     elsif user_needs_to_reactivate_account?
@@ -520,17 +519,27 @@ class ApplicationController < ActionController::Base
     BrowserCache.parse(request.user_agent).mobile?
   end
 
-
   def user_is_banned?
     return false unless user_signed_in?
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
   end
 
-
   def user_account_creation_device_profile_failed?
-    profiling_result = grab_device_profiling_result
-    profiling_result && profiling_result.rejected?
-end
+    profiling_result = find_device_profiling_result(
+      DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+    )
+    profiling_result&.rejected?
+  end
+
+  def find_device_profiling_result(type)
+    return unless IdentityConfig.store.account_creation_device_profiling == :enabled
+    return unless user_session[:in_account_creation_flow]
+    return unless user_session[:next_mfa_selection_choice].nil?
+    DeviceProfilingResult.for_user(
+      user_id: current_user.id,
+      type: type,
+    ).first
+  end
 
   def user_duplicate_profiles_detected?
     return false unless sp_eligible_for_one_account?

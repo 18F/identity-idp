@@ -31,7 +31,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
 
   def store_device_profiling_result(user_id, result)
     return unless user_id.present?
-    
+
     DeviceProfilingResult.create(
       user_id: user_id,
       success: result.success?,
@@ -39,7 +39,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       review_status: result.review_status,
       transaction_id: result.transaction_id,
       reason: result.review_status,
-      profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation]
+      profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
     )
   end
 end

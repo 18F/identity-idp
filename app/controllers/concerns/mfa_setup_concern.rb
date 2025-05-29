@@ -14,7 +14,7 @@ module MfaSetupConcern
       track_user_registration_mfa_setup_complete_event
       user_session.delete(:mfa_selections)
 
-      sign_up_completed_path
+      after_mfa_setup_path
     end
   end
 

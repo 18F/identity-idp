@@ -1569,6 +1569,8 @@ openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisati
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré
 pages.page_took_too_long.body: Nous vous recommandons de patienter quelques minutes, puis de réessayer. (503)
 pages.page_took_too_long.header: Le serveur a mis trop de temps à traiter votre demande.
+profiling_failed.title: We couldn't sign you into your account
+profiling_failed.details: We are unable to authenticate or sign you in. Reach out to your agency to access services.
 report_mailer.deleted_accounts_report.issuers: Émetteurs
 report_mailer.deleted_accounts_report.name: Nom
 report_mailer.deleted_accounts_report.subject: Rapport sur les comptes supprimés
