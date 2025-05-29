@@ -706,7 +706,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
 
   add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_capture_sessions", "users"
-  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"

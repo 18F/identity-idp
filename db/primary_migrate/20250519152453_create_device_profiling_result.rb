@@ -12,7 +12,8 @@ class CreateDeviceProfilingResult < ActiveRecord::Migration[8.0]
       t.datetime :processed_at, comment: "sensitive=false"
       t.string :profiling_type, comment: "sensitive=false"
 
-      t.timestamps
+      t.datetime :created_at, null: false, comment: "sensitive=false"
+      t.datetime :updated_at, null: false, comment: "sensitive=false"
     end
     
     add_index :device_profiling_results, :user_id, algorithm: :concurrently
