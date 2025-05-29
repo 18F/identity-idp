@@ -70,6 +70,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     stub_cloudwatch_client(monthly_key_metrics_report.proofing_rate_report)
     stub_cloudwatch_client(monthly_key_metrics_report.monthly_idv_report)
+    stub_cloudwatch_client(monthly_key_metrics_report.account_reset_rate_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
