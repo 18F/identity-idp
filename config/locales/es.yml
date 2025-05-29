@@ -1767,7 +1767,6 @@ two_factor_authentication.important_alert_icon: icono importante de alerta
 two_factor_authentication.invalid_backup_code: Ese código de recuperación no es válido.
 two_factor_authentication.invalid_otp: Ese código de un solo uso no es válido. Inténtelo de nuevo o solicite un nuevo código.
 two_factor_authentication.invalid_personal_key: Esa clave personal no es válida.
-two_factor_authentication.invalid_piv_cac: Esa tarjeta PIV o CAC no funcionó. Asegúrese de que sea la tarjeta PIV o CAC correcta para esta cuenta. Si lo es, puede haber un problema con el PIN de su tarjeta PIV o CAC, o bien el problema es nuestro. Inténtelo de nuevo o elija otro método de autenticación.
 two_factor_authentication.learn_more: Obtenga más información sobre las opciones de autenticación
 two_factor_authentication.login_intro: Usted los configuró cuando creó su cuenta.
 two_factor_authentication.login_intro_reauthentication: Antes de que pueda hacer cambios en su cuenta, debemos usar uno de sus métodos de autenticación para confirmar que se trata de usted.

@@ -1755,7 +1755,6 @@ two_factor_authentication.important_alert_icon: important alert icon
 two_factor_authentication.invalid_backup_code: That backup code is invalid.
 two_factor_authentication.invalid_otp: That one-time code is invalid. Try again or request a new code.
 two_factor_authentication.invalid_personal_key: That personal key is invalid.
-two_factor_authentication.invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for this account. If it is, there may be a problem with your PIV/CAC, PIN, or something went wrong on our end. Try again or choose another authentication method.
 two_factor_authentication.learn_more: Learn more about authentication options
 two_factor_authentication.login_intro: You set these up when you created your account.
 two_factor_authentication.login_intro_reauthentication: Before you can make changes to your account, we need to make sure it’s really you by using one of your authentication methods.

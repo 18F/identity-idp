@@ -1768,7 +1768,6 @@ two_factor_authentication.important_alert_icon: 重要警告标志
 two_factor_authentication.invalid_backup_code: 该备用代码有误
 two_factor_authentication.invalid_otp: 那个一次性代码有误。再试一次或请求新代码。
 two_factor_authentication.invalid_personal_key: 那个个人密钥有误
-two_factor_authentication.invalid_piv_cac: 那个 PIV/CAC 没起作用。确保 PIV/CAC 是这个账户的。如果的确是，那你的PIV/CAC、个人识别号码（PIN）有问题，或者我们这边出了问题。再试一次或选择另一个身份证实方法。
 two_factor_authentication.learn_more: 了解身份证实选项的更多信息
 two_factor_authentication.login_intro: 你设立账户时设了以下方法。
 two_factor_authentication.login_intro_reauthentication: 在你能对账户做出任何更改前，我们需要你使用你一种身份证实方法来确定的确是你。
