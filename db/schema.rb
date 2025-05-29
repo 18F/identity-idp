@@ -95,7 +95,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
     t.string "transaction_id", comment: "sensitive=false"
     t.string "reason", comment: "sensitive=false"
     t.datetime "processed_at", comment: "sensitive=false"
-    t.string "type", comment: "sensitive=false"
+    t.string "profiling_type", comment: "sensitive=false"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_device_profiling_results_on_user_id"
