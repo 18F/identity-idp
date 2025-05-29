@@ -16,15 +16,17 @@
   <%= t('doc_auth.headings.document_capture') %>
 <% end %>
 
-<% if decorated_sp_session.sp_name.present? %>
-  <p>
-    <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
-  </p>
-<% else %>
-  <p>
-    <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: APP_NAME) %>
-  </p>
+<% if @hybrid_flow %>
+  <% if decorated_sp_session.sp_name.present? %>
+    <p>
+      <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
+    </p>
+  <% else %>
+    <p>
+      <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: APP_NAME) %>
+    </p>
   <% end %>
+<% end %>
 
 <p>
   <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
