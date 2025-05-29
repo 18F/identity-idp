@@ -1432,10 +1432,11 @@ instructions.mfa.piv_cac.another_method_text: méthode d’authentification.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
 instructions.mfa.piv_cac.bullet_1: Choisir un autre certificat, par exemple associé à votre nom.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} avec votre adresse e-mail, votre mot de passe et une %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3: Contacter le service d’assistance de %{app_name} pour obtenir une aide supplémentaire.
+instructions.mfa.piv_cac.bullet_3_html: Contacter le service d’assistance de %{app_name} pour obtenir une aide supplémentaire.
 instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
 instructions.mfa.piv_cac.create_account_html: '<strong>Vous n’avez pas de compte %{app_name} ?</strong> %{create_account_link}'
 instructions.mfa.piv_cac.create_account_text: Créer un compte
+instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.having_trouble: 'Si vous rencontrez des difficultés pour vous connecter avec votre carte PIV/CAC, essayez de :'
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
 instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
