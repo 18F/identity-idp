@@ -818,20 +818,7 @@ var AcuantCameraUI = (function () {
     }
   
     function startManualCapture(callback) {
-      onManualCaptureCallback = callback;
-      if (!manualCaptureInput && isMobile()) {
-        manualCaptureInput = document.createElement('input');
-        manualCaptureInput.type = 'file';
-        manualCaptureInput.capture = 'environment';
-        manualCaptureInput.accept = 'image/*';
-        manualCaptureInput.onclick = function(event) {
-          if (event && event.target) {
-            event.target.value = '';
-          }
-        };
-      }
-      manualCaptureInput.onchange = onManualCapture;
-      manualCaptureInput.click();
+      return (noop=()=>{})();
     }
   
     function getOrientation(e) {
