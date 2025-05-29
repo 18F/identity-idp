@@ -213,9 +213,9 @@ RSpec.describe Idv::AgreementController do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         end
 
-        it 'redirects to how to verify' do
+        it 'redirects to hybrid handoff with new content' do
           put :update, params: params
-          expect(response).to redirect_to(idv_how_to_verify_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
 
