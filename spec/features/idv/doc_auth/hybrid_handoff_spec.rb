@@ -151,7 +151,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         )
         expect(page).to have_current_path(idv_hybrid_handoff_path)
 
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end
       expect(fake_analytics).to have_logged_event(
@@ -210,7 +210,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       it 'has expected UI elements' do
         mobile_form = find('#form-to-submit-photos-through-mobile')
         expect(mobile_form).to have_name(t('forms.buttons.send_link'))
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       end
       context 'on a desktop choose ipp', js: true do
         let(:in_person_doc_auth_button_enabled) { true }
@@ -270,7 +270,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     expect(page).to have_selector(
       'h1',
-      text: t('doc_auth.headings.hybrid_handoff_selfie'),
+      text: t('doc_auth.headings.how_to_verify'),
     )
   end
 
@@ -278,11 +278,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     expect(page).to_not have_selector(
       'h1',
-      text: t('doc_auth.headings.hybrid_handoff_selfie'),
+      text: t('doc_auth.headings.how_to_verify'),
     )
     expect(page).to have_selector(
       'h1',
-      text: t('doc_auth.headings.hybrid_handoff'),
+      text: t('doc_auth.headings.how_to_verify'),
     )
   end
 
