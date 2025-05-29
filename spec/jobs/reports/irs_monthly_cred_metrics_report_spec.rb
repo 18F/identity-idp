@@ -4,10 +4,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date) }
 
-  # before do
-  #   clear_agreements_data
-  #   ServiceProvider.delete_all
-  # end
 
   let(:name) { 'irs_monthly_cred_metrics' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -119,12 +115,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             name: 'IRS',
             description: "This is a description.",
             requesting_agency: "IRS",
-            # became_partner: DateTime.new(2020, 4, 15),
-            # agency_id: 123,
-            # crm_id: 789,
           )
         end
-        #let(:partner_account1) { create(:partner_account) } #TODO: create partner acc with IRS
         let(:partner_account2) { create(:partner_account) }
         let(:service_provider1) { create(:service_provider) }
         let(:service_provider2) { create(:service_provider) }
@@ -279,7 +271,5 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       billable: true,
     )
   end
-    
-
   end
 end

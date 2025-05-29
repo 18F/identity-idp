@@ -188,18 +188,9 @@ module Reports
     
       CSV.generate do |csv|
         csv << [
-          # 'iaa_order_number',
-          # 'partner',
-          # 'iaa_start_date',
-          # 'iaa_end_date',
-          # 'year_month',
-          # 'year_month_readable',
           'Credentials Authorized',
           'New ID Verifications Authorized Credentials',
           'Existing Identity Verification Credentials',
-          # 'credentials_authorized_requesting_agency',
-          # 'new_identity_verification_credentials_authorized_for_partner',
-          # 'existing_identity_verification_credentials_authorized_for_partner',
         ]
     
         by_iaa_and_year_month.each do |(iaa_key, year_month), iaa_results|
@@ -256,12 +247,6 @@ module Reports
           end
     
           csv << [
-            # iaa_key,
-            # partner_results.first&.[](:partner),
-            # iaa_start_date,
-            # iaa_end_date,
-            # year_month,
-            # year_month_start.strftime('%B %Y'),
             total_auth,
             new_users,
             existing_users,
