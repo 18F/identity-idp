@@ -643,11 +643,6 @@ doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre co
 doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
 doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
-doc_auth.info.socure_basic_idv: "%{app_name} vérifiera votre pièce d'identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d'identité avec Socure."
-doc_auth.info.socure_basic_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
-doc_auth.info.socure_ial2_idv: "%{app_name} vérifiera votre pièce d'identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d'identité et de vous-même avec Socure."
-doc_auth.info.socure_ial2_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
-doc_auth.info.socure_hybrid_flow: Vous utilisez %{app_name} pour vérifier votre identité et accéder à %{sp_name}.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
@@ -696,6 +691,11 @@ doc_auth.info.selfie_capture.action.close: fermer
 doc_auth.info.selfie_capture.action.retake: nouvelle photo
 doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
+doc_auth.info.socure_basic_idv: '%{app_name} vérifiera votre pièce d’identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d’identité avec Socure.'
+doc_auth.info.socure_basic_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
+doc_auth.info.socure_hybrid_flow_html: Vous utilisez %{app_name} pour vérifier votre identité et accéder à <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv: '%{app_name} vérifiera votre pièce d’identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d’identité et de vous-même avec Socure.'
+doc_auth.info.socure_ial2_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.

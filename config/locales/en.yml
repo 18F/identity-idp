@@ -643,11 +643,6 @@ doc_auth.hybrid_flow_warning.only_add_own_account: You are using your own %{app_
 doc_auth.hybrid_flow_warning.only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
 doc_auth.hybrid_flow_warning.only_add_sp_services_html: You are trying to access <strong>%{service_provider_name}</strong> services
 doc_auth.info.add_id_consent_with_phone: Only add your ID if you asked %{app_name} to verify your ID using your phone.
-doc_auth.info.socure_basic_idv: "%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID with Socure."
-doc_auth.info.socure_basic_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
-doc_auth.info.socure_ial2_idv: "%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you'll be asked to take photos of your ID and a photo of yourself with Socure."
-doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
-doc_auth.info.socure_hybrid_flow: You are using %{app_name} to verify your identity and access %{sp_name}.
 doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.
 doc_auth.info.address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your address to list your urbanization or condominium on address line 2.
 doc_auth.info.capture_status_big_document: Too Close
@@ -696,6 +691,11 @@ doc_auth.info.selfie_capture.action.close: close
 doc_auth.info.selfie_capture.action.retake: retake
 doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
+doc_auth.info.socure_basic_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID with Socure.'
+doc_auth.info.socure_basic_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
+doc_auth.info.socure_hybrid_flow_html: You are using %{app_name} to verify your identity and access <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID and a photo of yourself with Socure.'
+doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.

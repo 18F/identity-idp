@@ -18,11 +18,11 @@
 
 <% if decorated_sp_session.sp_name.present? %>
   <p>
-    <%= t('doc_auth.info.socure_hybrid_flow', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
+    <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
   </p>
 <% else %>
   <p>
-    <%= t('doc_auth.info.socure_hybrid_flow', app_name: APP_NAME, sp_name: APP_NAME) %>
+    <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: APP_NAME) %>
   </p>
   <% end %>
 
