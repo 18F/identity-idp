@@ -660,6 +660,8 @@ doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agi
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
 doc_auth.info.hybrid_handoff: Nous recueillerons les informations vous concernant en lisant votre pièce d’identité.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
+doc_auth.info.hybrid_handoff_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
+doc_auth.info.hybrid_handoff_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement

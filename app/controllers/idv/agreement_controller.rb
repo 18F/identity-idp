@@ -47,7 +47,7 @@ module Idv
           if params[:skip_hybrid_handoff]
             redirect_to idv_choose_id_type_url
           else
-            redirect_to idv_how_to_verify_url
+            redirect_to idv_hybrid_handoff_url
           end
         else
           redirect_to idv_hybrid_handoff_url

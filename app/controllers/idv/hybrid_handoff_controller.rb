@@ -21,6 +21,8 @@ module Idv
                                         )
 
       @selfie_required = idv_session.selfie_check_required
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      set_how_to_verify_presenter
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -36,7 +38,13 @@ module Idv
     def update
       clear_future_steps!
 
-      if params[:type] == 'mobile'
+      if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::IPP
+        abandon_any_ipp_progress
+        idv_session.opted_in_to_in_person_proofing = true
+        idv_session.flow_path = 'standard'
+        idv_session.skip_doc_auth_from_how_to_verify = true
+        redirect_to idv_document_capture_url(step: :hybrid_handoff)
+      elsif params[:type] == 'mobile'
         handle_phone_submission
       else
         bypass_send_link_steps
@@ -73,6 +81,21 @@ module Idv
     end
 
     private
+
+    def mobile_required?
+      idv_session.selfie_check_required ||
+        document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+    end
+
+    def set_how_to_verify_presenter
+      @mobile_required = mobile_required?
+      @selfie_required = idv_session.selfie_check_required
+      @presenter = Idv::HowToVerifyPresenter.new(
+        mobile_required: @mobile_required,
+        selfie_check_required: @selfie_required,
+        passport_allowed: idv_session.passport_allowed,
+      )
+    end
 
     def abandon_any_ipp_progress
       current_user&.establishing_in_person_enrollment&.cancel
@@ -247,6 +270,12 @@ module Idv
     def formatted_destination_phone
       raw_phone = params.require(:doc_auth).permit(:phone)
       PhoneFormatter.format(raw_phone, country_code: 'US')
+    end
+
+    def how_to_verify_form_params
+      params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
+    rescue ActionController::ParameterMissing
+      ActionController::Parameters.new(selection: [])
     end
   end
 end

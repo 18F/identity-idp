@@ -671,6 +671,8 @@ doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se tr
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
 doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted al leer su identificación.
 doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
+doc_auth.info.hybrid_handoff_no_selfie: Tomará fotografías de su identificación con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
+doc_auth.info.hybrid_handoff_selfie: Tomará fotografías de su identificación y de usted con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
