@@ -45,6 +45,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_components: proofing_components,
+        proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
       )
     end
 
@@ -390,6 +391,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
         )
       end
 
