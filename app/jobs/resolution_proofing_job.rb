@@ -161,7 +161,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def progressive_proofer(user:, proofing_vendor:)
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
-      user_uuid: user.uuid, proofing_vendor:
+      user_uuid: user.uuid, proofing_vendor:,
     )
   end
 
