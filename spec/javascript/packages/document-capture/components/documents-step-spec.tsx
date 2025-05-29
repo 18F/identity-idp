@@ -41,7 +41,7 @@ describe('document-capture/components/documents-step', () => {
       <FailedCaptureAttemptsContextProvider
         maxCaptureAttemptsBeforeNativeCamera={3}
         maxSubmissionAttemptsBeforeNativeCamera={3}
-        failedFingerprints={{ front: [], back: [] }}
+        failedFingerprints={{ front: [], back: [], passport: [] }}
       >
         <DocumentsStep
           value={{}}
@@ -102,7 +102,7 @@ describe('document-capture/components/documents-step', () => {
   it('renders the hybrid flow warning if the flow is hybrid', () => {
     const { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="hybrid" endpoint="unused">
+        <UploadContextProvider flowPath="hybrid" endpoint="unused" idType="state_id">
           <DocumentsStep
             value={{}}
             onChange={() => undefined}
@@ -123,7 +123,7 @@ describe('document-capture/components/documents-step', () => {
   it('does not render the hybrid flow warning if the flow is standard (default)', () => {
     const { queryByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <UploadContextProvider flowPath="standard" endpoint="unused">
+        <UploadContextProvider flowPath="standard" endpoint="unused" idType="state_id">
           <DocumentsStep
             value={{}}
             onChange={() => undefined}
@@ -146,6 +146,7 @@ describe('document-capture/components/documents-step', () => {
       <SelfieCaptureContext.Provider
         value={{
           isSelfieCaptureEnabled: true,
+          isUploadEnabled: false,
           isSelfieDesktopTestMode: false,
           showHelpInitially: true,
         }}

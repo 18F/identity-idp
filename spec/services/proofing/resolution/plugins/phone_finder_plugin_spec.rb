@@ -96,10 +96,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhoneFinderPlugin do
             {
               uuid: 'abc',
               uuid_prefix: '123',
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              ssn: '900-66-1234',
-              dob: '1938-10-06',
+              first_name: 'MICHELE',
+              last_name: 'DEBAK',
+              ssn: '900661234',
+              dob: '1976-10-18',
               phone: '12025551212',
             },
           ).and_call_original

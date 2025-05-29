@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :biometric_comparison_required
+        attr_reader :http_response
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -37,10 +37,8 @@ module DocAuth
           socure_user_id: %w[customerProfile userId],
         }.freeze
 
-        def initialize(http_response:,
-                       biometric_comparison_required: false)
+        def initialize(http_response:)
           @http_response = http_response
-          @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
 
           super(
@@ -66,30 +64,36 @@ module DocAuth
         end
 
         def selfie_status
+          return :not_processed if reason_codes&.intersect? reason_codes_selfie_not_processed
+          return :fail if reason_codes&.intersect? reason_codes_selfie_fail
+
+          if reason_codes&.intersect? reason_codes_selfie_pass
+            return :success
+          end
+
           :not_processed
         end
 
         def extra_attributes
           {
+            address_line2_present: address2.present?,
+            birth_year: dob&.year,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+            customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
+            decision: get_data(DATA_PATHS[:decision]),
+            doc_auth_success: doc_auth_success?,
+            document_type: get_data(DATA_PATHS[:document_type]),
+            flow_path: nil,
+            id_doc_type:,
+            issue_year: state_id_issued&.year,
+            liveness_enabled:,
+            reason_codes:,
             reference_id: get_data(DATA_PATHS[:reference_id]),
+            state:,
+            vendor: 'Socure',
             vendor_status: get_data(DATA_PATHS[:status]),
             vendor_status_message: get_data(DATA_PATHS[:msg]),
-            decision: get_data(DATA_PATHS[:decision]),
-            biometric_comparison_required: biometric_comparison_required,
-            customer_profile: get_data(DATA_PATHS[:customer_profile]),
-            reason_codes: get_data(DATA_PATHS[:reason_codes]),
-            document_type: get_data(DATA_PATHS[:document_type]),
-            state: state,
-            state_id_type:,
-            flow_path: nil,
-            liveness_checking_required: @biometric_comparison_required,
-            issue_year: state_id_issued&.year,
-            doc_auth_success: doc_auth_success?,
-            vendor: 'Socure', # TODO: Replace with Idp::Constants::Vendors::SOCURE
-            address_line2_present: address2.present?,
             zip_code: zipcode,
-            birth_year: dob&.year,
-            liveness_enabled: @biometric_comparison_required,
           }
         end
 
@@ -103,7 +107,7 @@ module DocAuth
           if !id_type_supported?
             { unaccepted_id_type: true }
           elsif !successful_result?
-            { socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) } }
+            { socure: { reason_codes: } }
           else
             {}
           end
@@ -120,7 +124,7 @@ module DocAuth
             city: get_data(DATA_PATHS[:city]),
             state: get_data(DATA_PATHS[:state]),
             zipcode: get_data(DATA_PATHS[:zipcode]),
-            dob: parse_date(get_data(DATA_PATHS[:dob])),
+            dob:,
             sex: nil,
             height: nil,
             weight: nil,
@@ -128,7 +132,7 @@ module DocAuth
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued:,
             state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
-            state_id_type: state_id_type,
+            id_doc_type: id_doc_type,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
             issuing_country_code: get_data(DATA_PATHS[:issuing_country]),
           )
@@ -160,7 +164,7 @@ module DocAuth
           parse_date(get_data(DATA_PATHS[:issue_date]))
         end
 
-        def state_id_type
+        def id_doc_type
           document_id_type&.gsub(/\W/, '')&.underscore
         end
 
@@ -176,6 +180,10 @@ module DocAuth
           get_data(DATA_PATHS[:address2])
         end
 
+        def reason_codes
+          get_data(DATA_PATHS[:reason_codes])
+        end
+
         def parse_date(date_string)
           Date.parse(date_string)
         rescue ArgumentError, TypeError
@@ -188,6 +196,22 @@ module DocAuth
 
         def id_type_supported?
           DocAuth::Response::SOCURE_ID_TYPE_SLUGS.key?(document_id_type)
+        end
+
+        def reason_codes_selfie_pass
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_pass
+        end
+
+        def reason_codes_selfie_fail
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_fail
+        end
+
+        def reason_codes_selfie_not_processed
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_not_processed
+        end
+
+        def liveness_enabled
+          selfie_status != :not_processed
         end
       end
     end

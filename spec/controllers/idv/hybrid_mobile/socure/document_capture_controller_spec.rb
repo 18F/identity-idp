@@ -24,12 +24,18 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:timeout_socure_route) do
     idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
   end
+  let(:idv_socure_docv_flow_id_only) { 'id only flow' }
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
       .and_return(fake_socure_endpoint)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
+      .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
+      .and_return(idv_socure_docv_flow_id_only)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
@@ -109,46 +115,144 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         allow(I18n).to receive(:locale).and_return(expected_language)
         allow(request_class).to receive(:new).and_call_original
         allow(request_class).to receive(:handle_connection_error).and_call_original
-        get(:show)
       end
 
-      it 'correctly logs idv_doc_auth_document_capture_visited' do
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(
-            step: 'socure_document_capture',
-            flow_path: 'hybrid',
-          ),
-        )
-      end
+      context 'selfie not required' do
+        before do
+          get(:show)
+        end
 
-      it 'creates a DocumentRequest' do
-        expect(request_class).to have_received(:new)
-          .with(
-            redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
-            language: expected_language,
+        it 'correctly logs idv_doc_auth_document_capture_visited' do
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth document_capture visited',
+            hash_including(
+              step: 'socure_document_capture',
+              flow_path: 'hybrid',
+            ),
           )
+        end
+
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              customer_user_id: user.uuid,
+              redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: false,
+            )
+        end
+
+        it 'sets any docv timeouts to nil' do
+          expect(session[:socure_docv_wait_polling_started_at]).to eq nil
+        end
+
+        it 'logs correct info' do
+          expect(@analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
+          )
+        end
+
+        it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+          document_capture_session.reload
+          expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
+        end
+
+        context 'language is english' do
+          let(:expected_language) { :en }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'language is chinese and language should be zn-ch' do
+          let(:expected_language) { :zh }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: 'zh-cn',
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'renders the interstital page' do
+          render_views
+
+          it 'response includes the socure capture app url' do
+            expect(response).to have_http_status 200
+            expect(response.body).to have_link(href: socure_capture_app_url)
+          end
+
+          it 'puts the docvTransactionToken into the document capture session' do
+            document_capture_session.reload
+            expect(document_capture_session.socure_docv_transaction_token)
+              .to eq(docv_transaction_token)
+          end
+
+          context 'when we try to use this controller but we should be using the LN/mock version' do
+            let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
+
+            it 'redirects to the LN/Mock controller' do
+              get :show
+
+              expect(response).to redirect_to(idv_hybrid_mobile_document_capture_url)
+            end
+
+            context 'when redirect to correct vendor is disabled' do
+              before do
+                allow(IdentityConfig.store)
+                  .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+              end
+
+              it 'renders to the Socure controller' do
+                get :show
+
+                expect(response).to have_http_status 200
+                expect(response.body).to have_link(href: socure_capture_app_url)
+              end
+            end
+          end
+        end
       end
 
-      it 'sets any docv timeouts to nil' do
-        expect(session[:socure_docv_wait_polling_started_at]).to eq nil
-      end
+      context 'selfie required' do
+        before do
+          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
+          get(:show)
+        end
 
-      it 'logs correct info' do
-        expect(@analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
-        )
-      end
-
-      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
-        document_capture_session.reload
-        expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
-      end
-
-      context 'language is english' do
-        let(:expected_language) { :en }
-
-        it 'does the correct POST to Socure' do
+        it 'request the flow for selfie' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
@@ -160,71 +264,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
                       url: idv_hybrid_mobile_socure_document_capture_update_url,
                     },
                     language: expected_language,
+                    useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_w_selfie,
                   },
+                  customerUserId: user.uuid,
                 },
               ),
             )
-        end
-      end
-
-      context 'language is chinese and language should be zn-ch' do
-        let(:expected_language) { :zh }
-
-        it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
-            .with(
-              body: JSON.generate(
-                {
-                  config: {
-                    documentType: 'license',
-                    redirect: {
-                      method: 'GET',
-                      url: idv_hybrid_mobile_socure_document_capture_update_url,
-                    },
-                    language: 'zh-cn',
-                  },
-                },
-              ),
-            )
-        end
-      end
-
-      context 'renders the interstital page' do
-        render_views
-
-        it 'response includes the socure capture app url' do
-          expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: socure_capture_app_url)
-        end
-
-        it 'puts the docvTransactionToken into the document capture session' do
-          document_capture_session.reload
-          expect(document_capture_session.socure_docv_transaction_token)
-            .to eq(docv_transaction_token)
-        end
-
-        context 'when we try to use this controller but we should be using the LN/mock version' do
-          let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
-          it 'redirects to the LN/Mock controller' do
-            get :show
-
-            expect(response).to redirect_to(idv_hybrid_mobile_document_capture_url)
-          end
-
-          context 'when redirect to correct vendor is disabled' do
-            before do
-              allow(IdentityConfig.store)
-                .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
-            end
-
-            it 'renders to the Socure controller' do
-              get :show
-
-              expect(response).to have_http_status 200
-              expect(response.body).to have_link(href: socure_capture_app_url)
-            end
-          end
         end
       end
     end
@@ -438,7 +483,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           :post,
           "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
         )
-          .with(body: { modules: ['documentverification'], docvTransactionToken: test_token }
+          .with(body: {
+            modules: ['documentverification'],
+            docvTransactionToken: test_token,
+            customerUserId: user.uuid,
+          }
             .to_json)
           .to_return(
             headers: {

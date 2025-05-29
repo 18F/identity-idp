@@ -31,7 +31,12 @@ module AccountReset
     def delete
       granted_token = session.delete(:granted_token)
       result = AccountReset::DeleteAccount.new(granted_token, request, analytics).call
+
       analytics.account_reset_delete(**result.to_h.except(:email))
+      attempts_api_tracker.account_reset_account_deleted(
+        success: result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         handle_successful_deletion(result)

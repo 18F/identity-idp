@@ -2,7 +2,7 @@
 
 module AttemptsApi
   class AttemptEvent
-    attr_reader :jti, :iat, :event_type, :session_id, :occurred_at, :event_metadata
+    attr_reader :jti, :iat, :event_type, :session_id, :occurred_at, :event_metadata, :language
 
     def initialize(
       event_type:,

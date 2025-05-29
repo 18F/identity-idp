@@ -70,14 +70,14 @@ RSpec.feature 'Analytics Regression', :js do
       transaction_id: 'state-id-mock-transaction-id-456',
       vendor_name: 'StateIdMock',
       verified_attributes: [],
-      state: 'MT',
+      state: 'WV',
       state_id_jurisdiction: 'ND',
       state_id_number: '#############',
       jurisdiction_in_maintenance_window: false }
   end
 
   let(:state_id_resolution_with_id_type) do
-    state_id_resolution.merge(state_id_type: 'drivers_license')
+    state_id_resolution.merge(id_doc_type: 'drivers_license')
   end
 
   let(:resolution_block) do
@@ -134,9 +134,9 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
+        birth_year: 1976,
         identity_doc_address_state: nil,
-        state: 'MT',
+        state: 'WV',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
       },
@@ -189,9 +189,9 @@ RSpec.feature 'Analytics Regression', :js do
         },
       },
       biographical_info: {
-        birth_year: 1938,
-        identity_doc_address_state: 'MT',
-        state: 'MT',
+        birth_year: 1976,
+        identity_doc_address_state: 'WV',
+        state: 'WV',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
       },
@@ -606,13 +606,13 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing'
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1976', document_zip_code: '12345', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps' }
       },
       'IdV: in person proofing residential address submitted' => {
-        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', current_address_zip_code: '59010', proofing_components: { document_check: 'usps' }
+        success: true, step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', current_address_zip_code: '25309', proofing_components: { document_check: 'usps' }
       },
       'IdV: doc auth ssn visited' => {
         analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', proofing_components: { document_check: 'usps' }
@@ -1250,6 +1250,7 @@ RSpec.feature 'Analytics Regression', :js do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
       allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter)
         .to receive(:service_provider_homepage_url).and_return(return_sp_url)

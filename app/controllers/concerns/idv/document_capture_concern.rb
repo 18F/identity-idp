@@ -111,7 +111,9 @@ module Idv
         vendor: 'Socure',
         vendor_request_time_in_ms: timer.results['vendor_request'],
         success: @url.present?,
+        customer_user_id: document_request_body[:customerUserId],
         document_type: document_request_body[:documentType],
+        use_case_key: document_request_body[:useCaseKey],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
         socure_status: response_hash[:status],
         socure_msg: response_hash[:msg],
@@ -120,6 +122,7 @@ module Idv
         .merge(analytics_arguments)
         .merge(document_request_body).except(
           :documentType, # requested document type
+          :useCaseKey,
         )
         .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
@@ -133,6 +136,10 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
+    end
+
+    def id_type
+      document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
   end
 end

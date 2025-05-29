@@ -36,7 +36,12 @@ module DocAuth
           when 'YES'
             DocAuth::Response.new(success: true, errors: {}, exception: nil, extra:)
           when 'NO'
-            DocAuth::Response.new(success: false, errors: {}, exception: nil, extra:)
+            DocAuth::Response.new(
+              success: false,
+              errors: { passport: I18n.t('doc_auth.errors.general.fallback_field_level') },
+              exception: nil,
+              extra:,
+            )
           else
             DocAuth::Response.new(
               success: false,
@@ -56,8 +61,8 @@ module DocAuth
           {
             'Content-Type': 'application/json',
             'X-Correlation-ID': correlation_id,
-            client_id: IdentityConfig.store.dos_passport_client_id,
-            client_secret: IdentityConfig.store.dos_passport_client_secret,
+            'Client-Id': IdentityConfig.store.dos_passport_client_id,
+            'Client-Secret': IdentityConfig.store.dos_passport_client_secret,
           }
         end
 

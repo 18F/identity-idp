@@ -45,7 +45,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -74,7 +74,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -99,7 +99,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           dob: 10/06/1938
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
       YAML
     end
 
@@ -132,7 +132,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(nil)
-      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.attention_with_barcode?).to eq(true)
     end
   end
 
@@ -295,7 +295,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           sex: female
           height: 66
           state_id_number: '123456789'
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_jurisdiction: 'NY'
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
@@ -325,7 +325,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66,
           weight: nil,
           eye_color: nil,
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -333,11 +333,13 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
         workflow: 'test_non_liveness_workflow',
         liveness_checking_required: false,
+        passport_check_result: {},
         portrait_match_results: nil,
       )
       expect(response.doc_auth_success?).to eq(true)
@@ -370,21 +372,21 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         Pii::StateId.new(
           first_name: 'Susan',
           middle_name: nil,
-          last_name: 'MCFAKERSON',
-          name_suffix: 'JR',
-          address1: '1 FAKE RD',
-          address2: nil,
-          city: 'GREAT FALLS',
-          state: 'MT',
-          zipcode: '59010-1234',
-          dob: '1938-10-06',
-          sex: 'male',
+          last_name: 'DEBAK',
+          name_suffix: '',
+          address1: '514 EAST AVE',
+          address2: '',
+          city: 'SOUTH CHARLESTON',
+          state: 'WV',
+          zipcode: '25309-1104',
+          dob: '1976-10-18',
+          sex: 'female',
           height: 72,
           weight: nil,
           eye_color: nil,
           state_id_number: '1111111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2099-12-31',
           state_id_issued: '2019-12-31',
           issuing_country_code: 'US',
@@ -414,6 +416,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
+        transaction_status: 'failed',
         billed: true,
         classification_info: nil,
         liveness_checking_required: false,
@@ -421,6 +424,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         portrait_match_results: nil,
         alert_failure_count: 1,
         liveness_enabled: false,
+        passport_check_result: nil,
         vendor: 'Mock',
         processed_alerts: {
           failed: [{ name: '2D Barcode Read', result: 'Failed' }],
@@ -462,6 +466,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'failed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
         classification_info: nil,
@@ -470,6 +475,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         portrait_match_results: nil,
         alert_failure_count: 1,
         liveness_enabled: false,
+        passport_check_result: nil,
         vendor: 'Mock',
         processed_alerts: {
           failed: [{ name: '2D Barcode Read', result: 'Failed' }],
@@ -511,7 +517,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          state_id_type: drivers_license
+          id_doc_type: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -540,7 +546,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          state_id_type: 'drivers_license',
+          id_doc_type: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -548,11 +554,13 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
         liveness_checking_required: false,
         workflow: 'test_non_liveness_workflow',
+        passport_check_result: {},
         portrait_match_results: nil,
       )
     end
@@ -685,7 +693,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           Front:
             ClassName: Identification Card
             CountryCode: USA
-            IssuerType: Country
+            IssuerType: Forgery
           Back:
             ClassName: Identification Card
             CountryCode: USA
@@ -770,6 +778,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
   context 'with a yaml file that includes classification info but missing pii' do
     let(:input) do
       <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         document:
           city: Bayside
@@ -804,6 +813,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     describe 'and it is successful' do
       let(:input) do
         <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'

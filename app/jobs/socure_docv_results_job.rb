@@ -39,6 +39,7 @@ class SocureDocvResultsJob < ApplicationJob
           errors: { pii_validation: 'failed' },
           front_image_fingerprint: nil,
           back_image_fingerprint: nil,
+          passport_image_fingerprint: nil,
           selfie_image_fingerprint: nil,
         )
         return
@@ -84,6 +85,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
+      customer_user_id: document_capture_session&.user&.uuid,
       document_capture_session_uuid:,
       docv_transaction_token_override:,
     ).fetch

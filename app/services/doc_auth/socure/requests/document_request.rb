@@ -4,16 +4,21 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :document_type, :redirect_url, :language
+        attr_reader :customer_user_id, :document_type, :redirect_url, :language,
+                    :liveness_checking_required
 
         def initialize(
+          customer_user_id:,
           redirect_url:,
           language:,
-          document_type: 'license'
+          document_type: 'license',
+          liveness_checking_required: false
         )
+          @customer_user_id = customer_user_id
           @redirect_url = redirect_url
           @document_type = document_type
           @language = language
+          @liveness_checking_required = liveness_checking_required
         end
 
         def body
@@ -29,7 +34,9 @@ module DocAuth
               documentType: document_type,
               redirect: redirect,
               language: lang(language),
+              useCaseKey: use_case_key,
             },
+            customerUserId: customer_user_id,
           }.to_json
         end
 
@@ -73,6 +80,14 @@ module DocAuth
 
         def metric_name
           'socure_doc_auth_docv'
+        end
+
+        def use_case_key
+          if liveness_checking_required
+            IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
+          else
+            IdentityConfig.store.idv_socure_docv_flow_id_only
+          end
         end
       end
     end

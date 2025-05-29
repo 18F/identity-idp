@@ -615,6 +615,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         controller.current_user.create_direct_otp
 
         stub_analytics
+        stub_attempts_tracker
 
         allow(controller).to receive(:create_user_event)
 
@@ -640,6 +641,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               .default_phone_configuration.created_at
 
             controller.user_session[:phone_id] = phone_id
+            expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+              success: true,
+              mfa_device_type: 'phone',
+              otp_delivery_method: 'sms',
+              phone_number: parsed_phone.e164,
+            )
 
             post(
               :create,
@@ -685,6 +692,14 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         context 'user enters an invalid code' do
           before do
+            stub_attempts_tracker
+            expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+              success: false,
+              mfa_device_type: 'phone',
+              otp_delivery_method: 'sms',
+              phone_number: parsed_phone.e164,
+            )
+
             post(
               :create,
               params: {
@@ -739,12 +754,11 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           context 'user enters in valid code after invalid entry' do
             before do
               expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
-              post(
-                :create,
-                params: {
-                  code: '999',
-                  otp_delivery_preference: 'sms',
-                },
+              expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+                success: true,
+                mfa_device_type: 'phone',
+                otp_delivery_method: 'sms',
+                phone_number: parsed_phone.e164,
               )
               post(
                 :create,
@@ -811,6 +825,12 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
           it 'tracks the confirmation event' do
             parsed_phone = Phonelib.parse('+1 (703) 555-5555')
+            expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+              success: true,
+              mfa_device_type: 'phone',
+              otp_delivery_method: 'sms',
+              phone_number: parsed_phone.e164,
+            )
 
             response
 

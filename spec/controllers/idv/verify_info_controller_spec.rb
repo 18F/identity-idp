@@ -17,6 +17,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_sign_in(user)
     stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -150,6 +151,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to ssn failure url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :proof_ssn,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
@@ -167,6 +171,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -178,12 +185,17 @@ RSpec.describe Idv::VerifyInfoController do
     context 'when proofing_device_profiling is enabled' do
       let(:threatmetrix_client_id) { 'threatmetrix_client' }
       let(:review_status) { 'pass' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:success) { true }
 
       let(:idv_result) do
         {
           context: {
+            device_profiling_adjudication_reason: 'device_profiling_result',
+            resolution_adjudication_reason: 'pass_resolution_and_state_id',
             stages: {
               threatmetrix: {
+                success:,
                 client: threatmetrix_client_id,
                 transaction_id: 1,
                 review_status: review_status,
@@ -278,14 +290,66 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks the attempts events' do
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: true,
+            failure_reason: nil,
+          )
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: nil,
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is No Result' do
         let(:review_status) { nil }
+        let(:success) { false }
 
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: { tmx_summary_reason_code: ['Identity_Negative_History'] },
+          )
+
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              failed_stages: [:threatmetrix],
+              device_profiling_adjudication_reason: ['device_profiling_result'],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+            },
+          )
+
+          get :show
         end
       end
 
@@ -296,6 +360,7 @@ RSpec.describe Idv::VerifyInfoController do
           {
             context: {
               device_profiling_adjudication_reason: 'device_profiling_exception',
+              resolution_adjudication_reason: 'pass_resolution_and_state_id',
               errors: {},
               stages: {
                 threatmetrix: {
@@ -350,14 +415,79 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
         end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              failed_stages: [:threatmetrix],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_exception'],
+            },
+          )
+          get :show
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['ThreatMetrix review has failed for unknown reasons'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is Reject' do
         let(:review_status) { 'reject' }
+        let(:success) { false }
 
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success:,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              failed_stages: [:threatmetrix],
+              device_profiling_adjudication_reason: ['device_profiling_result'],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+            },
+          )
+
+          get :show
         end
       end
 
@@ -367,6 +497,18 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+            success: false,
+            failure_reason: {
+              tmx_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
         end
       end
     end
@@ -384,6 +526,14 @@ RSpec.describe Idv::VerifyInfoController do
 
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
+        end
+
+        it 'does not track a threatmetrix check' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).not_to receive(:idv_tmx_fraud_check)
+
+          get :show
         end
       end
     end
@@ -422,7 +572,7 @@ RSpec.describe Idv::VerifyInfoController do
       it 'logs the edit distance between SSNs' do
         allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 
@@ -444,6 +594,7 @@ RSpec.describe Idv::VerifyInfoController do
       let(:errors) { {} }
       let(:exception) { nil }
       let(:vendor_name) { 'aamva_placeholder' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -468,7 +619,7 @@ RSpec.describe Idv::VerifyInfoController do
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
           should_proof_state_id: true,
-          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          applicant_pii:,
         ).adjudicated_result.to_h
 
         document_capture_session.create_proofing_session
@@ -506,15 +657,55 @@ RSpec.describe Idv::VerifyInfoController do
           state_id = event.dig(:proofing_results, :context, :stages, :state_id)
           expect(state_id).to match(
             hash_including(
-              state_id_type: 'drivers_license',
+              id_doc_type: 'drivers_license',
               vendor_name: 'aamva_placeholder',
             ),
           )
+        end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: nil,
+          )
+          get :show
         end
       end
 
       context 'when aamva returns success: false but no exception' do
         let(:success) { false }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              failed_stages: [:state_id],
+              resolution_adjudication_reason: ['fail_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
 
         it 'redirects to the warning URL' do
           put :show
@@ -525,6 +716,28 @@ RSpec.describe Idv::VerifyInfoController do
       context 'when aamva returns an exception' do
         let(:success) { false }
         let(:exception) { Proofing::Aamva::VerificationError.new('ExceptionId: 0001') }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              failed_stages: [:state_id],
+              resolution_adjudication_reason: ['fail_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
 
         it 'redirects user to warning' do
           put :show
@@ -543,6 +756,126 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
+    context 'when instant verify address proofing results in an exception' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+      let(:success) { false }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:error_attributes) { nil }
+      let(:vendor_name) { 'instantverify_placeholder' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_finder_result: Proofing::AddressResult.new(
+            success: success,
+            errors: {},
+            exception: exception,
+            vendor_name: 'instant_verify_test',
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: success,
+            errors: {},
+            exception: 'fake exception',
+            vendor_name: vendor_name,
+            attributes_requiring_additional_verification: error_attributes,
+          ),
+          same_address_as_id: nil,
+          should_proof_state_id: true,
+          applicant_pii:,
+        ).adjudicated_result.to_h
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(adjudicated_result)
+
+        document_capture_session.load_proofing_result
+      end
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
+      context 'address is the only exception' do
+        let(:error_attributes) { ['address'] }
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_address_warning_url
+        end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              attributes_requiring_additional_verification: ['address'],
+              failed_stages: [:resolution, :phone_precheck],
+              resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
+
+        it 'logs an event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_doc_auth_address_warning_visited,
+            step_name: 'verify_info',
+            remaining_submit_attempts: kind_of(Numeric),
+          )
+        end
+      end
+
+      context 'there are more instant verify exceptions' do
+        let(:error_attributes) { ['address', 'dob', 'ssn'] }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: applicant_pii[:ssn],
+            failure_reason: {
+              attributes_requiring_additional_verification: ['address', 'dob', 'ssn'],
+              failed_stages: [:resolution, :phone_precheck],
+              resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_exception_url
+        end
+      end
+    end
+
     context 'when the resolution proofing job fails and there is no exception' do
       before do
         allow(controller).to receive(:load_async_state).and_return(async_state)
@@ -551,6 +884,8 @@ RSpec.describe Idv::VerifyInfoController do
       let(:document_capture_session) do
         DocumentCaptureSession.create(user:)
       end
+
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -582,7 +917,7 @@ RSpec.describe Idv::VerifyInfoController do
           ),
           same_address_as_id: true,
           should_proof_state_id: true,
-          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          applicant_pii:,
         ).adjudicated_result.to_h
 
         document_capture_session.create_proofing_session
@@ -592,8 +927,31 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session.load_proofing_result
       end
 
+      it 'tracks the attempts api event' do
+        expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+          success: false,
+          document_state: applicant_pii[:state],
+          document_number: applicant_pii[:state_id_number],
+          document_issued: applicant_pii[:state_id_issued],
+          document_expiration: applicant_pii[:state_id_expiration],
+          first_name: applicant_pii[:first_name],
+          last_name: applicant_pii[:last_name],
+          date_of_birth: applicant_pii[:dob],
+          address1: applicant_pii[:address1],
+          address2: applicant_pii[:address2],
+          ssn: applicant_pii[:ssn],
+          failure_reason: {
+            failed_stages: [:resolution],
+            resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+            device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+          },
+        )
+        get :show
+      end
+
       it 'renders the warning page' do
         get :show
+
         expect(response).to redirect_to(idv_session_errors_warning_url)
       end
 

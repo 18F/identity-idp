@@ -19,12 +19,16 @@
   <%= t('in_person_proofing.body.barcode.email_sent') %>
 <% end %>
 
+<% if @presenter.location_search_skipped? %>
+  <%= render 'shared/location_search_skipped_notice' %>
+<% end %>
+
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= @presenter.barcode_heading_text %>
 <% end %>
 
 <%# Tag for GSA Enhanced Pilot Barcode %>
-<% if @is_enhanced_ipp %>
+<% if @presenter.enhanced_ipp? %>
   <div class="text-center margin-y-4">
     <span class="usa-tag usa-tag--informative">
       <%= t('in_person_proofing.body.barcode.eipp_tag') %>
@@ -49,7 +53,7 @@
 <% end %>
 
 <%# Enhanced IPP Only - What to bring section %>
-<% if @is_enhanced_ipp %>
+<% if @presenter.enhanced_ipp? %>
   <section class="border-1px rounded-xl border-primary-light padding-4 padding-2 margin-bottom-4">
     <%# What to bring to the Post Office %>
     <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.headings.barcode_what_to_bring') %></h2>
@@ -186,7 +190,7 @@
     <% end %>
   <% end %>
 
-  <% if !@is_enhanced_ipp %>
+  <% if !@presenter.enhanced_ipp? %>
     <p class="margin-top-3 margin-bottom-0">
       <%= t('in_person_proofing.body.barcode.questions') %>
       <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked what to bring link on ready to verify page') do %>
@@ -202,13 +206,15 @@
   <% end %>
 </section>
 
-<h2 class="margin-bottom-2"><%= t('in_person_proofing.body.location.heading') %></h2>
-<p>
-  <%= t('in_person_proofing.body.location.info') %>
-  <% if @presenter.selected_location_details.present? %>
-    <%= t('in_person_proofing.body.location.selection') %>
-  <% end %>
-</p>
+<% unless @presenter.location_search_skipped? %>
+  <h2 class="margin-bottom-2"><%= t('in_person_proofing.body.location.heading') %></h2>
+  <p>
+    <%= t('in_person_proofing.body.location.info') %>
+    <% if @presenter.selected_location_details.present? %>
+      <%= t('in_person_proofing.body.location.selection') %>
+    <% end %>
+  </p>
+<% end %>
 
 <% if @presenter.selected_location_details.present? %>
   <section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>" class="margin-bottom-4">
@@ -228,7 +234,7 @@
   </section>
 <% end %>
 
-<% if !@is_enhanced_ipp %>
+<% unless @presenter.location_search_skipped? || @presenter.enhanced_ipp? %>
   <h3><%= t('in_person_proofing.body.location.change_location_heading') %></h3>
   <p class="margin-bottom-4">
     <%= t(

@@ -82,6 +82,7 @@ module Users
     end
 
     def process_rate_limited
+      attempts_api_tracker.login_rate_limited(email: auth_params[:email])
       sign_out(:user)
       warden.lock!
 
@@ -115,9 +116,13 @@ module Users
     end
 
     def recaptcha_form
+      return @recaptcha_form if defined?(@recaptcha_form)
+      existing_device = User.find_with_confirmed_email(auth_params[:email])&.devices&.exists?(
+        cookie_uuid: cookies[:device],
+      )
+
       @recaptcha_form ||= SignInRecaptchaForm.new(
-        email: auth_params[:email],
-        device_cookie: cookies[:device],
+        existing_device: existing_device,
         ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )
@@ -209,6 +214,7 @@ module Users
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
+      check_for_duplicate_profiles
       redirect_to next_url_after_valid_authentication
     end
 
@@ -232,7 +238,7 @@ module Users
         remember_device: remember_device_cookie.present?,
         new_device: success ? new_device? : nil,
       )
-      attempts_api_tracker.email_and_password_auth(success:)
+      attempts_api_tracker.login_email_and_password_auth(success:)
     end
 
     def user_locked_out?(user)
@@ -309,6 +315,13 @@ module Users
       session[:redirect_to_change_password] =
         PwnedPasswords::LookupPassword.call(auth_params[:password])
       update_user_password_compromised_checked_at
+    end
+
+    def check_for_duplicate_profiles
+      DuplicateProfileChecker.new(
+        user: current_user,
+        user_session: user_session, sp: sp_from_sp_session
+      ).check_for_duplicate_profiles
     end
 
     def eligible_for_password_lookup?

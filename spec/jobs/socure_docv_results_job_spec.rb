@@ -16,6 +16,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_type_type) { 'Drivers License' }
+  let(:reason_codes) { %w[I831 R810] }
 
   before do
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
@@ -39,7 +40,7 @@ RSpec.describe SocureDocvResultsJob do
           referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
           previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
           documentVerification: {
-            reasonCodes: %w[I831 R810],
+            reasonCodes: reason_codes,
             documentType: {
               type: document_type_type,
               country: 'USA',
@@ -69,7 +70,7 @@ RSpec.describe SocureDocvResultsJob do
             },
           },
           customerProfile: {
-            customerUserId: document_capture_session.uuid,
+            customerUserId: user.uuid,
             userId: 'u8JpWn4QsF3R7tA2',
           },
         }
@@ -90,6 +91,7 @@ RSpec.describe SocureDocvResultsJob do
             country: 'USA',
             state: 'NY',
           },
+          customer_user_id: user.uuid,
         }
       end
 
@@ -116,6 +118,65 @@ RSpec.describe SocureDocvResultsJob do
         expect(document_capture_session.last_doc_auth_result).to eq('accept')
       end
 
+      context 'facial match' do
+        let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
+        let(:reason_codes_selfie_not_processed) { ['not procesed'] }
+        let(:reason_codes_selfie_pass) { ['match', 'live'] }
+
+        before do
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
+            .and_return(reason_codes_selfie_pass)
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
+            .and_return(reason_codes_selfie_fail)
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
+            .and_return(reason_codes_selfie_not_processed)
+        end
+
+        context 'when facial match successful' do
+          let(:reason_codes) { reason_codes_selfie_pass }
+          it 'selfies status is :success' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.selfie_status).to eq(:success)
+          end
+        end
+
+        context 'when facial match fails' do
+          let(:reason_codes) { reason_codes_selfie_fail }
+          it 'selfies status is :fail' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.selfie_status).to eq(:fail)
+          end
+        end
+
+        context 'when facial match is not processed code received' do
+          let(:reason_codes) { reason_codes_selfie_not_processed }
+          it 'selfies status is :not_processed' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          end
+        end
+
+        context 'when no facial match does are reeived' do
+          let(:reason_codes) { ['random code'] }
+          it 'selfies status is :not_processed' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          end
+        end
+      end
+
       context 'Identification Card is submitted' do
         let(:document_type_type) { 'Identification Card' }
         it 'doc auth succeeds' do
@@ -129,6 +190,14 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
           expect(document_capture_session.last_doc_auth_result).to eq('accept')
+          expect(fake_analytics).to have_logged_event(
+            :idv_socure_verification_data_requested,
+            hash_including(
+              :customer_user_id,
+              :decision,
+              :reference_id,
+            ),
+          )
         end
       end
 

@@ -33,6 +33,15 @@ class InPersonEnrollment < ApplicationRecord
     STATUS_IN_FRAUD_REVIEW.to_sym => 6,
   }
 
+  DOCUMENT_TYPE_STATE_ID = 'state_id'
+  DOCUMENT_TYPE_PASSPORT_BOOK = 'passport_book'
+
+  # This will always be nil in the Verify-by-Mail (GPO) flow.
+  enum :document_type, {
+    DOCUMENT_TYPE_STATE_ID.to_sym => 0,
+    DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
+  }
+
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
@@ -164,6 +173,11 @@ class InPersonEnrollment < ApplicationRecord
   def cancel
     cancelled!
     profile&.deactivate_due_to_in_person_verification_cancelled
+  end
+
+  # @return [Boolean] Whether the enrollment is type passport book.
+  def passport_book?
+    document_type == DOCUMENT_TYPE_PASSPORT_BOOK
   end
 
   private

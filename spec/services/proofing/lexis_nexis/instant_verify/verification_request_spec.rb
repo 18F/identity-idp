@@ -17,7 +17,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       zipcode: '70802-12345',
       state_id_number: '132465879',
       state_id_jurisdiction: 'LA',
-      state_id_type: 'drivers_license',
+      id_doc_type: 'drivers_license',
     }
   end
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }

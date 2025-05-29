@@ -97,8 +97,9 @@ RSpec.describe AgencyIdentityLinker do
     let(:sp) { create(:service_provider) }
     let(:agency) { sp.agency }
     let(:uuid) { SecureRandom.uuid }
+    let(:skip_create) { false }
 
-    subject { described_class.for(user: user, service_provider: sp) }
+    subject { described_class.for(user: user, service_provider: sp, skip_create: skip_create) }
 
     context 'when there is already an agency identity' do
       before { create_agency_identity(user, agency, uuid) }
@@ -129,8 +130,32 @@ RSpec.describe AgencyIdentityLinker do
       end
 
       context 'and there is no service provider identity' do
-        it 'returns nil' do
-          expect(subject).to be_nil
+        context 'skip_create is false' do
+          let(:skip_create) { false }
+
+          it 'creates a new AgencyIdentity and returns it' do
+            expect(subject).not_to be_nil
+            expect(subject.user_id).to eq user.id
+            expect(subject.agency_id).to eq agency.id
+            expect(subject.uuid).not_to be_nil
+          end
+
+          context 'service provider does not have an agency' do
+            let(:sp) { create(:service_provider, agency: nil) }
+            it 'raises an exception' do
+              expect do
+                subject
+              end.to raise_error(RuntimeError)
+            end
+          end
+        end
+
+        context 'skip_create is true' do
+          let(:skip_create) { true }
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
         end
       end
     end

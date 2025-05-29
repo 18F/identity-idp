@@ -95,31 +95,31 @@ module Idp
     AAL2 = 2
     AAL3 = 3
 
-    MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+    MOCK_IDV_APPLICANT_FULL_STATE = 'West Virginia'
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
-    MOCK_IDV_APPLICANT_STATE = 'MT'
+    MOCK_IDV_APPLICANT_STATE = 'WV'
     MOCK_IDV_APPLICANT = {
-      address1: '1 FAKE RD',
-      address2: nil,
-      city: 'GREAT FALLS',
-      dob: '1938-10-06',
+      address1: '514 EAST AVE',
+      address2: '',
+      city: 'SOUTH CHARLESTON',
+      dob: '1976-10-18',
       eye_color: nil,
-      first_name: 'FAKEY',
+      first_name: 'MICHELE',
       height: 72,
       issuing_country_code: 'US',
-      last_name: 'MCFAKERSON',
+      last_name: 'DEBAK',
       middle_name: nil,
-      name_suffix: 'JR',
+      name_suffix: '',
       state: MOCK_IDV_APPLICANT_STATE,
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      state_id_type: 'drivers_license',
-      sex: 'male',
+      id_doc_type: 'drivers_license',
+      sex: 'female',
       weight: nil,
-      zipcode: '59010-1234',
+      zipcode: '25309-1104',
     }.freeze
 
     MOCK_IPP_APPLICANT = {
@@ -136,10 +136,15 @@ module Idp
       same_address_as_id: 'true',
     }.freeze
 
+    MOCK_IPP_PASSPORT_APPLICANT = {
+      passport_number: '123456789',
+      passport_expiration_date: (DateTime.now.utc + 1.year).to_s,
+    }.freeze
+
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
-      state_id_type: 'passport',
+      id_doc_type: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
       birth_place: 'Birthplace',
@@ -154,7 +159,7 @@ module Idp
       same_address_as_id: 'false',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900661234').freeze
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(

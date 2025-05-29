@@ -281,6 +281,13 @@ RSpec.describe Idv::EnterPasswordController do
           in_person_verification_pending: false,
         )
       end
+
+      it 'does not track the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).not_to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: 'wrong' } }
+      end
     end
 
     it 'redirects to personal key path', :freeze_time do
@@ -399,6 +406,13 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
 
+      it 'tracks the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+
       it 'creates an `account_verified` event once per confirmation' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
         events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
@@ -443,7 +457,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'with in person profile' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user: user)
         end
 
         before do
@@ -1034,7 +1048,7 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user is going through enhanced ipp' do
       let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
-        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        create(:in_person_enrollment, :establishing, user: user)
       end
       before do
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
@@ -1053,6 +1067,34 @@ RSpec.describe Idv::EnterPasswordController do
           )
 
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+    end
+
+    describe 'attempts api tracking' do
+      before do
+        stub_attempts_tracker
+      end
+
+      context 'with a previously proofed user' do
+        context 'with an activated legacy idv  profile' do
+          before { create(:profile, :active, user:) }
+
+          context 'when requesting ial2' do
+            before do
+              resolved_authn_context_result = Vot::Parser.new(
+                acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+              ).parse
+
+              allow(controller).to receive(:resolved_authn_context_result)
+                .and_return(resolved_authn_context_result)
+            end
+
+            it 'tracks a reproofing event upon reproofing' do
+              expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
+          end
+        end
       end
     end
   end

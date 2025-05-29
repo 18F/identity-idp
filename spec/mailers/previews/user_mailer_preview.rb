@@ -185,14 +185,24 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_ready_to_verify
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_id_ipp,
-      is_enhanced_ipp: false,
+    )
+  end
+
+  def in_person_ready_to_verify_skipped_location
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
+    )
+  end
+
+  def in_person_ready_to_verify_passport
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment_passport,
     )
   end
 
   def in_person_ready_to_verify_enhanced_ipp_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_enhanced_ipp,
-      is_enhanced_ipp: true,
     )
   end
 
@@ -202,6 +212,24 @@ class UserMailerPreview < ActionMailer::Preview
       email_address: email_address_record,
     ).in_person_ready_to_verify_reminder(
       enrollment: in_person_enrollment_id_ipp,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_skipped_location
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_passport
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_passport,
     )
   end
 
@@ -222,6 +250,16 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_failed
+    UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
+      enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
+    )
+  end
+
+  # To view this email, set the below in application.yml
+  # in_person_passports_enabled: true
+  # doc_auth_passports_enabled: true
+  def in_person_failed_passports_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,
       visited_location_name: in_person_visited_location_name,
@@ -322,6 +360,27 @@ class UserMailerPreview < ActionMailer::Preview
     'ACQUAINTANCESHIP'
   end
 
+  def in_person_enrollment_id_ipp_skipped_location
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+          logo: 'gsa.png',
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: nil,
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+      ),
+    )
+  end
+
   def in_person_enrollment_id_ipp
     unsaveable(
       InPersonEnrollment.new(
@@ -346,6 +405,36 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+      ),
+    )
+  end
+
+  def in_person_enrollment_passport
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+          logo: '18f.svg',
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: {
+          'name' => 'BALTIMORE',
+          'street_address' => '900 E FAYETTE ST RM 118',
+          'formatted_city_state_zip' => 'BALTIMORE, MD 21233-9715',
+          'phone' => '555-123-6409',
+          'weekday_hours' => '8:30 AM - 4:30 PM',
+          'saturday_hours' => '9:00 AM - 12:00 PM',
+          'sunday_hours' => 'Closed',
+        },
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK,
       ),
     )
   end
@@ -374,6 +463,7 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_eipp_sponsor_id,
+        document_type: 'state_id',
       ),
     )
   end

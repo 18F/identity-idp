@@ -7,7 +7,11 @@ RSpec.describe AccountReset::DeleteAccountController do
     t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
   end
 
-  before { stub_analytics }
+  before do
+    stub_analytics
+    stub_attempts_tracker
+  end
+
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
@@ -16,6 +20,11 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
+
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: true,
+        failure_reason: nil,
+      )
 
       delete :delete
 
@@ -37,6 +46,10 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:granted_token_invalid] },
+      )
 
       delete :delete
 
@@ -55,6 +68,11 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:blank] },
+      )
+
       delete :delete
 
       expect(@analytics).to have_logged_event(
@@ -78,6 +96,11 @@ RSpec.describe AccountReset::DeleteAccountController do
       user = create(:user)
       create_account_reset_request_for(user)
       grant_request(user)
+
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:granted_token_expired] },
+      )
 
       travel_to(Time.zone.now + 2.days) do
         session[:granted_token] = AccountResetRequest.first.granted_token

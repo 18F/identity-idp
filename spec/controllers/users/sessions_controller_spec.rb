@@ -70,7 +70,7 @@ RSpec.describe Users::SessionsController, devise: true do
     end
   end
 
-  describe 'POST /' do
+  describe 'POST /create' do
     include AccountResetHelper
     before do
       stub_attempts_tracker
@@ -85,7 +85,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'tracks the successful authentication for existing user' do
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: true,
         )
 
@@ -161,7 +161,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         it 'tracks as not being from a new device' do
           stub_analytics(user:)
-          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
             success: true,
           )
 
@@ -213,6 +213,20 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'when sign_in_failure_count is above the max_sign_in_failures count' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'records the attempts api login_rate_limited event' do
+        subject.session[:sign_in_failure_count] =
+          IdentityConfig.store.max_sign_in_failures + 1
+        expect(@attempts_api_tracker).to receive(:login_rate_limited).with(
+          email: user.email,
+        )
+
+        post :create, params: { user: { email: user.email, password: user.password } }
+      end
+    end
+
     it 'prevents attempt and logs after exceeding maximum rate limit' do
       allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(10_000)
       allow(RateLimiter).to receive(:rate_limit_config).and_return(
@@ -226,9 +240,13 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user, :fully_registered)
       stub_analytics(user:)
 
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       ).exactly(9).times
+
+      expect(@attempts_api_tracker).to receive(:login_rate_limited).with(
+        email: user.email,
+      )
 
       travel_to (3.hours + 1.minute).ago do
         2.times do
@@ -273,7 +291,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics(user:)
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -296,7 +314,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics(user: kind_of(AnonymousUser))
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -323,7 +341,7 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -366,7 +384,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
 
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: false,
         )
 
@@ -399,7 +417,7 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
         it 'prevents attempt after exceeding maximum rate limit' do
           allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
-          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
             success: false,
           ).exactly(6).times
 
@@ -436,7 +454,7 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       ).exactly(2).times
 
@@ -458,7 +476,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics(user: kind_of(AnonymousUser))
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -632,7 +650,7 @@ RSpec.describe Users::SessionsController, devise: true do
         )
 
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: true,
         )
 

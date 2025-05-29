@@ -6,6 +6,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
   let(:liveness_checking_required) { false }
 
   let(:instance_id) { 'fake-instance-id' }
+
   it 'allows doc auth without any external requests' do
     post_front_image_response = client.post_front_image(
       instance_id: instance_id,
@@ -25,28 +26,86 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(get_results_response.success?).to eq(true)
     expect(get_results_response.pii_from_doc).to eq(
       Pii::StateId.new(
-        first_name: 'FAKEY',
+        first_name: 'MICHELE',
         middle_name: nil,
-        last_name: 'MCFAKERSON',
-        name_suffix: 'JR',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010-1234',
-        dob: '1938-10-06',
-        sex: 'male',
+        last_name: 'DEBAK',
+        name_suffix: '',
+        address1: '514 EAST AVE',
+        address2: '',
+        city: 'SOUTH CHARLESTON',
+        state: 'WV',
+        zipcode: '25309-1104',
+        dob: '1976-10-18',
+        sex: 'female',
         height: 72,
         weight: nil,
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
       ),
     )
+  end
+
+  context 'when given passport yaml' do
+    let(:passport_yaml) { 'needs to be set' }
+
+    let(:post_passport_image_response) do
+      client.post_passport_image(
+        instance_id: instance_id,
+        image: passport_yaml,
+      )
+    end
+
+    let(:get_results_response) do
+      client.get_results(
+        instance_id: instance_id,
+        passport_submittal: true,
+      )
+    end
+
+    let(:expected_pii_hash) do
+      Pii::Passport.new(
+        first_name: 'Joe',
+        last_name: 'Dokes',
+        middle_name: 'Q',
+        dob: '1938-10-06',
+        sex: 'Male',
+        birth_place: 'birthplace',
+        passport_expiration: '2030-03-15',
+        issuing_country_code: 'USA',
+        # rubocop:disable Layout/LineLength
+        mrz: 'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+        # rubocop:enable Layout/LineLength
+        passport_issued: '2015-03-15',
+        nationality_code: 'USA',
+        document_number: '000000',
+        id_doc_type: 'passport',
+      ).to_h
+    end
+
+    context 'for a valid passport' do
+      let(:passport_yaml) { DocAuthImageFixtures.passport_passed_yaml.read }
+
+      it 'passes' do
+        expect(post_passport_image_response.success?).to eq(true)
+        expect(get_results_response.success?).to eq(true)
+        expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
+      end
+    end
+
+    context 'when given a passport with a bad MRZ' do
+      let(:passport_yaml) { DocAuthImageFixtures.passport_failed_yaml.read }
+
+      it 'fails' do
+        expect(post_passport_image_response.success?).to eq(true)
+        expect(get_results_response.success?).to eq(true)
+        expect(get_results_response.pii_from_doc.to_h).to eq(expected_pii_hash)
+      end
+    end
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do
@@ -66,7 +125,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         height: 66
         state_id_number: '111111111'
         state_id_jurisdiction: ND
-        state_id_type: drivers_license
+        id_doc_type: drivers_license
         state_id_expiration: '2089-12-31'
         state_id_issued: '2009-12-31'
         issuing_country_code: 'CA'
@@ -105,7 +164,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2089-12-31',
         state_id_issued: '2009-12-31',
         issuing_country_code: 'CA',
@@ -139,21 +198,21 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       Pii::StateId.new(
         first_name: 'Susan',
         middle_name: nil,
-        last_name: 'MCFAKERSON',
-        name_suffix: 'JR',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010-1234',
-        dob: '1938-10-06',
-        sex: 'male',
+        last_name: 'DEBAK',
+        name_suffix: '',
+        address1: '514 EAST AVE',
+        address2: '',
+        city: 'SOUTH CHARLESTON',
+        state: 'WV',
+        zipcode: '25309-1104',
+        dob: '1976-10-18',
+        sex: 'female',
         height: 72,
         weight: nil,
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
@@ -191,6 +250,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(errors[:hints]).to eq(true)
     expect(get_results_response.extra[:classification_info]).to include(:Front, :Back)
   end
+
   it 'allows responses to be mocked' do
     response = DocAuth::Response.new(
       success: true,
@@ -259,10 +319,12 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           FaceMatchResult: Pass
           FaceErrorMessage: 'Successful. Liveness: Live'
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
       image_no_setting = <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         failed_alerts: []
       YAML
@@ -298,6 +360,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
       image = <<~YAML
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
@@ -371,6 +434,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     describe 'when sending a selfie image that is successful (both live and a match)' do
       it 'returns a success response' do
         image = <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'
@@ -407,6 +471,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: NotLive'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -439,6 +504,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: PoorQuality'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -471,6 +537,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Successful. Liveness: Live'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
           post_images_response = client.post_images(

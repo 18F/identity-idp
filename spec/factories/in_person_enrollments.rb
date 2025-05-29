@@ -6,8 +6,10 @@ FactoryBot.define do
     unique_id { InPersonEnrollment.generate_unique_id }
     user { association :user, :fully_registered }
     sponsor_id { IdentityConfig.store.usps_ipp_sponsor_id }
+    document_type { nil }
 
     trait :establishing do
+      profile { nil }
       status { :establishing }
     end
 
@@ -22,6 +24,7 @@ FactoryBot.define do
           :in_person_verification_pending,
           user: user,
           in_person_enrollment: instance,
+          in_person_verification_pending_at: Time.zone.now,
         )
       end
     end
@@ -68,6 +71,14 @@ FactoryBot.define do
 
     trait :enhanced_ipp do
       sponsor_id { IdentityConfig.store.usps_eipp_sponsor_id }
+    end
+
+    trait :state_id do
+      document_type { :state_id }
+    end
+
+    trait :passport_book do
+      document_type { :passport_book }
     end
   end
 end

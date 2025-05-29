@@ -32,20 +32,16 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
     travel_to Time.zone.now.beginning_of_day
     stub_cloudwatch_logs(
       [
-        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
-        { 'user_id' => 'user1', 'name' => 'IdV: Verify please call visited' },
-        { 'user_id' => 'user1', 'name' => 'IdV: Verify setup errors visited' },
+        { 'user_id' => 'user1', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user1', 'name' => 'IdV: Final Resolution' },
 
-        { 'user_id' => 'user2', 'name' => 'IdV: Verify setup errors visited' },
+        { 'user_id' => 'user2', 'name' => 'IdV: Final Resolution' },
 
-        { 'user_id' => 'user3', 'name' => 'IdV: Verify please call visited' },
-        { 'user_id' => 'user3', 'name' => 'IdV: Verify setup errors visited' },
+        { 'user_id' => 'user3', 'name' => 'IdV: Final Resolution' },
 
-        { 'user_id' => 'user4', 'name' => 'IdV: Verify please call visited' },
-        { 'user_id' => 'user4', 'name' => 'IdV: Verify setup errors visited' },
+        { 'user_id' => 'user4', 'name' => 'IdV: Final Resolution' },
 
-        { 'user_id' => 'user5', 'name' => 'IdV: Verify please call visited' },
-        { 'user_id' => 'user5', 'name' => 'IdV: Verify setup errors visited' },
+        { 'user_id' => 'user5', 'name' => 'IdV: Final Resolution' },
 
         { 'user_id' => 'user6', 'name' => 'User Suspension: Suspended' },
         { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },

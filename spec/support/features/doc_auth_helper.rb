@@ -9,6 +9,7 @@ module DocAuthHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn].freeze
   GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  GOOD_SSN_FORMATTED = SsnFormatter.format(GOOD_SSN).freeze
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
@@ -132,6 +133,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    expect(page).to have_content(t('doc_auth.headings.document_capture'))
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -222,6 +224,15 @@ module DocAuthHelper
     )
   end
 
+  def expect_to_try_again(is_hybrid: false)
+    click_try_again
+    if is_hybrid
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+    else
+      expect(page).to have_current_path(idv_document_capture_path)
+    end
+  end
+
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
@@ -250,5 +261,15 @@ module DocAuthHelper
     complete_phone_step(user)
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
+  end
+
+  def expect_rate_limit_warning(expected_remaining_attempts)
+    review_issues_rate_limit_warning = strip_tags(
+      t(
+        'idv.failure.attempts_html',
+        count: expected_remaining_attempts,
+      ),
+    )
+    expect(page).to have_content(review_issues_rate_limit_warning)
   end
 end

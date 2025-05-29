@@ -13,6 +13,7 @@ RSpec.describe AccountReset::ConfirmRequestController do
     context 'email is present in flash' do
       it 'renders the show template' do
         allow(controller).to receive(:flash).and_return(email: 'test@test.com')
+        allow(controller).to receive(:account_reset_deletion_period_interval).and_return('24 hours')
         get :show
 
         expect(response).to render_template(:show)

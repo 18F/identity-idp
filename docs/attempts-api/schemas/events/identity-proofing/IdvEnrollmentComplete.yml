@@ -3,3 +3,8 @@ description: |
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
+    properties:
+      reproof:
+        type: boolean
+        description: |
+          When true, indicates that the user has proofed previously

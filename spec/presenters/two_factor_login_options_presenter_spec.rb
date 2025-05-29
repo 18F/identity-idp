@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorLoginOptionsPresenter do
+  include AccountResetHelper
+  include ActionView::Helpers::OutputSafetyHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::DateHelper
   include Rails.application.routes.url_helpers
 
   let(:user) { User.new }
@@ -65,7 +69,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   it 'supplies a cancel link when the token is valid' do
     allow(presenter).to receive(:account_reset_token).and_return('foo')
     allow(presenter).to receive(:account_reset_token_valid?).and_return(true)
-    allow(presenter).to receive(:confirmation_period).and_return('24 hours')
+    allow(IdentityConfig.store).to receive(:account_reset_wait_period_days).and_return(1)
 
     expect(presenter.account_reset_or_cancel_link).to eq(
       t('two_factor_authentication.account_reset.pending', interval: '24 hours') + ' ' +
@@ -155,6 +159,34 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         end
       end
 
+      context 'with no piv cac mfa yet' do
+        let(:user) do
+          create(
+            :user,
+            :fully_registered,
+            :with_webauthn,
+            :with_webauthn_platform,
+            :with_phone,
+            :with_personal_key,
+            :with_backup_code,
+            :with_authentication_app,
+          )
+        end
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInWebauthnSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
+
       context 'add piv cac after 2fa' do
         let(:add_piv_cac_after_2fa) { true }
 
@@ -204,6 +236,31 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         end
       end
 
+      context 'with no phishing resistant mfa' do
+        let(:user) do
+          create(
+            :user,
+            :fully_registered,
+            :with_phone,
+            :with_personal_key,
+            :with_backup_code,
+            :with_authentication_app,
+          )
+        end
+
+        it 'returns all mfas associated with account' do
+          expect(options_classes).to eq(
+            [
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInPhoneSelectionPresenter,
+              TwoFactorAuthentication::SignInBackupCodeSelectionPresenter,
+              TwoFactorAuthentication::SignInAuthAppSelectionPresenter,
+              TwoFactorAuthentication::SignInPersonalKeySelectionPresenter,
+            ],
+          )
+        end
+      end
+
       context 'add piv cac after 2fa' do
         let(:add_piv_cac_after_2fa) { true }
 
@@ -230,6 +287,16 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     it { should be_nil }
 
     context 'phishing resistant required' do
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
+
       let(:phishing_resistant_required) { true }
 
       it 'returns phishing resistant required warning text for app' do
@@ -266,6 +333,15 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'piv cac required' do
       let(:piv_cac_required) { true }
+      let(:user) do
+        create(
+          :user,
+          :fully_registered,
+          :with_webauthn,
+          :with_webauthn_platform,
+          :with_piv_or_cac,
+        )
+      end
 
       it 'returns piv cac required warning text for app' do
         expect(restricted_options_warning_text).to eq(

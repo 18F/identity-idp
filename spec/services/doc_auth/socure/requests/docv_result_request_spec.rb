@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
+  let(:user) { create(:user) }
   let(:document_capture_session_uuid) { 'fake uuid' }
-  let(:biometric_comparison_required) { false }
   let(:fake_analytics) { FakeAnalytics.new }
 
   subject(:docv_result_request) do
     described_class.new(
+      customer_user_id: user.uuid,
       document_capture_session_uuid:,
-      biometric_comparison_required: biometric_comparison_required,
     )
   end
 
@@ -16,7 +16,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
     let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
     let(:fake_socure_api_endpoint) { 'https://fake-socure.test/api/3.0/EmailAuthScore' }
     let(:docv_transaction_token) { 'fake docv transaction token' }
-    let(:user) { create(:user) }
     let(:document_capture_session) do
       DocumentCaptureSession.create(user:).tap do |dcs|
         dcs.socure_docv_transaction_token = docv_transaction_token

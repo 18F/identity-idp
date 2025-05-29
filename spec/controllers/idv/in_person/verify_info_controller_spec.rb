@@ -14,6 +14,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
@@ -111,6 +112,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -174,7 +178,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       it 'logs the edit distance between SSNs' do
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 

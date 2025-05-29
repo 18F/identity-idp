@@ -39,8 +39,6 @@ module DocAuth
 
         ## returns full check success status, considering all checks:
         #    vendor (document and selfie if requested)
-        #    document type
-        #    bar code attention
         def successful_result?
           doc_auth_success? &&
             (@liveness_checking_enabled ? selfie_passed? : true)
@@ -49,16 +47,9 @@ module DocAuth
         # all checks from document perspectives, without considering selfie:
         #  vendor (document only)
         #  document_type
-        #  bar code attention
         def doc_auth_success?
           # really it's everything else excluding selfie
-          ((transaction_status_passed? &&
-            true_id_product.present? &&
-            product_status_passed? &&
-            doc_auth_result_passed?
-           ) ||
-            attention_with_barcode?
-          ) && id_type_supported?
+          transaction_status_passed? && id_type_supported?
         end
 
         def error_messages
@@ -93,9 +84,8 @@ module DocAuth
         def attention_with_barcode?
           return false unless doc_auth_result_attention?
 
-          parsed_alerts[:failed]&.count.to_i == 1 &&
-            parsed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-            parsed_alerts.dig(:failed, 0, :result) == 'Attention'
+          !!parsed_alerts[:failed]
+            &.any? { |alert| alert[:name] == '2D Barcode Read' && alert[:result] == 'Attention' }
         end
 
         def billed?
@@ -132,7 +122,7 @@ module DocAuth
         end
 
         def passport_pii?
-          @passport_pii ||= pii_from_doc&.state_id_type == 'passport'
+          @passport_pii ||= pii_from_doc&.id_doc_type == 'passport'
         end
 
         def transaction_status

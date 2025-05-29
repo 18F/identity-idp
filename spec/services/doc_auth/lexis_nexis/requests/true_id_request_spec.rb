@@ -27,12 +27,14 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     )
   end
   let(:selfie_image) { DocAuthImageFixtures.selfie_image }
+  let(:passport_image) { nil }
   let(:liveness_checking_required) { false }
   let(:subject) do
     described_class.new(
       config: config,
       front_image: DocAuthImageFixtures.document_front_image,
       back_image: DocAuthImageFixtures.document_back_image,
+      passport_image: passport_image,
       image_source: image_source,
       images_cropped: images_cropped,
       user_uuid: applicant[:uuid],
@@ -158,6 +160,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   context 'with a Passport document_type' do
     let(:document_type) { 'Passport' }
     let(:back_image_required) { false }
+    let(:passport_image) { DocAuthImageFixtures.document_passport_image }
 
     it_behaves_like 'a successful request'
   end
@@ -220,12 +223,12 @@ end
 def response_body_with_doc_auth_errors(include_liveness)
   {
     Status: {
-      TransactionStatus: 'passed',
+      TransactionStatus: 'failed',
     },
     Products: [
       {
         ProductType: 'TrueID',
-        ProductStatus: 'pass',
+        ProductStatus: 'fail',
         ParameterDetails: [
           {
             Group: 'AUTHENTICATION_RESULT',

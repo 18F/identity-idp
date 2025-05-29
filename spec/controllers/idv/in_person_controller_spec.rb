@@ -1,9 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPersonController do
+  include PassportApiHelpers
+
   let(:in_person_proofing_enabled) { false }
   let(:sp) { nil }
-  let(:user) { nil }
+  let(:user) { build(:user) }
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session: controller.user_session,
+      current_user: user,
+      service_provider: nil,
+    )
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
@@ -25,65 +34,49 @@ RSpec.describe Idv::InPersonController do
   end
 
   describe '#index' do
-    it 'renders 404 not found' do
-      get :index
-      expect(response.status).to eq 404
-    end
+    context 'when the service provider has IPP enabled' do
+      let(:sp) { create(:service_provider, in_person_proofing_enabled: true) }
 
-    context 'with in person proofing enabled' do
-      let(:in_person_proofing_enabled) { true }
+      context 'when in person proofing enabled in the application' do
+        let(:user) { nil }
+        let(:in_person_proofing_enabled) { true }
 
-      it 'redirects to the root url' do
-        get :index
-
-        expect(response).to redirect_to root_url
-      end
-
-      context 'signed in' do
-        let(:user) { build(:user) }
-
-        it 'redirects to idv' do
+        it 'redirects to the root url' do
           get :index
 
-          expect(response).to redirect_to idv_url
+          expect(response).to redirect_to root_url
         end
 
-        context 'with establishing in-person enrollment' do
+        context 'signed in' do
+          let(:user) { build(:user) }
+
           before do
-            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+            allow(controller).to receive(:idv_session).and_return(idv_session)
           end
 
-          it 'initializes the in-person session' do
-            get :index
-            expect(controller.user_session['idv/in_person']).to include(
-              pii_from_user: { uuid: user.uuid },
-            )
-          end
-
-          it 'redirects to the first step' do
+          it 'redirects to idv' do
             get :index
 
-            expect(response).to redirect_to idv_in_person_state_id_path
+            expect(response).to redirect_to idv_url
           end
 
-          it 'has non-nil presenter' do
-            get :index
-            expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
-          end
-
-          context 'with associated service provider' do
-            let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
-
-            it 'renders 404 not found' do
-              get :index
-
-              expect(response.status).to eq 404
+          context 'when user has an establishing in-person enrollment' do
+            let(:document_capture_session) do
+              DocumentCaptureSession.create(user: user, requested_at: Time.zone.now)
+            end
+            let(:document_capture_session_uuid) { document_capture_session&.uuid }
+            before do
+              idv_session.document_capture_session_uuid = document_capture_session_uuid
+              create(:in_person_enrollment, :establishing, user: user)
             end
 
-            context 'with in person proofing enabled for service provider' do
-              before do
-                ServiceProvider.find_by(issuer: sp.issuer)
-                  .update(in_person_proofing_enabled: true)
+            context 'when passports are not allowed' do
+              it 'initializes the in-person session' do
+                get :index
+
+                expect(controller.user_session['idv/in_person']).to include(
+                  pii_from_user: { uuid: user.uuid },
+                )
               end
 
               it 'redirects to the first step' do
@@ -91,27 +84,159 @@ RSpec.describe Idv::InPersonController do
 
                 expect(response).to redirect_to idv_in_person_state_id_path
               end
+
+              it 'has non-nil presenter' do
+                get :index
+
+                expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+              end
+            end
+
+            context 'when passports are allowed' do
+              let(:document_capture_session) do
+                DocumentCaptureSession.create(
+                  user: user, requested_at: Time.zone.now,
+                  passport_status: 'allowed'
+                )
+              end
+              let(:document_capture_session_uuid) { document_capture_session&.uuid }
+              before do
+                idv_session.document_capture_session_uuid = document_capture_session_uuid
+                create(:in_person_enrollment, :establishing, user: user)
+              end
+
+              it 'redirects to the choose id page' do
+                get :index
+
+                expect(response).to redirect_to idv_in_person_choose_id_type_path
+              end
             end
           end
+        end
+      end
+    end
 
-          context 'with an existing applicant' do
-            before do
-              idv_session = Idv::Session.new(
-                user_session: controller.user_session,
-                current_user: user,
-                service_provider: nil,
+    context 'when the service provider has IPP disabled' do
+      let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
+
+      it 'renders 404 not found' do
+        get :index
+
+        expect(response.status).to eq 404
+      end
+    end
+  end
+
+  describe '#update' do
+    context 'when the service provider has IPP enabled' do
+      let(:sp) { create(:service_provider, in_person_proofing_enabled: true) }
+
+      context 'with in person proofing enabled' do
+        let(:user) { nil }
+        let(:in_person_proofing_enabled) { true }
+
+        it 'redirects to the root url' do
+          put :update
+
+          expect(response).to redirect_to root_url
+        end
+
+        context 'signed in' do
+          let(:user) { build(:user) }
+
+          before do
+            allow(controller).to receive(:idv_session).and_return(idv_session)
+          end
+
+          it 'redirects to idv' do
+            put :update
+
+            expect(response).to redirect_to idv_url
+          end
+
+          context 'with establishing in-person enrollment' do
+            let(:document_capture_session) do
+              DocumentCaptureSession.create(
+                user: user, requested_at: Time.zone.now,
+                passport_status: 'allowed'
               )
-              idv_session.applicant = {}
-              allow(controller).to receive(:idv_session).and_return(idv_session)
+            end
+            let(:document_capture_session_uuid) { document_capture_session&.uuid }
+            before do
+              idv_session.document_capture_session_uuid = document_capture_session_uuid
+              create(:in_person_enrollment, :establishing, user: user)
+              allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
             end
 
-            it 'finishes the flow' do
+            it 'initializes the in-person session' do
+              put :update
+
+              expect(controller.user_session['idv/in_person']).to include(
+                pii_from_user: { uuid: user.uuid },
+              )
+            end
+
+            it 'redirects to the first step' do
               put :update
 
               expect(response).to redirect_to idv_in_person_state_id_path
             end
+
+            it 'has non-nil presenter' do
+              put :update
+
+              expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
+            end
+
+            context 'when in person passports are allowed' do
+              before do
+                allow(IdentityConfig.store).to receive(:in_person_passports_enabled)
+                  .and_return(true)
+              end
+
+              it 'redirects to the choose ID type page' do
+                put :update
+
+                expect(response).to redirect_to idv_in_person_choose_id_type_path
+              end
+            end
+
+            context 'when passports are not allowed' do
+              before do
+                allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+                  .and_return(false)
+              end
+
+              it 'redirects to the state ID page' do
+                put :update
+
+                expect(response).to redirect_to idv_in_person_state_id_path
+              end
+            end
+
+            context 'with an existing applicant' do
+              before do
+                allow(idv_session).to receive(:applicant).and_return({})
+              end
+
+              it 'finishes the flow' do
+                put :update
+
+                expect(response).to redirect_to idv_in_person_state_id_path
+              end
+            end
           end
         end
+      end
+    end
+
+    context 'when the service provider has IPP disabled' do
+      let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
+
+      it 'renders 404 not found' do
+        put :update
+
+        expect(response.status).to eq 404
       end
     end
   end

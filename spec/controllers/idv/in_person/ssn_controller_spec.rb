@@ -17,6 +17,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_sign_in(user)
     controller.user_session['idv/in_person'] = flow_session
     stub_analytics
+    stub_attempts_tracker
     controller.idv_session.flow_path = 'standard'
   end
 
@@ -140,15 +141,29 @@ RSpec.describe Idv::InPerson::SsnController do
       end
 
       it 'sends analytics_submitted event' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: true,
+          ssn:,
+          failure_reason: nil,
+        )
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
-      it 'adds ssn to idv_session' do
+      it 'adds the ssn to idv_session' do
         put :update, params: params
 
         expect(subject.idv_session.ssn).to eq(ssn)
+      end
+
+      context 'when the submitted ssn includes dashes' do
+        let(:ssn) { '123-45-6789' }
+        it 'adds the normalized ssn to idv_session' do
+          put :update, params: params
+
+          expect(subject.idv_session.ssn).to eq('123456789')
+        end
       end
 
       it 'invalidates steps after ssn' do
@@ -177,17 +192,18 @@ RSpec.describe Idv::InPerson::SsnController do
         end
 
         it 'updates idv_session.ssn' do
-          subject.idv_session.ssn = '900-95-7890'
+          subject.idv_session.ssn = '900957890'
 
           expect { put :update, params: params }.to change { subject.idv_session.ssn }
-            .from('900-95-7890').to(ssn)
+            .from('900957890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end
     end
 
     context 'invalid ssn' do
-      let(:params) { { doc_auth: { ssn: 'i am not an ssn' } } }
+      let(:ssn) { 'i am not an ssn' }
+      let(:params) { { doc_auth: { ssn: } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
         {
@@ -202,6 +218,11 @@ RSpec.describe Idv::InPerson::SsnController do
       render_views
 
       it 'renders the show template with an error message' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: false,
+          ssn:,
+          failure_reason: { ssn: [:invalid] },
+        )
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')

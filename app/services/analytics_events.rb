@@ -217,6 +217,12 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks expiration of account reset requests
+  # @param [Integer] count number of requests expired
+  def account_reset_request_expired(count:, **extra)
+    track_event(:account_reset_request_expired, count: count, **extra)
+  end
+
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
@@ -304,6 +310,33 @@ module AnalyticsEvents
       asserted_aal_value:,
       client_id:,
       response_aal_value:,
+      **extra,
+    )
+  end
+
+  # @param [String, nil] issuer
+  # @param [Integer, nil] requested_events_count
+  # @param [Integer, nil] requested_acknowledged_events_count
+  # @param [Integer, nil] returned_events_count
+  # @param [Integer, nil] acknowledged_events_count
+  # @param [Boolean] success
+  def attempts_api_poll_events_request(
+    issuer:,
+    requested_events_count:,
+    requested_acknowledged_events_count:,
+    returned_events_count:,
+    acknowledged_events_count:,
+    success:,
+    **extra
+  )
+    track_event(
+      :attempts_api_poll_events_request,
+      issuer:,
+      requested_events_count:,
+      requested_acknowledged_events_count:,
+      returned_events_count:,
+      acknowledged_events_count:,
+      success:,
       **extra,
     )
   end
@@ -736,6 +769,10 @@ module AnalyticsEvents
       flow: flow,
       **extra,
     )
+  end
+
+  def fingerprints_rotated
+    track_event(:fingerprints_rotated)
   end
 
   # The user chose to "forget all browsers"
@@ -1226,6 +1263,18 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step_name
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_address_warning_visited(step_name:, remaining_submit_attempts:, **extra)
+    track_event(
+      :idv_doc_auth_address_warning_visited,
+      step_name: step_name,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
@@ -1497,6 +1546,7 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
   def idv_doc_auth_failed_image_resubmitted(
@@ -1505,9 +1555,10 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     submit_attempts:,
-    front_image_fingerprint:,
-    back_image_fingerprint:,
-    selfie_image_fingerprint:,
+    selfie_image_fingerprint: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     document_type: nil,
     **extra
   )
@@ -1520,6 +1571,7 @@ module AnalyticsEvents
       submit_attempts:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       document_type:,
       **extra,
@@ -1867,6 +1919,7 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of passport image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
@@ -1882,6 +1935,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     document_type: nil,
@@ -1897,6 +1951,7 @@ module AnalyticsEvents
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       liveness_checking_required:,
       selfie_image_fingerprint:,
       acuant_sdk_upgrade_ab_test_bucket:,
@@ -1912,7 +1967,7 @@ module AnalyticsEvents
   # @param [String] doc_auth_result
   # @param [String] state
   # @param [String] country for passport doc types
-  # @param [String] state_id_type
+  # @param [String] id_doc_type
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -1922,6 +1977,7 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
@@ -1969,12 +2025,13 @@ module AnalyticsEvents
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
     exception:,
-    state_id_type:,
+    id_doc_type:,
     async:,
     submit_attempts:,
     remaining_submit_attempts:,
@@ -1990,6 +2047,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     attention_with_barcode: nil,
     doc_type_supported: nil,
@@ -2018,6 +2076,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
     document_type: nil,
+    passport_check_result: nil,
     **extra
   )
     track_event(
@@ -2029,7 +2088,7 @@ module AnalyticsEvents
       doc_auth_result:,
       state:,
       country:,
-      state_id_type:,
+      id_doc_type:,
       async:,
       submit_attempts: submit_attempts,
       remaining_submit_attempts: remaining_submit_attempts,
@@ -2038,6 +2097,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       attention_with_barcode:,
       doc_type_supported:,
@@ -2069,6 +2129,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
       document_type:,
+      passport_check_result:,
       **extra,
     )
   end
@@ -2088,6 +2149,7 @@ module AnalyticsEvents
   # @param [Integer] submit_attempts Times that user has tried submitting
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param ["Passport","DriversLicense"] document_type Document capture user flow
   # @param [Hash] classification_info document image side information, issuing country and type etc
@@ -2108,6 +2170,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     classification_info: nil,
     document_type: nil,
@@ -2129,6 +2192,7 @@ module AnalyticsEvents
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
@@ -3100,6 +3164,63 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Hash] error_details
+  def idv_in_person_proofing_choose_id_type_submitted(
+    success:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    chosen_id_type:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_submitted,
+      success:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      chosen_id_type:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_in_person_proofing_choose_id_type_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
@@ -3165,6 +3286,62 @@ module AnalyticsEvents
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
       nontransliterable_characters: nontransliterable_characters,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether form validation was successful
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_submitted(
+    success:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    error_details: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_submitted,
+      success:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      error_details:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_visited(
+    flow_path: nil,
+    step: nil,
+    analytics_id: nil,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
       **extra,
     )
   end
@@ -4167,6 +4344,129 @@ module AnalyticsEvents
     track_event('IdV: Not verified visited', **extra)
   end
 
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    captureAttempts:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    liveness_checking_required:,
+    mimeType:,
+    moire:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image added',
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      captureAttempts:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      liveness_checking_required:,
+      mimeType:,
+      moire:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Number] captureAttempts count of image capturing attempts
+  # @param [Boolean] click_source
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] isDrop
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    captureAttempts:,
+    click_source:,
+    flow_path:,
+    isDrop:,
+    liveness_checking_required:,
+    use_alternate_sdk:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      captureAttempts:,
+      click_source:,
+      flow_path:,
+      isDrop:,
+      liveness_checking_required:,
+      use_alternate_sdk:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
@@ -5156,6 +5456,7 @@ module AnalyticsEvents
   # @param [String] exception any exceptions thrown during request
   # @param [String] docv_transaction_token socure transaction token
   # @param [String] reference_id socure interal id for transaction
+  # @param [String] customer_user_id user uuid sent to socure
   # @param [String] language lagnuage presented to user
   # @param [String] step current step of idv to user
   # @param [String] analytics_id id of analytics
@@ -5173,6 +5474,7 @@ module AnalyticsEvents
   # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
+  # @param [String] use_case_key name of requested DocV flow
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -5191,12 +5493,14 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     reference_id: nil,
+    customer_user_id: nil,
     liveness_enabled: nil,
     document_type: nil,
     docv_transaction_token: nil,
     flow_path: nil,
     socure_status: nil,
     socure_msg: nil,
+    use_case_key: nil,
     **extra
   )
     track_event(
@@ -5216,6 +5520,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       reference_id:,
+      customer_user_id:,
       response_body:,
       liveness_enabled:,
       document_type:,
@@ -5223,6 +5528,7 @@ module AnalyticsEvents
       flow_path:,
       socure_status:,
       socure_msg:,
+      use_case_key:,
       **extra,
     )
   end
@@ -5280,66 +5586,64 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
-  # @param [Boolean] billed
-  # @param [String] docv_transaction_token socure transaction token
-  # @param [Hash] customer_profile socure customer profile
-  # @param [String] reference_id socure interal id for transaction
-  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
-  # @param [Hash] decision accept or reject of given ID
-  # @param [String] user_id internal id of socure user
-  # @param [String] state state of ID
-  # @param [String] state_id_type type of state issued ID
-  # @param [Boolean] async whether or not this worker is running asynchronously
-  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  #   "attempts")
-  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
-  # @param [Boolean] doc_type_supported
-  # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
-  # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
-  # @param [String] zip_code zip code from state issued ID
+  # @param [Boolean] async whether or not this worker is running asynchronously
+  # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] customer_user_id user uuid sent to Socure
+  # @param [Hash] decision accept or reject of given ID
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] doc_type_supported
+  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [String] docv_transaction_token socure transaction token
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] id_doc_type type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
-  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [String] reference_id socure internal id for transaction
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param [String] state state of ID
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # @param [String] user_id internal id of socure user
+  #   "attempts")
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] vendor_status Socure's request status (used for errors)
   # @param [String] vendor_status_message socure's error message (used for errors)
+  # @param [String] zip_code zip code from state issued ID
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
     errors:,
     async:,
-    submit_attempts:,
-    vendor_request_time_in_ms:,
     doc_type_supported:,
     doc_auth_success:,
-    vendor:,
     remaining_submit_attempts:,
+    submit_attempts:,
+    vendor:,
+    vendor_request_time_in_ms:,
+    exception: nil,
+    address_line2_present: nil,
+    billed: nil,
+    birth_year: nil,
+    customer_profile: nil,
+    customer_user_id: nil,
+    decision: nil,
+    document_type: nil,
+    docv_transaction_token: nil,
+    flow_path: nil,
+    id_doc_type: nil,
+    issue_year: nil,
+    liveness_enabled: nil,
     reference_id: nil,
     reason_codes: nil,
-    document_type: nil,
-    decision: nil,
     state: nil,
-    state_id_type: nil,
-    liveness_checking_required: nil,
-    issue_year: nil,
-    address_line2_present: nil,
-    zip_code: nil,
-    birth_year: nil,
-    liveness_enabled: nil,
-    biometric_comparison_required: nil,
-    customer_profile: nil,
-    docv_transaction_token: nil,
     user_id: nil,
-    exception: nil,
-    flow_path: nil,
-    billed: nil,
     vendor_status: nil,
     vendor_status_message: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -5347,33 +5651,32 @@ module AnalyticsEvents
       success:,
       errors:,
       exception:,
-      billed:,
-      docv_transaction_token:,
-      customer_profile:,
-      reference_id:,
-      reason_codes:,
-      document_type:,
-      decision:,
-      user_id:,
-      state:,
-      state_id_type:,
-      async:,
-      submit_attempts:,
-      remaining_submit_attempts:,
-      flow_path:,
-      liveness_checking_required:,
-      vendor_request_time_in_ms:,
-      doc_type_supported:,
-      doc_auth_success:,
-      vendor:,
       address_line2_present:,
-      zip_code:,
+      async:,
+      billed:,
       birth_year:,
+      customer_profile:,
+      customer_user_id:,
+      decision:,
+      doc_auth_success:,
+      doc_type_supported:,
+      document_type:,
+      docv_transaction_token:,
+      flow_path:,
+      id_doc_type:,
       issue_year:,
       liveness_enabled:,
-      biometric_comparison_required:,
+      reason_codes:,
+      reference_id:,
+      remaining_submit_attempts:,
+      state:,
+      submit_attempts:,
+      user_id:,
+      vendor:,
+      vendor_request_time_in_ms:,
       vendor_status:,
       vendor_status_message:,
+      zip_code:,
       **extra,
     )
   end
@@ -5766,48 +6069,6 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       in_account_creation_flow:,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
-  # Tracks when the user has added the MFA method piv_cac to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['piv_cac'] method_name Authentication method added
-  # @param [Integer] attempts number of MFA setup attempts
-  def multi_factor_auth_added_piv_cac(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :piv_cac,
-    attempts: nil,
-    **extra
-  )
-    track_event(
-      :multi_factor_auth_added_piv_cac,
-      method_name:,
-      enabled_mfa_methods_count:,
-      in_account_creation_flow:,
-      attempts:,
-      **extra,
-    )
-  end
-
-  # Tracks when the user has added the MFA method TOTP to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['totp'] method_name Authentication method added
-  def multi_factor_auth_added_totp(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :totp,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added TOTP',
-      method_name:,
-      in_account_creation_flow:,
-      enabled_mfa_methods_count:,
       **extra,
     )
   end
@@ -6230,6 +6491,20 @@ module AnalyticsEvents
       method: method,
       **extra,
     )
+  end
+
+  # Tracks when user lands on page notifying them multiple profiles contain same information
+  def one_account_duplicate_profiles_detected
+    track_event(:one_account_duplicate_profiles_detected)
+  end
+
+  # Tracks when user says they recognize all accounts that has same profile information.
+  def one_account_recognize_all_profiles
+    track_event(:one_account_recognize_all_profiles)
+  end
+
+  def one_account_unknown_profile_detected
+    track_event(:one_account_unknown_profile_detected)
   end
 
   # Tracks when a sucessful openid authorization request is returned

@@ -8,12 +8,17 @@ module PassportApiHelpers
         .and_return(composite_health_check_endpoint)
     end
 
-    def stub_health_check_endpoints
+    def stub_health_check_endpoints_success
       stub_request(:get, general_health_check_endpoint)
         .to_return_json(body: successful_api_general_health_check_body)
 
       stub_request(:get, composite_health_check_endpoint)
         .to_return_json(body: successful_api_composite_health_check_body)
+    end
+
+    def stub_composite_health_check_endpoint_failure
+      stub_request(:get, composite_health_check_endpoint)
+        .to_return_json(body: failed_api_composite_health_check_body)
     end
 
     def general_health_check_endpoint
@@ -41,6 +46,17 @@ module PassportApiHelpers
           Rails.root.join(
             'spec', 'fixtures', 'dos', 'healthcheck',
             'composite_health_success.json'
+          ),
+        ),
+      )
+    end
+
+    def failed_api_composite_health_check_body
+      JSON.parse(
+        File.read(
+          Rails.root.join(
+            'spec', 'fixtures', 'dos', 'healthcheck',
+            'composite_health_fail.json'
           ),
         ),
       )

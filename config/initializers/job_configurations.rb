@@ -36,6 +36,12 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
+      # Cancel expired account reset requests
+      expire_account_reset_requests: {
+        class: 'ExpireAccountResetRequestsJob',
+        cron: cron_5m,
+        args: -> { [Time.zone.now] },
+      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -186,8 +192,15 @@ else
       table_summary_stats_export_job: {
         class: 'DataWarehouse::TableSummaryStatsExportJob',
         cron: gpo_cron_24h,
-        args: -> { [Time.zone.now.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday] },
       },
+      # Send previous week's verification reports to partners
+      irs_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
       # Send Duplicate SSN report to S3
       duplicate_ssn: {
         class: 'Reports::DuplicateSsnReport',
@@ -236,6 +249,12 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Send previous week's authentication reports to irs
+      irs_weekly_authentication_report: {
+        class: 'Reports::IrsAuthenticationReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',
@@ -245,6 +264,12 @@ else
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Send irs fraud metrics to Team Data
+      irs_fraud_metrics_report: {
+        class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
@@ -266,6 +291,12 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Previous months's irs verification report
+      monthly_irs_verification_report: {
+        class: 'Reports::MonthlyIrsVerificationReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
@@ -276,6 +307,12 @@ else
         class: 'DataWarehouse::DailySensitiveColumnJob',
         cron: s3_cron_24h,
         args: -> { [Time.zone.today] },
+      },
+      # Previoius week API transaction count reprot
+      api_transaction_count_report: {
+        class: 'Reports::ApiTransactionCountReport',
+        cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact
   end

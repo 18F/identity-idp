@@ -19,6 +19,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
+  def self.document_passport_image
+    load_image_data('passport.jpg')
+  end
+
+  def self.document_passport_image_multipart
+    Rack::Test::UploadedFile.new(fixture_path('passport.jpg'), 'image/jpeg')
+  end
+
   def self.selfie_image
     load_image_data('selfie.jpg')
   end
@@ -59,6 +67,22 @@ module DocAuthImageFixtures
     path = File.join(
       File.dirname(__FILE__),
       '../fixtures/ial2_test_portrait_match_failure.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
+  def self.passport_passed_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/passport_credential.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
+  def self.passport_failed_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/passport_bad_mrz_credential.yml',
     )
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end

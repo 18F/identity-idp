@@ -123,7 +123,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -218,7 +218,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -283,7 +283,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         expect(result[:success]).to be false
         expect(result[:errors]).to include(
-          :state_id_number, :state_id_type, :dob, :last_name, :first_name, :address1, :address2,
+          :state_id_number, :id_doc_type, :dob, :last_name, :first_name, :address1, :address2,
           :city, :state, :zipcode
         )
         expect(result[:exception]).to be_nil
@@ -293,7 +293,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
         expect(result_context_stages_state_id[:success]).to eq(false)
         expect(result_context_stages_state_id[:errors]).to include(
-          :state_id_number, :state_id_type, :dob, :last_name, :first_name, :address1, :address2,
+          :state_id_number, :id_doc_type, :dob, :last_name, :first_name, :address1, :address2,
           :city, :state, :zipcode
         )
         expect(result_context_stages_state_id[:exception]).to eq(nil)
@@ -454,7 +454,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_expiration
             state_id_issued
             state_id_number
-            state_id_type
+            id_doc_type
             dob
             last_name
             first_name
@@ -586,33 +586,33 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 )
                 expect(json[:applicant_pii]).to eql(
                   {
-                    first_name: 'FAKEY',
+                    first_name: 'MICHELE',
                     middle_name: nil,
-                    last_name: 'MCFAKERSON',
-                    name_suffix: 'JR',
-                    address1: '1 FAKE RD',
-                    identity_doc_address1: '1 FAKE RD',
-                    identity_doc_address2: nil,
-                    identity_doc_city: 'GREAT FALLS',
-                    identity_doc_address_state: 'MT',
-                    identity_doc_zipcode: '59010-1234',
+                    last_name: 'DEBAK',
+                    name_suffix: '',
+                    address1: '514 EAST AVE',
+                    identity_doc_address1: '514 EAST AVE',
+                    identity_doc_address2: '',
+                    identity_doc_city: 'SOUTH CHARLESTON',
+                    identity_doc_address_state: 'WV',
+                    identity_doc_zipcode: '25309-1104',
                     issuing_country_code: 'US',
-                    address2: nil,
+                    address2: '',
                     same_address_as_id: 'true',
-                    city: 'GREAT FALLS',
-                    state: 'MT',
-                    zipcode: '59010-1234',
-                    dob: '1938-10-06',
-                    sex: 'male',
+                    city: 'SOUTH CHARLESTON',
+                    state: 'WV',
+                    zipcode: '25309-1104',
+                    dob: '1976-10-18',
+                    sex: 'female',
                     height: 72,
                     weight: nil,
                     eye_color: nil,
-                    ssn: '900-66-1234',
+                    ssn: '900661234',
                     state_id_jurisdiction: 'ND',
                     state_id_expiration: '2099-12-31',
                     state_id_issued: '2019-12-31',
                     state_id_number: '1111111111111',
-                    state_id_type: 'drivers_license',
+                    id_doc_type: 'drivers_license',
                   },
                 )
               end,

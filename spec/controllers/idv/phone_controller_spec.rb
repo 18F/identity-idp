@@ -33,9 +33,7 @@ RSpec.describe Idv::PhoneController do
         :check_for_mail_only_outage,
       )
     end
-  end
 
-  describe 'before_actions' do
     it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
@@ -52,6 +50,7 @@ RSpec.describe Idv::PhoneController do
     stub_sign_in(user)
     stub_up_to(:verify_info, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#new' do
@@ -119,10 +118,6 @@ RSpec.describe Idv::PhoneController do
       let(:step) { 'path_where_user_asked_to_use_different_number' }
       let(:params) { { step: step } }
 
-      before do
-        stub_analytics
-      end
-
       it 'logs an event showing that the user wants to choose a different number' do
         get :new, params: params
 
@@ -134,8 +129,6 @@ RSpec.describe Idv::PhoneController do
     end
 
     it 'shows phone form if async process times out and allows successful resubmission' do
-      stub_analytics
-
       # setting the document capture session to a nonexistent uuid will trigger async
       # missing behavior
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
@@ -193,6 +186,17 @@ RSpec.describe Idv::PhoneController do
           expect(Telephony::Test::Message.messages.length).to eq(1)
         end
 
+        it 'tracks the Attempts API event' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
+
+          get :new
+        end
+
         context 'the user submited their last attempt' do
           it 'redirects to the OTP confirmation and the rate limiter is maxed' do
             RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
@@ -203,6 +207,32 @@ RSpec.describe Idv::PhoneController do
             expect(Telephony::Test::Message.messages.length).to eq(1)
             expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
           end
+
+          it 'tracks the event' do
+            expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+              phone_number: Phonelib.parse(phone).e164,
+              success: true,
+              otp_delivery_method: :sms,
+              failure_reason: nil,
+            )
+
+            get :new
+          end
+        end
+      end
+
+      context 'when Pinpoint throws an opt-out error' do
+        let(:phone) { Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER }
+
+        it 'tracks the Attempts API event' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(phone).e164,
+            success: false,
+            otp_delivery_method: :sms,
+            failure_reason: { telephony_error: ['opt_out'] },
+          )
+
+          get :new
         end
       end
 
@@ -217,6 +247,12 @@ RSpec.describe Idv::PhoneController do
           expect(subject.idv_session.vendor_phone_confirmation).to eq(nil)
           expect(subject.idv_session.user_phone_confirmation).to eq(nil)
           expect(Telephony::Test::Message.messages.length).to eq(0)
+        end
+
+        it 'does not track the event' do
+          expect(@attempts_api_tracker).not_to receive(:idv_phone_otp_sent)
+
+          get :new
         end
 
         context 'the user submited their last attempt' do
@@ -255,10 +291,13 @@ RSpec.describe Idv::PhoneController do
             },
         }
       end
-      before do
-      end
 
       it 'renders #new' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(improbable_phone_number).e164,
+          success: false,
+          failure_reason: { phone: [:improbable_phone], otp_delivery_preference: [:inclusion] },
+        )
         put :create, params: improbable_phone_form
 
         expect(flash[:error]).to eq improbable_phone_message
@@ -276,6 +315,12 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'disallows non-US numbers' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(international_phone).e164,
+          success: false,
+          failure_reason: { phone: [:improbable_phone] },
+        )
+
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
         expect(flash[:error]).to eq improbable_phone_message
@@ -325,6 +370,12 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'tracks events with valid phone' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(good_phone).e164,
+          success: true,
+          failure_reason: nil,
+        )
+
         put :create, params: phone_params
 
         expect(@analytics).to have_logged_event(
@@ -350,6 +401,12 @@ RSpec.describe Idv::PhoneController do
       context 'when same as user phone' do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(good_phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
 
           put :create, params: phone_params
 
@@ -386,6 +443,13 @@ RSpec.describe Idv::PhoneController do
 
       context 'when different phone from user phone' do
         it 'redirects to otp page and does not set phone_confirmed_at' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(good_phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
+
           put :create, params: phone_params
 
           expect(response).to redirect_to idv_phone_path
@@ -447,6 +511,13 @@ RSpec.describe Idv::PhoneController do
 
     it 'tracks that the hybrid handoff phone was used' do
       subject.idv_session.phone_for_mobile_flow = good_phone
+
+      expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+        phone_number: Phonelib.parse(good_phone).e164,
+        success: true,
+        otp_delivery_method: :sms,
+        failure_reason: nil,
+      )
 
       put :create, params: { idv_phone_form: { phone: good_phone } }
       expect(response).to redirect_to idv_phone_path
@@ -526,10 +597,12 @@ RSpec.describe Idv::PhoneController do
 
       context 'when the user is rate limited by submission' do
         before do
-          stub_analytics
-
           rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
           rate_limiter.increment_to_limited!
+
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
         end

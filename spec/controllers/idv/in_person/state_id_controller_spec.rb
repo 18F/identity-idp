@@ -5,7 +5,7 @@ RSpec.describe Idv::InPerson::StateIdController do
   include InPersonHelper
 
   let(:user) { build(:user) }
-  let(:enrollment) { InPersonEnrollment.new }
+  let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
 
   before do
     stub_sign_in(user)
@@ -200,6 +200,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
         expect(subject.idv_session.ssn).to eq(nil)
         expect(subject.idv_session.doc_auth_vendor).to eq(nil)
+        expect(enrollment.document_type).to eq(nil)
         expect(subject.extra_view_variables[:updating_state_id]).to eq(false)
         expect(response).to render_template :show
       end
@@ -208,6 +209,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         subject.idv_session.ssn = '123-45-6789'
         put :update, params: invalid_params
 
+        expect(enrollment.document_type).to eq(nil)
         expect(subject.extra_view_variables[:updating_state_id]).to eq(true)
         expect(response).to render_template :show
       end
@@ -240,6 +242,12 @@ RSpec.describe Idv::InPerson::StateIdController do
         put :update, params: params
 
         expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
+      end
+
+      it 'sets the enrollment document type' do
+        put :update, params: params
+
+        expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
       end
     end
 

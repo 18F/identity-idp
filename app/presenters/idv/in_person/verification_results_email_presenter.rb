@@ -16,6 +16,11 @@ module Idv
         @visited_location_name = visited_location_name
       end
 
+      def passports_enabled?
+        IdentityConfig.store.doc_auth_passports_enabled &&
+          IdentityConfig.store.in_person_passports_enabled
+      end
+
       def formatted_verified_date
         I18n.l(
           enrollment.status_updated_at.in_time_zone(USPS_SERVER_TIMEZONE),

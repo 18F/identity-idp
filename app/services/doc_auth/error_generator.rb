@@ -11,6 +11,7 @@ module DocAuth
   class IdTypeErrorHandler < ErrorHandler
     SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+                             DocAuth::LexisNexis::IssuerTypes::COUNTRY.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])
@@ -130,7 +131,7 @@ module DocAuth
     def get_doc_auth_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
-      if response_info[:doc_auth_result] != LexisNexis::ResultCodes::PASSED.name
+      if response_info[:transaction_status] != LexisNexis::TransactionCodes::PASSED.name
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
 
@@ -372,28 +373,10 @@ module DocAuth
       unknown_fail_count
     end
 
-    # This method replicates TrueIdResponse::attention_with_barcode? and
-    # should be removed/updated when that is.
-    def attention_with_barcode_result(doc_auth_result, processed_alerts)
-      attention_result_name = LexisNexis::ResultCodes::ATTENTION.name
-      barcode_alerts = processed_alerts[:failed]&.count.to_i == 1 &&
-                       processed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-                       processed_alerts.dig(:failed, 0, :result) == 'Attention'
-
-      doc_auth_result == attention_result_name && barcode_alerts
-    end
-
-    def doc_auth_passed_or_attn_with_barcode(response_info)
-      doc_auth_result = response_info[:doc_auth_result]
-      processed_alerts = response_info[:processed_alerts]
-
-      doc_auth_result_passed = doc_auth_result == LexisNexis::ResultCodes::PASSED.name
-      doc_auth_result_passed || attention_with_barcode_result(doc_auth_result, processed_alerts)
-    end
-
     def doc_auth_error_count(response_info)
-      doc_auth_passed_or_attn_with_barcode(response_info) ?
-        0 : response_info[:alert_failure_count]
+      return 0 if response_info[:transaction_status] == LexisNexis::TransactionCodes::PASSED.name
+
+      response_info[:alert_failure_count]
     end
   end
 end

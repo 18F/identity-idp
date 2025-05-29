@@ -121,7 +121,6 @@ Rails.application.routes.draw do
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       get '/account_reset/pending' => 'account_reset/pending#show'
-      get '/account_reset/pending/confirm' => 'account_reset/pending#confirm'
       post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
@@ -207,6 +206,9 @@ Rails.application.routes.draw do
     end
 
     get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+    get '/duplicate_profiles_detected' => 'duplicate_profiles_detected#show'
+    post '/duplicate_profiles_detected/recognize_all_profiles' => 'duplicate_profiles_detected#recognize_all_profiles'
+    post '/duplicate_profiles_detected/do_not_recognize_profiles' => 'duplicate_profiles_detected#do_not_recognize_profiles'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
@@ -424,6 +426,7 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
+      get '/session/errors/address_warning' => 'session_errors#address_warning'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
@@ -442,10 +445,14 @@ Rails.application.routes.draw do
           as: :capture_doc_dashes
       get '/in_person' => 'in_person#index'
       put '/in_person' => 'in_person#update'
+      get '/in_person/choose_id_type' => 'in_person/choose_id_type#show'
+      put '/in_person/choose_id_type' => 'in_person/choose_id_type#update'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/passport' => 'in_person/passport#show'
+      put '/in_person/passport' => 'in_person/passport#update'
       get '/in_person/state_id' => 'in_person/state_id#show'
       put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'

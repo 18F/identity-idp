@@ -12,7 +12,7 @@ class ServiceProviderSession
   end
 
   def attempts_api_session_id
-    request_url_params['attempts_api_session_id']
+    request_url_params['attempts_api_session_id'] || request_url_params['tid']
   end
 
   def remember_device_default

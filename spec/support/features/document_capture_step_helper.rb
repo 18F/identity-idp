@@ -18,6 +18,10 @@ module DocumentCaptureStepHelper
     attach_file t('doc_auth.headings.document_capture_back'), file, make_visible: true
   end
 
+  def attach_passport_image(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
+    attach_file t('doc_auth.headings.document_capture_passport'), file, make_visible: true
+  end
+
   def attach_liveness_images(
     file = Rails.root.join(
       'spec', 'fixtures',
@@ -32,6 +36,18 @@ module DocumentCaptureStepHelper
 
   def attach_selfie(file = Rails.root.join('app', 'assets', 'images', 'email', 'logo.png'))
     attach_file t('doc_auth.headings.document_capture_selfie'), file, make_visible: true
+  end
+
+  def choose_id_type(id_type)
+    case id_type
+    when :passport
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+    when :state_id
+      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+    else
+      raise "choose_id_type: unsupported id type: #{id_type}"
+    end
+    click_continue
   end
 
   def document_capture_form
@@ -87,6 +103,18 @@ module DocumentCaptureStepHelper
     ]
   end
 
+  def selfie_webhook_list
+    %w[
+      WAITING_FOR_USER_TO_REDIRECT
+      APP_OPENED
+      DOCUMENT_FRONT_UPLOADED
+      DOCUMENT_BACK_UPLOADED
+      DOCUMENT_SELFIE_UPLOADED
+      DOCUMENTS_UPLOADED
+      SESSION_COMPLETE
+    ]
+  end
+
   def socure_docv_send_webhook(
     docv_transaction_token:,
     event_type: 'DOCUMENTS_UPLOADED'
@@ -107,19 +135,34 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass(docv_transaction_token:)
-    stub_docv_verification_data(body: SocureDocvFixtures.pass_json, docv_transaction_token:)
+  def stub_docv_verification_data_pass(docv_transaction_token:, reason_codes: nil, user: nil)
+    stub_docv_verification_data(
+      body: SocureDocvFixtures.pass_json(reason_codes:),
+      docv_transaction_token:,
+      user:,
+    )
   end
 
-  def stub_docv_verification_data_fail_with(docv_transaction_token:, errors:)
-    stub_docv_verification_data(body: SocureDocvFixtures.fail_json(errors), docv_transaction_token:)
+  def stub_docv_verification_data_fail_with(docv_transaction_token:, reason_codes:, user: nil)
+    stub_docv_verification_data(
+      body: SocureDocvFixtures.fail_json(reason_codes:),
+      docv_transaction_token:,
+      user:,
+    )
   end
 
-  def stub_docv_verification_data(docv_transaction_token:, body:)
+  def stub_docv_verification_data(docv_transaction_token:, body:, user: nil)
+    if user
+      body_hash = JSON.parse(body, symbolize_names: true)
+      body_hash[:customerUserId] = user.uuid
+      body = body_hash.to_json
+    end
+
     request_body = {
       modules: ['documentverification'],
       docvTransactionToken: docv_transaction_token,
     }
+    request_body[:customerUserId] = user.uuid if user
 
     stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
       .with(body: request_body.to_json)
@@ -135,7 +178,8 @@ module DocumentCaptureStepHelper
     url: 'https://verify.fake-socure.test/something',
     status: 200,
     token: SecureRandom.hex,
-    body: nil
+    body: nil,
+    user: nil
   )
     body ||= {
       referenceId: 'socure-reference-id',
@@ -146,6 +190,7 @@ module DocumentCaptureStepHelper
         url:,
       },
     }
+    body[:customerUserId] = user.uuid if user
 
     stub_request(:post, IdentityConfig.store.socure_docv_document_request_endpoint)
       .to_return(

@@ -135,7 +135,7 @@ RSpec.describe 'Identity verification', :js do
         .update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing', allow_browser_log: true do
+    scenario 'In person proofing with state ID', allow_browser_log: true do
       visit_idp_from_sp_with_ial2(sp)
       user = sign_up_and_2fa_ial1_user
 
@@ -223,7 +223,7 @@ RSpec.describe 'Identity verification', :js do
 
   def validate_document_capture_submit(user)
     expect_costing_for_document
-    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('WV')
   end
 
   # copied from document_capture_spec
@@ -271,7 +271,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     check t('forms.ssn.show')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_FORMATTED)
   end
 
   def validate_verify_info_submit

@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
     @attempts_api_tracker ||= AttemptsApi::Tracker.new(
       session_id: attempts_api_session_id,
       request:,
-      user: current_user,
+      user: analytics_user,
       sp: current_sp,
       cookie_device_uuid: cookies[:device],
       # this only works for oidc
@@ -180,6 +180,7 @@ class ApplicationController < ActionController::Base
 
     if params[:timeout] == 'session'
       analytics.session_timed_out
+      attempts_api_tracker.session_timeout
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,
@@ -256,11 +257,9 @@ class ApplicationController < ActionController::Base
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
-    return webauthn_platform_recommended_path if recommend_webauthn_platform_for_sms_user?(
-      :recommend_for_authentication,
-    )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
+    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
@@ -520,6 +519,19 @@ class ApplicationController < ActionController::Base
   def user_is_banned?
     return false unless user_signed_in?
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
+  end
+
+  def user_duplicate_profiles_detected?
+    return false unless sp_eligible_for_one_account?
+    profile = current_user&.active_profile
+    DuplicateProfileConfirmation.where(
+      profile_id: profile.id,
+      confirmed_all: nil,
+    ).present?
+  end
+
+  def sp_eligible_for_one_account?
+    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
   end
 
   def handle_banned_user

@@ -165,7 +165,7 @@ RSpec.describe SocureShadowModeProofingJob do
           },
         },
         customerProfile: {
-          customerUserId: '129',
+          customerUserId: user.uuid,
           userId: 'u8JpWn4QsF3R7tA2',
         },
       }
@@ -278,6 +278,7 @@ RSpec.describe SocureShadowModeProofingJob do
             success: true,
             timed_out: false,
             transaction_id: 'a1234b56-e789-0123-4fga-56b7c890d123',
+            customer_user_id: user.uuid,
             vendor_name: 'socure_kyc',
             vendor_workflow: nil,
             verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
@@ -286,7 +287,7 @@ RSpec.describe SocureShadowModeProofingJob do
       end
 
       it 'makes a proofing call' do
-        expect(job.proofer).to receive(:proof).and_call_original
+        expect(job.proofer(user: user)).to receive(:proof).and_call_original
         perform
       end
 
@@ -330,7 +331,7 @@ RSpec.describe SocureShadowModeProofingJob do
 
       context 'when socure proofer raises an error' do
         before do
-          allow(job.proofer).to receive(:proof).and_raise
+          allow(job.proofer(user: user)).to receive(:proof).and_raise
         end
 
         it 'does not squash the error' do
@@ -419,15 +420,15 @@ RSpec.describe SocureShadowModeProofingJob do
 
     let(:expected_attributes) do
       {
-        first_name: 'FAKEY',
-        last_name: 'MCFAKERSON',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010-1234',
-        dob: '1938-10-06',
-        ssn: '900-66-1234',
+        first_name: 'MICHELE',
+        last_name: 'DEBAK',
+        address1: '514 EAST AVE',
+        address2: '',
+        city: 'SOUTH CHARLESTON',
+        state: 'WV',
+        zipcode: '25309-1104',
+        dob: '1976-10-18',
+        ssn: '900661234',
         email: user.email,
       }
     end
@@ -502,7 +503,8 @@ RSpec.describe SocureShadowModeProofingJob do
       allow(IdentityConfig.store).to receive(:socure_idplus_base_url).and_return('https://example.org')
       allow(IdentityConfig.store).to receive(:socure_idplus_timeout_in_seconds).and_return(6)
 
-      expect(job.proofer.config.to_h).to eql(
+      expect(job.proofer(user:).config.to_h).to eql(
+        user_uuid: user.uuid,
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,

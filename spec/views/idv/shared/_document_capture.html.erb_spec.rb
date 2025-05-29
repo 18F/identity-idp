@@ -7,12 +7,14 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
+  let(:id_type) { 'state_id' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuer) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:selfie_capture_enabled) { true }
+  let(:upload_enabled) { true }
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth_from_how_to_verify) { false }
@@ -48,11 +50,13 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       document_capture_session_uuid: document_capture_session_uuid,
       sp_name: sp_name,
       flow_path: flow_path,
+      id_type: id_type,
       failure_to_proof_url: failure_to_proof_url,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       doc_auth_selfie_capture: selfie_capture_enabled,
+      doc_auth_upload_enabled: upload_enabled,
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
       skip_doc_auth_from_handoff: skip_doc_auth_from_handoff,
       skip_doc_auth_from_socure: skip_doc_auth_from_socure,
@@ -143,6 +147,16 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         render_partial
         expect(rendered).to have_css(
           "#document-capture-form[data-doc-auth-selfie-capture='false']",
+        )
+      end
+    end
+
+    context 'when doc_auth_upload_enabled is false' do
+      let(:upload_enabled) { false }
+      it 'does not send doc_auth_upload_enabled to the FE' do
+        render_partial
+        expect(rendered).to have_css(
+          "#document-capture-form[data-doc-auth-upload-enabled='false']",
         )
       end
     end

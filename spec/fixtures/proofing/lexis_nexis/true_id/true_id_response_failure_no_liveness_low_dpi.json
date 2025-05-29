@@ -15,7 +15,7 @@
       "ProductType": "TrueID",
       "ExecutedStepName": "True_ID_Step",
       "ProductConfigurationName": "AndreV3_TrueID_Flow",
-      "ProductStatus": "pass",
+      "ProductStatus": "fail",
       "ParameterDetails": [
         {
           "Group": "AUTHENTICATION_RESULT",

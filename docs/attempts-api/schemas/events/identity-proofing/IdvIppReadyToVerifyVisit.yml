@@ -1,5 +1,5 @@
 description: |
-  When the user submits the security code that they received on their phone to verify their phone or address during identity proofing.
+  When the user becomes able to visit the post office for in-person proofing.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
