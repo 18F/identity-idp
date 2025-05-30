@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
   include FlowPolicyHelper
+  include AbTestsHelper
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
@@ -476,6 +477,49 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       it 'redirects back to the SSN step' do
         get :show
         expect(response).to redirect_to(idv_in_person_ssn_url)
+      end
+    end
+  end
+
+  context '#proofing_vendor' do
+    let(:idv_resolution_vendor_instant_verify_percent) { 100 }
+    let(:idv_resolution_vendor_socure_kyc_percent) { 0 }
+    let(:idv_resolution_vendor_switching_enabled) { false }
+    before do
+      subject.idv_session.verify_info_step_document_capture_session_uuid = 'random-uuid'
+      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
+        .and_return(:default_vendor)
+      allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
+        .and_return(idv_resolution_vendor_instant_verify_percent)
+      allow(IdentityConfig.store).to receive(:idv_resolution_vendor_socure_kyc_percent)
+        .and_return(idv_resolution_vendor_socure_kyc_percent)
+      allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
+        .and_return(idv_resolution_vendor_switching_enabled)
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
+    end
+
+    it 'returns default vendor' do
+      expect(subject.proofing_vendor).to eq(:default_vendor)
+    end
+
+    context 'idv_resolution_vendor_switching_enabled is enabled' do
+      let(:idv_resolution_vendor_switching_enabled) { true }
+
+      it 'returns instant verify' do
+        expect(subject.proofing_vendor).to eq(:instant_verify)
+      end
+
+      context 'socure is 100%' do
+        let(:idv_resolution_vendor_instant_verify_percent) { 0 }
+        let(:idv_resolution_vendor_socure_kyc_percent) { 100 }
+
+        it 'returns instant verify' do
+          expect(subject.proofing_vendor).to eq(:socure_kyc)
+        end
       end
     end
   end
