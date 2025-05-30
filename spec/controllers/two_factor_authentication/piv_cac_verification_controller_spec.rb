@@ -211,7 +211,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 'redirects to the piv/cac entry screen' do
+      it 'redirects to the piv/cac error screen' do
         expect(response).to redirect_to login_two_factor_piv_cac_error_url(error: 'token.invalid')
       end
 

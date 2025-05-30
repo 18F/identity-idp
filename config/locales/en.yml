@@ -995,12 +995,12 @@ headings.piv_cac_setup.already_associated: The PIV/CAC you presented is associat
 headings.piv_cac_setup.new: Use your PIV/CAC card to secure your account
 headings.piv_cac.certificate.bad: The government employee ID certificate you selected is invalid
 headings.piv_cac.certificate.expired: The government employee ID certificate you selected is expired
-headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
+headings.piv_cac.certificate.invalid: The government employee ID certificate you selected is invalid
 headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID
 headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your government employee ID
 headings.piv_cac.certificate.revoked: The government employee ID certificate you selected has been revoked from your card
-headings.piv_cac.certificate.unverified: The PIV/CAC certificate you selected is invalid
-headings.piv_cac.did_not_work: Internal error.
+headings.piv_cac.certificate.unverified: The government employee ID certificate you selected is invalid
+headings.piv_cac.did_not_work: Your government employee ID did not work
 headings.piv_cac.token.bad: Internal error.
 headings.piv_cac.token.invalid: The PIV/CAC certificate you selected is invalid.
 headings.piv_cac.token.missing: Internal error.
@@ -1434,10 +1434,9 @@ instructions.mfa.piv_cac.another_method_text: another authentication method.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
 instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} in with your email address and password and using %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: Contacting %{app_name} support for additional help.
+instructions.mfa.piv_cac.bullet_3: 'Contacting %{app_name} support for additional help.'
 instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
-instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong> %{create_account_link}'
-instructions.mfa.piv_cac.create_account_text: Create an account.
+instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
@@ -1489,6 +1488,7 @@ links.resend: Resend
 links.reverify: Please verify your identity again.
 links.sign_in: Sign in
 links.sign_out: Sign out
+links.try_again: Try again
 links.two_factor_authentication.send_another_code: Send another code
 links.what_is_totp: What is an authentication app?
 login_cancel.account_page: account page

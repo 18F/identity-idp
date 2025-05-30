@@ -1006,15 +1006,15 @@ headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó es
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
 headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
 headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
-headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
+headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
 headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
 headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
 headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
-headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.did_not_work: Error interno.
-headings.piv_cac.token.bad: Error interno
+headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
+headings.piv_cac.did_not_work: Su identificación de empleado del gobierno no funcionó.
+headings.piv_cac.token.bad: Error interno.
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
-headings.piv_cac.token.missing: Error interno
+headings.piv_cac.token.missing: Error interno.
 headings.redirecting: Redirigiendo
 headings.residential_address: Domicilio actual
 headings.session_timeout_warning: '¿Necesita más tiempo?'
@@ -1445,10 +1445,9 @@ instructions.mfa.piv_cac.another_method_text: otro método de autenticación.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
 instructions.mfa.piv_cac.bullet_1: Elija un certificado diferente, por ejemplo, uno asociado a su nombre.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} con su dirección de correo electrónico y contraseña y use %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: '[Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.]'
+instructions.mfa.piv_cac.bullet_3: 'Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.'
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
-instructions.mfa.piv_cac.create_account_html: '<strong>¿No tiene una cuenta de %{app_name}?</strong> %{create_account_link}'
-instructions.mfa.piv_cac.create_account_text: Crear una cuenta
+instructions.mfa.piv_cac.create_account_html: '<strong>¿No tiene una cuenta de %{app_name}?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: 'Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
 instructions.mfa.piv_cac.having_trouble: 'Si tiene problemas para iniciar sesión con su tarjeta PIV o CAC, intente lo siguiente:'
 instructions.mfa.piv_cac.http_failure: El servidor tardó demasiado en responder. Vuelva a intentarlo.
@@ -1500,6 +1499,7 @@ links.resend: Volver a enviar
 links.reverify: Verifique su identidad de nuevo.
 links.sign_in: Iniciar sesión
 links.sign_out: Cerrar sesión
+links.try_again: Volver a intentarlo
 links.two_factor_authentication.send_another_code: Enviar otro código
 links.what_is_totp: '¿Qué es una aplicación de autenticación?'
 login_cancel.account_page: página de su cuenta

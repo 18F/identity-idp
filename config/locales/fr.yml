@@ -995,12 +995,12 @@ headings.piv_cac_setup.already_associated: La carte PIV/CAC que vous avez prése
 headings.piv_cac_setup.new: Utilisez votre carte PIV/CAC pour sécuriser votre compte.
 headings.piv_cac.certificate.bad: Le certificat de la carte d’employé fédéral que vous avez sélectionné n’est pas valide.
 headings.piv_cac.certificate.expired: Le certificat de la carte d’employé fédéral que vous avez sélectionné a expiré.
-headings.piv_cac.certificate.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
+headings.piv_cac.certificate.invalid: Le certificat de la carte d’employé fédéral que vous avez sélectionné n’est pas valide.
 headings.piv_cac.certificate.none: Nous ne détectons pas de certificat sur votre carte d’employé fédéral.
 headings.piv_cac.certificate.not_auth_cert: Veuillez choisir un autre certificat pour votre carte d’employé fédéral.
 headings.piv_cac.certificate.revoked: Le certificat de la carte d’employé fédéral que vous avez sélectionné a été révoqué.
-headings.piv_cac.certificate.unverified: Le certificat PIV/CAC sélectionné n’est pas valide.
-headings.piv_cac.did_not_work: Erreur interne.
+headings.piv_cac.certificate.unverified: Le certificat de la carte d’employé fédéral que vous avez sélectionné n’est pas valide.
+headings.piv_cac.did_not_work: Votre carte d’employé fédéral n’a pas fonctionné.
 headings.piv_cac.token.bad: Erreur interne.
 headings.piv_cac.token.invalid: Le certificat PIV/CAC sélectionné n’est pas valide.
 headings.piv_cac.token.missing: Erreur interne.
@@ -1434,10 +1434,9 @@ instructions.mfa.piv_cac.another_method_text: méthode d’authentification.
 instructions.mfa.piv_cac.back_to_sign_in: Retourner vous connecter
 instructions.mfa.piv_cac.bullet_1: Choisir un autre certificat, par exemple associé à votre nom.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} avec votre adresse e-mail, votre mot de passe et une %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: Contacter le service d’assistance de %{app_name} pour obtenir une aide supplémentaire.
+instructions.mfa.piv_cac.bullet_3: 'Contacter le service d’assistance de %{app_name} pour obtenir une aide supplémentaire.'
 instructions.mfa.piv_cac.confirm_piv_cac: Introduisez la carte PIV/CAC que vous avez associée à votre compte dans un lecteur de carte à puce.
-instructions.mfa.piv_cac.create_account_html: '<strong>Vous n’avez pas de compte %{app_name} ?</strong> %{create_account_link}'
-instructions.mfa.piv_cac.create_account_text: Créer un compte
+instructions.mfa.piv_cac.create_account_html: '<strong>Vous n’avez pas de compte %{app_name} ?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.having_trouble: 'Si vous rencontrez des difficultés pour vous connecter avec votre carte PIV/CAC, essayez de :'
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
@@ -1489,6 +1488,7 @@ links.resend: Renvoyer
 links.reverify: Veuillez reconfirmer votre identité.
 links.sign_in: Se connecter
 links.sign_out: Se déconnecter
+links.try_again: Réessayer
 links.two_factor_authentication.send_another_code: Envoyer un autre code
 links.what_is_totp: Qu’est-ce qu’une appli d’authentification ?
 login_cancel.account_page: page de votre compte

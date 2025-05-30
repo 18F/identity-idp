@@ -22,25 +22,36 @@
             ),
           ) %>
     </li>
-    <li><%= link_to(
-              t('instructions.mfa.piv_cac.bullet_3_html', app_name: APP_NAME),
-              sign_up_email_url,
+    <li>
+      <div>
+        <%= link_to(
+              t('instructions.mfa.piv_cac.bullet_3', app_name: APP_NAME),
+              MarketingSite.contact_url,
             ) %>
+      </div>
     </li>
   </ul>
 
-  <p><%= t(
-           'instructions.mfa.piv_cac.create_account_html',
-           app_name: APP_NAME,
-           create_account_link: link_to(
-             t('instructions.mfa.piv_cac.create_account_text'),
-             sign_out_url,
-           ),
-         ) %></p>
+<div class="margin-bottom-2">
+   <p class="display-inline">
+    <%= t('instructions.mfa.piv_cac.create_account_html', app_name: APP_NAME) %>
+  </p>
+
+<%= button_to(
+      login_two_factor_piv_cac_logout_url,
+      form_class: 'display-inline',
+      class: 'usa-button usa-button--unstyled',
+      method: :delete,
+    ) { t('links.create_account') } %>
+</div>
 
   <%= render ButtonComponent.new(
         url: login_two_factor_piv_cac_url,
         class: 'margin-top-3',
         big: true,
-      ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+      ).with_content(t('links.try_again')) %>
+<% end %>
+
+<%= render(PageFooterComponent.new) do %>
+  <%= link_to t('links.cancel'), sign_out_url %>
 <% end %>

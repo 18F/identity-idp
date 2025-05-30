@@ -37,6 +37,11 @@ module TwoFactorAuthentication
       )
     end
 
+    def logout
+      sign_out
+      redirect_to sign_up_email_path
+    end
+
     private
 
     def process_token
