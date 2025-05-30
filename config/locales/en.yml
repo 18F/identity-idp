@@ -634,7 +634,6 @@ doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
-doc_auth.headings.verify_with_phone: Verify your identity using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
@@ -692,9 +691,7 @@ doc_auth.info.selfie_capture.action.retake: retake
 doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
 doc_auth.info.socure_basic_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID with Socure.'
-doc_auth.info.socure_basic_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.socure_hybrid_flow_html: You are using %{app_name} to verify your identity and access <strong>%{sp_name}</strong>.
-doc_auth.info.socure_ial2_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID and a photo of yourself with Socure.'
 doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}

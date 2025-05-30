@@ -645,7 +645,6 @@ doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
-doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -703,9 +702,7 @@ doc_auth.info.selfie_capture.action.retake: 重拍
 doc_auth.info.selfie_capture.action.submit: 照片拍摄完毕。提交照片。
 doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
 doc_auth.info.socure_basic_idv: '%{app_name}会使用一家受信任的服务提供商 - Socure – 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID的照片。'
-doc_auth.info.socure_basic_idv_finish: 你拍完照片后，%{app_name} 会完成你的信息验证。
 doc_auth.info.socure_hybrid_flow_html: 你正在使用 %{app_name} 验证你的身份并访问 <strong>%{sp_name}</strong>。
-doc_auth.info.socure_ial2_idv: '%{app_name} 会使用一家受信任的服务提供商 - Socure - 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID以及自己的照片。'
 doc_auth.info.socure_ial2_idv_finish: 拍完照片后，%{app_name} 会完成你的信息验证。
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
