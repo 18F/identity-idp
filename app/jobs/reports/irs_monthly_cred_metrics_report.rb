@@ -47,14 +47,6 @@ module Reports
       ]
     end
 
-    def as_tables
-      [
-        definitions_table,
-        overview_table,
-        dropoff_metrics_table,
-      ]
-    end
-
     def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
       #return unless IdentityConfig.store.s3_reports_enabled
