@@ -10,7 +10,7 @@ module DocAuth
 
         private
 
-        attr_reader :reference
+        attr_reader :reference_id
 
         def body
           {}
@@ -53,8 +53,8 @@ module DocAuth
 
         def endpoint
           @endpoint ||= URI.join(
-            # TODO move this to config
-            "https://upload.socure.us/api/5.0/documents/#{@reference_id}",
+            IdentityConfig.store.socure_docv_images_request_endpoint,
+            @reference_id,
           ).to_s
         end
 
