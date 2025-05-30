@@ -217,7 +217,6 @@ module Idv
       end
 
       summarize_result_and_rate_limit(form_response)
-      delete_async
 
       if form_response.success?
         save_threatmetrix_status(form_response)
@@ -230,6 +229,7 @@ module Idv
         redirect_to next_step_url
       end
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
+      delete_async
     end
 
     def next_step_url
