@@ -21,7 +21,7 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
-    redirect_to sign_up_completed_path
+    redirect_to after_mfa_setup_path
   end
 
   private
