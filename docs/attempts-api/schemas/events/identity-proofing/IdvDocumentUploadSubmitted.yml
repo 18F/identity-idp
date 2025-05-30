@@ -60,6 +60,125 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          id:
+            type: array
+            description: Errors that describe the failure
+            enum:
+              # alerts
+              - birth_date_checks
+              - id_not_recognized
+              - doc_crosscheck
+              - doc_expired_check
+              - doc_number_checks
+              - expiration_checks
+              - full_name_check
+              - issue_date_checks
+              - id_not_verified
+              - sex_check
+              - visible_color_check
+              # general
+              - general error
+          front:
+            type: array
+            description: Errors that describe the failure
+            enum:
+              - visible_photo_check
+              # image quality
+              - dpi_low
+              - dpi_low_field
+              - sharp_low
+              - sharp_low_field
+              - glare_low
+              - glare_low_field
+              # general
+              - multiple_front_id_failures
+              # doc_type
+              - doc_type_check
+              - card_type
+          back:
+            type: array
+            description: Errors that describe the failure
+            enum:
+              # alerts
+              - ref_control_number_check
+              - barcode_content_check
+              - barcode_read_check
+              - control_number_check
+              # image quality
+              - dpi_low
+              - sharp_low_field
+              - glare_low_field
+              # general
+              - multiple_back_id_failures
+              # doc_type
+              - doc_type_check
+              - card_type
+          selfie:
+            type: array
+            description: Errors that describe the failure
+            enum:
+              - selfie_failure
+              - selfie_not_live_or_poor_quality
+          general:
+            type: array
+            description: Errors that describe the failure
+              - fallback_field_level
+              - selfie_failure
+              - dpi_low_one_side
+              - dpi_low_both_sides
+              - glare_low_both_sides
+              - glare_low_one_side
+              - sharp_low_both_sides
+              - sharp_low_one_side
+          # pii validation errors
+          name:
+            enum:
+              - name
+          dob:
+            enum:
+              - dob
+          dob_min_age:
+            enum:
+              - dob
+          no_document:
+            enum:
+              - no_document
+          # if state ID
+          address1:
+            enum:
+              - blank
+          zipcode:
+            enum:
+              - zipcode
+          state_id_expiration:
+            enum:
+              - state_id_expiration
+          state:
+            enum:
+              - inclusion
+          state_id_number:
+            enum:
+              - blank
+          # if passport
+          birth_place:
+            enum:
+              - blank
+          passport_issued:
+            enum:
+              - blank
+          mrz:
+            enum:
+              - blank
+          issuing_country_code:
+            enum:
+              - inclusion
+          nationality_code:
+            enum:
+              - inclusion
+          passport_expiration:
+            enum:
+              - passport_expiration
       success:
         type: boolean
         description: |
