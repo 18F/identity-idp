@@ -169,7 +169,7 @@ module AbTests
   end.freeze
 
   PROOFING_VENDOR = AbTest.new(
-    experiment_name: 'Proofing vendor',
+    experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
     default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
     buckets: {
