@@ -62,9 +62,8 @@ module Idv
     end
 
     def proofing_vendor
-      # nil is returned when AB test is inactive ... to be fixed in LG-16289
-      # to do provide fall back bucket
       @proofing_vendor ||= begin
+        # if proofing vendor A/B test is disabled, return default vendor
         ab_test_bucket(:PROOFING_VENDOR) || IdentityConfig.store.idv_resolution_default_vendor
       end
     end
