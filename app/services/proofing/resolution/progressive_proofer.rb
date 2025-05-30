@@ -64,6 +64,7 @@ module Proofing
 
         residential_address_resolution_result = residential_address_plugin.call(
           applicant_pii:,
+          user_email:,
           current_sp:,
           ipp_enrollment_in_progress:,
           timer:,
@@ -71,6 +72,7 @@ module Proofing
 
         state_id_address_resolution_result = state_id_address_plugin.call(
           applicant_pii:,
+          user_email:,
           current_sp:,
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,

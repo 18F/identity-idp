@@ -4,6 +4,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
   let(:current_sp) { build(:service_provider) }
 
   let(:ipp_enrollment_in_progress) { false }
+  let(:user_email) { Faker::Internet.email }
 
   let(:proofer_transaction_id) { 'residential-123' }
 
@@ -47,6 +48,7 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         current_sp:,
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
+        user_email:,
       )
     end
 
@@ -81,8 +83,8 @@ RSpec.describe Proofing::Resolution::Plugins::ResidentialAddressPlugin do
         )
       end
 
-      it 'calls proofer with pii' do
-        expect(plugin.proofer).to receive(:proof).with(applicant_pii)
+      it 'calls proofer with pii and email' do
+        expect(plugin.proofer).to receive(:proof).with(applicant_pii.merge(email: user_email))
         call
       end
 

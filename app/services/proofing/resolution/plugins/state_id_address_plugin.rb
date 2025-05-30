@@ -27,7 +27,8 @@ module Proofing
           current_sp:,
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          user_email:
         )
           if same_address_as_id?(applicant_pii) && ipp_enrollment_in_progress
             return residential_address_resolution_result
@@ -43,7 +44,7 @@ module Proofing
             end
 
           timer.time('resolution') do
-            proofer.proof(applicant_pii_with_state_id_address)
+            proofer.proof(applicant_pii_with_state_id_address.merge(email: user_email))
           end.tap do |result|
             Db::SpCost::AddSpCost.call(
               current_sp,

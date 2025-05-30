@@ -18,12 +18,13 @@ module Proofing
           applicant_pii:,
           current_sp:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          user_email:
         )
           return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
           timer.time('residential address') do
-            proofer.proof(applicant_pii)
+            proofer.proof(applicant_pii.merge(email: user_email))
           end.tap do |result|
             Db::SpCost::AddSpCost.call(
               current_sp,
