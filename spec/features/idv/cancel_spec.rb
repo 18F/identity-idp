@@ -108,7 +108,7 @@ RSpec.describe 'cancel IdV' do
   context 'when user has recorded proofing components' do
     before do
       complete_agreement_step
-      expect(page).to have_content(t('doc_auth.headings.hybrid_handoff'))
+      expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
       complete_hybrid_handoff_step
       expect(page).to have_content(t('doc_auth.headings.document_capture'))
       complete_document_capture_step

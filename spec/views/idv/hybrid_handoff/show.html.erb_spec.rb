@@ -4,11 +4,20 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   before do
     allow(view).to receive(:current_user).and_return(@user)
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
+    @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+    @presenter = Idv::HowToVerifyPresenter.new(
+      mobile_required: true,
+      selfie_check_required: true,
+      passport_allowed: true,
+    )
   end
 
   subject(:rendered) do
     render template: 'idv/hybrid_handoff/show', locals: {
       idv_phone_form: @idv_form,
+      idv_how_to_verify_form: @idv_how_to_verify_form,
+      selfie_required: @selfie_required,
+      presenter: @presenter,
     }
   end
 
@@ -31,7 +40,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     end
 
     it 'displays the expected headings from the "a" case' do
-      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
     end
 
@@ -54,7 +63,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       )
     end
     it 'displays the expected headings from the "a" case' do
-      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
+      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
     end
 
     describe 'when ipp is enabled' do

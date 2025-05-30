@@ -670,8 +670,7 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).not_to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.send_link')
               expect(page).to have_current_path(idv_link_sent_path)
@@ -689,8 +688,7 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.upload_photos')
               expect(page).to have_current_path(idv_document_capture_url)
@@ -734,7 +732,7 @@ RSpec.feature 'document capture step', :js do
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # still have option to continue handoff, since it's desktop no skip_hand_off
                   expect(page).to have_current_path(idv_hybrid_handoff_path)
-                  expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
+                  expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
                   click_on t('in_person_proofing.headings.prepare')
                   expect(page).to have_current_path(
                     idv_document_capture_path({ step: 'hybrid_handoff' }),
