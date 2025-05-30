@@ -96,7 +96,13 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       before do
-        stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore')
+        stub_request(:post, "#{socure_idplus_base_url}/api/3.0/EmailAuthScore")
+          .with(body: {
+            modules: ['documentverification'],
+            docvTransactionToken: nil,
+            customerUserId: user.uuid,
+            email: user.last_sign_in_email_address.email,
+          })
           .to_return(
             headers: {
               'Content-Type' => 'application/json',

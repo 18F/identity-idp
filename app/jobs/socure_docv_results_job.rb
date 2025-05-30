@@ -88,6 +88,7 @@ class SocureDocvResultsJob < ApplicationJob
       customer_user_id: document_capture_session&.user&.uuid,
       document_capture_session_uuid:,
       docv_transaction_token_override:,
+      user_email: document_capture_session&.user&.last_sign_in_email_address&.email,
     ).fetch
   end
 

@@ -14,6 +14,6 @@ module Proofing
           :timeout,
         ],
       ).freeze
+    end
   end
-end
 end

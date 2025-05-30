@@ -137,6 +137,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls ResidentialAddressPlugin' do
         expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
           applicant_pii:,
+          user_email:,
           current_sp:,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
@@ -147,6 +148,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       it 'calls StateIdAddressPlugin' do
         expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
           applicant_pii:,
+          user_email:,
           current_sp:,
           residential_address_resolution_result: satisfy do |result|
             expect(result.success?).to eql(true)
@@ -215,6 +217,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls ResidentialAddressPlugin' do
           expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
             applicant_pii:,
+            user_email:,
             current_sp:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
@@ -225,6 +228,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls StateIdAddressPlugin' do
           expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
+            user_email:,
             current_sp:,
             residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
@@ -300,6 +304,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls ResidentialAddressPlugin' do
           expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
             applicant_pii:,
+            user_email:,
             current_sp:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
@@ -310,6 +315,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'calls StateIdAddressPlugin' do
           expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
             applicant_pii:,
+            user_email:,
             current_sp:,
             residential_address_resolution_result:,
             ipp_enrollment_in_progress: true,
