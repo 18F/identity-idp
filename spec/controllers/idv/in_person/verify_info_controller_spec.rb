@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
   include FlowPolicyHelper
+  include AbTestsHelper
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
@@ -21,6 +22,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
+    reload_ab_tests
   end
 
   describe '#step_info' do
@@ -355,6 +357,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
             proofing_components: Idv::ProofingComponents,
+            proofing_vendor: :mock,
           )
 
         put :update
@@ -376,6 +379,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: anything,
           ipp_enrollment_in_progress: true,
           proofing_components: Idv::ProofingComponents,
+          proofing_vendor: :mock,
         )
 
         put :update
@@ -405,6 +409,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
           proofing_components: Idv::ProofingComponents,
+          proofing_vendor: :mock,
         )
 
       put :update
@@ -456,6 +461,80 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(subject).to receive(:clear_future_steps!)
 
       put :update
+    end
+
+    context '#proofing_vendor' do
+      let(:idv_resolution_vendor_instant_verify_percent) { 100 }
+      let(:idv_resolution_vendor_socure_kyc_percent) { 0 }
+      let(:idv_resolution_vendor_switching_enabled) { false }
+      before do
+        allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
+          .and_return(:default_vendor)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
+          .and_return(idv_resolution_vendor_instant_verify_percent)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_socure_kyc_percent)
+          .and_return(idv_resolution_vendor_socure_kyc_percent)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
+          .and_return(idv_resolution_vendor_switching_enabled)
+        reload_ab_tests
+      end
+
+      it 'returns default vendor' do
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
+            kind_of(DocumentCaptureSession),
+            trace_id: subject.send(:amzn_trace_id),
+            threatmetrix_session_id: 'a-random-session-id',
+            user_id: anything,
+            request_ip: request.remote_ip,
+            ipp_enrollment_in_progress: true,
+            proofing_components: Idv::ProofingComponents,
+            proofing_vendor: :default_vendor,
+          )
+
+        put :update
+      end
+
+      context 'idv_resolution_vendor_switching_enabled is enabled' do
+        let(:idv_resolution_vendor_switching_enabled) { true }
+
+        it 'returns instant verify' do
+          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+            .with(
+              kind_of(DocumentCaptureSession),
+              trace_id: subject.send(:amzn_trace_id),
+              threatmetrix_session_id: 'a-random-session-id',
+              user_id: anything,
+              request_ip: request.remote_ip,
+              ipp_enrollment_in_progress: true,
+              proofing_components: Idv::ProofingComponents,
+              proofing_vendor: :instant_verify,
+            )
+
+          put :update
+        end
+
+        context 'socure is 100%' do
+          let(:idv_resolution_vendor_instant_verify_percent) { 0 }
+          let(:idv_resolution_vendor_socure_kyc_percent) { 100 }
+
+          it 'returns socure_kyc' do
+            expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+              .with(
+                kind_of(DocumentCaptureSession),
+                trace_id: subject.send(:amzn_trace_id),
+                threatmetrix_session_id: 'a-random-session-id',
+                user_id: anything,
+                request_ip: request.remote_ip,
+                ipp_enrollment_in_progress: true,
+                proofing_components: Idv::ProofingComponents,
+                proofing_vendor: :socure_kyc,
+              )
+
+            put :update
+          end
+        end
+      end
     end
   end
 
