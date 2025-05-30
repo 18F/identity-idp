@@ -38,7 +38,7 @@ module Reporting
       )
     end
 
-    private
+      private
 
     def total_user_count
       Reports::BaseReport.transaction_with_timeout do
@@ -46,14 +46,16 @@ module Reporting
       end
     end
 
-def average_credential_tenure_months
-  Reports::BaseReport.transaction_with_timeout do
-    end_of_month = report_date.end_of_month
-    User.where('created_at <= ?', end_of_month).average(
-      "EXTRACT(YEAR FROM age(?, created_at)) * 12 + EXTRACT(MONTH FROM age(?, created_at))",
-      end_of_month, end_of_month
-    )&.round(2) || 0
-  end
-end
-  end
+    def average_credential_tenure_months
+      end_of_month = report_date.end_of_month
+      users = User.where('created_at <= ?', end_of_month)
+      return 0 if users.count == 0
+
+      total_months = users.sum do |user|
+        (end_of_month.year * 12 + end_of_month.month) -
+          (user.created_at.year * 12 + user.created_at.month)
+      end
+      (total_months.to_f / users.count).round(2)
+    end
+    end
 end
