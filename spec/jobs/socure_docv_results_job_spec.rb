@@ -165,7 +165,7 @@ RSpec.describe SocureDocvResultsJob do
           end
         end
 
-        context 'when no facial match does are reeived' do
+        context 'when no facial match docs are received' do
           let(:reason_codes) { ['random code'] }
           it 'selfies status is :not_processed' do
             perform
