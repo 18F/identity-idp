@@ -99,7 +99,7 @@ module Proofing
             userConsent: true,
             consentTimestamp: input.consent_given_at&.to_time&.iso8601,
 
-            email: input.email,
+            email: config.user_email,
             mobileNumber: input.phone,
 
             # > The country or jurisdiction from where the transaction originates,
