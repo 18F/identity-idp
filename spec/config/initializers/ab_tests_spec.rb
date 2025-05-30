@@ -115,7 +115,7 @@ RSpec.describe AbTests do
     end
   end
 
-  shared_examples 'an A/B test that uses verify_info_step_document_capture_session_uuid as a discriminator' do
+  shared_examples 'A/B test using verify_info_step_document_capture_session_uuid discriminator' do
     subject(:bucket) do
       AbTests.all[ab_test].bucket(
         request: nil,
@@ -139,7 +139,7 @@ RSpec.describe AbTests do
       context 'and user is logged in' do
         let(:user) { build(:user) }
 
-        context 'and the user has a verify_info_step_document_capture_session_uuid in their IdV session' do
+        context 'with a verify_info_step_document_capture_session_uuid in their IdV session' do
           let(:user_session) do
             {
               idv: {
@@ -583,6 +583,6 @@ RSpec.describe AbTests do
       }
     end
 
-    it_behaves_like 'an A/B test that uses verify_info_step_document_capture_session_uuid as a discriminator'
+    it_behaves_like 'A/B test using verify_info_step_document_capture_session_uuid discriminator'
   end
 end
