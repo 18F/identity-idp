@@ -118,7 +118,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         let(:service_provider1) { create(:service_provider) }
         let(:service_provider2) { create(:service_provider) }
         let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
-        let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
+        let(:iaa2_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }
 
         let(:integration3) do
           build_integration2(service_provider: service_provider1, partner_account: partner_account1)
