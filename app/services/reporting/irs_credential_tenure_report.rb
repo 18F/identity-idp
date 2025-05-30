@@ -46,14 +46,14 @@ module Reporting
       end
     end
 
-    def average_credential_tenure_months
-      Reports::BaseReport.transaction_with_timeout do
-        end_of_month = report_date.end_of_month
-        User.where('created_at <= ?', end_of_month).average(
-          "EXTRACT(YEAR FROM age('#{end_of_month}', created_at)) * 12
-           + EXTRACT(MONTH FROM age('#{end_of_month}', created_at))",
-        )&.round(2) || 0
-      end
-    end
+def average_credential_tenure_months
+  Reports::BaseReport.transaction_with_timeout do
+    end_of_month = report_date.end_of_month
+    User.where('created_at <= ?', end_of_month).average(
+      "EXTRACT(YEAR FROM age(?, created_at)) * 12 + EXTRACT(MONTH FROM age(?, created_at))",
+      end_of_month, end_of_month
+    )&.round(2) || 0
+  end
+end
   end
 end
