@@ -57,7 +57,7 @@
           ) %>
       <%= f.submit t('forms.buttons.send_link') %>
     <% end %>
-        <% if @direct_ipp_with_selfie_enabled %>
+        <% if @direct_ipp_with_selfie_enabled && @selfie_required %>
     <div class="margin-top-4 padding-top-2 border-top border-primary-light">
       <p class="margin-top-1">
         <%= t('doc_auth.info.hybrid_handoff_ipp_html') %>
