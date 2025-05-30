@@ -84,7 +84,7 @@ module Reports
       end
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Monthly Credential Metrics - #{_date.to_date}",
+        subject: "IRS Monthly Credential Metrics - #{date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -194,6 +194,81 @@ module Reports
       )
     end
 
+    private
+
+    def write_csv_header(csv)
+      csv << [
+        'Credentials Authorized',
+        'New ID Verifications Authorized Credentials',
+        'Existing Identity Verification Credentials',
+      ]
+    end
+
+    def write_csv_row(csv:, iaa_key:, year_month:, iaa_results:, by_issuer_results:,
+                      by_partner_results:, by_issuer_profile_age_results:)
+      Date.parse(iaa_results.first[:iaa_start_date])
+      Date.parse(iaa_results.first[:iaa_end_date])
+      Date.strptime(year_month, '%Y%m')
+
+      issuer_results = by_issuer_results.select do |r|
+        r[:iaa] == iaa_key && r[:year_month] == year_month
+      end
+
+      total_auth = issuer_results.sum do |r|
+        (r[:total_auth_count] if r[:ial] == 1 || r[:ial] == 2) || 0
+      end
+
+      related_issuers = issuer_results.map { |r| r[:issuer] }.uniq
+
+      partner_results = by_partner_results.select do |result|
+        result[:year_month] == year_month && (result[:issuers] & related_issuers).any?
+      end
+
+      new_users = partner_results.sum do |r|
+        %i[
+          partner_ial2_new_unique_user_events_year1
+          partner_ial2_new_unique_user_events_year2
+          partner_ial2_new_unique_user_events_year3
+          partner_ial2_new_unique_user_events_year4
+          partner_ial2_new_unique_user_events_year5
+          partner_ial2_new_unique_user_events_year_greater_than_5
+          partner_ial2_new_unique_user_events_unknown
+        ].sum { |key| r[key] || 0 }
+      end
+
+      existing_users = by_issuer_profile_age_results.select do |r|
+        r[:year_month] == year_month && (r[:issuers] & related_issuers).any?
+      end.sum do |r|
+        total = %i[
+          partner_ial2_unique_user_events_year1
+          partner_ial2_unique_user_events_year2
+          partner_ial2_unique_user_events_year3
+          partner_ial2_unique_user_events_year4
+          partner_ial2_unique_user_events_year5
+          partner_ial2_unique_user_events_year_greater_than_5
+          partner_ial2_unique_user_events_unknown
+        ].sum { |key| r[key] || 0 }
+
+        new = %i[
+          partner_ial2_new_unique_user_events_year1
+          partner_ial2_new_unique_user_events_year2
+          partner_ial2_new_unique_user_events_year3
+          partner_ial2_new_unique_user_events_year4
+          partner_ial2_new_unique_user_events_year5
+          partner_ial2_new_unique_user_events_year_greater_than_5
+          partner_ial2_new_unique_user_events_unknown
+        ].sum { |key| r[key] || 0 }
+
+        total - new
+      end
+
+      csv << [
+        total_auth,
+        new_users,
+        existing_users,
+      ]
+    end
+
     def combine_by_iaa_month(
       by_iaa_results:,
       by_issuer_results:,
@@ -203,76 +278,18 @@ module Reports
       by_iaa_and_year_month = by_iaa_results.group_by do |result|
         [result[:key], result[:year_month]]
       end
-
       CSV.generate do |csv|
-        csv << [
-          'Credentials Authorized',
-          'New ID Verifications Authorized Credentials',
-          'Existing Identity Verification Credentials',
-        ]
-
+        write_csv_header(csv)
         by_iaa_and_year_month.each do |(iaa_key, year_month), iaa_results|
-          Date.parse(iaa_results.first[:iaa_start_date])
-          Date.parse(iaa_results.first[:iaa_end_date])
-          Date.strptime(year_month, '%Y%m')
-
-          issuer_results = by_issuer_results.select do |r|
-            r[:iaa] == iaa_key && r[:year_month] == year_month
-          end
-
-          total_auth = issuer_results.sum do |r|
-            (r[:total_auth_count] if r[:ial] == 1 || r[:ial] == 2) || 0
-          end
-
-          related_issuers = issuer_results.map { |r| r[:issuer] }.uniq
-
-          partner_results = by_partner_results.select do |result|
-            result[:year_month] == year_month && (result[:issuers] & related_issuers).any?
-          end
-
-          new_users = partner_results.sum do |r|
-            %i[
-              partner_ial2_new_unique_user_events_year1
-              partner_ial2_new_unique_user_events_year2
-              partner_ial2_new_unique_user_events_year3
-              partner_ial2_new_unique_user_events_year4
-              partner_ial2_new_unique_user_events_year5
-              partner_ial2_new_unique_user_events_year_greater_than_5
-              partner_ial2_new_unique_user_events_unknown
-            ].sum { |key| r[key] || 0 }
-          end
-
-          existing_users = by_issuer_profile_age_results.select do |r|
-            r[:year_month] == year_month && (r[:issuers] & related_issuers).any?
-          end.sum do |r|
-            total = %i[
-              partner_ial2_unique_user_events_year1
-              partner_ial2_unique_user_events_year2
-              partner_ial2_unique_user_events_year3
-              partner_ial2_unique_user_events_year4
-              partner_ial2_unique_user_events_year5
-              partner_ial2_unique_user_events_year_greater_than_5
-              partner_ial2_unique_user_events_unknown
-            ].sum { |key| r[key] || 0 }
-
-            new = %i[
-              partner_ial2_new_unique_user_events_year1
-              partner_ial2_new_unique_user_events_year2
-              partner_ial2_new_unique_user_events_year3
-              partner_ial2_new_unique_user_events_year4
-              partner_ial2_new_unique_user_events_year5
-              partner_ial2_new_unique_user_events_year_greater_than_5
-              partner_ial2_new_unique_user_events_unknown
-            ].sum { |key| r[key] || 0 }
-
-            total - new
-          end
-
-          csv << [
-            total_auth,
-            new_users,
-            existing_users,
-          ]
+          write_csv_row(
+            csv: csv,
+            iaa_key: iaa_key,
+            year_month: year_month,
+            iaa_results: iaa_results,
+            by_issuer_results: by_issuer_results,
+            by_partner_results: by_partner_results,
+            by_issuer_profile_age_results: by_issuer_profile_age_results,
+          )
         end
       end
     end

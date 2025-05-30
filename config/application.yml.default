@@ -232,12 +232,13 @@ in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
 irs_authentication_emails: '[]'
 irs_authentication_issuers: '[]'
+irs_credentials _issuers: '[]'
+irs_credentials_emails: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
+irs_monthly_cred_metrics: '[{"emails":["jabari.myles@gsa.gov"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 irs_verification_report_config: '[]'
 irs_verification_report_issuers: '[]'
-irs_credentials_emails: '[]'
-irs_credentials _issuers: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -494,7 +495,6 @@ voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 vtm_url: 'https://developer.login.gov/vot-trust-framework'
 weekly_auth_funnel_report_config: '[]'
-irs_monthly_cred_metrics: '[{"emails":["jabari.myles@gsa.gov"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 
 development:
   aamva_private_key: 123abc
