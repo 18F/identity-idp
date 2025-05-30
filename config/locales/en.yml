@@ -1434,7 +1434,7 @@ instructions.mfa.piv_cac.another_method_text: another authentication method.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
 instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} in with your email address and password and using %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: Contacting %{app_name} support for additional help.
+instructions.mfa.piv_cac.bullet_3: Contacting %{app_name} support for additional help.
 instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
 instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong> %{create_account_link}'
 instructions.mfa.piv_cac.create_account_text: Create an account.

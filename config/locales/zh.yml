@@ -1447,7 +1447,7 @@ instructions.mfa.piv_cac.another_method_text: 另一种身份证实方法登录�
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
 instructions.mfa.piv_cac.bullet_1: 选择一个不同的证书，例如与您姓名相关联的证书。
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} 您的电邮地址和密码并使用%{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: '联系 %{app_name} 支持以获得更多帮助。'
+instructions.mfa.piv_cac.bullet_3: '联系 %{app_name} 支持以获得更多帮助。'
 instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
 instructions.mfa.piv_cac.create_account_html: '<strong>没有 %{app_name} 帐户？</strong> %{create_account_link}'
 instructions.mfa.piv_cac.create_account_text: 设立一个帐户

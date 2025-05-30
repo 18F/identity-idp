@@ -1445,7 +1445,7 @@ instructions.mfa.piv_cac.another_method_text: otro método de autenticación.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
 instructions.mfa.piv_cac.bullet_1: Elija un certificado diferente, por ejemplo, uno asociado a su nombre.
 instructions.mfa.piv_cac.bullet_2_html: '%{link_html} con su dirección de correo electrónico y contraseña y use %{auth_method_link}'
-instructions.mfa.piv_cac.bullet_3_html: '[Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.]'
+instructions.mfa.piv_cac.bullet_3: 'Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.'
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
 instructions.mfa.piv_cac.create_account_html: '<strong>¿No tiene una cuenta de %{app_name}?</strong> %{create_account_link}'
 instructions.mfa.piv_cac.create_account_text: Crear una cuenta
