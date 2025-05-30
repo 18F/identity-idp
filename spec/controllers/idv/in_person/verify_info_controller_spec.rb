@@ -22,6 +22,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
+    reload_ab_tests
   end
 
   describe '#step_info' do
@@ -467,7 +468,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       let(:idv_resolution_vendor_socure_kyc_percent) { 0 }
       let(:idv_resolution_vendor_switching_enabled) { false }
       before do
-        # subject.idv_session.verify_info_step_document_capture_session_uuid = 'random-uuid'
         allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
           .and_return(:default_vendor)
         allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
@@ -476,10 +476,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           .and_return(idv_resolution_vendor_socure_kyc_percent)
         allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
           .and_return(idv_resolution_vendor_switching_enabled)
-        reload_ab_tests
-      end
-
-      after do
         reload_ab_tests
       end
 
