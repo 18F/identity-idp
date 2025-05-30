@@ -484,6 +484,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'when proofing_vendor is :mock' do
       let(:proofing_vendor) { :mock }
+
       it 'returns StateIdAddressPlugin with a mock proofer' do
         expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
           Proofing::Resolution::Plugins::StateIdAddressPlugin,
