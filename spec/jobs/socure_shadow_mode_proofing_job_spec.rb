@@ -505,6 +505,7 @@ RSpec.describe SocureShadowModeProofingJob do
 
       expect(job.proofer(user:).config.to_h).to eql(
         user_uuid: user.uuid,
+        user_email: nil,
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,

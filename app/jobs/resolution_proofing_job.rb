@@ -122,7 +122,6 @@ class ResolutionProofingJob < ApplicationJob
   )
     result = progressive_proofer(user:, proofing_vendor:).proof(
       applicant_pii: applicant_pii,
-      user_email: user_email_for_proofing(user),
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
@@ -161,7 +160,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def progressive_proofer(user:, proofing_vendor:)
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
-      user_uuid: user.uuid, proofing_vendor:,
+      user_uuid: user.uuid, proofing_vendor:, user_email: user_email_for_proofing(user),
     )
   end
 
