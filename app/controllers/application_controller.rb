@@ -540,4 +540,10 @@ class ApplicationController < ActionController::Base
     sign_out
     redirect_to banned_user_url
   end
+
+  def boo
+    sign_out
+    flash[:success] = t('devise.sessions.signed_out')
+    redirect_to sign_in_email_path
+  end
 end

@@ -24,7 +24,7 @@
     </li>
     <li><%= link_to(
               t('instructions.mfa.piv_cac.bullet_3_html', app_name: APP_NAME),
-              sign_up_email_url,
+                MarketingSite.contact_url,
             ) %>
     </li>
   </ul>
@@ -34,7 +34,7 @@
            app_name: APP_NAME,
            create_account_link: link_to(
              t('instructions.mfa.piv_cac.create_account_text'),
-             sign_out_url,
+             login_two_factor_options_url,
            ),
          ) %></p>
 
