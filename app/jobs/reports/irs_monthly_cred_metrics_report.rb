@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 module Reports
@@ -14,12 +16,27 @@ module Reports
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
-        ['Credentials authorized for Partner', 'Count',
-         'The total number of users (new and existing) that successfully signed into the applications (The combined count of the two rows below: “new identity verification + existing identity verification)'],
-        ['New identity verification/Credentials Authorized for Partner', 'Count',
-         'The number of users without existing IAL2 credentials who complete IAL2 IdV for the partner'],
-        ['Existing identity verification/Credentials Authorized for Partner', 'Count',
-         'The existing users who are already IAL2 verified and added authentication with the IRS; count of users who share credentials with these applications.'],
+        [
+          'Credentials authorized for Partner',
+          'Count',
+          'The total number of users (new and existing)
+          that successfully signed into the applications. ' \
+          'The combined count of the two rows below: "new identity
+           verification + existing identity verification".',
+        ],
+        [
+          'New identity verification/Credentials Authorized for Partner',
+          'Count',
+          'The number of users without existing IAL2 credentials
+          who complete IAL2 IdV for the partner.',
+        ],
+        [
+          'Existing identity verification/Credentials Authorized for Partner',
+          'Count',
+          'The existing users who are already IAL2 verified
+          and added authentication with the IRS; ' \
+          'count of users who share credentials with these applications.',
+        ],
       ]
     end
 
@@ -38,29 +55,30 @@ module Reports
       ]
     end
 
-
-    def perform(_date = Time.zone.yesterday.end_of_day)
-      @report_date = _date
+    def perform(date = Time.zone.yesterday.end_of_day)
+      @report_date = date
       return unless IdentityConfig.store.s3_reports_enabled
-      issuers = IaaReportingHelper.partner_accounts.select { |pc| pc.partner == "IRS" }.flat_map(&:issuers)    
-      iaas = IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
+      issuers = IaaReportingHelper.partner_accounts.select do |pc|
+        pc.partner == 'IRS'
+      end.flat_map(&:issuers)
+      IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
 
       iaas = IaaReportingHelper.iaas.filter do |iaa|
         iaa.end_date > 90.days.ago &&
-          (iaa.issuers & issuers).any?  # intersection: at least one issuer matches
+          (iaa.issuers & issuers).any? # intersection: at least one issuer matches
       end
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
-
-      message = "Report: #{REPORT_NAME}"
       email_addresses = emails.select(&:present?)
 
-
-        # Check if any emails are found
+      # Check if any emails are found
       if email_addresses.empty?
-       Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
-       return false
+        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+        return false
       end
-      reports = as_emailable_irs_report(iaas: iaas, partner_accounts: IaaReportingHelper.partner_accounts, date: report_date)
+      reports = as_emailable_irs_report(
+        iaas: iaas,
+        partner_accounts: IaaReportingHelper.partner_accounts, date: report_date
+      )
       reports.each do |report|
         upload_to_s3(report.table, report_date, report_name: report.filename)
       end
@@ -75,12 +93,12 @@ module Reports
     end
 
     def as_emailable_irs_report(iaas:, partner_accounts:, date:)
-        [
-          Reporting::EmailableReport.new(
-            title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-            table: CSV.parse(build_csv(iaas, partner_accounts, date)),
-            filename: 'irs_monthly_cred_metrics',
-          ),
+      [
+        Reporting::EmailableReport.new(
+          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: CSV.parse(build_csv(iaas, partner_accounts, date)),
+          filename: 'irs_monthly_cred_metrics',
+        ),
         Reporting::EmailableReport.new(
           title: 'Definitions',
           table: definitions_table,
@@ -89,12 +107,10 @@ module Reports
         Reporting::EmailableReport.new(
           title: 'Overview',
           table: overview_table,
-          filename: 'irs_monthly_cred_overview'
+          filename: 'irs_monthly_cred_overview',
+        ),
 
-        )
-
-
-    ]
+      ]
     end
 
     # @return [String]
@@ -184,30 +200,36 @@ module Reports
       by_partner_results:,
       by_issuer_profile_age_results:
     )
-      by_iaa_and_year_month = by_iaa_results.group_by { |result| [result[:key], result[:year_month]] }
-    
+      by_iaa_and_year_month = by_iaa_results.group_by do |result|
+        [result[:key], result[:year_month]]
+      end
+
       CSV.generate do |csv|
         csv << [
           'Credentials Authorized',
           'New ID Verifications Authorized Credentials',
           'Existing Identity Verification Credentials',
         ]
-    
+
         by_iaa_and_year_month.each do |(iaa_key, year_month), iaa_results|
-          iaa_start_date = Date.parse(iaa_results.first[:iaa_start_date])
-          iaa_end_date = Date.parse(iaa_results.first[:iaa_end_date])
-          year_month_start = Date.strptime(year_month, '%Y%m')
-    
-          issuer_results = by_issuer_results.select { |r| r[:iaa] == iaa_key && r[:year_month] == year_month }
-    
-          total_auth = issuer_results.sum { |r| (r[:total_auth_count] if r[:ial] == 1 || r[:ial] == 2) || 0 }
-    
+          Date.parse(iaa_results.first[:iaa_start_date])
+          Date.parse(iaa_results.first[:iaa_end_date])
+          Date.strptime(year_month, '%Y%m')
+
+          issuer_results = by_issuer_results.select do |r|
+            r[:iaa] == iaa_key && r[:year_month] == year_month
+          end
+
+          total_auth = issuer_results.sum do |r|
+            (r[:total_auth_count] if r[:ial] == 1 || r[:ial] == 2) || 0
+          end
+
           related_issuers = issuer_results.map { |r| r[:issuer] }.uniq
-    
+
           partner_results = by_partner_results.select do |result|
             result[:year_month] == year_month && (result[:issuers] & related_issuers).any?
           end
-    
+
           new_users = partner_results.sum do |r|
             %i[
               partner_ial2_new_unique_user_events_year1
@@ -219,7 +241,7 @@ module Reports
               partner_ial2_new_unique_user_events_unknown
             ].sum { |key| r[key] || 0 }
           end
-    
+
           existing_users = by_issuer_profile_age_results.select do |r|
             r[:year_month] == year_month && (r[:issuers] & related_issuers).any?
           end.sum do |r|
@@ -232,7 +254,7 @@ module Reports
               partner_ial2_unique_user_events_year_greater_than_5
               partner_ial2_unique_user_events_unknown
             ].sum { |key| r[key] || 0 }
-    
+
             new = %i[
               partner_ial2_new_unique_user_events_year1
               partner_ial2_new_unique_user_events_year2
@@ -242,10 +264,10 @@ module Reports
               partner_ial2_new_unique_user_events_year_greater_than_5
               partner_ial2_new_unique_user_events_unknown
             ].sum { |key| r[key] || 0 }
-    
+
             total - new
           end
-    
+
           csv << [
             total_auth,
             new_users,
@@ -259,7 +281,7 @@ module Reports
       [*IdentityConfig.store.irs_credentials_emails]
     end
 
-    def upload_to_s3(report_body,report_date,  report_name: nil)
+    def upload_to_s3(report_body, report_date, report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
       if bucket_name.present?
         upload_file_to_s3_bucket(
