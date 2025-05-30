@@ -26,10 +26,11 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
-      document_capture_session.requested_at = Time.zone.now
-      document_capture_session.doc_auth_vendor = proofing_vendor
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
+
+      document_capture_session.requested_at = Time.zone.now
+      document_capture_session.doc_auth_vendor = proofing_vendor
 
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
