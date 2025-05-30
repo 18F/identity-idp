@@ -398,7 +398,7 @@ s3_idp_dw_tasks: 'login-gov-idp-dw-tasks'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
 s3_report_public_bucket_prefix: login-gov-pubdata
-s3_reports_enabled: true
+s3_reports_enabled: false
 saml_endpoint_configs: '[]'
 saml_secret_rotation_enabled: false
 scrypt_cost: 10000$8$1$
