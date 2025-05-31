@@ -217,12 +217,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks expiration of account reset requests
-  # @param [Integer] count number of requests expired
-  def account_reset_request_expired(count:, **extra)
-    track_event(:account_reset_request_expired, count: count, **extra)
-  end
-
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
