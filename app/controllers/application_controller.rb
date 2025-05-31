@@ -264,6 +264,10 @@ class ApplicationController < ActionController::Base
     signed_in_url
   end
 
+  def after_sign_out_path_for(_user)
+    signup_email_path
+  end
+
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     account_path
@@ -539,11 +543,5 @@ class ApplicationController < ActionController::Base
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
-  end
-
-  def boo
-    sign_out
-    flash[:success] = t('devise.sessions.signed_out')
-    redirect_to sign_in_email_path
   end
 end

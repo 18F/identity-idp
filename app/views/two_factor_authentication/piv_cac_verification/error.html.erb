@@ -34,7 +34,8 @@
            app_name: APP_NAME,
            create_account_link: link_to(
              t('instructions.mfa.piv_cac.create_account_text'),
-             login_two_factor_options_url,
+             destroy_user_session_path(redirect_to: sign_up_email_path),
+             method: :delete,
            ),
          ) %></p>
 

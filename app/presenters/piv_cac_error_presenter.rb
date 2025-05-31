@@ -73,6 +73,11 @@ class PivCacErrorPresenter
     @view.url_options
   end
 
+  def email_sign_up_redirect
+    sign_out
+    redirect_to sign_up_email_url
+  end
+
   private
 
   def please_try_again_link
