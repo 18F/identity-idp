@@ -264,6 +264,10 @@ class ApplicationController < ActionController::Base
     signed_in_url
   end
 
+  def after_sign_out_path_for(_user)
+    signup_email_path
+  end
+
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     account_path
