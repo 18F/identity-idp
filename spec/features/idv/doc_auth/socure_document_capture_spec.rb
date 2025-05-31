@@ -116,7 +116,7 @@ RSpec.feature 'document capture step', :js do
           # Try Socure again
           click_on t('idv.failure.button.warning')
           expect(page).to have_current_path(idv_socure_document_capture_path)
-          expect(page).to have_content(t('doc_auth.headings.verify_with_phone'))
+          expect(page).to have_content(t('doc_auth.headings.document_capture'))
         end
       end
 
