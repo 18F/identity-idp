@@ -44,6 +44,22 @@ class SocureDocvResultsJob < ApplicationJob
         )
         return
       end
+
+      if document_capture_session.passport_requested?
+        mrz_response = validate_mrz(doc_pii_response)
+        unless mrz_response.success?
+          document_capture_session.store_failed_auth_data(
+            doc_auth_success: true,
+            selfie_status: docv_result_response.selfie_status,
+            errors: { passport: 'failed' }, # mrz_response.errors,
+            front_image_fingerprint: nil,
+            back_image_fingerprint: nil,
+            passport_image_fingerprint: nil,
+            selfie_image_fingerprint: nil,
+          )
+          return
+        end
+      end
     end
     document_capture_session.store_result_from_response(docv_result_response)
   end
@@ -85,7 +101,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
-      customer_user_id: document_capture_session&.user&.uuid,
+      customer_user_id: user_uuid,
       document_capture_session_uuid:,
       docv_transaction_token_override:,
     ).fetch
@@ -101,5 +117,39 @@ class SocureDocvResultsJob < ApplicationJob
       user: document_capture_session.user,
       rate_limit_type: :idv_doc_auth,
     )
+  end
+
+  def validate_mrz(doc_pii_response)
+    id_type = doc_pii_response.pii_from_doc.id_doc_type
+    unless id_type == 'passport'
+      return DocAuth::Response.new(
+        success: false,
+        errors: { passport: "Cannot validate MRZ for id type: #{id_type}" }, # not needed ?
+      )
+    end
+    mrz_client = document_capture_session.doc_auth_vendor == 'mock' ?
+                    DocAuth::Mock::DosPassportApiClient.new :
+                    DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+    response = mrz_client.fetch
+
+    analytics.idv_dos_passport_verification(
+      document_type:, # id_type_requested:,
+      remaining_submit_attempts:,
+      submit_attempts:,
+      user_id: user_uuid,
+      response: response.extra[:response],
+      success: response.success?,
+    )
+
+    response
+  end
+
+  def document_type
+    @document_type ||= document_capture_session.passport_requested? \
+      ? 'Passport' : 'DriversLicense'
+  end
+
+  def user_uuid
+    @user_uuid ||= document_capture_session.user&.uuid
   end
 end

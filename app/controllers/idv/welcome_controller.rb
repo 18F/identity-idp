@@ -11,10 +11,10 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
-    before_action :update_doc_auth_vendor
     before_action :update_passport_allowed,
                   only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
+    before_action :update_doc_auth_vendor
 
     def show
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
@@ -85,9 +85,12 @@ module Idv
     end
 
     def update_passport_allowed
-      return if !IdentityConfig.store.doc_auth_passports_enabled
-      return if resolved_authn_context_result.facial_match?
-      return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+      if !IdentityConfig.store.doc_auth_passports_enabled ||
+         resolved_authn_context_result.facial_match?
+        idv_session.passport_allowed = nil
+        return
+      end
+      # return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
       idv_session.passport_allowed ||= begin
         if dos_passport_api_healthy?(analytics:)
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
@@ -96,8 +99,8 @@ module Idv
     end
 
     def passport_status
-      if resolved_authn_context_result.facial_match? ||
-         doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+      if resolved_authn_context_result.facial_match? # ||
+        #  doc_auth_vendor == Idp::Constants::Vendors::SOCURE
         idv_session.passport_allowed = nil
       end
 
