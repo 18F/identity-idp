@@ -525,6 +525,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_account_creation_device_profile_failed?
+    return unless IdentityConfig.store.account_creation_device_profiling == :enabled
     profiling_result = find_device_profiling_result(
       DeviceProfilingResult::PROFILING_TYPES[:account_creation],
     )
@@ -532,9 +533,6 @@ class ApplicationController < ActionController::Base
   end
 
   def find_device_profiling_result(type)
-    return unless IdentityConfig.store.account_creation_device_profiling == :enabled
-    return unless user_session[:in_account_creation_flow]
-    return unless user_session[:next_mfa_selection_choice].nil?
     DeviceProfilingResult.for_user(
       user_id: current_user.id,
       type: type,

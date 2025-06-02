@@ -67,7 +67,7 @@ module SignUp
 
     def return_to_account
       track_completion_event('account-page')
-      redirect_to account_url
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def decider

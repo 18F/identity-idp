@@ -23,6 +23,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
+account_creation_tmx_processed_percent: 0
 account_reset_fraud_user_wait_period_days:
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
@@ -495,6 +496,7 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
+  account_creation_tmx_processed_percent: 100
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   check_user_password_compromised_enabled: true

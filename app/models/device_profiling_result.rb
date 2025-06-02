@@ -7,6 +7,15 @@ class DeviceProfilingResult < ApplicationRecord
     account_creation: 'ACCOUNT_CREATION',
   }.freeze
 
+  def self.find_or_create_by(user_id:, profiling_type:)
+    obj = find_by(user_id:, profiling_type:)
+    return obj if obj
+    create(
+      user_id:,
+      profiling_type:,
+    )
+  end
+
   def self.passed?(user_id:, type:)
     result = find_by(user_id:, profiling_type: type)
     result&.success?

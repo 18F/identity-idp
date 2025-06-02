@@ -113,6 +113,18 @@ module AbTests
     },
   ).freeze
 
+  ACCOUNT_CREATION_TMX_PROCESSED = AbTest.new(
+    experiment_name: 'Account Creation Threat Metrix Processed',
+    should_log: [
+      :account_creation_tmx_result,
+    ].to_set,
+    buckets: {
+      account_creation_tmx_processed: IdentityConfig.store.account_creation_tmx_processed_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
   SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
     experiment_name: 'Socure shadow mode',
     should_log: ['IdV: doc auth verify proofing results'].to_set,
