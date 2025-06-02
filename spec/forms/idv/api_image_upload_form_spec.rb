@@ -621,7 +621,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'posting images to client fails' do
       let(:errors) do
-        { front: [:glare] }
+        { front: 'glare' }
       end
 
       let(:failed_response) do
@@ -692,7 +692,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             city: nil,
             state: nil,
             zip: nil,
-            failure_reason: { front: [:glare] },
+            failure_reason: { front: 'glare' },
           )
 
           form.submit
@@ -716,7 +716,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'includes client response errors' do
         response = form.submit
-        expect(response.errors[:front]).to eq([:glare])
+        expect(response.errors[:front]).to eq('glare')
       end
 
       it 'keeps fingerprints of failed image and triggers error when submit same image' do
@@ -735,7 +735,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           'IdV: doc auth image upload vendor submitted',
           hash_including(
             doc_auth_result: 'Failed',
-            errors: { front: [:glare] },
+            errors: { front: 'glare' },
             success: false,
             doc_type_supported: boolean,
             doc_auth_success: boolean,
@@ -751,7 +751,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:errors) do
-          { selfie: [:glare] }
+          { selfie: 'glare' }
         end
         let(:back_image) { DocAuthImageFixtures.portrait_match_fail_yaml }
 
@@ -764,7 +764,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           response = form.submit
           expect(response.errors[:front]).to be_nil
           expect(response.errors[:back]).to be_nil
-          expect(response.errors[:selfie]).to eq([:glare])
+          expect(response.errors[:selfie]).to eq('glare')
         end
 
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
