@@ -194,6 +194,7 @@ class ReportMailerPreview < ActionMailer::Preview
       iaas: IaaReportingHelper.iaas,
       partner_accounts: IaaReportingHelper.partner_accounts,
       date: report_date,
+      issuers: ['test-sp-1', 'test-sp-2'],
     )
 
     ReportMailer.tables_report(

@@ -40,10 +40,10 @@ module Reports
       ]
     end
 
-    def overview_table
+    def overview_table(issuers)
       [
-        ['Report Timeframe', 'Report Generated'],
-        ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s],
+        ['Report Timeframe', 'Report Generated', 'Issuers'],
+        ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s, issuers],
       ]
     end
 
@@ -68,7 +68,8 @@ module Reports
       end
       reports = as_emailable_irs_report(
         iaas: iaas,
-        partner_accounts: IaaReportingHelper.partner_accounts, date: report_date
+        partner_accounts: IaaReportingHelper.partner_accounts, date: report_date,
+        issuers: issuers
       )
       reports.each do |report|
         upload_to_s3(report.table, report_date, report_name: report.filename)
@@ -83,7 +84,7 @@ module Reports
       csv
     end
 
-    def as_emailable_irs_report(iaas:, partner_accounts:, date:)
+    def as_emailable_irs_report(iaas:, partner_accounts:, date:, issuers:)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -92,7 +93,7 @@ module Reports
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          table: overview_table,
+          table: overview_table(issuers), 
           filename: 'irs_monthly_cred_overview',
         ),
         Reporting::EmailableReport.new(
