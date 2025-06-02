@@ -232,7 +232,6 @@ in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
 irs_authentication_emails: '[]'
 irs_authentication_issuers: '[]'
-irs_credentials _issuers: '[]'
 irs_credentials_emails: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
