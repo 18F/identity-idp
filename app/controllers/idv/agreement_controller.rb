@@ -42,13 +42,8 @@ module Idv
       if result.success?
         idv_session.idv_consent_given_at = Time.zone.now
 
-        if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-           IdentityConfig.store.in_person_proofing_enabled
-          if params[:skip_hybrid_handoff]
-            redirect_to idv_choose_id_type_url
-          else
-            redirect_to idv_hybrid_handoff_url
-          end
+        if in_person_proofing_route_enabled? && params[:skip_hybrid_handoff]
+          redirect_to idv_choose_id_type_url
         else
           redirect_to idv_hybrid_handoff_url
         end
@@ -78,6 +73,11 @@ module Idv
         analytics_id: 'Doc Auth',
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
       }.merge(ab_test_analytics_buckets)
+    end
+
+    def in_person_proofing_route_enabled?
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+        IdentityConfig.store.in_person_proofing_enabled
     end
 
     def skip_to_capture

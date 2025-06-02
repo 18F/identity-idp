@@ -88,9 +88,8 @@ module Idv
     end
 
     def set_how_to_verify_presenter
-      @mobile_required = mobile_required?
       @presenter = Idv::HowToVerifyPresenter.new(
-        mobile_required: @mobile_required,
+        mobile_required: mobile_required?,
         selfie_check_required: @selfie_required,
         passport_allowed: idv_session.passport_allowed,
       )
