@@ -667,7 +667,6 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
 doc_auth.info.hybrid_handoff_no_selfie: 你将用手机拍摄你的身份证件照片。你不必重新登录，而且拍完照后可以转回到该电脑。
 doc_auth.info.hybrid_handoff_selfie: 你将用手机拍摄自己身份证件和你本人的照片。你不必重新登录，而且拍完照后可以转回到该电脑。
 doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
