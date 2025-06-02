@@ -86,11 +86,6 @@ module Reports
     def as_emailable_irs_report(iaas:, partner_accounts:, date:)
       [
         Reporting::EmailableReport.new(
-          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: CSV.parse(build_csv(iaas, partner_accounts, date)),
-          filename: 'irs_monthly_cred_metrics',
-        ),
-        Reporting::EmailableReport.new(
           title: 'Definitions',
           table: definitions_table,
           filename: 'irs_monthly_cred_definitions',
@@ -99,6 +94,11 @@ module Reports
           title: 'Overview',
           table: overview_table,
           filename: 'irs_monthly_cred_overview',
+        ),
+        Reporting::EmailableReport.new(
+          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: CSV.parse(build_csv(iaas, partner_accounts, date)),
+          filename: 'irs_monthly_cred_metrics',
         ),
 
       ]
