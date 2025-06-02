@@ -21,6 +21,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     ipp_enrollment_in_progress:,
+    proofing_vendor:,
     user_id: nil,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
@@ -45,13 +46,14 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii[:uuid] = user.uuid
 
     callback_log_data = make_vendor_proofing_requests(
-      timer: timer,
-      user: user,
-      applicant_pii: applicant_pii,
-      threatmetrix_session_id: threatmetrix_session_id,
-      request_ip: request_ip,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      current_sp: current_sp,
+      timer:,
+      user:,
+      applicant_pii:,
+      threatmetrix_session_id:,
+      request_ip:,
+      ipp_enrollment_in_progress:,
+      current_sp:,
+      proofing_vendor:,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
@@ -66,6 +68,7 @@ class ResolutionProofingJob < ApplicationJob
   ensure
     logger_info_hash(
       name: 'ProofResolution',
+      proofing_vendor:,
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
       residential_resolution_success: callback_log_data&.residential_resolution_success,
@@ -114,9 +117,10 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id:,
     request_ip:,
     ipp_enrollment_in_progress:,
-    current_sp:
+    current_sp:,
+    proofing_vendor:
   )
-    result = progressive_proofer(user:).proof(
+    result = progressive_proofer(user:, proofing_vendor:).proof(
       applicant_pii: applicant_pii,
       user_email: user_email_for_proofing(user),
       threatmetrix_session_id: threatmetrix_session_id,
@@ -124,7 +128,6 @@ class ResolutionProofingJob < ApplicationJob
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
       current_sp: current_sp,
-      user_uuid: user.uuid,
       workflow: :idv,
     )
 
@@ -156,8 +159,10 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:)
-    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(user_uuid: user.uuid)
+  def progressive_proofer(user:, proofing_vendor:)
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
+      user_uuid: user.uuid, proofing_vendor:,
+    )
   end
 
   def shadow_mode_ab_test_bucket(user:)

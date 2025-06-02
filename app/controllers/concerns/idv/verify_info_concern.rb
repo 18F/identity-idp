@@ -26,6 +26,7 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
+
       document_capture_session.requested_at = Time.zone.now
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -41,6 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_components: ProofingComponents.new(idv_session:),
+        proofing_vendor:,
       )
 
       return true
@@ -56,6 +58,13 @@ module Idv
         { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
       elsif current_user.default_phone_configuration
         { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
+      end
+    end
+
+    def proofing_vendor
+      @proofing_vendor ||= begin
+        # if proofing vendor A/B test is disabled, return default vendor
+        ab_test_bucket(:PROOFING_VENDOR) || IdentityConfig.store.idv_resolution_default_vendor
       end
     end
 
@@ -208,7 +217,6 @@ module Idv
       end
 
       summarize_result_and_rate_limit(form_response)
-      delete_async
 
       if form_response.success?
         save_threatmetrix_status(form_response)
@@ -221,6 +229,7 @@ module Idv
         redirect_to next_step_url
       end
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
+      delete_async
     end
 
     def next_step_url
@@ -281,8 +290,9 @@ module Idv
 
     def load_async_state
       dcs_uuid = idv_session.verify_info_step_document_capture_session_uuid
-      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.none if dcs_uuid.nil?
+
+      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.missing if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
