@@ -49,7 +49,7 @@ module Reports
 
     def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
-      #return unless IdentityConfig.store.s3_reports_enabled
+      # return unless IdentityConfig.store.s3_reports_enabled
       issuers = IaaReportingHelper.partner_accounts.select do |pc|
         pc.partner == 'IRS'
       end.flat_map(&:issuers)
