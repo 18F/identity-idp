@@ -17,17 +17,17 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
   it 'creates an appropriate instance' do
     expect(subject.to_h).to eql(
       {
-        address1: '514 EAST AVE',
+        address1: '1 FAKE RD',
         address2: '',
-        city: 'SOUTH CHARLESTON',
-        state: 'WV',
-        zipcode: '25309-1104',
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010-1234',
 
-        first_name: 'MICHELE',
-        last_name: 'DEBAK',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
         middle_name: nil,
 
-        dob: '1976-10-18',
+        dob: '1938-10-06',
 
         phone: '12025551212',
         ssn: '900661234',
