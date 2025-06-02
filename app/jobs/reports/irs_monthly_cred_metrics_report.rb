@@ -43,7 +43,8 @@ module Reports
     def overview_table(issuers)
       [
         ['Report Timeframe', 'Report Generated', 'Issuers'],
-        ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s, issuers],
+        ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s,
+         issuers],
       ]
     end
 
@@ -93,7 +94,7 @@ module Reports
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          table: overview_table(issuers), 
+          table: overview_table(issuers),
           filename: 'irs_monthly_cred_overview',
         ),
         Reporting::EmailableReport.new(
