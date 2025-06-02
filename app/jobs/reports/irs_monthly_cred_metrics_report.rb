@@ -309,10 +309,6 @@ module Reports
       end
     end
 
-    def report_configs
-      IdentityConfig.store.irs_monthly_cred_metrics
-    end
-
     def extract(arr, key, ial:)
       arr.find { |elem| elem[:ial] == ial && elem[key] }&.dig(key) || 0
     end
