@@ -1,14 +1,14 @@
 description: |
-  This event captures the result of the TMX fraud check during Identity Verification.
+  This event captures the result of the Fraud Risk Assessment during Identity Verification.
 allOf:
-  - $ref: '../shared/EventProperties.yml'
+  - $ref: "../shared/EventProperties.yml"
   - type: object
     properties:
       failure_reason:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if user has failed fraud review
-        properties: 
+        properties:
           tmx_summary_reason_code:
             type: array
             description: |
