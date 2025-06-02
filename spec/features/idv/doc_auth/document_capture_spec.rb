@@ -852,7 +852,7 @@ RSpec.feature 'document capture step', :js do
                   # still have option to continue handoff, since it's desktop no skip_hand_off
                   expect(page).to have_current_path(idv_hybrid_handoff_path)
                   expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
-                  click_on t('in_person_proofing.headings.prepare')
+                  click_on t('forms.buttons.continue_ipp')
                   expect(page).to have_current_path(
                     idv_document_capture_path({ step: 'hybrid_handoff' }),
                   )

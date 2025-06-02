@@ -43,6 +43,10 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
     end
+
+    it 'does not display IPP related content' do
+      expect(rendered).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+    end
   end
   context 'when selfie is required' do
     before do
@@ -56,6 +60,28 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     end
     it 'displays the expected headings from the "a" case' do
       expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
+    end
+
+    describe 'when ipp is enabled' do
+      before do
+        @direct_ipp_with_selfie_enabled = true
+      end
+      it 'displays content and link for choose ipp' do
+        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+      end
+    end
+
+    describe 'when ipp is not enabled' do
+      before do
+        @direct_ipp_with_selfie_enabled = false
+      end
+      it 'displays content and link for choose ipp' do
+        expect(rendered).to_not have_content(t('doc_auth.headings.verify_at_post_office'))
+        expect(rendered).to_not have_link(
+          t('in_person_proofing.headings.prepare'),
+          href: idv_document_capture_path(step: :hybrid_handoff),
+        )
+      end
     end
   end
 end
