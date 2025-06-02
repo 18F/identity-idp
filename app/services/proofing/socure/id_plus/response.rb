@@ -26,6 +26,10 @@ module Proofing
           http_response.body['referenceId']
         end
 
+        def customer_user_id
+          http_response.body.dig('customerProfile', 'customerUserId')
+        end
+
         private
 
         attr_reader :http_response

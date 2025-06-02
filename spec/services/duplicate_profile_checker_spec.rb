@@ -26,10 +26,10 @@ RSpec.describe DuplicateProfileChecker do
       profile.save
     end
 
-    context 'when service provider eligible for duplicate profile check' do
+    context 'when feature flag feature_one_verified_account_log_duplicate_profiles is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-          .and_return([sp.issuer])
+        allow(IdentityConfig.store).to receive(:feature_one_verified_account_log_duplicate_profiles)
+          .and_return(true)
 
         session[:encrypted_profiles] = {
           profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
@@ -186,9 +186,10 @@ RSpec.describe DuplicateProfileChecker do
       end
     end
 
-    context 'when service provider not eligible for duplicate profile check' do
+    context 'when feature flag feature_one_verified_account_log_duplicate_profiles is disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([])
+        allow(IdentityConfig.store).to receive(:feature_one_verified_account_log_duplicate_profiles)
+          .and_return(false)
       end
 
       it 'does not create a new duplicate profile confirmation' do

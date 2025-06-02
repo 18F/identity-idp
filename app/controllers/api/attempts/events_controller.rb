@@ -13,12 +13,28 @@ module Api
       before_action :authenticate_client, only: :poll
 
       def poll
+        deleted_events_count = 0
         if poll_params[:acks].present?
-          redis_client.delete_events(
+          deleted_events_count = redis_client.delete_events(
             issuer: request_token.issuer,
             keys: poll_params[:acks],
           )
         end
+
+        sets = redis_client.read_events(
+          issuer: request_token.issuer,
+          batch_size: batch_size,
+        )
+
+        analytics.attempts_api_poll_events_request(
+          issuer: request_token.issuer,
+          requested_events_count: batch_size,
+          requested_acknowledged_events_count: poll_params[:acks]&.length,
+          returned_events_count: sets.count,
+          acknowledged_events_count: deleted_events_count,
+          success: true,
+        )
+
         render json: { sets: }
       end
 
@@ -33,6 +49,14 @@ module Api
 
       def authenticate_client
         if request_token.invalid?
+          analytics.attempts_api_poll_events_request(
+            issuer: request_token&.issuer,
+            requested_events_count: nil,
+            requested_acknowledged_events_count: nil,
+            returned_events_count: nil,
+            acknowledged_events_count: nil,
+            success: false,
+          )
           render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
         end
       end
@@ -41,11 +65,8 @@ module Api
         params.permit(:maxEvents, acks: [])
       end
 
-      def sets
-        redis_client.read_events(
-          issuer: request_token.issuer,
-          batch_size: poll_params[:maxEvents]&.to_i || 1000,
-        )
+      def batch_size
+        poll_params[:maxEvents]&.to_i || 1000
       end
 
       def redis_client

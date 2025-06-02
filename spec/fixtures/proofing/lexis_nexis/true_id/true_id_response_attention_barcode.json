@@ -327,7 +327,7 @@
         "Name": "Alert_1_AuthenticationResult",
         "Values": [
           {
-            "Value": "Passed",
+            "Value": "Failed",
             "Detail": "Verified the presence of a pattern on the visible image."
           }
         ]

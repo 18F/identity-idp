@@ -176,6 +176,7 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
+    config.add(:feature_one_verified_account_log_duplicate_profiles, type: :boolean)
     config.add(:irs_authentication_issuers, type: :json)
     config.add(:irs_authentication_emails, type: :json)
     config.add(:irs_fraud_metrics_issuers, type: :json)
@@ -207,16 +208,13 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(
-      :idv_resolution_alternate_vendor,
-      type: :symbol,
-      enum: [:instant_verify, :socure_kyc, :mock, :none],
-    )
-    config.add(:idv_resolution_alternate_vendor_percent, type: :integer)
-    config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
       enum: [:instant_verify, :socure_kyc, :mock],
     )
+    config.add(:idv_resolution_vendor_instant_verify_percent, type: :integer)
+    config.add(:idv_resolution_vendor_socure_kyc_percent, type: :integer)
+    config.add(:idv_resolution_vendor_switching_enabled, type: :boolean)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_socure_docv_flow_id_only, type: :string)

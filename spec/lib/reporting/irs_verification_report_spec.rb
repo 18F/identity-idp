@@ -14,24 +14,24 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   def previous_week_range
     one_week = 7.days
-    last_sunday = Time.zone.today.beginning_of_week(:sunday) - one_week
+    last_sunday = Time.current.utc.to_date.beginning_of_week(:sunday) - one_week
     last_saturday = last_sunday + 6.days
     last_sunday..last_saturday
   end
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      # Dynamically calculate the expected "Report Generated" date
-      expected_generated_date = Time.zone.today.to_date.to_s
-      # Adjust this logic if the method uses a different approach
+      freeze_time do
+        expected_generated_date = Time.current.utc.to_date.to_s
 
-      table = report.overview_table
+        table = report.overview_table
 
-      expect(table).to include(
-        ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', expected_generated_date], # Dynamically match the generated date
-        ['Issuer', issuers.join(', ')],
-      )
+        expect(table).to include(
+          ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
+          ['Report Generated', expected_generated_date],
+          ['Issuer', issuers.join(', ')],
+        )
+      end
     end
   end
 
@@ -63,9 +63,17 @@ RSpec.describe Reporting::IrsVerificationReport do
 
       expect(csvs).to be_an(Array)
       expect(csvs.size).to eq(3) # One for each table
-      expect(csvs.first).to include('Report Timeframe')
-      expect(csvs[1]).to include('Metric,Count,Rate')
-      expect(csvs.last).to include('Metric,Definition')
+
+      # First CSV: Definitions
+      expect(csvs.first).to include('Metric,Definition')
+
+      # Second CSV: Overview table
+      expect(csvs[1]).to include('Report Timeframe')
+      expect(csvs[1]).to include('Report Generated')
+      expect(csvs[1]).to include('Issuer')
+
+      # Third CSV: Funnel table
+      expect(csvs.last).to include('Metric,Count,Rate')
     end
   end
 end

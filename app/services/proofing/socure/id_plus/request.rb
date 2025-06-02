@@ -81,6 +81,8 @@ module Proofing
         def body
           @body ||= {
             modules: ['kyc'],
+            customerUserId: config.user_uuid,
+
             firstName: input.first_name,
             surName: input.last_name,
             country: 'US',

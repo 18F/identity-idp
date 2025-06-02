@@ -26,17 +26,17 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(get_results_response.success?).to eq(true)
     expect(get_results_response.pii_from_doc).to eq(
       Pii::StateId.new(
-        first_name: 'FAKEY',
+        first_name: 'MICHELE',
         middle_name: nil,
-        last_name: 'MCFAKERSON',
-        name_suffix: 'JR',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010-1234',
-        dob: '1938-10-06',
-        sex: 'male',
+        last_name: 'DEBAK',
+        name_suffix: '',
+        address1: '514 EAST AVE',
+        address2: '',
+        city: 'SOUTH CHARLESTON',
+        state: 'WV',
+        zipcode: '25309-1104',
+        dob: '1976-10-18',
+        sex: 'female',
         height: 72,
         weight: nil,
         eye_color: nil,
@@ -198,15 +198,15 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       Pii::StateId.new(
         first_name: 'Susan',
         middle_name: nil,
-        last_name: 'MCFAKERSON',
-        name_suffix: 'JR',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010-1234',
-        dob: '1938-10-06',
-        sex: 'male',
+        last_name: 'DEBAK',
+        name_suffix: '',
+        address1: '514 EAST AVE',
+        address2: '',
+        city: 'SOUTH CHARLESTON',
+        state: 'WV',
+        zipcode: '25309-1104',
+        dob: '1976-10-18',
+        sex: 'female',
         height: 72,
         weight: nil,
         eye_color: nil,
@@ -319,10 +319,12 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
           FaceMatchResult: Pass
           FaceErrorMessage: 'Successful. Liveness: Live'
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
       image_no_setting = <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         failed_alerts: []
       YAML
@@ -358,6 +360,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
       image = <<~YAML
         doc_auth_result: Passed
+        transaction_status: passed
         failed_alerts: []
       YAML
 
@@ -431,6 +434,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     describe 'when sending a selfie image that is successful (both live and a match)' do
       it 'returns a success response' do
         image = <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'
@@ -467,6 +471,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: NotLive'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -499,6 +504,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Liveness: PoorQuality'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
 
@@ -531,6 +537,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
               FaceMatchResult: Fail
               FaceErrorMessage: 'Successful. Liveness: Live'
             doc_auth_result: Passed
+            transaction_status: passed
             failed_alerts: []
           YAML
           post_images_response = client.post_images(

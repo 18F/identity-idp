@@ -1,16 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
-  subject(:progressive_proofer) { described_class.new }
+  let(:user) { build(:user) }
+  let(:proofing_vendor) { :mock }
+
+  subject(:progressive_proofer) { described_class.new(user_uuid: user.uuid, proofing_vendor:) }
 
   it 'assigns aamva_plugin' do
-    expect(described_class.new.aamva_plugin).to be_a(
+    expect(described_class.new(user_uuid: user.uuid, proofing_vendor:).aamva_plugin).to be_a(
       Proofing::Resolution::Plugins::AamvaPlugin,
     )
   end
 
   it 'assigns threatmetrix_plugin' do
-    expect(described_class.new.threatmetrix_plugin).to be_a(
+    expect(described_class.new(user_uuid: user.uuid, proofing_vendor:).threatmetrix_plugin).to be_a(
       Proofing::Resolution::Plugins::ThreatMetrixPlugin,
     )
   end
@@ -22,7 +25,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:user_email) { Faker::Internet.email }
     let(:current_sp) { build(:service_provider) }
-    let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
+    let(:user_uuid) { user.uuid }
     let(:workflow) { :auth }
 
     let(:residential_address_resolution_result) do
@@ -96,7 +99,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         user_email:,
         current_sp:,
-        user_uuid:,
         workflow:,
       )
     end
@@ -383,52 +385,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         proof
-      end
-    end
-  end
-
-  describe '#proofing_vendor' do
-    let(:idv_resolution_default_vendor) { :default_vendor }
-    let(:idv_resolution_alternate_vendor) { :alternate_vendor }
-    let(:idv_resolution_alternate_vendor_percent) { 0 }
-
-    subject(:proofing_vendor) { progressive_proofer.proofing_vendor }
-
-    before do
-      allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
-        .and_return(idv_resolution_default_vendor)
-      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor)
-        .and_return(idv_resolution_alternate_vendor)
-      allow(IdentityConfig.store).to receive(:idv_resolution_alternate_vendor_percent)
-        .and_return(idv_resolution_alternate_vendor_percent)
-    end
-
-    context 'when default is set to 100%' do
-      it 'uses the default' do
-        expect(proofing_vendor).to eql(:default_vendor)
-      end
-    end
-
-    context 'when alternate is set to 100%' do
-      let(:idv_resolution_alternate_vendor_percent) { 100 }
-
-      it 'uses the alternate' do
-        expect(proofing_vendor).to eql(:alternate_vendor)
-      end
-    end
-
-    context 'when no alternate is set' do
-      let(:idv_resolution_alternate_vendor) { :none }
-
-      it 'uses default' do
-        expect(proofing_vendor).to eql(:default_vendor)
-      end
-
-      context 'and alternate is set to > 0' do
-        let(:idv_resolution_alternate_vendor_percent) { 100 }
-        it 'uses default' do
-          expect(proofing_vendor).to eql(:default_vendor)
-        end
       end
     end
   end

@@ -166,6 +166,8 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           click_on t('forms.buttons.continue')
 
           expect(page).to have_current_path(idv_in_person_verify_info_path)
+
+          check_passport_verify_info_page_content
         end
       end
 
@@ -360,5 +362,45 @@ RSpec.describe 'In Person Proofing Passports', js: true do
       'in_person_passport[passport_expiration]',
       InPersonHelper::GOOD_PASSPORT_EXPIRATION_DATE,
     )
+  end
+
+  def check_passport_verify_info_page_content
+    expect(page).to have_content t('in_person_proofing.form.verify_info.passport')
+
+    # Surname
+    expect(page).to have_content t('in_person_proofing.form.passport.surname')
+    expect(page).to have_content InPersonHelper::GOOD_LAST_NAME
+    # First name
+    expect(page).to have_content t('in_person_proofing.form.passport.first_name')
+    expect(page).to have_content InPersonHelper::GOOD_FIRST_NAME
+    # Date of Birth
+    expect(page).to have_content t('in_person_proofing.form.passport.dob')
+    expect(page).to have_content(
+      I18n.l(Date.parse(InPersonHelper::GOOD_DOB), format: t('time.formats.event_date')),
+    )
+
+    expect(page).to have_content(t('headings.residential_address'))
+    # address 1
+    expect(page).to have_content(t('idv.form.address1'))
+    expect(page).to have_content InPersonHelper::GOOD_ADDRESS1
+    # address 2
+    expect(page).to have_content(t('idv.form.address2'))
+    expect(page).to have_content InPersonHelper::GOOD_ADDRESS2
+    # address city
+    expect(page).to have_content(t('idv.form.city'))
+    expect(page).to have_content InPersonHelper::GOOD_CITY
+    # address state
+    expect(page).to have_content(t('idv.form.state'))
+    expect(page).to have_content InPersonHelper::GOOD_STATE_ABBR
+    # address zipcode
+    expect(page).to have_content(t('idv.form.zipcode'))
+    expect(page).to have_content InPersonHelper::GOOD_ZIPCODE
+
+    expect(page).to have_content(t('headings.ssn'))
+    expect(page).to have_content(t('idv.form.ssn'))
+    expect(page).to have_content SsnFormatter.format_masked(InPersonHelper::GOOD_SSN)
+
+    expect(page).to_not have_content(t('headings.state_id'))
+    expect(page).to_not have_content(t('idv.form.id_number'))
   end
 end

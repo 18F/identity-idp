@@ -1,27 +1,27 @@
-<div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-bottom border-primary-light">
+<div class="grid-row grid-gap grid-gap-2 padding-bottom-2 padding-top-2 border-bottom border-primary-light">
   <dl class='grid-col-fill margin-y-0'>
-    <div class="padding-y-1">
+    <div class="padding-bottom-1">
       <h2 class="h4 margin-y-0"><%= t('headings.residential_address') %></h2>
     </div>
     <div>
       <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
-      <dd class="display-inline margin-left-0"> <%= @pii[:address1] %> </dd>
+      <dd class="display-inline margin-left-0"> <%= pii[:address1] %> </dd>
     </div>
     <div>
       <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
-      <dd class="display-inline margin-left-0"> <%= @pii[:address2].presence %> </dd>
+      <dd class="display-inline margin-left-0"> <%= pii[:address2].presence %> </dd>
     </div>
     <div>
       <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
-      <dd class="display-inline margin-left-0"> <%= @pii[:city] %> </dd>
+      <dd class="display-inline margin-left-0"> <%= pii[:city] %> </dd>
     </div>
     <div>
       <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
-      <dd class="display-inline margin-left-0"> <%= @pii[:state] %> </dd>
+      <dd class="display-inline margin-left-0"> <%= pii[:state] %> </dd>
     </div>
     <div>
       <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
-      <dd class="display-inline margin-left-0"> <%= @pii[:zipcode] %> </dd>
+      <dd class="display-inline margin-left-0"> <%= pii[:zipcode] %> </dd>
     </div>
   </dl>
   <div class='grid-auto'>

@@ -132,7 +132,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq(nil)
-      expect(response.attention_with_barcode?).to eq(false)
+      expect(response.attention_with_barcode?).to eq(true)
     end
   end
 
@@ -333,6 +333,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
@@ -371,15 +372,15 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         Pii::StateId.new(
           first_name: 'Susan',
           middle_name: nil,
-          last_name: 'MCFAKERSON',
-          name_suffix: 'JR',
-          address1: '1 FAKE RD',
-          address2: nil,
-          city: 'GREAT FALLS',
-          state: 'MT',
-          zipcode: '59010-1234',
-          dob: '1938-10-06',
-          sex: 'male',
+          last_name: 'DEBAK',
+          name_suffix: '',
+          address1: '514 EAST AVE',
+          address2: '',
+          city: 'SOUTH CHARLESTON',
+          state: 'WV',
+          zipcode: '25309-1104',
+          dob: '1976-10-18',
+          sex: 'female',
           height: 72,
           weight: nil,
           eye_color: nil,
@@ -415,6 +416,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
+        transaction_status: 'failed',
         billed: true,
         classification_info: nil,
         liveness_checking_required: false,
@@ -464,6 +466,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.pii_from_doc).to eq(nil)
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'failed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::FAILED.name,
         billed: true,
         classification_info: nil,
@@ -551,6 +554,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
         classification_info: {},
@@ -774,6 +778,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
   context 'with a yaml file that includes classification info but missing pii' do
     let(:input) do
       <<~YAML
+        transaction_status: passed
         doc_auth_result: Passed
         document:
           city: Bayside
@@ -808,6 +813,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     describe 'and it is successful' do
       let(:input) do
         <<~YAML
+          transaction_status: passed
           portrait_match_results:
             FaceMatchResult: Pass
             FaceErrorMessage: 'Successful. Liveness: Live'

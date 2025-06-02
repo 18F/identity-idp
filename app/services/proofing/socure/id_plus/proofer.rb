@@ -42,6 +42,7 @@ module Proofing
 
           build_result_from_response(response)
         rescue Proofing::TimeoutError, Request::Error => err
+          NewRelic::Agent.notice_error(err)
           build_result_from_error(err)
         end
 
@@ -72,6 +73,7 @@ module Proofing
             vendor_name: VENDOR_NAME,
             verified_attributes: verified_attributes(response),
             transaction_id: response.reference_id,
+            customer_user_id: response.customer_user_id,
           )
         end
 

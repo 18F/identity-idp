@@ -1,0 +1,21 @@
+<div class="grid-row grid-gap grid-gap-2 padding-bottom-2 border-bottom border-primary-light">
+  <dl class="grid-col-fill margin-y-0">
+    <div class="padding-bottom-1">
+      <h2 class="h4 margin-y-0"><%= t('in_person_proofing.form.verify_info.passport') %></h2>
+    </div>
+    <div>
+      <dt class="display-inline"><%= t('in_person_proofing.form.passport.surname') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= pii[:passport_surname] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('in_person_proofing.form.passport.first_name') %>: </dt>
+      <dd class="display-inline margin-left-0"> <%= pii[:passport_first_name] %> </dd>
+    </div>
+    <div>
+      <dt class="display-inline"> <%= t('in_person_proofing.form.passport.dob') %>: </dt>
+      <dd class="display-inline margin-left-0">
+        <%= I18n.l(Date.parse(pii[:passport_dob]), format: I18n.t('time.formats.event_date')) %>
+      </dd>
+    </div>
+  </dl>
+</div>

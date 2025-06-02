@@ -925,6 +925,8 @@ forms.messages.remember_device: 记住这个浏览器
 forms.password: 密码
 forms.passwords.edit.buttons.submit: 变更密码
 forms.passwords.edit.labels.password: 新密码
+forms.passwords.reset.how_to_reset: 如何重置你的密码
+forms.passwords.reset.how_to_reset_with_personal_key: 如果你有个人密钥，如何重置密码
 forms.personal_key_partial.acknowledgement.header: 如果你忘记了密码，就需要你的个人密钥。请将其保管好，不要与任何人分享。
 forms.personal_key_partial.acknowledgement.help_link_text: 了解更多有关个人密钥的信息。
 forms.personal_key_partial.acknowledgement.text: 如果你在没有个人密钥情况下重设你的密码，将需要再次验证你的身份。
@@ -1292,6 +1294,8 @@ in_person_proofing.body.location.distance.other: 距离你 %{count} 英里
 in_person_proofing.body.location.heading: 邮局信息
 in_person_proofing.body.location.info: 验证你的身份无需做预约。
 in_person_proofing.body.location.location_button: 选择
+in_person_proofing.body.location.location_skipped_notice: 无需预约即可验证你的身份。你可以前往任何参与邮局，但必须在去之前先做搜索以确认该邮局的确参与本项目。
+in_person_proofing.body.location.location_skipped_notice_button_text: 查找邮局
 in_person_proofing.body.location.po_search.address_label: 地址
 in_person_proofing.body.location.po_search.address_search_label: 输入地址来寻找你附件的邮局。
 in_person_proofing.body.location.po_search.city_label: 城市
@@ -1372,6 +1376,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: 前斜杠
 in_person_proofing.form.state_id.state_id_number_hint_spaces: 空格
 in_person_proofing.form.state_id.state_id_number_texas_hint: 这是你身份证件上的8位数在这一字段中只输入数字
 in_person_proofing.form.state_id.zipcode: 邮编
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: 输入你当前住宅地址
 in_person_proofing.headings.barcode: 到邮局出示这一条形码和你政府颁发的身份证件来完成验证身份。
 in_person_proofing.headings.barcode_eipp: 携带该条形码和支持性文件到邮局去完成验证身份。
@@ -1667,6 +1673,7 @@ titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
 titles.confirmations.delete: 请确认
 titles.confirmations.show: 选择一个密码
+titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
 titles.doc_auth.hybrid_handoff: 验证你的身份证件
@@ -1712,6 +1719,7 @@ titles.registrations.new: 设立账户
 titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
+titles.sign_in: 登录
 titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
 titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}

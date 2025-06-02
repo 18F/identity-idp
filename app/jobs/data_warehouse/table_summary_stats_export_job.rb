@@ -67,7 +67,6 @@ module DataWarehouse
         fields @timestamp
         | filter #{log_stream_filter_map[log_group_name]}
         | filter @message like /\\{.*/
-        | filter @message not like 'unused_identity_config_keys'
         | stats count() as row_count
       QUERY
     end

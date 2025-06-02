@@ -45,6 +45,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_components: proofing_components,
+        proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
       )
     end
 
@@ -390,6 +391,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
         )
       end
 
@@ -586,24 +588,24 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 )
                 expect(json[:applicant_pii]).to eql(
                   {
-                    first_name: 'FAKEY',
+                    first_name: 'MICHELE',
                     middle_name: nil,
-                    last_name: 'MCFAKERSON',
-                    name_suffix: 'JR',
-                    address1: '1 FAKE RD',
-                    identity_doc_address1: '1 FAKE RD',
-                    identity_doc_address2: nil,
-                    identity_doc_city: 'GREAT FALLS',
-                    identity_doc_address_state: 'MT',
-                    identity_doc_zipcode: '59010-1234',
+                    last_name: 'DEBAK',
+                    name_suffix: '',
+                    address1: '514 EAST AVE',
+                    identity_doc_address1: '514 EAST AVE',
+                    identity_doc_address2: '',
+                    identity_doc_city: 'SOUTH CHARLESTON',
+                    identity_doc_address_state: 'WV',
+                    identity_doc_zipcode: '25309-1104',
                     issuing_country_code: 'US',
-                    address2: nil,
+                    address2: '',
                     same_address_as_id: 'true',
-                    city: 'GREAT FALLS',
-                    state: 'MT',
-                    zipcode: '59010-1234',
-                    dob: '1938-10-06',
-                    sex: 'male',
+                    city: 'SOUTH CHARLESTON',
+                    state: 'WV',
+                    zipcode: '25309-1104',
+                    dob: '1976-10-18',
+                    sex: 'female',
                     height: 72,
                     weight: nil,
                     eye_color: nil,

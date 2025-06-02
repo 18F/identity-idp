@@ -914,6 +914,8 @@ forms.messages.remember_device: Remember this browser
 forms.password: Password
 forms.passwords.edit.buttons.submit: Change password
 forms.passwords.edit.labels.password: New password
+forms.passwords.reset.how_to_reset: How to reset your password
+forms.passwords.reset.how_to_reset_with_personal_key: How to reset your password if you have a personal key
 forms.personal_key_partial.acknowledgement.header: You need your personal key if you forget your password. Keep it safe and don’t share it with anyone.
 forms.personal_key_partial.acknowledgement.help_link_text: Learn more about the personal key
 forms.personal_key_partial.acknowledgement.text: If you reset your password without your personal key, you’ll need to verify your identity again.
@@ -1279,6 +1281,8 @@ in_person_proofing.body.location.distance.other: '%{count} miles away'
 in_person_proofing.body.location.heading: Post Office information
 in_person_proofing.body.location.info: No appointment is needed to verify your identity.
 in_person_proofing.body.location.location_button: Select
+in_person_proofing.body.location.location_skipped_notice: No appointment is needed to verify your identity. You can visit any participating Post Office but you must search for a location before visiting to confirm it is participating.
+in_person_proofing.body.location.location_skipped_notice_button_text: Find a Post Office
 in_person_proofing.body.location.po_search.address_label: Address
 in_person_proofing.body.location.po_search.address_search_label: Enter an address to find a Post Office near you.
 in_person_proofing.body.location.po_search.city_label: City
@@ -1359,6 +1363,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: forward s
 in_person_proofing.form.state_id.state_id_number_hint_spaces: spaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: This is the 8-digit number on your ID. Enter only numbers in this field.
 in_person_proofing.form.state_id.zipcode: ZIP Code
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: Enter your current residential address
 in_person_proofing.headings.barcode: Show this barcode and your state ID at a Post Office to finish verifying your identity
 in_person_proofing.headings.barcode_eipp: Bring this barcode and supporting documents to a Post Office to finish verifying your identity
@@ -1654,6 +1660,7 @@ titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
 titles.confirmations.delete: Please confirm
 titles.confirmations.show: Choose a password
+titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
 titles.doc_auth.hybrid_handoff: Verify your ID
@@ -1699,6 +1706,7 @@ titles.registrations.new: Create your account
 titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
 titles.select_email: Select your preferred email
+titles.sign_in: Sign in
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}

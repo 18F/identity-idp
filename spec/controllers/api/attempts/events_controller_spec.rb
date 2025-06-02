@@ -6,6 +6,7 @@ RSpec.describe Api::Attempts::EventsController do
 
   before do
     allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(enabled)
+    stub_analytics
   end
 
   describe '#poll' do
@@ -98,6 +99,15 @@ RSpec.describe Api::Attempts::EventsController do
               keys: [*acks],
             ).and_call_original
             expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              issuer: issuer,
+              requested_events_count: 1000,
+              requested_acknowledged_events_count: acks.count,
+              returned_events_count: 1,
+              acknowledged_events_count: 0,
+              success: true,
+            )
           end
 
           context 'when an event is acknowledged' do
@@ -110,15 +120,33 @@ RSpec.describe Api::Attempts::EventsController do
               ).and_call_original
 
               expect(action.body).to eq({ sets: {} }.to_json)
+              expect(@analytics).to have_logged_event(
+                :attempts_api_poll_events_request,
+                issuer: issuer,
+                requested_events_count: 1000,
+                requested_acknowledged_events_count: 1,
+                returned_events_count: 0,
+                acknowledged_events_count: 1,
+                success: true,
+              )
             end
           end
 
           context 'when there are acknowledged events' do
             let(:payload) { { maxEvents: '1000' } }
 
-            it 'does not attempts to delete events' do
+            it 'does not attempt to delete events' do
               expect(redis_client).not_to receive(:delete_events)
               expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
+
+              expect(@analytics).to have_logged_event(
+                :attempts_api_poll_events_request,
+                issuer: issuer,
+                requested_events_count: 1000,
+                returned_events_count: 1,
+                acknowledged_events_count: 0,
+                success: true,
+              )
             end
           end
 
@@ -149,6 +177,16 @@ RSpec.describe Api::Attempts::EventsController do
             it 'returns a json blob including all those events set' do
               sets = events.merge({ event_key => jwe })
               expect(JSON.parse(action.body)).to eq({ 'sets' => sets })
+
+              expect(@analytics).to have_logged_event(
+                :attempts_api_poll_events_request,
+                issuer:,
+                requested_events_count: 1000,
+                requested_acknowledged_events_count: 2,
+                returned_events_count: 4,
+                acknowledged_events_count: 0,
+                success: true,
+              )
             end
 
             context 'when the payload includes a maxEvents parameter' do
@@ -161,6 +199,15 @@ RSpec.describe Api::Attempts::EventsController do
 
               it 'only returns the number of events indicated' do
                 expect(JSON.parse(action.body)['sets'].length).to be 3
+                expect(@analytics).to have_logged_event(
+                  :attempts_api_poll_events_request,
+                  issuer: issuer,
+                  requested_events_count: 3,
+                  requested_acknowledged_events_count: 2,
+                  returned_events_count: 3,
+                  acknowledged_events_count: 0,
+                  success: true,
+                )
               end
 
               it 'returns the oldest events' do
@@ -178,6 +225,15 @@ RSpec.describe Api::Attempts::EventsController do
 
                 sets = events.merge({ event_key => jwe })
                 expect(JSON.parse(action.body)).to eq({ 'sets' => sets })
+                expect(@analytics).to have_logged_event(
+                  :attempts_api_poll_events_request,
+                  issuer: issuer,
+                  requested_events_count: 1000,
+                  requested_acknowledged_events_count: 2,
+                  returned_events_count: 4,
+                  acknowledged_events_count: 0,
+                  success: true,
+                )
               end
             end
           end
@@ -187,6 +243,16 @@ RSpec.describe Api::Attempts::EventsController do
           it 'returns an empty set' do
             expect(redis_client).to receive(:delete_events).and_call_original
             expect(action.body).to eq({ sets: {} }.to_json)
+
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              issuer: issuer,
+              requested_events_count: 1000,
+              requested_acknowledged_events_count: 2,
+              returned_events_count: 0,
+              acknowledged_events_count: 0,
+              success: true,
+            )
           end
         end
       end
@@ -197,6 +263,11 @@ RSpec.describe Api::Attempts::EventsController do
 
           it 'returns a 401' do
             expect(action.status).to eq 401
+
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              success: false,
+            )
           end
         end
 
@@ -205,6 +276,11 @@ RSpec.describe Api::Attempts::EventsController do
 
           it 'returns a 401' do
             expect(action.status).to eq 401
+
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              success: false,
+            )
           end
         end
 
@@ -213,6 +289,10 @@ RSpec.describe Api::Attempts::EventsController do
 
           it 'returns a 401' do
             expect(action.status).to eq 401
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              success: false,
+            )
           end
         end
 
@@ -222,6 +302,11 @@ RSpec.describe Api::Attempts::EventsController do
 
             it 'returns a 401' do
               expect(action.status).to eq 401
+              expect(@analytics).to have_logged_event(
+                :attempts_api_poll_events_request,
+                issuer: issuer,
+                success: false,
+              )
             end
           end
         end
@@ -231,6 +316,10 @@ RSpec.describe Api::Attempts::EventsController do
 
           it 'returns a 401' do
             expect(action.status).to eq 401
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              success: false,
+            )
           end
         end
 
@@ -239,6 +328,11 @@ RSpec.describe Api::Attempts::EventsController do
 
           it 'returns a 401' do
             expect(action.status).to eq 401
+            expect(@analytics).to have_logged_event(
+              :attempts_api_poll_events_request,
+              issuer: issuer,
+              success: false,
+            )
           end
         end
       end
