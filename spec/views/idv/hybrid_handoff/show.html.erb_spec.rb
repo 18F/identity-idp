@@ -16,6 +16,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     render template: 'idv/hybrid_handoff/show', locals: {
       idv_phone_form: @idv_form,
       idv_how_to_verify_form: @idv_how_to_verify_form,
+      post_office_enabled: @post_office_enabled,
       selfie_required: @selfie_required,
       presenter: @presenter,
     }
@@ -51,6 +52,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   context 'when selfie is required' do
     before do
       @selfie_required = true
+      @post_office_enabled = true
     end
     it 'has a form for starting mobile doc auth with an aria label tag' do
       expect(rendered).to have_selector(
@@ -74,6 +76,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     describe 'when ipp is not enabled' do
       before do
         @direct_ipp_with_selfie_enabled = false
+        @post_office_enabled = false
       end
       it 'displays content and link for choose ipp' do
         expect(rendered).to_not have_content(t('doc_auth.headings.verify_at_post_office'))
