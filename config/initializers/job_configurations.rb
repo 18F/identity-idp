@@ -36,12 +36,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Cancel expired account reset requests
-      expire_account_reset_requests: {
-        class: 'ExpireAccountResetRequestsJob',
-        cron: cron_5m,
-        args: -> { [Time.zone.now] },
-      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
