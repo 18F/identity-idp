@@ -349,7 +349,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:fraud_risk_assesment],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },
@@ -439,7 +439,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:fraud_risk_assesment],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
               device_profiling_adjudication_reason: ['device_profiling_exception'],
             },
@@ -494,7 +494,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:fraud_risk_assesment],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },

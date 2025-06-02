@@ -467,7 +467,9 @@ module Idv
       end
 
       def failed_stages
-        stages.keys.select { |k| !stages[k][:success] }
+        stages.keys.select { |k| !stages[k][:success] }.map do |stage|
+          stage == :threatmetrix ? :fraud_risk_assesment : stage
+        end
       end
 
       def resolution_adjudication_reason
