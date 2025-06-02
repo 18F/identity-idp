@@ -49,6 +49,10 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
           ),
         )
       end
+
+      it 'creates a DeviceProfilingResult' do
+        
+      end
     end
 
     context 'with an error response result' do
