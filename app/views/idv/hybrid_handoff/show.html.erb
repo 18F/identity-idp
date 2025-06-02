@@ -57,16 +57,6 @@
           ) %>
       <%= f.submit t('forms.buttons.send_link') %>
     <% end %>
-        <% if @direct_ipp_with_selfie_enabled && @selfie_required %>
-    <div class="margin-top-4 padding-top-2 border-top border-primary-light">
-      <p class="margin-top-1">
-        <%= t('doc_auth.info.hybrid_handoff_ipp_html') %>
-      </p>
-      <p class="margin-top-1 margin-bottom-0">
-        <%= link_to t('in_person_proofing.headings.prepare'), idv_document_capture_path(step: :hybrid_handoff) %>
-      </p>
-    </div>
-  <% end %>
   </div>
 </div>
 <hr class="margin-top-4" />
