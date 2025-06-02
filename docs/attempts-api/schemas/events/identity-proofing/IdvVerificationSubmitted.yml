@@ -46,7 +46,7 @@ allOf:
                 - resolution
                 - residential_address
                 - state_id
-                - threatmetrix
+                - fraud_risk_assessment
                 - phone_precheck
           attributes_requiring_additional_verification:
             type: array
