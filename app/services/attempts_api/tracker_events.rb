@@ -31,7 +31,7 @@ module AttemptsApi
     # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
     # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfie
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if password was not successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason reason the images were not uploaded
     # A user has uploaded documents locally
     def idv_document_uploaded(
         success:,
