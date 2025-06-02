@@ -225,8 +225,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
         context 'when ipp is enabled' do
           it 'proceeds to ipp if selected and can go back' do
-            expect(page).to have_content(strip_tags(t('doc_auth.headings.upload_from_phone')))
-            click_on t('in_person_proofing.headings.prepare')
+            expect(page).to have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+            click_on t('forms.buttons.continue_ipp')
             hybrid_step = { step: 'hybrid_handoff' }
             expect(page).to have_current_path(idv_document_capture_path(hybrid_step))
             click_on t('forms.buttons.back')
@@ -239,7 +239,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
           let(:sp_ipp_enabled) { false }
           it 'has no ipp option can be selected' do
             expect(page).to_not have_content(
-              t('in_person_proofing.headings.prepare'),
+              strip_tags(t('doc_auth.headings.verify_at_post_office')),
             )
           end
         end
@@ -280,15 +280,12 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
   end
 
   def verify_handoff_page_no_ipp_option_shown(page)
-    expect(page).to_not have_link(
-      t('in_person_proofing.headings.prepare'),
-      href: idv_document_capture_path(step: :hybrid_handoff),
-    )
+    expect(page).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
   end
 
   def verify_handoff_page_ipp_section_and_link(page)
-    expect(page).to have_content(strip_tags(t('doc_auth.headings.upload_from_phone')))
-    click_on t('in_person_proofing.headings.prepare')
+    expect(page).to have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+    click_on t('forms.buttons.continue_ipp')
     expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('headings.verify'))
