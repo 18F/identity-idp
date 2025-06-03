@@ -50,7 +50,6 @@ class User < ApplicationRecord
   has_many :in_person_enrollments, dependent: :destroy
   has_many :fraud_review_requests, dependent: :destroy
   has_many :gpo_confirmation_codes, through: :profiles
-  has_many :device_profiling_results, dependent: :destroy
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
