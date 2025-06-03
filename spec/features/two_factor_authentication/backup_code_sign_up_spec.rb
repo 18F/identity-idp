@@ -33,9 +33,7 @@ RSpec.feature 'sign up with backup code' do
       expect(user.backup_code_configurations.count).to eq(BackupCodeGenerator::NUMBER_OF_CODES)
 
       click_continue
-      click_button t('mfa.skip')
 
-      expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(page).to have_title(t('titles.account'))
     end
   end
