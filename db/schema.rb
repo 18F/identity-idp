@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -704,7 +704,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
+  add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
