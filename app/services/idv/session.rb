@@ -117,7 +117,7 @@ module Idv
     def create_profile_from_applicant_with_password(
       user_password, is_enhanced_ipp:, proofing_components:
     )
-      if (active_enrollment = current_user.active_enrollment)
+      if current_user.has_establishing_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
           pii: Pii::Attributes.new_from_hash(applicant),
@@ -125,6 +125,8 @@ module Idv
           opt_in: opt_in_param,
         )
       end
+
+      active_enrollment = current_user.active_enrollment
 
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
