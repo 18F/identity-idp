@@ -1,7 +1,7 @@
 description: |
   The user has uploaded documents locally
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       document_front_image_file_id:

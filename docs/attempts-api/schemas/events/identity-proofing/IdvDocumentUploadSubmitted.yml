@@ -1,7 +1,7 @@
 description: |
   The document was uploaded during identity proofing and authenticated by the vendor.
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       document_state:
@@ -139,8 +139,7 @@ allOf:
                 # image quality
                 - dpi_low
                 - sharp_low_field
-                - glare_low_field
-                  # network failures
+                - glare_low_field # network failures
                 - image_load_failure_field
                 - pixel_depth_failure_field
                 - image_size_failure_field

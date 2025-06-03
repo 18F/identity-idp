@@ -8,13 +8,13 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if user has failed fraud review
-        properties: 
+        properties:
           tmx_summary_reason_code:
             type: array
             description: |
               An OPTIONAL key that describes rules that failed during the test. Can include multiple elements in the array.
               * `Identity_Negative_History`: Rules that indicate a negative history for related Identity (such as black listed email address or phone number). 
-              * `IP_Negative_History`:  Rules that indicate a negative history for IP Address (such as block-listed IP/Proxy address).
+              * `IP_Negative_History`: Rules that indicate a negative history for IP Address (such as block-listed IP/Proxy address).
               * `Bot`: Rules that examine velocity counts for anomalies and rules that indicate the presence of an aggregator (Online Bots).
               * `Device_Spoofing`: Rules that indicate device anomalies, rules for OS spoofing, and rules that examine the mobile device for malware, root-cloaking applications and so on.
               * `Geo_Spoofing`: Rules for anomalies pertaining to geographical location.
