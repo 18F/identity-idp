@@ -10,9 +10,11 @@ module Proofing
     class ProgressiveProofer
       class InvalidProofingVendorError; end
 
-      attr_reader :aamva_plugin,
+      attr_reader :user_uuid,
+                  :aamva_plugin,
                   :threatmetrix_plugin,
-                  :phone_finder_plugin
+                  :phone_finder_plugin,
+                  :proofing_vendor
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
@@ -20,10 +22,12 @@ module Proofing
         socure_kyc: :socure_resolution,
       }.freeze
 
-      def initialize
+      def initialize(user_uuid:, proofing_vendor:)
+        @user_uuid = user_uuid
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_finder_plugin = Plugins::PhoneFinderPlugin.new
+        @proofing_vendor = proofing_vendor
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
@@ -44,7 +48,6 @@ module Proofing
         user_email:,
         ipp_enrollment_in_progress:,
         current_sp:,
-        user_uuid:,
         workflow:
       )
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
@@ -106,24 +109,6 @@ module Proofing
         )
       end
 
-      def proofing_vendor
-        @proofing_vendor ||= begin
-          default_vendor = IdentityConfig.store.idv_resolution_default_vendor
-          alternate_vendor = IdentityConfig.store.idv_resolution_alternate_vendor
-          alternate_vendor_percent = IdentityConfig.store.idv_resolution_alternate_vendor_percent
-
-          if alternate_vendor == :none
-            return default_vendor
-          end
-
-          if (rand * 100) <= alternate_vendor_percent
-            alternate_vendor
-          else
-            default_vendor
-          end
-        end
-      end
-
       def residential_address_plugin
         @residential_address_plugin ||= Plugins::ResidentialAddressPlugin.new(
           proofer: create_proofer,
@@ -168,6 +153,7 @@ module Proofing
       def create_socure_proofer
         Proofing::Socure::IdPlus::Proofer.new(
           Proofing::Socure::IdPlus::Config.new(
+            user_uuid:,
             api_key: IdentityConfig.store.socure_idplus_api_key,
             base_url: IdentityConfig.store.socure_idplus_base_url,
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,

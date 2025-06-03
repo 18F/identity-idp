@@ -101,7 +101,7 @@ module Idp
     MOCK_IDV_APPLICANT_STATE = 'MT'
     MOCK_IDV_APPLICANT = {
       address1: '1 FAKE RD',
-      address2: nil,
+      address2: '',
       city: 'GREAT FALLS',
       dob: '1938-10-06',
       eye_color: nil,

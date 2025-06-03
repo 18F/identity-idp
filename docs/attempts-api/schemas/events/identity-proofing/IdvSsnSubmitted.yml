@@ -4,6 +4,6 @@ allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
-      social_security:
+      ssn:
         type: string
         description: User-submitted Social Security Number

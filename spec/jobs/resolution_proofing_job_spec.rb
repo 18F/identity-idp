@@ -45,6 +45,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_components: proofing_components,
+        proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
       )
     end
 
@@ -390,6 +391,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
         )
       end
 
@@ -592,12 +594,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
                     name_suffix: 'JR',
                     address1: '1 FAKE RD',
                     identity_doc_address1: '1 FAKE RD',
-                    identity_doc_address2: nil,
+                    identity_doc_address2: '',
                     identity_doc_city: 'GREAT FALLS',
                     identity_doc_address_state: 'MT',
                     identity_doc_zipcode: '59010-1234',
                     issuing_country_code: 'US',
-                    address2: nil,
+                    address2: '',
                     same_address_as_id: 'true',
                     city: 'GREAT FALLS',
                     state: 'MT',

@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Proofing::Socure::IdPlus::Request do
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
+      user_uuid: user.uuid,
       api_key:,
       base_url:,
       timeout:,
@@ -38,13 +39,14 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
           surName: 'MCFAKERSON',
           dob: '1938-10-06',
           physicalAddress: '1 FAKE RD',
-          physicalAddress2: nil,
+          physicalAddress2: '',
           city: 'GREAT FALLS',
           state: 'MT',
           zip: '59010-1234',
           country: 'US',
           nationalId: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn],
           countryOfOrigin: 'US',
+          customerUserId: user.uuid,
 
           email: user.email,
           mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
@@ -93,6 +95,9 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
                   ssn: 0.99,
                 },
               },
+              customerProfile: {
+                customerUserId: user.uuid,
+              },
             },
           ),
         )
@@ -124,6 +129,11 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
         res = request.send_request
         expect(res.kyc_field_validations).to be
         expect(res.kyc_reason_codes).to be
+      end
+
+      it 'response has customer_user_id' do
+        res = request.send_request
+        expect(res.customer_user_id).to eql(user.uuid)
       end
     end
 

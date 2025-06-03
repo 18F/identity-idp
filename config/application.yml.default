@@ -184,9 +184,10 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_resolution_alternate_vendor: none
-idv_resolution_alternate_vendor_percent: 0
 idv_resolution_default_vendor: mock
+idv_resolution_vendor_instant_verify_percent: 0
+idv_resolution_vendor_socure_kyc_percent: 0
+idv_resolution_vendor_switching_enabled: false
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
@@ -559,7 +560,6 @@ production:
   enable_usps_verification: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
-  feature_pending_in_person_password_reset_enabled: false
   idv_sp_required: true
   in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''

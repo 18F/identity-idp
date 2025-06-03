@@ -122,10 +122,30 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     context 'when selected_location_details is not present' do
       let(:selected_location_details) { nil }
 
+      it 'renders skipped location notice' do
+        render
+
+        expect(rendered).to have_content(
+          t('in_person_proofing.headings.po_search.location'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.body.location.location_skipped_notice'),
+        )
+        expect(rendered).to have_content(
+          t('in_person_proofing.body.location.location_skipped_notice_button_text'),
+        )
+
+        expect(rendered).not_to have_content(
+          t('in_person_proofing.body.location.change_location_heading'),
+        )
+      end
+
       it 'does not render a location' do
         render
 
-        expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.retail_hours'))
+        expect(rendered).not_to have_content(
+          t('in_person_proofing.body.barcode.retail_hours'),
+        )
       end
     end
   end

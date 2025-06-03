@@ -1,5 +1,5 @@
 description: |
-   The user has uploaded documents locally 
+  The user has uploaded documents locally
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -7,10 +7,10 @@ allOf:
       document_front_image_file_id:
         type: string
         description: If this image exists, the ID used to retrieve it if needed
-      document_back_image_file_id: 
+      document_back_image_file_id:
         type: string
         description: If this image exists, the ID used to retrieve it if needed
-      document_selfie_image_file_id: 
+      document_selfie_image_file_id:
         type: string
         description: If this image exists, the ID used to retrieve it if needed
       document_front_image_encryption_key:
@@ -23,6 +23,45 @@ allOf:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
       success:
-          type: boolean
-          description: |
-            Indicates whether the upload was successful
+        type: boolean
+        description: |
+          Indicates whether the upload was successful
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          limit:
+            type: array
+            description: An OPTIONAL key if the upload is rate limited
+            items:
+              type: string
+              enum:
+                - rate_limited
+          front:
+            type: array
+            description: An OPTIONAL key if there are errors with the front image
+            items:
+              type: string
+              enum:
+                - blank
+                - duplicate_image
+                - not_a_file
+          back:
+            type: array
+            description: An OPTIONAL key if there are errors with the back image
+            items:
+              type: string
+              enum:
+                - blank
+                - duplicate_image
+                - not_a_file
+          selfie:
+            type: array
+            description: An OPTIONAL key if there are errors with the back image
+            items:
+              type: string
+              enum:
+                - blank
+                - duplicate_image
+                - not_a_file

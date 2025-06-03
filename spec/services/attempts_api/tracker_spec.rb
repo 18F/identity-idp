@@ -90,6 +90,34 @@ RSpec.describe AttemptsApi::Tracker do
         event = subject.track_event(:test_event)
         expect(event.event_metadata[:user]).to be_nil
       end
+
+      it 'returns the default locale as the language attribute' do
+        event = subject.track_event(:test_event)
+        expect(event.event_metadata[:language]).to eq('en')
+      end
+    end
+
+    context 'with AnonymousUser user' do
+      let(:user) { AnonymousUser.new }
+
+      it 'logs nil user_uuid' do
+        event = subject.track_event(:test_event)
+        expect(event.event_metadata[:user]).to be_nil
+      end
+
+      it 'returns default locale as the language attribute' do
+        event = subject.track_event(:test_event)
+        expect(event.event_metadata[:language]).to eq('en')
+      end
+    end
+
+    context 'user that has a locale selected' do
+      before { user.update(email_language: :es) }
+      it 'returns that locale as a language attribute in event' do
+        event = subject.track_event(:test_event)
+
+        expect(event.event_metadata[:language]).to eq('es')
+      end
     end
 
     context 'user has existing Agency UUID' do

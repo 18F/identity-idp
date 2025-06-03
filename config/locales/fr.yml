@@ -914,6 +914,8 @@ forms.messages.remember_device: Se souvenir de ce navigateur
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
 forms.passwords.edit.labels.password: Nouveau mot de passe
+forms.passwords.reset.how_to_reset: Comment réinitialiser votre mot de passe
+forms.passwords.reset.how_to_reset_with_personal_key: Comment réinitialiser votre mot de passe si vous disposez d’une clé personnelle
 forms.personal_key_partial.acknowledgement.header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé personnelle. Gardez-la en sécurité et ne la partagez avec personne.
 forms.personal_key_partial.acknowledgement.help_link_text: En savoir plus sur la clé personnelle
 forms.personal_key_partial.acknowledgement.text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous devrez à nouveau confirmer votre identité.
@@ -1279,6 +1281,8 @@ in_person_proofing.body.location.distance.other: à %{count} miles
 in_person_proofing.body.location.heading: Informations sur les bureaux de poste
 in_person_proofing.body.location.info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité.
 in_person_proofing.body.location.location_button: Sélectionner
+in_person_proofing.body.location.location_skipped_notice: Il est inutile de prendre rendez-vous pour la vérification de votre identité. Vous pouvez vous rendre dans n’importe quel bureau de poste à condition d’avoir vérifié au préalable que c’est un bureau de poste participant.
+in_person_proofing.body.location.location_skipped_notice_button_text: Trouver un bureau de poste
 in_person_proofing.body.location.po_search.address_label: Adresse
 in_person_proofing.body.location.po_search.address_search_label: Saisissez une adresse pour trouver un bureau de poste près de chez vous.
 in_person_proofing.body.location.po_search.city_label: Ville
@@ -1359,6 +1363,8 @@ in_person_proofing.form.state_id.state_id_number_hint_forward_slashes: des barre
 in_person_proofing.form.state_id.state_id_number_hint_spaces: des espaces
 in_person_proofing.form.state_id.state_id_number_texas_hint: Il s’agit du numéro à huit chiffres figurant sur votre pièce d’identité. Dans ce champ, ne saisissez que des chiffres.
 in_person_proofing.form.state_id.zipcode: Code postal
+in_person_proofing.form.verify_info.passport: U.S. passport book
+in_person_proofing.form.verify_info.passport_intro_text: We will check records to verify that your address and Social Security number match the information on your ID.
 in_person_proofing.headings.address: Saisissez votre adresse résidentielle actuelle
 in_person_proofing.headings.barcode: Présentez ce code-barres et votre pièce d’identité l’État à un bureau de poste pour terminer la vérification de votre identité
 in_person_proofing.headings.barcode_eipp: Présenter ce code-barres et les documents complémentaires à un bureau de poste pour terminer la vérification de votre identité
@@ -1652,6 +1658,7 @@ titles.backup_codes: Ne perdez pas vos codes de sauvegarde
 titles.cancel_exit_login: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
 titles.confirmations.delete: Veuillez confirmer
 titles.confirmations.show: Choisir un mot de passe
+titles.create_account: Créer un compte
 titles.doc_auth.address: Mettre à jour votre adresse personnelle
 titles.doc_auth.doc_capture: Ajouter votre pièce d’identité
 titles.doc_auth.hybrid_handoff: Vérifier votre identité
@@ -1697,6 +1704,7 @@ titles.registrations.new: Créer votre compte
 titles.revoke_consent: Révoquer le consentement
 titles.rules_of_use: Règles d’utilisation
 titles.select_email: Sélectionner l’adresse e-mail de votre choix
+titles.sign_in: Se connecter
 titles.sign_up.completion_consent_expired_ial1: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
 titles.sign_up.completion_consent_expired_ial2: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}

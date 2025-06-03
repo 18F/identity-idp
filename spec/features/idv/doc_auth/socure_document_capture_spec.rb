@@ -6,6 +6,7 @@ RSpec.feature 'document capture step', :js do
   include DocCaptureHelper
   include ActionView::Helpers::DateHelper
 
+  let(:user) { user_with_2fa }
   let(:max_attempts) { 3 }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
@@ -34,7 +35,7 @@ RSpec.feature 'document capture step', :js do
       attempts_api_tracker,
     )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
-    @docv_transaction_token = stub_docv_document_request
+    @docv_transaction_token = stub_docv_document_request(user:)
     allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
     allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
@@ -42,13 +43,16 @@ RSpec.feature 'document capture step', :js do
 
   context 'happy path', allow_browser_log: true do
     before do
-      @pass_stub = stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+      @pass_stub = stub_docv_verification_data_pass(
+        docv_transaction_token: @docv_transaction_token,
+        user:,
+      )
     end
 
     context 'standard desktop flow' do
       before do
         visit_idp_from_oidc_sp_with_ial2
-        @user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
         click_idv_continue
       end
@@ -190,6 +194,7 @@ RSpec.feature 'document capture step', :js do
           stub_docv_verification_data_fail_with(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['XXXX'],
+            user:,
           )
         end
 
@@ -222,7 +227,7 @@ RSpec.feature 'document capture step', :js do
             expect(DocAuth::Socure::WebhookRepeater).not_to receive(:new)
           end
           it 'proceeds to the next page with valid info' do
-            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            document_capture_session = DocumentCaptureSession.find_by(user_id: user.id)
             expect(document_capture_session.socure_docv_capture_app_url)
               .to eq(fake_socure_document_capture_app_url)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -239,7 +244,7 @@ RSpec.feature 'document capture step', :js do
           end
 
           it 'reuse capture app url when appropriate and creates new when not' do
-            document_capture_session = DocumentCaptureSession.find_by(user_id: @user.id)
+            document_capture_session = DocumentCaptureSession.find_by(user_id: user.id)
             expect(document_capture_session.socure_docv_capture_app_url)
               .to eq(fake_socure_document_capture_app_url)
             expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -282,7 +287,7 @@ RSpec.feature 'document capture step', :js do
 
           it 'shows the network error page', js: true do
             visit_idp_from_oidc_sp_with_ial2
-            sign_in_and_2fa_user(@user)
+            sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_document_capture_step
 
@@ -308,7 +313,7 @@ RSpec.feature 'document capture step', :js do
         context 'getting the capture path w wrong api key' do
           before do
             DocAuth::Mock::DocAuthMockClient.reset!
-            stub_docv_document_request(status: 401)
+            stub_docv_document_request(user:, status: 401)
           end
 
           it 'correctly logs event', js: true do
@@ -335,7 +340,7 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_socure_document_capture_url)
 
         visit idv_socure_document_capture_update_path
-        expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+        expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
       end
 
       it 'does track state if state tracking is enabled' do
@@ -345,7 +350,7 @@ RSpec.feature 'document capture step', :js do
         )
 
         visit idv_socure_document_capture_update_path
-        expect(DocAuthLog.find_by(user_id: @user.id).state).not_to be_nil
+        expect(DocAuthLog.find_by(user_id: user.id).state).not_to be_nil
       end
 
       context 'when socure_docv_verification_data_test_mode is enabled' do
@@ -361,12 +366,12 @@ RSpec.feature 'document capture step', :js do
           it 'fetches verificationdata using override docvToken in request',
              allow_browser_log: true do
             remove_request_stub(@pass_stub)
-            stub_docv_verification_data_pass(docv_transaction_token: test_token)
+            stub_docv_verification_data_pass(docv_transaction_token: test_token, user:)
 
             visit idv_socure_document_capture_update_path(docv_token: test_token)
             expect(page).to have_current_path(idv_ssn_url)
 
-            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+            expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
             )
@@ -393,7 +398,7 @@ RSpec.feature 'document capture step', :js do
 
             expect(page).to have_current_path(idv_ssn_url)
 
-            expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+            expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
             )
@@ -415,6 +420,7 @@ RSpec.feature 'document capture step', :js do
           stub_docv_verification_data(
             docv_transaction_token: @docv_transaction_token,
             body: body.to_json,
+            user:,
           )
 
           socure_docv_upload_documents(
@@ -439,7 +445,7 @@ RSpec.feature 'document capture step', :js do
 
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
-          @user = sign_in_and_2fa_user
+          sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
 
           expect(page).to have_current_path(idv_socure_document_capture_url)
@@ -451,7 +457,7 @@ RSpec.feature 'document capture step', :js do
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_ssn_url)
 
-          expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('NY')
+          expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
           expect(fake_analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
@@ -483,7 +489,7 @@ RSpec.feature 'document capture step', :js do
           .and_return(0)
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
-        @user = sign_in_and_2fa_user
+        sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
       end
 
@@ -505,6 +511,7 @@ RSpec.feature 'document capture step', :js do
         @pass_stub = stub_docv_verification_data_pass(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['not_processed'],
+          user:,
         )
 
         click_idv_continue
@@ -523,6 +530,7 @@ RSpec.feature 'document capture step', :js do
         @pass_stub = stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['pass'],
+          user:,
         )
 
         click_idv_continue
@@ -541,6 +549,7 @@ RSpec.feature 'document capture step', :js do
         @pass_stub = stub_docv_verification_data_pass(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['pass'],
+          user:,
         )
 
         click_idv_continue
@@ -576,10 +585,11 @@ RSpec.feature 'document capture step', :js do
       stub_docv_verification_data_fail_with(
         docv_transaction_token: @docv_transaction_token,
         reason_codes: [socure_error_code],
+        user:,
       )
 
       visit_idp_from_oidc_sp_with_ial2
-      @user = sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_document_capture_step
       click_idv_continue
@@ -636,10 +646,10 @@ RSpec.feature 'document capture step', :js do
     end
 
     it 'presents as a type 1 error' do
-      stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token)
+      stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token, user:)
 
       visit_idp_from_oidc_sp_with_ial2
-      @user = sign_in_and_2fa_user
+      sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_document_capture_step
       click_idv_continue

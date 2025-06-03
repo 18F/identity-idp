@@ -54,6 +54,20 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
+  describe '#location_search_skipped?' do
+    context 'when location is not skipped' do
+      it 'returns false' do
+        expect(presenter.location_search_skipped?).to be false
+      end
+    end
+    context 'when location is skipped' do
+      let(:enrollment_selected_location_details) { nil }
+      it 'returns true' do
+        expect(presenter.location_search_skipped?).to be true
+      end
+    end
+  end
+
   describe '#selected_location_details' do
     subject(:selected_location_details) { presenter.selected_location_details }
 

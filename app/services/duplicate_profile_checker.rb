@@ -11,7 +11,6 @@ class DuplicateProfileChecker
   end
 
   def check_for_duplicate_profiles
-    return unless sp_eligible_for_one_account?
     return unless user_has_ial2_profile?
     cacher = Pii::Cacher.new(user, user_session)
 
@@ -39,10 +38,6 @@ class DuplicateProfileChecker
   end
 
   private
-
-  def sp_eligible_for_one_account?
-    sp.present? && IdentityConfig.store.eligible_one_account_providers.include?(sp.issuer)
-  end
 
   def user_has_ial2_profile?
     user.identity_verified_with_facial_match?
