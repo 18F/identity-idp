@@ -31,6 +31,7 @@ class AccountCreationThreatMetrixJob < ApplicationJob
 
   def store_device_profiling_result(user_id, result)
     return unless user_id.present?
+    return unless IdentityConfig.store.account_creation_device_profiling == :enabled
     device_profiling_result = DeviceProfilingResult.find_or_create_by(
       user_id:,
       profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],

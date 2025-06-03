@@ -36,6 +36,8 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
 
     context 'Threat Metrix Account Creation analysis passes' do
       let(:threatmetrix_response) { LexisNexisFixtures.ddp_success_response_json }
+      let(:authentication_device_profiling) { :enabled }
+
       it 'logs a successful result' do
         threatmetrix_stub
 
