@@ -38,7 +38,7 @@ RSpec.describe Funnel::Registration::AddMfa do
         .and_return(100)
     end
     it 'triggers threatmetrix job call' do
-      expect(AccountCreationThreatMetrixJob).to receive(:perform_now)
+      expect(AccountCreationThreatMetrixJob).to receive(:perform_later)
       subject.call(user_id, 'phone', analytics, threatmetrix_attrs)
     end
   end
