@@ -518,7 +518,7 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
-  # User directed to this page after TMX returns a failure 
+  # User directed to this page after TMX returns a failure
 
   def device_profiling_failed_visited
     track_event(:device_profiling_failed_visited)
