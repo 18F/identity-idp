@@ -54,7 +54,10 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
         threatmetrix_stub
 
         perform
-        result = DeviceProfilingResult.find_by(user_id: user.id, profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation])
+        result = DeviceProfilingResult.find_by(
+          user_id: user.id,
+          profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+        )
         expect(result).to be_truthy
         expect(result.user_id).to eq(user.id)
       end
