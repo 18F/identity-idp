@@ -19,6 +19,7 @@ RSpec.describe Idv::ImageUploadsController do
     stub_attempts_tracker
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
+    allow(writer).to receive(:write).and_return result
     stub_sign_in(user) if user
   end
 
@@ -67,6 +68,8 @@ RSpec.describe Idv::ImageUploadsController do
       it 'tracks events' do
         stub_analytics
 
+        expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
         action
 
         expect(@analytics).not_to have_logged_event(
@@ -80,7 +83,7 @@ RSpec.describe Idv::ImageUploadsController do
         expect_funnel_update_counts(user, 0)
       end
 
-      context 'when the attempts_api_tracker is enabled' do
+      context 'when document escrow is enabled' do
         let(:doc_escrow_enabled) { true }
 
         before do
@@ -95,6 +98,7 @@ RSpec.describe Idv::ImageUploadsController do
             document_back_image_file_id: 'name',
             failure_reason: { front: [:blank] },
           )
+
           action
         end
       end
@@ -315,6 +319,8 @@ RSpec.describe Idv::ImageUploadsController do
               failure_reason: { limit: [:rate_limited] },
             )
 
+            expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
             action
           end
         end
@@ -395,7 +401,7 @@ RSpec.describe Idv::ImageUploadsController do
         before do
           allow(writer).to receive(:write).and_return result
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          expect(writer).to receive(:write).exactly(2).times
+          expect(writer).to receive(:write).exactly(4).times
         end
 
         it 'tracks the event' do
@@ -407,6 +413,30 @@ RSpec.describe Idv::ImageUploadsController do
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
             failure_reason: nil,
+          )
+
+          expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: false,
+            document_expiration: nil,
+            document_issued: nil,
+            document_number: nil,
+            document_state: nil,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            first_name: nil,
+            last_name: nil,
+            date_of_birth: nil,
+            address1: nil,
+            address2: nil,
+            city: nil,
+            state: nil,
+            zip: nil,
+            failure_reason: {
+              front: ['image_size_failure_field'],
+              general: ['image_size_failure'],
+            },
           )
 
           action
@@ -472,6 +502,35 @@ RSpec.describe Idv::ImageUploadsController do
         expect(document_capture_session.reload.load_result.success?).to eq(true)
       end
 
+      context 'when doc escrow is enabled' do
+        let(:doc_escrow_enabled) { true }
+        it 'records attempts api events' do
+          pii = Idp::Constants::MOCK_IDV_APPLICANT
+          expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: true,
+            document_expiration: pii[:state_id_expiration],
+            document_issued: pii[:state_id_issued],
+            document_number: pii[:state_id_number],
+            document_state: pii[:state],
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            first_name: pii[:first_name],
+            last_name: pii[:last_name],
+            date_of_birth: pii[:dob],
+            address1: pii[:address1],
+            address2: pii[:address2],
+            city: pii[:city],
+            state: pii[:state],
+            zip: pii[:zip_code],
+            failure_reason: nil,
+          )
+
+          action
+        end
+      end
+
       it 'tracks events' do
         stub_analytics
 
@@ -498,7 +557,7 @@ RSpec.describe Idv::ImageUploadsController do
           async: false,
           billed: true,
           doc_auth_result: 'Passed',
-          state: 'WV',
+          state: 'MT',
           country: 'US',
           id_doc_type: 'drivers_license',
           user_id: user.uuid,
@@ -521,8 +580,8 @@ RSpec.describe Idv::ImageUploadsController do
           selfie_quality_good: boolean,
           transaction_status: 'passed',
           workflow: an_instance_of(String),
-          birth_year: 1976,
-          zip_code: '25309',
+          birth_year: 1938,
+          zip_code: '59010',
           issue_year: 2019,
           document_type: an_instance_of(String),
         )
@@ -686,6 +745,34 @@ RSpec.describe Idv::ImageUploadsController do
               document_type: an_instance_of(String),
             )
           end
+
+          context 'when doc escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+            it 'records attempts api events' do
+              expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: false,
+                document_expiration: state_id_expiration,
+                document_issued: nil,
+                document_number: state_id_number,
+                document_state: state,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                first_name: nil,
+                last_name: last_name,
+                date_of_birth: dob,
+                address1: address1,
+                address2: nil,
+                city: nil,
+                state: state,
+                zip: nil,
+                failure_reason: { name: [:name] },
+              )
+
+              action
+            end
+          end
         end
 
         context 'due to invalid State' do
@@ -765,6 +852,34 @@ RSpec.describe Idv::ImageUploadsController do
               passport_expiration_status: 'missing',
               document_type: an_instance_of(String),
             )
+          end
+
+          context 'when doc escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+            it 'records attempts api events' do
+              expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: false,
+                document_expiration: state_id_expiration,
+                document_issued: nil,
+                document_number: state_id_number,
+                document_state: state,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                first_name:,
+                last_name:,
+                date_of_birth: dob,
+                address1:,
+                address2: nil,
+                city: nil,
+                state:,
+                zip: nil,
+                failure_reason: { state: [:inclusion] },
+              )
+
+              action
+            end
           end
         end
 

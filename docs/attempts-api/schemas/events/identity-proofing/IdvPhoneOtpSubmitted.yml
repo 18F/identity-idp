@@ -15,7 +15,7 @@ allOf:
             type: array
             items:
               type: string
-              enum: 
+              enum:
                 - expired
                 - does_not_match
       success:

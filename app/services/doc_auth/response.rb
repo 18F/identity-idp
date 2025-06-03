@@ -6,6 +6,7 @@ module DocAuth
 
     attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported,
                 :selfie_live, :selfie_quality_good
+    attr_accessor :vendor_errors
 
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',

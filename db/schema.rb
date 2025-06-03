@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -85,20 +85,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
     t.datetime "deleted_at", precision: nil, null: false, comment: "sensitive=false"
     t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
-  end
-
-  create_table "device_profiling_results", force: :cascade do |t|
-    t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.boolean "success", default: false, null: false, comment: "sensitive=false"
-    t.string "client", comment: "sensitive=false"
-    t.string "review_status", comment: "sensitive=false"
-    t.string "transaction_id", comment: "sensitive=false"
-    t.string "reason", comment: "sensitive=false"
-    t.datetime "processed_at", comment: "sensitive=false"
-    t.string "profiling_type", comment: "sensitive=false"
-    t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "updated_at", null: false, comment: "sensitive=false"
-    t.index ["user_id"], name: "index_device_profiling_results_on_user_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -704,8 +690,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
-  add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"

@@ -1,7 +1,7 @@
 description: |
   When the user verifies their information when identity proofing.
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       document_state:
@@ -22,7 +22,15 @@ allOf:
         type: string
       date_of_birth:
         type: string
-      address:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zip:
         type: string
       failure_reason:
         type: object

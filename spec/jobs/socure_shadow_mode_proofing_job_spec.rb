@@ -420,14 +420,14 @@ RSpec.describe SocureShadowModeProofingJob do
 
     let(:expected_attributes) do
       {
-        first_name: 'MICHELE',
-        last_name: 'DEBAK',
-        address1: '514 EAST AVE',
+        first_name: 'FAKEY',
+        last_name: 'MCFAKERSON',
+        address1: '1 FAKE RD',
         address2: '',
-        city: 'SOUTH CHARLESTON',
-        state: 'WV',
-        zipcode: '25309-1104',
-        dob: '1976-10-18',
+        city: 'GREAT FALLS',
+        state: 'MT',
+        zipcode: '59010-1234',
+        dob: '1938-10-06',
         ssn: '900661234',
         email: user.email,
       }
