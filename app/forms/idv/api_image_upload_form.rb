@@ -60,6 +60,29 @@ module Idv
         passport_response:,
       )
 
+      # if there is no client_response, there was no submission attempt
+      if doc_escrow_enabled? && client_response
+        pii_from_doc = client_response.pii_from_doc.to_h || {}
+
+        attempts_api_tracker.idv_document_upload_submitted(
+          **images_metadata.attempts_file_data,
+          success: response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address1: pii_from_doc[:address1],
+          address2: pii_from_doc[:address2],
+          city: pii_from_doc[:city],
+          state: pii_from_doc[:state],
+          zip: pii_from_doc[:zip],
+          failure_reason: failure_reason(response),
+        )
+      end
+
       failed_fingerprints = store_failed_images(client_response, doc_pii_response)
       response.extra[:failed_image_fingerprints] = failed_fingerprints
       abandon_any_ipp_progress
@@ -79,6 +102,15 @@ module Idv
 
     def abandon_any_ipp_progress
       user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
+    end
+
+    def failure_reason(response)
+      if response.respond_to?(:vendor_errors)
+        response.vendor_errors.presence ||
+          attempts_api_tracker.parse_failure_reason(response)
+      else
+        attempts_api_tracker.parse_failure_reason(response)
+      end
     end
 
     def increment_rate_limiter!
