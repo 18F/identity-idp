@@ -42,7 +42,7 @@ module SignUp
     end
 
     def verify_needs_completions_screen
-      return_to_account unless needs_completion_screen_reason
+      return_to_next_path unless needs_completion_screen_reason
     end
 
     def completions_presenter
@@ -65,9 +65,13 @@ module SignUp
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
-    def return_to_account
+    def return_to_next_path
       track_completion_event('account-page')
-      redirect_to after_sign_in_path_for(current_user)
+      if user_session[:in_account_creation_flow]
+        redirect_to after_mfa_setup_path
+      else
+        redirect_to after_sign_in_path_for(current_user)
+      end
     end
 
     def decider
