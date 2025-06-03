@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.feature 'ThreatMetrix in account creation', :js do
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
+    allow(IdentityConfig.store)
+      .to receive(:lexisnexis_threatmetrix_mock_enabled)
+      .and_return(true)
   end
 
   context 'when tmx is in collect only' do
