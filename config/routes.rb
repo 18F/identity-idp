@@ -210,7 +210,7 @@ Rails.application.routes.draw do
     post '/duplicate_profiles_detected/recognize_all_profiles' => 'duplicate_profiles_detected#recognize_all_profiles'
     post '/duplicate_profiles_detected/do_not_recognize_profiles' => 'duplicate_profiles_detected#do_not_recognize_profiles'
 
-    get '/profiling_failed', to: 'profiling_failed#show'
+    get '/device_profiling_failed', to: 'device_profiling_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
