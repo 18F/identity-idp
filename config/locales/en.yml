@@ -1575,8 +1575,8 @@ openid_connect.user_info.errors.no_authorization: No Authorization header provid
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
-profiling_failed.title: We couldn't sign you into your account
 profiling_failed.details: We are unable to authenticate or sign you in. Reach out to your agency to access services.
+profiling_failed.title: We couldn’t sign you into your account
 report_mailer.deleted_accounts_report.issuers: Issuers
 report_mailer.deleted_accounts_report.name: Name
 report_mailer.deleted_accounts_report.subject: Deleted accounts report
