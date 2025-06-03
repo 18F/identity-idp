@@ -87,6 +87,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
   end
 
+  create_table "device_profiling_results", force: :cascade do |t|
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.boolean "success", default: false, null: false, comment: "sensitive=false"
+    t.string "client", comment: "sensitive=false"
+    t.string "review_status", comment: "sensitive=false"
+    t.string "transaction_id", comment: "sensitive=false"
+    t.string "reason", comment: "sensitive=false"
+    t.datetime "processed_at", comment: "sensitive=false"
+    t.string "profiling_type", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["user_id"], name: "index_device_profiling_results_on_user_id"
+  end
+
   create_table "devices", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "cookie_uuid", null: false, comment: "sensitive=false"
@@ -691,7 +705,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_182109) do
   end
 
   add_foreign_key "document_capture_sessions", "users"
-  add_foreign_key "duplicate_profile_confirmations", "profiles"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"

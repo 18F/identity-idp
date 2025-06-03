@@ -17,7 +17,6 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       uuid: user_uuid,
       workflow: :auth,
     )
-    store_device_profiling_result(user_id, device_profiling_result)
   ensure
     user = User.find_by(id: user_id)
     analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
