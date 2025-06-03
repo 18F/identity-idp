@@ -15,19 +15,31 @@ module AbTests
       return session[:document_capture_session_uuid]
     end
 
-    # Otherwise, try to get the user's current Idv::Session and read
-    # the generated document_capture_session UUID from there
-    return if !(user && user_session)
-
-    # Avoid creating a pointless :idv entry in user_session if the
-    # user has not already started IdV
-    return unless user_session.key?(:idv)
+    return unless user_has_idv_session?(user:, user_session:)
 
     Idv::Session.new(
       current_user: user,
       service_provider:,
       user_session:,
     ).document_capture_session_uuid
+  end
+
+  def self.verify_info_step_document_capture_session_uuid_discriminator(
+    service_provider:,
+    user:,
+    user_session:
+  )
+    return unless user_has_idv_session?(user:, user_session:)
+
+    Idv::Session.new(
+      current_user: user,
+      service_provider:,
+      user_session:,
+    ).verify_info_step_document_capture_session_uuid
+  end
+
+  def self.user_has_idv_session?(user:, user_session:)
+    user && user_session&.key?(:idv)
   end
 
   # @returns [Hash]
@@ -154,5 +166,21 @@ module AbTests
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
+  end.freeze
+
+  PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
+    buckets: {
+      socure_kyc: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+          IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
+      instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+          IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    verify_info_step_document_capture_session_uuid_discriminator(
+      service_provider:, user:, user_session:,
+    )
   end.freeze
 end
