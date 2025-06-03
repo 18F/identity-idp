@@ -1,5 +1,5 @@
 description: |
-  A user that requested to verify their address by mail has entered the security code contained in their letter. 
+  A user that requested to verify their address by mail has entered the security code contained in their letter.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

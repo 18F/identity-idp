@@ -1,5 +1,5 @@
 description: |
-   The user has requested that a letter be sent via mail in order to verify their address.
+  The user has requested that a letter be sent via mail in order to verify their address.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
