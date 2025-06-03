@@ -19,7 +19,9 @@ module Idv
                                         Idv::InPersonConfig.enabled_for_issuer?(
                                           decorated_sp_session.sp_issuer,
                                         )
-      @post_office_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled
+      @post_office_enabled = IdentityConfig.store.in_person_proofing_enabled &&
+                             IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+                             IdentityConfig.store.in_person_doc_auth_button_enabled
       @selfie_required = idv_session.selfie_check_required
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new
       set_how_to_verify_presenter
