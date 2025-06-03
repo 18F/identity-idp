@@ -420,6 +420,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
       context 'when in person proofing opt in disabled' do
         let(:in_person_proofing_opt_in_enabled) { false }
+        let(:in_person_doc_auth_button_enabled) { false }
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+            .and_return(in_person_doc_auth_button_enabled)
+        end
         context 'when sp ipp is not available' do
           let(:sp_ipp_enabled) { false }
 
@@ -461,6 +466,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
     context 'when ipp is not available system wide' do
       let(:in_person_proofing_enabled) { false }
+      let(:in_person_doc_auth_button_enabled) { false }
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+          .and_return(in_person_doc_auth_button_enabled)
+      end
       context 'when ipp opt in is enabled' do
         let(:in_person_proofing_opt_in_enabled) { true }
         context 'when sp ipp is available' do
@@ -509,6 +519,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
 
       context 'when ipp opt in is disabled' do
         let(:in_person_proofing_opt_in_enabled) { false }
+        let(:in_person_doc_auth_button_enabled) { false }
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
+            .and_return(in_person_doc_auth_button_enabled)
+        end
         context 'when sp ipp is enabled' do
           let(:sp_ipp_enabled) { true }
           describe 'when selfie is required by sp' do
