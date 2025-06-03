@@ -518,16 +518,6 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
-  def device_profiling_restriction_enforced(client:, review_status:, reason:, **extra)
-    track_event(
-      :device_profiling_restriction_enforced,
-      client:,
-      review_status:,
-      reason:,
-      **extra,
-    )
-  end
-
   # @param [String] message the warning
   # @param [Array<String>] unknown_alerts Names of alerts not recognized by our code
   # @param [Hash] response_info Response payload
