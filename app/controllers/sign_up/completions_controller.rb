@@ -66,12 +66,13 @@ module SignUp
     end
 
     def return_to_next_path
-      track_completion_event('account-page')
-      if user_session[:in_account_creation_flow]
-        redirect_to after_mfa_setup_path
+      @return_path = if user_session[:in_account_creation_flow]
+                       after_mfa_setup_path
       else
-        redirect_to after_sign_in_path_for(current_user)
+        after_sign_in_path_for(current_user)
       end
+      track_completion_event('account-page')
+      redirect_to @return_path
     end
 
     def decider
