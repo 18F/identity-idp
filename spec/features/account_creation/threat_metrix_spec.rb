@@ -9,16 +9,14 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
     before do
       allow(IdentityConfig.store)
         .to receive(:account_creation_device_profiling).and_return(:collect_only)
+      allow(IdentityConfig.store)
+        .to receive(:account_creation_tmx_processed_percent).and_return(100)
     end
     it 'logs the threatmetrix result once the account is fully registered' do
-      visit root_url
-      click_on t('links.create_account')
-      fill_in t('forms.registration.labels.email'), with: Faker::Internet.email
-      check t('sign_up.terms', app_name: APP_NAME)
-      click_button t('forms.buttons.submit.default')
-      user = confirm_last_user
-      set_password(user)
+      user = sign_up_and_set_password
+
       fake_analytics = FakeAnalytics.new
+      expect(page).to have_current_path(authentication_methods_setup_path)
       expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user)
         .and_return(fake_analytics)
       select 'Reject', from: :mock_profiling_result
@@ -59,14 +57,11 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
 
     context 'when tmx returns a rejected response' do
       it 'logs repsonse and redirects to profiling failed page' do
-        visit root_url
-        click_on t('links.create_account')
-        fill_in t('forms.registration.labels.email'), with: Faker::Internet.email
-        check t('sign_up.terms', app_name: APP_NAME)
-        click_button t('forms.buttons.submit.default')
-        user = confirm_last_user
-        set_password(user)
+        user = sign_up_and_set_password
+
         fake_analytics = FakeAnalytics.new
+
+        expect(page).to have_current_path(authentication_methods_setup_path)
         expect_any_instance_of(AccountCreationThreatMetrixJob).to receive(:analytics).with(user)
           .and_return(fake_analytics)
         select 'Reject', from: :mock_profiling_result
