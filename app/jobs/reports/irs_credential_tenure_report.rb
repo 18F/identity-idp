@@ -67,8 +67,8 @@ module Reports
 
     def reports
       @reports ||= [
-        # account_deletion_rate_report.account_deletion_emailable_report,
-        irs_credential_tenure_definition.irs_credential_tenure_definition,
+        irs_credential_tenure_report.irs_credential_tenure_definition,
+        irs_credential_tenure_report.irs_credential_tenure_overview,
         irs_credential_tenure_report.credential_tenure_emailable_report,
       ]
     end
@@ -81,12 +81,15 @@ module Reports
       emails
     end
 
-    def irs_credential_tenure_report
-      @irs_credential_tenure_report ||= Reporting::IrsCredentialTenureReport.new(report_date)
+    def issuers
+      IdentityConfig.store.irs_verification_report_issuers || []
     end
 
-    def irs_credential_tenure_definition
-      @irs_credential_tenure_definition ||= Reporting::IrsCredentialTenureReport.new(report_date)
+    def irs_credential_tenure_report
+      @irs_credential_tenure_report ||= Reporting::IrsCredentialTenureReport.new(
+        report_date,
+        issuers: issuers,
+      )
     end
 
     def upload_to_s3(report_body, report_name: nil)

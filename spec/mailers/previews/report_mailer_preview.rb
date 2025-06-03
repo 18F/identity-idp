@@ -160,7 +160,7 @@ class ReportMailerPreview < ActionMailer::Preview
   def irs_verification_report
     irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
 
-    # stub_cloudwatch_client(irs_verification_report.irs_verification_report)
+    stub_cloudwatch_client(irs_verification_report.irs_verification_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
@@ -173,8 +173,6 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def irs_credential_tenure_report
     irs_credential_tenure_report = Reports::IrsCredentialTenureReport.new(Time.zone.yesterday)
-
-    stub_cloudwatch_client(irs_credential_tenure_report.irs_credential_tenure_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
