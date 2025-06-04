@@ -377,9 +377,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
-          before do
-            expect(page).to have_current_path(idv_how_to_verify_path)
-          end
           describe 'when selfie is required by sp' do
             before do
               click_on t('forms.buttons.continue_online_mobile')
