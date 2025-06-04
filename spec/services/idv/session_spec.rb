@@ -244,6 +244,19 @@ RSpec.describe Idv::Session do
             )
             expect(enrollment.reload.profile_id).to eq(profile.id)
           end
+
+          context 'when the in person enrollment is pending' do
+            before do
+              user.establishing_in_person_enrollment.update(status: 'pending')
+            end
+
+            it 'associates the in person enrollment with the created profile' do
+              subject.create_profile_from_applicant_with_password(
+                user.password, is_enhanced_ipp:, proofing_components:
+              )
+              expect(enrollment.reload.profile_id).to eq(profile.id)
+            end
+          end
         end
 
         context 'when the USPS enrollment throws an enroll exception' do
