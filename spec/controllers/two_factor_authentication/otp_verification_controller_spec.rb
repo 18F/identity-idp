@@ -344,7 +344,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           it 'redirects to the webauthn platform recommendation' do
             subject.current_user.update(webauthn_platform_recommended_dismissed_at: nil)
             controller.user_session[:platform_authenticator_available] = true
-            subject.current_user.save
             post :create, params: {
               code: subject.current_user.reload.direct_otp,
               otp_delivery_preference: 'sms',
@@ -355,7 +354,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           it 'redirects to the user account' do
             subject.current_user.update(webauthn_platform_recommended_dismissed_at: Time.zone.now)
             controller.user_session[:platform_authenticator_available] = true
-            subject.current_user.save
             post :create, params: {
               code: subject.current_user.reload.direct_otp,
               otp_delivery_preference: 'sms',
