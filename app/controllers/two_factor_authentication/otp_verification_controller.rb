@@ -45,6 +45,9 @@ module TwoFactorAuthentication
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
+        elsif user_session[:platform_authenticator_available] &&
+              !current_user.webauthn_platform_recommended_dismissed_at?
+          redirect_to webauthn_platform_recommended_path
         else
           redirect_to after_sign_in_path_for(current_user)
         end
