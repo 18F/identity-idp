@@ -271,7 +271,7 @@ RSpec.describe Idv::HybridHandoffController do
         it 'redirects to the how to verify page' do
           get :show
 
-          expect(response).to render_template :show
+          expect(response).to redirect_to idv_document_capture_url
         end
       end
 
