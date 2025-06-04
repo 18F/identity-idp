@@ -238,7 +238,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
-      complete_doc_auth_steps_before_document_capture_step(expect_accessible: true)
+      complete_doc_auth_steps_before_document_capture_step
 
       # Fail docauth
       complete_document_capture_step_with_yml(
