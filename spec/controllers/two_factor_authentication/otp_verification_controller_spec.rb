@@ -338,6 +338,33 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           )
         end
       end
+
+      context 'when recommending if user is eligible for webauthn platform setup' do
+        context 'when user is recommended for webauthn platform setup' do
+          it 'redirects to the webauthn platform recommendation' do
+            subject.current_user.update(webauthn_platform_recommended_dismissed_at: nil)
+            controller.user_session[:platform_authenticator_available] = true
+            subject.current_user.save
+            post :create, params: {
+              code: subject.current_user.reload.direct_otp,
+              otp_delivery_preference: 'sms',
+            }
+
+            expect(response).to redirect_to webauthn_platform_recommended_path
+          end
+          it 'redirects to the user account' do
+            subject.current_user.update(webauthn_platform_recommended_dismissed_at: Time.zone.now)
+            controller.user_session[:platform_authenticator_available] = true
+            subject.current_user.save
+            post :create, params: {
+              code: subject.current_user.reload.direct_otp,
+              otp_delivery_preference: 'sms',
+            }
+
+            expect(response).to redirect_to account_path
+          end
+        end
+      end
     end
 
     context 'when the user enters a valid OTP' do
