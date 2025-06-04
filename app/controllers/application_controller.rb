@@ -261,7 +261,6 @@ class ApplicationController < ActionController::Base
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
-    return webauthn_platform_recommended_path if user_session[:sms_platform_webauthn_upsell]
     signed_in_url
   end
 
