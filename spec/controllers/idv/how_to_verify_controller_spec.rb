@@ -213,7 +213,7 @@ RSpec.describe Idv::HowToVerifyController do
         put :update, params: params
 
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_document_capture_url)
       end
 
       it 'sends analytics_submitted event when remote proofing is selected' do
