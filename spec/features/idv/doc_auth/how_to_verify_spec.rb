@@ -195,8 +195,6 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
         page.go_back
-        expect(page).to have_current_path(idv_hybrid_handoff_url)
-        page.go_back
         expect(page).to have_current_path(idv_agreement_url)
       end
     end
@@ -245,8 +243,6 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Document Capture with opt in enabled midstream' do
       it 'should continue to Document Capture with opt in toggled midstream' do
-        expect(page).to have_current_path(idv_hybrid_handoff_path)
-        click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_document_capture_path)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.go_back

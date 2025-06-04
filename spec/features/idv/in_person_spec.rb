@@ -373,8 +373,6 @@ RSpec.describe 'In Person Proofing', js: true do
             # Change mind and resume remote identity verification
             visit idv_hybrid_handoff_url
 
-            # choose remote
-            click_on t('forms.buttons.continue_online')
             complete_hybrid_handoff_step
             successful_response = instance_double(
               Faraday::Response,
