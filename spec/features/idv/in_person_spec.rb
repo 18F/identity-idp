@@ -267,10 +267,7 @@ RSpec.describe 'In Person Proofing', js: true do
       it 'allows the user to successfully complete remote identity verification' do
         complete_state_id_controller(user)
         # Change mind and resume remote identity verification
-        visit idv_how_to_verify_url
-
-        # choose remote
-        click_on t('forms.buttons.continue_online')
+        visit idv_hybrid_handoff_path
         complete_hybrid_handoff_step
         complete_document_capture_step(with_selfie: false)
 
@@ -298,8 +295,6 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'allows the user to successfully complete remote identity verification' do
-      # choose remote
-      click_on t('forms.buttons.continue_online')
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
