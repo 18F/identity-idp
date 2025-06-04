@@ -291,7 +291,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
       # Change mind and start remote identity verification
-      visit idv_how_to_verify_url
+      visit idv_hybrid_handoff_url
     end
 
     it 'allows the user to successfully complete remote identity verification' do
@@ -358,8 +358,6 @@ RSpec.describe 'In Person Proofing', js: true do
           sign_in_via_branded_page(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
 
-          # choose remote
-          click_on t('forms.buttons.continue_online')
           click_send_link
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -373,7 +371,7 @@ RSpec.describe 'In Person Proofing', js: true do
         it 'allows the user to successfully complete remote identity verification' do
           perform_in_browser(:desktop) do
             # Change mind and resume remote identity verification
-            visit idv_how_to_verify_url
+            visit idv_hybrid_handoff_url
 
             # choose remote
             click_on t('forms.buttons.continue_online')

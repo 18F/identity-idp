@@ -378,9 +378,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
           describe 'when selfie is required by sp' do
-            before do
-              click_on t('forms.buttons.continue_online_mobile')
-            end
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)
               verify_no_upload_photos_section_and_link(page)
@@ -388,9 +385,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           end
           describe 'when selfie is not required by sp' do
             let(:facial_match_required) { false }
-            before do
-              click_on t('forms.buttons.continue_online')
-            end
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
