@@ -19,7 +19,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
       complete_welcome_step
       complete_agreement_step
 
-      expect(page).to have_current_path idv_how_to_verify_path
+      expect(page).to have_current_path idv_hybrid_handoff_path
       expect(page).to have_unique_form_landmark_labels
       expect_page_to_have_no_accessibility_violations(page)
     end
