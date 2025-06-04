@@ -19,9 +19,9 @@ RSpec.describe Reporting::IrsCredentialTenureReport do
     end
   end
 
-  describe '#irs_credential_tenure_report_report' do
+  describe '#irs_credential_tenure_report' do
     it 'returns a table with headers and values' do
-      table = report.irs_credential_tenure_report_report
+      table = report.irs_credential_tenure_report
       expect(table.first).to eq(['Metric', 'Value'])
       expect(table.last.first).to eq('Credential Tenure')
     end
