@@ -8,6 +8,7 @@ module SignUp
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
+    before_action :verify_profiling_passed?
 
     def show
       analytics.user_registration_agency_handoff_page_visit(
@@ -36,6 +37,11 @@ module SignUp
     end
 
     private
+
+    def verify_profiling_passed?
+      return unless user_account_creation_device_profile_failed?
+      redirect_to device_profiling_failed_url
+    end
 
     def confirm_identity_verified
       redirect_to idv_url if current_user.identity_not_verified?

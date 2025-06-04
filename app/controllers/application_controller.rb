@@ -249,7 +249,6 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
-    return device_profiling_failed_url if user_account_creation_device_profile_failed?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
