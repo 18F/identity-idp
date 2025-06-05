@@ -108,7 +108,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
           transaction_id: 'ddp-mock-transaction-id-123',
         )
 
-        expect(page).to have_current_path(profiling_failed_path)
+        expect(page).to have_current_path(device_profiling_failed_path)
       end
     end
   end
