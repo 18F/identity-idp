@@ -1,12 +1,13 @@
 # frozen_string_literal: true
+
 if IdentityConfig.store.data_warehouse_v3_enabled
   module Reports
     module DataWarehouse
       class DailyAuthsReport < BaseReport
         REPORT_NAME = 'dw-daily-auths-report'
-        
+
         attr_reader :report_date
-        
+
         def perform(report_date)
           @report_date = report_date
 
