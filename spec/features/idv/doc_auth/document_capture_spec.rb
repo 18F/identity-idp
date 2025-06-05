@@ -516,7 +516,7 @@ RSpec.feature 'document capture step', :js do
 
           expect(page).to have_current_path(idv_ssn_url)
           expect_costing_for_document
-          expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('WV')
+          expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
 
           expect(page).to have_current_path(idv_ssn_url)
           fill_out_ssn_form_ok
@@ -561,7 +561,7 @@ RSpec.feature 'document capture step', :js do
 
               expect(page).to have_current_path(idv_ssn_url)
               expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('WV')
+              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
 
               expect(page).to have_current_path(idv_ssn_url)
               fill_out_ssn_form_ok
@@ -761,7 +761,7 @@ RSpec.feature 'document capture step', :js do
 
               expect(page).to have_current_path(idv_ssn_url)
               expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('WV')
+              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
 
               expect(page).to have_current_path(idv_ssn_url)
               fill_out_ssn_form_ok
@@ -824,7 +824,7 @@ RSpec.feature 'document capture step', :js do
 
               expect(page).to have_current_path(idv_ssn_url)
               expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('WV')
+              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
 
               expect(page).to have_current_path(idv_ssn_url)
               fill_out_ssn_form_ok

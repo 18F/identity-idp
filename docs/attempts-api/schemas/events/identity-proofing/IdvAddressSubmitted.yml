@@ -1,5 +1,5 @@
 description: |
-  User manually submitted an IdV address 
+  User manually submitted an IdV address
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -10,7 +10,7 @@ allOf:
         type: string
       city:
         type: string
-      state: 
+      state:
         type: string
       country:
         type: string
@@ -45,7 +45,7 @@ allOf:
               - too_long
           address2:
             type: string
-            enum: 
+            enum:
               - too_long
       success:
         type: boolean

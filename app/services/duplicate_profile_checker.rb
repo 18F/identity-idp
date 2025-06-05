@@ -11,7 +11,6 @@ class DuplicateProfileChecker
   end
 
   def check_for_duplicate_profiles
-    return unless IdentityConfig.store.feature_one_verified_account_log_duplicate_profiles
     return unless user_has_ial2_profile?
     cacher = Pii::Cacher.new(user, user_session)
 

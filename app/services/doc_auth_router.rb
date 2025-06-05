@@ -134,6 +134,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
 
+      response.vendor_errors = response.errors.dup
       error_keys.each do |category|
         cat_errors = response.errors[category]
         next unless cat_errors

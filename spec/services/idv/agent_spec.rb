@@ -30,6 +30,10 @@ RSpec.describe Idv::Agent do
       Idv::ProofingComponents.new(idv_session:)
     end
 
+    let(:proofing_vendor) do
+      IdentityConfig.store.idv_resolution_default_vendor
+    end
+
     subject(:agent) { Idv::Agent.new(applicant) }
 
     before do
@@ -50,6 +54,7 @@ RSpec.describe Idv::Agent do
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           proofing_components:,
+          proofing_vendor:,
         )
       end
 

@@ -1,7 +1,7 @@
 description: |
   When the user submits their Social Security Number during identity proofing.
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       ssn:

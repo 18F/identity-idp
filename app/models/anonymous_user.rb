@@ -72,4 +72,8 @@ class AnonymousUser
   def id
     nil
   end
+
+  def email_language
+    nil
+  end
 end

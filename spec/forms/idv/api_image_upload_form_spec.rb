@@ -84,6 +84,8 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
@@ -249,7 +251,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           doc_auth_result: 'Passed',
           errors: {},
           remaining_submit_attempts: 3,
-          state: 'WV',
+          state: 'MT',
           country: 'US',
           id_doc_type: 'drivers_license',
           success: true,
@@ -265,8 +267,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           selfie_status: anything,
           transaction_status: 'passed',
           workflow: 'test_non_liveness_workflow',
-          birth_year: 1976,
-          zip_code: '25309',
+          birth_year: 1938,
+          zip_code: '59010',
           issue_year: 2019,
           document_type: document_type,
           passport_check_result: {},
@@ -279,11 +281,11 @@ RSpec.describe Idv::ApiImageUploadForm do
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-          allow(writer).to receive(:write).exactly(2).times
+          allow(writer).to receive(:write).and_return result
 
           form.send(:images).each do |image|
             # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
           end
         end
 
@@ -294,6 +296,27 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
+            failure_reason: nil,
+          )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: pii_from_doc[:state],
+            document_number: pii_from_doc[:state_id_number],
+            document_issued: pii_from_doc[:state_id_issued],
+            document_expiration: pii_from_doc[:state_id_expiration],
+            first_name: pii_from_doc[:first_name],
+            last_name: pii_from_doc[:last_name],
+            date_of_birth: pii_from_doc[:dob],
+            address1: pii_from_doc[:address1],
+            address2: pii_from_doc[:address2],
+            city: pii_from_doc[:city],
+            state: pii_from_doc[:state],
+            zip: pii_from_doc[:zip],
             failure_reason: nil,
           )
           form.submit
@@ -419,11 +442,11 @@ RSpec.describe Idv::ApiImageUploadForm do
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-            allow(writer).to receive(:write).exactly(3).times
+            allow(writer).to receive(:write).and_return result
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).and_return result
+              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
             end
           end
 
@@ -436,6 +459,29 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_front_image_file_id: 'name',
               document_selfie_image_encryption_key: '12345',
               document_selfie_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
+              document_state: pii_from_doc[:state],
+              document_number: pii_from_doc[:state_id_number],
+              document_issued: pii_from_doc[:state_id_issued],
+              document_expiration: pii_from_doc[:state_id_expiration],
+              first_name: pii_from_doc[:first_name],
+              last_name: pii_from_doc[:last_name],
+              date_of_birth: pii_from_doc[:dob],
+              address1: pii_from_doc[:address1],
+              address2: pii_from_doc[:address2],
+              city: pii_from_doc[:city],
+              state: pii_from_doc[:state],
+              zip: pii_from_doc[:zip],
               failure_reason: nil,
             )
             form.submit
@@ -566,6 +612,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             failure_reason: { front: [:blank] },
           )
+
+          expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
           form.submit
         end
       end
@@ -608,11 +656,11 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(2).times
+          allow(writer).to receive(:write).and_return result
 
           form.send(:images).each do |image|
             # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            expect(writer).to receive(:write).with(image: image.bytes)
           end
         end
 
@@ -625,6 +673,28 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_front_image_file_id: 'name',
             failure_reason: nil,
           )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: nil,
+            document_number: nil,
+            document_issued: nil,
+            document_expiration: nil,
+            first_name: nil,
+            last_name: nil,
+            date_of_birth: nil,
+            address1: nil,
+            address2: nil,
+            city: nil,
+            state: nil,
+            zip: nil,
+            failure_reason: { front: 'glare' },
+          )
+
           form.submit
         end
       end

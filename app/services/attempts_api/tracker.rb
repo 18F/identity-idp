@@ -41,6 +41,7 @@ module AttemptsApi
         application_url: sp_request_uri,
         language: user&.email_language || I18n.locale.to_s,
         client_port: CloudFrontHeaderParser.new(request).client_port,
+        aws_region: IdentityConfig.store.aws_region,
       }
 
       event_metadata.merge!(extra_metadata)

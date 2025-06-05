@@ -38,7 +38,7 @@ RSpec.shared_examples 'clearing and restarting idv' do
     expect(page).to have_current_path(idv_letter_enqueued_path)
     expect(user.reload.identity_verified?).to eq(false)
     expect(User.find(user.id).pending_profile?).to eq(true)
-    expect(gpo_confirmation.entry[:address1]).to eq('514 EAST AVE')
+    expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do

@@ -6,14 +6,12 @@ class EmailMasker
       local_part = $1
       domain_part = "@#{$2}"
       local_length = local_part.length
-      mask_char = '*'
+      mask_chars = '**'
 
       masked_local_part = case local_length
-                          when 1 then mask_char
-                          when 2 then mask_char * 2
+                          when 1..2 then mask_chars
                           else
-                            hidden_length = local_length - 2
-                            local_part[0] + (mask_char * hidden_length) + local_part[-1]
+                            local_part[0] + mask_chars + local_part[-1]
                           end
       masked_local_part + domain_part
     end

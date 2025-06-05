@@ -237,7 +237,11 @@ class User < ApplicationRecord
   end
 
   def has_in_person_enrollment?
-    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+    active_enrollment.present?
+  end
+
+  def active_enrollment
+    pending_in_person_enrollment || establishing_in_person_enrollment
   end
 
   # @return [Boolean] Whether the user has an establishing in person enrollment.
