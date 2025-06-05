@@ -342,6 +342,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       context 'when recommending if user is eligible for webauthn platform setup' do
         context 'when user is recommended for webauthn platform setup' do
           it 'redirects to the webauthn platform recommendation' do
+            allow(subject).to receive(:mobile?).and_return(true)
             subject.current_user.update(webauthn_platform_recommended_dismissed_at: nil)
             controller.user_session[:platform_authenticator_available] = true
             post :create, params: {
