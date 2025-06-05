@@ -106,7 +106,6 @@ module TwoFactorAuthentication
         !current_user.webauthn_platform_recommended_dismissed_at? &&
         current_user.webauthn_configurations.where(platform_authenticator: [false, nil]) &&
         params[:otp_delivery_preference] == 'sms' &&
-        in_multi_mfa_selection_flow? &&
         mobile?
     end
 
