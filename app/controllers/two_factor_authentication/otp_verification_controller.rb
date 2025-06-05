@@ -47,8 +47,8 @@ module TwoFactorAuthentication
           handle_valid_confirmation_otp
         elsif confirm_eligible_for_platform_upsell?
           redirect_to webauthn_platform_recommended_path
-          else
-            redirect_to after_sign_in_path_for(current_user)
+        else
+          redirect_to after_sign_in_path_for(current_user)
         end
 
         reset_otp_session_data
