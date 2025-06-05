@@ -29,7 +29,8 @@ if IdentityConfig.store.data_warehouse_v3_enabled
 
     describe '#perform' do
       it 'uploads a file to S3 based on the report date' do
-        ['reports-bucket.1234-us-west-1', 'public-reports-bucket-int.1234-us-west-1'].each do |bucket|
+        ['reports-bucket.1234-us-west-1',
+         'public-reports-bucket-int.1234-us-west-1'].each do |bucket|
           expect(report).to receive(:upload_file_to_s3_bucket).with(
             path: 'int/dw-daily-auths-report/2021/2021-03-01.dw-daily-auths-report.json',
             body: kind_of(String),
@@ -78,6 +79,10 @@ if IdentityConfig.store.data_warehouse_v3_enabled
 
           # extra non-billable row that shouldn't be counter
           create(:sp_return_log, ial: 2, issuer: 'a', returned_at: timestamp, billable: false)
+        end
+
+        after do
+          ActiveRecord::Base.establish_connection(:data_warehouse)
         end
 
         it 'aggregates by issuer' do
