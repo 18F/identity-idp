@@ -39,9 +39,9 @@ module Idv
 
     def update
       clear_future_steps!
+      abandon_any_ipp_progress
 
       if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::IPP
-        abandon_any_ipp_progress
         idv_session.opted_in_to_in_person_proofing = true
         idv_session.flow_path = 'standard'
         idv_session.skip_doc_auth_from_how_to_verify = true
