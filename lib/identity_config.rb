@@ -517,6 +517,7 @@ module IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
+    config.add(:irs_credentials_emails, type: :json)
   end.freeze
   # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength
