@@ -1,5 +1,5 @@
 description: |
-  When the user provides their phone number for identity verification. 
+  When the user provides their phone number for identity verification.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -10,7 +10,7 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false
-        properties: 
+        properties:
           phone:
             type: array
             description: An OPTIONAL key that describes errors with the phone number

@@ -405,6 +405,9 @@ module Idv
         address1: pii_from_doc[:address1],
         address2: pii_from_doc[:address2],
         ssn: idv_session.ssn,
+        city: pii_from_doc[:city],
+        state: pii_from_doc[:state],
+        zip: pii_from_doc[:zip],
         failure_reason:,
       )
     end

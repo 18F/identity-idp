@@ -1,5 +1,5 @@
 description: |
-  When the user verifies their information when identity proofing. 
+  When the user verifies their information when identity proofing.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -22,18 +22,67 @@ allOf:
         type: string
       date_of_birth:
         type: string
-      address:
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zip:
         type: string
       failure_reason:
-          type: object
-          description: |
-            An OPTIONAL object. An associative array of attributes and errors if success is false
-          properties:
-            pii:
-              type: array
-              # What is the best way of documenting all these errors? https://docs.google.com/document/d/1H7SAM8DSnbRJqKoSj4Qdzr-UvLCNMupt2zoqHLsIFe8/edit?tab=t.0#heading=h.26slvbezaoz5
-              # They won't be very readable in this document
-              # is there a way for us to make errors out of this more in line with other failure_reasons?
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          failed_stages:
+            type: array
+            description: An OPTIONAL key. A list of all the stages that failed, if any.
+            items:
+              type: string
+              enum:
+                - resolution
+                - residential_address
+                - state_id
+                - threatmetrix
+                - phone_precheck
+          attributes_requiring_additional_verification:
+            type: array
+            description: |
+              An OPTIONAL key. A list of all the attributes that require additional verification
+            items:
+              type: string
+              enum:
+                - address
+                - dob
+                - dead
+                - ssn
+                - state_id_number
+          resolution_adjudication_reason:
+            type: array
+            description: |
+              An OPTIONAL key. High-level reason for the resolution result
+            items:
+              type: string
+              enum:
+                - fail_resolution_skip_state_id
+                - pass_resolution_and_state_id
+                - fail_state_id
+                - fail_resolution_skip_state_id
+                - state_id_covers_failed_resolution
+                - fail_resolution_without_state_id_coverage
+          device_profiling_adjudication_reason:
+            type: array
+            description: |
+              An OPTIONAL key. High-level reason for the device profiling result
+            items:
+              type: string
+              enum:
+                - device_profiling_exception
+                - device_profiling_result_pass
+                - device_profiling_result_review_required
       success:
         type: boolean
         description: |
