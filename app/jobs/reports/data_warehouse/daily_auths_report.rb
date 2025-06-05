@@ -50,11 +50,11 @@ module Reports
           , MAX(service_providers.friendly_name) AS friendly_name
           , MAX(agencies.name) AS agency
           FROM
-            idp.sp_return_logs
+            sp_return_logs
           LEFT JOIN
-            idp.service_providers ON service_providers.issuer = sp_return_logs.issuer
+            service_providers ON service_providers.issuer = sp_return_logs.issuer
           LEFT JOIN
-            idp.agencies ON service_providers.agency_id = agencies.id
+            agencies ON service_providers.agency_id = agencies.id
           WHERE
             sp_return_logs.returned_at::date BETWEEN %{start} AND %{finish}
             AND sp_return_logs.billable = true
