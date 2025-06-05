@@ -53,6 +53,8 @@ test:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
+  data_warehouse:
+    <<: *test
 
 <%
   worker_pool = if Identity::Hostdata.instance_role == 'worker'
@@ -124,5 +126,5 @@ production:
     encoding: utf8
     database_tasks: false
     replica: true
-    schema_search_path: "idp,logs"
+    schema_search_path: idp,logs
 <% end %>
