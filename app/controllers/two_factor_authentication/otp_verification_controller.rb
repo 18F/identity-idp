@@ -285,7 +285,6 @@ module TwoFactorAuthentication
     end
 
     def reset_otp_session_data
-      user_session.delete(:sms_platform_webauthn_upsell)
       user_session.delete(:unconfirmed_phone)
       user_session[:context] = 'authentication'
     end
