@@ -1,5 +1,7 @@
 <% self.title = @presenter.title %>
 
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+
 <%= render PageHeadingComponent.new do %>
   <%= @presenter.heading %>
 <% end %>
@@ -13,3 +15,5 @@
       class: 'margin-top-3',
       big: true,
     ).with_content(t('instructions.mfa.piv_cac.back_to_sign_in')) %>
+
+<% end %>
