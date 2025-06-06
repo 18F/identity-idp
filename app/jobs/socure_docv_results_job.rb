@@ -230,14 +230,14 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_mrz(doc_pii_response)
-    id_type = doc_pii_response.pii_from_doc.id_doc_type
+    id_type = doc_pii_response.extra[:id_doc_type]
     unless id_type == 'passport'
       return DocAuth::Response.new(
         success: false,
-        errors: { passport: "Cannot validate MRZ for id type: #{id_type}" }, # not needed ?
+        errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
       )
     end
-    mrz_client = document_capture_session.doc_auth_vendor == 'mock' ?
+    mrz_client = document_capture_session.doc_auth_vendor == 'mock' || Rails.env.development? ?
                     DocAuth::Mock::DosPassportApiClient.new :
                     DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
     response = mrz_client.fetch
