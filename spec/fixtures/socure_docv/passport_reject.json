@@ -22,9 +22,9 @@
       "value": "reject"
     },
     "documentData": {
-      "firstName": "HAPPY",
-      "surName": "TRAVELER",
-      "fullName": "HAPPY TRAVELER",
+      "firstName": "DWAYNE",
+      "surName": "DENVER",
+      "fullName": "DWAYNE",
       "documentNumber": "E00009349",
       "dob": "1965-02-05",
       "expirationDate": "2030-07-09",
@@ -32,6 +32,8 @@
         "documentNumber": "E00009349"
       }
     },
-    "rawData": {}
+    "rawData": {
+      "mrz": "P<DENVER<<DWAYNE<<<<<<<<<<<<<<<<<<<<<<<<\n0123456789USA1234567F1234567890123456<123456"
+    }
   }
 }
