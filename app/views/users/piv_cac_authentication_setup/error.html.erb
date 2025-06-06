@@ -1,16 +1,17 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new do %>
-  <%= @presenter.heading %>
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <%= render PageHeadingComponent.new do %>
+    <%= @presenter.heading %>
+  <% end %>
+
+  <p class="margin-top-2 margin-bottom-5">
+    <%= @presenter.description %>
+  </p>
+
+  <%= render ButtonComponent.new(
+        url: setup_piv_cac_url,
+        wide: true,
+        big: true,
+      ).with_content(t('forms.piv_cac_setup.try_again')) %>
 <% end %>
-
-<p class="margin-top-2 margin-bottom-5">
-  <%= @presenter.description %>
-</p>
-
-<%= render ButtonComponent.new(
-      url: setup_piv_cac_url,
-      wide: true,
-      big: true,
-    ).with_content(t('forms.piv_cac_setup.try_again')) %>
-
