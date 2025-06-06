@@ -8,7 +8,6 @@ module Reports
       attr_reader :report_date
 
       def perform(report_date)
-        return unless IdentityConfig.store.data_warehouse_enabled
         return unless IdentityConfig.store.data_warehouse_v3_enabled
 
         @report_date = report_date
