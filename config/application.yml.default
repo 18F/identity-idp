@@ -637,6 +637,8 @@ test:
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
+  data_warehouse_enabled: false
+  data_warehouse_v3_enabled: false
   doc_auth_max_attempts: 4
   doc_auth_selfie_desktop_test_mode: true
   doc_capture_polling_enabled: false

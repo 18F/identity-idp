@@ -34,6 +34,10 @@ development:
     <<: *defaults
     database: identity_idp_worker_jobs_<%= Rails.env %>
     migrations_paths: db/worker_jobs_migrate
+<% if IdentityConfig.store.data_warehouse_enabled && IdentityConfig.store.data_warehouse_v3_enabled %>
+  data_warehouse:
+    <<: *defaults
+<% end %>
 
 test:
   primary: &test
@@ -116,6 +120,18 @@ production:
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
 <% if IdentityConfig.store.data_warehouse_enabled && IdentityConfig.store.data_warehouse_v3_enabled %>
+<% if Rails.env.test? || ENV['SKIP_AWS_REDSHIFT_CONFIG'] %>
+  data_warehouse:
+    adapter: postgresql
+    host: localhost
+    port: 5432
+    database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
+    user: <%= ENV['POSTGRES_USER'] %>
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
+    encoding: utf8
+    database_tasks: false
+    replica: true
+<% else %>
 <% redshift_config = JSON.parse(Identity::Hostdata.config_builder.secrets_client.get_secret_value(secret_id: Identity::Hostdata.config.redshift_secret_arn).secret_string) %>
   data_warehouse:
     adapter: redshift
@@ -128,4 +144,5 @@ production:
     database_tasks: false
     replica: true
     schema_search_path: idp,logs
+<% end %>
 <% end %>
