@@ -1006,17 +1006,17 @@ headings.piv_cac_login.new: 插入您的政府雇员ID
 headings.piv_cac_login.success: 你已成功把 PIV/CAC 设为一个身份证实方法
 headings.piv_cac_setup.already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
 headings.piv_cac_setup.new: 用你的 PIV/CAC 卡来保护你的账户安全
-headings.piv_cac.certificate.bad: 你选择的 PIV/CAC 证书有误
-headings.piv_cac.certificate.expired: 你选择的 PIV/CAC 证书已过期
-headings.piv_cac.certificate.invalid: 你选择的 PIV/CAC 证书有误
+headings.piv_cac.certificate.bad: 您选择的政府雇员ID的证书无效
+headings.piv_cac.certificate.expired: 您选择的政府雇员ID的证书已过期
+headings.piv_cac.certificate.invalid: 您选择的政府雇员ID的证书无效
 headings.piv_cac.certificate.none: 我们在您政府雇员ID上探查不到证书
-headings.piv_cac.certificate.not_auth_cert: 请给你的PIV/CAC 卡选择另外一个证书
-headings.piv_cac.certificate.revoked: 你选择的 PIV/CAC 证书已从你的卡上撤销
-headings.piv_cac.certificate.unverified: 你选择的 PIV/CAC 证书有误
-headings.piv_cac.did_not_work: 你的 PIV/CAC 卡没起作用
-headings.piv_cac.token.bad: 内部出错
+headings.piv_cac.certificate.not_auth_cert: 请为您的政府雇员ID选择一个不同的证书
+headings.piv_cac.certificate.revoked: 您选择的政府雇员ID的证书已从您的卡中撤销
+headings.piv_cac.certificate.unverified: 您选择的政府雇员ID的证书无效
+headings.piv_cac.did_not_work: 您的政府雇员ID没有起作用
+headings.piv_cac.token.bad: 内部错误。
 headings.piv_cac.token.invalid: 你选择的 PIV/CAC 证书有误。
-headings.piv_cac.token.missing: 内部出错
+headings.piv_cac.token.missing: 内部错误。
 headings.redirecting: 重定向
 headings.residential_address: 目前住宅地址
 headings.session_timeout_warning: 需要更多时间？
@@ -1443,14 +1443,21 @@ instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入�
 instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
+instructions.mfa.piv_cac.another_method_text: 另一种身份证实方法登录。
 instructions.mfa.piv_cac.back_to_sign_in: 返回去登录
+instructions.mfa.piv_cac.bullet_1: 选择一个不同的证书，例如与您姓名相关联的证书。
+instructions.mfa.piv_cac.bullet_2_html: '%{link_html} 您的电邮地址和密码并使用%{auth_method_link}'
+instructions.mfa.piv_cac.bullet_3: '联系 %{app_name} 支持以获得更多帮助。'
 instructions.mfa.piv_cac.confirm_piv_cac: 将与您的帐户关联的 PIV/CAC 插入智能卡读卡器。
+instructions.mfa.piv_cac.create_account_html: '<strong>没有 %{app_name} 帐户？</strong>'
 instructions.mfa.piv_cac.did_not_work_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{please_try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
+instructions.mfa.piv_cac.having_trouble: 如果您在使用 PIV/CAC 登录时遇到问题，请尝试：
 instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试一次。
 instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
 instructions.mfa.piv_cac.sign_in: 确保您有 %{app_name} 帐户并且已设置个人身份验证（PIV）或通用访问卡（CAC）作为双因素身份证实方法。
+instructions.mfa.piv_cac.signing_in.text: 使用
 instructions.mfa.piv_cac.step_1: 给它一个昵称
 instructions.mfa.piv_cac.step_1_info: 这样如果你添加了一个以上 PIV/CAC 话，你就能把它们分辨开来。
 instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
@@ -1494,6 +1501,7 @@ links.resend: 重发
 links.reverify: 请再验证你的身份。
 links.sign_in: 登录
 links.sign_out: 登出
+links.try_again: 然后重试
 links.two_factor_authentication.send_another_code: 发送另一个代码
 links.what_is_totp: 什么是身份证实应用程序？
 login_cancel.account_page: 账户页面
@@ -1762,7 +1770,6 @@ two_factor_authentication.important_alert_icon: 重要警告标志
 two_factor_authentication.invalid_backup_code: 该备用代码有误
 two_factor_authentication.invalid_otp: 那个一次性代码有误。再试一次或请求新代码。
 two_factor_authentication.invalid_personal_key: 那个个人密钥有误
-two_factor_authentication.invalid_piv_cac: 那个 PIV/CAC 没起作用。确保 PIV/CAC 是这个账户的。如果的确是，那你的PIV/CAC、个人识别号码（PIN）有问题，或者我们这边出了问题。再试一次或选择另一个身份证实方法。
 two_factor_authentication.learn_more: 了解身份证实选项的更多信息
 two_factor_authentication.login_intro: 你设立账户时设了以下方法。
 two_factor_authentication.login_intro_reauthentication: 在你能对账户做出任何更改前，我们需要你使用你一种身份证实方法来确定的确是你。
