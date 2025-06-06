@@ -193,6 +193,7 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
+          .merge(id_doc_type: client_response.pii_from_doc.id_doc_type)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
