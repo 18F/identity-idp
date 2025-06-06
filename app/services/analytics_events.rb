@@ -2141,6 +2141,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [String] id_doc_type Document type detected by the vendor
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
   # @param ["present","missing"] id_expiration_status Status of state_id_expiration field presence
   # @param ["present","missing"] passport_issued_status Status of passport_issued field presence
@@ -2160,6 +2161,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     attention_with_barcode:,
+    id_doc_type:,
     id_issued_status:,
     id_expiration_status:,
     passport_issued_status:,
@@ -2183,6 +2185,7 @@ module AnalyticsEvents
       error_details:,
       user_id:,
       attention_with_barcode:,
+      id_doc_type:,
       id_issued_status:,
       id_expiration_status:,
       passport_issued_status:,
