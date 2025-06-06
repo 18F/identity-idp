@@ -116,7 +116,6 @@ production:
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
 <% if IdentityConfig.store.data_warehouse_enabled && IdentityConfig.store.data_warehouse_v3_enabled %>
-<% redshift_config = JSON.parse(Identity::Hostdata.config_builder.secrets_client.get_secret_value(secret_id: Identity::Hostdata.config.redshift_secret_arn).secret_string) %>
   data_warehouse:
     adapter: redshift
     host: <%= IdentityConfig.store.redshift_endpoint_host %>
