@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Reports::DataWarehouse::DailyAuthsReport do
-  return unless IdentityConfig.store.data_warehouse_enabled
-  return unless IdentityConfig.store.data_warehouse_v3_enabled
-
   subject(:report) { Reports::DataWarehouse::DailyAuthsReport.new }
 
   let(:report_date) { Date.new(2021, 3, 1) }
@@ -21,6 +18,10 @@ RSpec.describe Reports::DataWarehouse::DailyAuthsReport do
       .and_return(s3_report_bucket_prefix)
     allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix)
       .and_return(s3_report_public_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:data_warehouse_enabled)
+      .and_return(true)
+    allow(IdentityConfig.store).to receive(:data_warehouse_v3_enabled)
+      .and_return(true)
 
     Aws.config[:s3] = {
       stub_responses: {
