@@ -1,6 +1,7 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new do %>
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <%= render PageHeadingComponent.new do %>
   <%= @presenter.heading %>
 <% end %>
 
@@ -13,4 +14,4 @@
       wide: true,
       big: true,
     ).with_content(t('forms.piv_cac_setup.try_again')) %>
-
+<% end %>
