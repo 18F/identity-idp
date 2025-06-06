@@ -36,8 +36,9 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
+          idv_session.flow_path = 'standard'
           abandon_any_ipp_progress
-          redirect_to idv_hybrid_handoff_url
+          redirect_to idv_document_capture_url
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'

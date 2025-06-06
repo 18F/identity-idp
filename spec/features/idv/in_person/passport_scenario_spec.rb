@@ -47,12 +47,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         expect(page).to have_current_path(idv_agreement_path)
         complete_agreement_step
 
-        expect(page).to have_current_path(idv_how_to_verify_path)
         expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
         click_on t('forms.buttons.continue_ipp')
 
-        expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+        expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
         click_on t('forms.buttons.continue')
 
@@ -83,12 +82,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
-          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+          expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
           click_on t('forms.buttons.continue')
           complete_location_step(user)
@@ -125,12 +123,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
-          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+          expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
           click_on t('forms.buttons.continue')
           complete_location_step(user)
@@ -193,11 +190,9 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_current_path(idv_how_to_verify_path)
-
           click_on t('forms.buttons.continue_ipp')
 
-          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+          expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
           click_on t('forms.buttons.continue')
           complete_location_step(user)
@@ -234,12 +229,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_current_path(idv_how_to_verify_path)
           expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
-          expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+          expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
           click_on t('forms.buttons.continue')
           # The second health check fails
@@ -285,14 +279,13 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         expect(page).to have_current_path(idv_agreement_path)
         complete_agreement_step
 
-        expect(page).to have_current_path(idv_how_to_verify_path)
         expect(page).to have_content strip_tags(
           t('doc_auth.info.verify_at_post_office_description_passport_html'),
         )
 
         click_on t('forms.buttons.continue_ipp')
 
-        expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+        expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
         click_on t('forms.buttons.continue')
         complete_location_step(user)
@@ -326,7 +319,6 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         expect(page).to have_current_path(idv_agreement_path)
         complete_agreement_step
 
-        expect(page).to have_current_path(idv_how_to_verify_path)
         expect(page).to_not have_content t('doc_auth.info.verify_online_description_passport')
         expect(page).to_not have_content strip_tags(
           t('doc_auth.info.verify_at_post_office_description_passport_html'),
@@ -334,7 +326,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
         click_on t('forms.buttons.continue_ipp')
 
-        expect(page).to have_current_path(idv_document_capture_path(step: 'how_to_verify'))
+        expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
         click_on t('forms.buttons.continue')
         complete_location_step(user)

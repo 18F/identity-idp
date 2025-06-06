@@ -151,7 +151,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         )
         expect(page).to have_current_path(idv_hybrid_handoff_path)
 
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff'))
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
         expect(page).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
       end
       expect(fake_analytics).to have_logged_event(
@@ -210,7 +210,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
       it 'has expected UI elements' do
         mobile_form = find('#form-to-submit-photos-through-mobile')
         expect(mobile_form).to have_name(t('forms.buttons.send_link'))
-        expect(page).to have_selector('h1', text: t('doc_auth.headings.hybrid_handoff_selfie'))
+        expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       end
       context 'on a desktop choose ipp', js: true do
         let(:in_person_doc_auth_button_enabled) { true }
@@ -218,6 +218,10 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         before do
           allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
             .and_return(in_person_doc_auth_button_enabled)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
           allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
             .and_return(sp_ipp_enabled)
           complete_doc_auth_steps_before_hybrid_handoff_step
@@ -225,8 +229,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
         context 'when ipp is enabled' do
           it 'proceeds to ipp if selected and can go back' do
-            expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
-            click_on t('in_person_proofing.headings.prepare')
+            expect(page).to have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+            click_on t('forms.buttons.continue_ipp')
             hybrid_step = { step: 'hybrid_handoff' }
             expect(page).to have_current_path(idv_document_capture_path(hybrid_step))
             click_on t('forms.buttons.back')
@@ -239,10 +243,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
           let(:sp_ipp_enabled) { false }
           it 'has no ipp option can be selected' do
             expect(page).to_not have_content(
-              strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')),
-            )
-            expect(page).to_not have_content(
-              t('in_person_proofing.headings.prepare'),
+              strip_tags(t('doc_auth.headings.verify_at_post_office')),
             )
           end
         end
@@ -270,37 +271,25 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     expect(page).to have_selector(
       'h1',
-      text: t('doc_auth.headings.hybrid_handoff_selfie'),
+      text: t('doc_auth.headings.how_to_verify'),
     )
   end
 
   def verify_handoff_page_non_selfie_version_content(page)
     expect(page).to have_current_path(idv_hybrid_handoff_path)
-    expect(page).to_not have_selector(
-      'h1',
-      text: t('doc_auth.headings.hybrid_handoff_selfie'),
-    )
     expect(page).to have_selector(
       'h1',
-      text: t('doc_auth.headings.hybrid_handoff'),
+      text: t('doc_auth.headings.how_to_verify'),
     )
   end
 
   def verify_handoff_page_no_ipp_option_shown(page)
-    expect(page).to_not have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
-    expect(page).to_not have_link(
-      t('in_person_proofing.headings.prepare'),
-      href: idv_document_capture_path(step: :hybrid_handoff),
-    )
+    expect(page).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
   end
 
   def verify_handoff_page_ipp_section_and_link(page)
-    expect(page).to have_content(strip_tags(t('doc_auth.info.hybrid_handoff_ipp_html')))
-    expect(page).to have_link(
-      t('in_person_proofing.headings.prepare'),
-      href: idv_document_capture_path(step: :hybrid_handoff),
-    )
-    click_on t('in_person_proofing.headings.prepare')
+    expect(page).to have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+    click_on t('forms.buttons.continue_ipp')
     expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('headings.verify'))
@@ -388,28 +377,17 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
-          before do
-            expect(page).to have_current_path(idv_how_to_verify_path)
-          end
           describe 'when selfie is required by sp' do
-            before do
-              click_on t('forms.buttons.continue_online_mobile')
-            end
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)
-              verify_handoff_page_ipp_section_and_link(page)
               verify_no_upload_photos_section_and_link(page)
             end
           end
           describe 'when selfie is not required by sp' do
             let(:facial_match_required) { false }
-            before do
-              click_on t('forms.buttons.continue_online')
-            end
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
-              verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
             end
           end
@@ -421,7 +399,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows selfie version of top content, no ipp option section,
                 no upload section' do
               verify_handoff_page_selfie_version_content(page)
-              verify_handoff_page_no_ipp_option_shown(page)
               verify_no_upload_photos_section_and_link(page)
             end
           end
@@ -430,7 +407,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
-              verify_handoff_page_no_ipp_option_shown(page)
               verify_upload_photos_section_and_link(page)
             end
           end
