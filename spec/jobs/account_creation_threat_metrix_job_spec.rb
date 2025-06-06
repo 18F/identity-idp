@@ -36,6 +36,8 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
 
     context 'Threat Metrix Account Creation analysis passes' do
       let(:threatmetrix_response) { LexisNexisFixtures.ddp_success_response_json }
+      let(:authentication_device_profiling) { :enabled }
+
       it 'logs a successful result' do
         threatmetrix_stub
 
@@ -48,6 +50,18 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
             review_status: 'pass',
           ),
         )
+      end
+
+      it 'creates a DeviceProfilingResult' do
+        threatmetrix_stub
+
+        perform
+        result = DeviceProfilingResult.find_by(
+          user_id: user.id,
+          profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+        )
+        expect(result).to be_truthy
+        expect(result.user_id).to eq(user.id)
       end
     end
 
