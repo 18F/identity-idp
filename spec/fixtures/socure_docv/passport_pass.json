@@ -32,7 +32,11 @@
       "dob": "2002-01-01",
       "issueDate": "2024-01-01",
       "expirationDate": "2070-01-01"
+    },
+    "rawData": {
+      "mrz": "P<DENVER<<DWAYNE<<<<<<<<<<<<<<<<<<<<<<<<\n0123456789USA1234567F1234567890123456<123456"
     }
+
   },
   "customerProfile": {
     "customerUserId": "129",
