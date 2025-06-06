@@ -45,6 +45,21 @@ module Test
       render json: DocAuth::Mock::Socure.instance.selected_fixture_body
     end
 
+    def image_request_endpoint
+      respond_to do |format|
+        format.zip do
+          send_data(
+            DocAuthImageFixtures.zipped_files(
+              passport: params['fixture']['passport'],
+              selfie: params['fixture']['selfie'],
+            ),
+            filename: "#{params['reference_id']}.zip",
+            type: :zip,
+          )
+        end
+      end
+    end
+
     private
 
     def update_from_params

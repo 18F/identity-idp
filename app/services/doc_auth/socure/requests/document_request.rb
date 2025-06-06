@@ -51,28 +51,13 @@ module DocAuth
           JSON.parse(http_response.body, symbolize_names: true)
         end
 
-        def handle_connection_error(exception:, status: nil, status_message: nil, reference_id: nil)
-          NewRelic::Agent.notice_error(exception)
-          {
-            success: false,
-            errors: { network: true },
-            exception: exception,
-            extra: {
-              vendor: 'Socure',
-              vendor_status: status,
-              vendor_status_message: status_message,
-              reference_id:,
-            }.compact,
-          }
-        end
-
         def method
           :post
         end
 
         def endpoint
           if DocAuth::Mock::Socure.instance.enabled?
-            return Rails.application.routes.url_helpers.test_mock_socure_api_document_request_url
+            return DocAuth::Mock::Socure.instance.document_request_endpoint
           end
 
           IdentityConfig.store.socure_docv_document_request_endpoint
