@@ -1013,7 +1013,7 @@ headings.piv_cac.certificate.none: 我们在您政府雇员ID上探查不到证�
 headings.piv_cac.certificate.not_auth_cert: 请为您的政府雇员ID选择一个不同的证书
 headings.piv_cac.certificate.revoked: 您选择的政府雇员ID的证书已从您的卡中撤销
 headings.piv_cac.certificate.unverified: 您选择的政府雇员ID的证书无效
-headings.piv_cac.did_not_work: 你的 PIV/CAC 卡没起作用
+headings.piv_cac.did_not_work: 您的政府雇员ID没有起作用
 headings.piv_cac.token.bad: 内部错误。
 headings.piv_cac.token.invalid: 你选择的 PIV/CAC 证书有误。
 headings.piv_cac.token.missing: 内部错误。

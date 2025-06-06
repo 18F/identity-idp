@@ -1002,7 +1002,7 @@ headings.piv_cac.certificate.revoked: The government employee ID certificate you
 headings.piv_cac.certificate.unverified: The government employee ID certificate you selected is invalid
 headings.piv_cac.did_not_work: Your government employee ID did not work
 headings.piv_cac.token.bad: Internal error.
-headings.piv_cac.token.invalid: The PIV/CAC certificate you selected is invalid.
+headings.piv_cac.token.invalid: The government employee ID certificate you selected is invalid
 headings.piv_cac.token.missing: Internal error.
 headings.redirecting: Redirecting
 headings.residential_address: Current residential address
