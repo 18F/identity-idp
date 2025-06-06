@@ -569,4 +569,16 @@ module IdentityConfig
   end.freeze
   # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength
+  DATA_WAREHOUSE_BUILDER = proc do |config|
+    config.add(
+      :redshift_password,
+      secrets_manager_name: Identity::Hostdata.config.redshift_secret_arn,
+      type: :string,
+    ) { |raw| JSON.parse(raw).fetch('password') }
+    config.add(
+      :redshift_username,
+      secrets_manager_name: Identity::Hostdata.config.redshift_secret_arn,
+      type: :string,
+    ) { |raw| JSON.parse(raw).fetch('username') }
+  end.freeze
 end
