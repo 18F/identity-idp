@@ -487,6 +487,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
             modules: ['documentverification'],
             docvTransactionToken: test_token,
             customerUserId: user.uuid,
+            email: user.email,
           }
             .to_json)
           .to_return(
