@@ -205,7 +205,7 @@ module AbTests
       socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
           IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_passport_vendor_passport_nexis_percent : 0,
+          IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
