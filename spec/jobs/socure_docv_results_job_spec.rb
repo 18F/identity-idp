@@ -53,11 +53,11 @@ RSpec.describe SocureDocvResultsJob do
 
   describe '#perform' do
     subject(:perform) do
-      job.perform(document_capture_session_uuid: document_capture_session_uuid)
+      job.perform(document_capture_session_uuid:)
     end
 
     subject(:perform_now) do
-      job.perform(document_capture_session_uuid: document_capture_session_uuid, async: false)
+      job.perform(document_capture_session_uuid:, async: false)
     end
 
     context 'when we get a 200 OK back from Socure' do
@@ -425,7 +425,8 @@ RSpec.describe SocureDocvResultsJob do
           document_capture_session.reload
           document_capture_session_result = document_capture_session.load_result
           expect(document_capture_session_result.success).to eq(false)
-          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.pii).to be_empty
+          expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
