@@ -121,31 +121,8 @@ module DocAuth
         end
 
         def read_pii
-          if ['drivers_license', 'state_id_card', 'identification_card'].include?(id_doc_type)
-            Pii::StateId.new(
-              first_name: get_data(DATA_PATHS[:first_name]),
-              middle_name: get_data(DATA_PATHS[:middle_name]),
-              last_name: get_data(DATA_PATHS[:last_name]),
-              name_suffix: nil,
-              address1: get_data(DATA_PATHS[:address1]),
-              address2:,
-              city: get_data(DATA_PATHS[:city]),
-              state: get_data(DATA_PATHS[:state]),
-              zipcode: get_data(DATA_PATHS[:zipcode]),
-              dob:,
-              sex: nil,
-              height: nil,
-              weight: nil,
-              eye_color: nil,
-              state_id_number: get_data(DATA_PATHS[:document_number]),
-              state_id_issued:,
-              state_id_expiration: expiration_date,
-              id_doc_type:,
-              state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
-              issuing_country_code:,
-            )
-          elsif id_doc_type == 'passport'
-            Pii::Passport.new(
+          if id_doc_type == 'passport'
+            return Pii::Passport.new(
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
               last_name: get_data(DATA_PATHS[:last_name]),
@@ -155,9 +132,35 @@ module DocAuth
               nationality_code: issuing_country_code,
               document_number: get_data(DATA_PATHS[:document_number]),
               id_doc_type:,
-              passport_expiration: expiration_date
+              passport_expiration: expiration_date,
+              sex: nil,
+              birth_place: nil,
+              passport_issued: nil,
             )
           end
+
+          Pii::StateId.new(
+            first_name: get_data(DATA_PATHS[:first_name]),
+            middle_name: get_data(DATA_PATHS[:middle_name]),
+            last_name: get_data(DATA_PATHS[:last_name]),
+            name_suffix: nil,
+            address1: get_data(DATA_PATHS[:address1]),
+            address2:,
+            city: get_data(DATA_PATHS[:city]),
+            state: get_data(DATA_PATHS[:state]),
+            zipcode: get_data(DATA_PATHS[:zipcode]),
+            dob:,
+            sex: nil,
+            height: nil,
+            weight: nil,
+            eye_color: nil,
+            state_id_number: get_data(DATA_PATHS[:document_number]),
+            state_id_issued:,
+            state_id_expiration: expiration_date,
+            id_doc_type:,
+            state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
+            issuing_country_code:,
+          )
         end
 
         def get_data(path)
