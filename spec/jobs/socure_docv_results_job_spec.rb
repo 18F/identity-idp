@@ -441,7 +441,7 @@ RSpec.describe SocureDocvResultsJob do
           document_capture_session.reload
           document_capture_session_result = document_capture_session.load_result
           expect(document_capture_session_result.success).to eq(false)
-          expect(document_capture_session_result.pii).to be_empty
+          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
           expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(false)
