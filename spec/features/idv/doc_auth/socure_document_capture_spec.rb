@@ -507,44 +507,48 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           )
           allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
             .and_return('https://fake-socure.test/mrz')
-          stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
-            .to_return({ status: 200, body: { response: 'YES' }.to_json })
         end
 
-        it 'proceeds to the next page with valid info' do
-          perform_in_browser(:mobile) do
-            visit_idp_from_oidc_sp_with_ial2
-            sign_in_and_2fa_user(user)
+        context 'with valid info' do
+          before do
+            stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+              .to_return({ status: 200, body: { response: 'YES' }.to_json })
+          end
+          it 'proceeds to the next page with valid info' do
+            perform_in_browser(:mobile) do
+              visit_idp_from_oidc_sp_with_ial2
+              sign_in_and_2fa_user(user)
 
-            complete_doc_auth_steps_before_hybrid_handoff_step
-            expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
-            click_on t('forms.buttons.upload_photos')
-            expect(page).to have_current_path(idv_choose_id_type_url)
-            choose(t('doc_auth.forms.id_type_preference.passport'))
-            click_on t('forms.buttons.continue')
+              complete_doc_auth_steps_before_hybrid_handoff_step
+              expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+              click_on t('forms.buttons.upload_photos')
+              expect(page).to have_current_path(idv_choose_id_type_url)
+              choose(t('doc_auth.forms.id_type_preference.passport'))
+              click_on t('forms.buttons.continue')
 
-            expect(page).to have_current_path(idv_socure_document_capture_url)
-            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-            click_idv_continue
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-            visit idv_socure_document_capture_update_path
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
 
-            expect(page).to have_current_path(idv_ssn_url)
+              expect(page).to have_current_path(idv_ssn_url)
 
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_document_request_submitted,
-            )
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-            )
-            expect(fake_analytics).to have_logged_event(
-              'IdV: doc auth image upload vendor pii validation',
-            )
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_document_request_submitted,
+              )
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+              )
+              expect(fake_analytics).to have_logged_event(
+                'IdV: doc auth image upload vendor pii validation',
+              )
 
-            fill_out_ssn_form_ok
-            click_idv_continue
+              fill_out_ssn_form_ok
+              click_idv_continue
+            end
           end
         end
       end
