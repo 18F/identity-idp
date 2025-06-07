@@ -6,9 +6,9 @@ module Idv
 
     validates :mrz,
               presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
-              # :nationality_code,
-              #:birth_place,
-              #:passport_issued,
+    # :nationality_code,
+    # :birth_place,
+    # :passport_issued,
 
     validates :issuing_country_code,
               # :nationality_code,

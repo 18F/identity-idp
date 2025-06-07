@@ -200,7 +200,7 @@ RSpec.describe 'Hybrid Flow' do
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
-            expect(page).to have_content(t('idv.errors.try_again_later'))
+          expect(page).to have_content(t('idv.errors.try_again_later'))
 
           click_on t('idv.failure.button.warning')
 
