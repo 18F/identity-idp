@@ -140,8 +140,8 @@ class SocureDocvResultsJob < ApplicationJob
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
     analytics.idv_socure_verification_data_requested(
       **docv_result_response.to_h.merge(
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
+        submit_attempts:,
+        remaining_submit_attempts:,
         vendor_request_time_in_ms:,
         async:,
         pii_like_keypaths: [[:pii]],
@@ -153,8 +153,8 @@ class SocureDocvResultsJob < ApplicationJob
   def log_pii_validation(doc_pii_response:)
     analytics.idv_doc_auth_submitted_pii_validation(
       **doc_pii_response.to_h.merge(
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
+        submit_attempts:,
+        remaining_submit_attempts:,
         flow_path: nil,
         liveness_checking_required: nil,
       ),
@@ -204,9 +204,10 @@ class SocureDocvResultsJob < ApplicationJob
         errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
       )
     end
-    mrz_client = document_capture_session.doc_auth_vendor == 'mock' || Rails.env.development? ?
+
+    mrz_client = Rails.env.development? ?
                     DocAuth::Mock::DosPassportApiClient.new :
-                    DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+                    DocAuth::Dos::Requests::MrzRequest.new(mrz: doc_pii_response.pii_from_doc[:mrz])
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
@@ -228,5 +229,13 @@ class SocureDocvResultsJob < ApplicationJob
 
   def user_uuid
     @user_uuid ||= document_capture_session.user&.uuid
+  end
+
+  def submit_attempts
+    rate_limiter&.attempts
+  end
+
+  def remaining_submit_attempts
+    rate_limiter&.remaining_count
   end
 end
