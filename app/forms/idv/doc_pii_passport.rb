@@ -4,15 +4,14 @@ module Idv
   class DocPiiPassport
     include ActiveModel::Model
 
-    validates :nationality_code,
-              :mrz,
+    validates :mrz,
               presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+              # :nationality_code,
               #:birth_place,
               #:passport_issued,
 
-
     validates :issuing_country_code,
-              :nationality_code,
+              # :nationality_code,
               inclusion: {
                 in: 'USA', message: proc { I18n.t('doc_auth.errors.general.no_liveness') }
               }
@@ -24,12 +23,13 @@ module Idv
 
     def initialize(pii:)
       @pii_from_doc = pii
-      @birth_place = pii[:birth_place]
       @passport_expiration = pii[:passport_expiration]
-      @passport_issued = pii[:passport_issued]
       @issuing_country_code = pii[:issuing_country_code]
-      @nationality_code = issuing_country_code # pii[:nationality_code]
       @mrz = pii[:mrz]
+      # below to be removed? - not needed
+      @birth_place = pii[:birth_place]
+      @passport_issued = pii[:passport_issued]
+      @nationality_code = pii[:nationality_code]
     end
 
     def self.pii_like_keypaths
