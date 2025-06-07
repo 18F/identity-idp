@@ -115,7 +115,7 @@ module DocAuth
         end
 
         def read_pii
-          if id_doc_type == 'drivers_license' || id_doc_type == 'state_id_card'
+          if ['drivers_license', 'state_id_card', 'identification_card'].include?(id_doc_type)
             Pii::StateId.new(
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
