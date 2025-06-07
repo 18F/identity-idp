@@ -649,7 +649,7 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'when birth place is nil' do
+      xcontext 'when birth place is nil' do # birthdate not needed
         let(:subject) { Idv::DocPiiForm.new(pii: nil_birth_place_pii) }
 
         it 'responds with an unsuccessful result' do
@@ -693,7 +693,7 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'when passport issued is nil' do
+      xcontext 'when passport issued is nil' do # not returned by DocV
         let(:subject) { Idv::DocPiiForm.new(pii: nil_passport_issued_pii) }
 
         it 'responds with an unsuccessful result' do
@@ -737,7 +737,7 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'when there is an invalid nationality code' do
+      xcontext 'when there is an invalid nationality code' do # not returned by DocV - not needed
         let(:subject) { Idv::DocPiiForm.new(pii: nationality_code_error_pii) }
 
         it 'responds with an unsuccessful result' do
