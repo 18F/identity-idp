@@ -344,9 +344,9 @@ module Idv
 
       success = (threatmetrix_result[:review_status] == 'pass')
 
-      attempts_api_tracker.idv_fraud_risk_assessment(
+      attempts_api_tracker.idv_device_risk_assessment(
         success:,
-        failure_reason: fraud_risk_failure_reason(success, threatmetrix_result),
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
 
       return if success
@@ -375,7 +375,7 @@ module Idv
       threatmetrix_result.delete(:response_body)
     end
 
-    def fraud_risk_failure_reason(success, result)
+    def device_risk_failure_reason(success, result)
       return nil if success
 
       fraud_risk_summary_reason_code = result.dig(
@@ -468,7 +468,7 @@ module Idv
 
       def failed_stages
         stages.keys.select { |k| !stages[k][:success] }.map do |stage|
-          stage == :threatmetrix ? :fraud_risk_assesment : stage
+          stage == :threatmetrix ? :device_risk_assesment : stage
         end
       end
 

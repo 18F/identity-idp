@@ -21,8 +21,8 @@ properties:
     $ref: "./identity-proofing/IdvReproof.yml"
   idv-ssn-submitted:
     $ref: "./identity-proofing/IdvSsnSubmitted.yml"
-  idv-fraud-risk-assessment:
-    $ref: "./identity-proofing/IdvFraudRiskAssessment.yml"
+  idv-device-risk-assessment:
+    $ref: "./identity-proofing/IdvDeviceRiskAssessment.yml"
   idv-verification-submitted:
     $ref: "./identity-proofing/IdvVerificationSubmitted.yml"
   idv-verify-by-mail-letter-requested:
