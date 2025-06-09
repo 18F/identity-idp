@@ -105,7 +105,7 @@ module TwoFactorAuthentication
       user_session[:platform_authenticator_available] &&
         !current_user.webauthn_platform_recommended_dismissed_at? &&
         current_user.webauthn_configurations.where(platform_authenticator: [false, nil]) &&
-        current_user.user_set_up_with_sms? &&
+        phone_configuration.delivery_preference == 'sms' &&
         mobile?
     end
 
