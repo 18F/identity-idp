@@ -801,6 +801,7 @@ RSpec.describe 'OpenID Connect' do
       user = user_with_2fa
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
+
       state1 = SecureRandom.hex
       nonce1 = SecureRandom.hex
       code_verifier1 = SecureRandom.hex
@@ -1162,6 +1163,7 @@ RSpec.describe 'OpenID Connect' do
 
     link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
+
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
