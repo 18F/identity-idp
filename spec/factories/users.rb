@@ -14,7 +14,6 @@ FactoryBot.define do
     end
 
     created_at { Time.zone.now }
-    webauthn_platform_recommended_dismissed_at { Time.zone.now }
     accepted_terms_at { Time.zone.now if email }
 
     after(:build) do |user, evaluator|
@@ -126,6 +125,8 @@ FactoryBot.define do
             ),
           ),
         )
+
+        user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
       end
 
       after(:stub) do |user, evaluator|
