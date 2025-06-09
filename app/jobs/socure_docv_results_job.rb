@@ -57,7 +57,7 @@ class SocureDocvResultsJob < ApplicationJob
   def record_attempt(docv_result_response:, doc_pii_response: nil)
     image_errors = {}
 
-    if doc_escrow_enabled?
+    if socure_doc_escrow_enabled?
       result = fetch_images(docv_result_response.to_h[:reference_id])
       if result.is_a?(Idv::IdvImages)
         images = result.attempts_file_data
@@ -95,7 +95,7 @@ class SocureDocvResultsJob < ApplicationJob
       failures = failures[:socure].presence || failures || {}
     end
 
-    failures.merge(image_errors).presence || nil
+    failures.merge(image_errors).presence
   end
 
   def analytics
@@ -173,7 +173,7 @@ class SocureDocvResultsJob < ApplicationJob
     @sp ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
   end
 
-  def doc_escrow_enabled?
-    IdentityConfig.store.doc_escrow_enabled
+  def socure_doc_escrow_enabled?
+    sp&.attempts_api_enabled? && IdentityConfig.store.socure_doc_escrow_enabled
   end
 end

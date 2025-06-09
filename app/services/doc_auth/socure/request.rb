@@ -6,7 +6,7 @@ module DocAuth
       def fetch
         # return DocAuth::Response with DocAuth::Error if workflow is invalid
         http_response = send_http_request
-        if http_response&.success? && http_response.body.force_encoding('ASCII-8BIT').present?
+        if http_response&.success? && http_response.body.length > 0
           handle_http_response(http_response)
         else
           handle_invalid_response(http_response)

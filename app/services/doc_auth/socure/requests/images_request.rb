@@ -4,6 +4,8 @@ module DocAuth
   module Socure
     module Requests
       class ImagesRequest < DocAuth::Socure::Request
+        MAX_IMAGE_SIZE = 5 * 1024 * 1024 # 5 MB
+
         def initialize(reference_id:)
           @reference_id = reference_id
         end
@@ -29,6 +31,7 @@ module DocAuth
             # Iterate through entries
             # TODO do we need to protect against possible zip bombs here?
             while (entry = io.get_next_entry) && image_files.keys.count < 3
+              raise 'File too large when extracted' if entry.size > MAX_FILE_SIZE
               param_name = entry_name_to_type[entry.name]
               next if param_name.blank?
 

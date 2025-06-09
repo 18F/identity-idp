@@ -7,6 +7,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:user) { create(:user) }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:sp) { create(:service_provider) }
   let(:document_capture_session) do
     DocumentCaptureSession.create(user:).tap do |dcs|
       dcs.socure_docv_transaction_token = '1234'
@@ -19,7 +20,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:document_type_type) { 'Drivers License' }
   let(:reason_codes) { %w[I831 R810] }
   let(:writer) { EncryptedDocStorage::DocWriter.new }
-  let(:doc_escrow_enabled) { false }
+  let(:socure_doc_escrow_enabled) { false }
   let(:result) do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
@@ -31,8 +32,24 @@ RSpec.describe SocureDocvResultsJob do
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
+
+    enable_attempts_api if socure_doc_escrow_enabled
+
     allow(writer).to receive(:write).and_return(result)
+  end
+
+  def enable_attempts_api
+    document_capture_session.update(issuer: sp.issuer)
+
+    allow(IdentityConfig.store).to receive(:socure_doc_escrow_enabled).and_return(
+      socure_doc_escrow_enabled,
+    )
+    allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(
+      socure_doc_escrow_enabled,
+    )
+    allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+      [{ 'issuer' => sp.issuer }],
+    )
   end
 
   describe '#perform' do
@@ -161,7 +178,7 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'document escrow is enabled' do
-        let(:doc_escrow_enabled) { true }
+        let(:socure_doc_escrow_enabled) { true }
 
         context 'we get a 200-http response from the image endpoint' do
           before do
@@ -196,7 +213,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when we get a non-200 HTTP response back from the image endpoint' do
-          let(:doc_escrow_enabled) { true }
+          let(:socure_doc_escrow_enabled) { true }
 
           %w[400 403 404 500].each do |http_status|
             context "Socure returns HTTP #{http_status} with an error body" do
@@ -267,7 +284,7 @@ RSpec.describe SocureDocvResultsJob do
           end
 
           context 'document escrow is enabled' do
-            let(:doc_escrow_enabled) { true }
+            let(:socure_doc_escrow_enabled) { true }
 
             before do
               expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
@@ -316,7 +333,7 @@ RSpec.describe SocureDocvResultsJob do
           context 'and the socure result response is a failure' do
             let(:decision_value) { 'failed' }
             context 'doc escrow is enabled' do
-              let(:doc_escrow_enabled) { true }
+              let(:socure_doc_escrow_enabled) { true }
 
               it 'stores the images via doc escrow' do
                 expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
@@ -410,7 +427,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'doc escrow is enabled' do
-          let(:doc_escrow_enabled) { true }
+          let(:socure_doc_escrow_enabled) { true }
 
           it 'stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
@@ -459,7 +476,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'doc escrow is enabled' do
-          let(:doc_escrow_enabled) { true }
+          let(:socure_doc_escrow_enabled) { true }
 
           it 'stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
@@ -504,7 +521,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'doc escrow is enabled' do
-          let(:doc_escrow_enabled) { true }
+          let(:socure_doc_escrow_enabled) { true }
 
           it 'tracks the attempt and stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
@@ -634,7 +651,7 @@ RSpec.describe SocureDocvResultsJob do
           end
 
           context 'doc escrow is enabled' do
-            let(:doc_escrow_enabled) { true }
+            let(:socure_doc_escrow_enabled) { true }
             it 'tracks the attempt and stores the images via doc escrow' do
               expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                 success: false,
