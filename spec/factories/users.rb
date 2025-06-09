@@ -126,7 +126,7 @@ FactoryBot.define do
           ),
         )
 
-        user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
+        user.webauthn_platform_recommended_dismissed_at { Time.zone.now }
       end
 
       after(:stub) do |user, evaluator|
