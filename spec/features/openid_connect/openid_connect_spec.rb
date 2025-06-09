@@ -545,8 +545,6 @@ RSpec.describe 'OpenID Connect' do
       user: user
     )
 
-    user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
-
     token_response = sign_in_get_token_response(
       user: user,
       scope: 'openid email profile:verified_at',
@@ -760,7 +758,7 @@ RSpec.describe 'OpenID Connect' do
 
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
-      user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
+
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
@@ -803,7 +801,6 @@ RSpec.describe 'OpenID Connect' do
       user = user_with_2fa
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
-      user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
       state1 = SecureRandom.hex
       nonce1 = SecureRandom.hex
       code_verifier1 = SecureRandom.hex
@@ -1165,7 +1162,6 @@ RSpec.describe 'OpenID Connect' do
 
     link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
-    user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
