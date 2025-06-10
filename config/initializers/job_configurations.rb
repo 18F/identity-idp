@@ -10,6 +10,7 @@ cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
+cron_quarterly = '0 0 1 1,4,7,10  *' # quarterly
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
@@ -289,6 +290,12 @@ else
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Send irs quarterly metrics to Team Data
+      irs_verification_demographics_report: {
+        class: 'Reports::IrsVerificationDemographicsReport',
+        cron: cron_quarterly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Download and store Socure reason codes
