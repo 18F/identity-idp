@@ -544,12 +544,12 @@ RSpec.describe 'OpenID Connect' do
       pii: { first_name: 'John', ssn: '111223333' },
       user: user
     )
-    user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
 
     token_response = sign_in_get_token_response(
       user: user,
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
+        visit sign_up_completed_path
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
@@ -572,6 +572,7 @@ RSpec.describe 'OpenID Connect' do
     token_response = sign_in_get_token_response(
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
+        visit sign_up_completed_path
         expect(page).not_to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
@@ -683,6 +684,7 @@ RSpec.describe 'OpenID Connect' do
         acknowledge_and_confirm_personal_key
       end,
       handoff_page_steps: proc do
+        visit sign_up_completed_path
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
         click_agree_and_continue
       end,
@@ -717,6 +719,7 @@ RSpec.describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
+        visit sign_up_completed_path
         expect(page).to have_content(t('titles.sign_up.completion_consent_expired_ial1'))
         expect(page).to_not have_content(t('titles.sign_up.completion_new_sp'))
 
@@ -740,6 +743,7 @@ RSpec.describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
+        visit sign_up_completed_path
         expect(page).to have_content(t('titles.sign_up.completion_new_sp'))
         expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired_ial1'))
 
@@ -759,7 +763,6 @@ RSpec.describe 'OpenID Connect' do
 
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
-      user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -776,6 +779,19 @@ RSpec.describe 'OpenID Connect' do
 
       _user = sign_in_live_with_2fa(user)
       expect(page.html).to_not include(code_challenge)
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: state,
+        prompt: 'select_account',
+        nonce: nonce,
+        code_challenge: code_challenge,
+        code_challenge_method: 'S256',
+      )
 
       redirect_uri = URI(oidc_redirect_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -801,9 +817,9 @@ RSpec.describe 'OpenID Connect' do
     it 'returns the most recent nonce when there are multiple authorize calls' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       user = user_with_2fa
+
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
-      user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
 
       state1 = SecureRandom.hex
       nonce1 = SecureRandom.hex
@@ -843,6 +859,19 @@ RSpec.describe 'OpenID Connect' do
 
       sign_in_live_with_2fa(user)
       continue_as(user.email)
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: state2,
+        prompt: 'select_account',
+        nonce: nonce2,
+        code_challenge: code_challenge2,
+        code_challenge_method: 'S256',
+      )
 
       redirect_uri2 = URI(oidc_redirect_url)
       expect(redirect_uri2.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -1166,7 +1195,6 @@ RSpec.describe 'OpenID Connect' do
 
     link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
-    user.update!(webauthn_platform_recommended_dismissed_at: Time.zone.now)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
