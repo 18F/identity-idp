@@ -105,8 +105,8 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    return @active_profile if defined?(@active_profile) && @active_profile&.active
-    @active_profile = profiles.verified.find(&:active?)
+    return @active_profile if defined?(@active_profile)
+    @active_profile = profiles.verified.find_by(active: true)
   end
 
   def pending_profile?
