@@ -133,8 +133,8 @@ module Reporting
          'Users who successfully completed document authentication'],
         ['Information Validation Success', 'Users who successfully validated their information'],
         ['Phone Verification Success', 'Users who successfully verified their using their phone'],
-        ['Total Verified', 'Users who completed the entire process'],
-        ['Verification Fallouts',
+        ['Verification Successes', 'Users who completed the entire process'],
+        ['Verification Failures',
          'The percentage of users that did not complete the identity verification process'],
       ]
     end
