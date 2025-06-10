@@ -131,4 +131,41 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       )
     end
   end
+
+  context 'selfie fail error' do
+    let(:error_code) { :selfie_fail }
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      assign(:presenter, presenter)
+
+      render
+    end
+
+    it 'shows correct h1' do
+      expect(rendered).to have_css('h1', text: t('doc_auth.errors.selfie_fail_heading'))
+    end
+
+    it 'shows selfie failure message' do
+      expect(rendered).to have_text(t('doc_auth.errors.general.selfie_failure'))
+    end
+
+    it 'shows remaining attempts' do
+      expect(rendered).to have_text(
+        strip_tags(
+          t(
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
+          ),
+        ),
+      )
+    end
+
+    it 'shows a primary action' do
+      expect(rendered).to have_link(
+        t('idv.failure.button.warning'),
+        href: idv_socure_document_capture_path,
+      )
+    end
+  end
 end

@@ -60,7 +60,7 @@ module DocAuth
         end
 
         def doc_auth_success?
-          id_type_supported? && successful_result?
+          id_type_supported? && successful_result? && !portrait_matching_failed?
         end
 
         def selfie_status
@@ -112,6 +112,8 @@ module DocAuth
             { unaccepted_id_type: true }
           elsif !successful_result?
             { socure: { reason_codes: } }
+          elsif portrait_matching_failed?
+            { selfie_fail: true }
           else
             {}
           end
@@ -212,6 +214,10 @@ module DocAuth
 
         def reason_codes_selfie_not_processed
           IdentityConfig.store.idv_socure_reason_codes_docv_selfie_not_processed
+        end
+
+        def portrait_matching_failed?
+          selfie_status == :fail
         end
       end
     end
