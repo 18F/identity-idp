@@ -2,18 +2,24 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user) { build(:user) }
+  let(:user_uuid) { user.uuid }
+  let(:user_email) { user.email }
   let(:proofing_vendor) { :mock }
 
-  subject(:progressive_proofer) { described_class.new(user_uuid: user.uuid, proofing_vendor:) }
+  subject(:progressive_proofer) { described_class.new(user_uuid:, proofing_vendor:, user_email:) }
 
   it 'assigns aamva_plugin' do
-    expect(described_class.new(user_uuid: user.uuid, proofing_vendor:).aamva_plugin).to be_a(
+    expect(
+      described_class.new(user_uuid:, proofing_vendor:, user_email:).aamva_plugin,
+    ).to be_a(
       Proofing::Resolution::Plugins::AamvaPlugin,
     )
   end
 
   it 'assigns threatmetrix_plugin' do
-    expect(described_class.new(user_uuid: user.uuid, proofing_vendor:).threatmetrix_plugin).to be_a(
+    expect(
+      described_class.new(user_uuid:, proofing_vendor:, user_email:).threatmetrix_plugin,
+    ).to be_a(
       Proofing::Resolution::Plugins::ThreatMetrixPlugin,
     )
   end
@@ -23,9 +29,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:ipp_enrollment_in_progress) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
-    let(:user_email) { Faker::Internet.email }
     let(:current_sp) { build(:service_provider) }
-    let(:user_uuid) { user.uuid }
     let(:workflow) { :auth }
 
     let(:residential_address_resolution_result) do
@@ -97,7 +101,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         request_ip:,
         threatmetrix_session_id:,
         timer: JobHelpers::Timer.new,
-        user_email:,
         current_sp:,
         workflow:,
       )
