@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'csv'
-# require 'reporting/proofing_rate_report'
-# require 'reporting/monthly_idv_report'
 
 module Reports
   class IrsCredentialTenureReport < BaseReport
@@ -33,7 +31,7 @@ module Reports
         subject: "IRS Credential Tenure Report - #{date.to_date}",
         reports: reports,
         message: preamble,
-        attachment_format: :xlsx,
+        attachment_format: :csv,
       ).deliver_now
     end
 
@@ -74,15 +72,11 @@ module Reports
     end
 
     def emails
-      emails = [*IdentityConfig.store.irs_verification_report_config]
-      if report_date.next_day.day == 1
-        emails += IdentityConfig.store.team_all_login_emails
-      end
-      emails
+      IdentityConfig.store.irs_credential_tenure_report_config || []
     end
 
     def issuers
-      IdentityConfig.store.irs_verification_report_issuers || []
+      IdentityConfig.store.irs_credential_tenure_report_issuers || []
     end
 
     def irs_credential_tenure_report
