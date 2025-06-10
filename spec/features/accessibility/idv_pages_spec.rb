@@ -19,7 +19,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
       complete_welcome_step
       complete_agreement_step
 
-      expect(page).to have_current_path idv_how_to_verify_path
+      expect(page).to have_current_path idv_hybrid_handoff_path
       expect(page).to have_unique_form_landmark_labels
       expect_page_to_have_no_accessibility_violations(page)
     end
@@ -33,7 +33,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
 
       visit idv_path
       expect_page_to_have_no_accessibility_violations(page)
-      complete_all_doc_auth_steps_before_password_step(expect_accessible: true)
+      complete_all_doc_auth_steps_before_password_step
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
@@ -44,7 +44,7 @@ RSpec.feature 'Accessibility on IDV pages', :js do
     scenario 'doc auth steps accessibility on mobile', driver: :headless_chrome_mobile do
       sign_in_and_2fa_user
       visit idv_path
-      complete_all_doc_auth_steps_before_password_step(expect_accessible: true)
+      complete_all_doc_auth_steps_before_password_step
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 

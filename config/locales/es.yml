@@ -623,8 +623,6 @@ doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
-doc_auth.headings.hybrid_handoff: '¿Cómo desea añadir su identificación?'
-doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cambiar dispositivos
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.mailing_address: Ingrese su dirección postal
@@ -669,8 +667,8 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted al leer su identificación.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
+doc_auth.info.hybrid_handoff_no_selfie: Tomará fotografías de su identificación con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
+doc_auth.info.hybrid_handoff_selfie: Tomará fotografías de su identificación y de usted con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
@@ -706,9 +704,7 @@ doc_auth.info.selfie_capture.action.submit: Se tomó la foto. Enviar la foto.
 doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
-doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
-doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo puede usar una licencia de conducir de los EE. UU. o una identificación estatal.</strong> Para esta opción, no puede usar un pasaporte estadounidense.
 doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
@@ -1681,7 +1677,6 @@ titles.confirmations.show: Elija una contraseña
 titles.create_account: Crear una cuenta
 titles.doc_auth.address: Actualice su domicilio actual
 titles.doc_auth.doc_capture: Agregue su identificación
-titles.doc_auth.hybrid_handoff: Verifique su identidad
 titles.doc_auth.link_sent: Vínculo enviado
 titles.doc_auth.processing_images: Procesando sus imágenes
 titles.doc_auth.ssn: Ingrese su número de Seguro Social

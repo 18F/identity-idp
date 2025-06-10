@@ -612,8 +612,6 @@ doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
-doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?
-doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
@@ -658,8 +656,8 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.hybrid_handoff: Nous recueillerons les informations vous concernant en lisant votre pièce d’identité.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
+doc_auth.info.hybrid_handoff_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
+doc_auth.info.hybrid_handoff_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
@@ -695,9 +693,7 @@ doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
-doc_auth.info.tag: Recommandation
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.
-doc_auth.info.upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos. Votre téléphone portable doit être équipé d’un appareil photo et d’un navigateur web.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Vous pouvez seulement utiliser un permis de conduire ou une carte d’identité d’un État des États-Unis.</strong> Le passeport des États-Unis n’est pas accepté dans ce cas.
 doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en ligne puis confirmez votre identité en personne dans un bureau de poste participant.
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
@@ -1669,7 +1665,6 @@ titles.confirmations.show: Choisir un mot de passe
 titles.create_account: Créer un compte
 titles.doc_auth.address: Mettre à jour votre adresse personnelle
 titles.doc_auth.doc_capture: Ajouter votre pièce d’identité
-titles.doc_auth.hybrid_handoff: Vérifier votre identité
 titles.doc_auth.link_sent: Lien envoyé
 titles.doc_auth.processing_images: Traitement de vos images en cours
 titles.doc_auth.ssn: Saisir votre numéro de sécurité sociale
