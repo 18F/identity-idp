@@ -916,7 +916,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           let(:mfa_selections) { ['sms', 'backup_code'] }
           before do
             subject.user_session[:mfa_selections] = mfa_selections
-            subject.current_user.update(webauthn_platform_recommended_dismissed_at: nil)
+
             post(
               :create,
               params: {
