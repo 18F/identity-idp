@@ -1,0 +1,57 @@
+<% self.title = @presenter.title %>
+
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <% c.with_header { @presenter.heading } %>
+
+  <p>
+    <%= t('instructions.mfa.piv_cac.having_trouble') %>
+  </p>
+
+  <ul>
+    <li><%= t('instructions.mfa.piv_cac.bullet_1') %></li>
+    <li>
+      <%= t(
+            'instructions.mfa.piv_cac.bullet_2_html',
+            link_html: link_to(
+              t('instructions.mfa.piv_cac.signing_in.text'),
+              sign_out_url,
+            ),
+            auth_method_link: link_to(
+              t('instructions.mfa.piv_cac.another_method_text'),
+              login_two_factor_options_url,
+            ),
+          ) %>
+    </li>
+    <li>
+      <div>
+        <%= link_to(
+              t('instructions.mfa.piv_cac.bullet_3', app_name: APP_NAME),
+              MarketingSite.contact_url,
+            ) %>
+      </div>
+    </li>
+  </ul>
+
+<div class="margin-bottom-2">
+   <p class="display-inline">
+    <%= t('instructions.mfa.piv_cac.create_account_html', app_name: APP_NAME) %>
+  </p>
+
+<%= button_to(
+      login_two_factor_piv_cac_logout_url,
+      form_class: 'display-inline',
+      class: 'usa-button usa-button--unstyled',
+      method: :delete,
+    ) { t('links.create_account') } %>
+</div>
+
+  <%= render ButtonComponent.new(
+        url: login_two_factor_piv_cac_url,
+        class: 'margin-top-3',
+        big: true,
+      ).with_content(t('links.try_again')) %>
+<% end %>
+
+<%= render(PageFooterComponent.new) do %>
+  <%= link_to t('links.cancel'), sign_out_url %>
+<% end %>

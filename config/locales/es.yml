@@ -1004,17 +1004,17 @@ headings.piv_cac_login.new: Inicie sesión con su identificación de empleado de
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-headings.piv_cac.certificate.bad: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.certificate.expired: El certificado de la tarjeta PIV o CAC que seleccionó ya venció
-headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
+headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
+headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
+headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
 headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta PIV o CAC
-headings.piv_cac.certificate.revoked: El certificado de la tarjeta PIV o CAC que seleccionó fue revocado para su tarjeta
-headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.did_not_work: Su tarjeta PIV o CAC no funcionó
-headings.piv_cac.token.bad: Error interno
+headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
+headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
+headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
+headings.piv_cac.did_not_work: Su identificación de empleado del gobierno no funcionó.
+headings.piv_cac.token.bad: Error interno.
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
-headings.piv_cac.token.missing: Error interno
+headings.piv_cac.token.missing: Error interno.
 headings.redirecting: Redirigiendo
 headings.residential_address: Domicilio actual
 headings.session_timeout_warning: '¿Necesita más tiempo?'
@@ -1441,14 +1441,21 @@ instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente 
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
+instructions.mfa.piv_cac.another_method_text: otro método de autenticación.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
+instructions.mfa.piv_cac.bullet_1: Elija un certificado diferente, por ejemplo, uno asociado a su nombre.
+instructions.mfa.piv_cac.bullet_2_html: '%{link_html} con su dirección de correo electrónico y contraseña y use %{auth_method_link}'
+instructions.mfa.piv_cac.bullet_3: 'Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.'
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
+instructions.mfa.piv_cac.create_account_html: '<strong>¿No tiene una cuenta de %{app_name}?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: 'Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
+instructions.mfa.piv_cac.having_trouble: 'Si tiene problemas para iniciar sesión con su tarjeta PIV o CAC, intente lo siguiente:'
 instructions.mfa.piv_cac.http_failure: El servidor tardó demasiado en responder. Vuelva a intentarlo.
 instructions.mfa.piv_cac.no_certificate_html: Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta. %{please_try_again_html} con un certificado diferente. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.please_try_again: vuelva a intentarlo
 instructions.mfa.piv_cac.sign_in: Asegúrese de tener una cuenta de %{app_name} y de tener configurada una tarjeta de verificación de identidad personal (PIV) o una tarjeta de acceso común (CAC) como método de autenticación de dos factores.
+instructions.mfa.piv_cac.signing_in.text: Inicie sesión
 instructions.mfa.piv_cac.step_1: Asígnele un alias.
 instructions.mfa.piv_cac.step_1_info: Si agrega más de una tarjeta PIV o CAC, podrá distinguirlas.
 instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas.
@@ -1492,6 +1499,7 @@ links.resend: Volver a enviar
 links.reverify: Verifique su identidad de nuevo.
 links.sign_in: Iniciar sesión
 links.sign_out: Cerrar sesión
+links.try_again: Volver a intentarlo
 links.two_factor_authentication.send_another_code: Enviar otro código
 links.what_is_totp: '¿Qué es una aplicación de autenticación?'
 login_cancel.account_page: página de su cuenta
@@ -1763,7 +1771,6 @@ two_factor_authentication.important_alert_icon: icono importante de alerta
 two_factor_authentication.invalid_backup_code: Ese código de recuperación no es válido.
 two_factor_authentication.invalid_otp: Ese código de un solo uso no es válido. Inténtelo de nuevo o solicite un nuevo código.
 two_factor_authentication.invalid_personal_key: Esa clave personal no es válida.
-two_factor_authentication.invalid_piv_cac: Esa tarjeta PIV o CAC no funcionó. Asegúrese de que sea la tarjeta PIV o CAC correcta para esta cuenta. Si lo es, puede haber un problema con el PIN de su tarjeta PIV o CAC, o bien el problema es nuestro. Inténtelo de nuevo o elija otro método de autenticación.
 two_factor_authentication.learn_more: Obtenga más información sobre las opciones de autenticación
 two_factor_authentication.login_intro: Usted los configuró cuando creó su cuenta.
 two_factor_authentication.login_intro_reauthentication: Antes de que pueda hacer cambios en su cuenta, debemos usar uno de sus métodos de autenticación para confirmar que se trata de usted.
