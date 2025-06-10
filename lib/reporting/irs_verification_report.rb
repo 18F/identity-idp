@@ -110,12 +110,12 @@ module Reporting
           to_percent(phone_verification_success_results, verification_demand_results),
         ],
         [
-          'Total Verified Success',
+          'Verification Successes',
           total_verified_results,
           to_percent(total_verified_results, verification_demand_results),
         ],
         [
-          'Verification Fallouts',
+          'Verification Failures',
           verification_demand_results - total_verified_results,
           to_percent(
             verification_demand_results - total_verified_results,

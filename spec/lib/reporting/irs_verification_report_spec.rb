@@ -51,8 +51,8 @@ RSpec.describe Reporting::IrsVerificationReport do
         ['Document Authentication Success', 80, 80.0],
         ['Information Verification Success', 70, 70.0],
         ['Phone Verification Success', 60, 60.0],
-        ['Total Verified Success', 50, 50.0],
-        ['Verification Fallouts', 50, 50.0],
+        ['Verification Successes', 50, 50.0],
+        ['Verification Failures', 50, 50.0],
       )
     end
   end
