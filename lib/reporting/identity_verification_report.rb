@@ -21,6 +21,7 @@ module Reporting
       IDV_DOC_AUTH_WELCOME_SUBMITTED = 'IdV: doc auth welcome submitted'
       IDV_DOC_AUTH_GETTING_STARTED = 'IdV: doc auth getting_started visited'
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
+      IDV_DOC_AUTH_SOCURE_VERIFICATION_DATA = 'idv_socure_verification_data_requested'
       IDV_DOC_AUTH_VERIFY_RESULTS = 'IdV: doc auth verify proofing results'
       IDV_PHONE_FINDER_RESULTS = 'IdV: phone confirmation vendor'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
@@ -116,6 +117,7 @@ module Reporting
       csv << ['IDV started', idv_started]
       csv << ['Welcome Submitted', idv_doc_auth_welcome_submitted]
       csv << ['Image Submitted', idv_doc_auth_image_vendor_submitted]
+      csv << ['Socure Verification Data Requested', idv_doc_auth_socure_verification_data_requested]
       csv << []
       csv << ['Workflow completed', idv_final_resolution]
       csv << ['Workflow completed - With Phone Number', idv_final_resolution_verified]
@@ -172,7 +174,8 @@ module Reporting
     end
 
     def actual_proofing_rate
-      successfully_verified_users.to_f / idv_doc_auth_image_vendor_submitted
+      denom = idv_doc_auth_image_vendor_submitted + idv_doc_auth_socure_verification_data_requested
+      successfully_verified_users.to_f / denom
     end
 
     def industry_proofing_rate
@@ -280,6 +283,10 @@ module Reporting
       data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].count
     end
 
+    def idv_doc_auth_socure_verification_data_requested
+      data[Events::IDV_DOC_AUTH_SOCURE_VERIFICATION_DATA].count
+    end
+
     def idv_doc_auth_welcome_submitted
       data[Events::IDV_DOC_AUTH_WELCOME_SUBMITTED].count
     end
@@ -338,7 +345,24 @@ module Reporting
 
           case event
           when Events::IDV_FINAL_RESOLUTION
-            users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['identity_verified'] == '1'
+            # We are counting users for each of the final resolution events, but we need to consider
+            # the various combinations of pending states and fraud review status.
+            # The logic is as follows (listed in the order they are checked):
+            #
+            # | fraud_review_pending | gpo_verification_pending | in_person_verification_pending | IDV_FINAL_RESOLUTION_      |
+            # |----------------------|--------------------------|--------------------------------|----------------------------|
+            # | false                | false                    | false                          | VERIFIED                   |
+            # | true                 | false                    | false                          | FRAUD_REVIEW               |
+            # | false                | true                     | false                          | GPO                        |
+            # | true                 | true                     | false                          | GPO_FRAUD_REVIEW           |
+            # | false                | false                    | true                           | IN_PERSON                  |
+            # | true                 | false                    | true                           | IN_PERSON_FRAUD_REVIEW     |
+            # | false                | true                     | true                           | GPO_IN_PERSON              |
+            # | true                 | true                     | true                           | GPO_IN_PERSON_FRAUD_REVIEW |
+            #
+            # The `profile_not_pending` flag indicates that the three pending possibilities are
+            # all false AND there is not a deactivation reason recorded.
+            users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << user_id if row['profile_not_pending'] == '1'
 
             if !gpo_verification_pending && !in_person_verification_pending
               users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << user_id if fraud_review_pending
@@ -426,7 +450,7 @@ module Reporting
           , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
           , properties.event_properties.success = '0' AND properties.event_properties.doc_auth_result NOT IN ['Failed', 'Attention'] AS doc_auth_failed_non_fraud
         | fields
-            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
+            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS profile_not_pending
         | limit 10000
       QUERY
     end
