@@ -9,11 +9,11 @@ module Idv
     # @returns [Hash{Symbol => Hash}] errors are keyed by Idv::Image#type
     attr_accessor :errors
 
-    def initialize(params)
+    def initialize(params, socure: false)
       @images = TYPES.map do |type|
         next unless params[type].present?
 
-        Idv::IdvImage.new(type:, value: params[type])
+        Idv::IdvImage.new(type:, value: params[type], socure:)
       end.compact
       @errors = {}
     end
