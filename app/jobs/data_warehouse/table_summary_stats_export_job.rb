@@ -16,6 +16,7 @@ module DataWarehouse
       'sp_return_logs' => 'returned_at',
       'registration_logs' => 'registered_at',
       'letter_requests_to_usps_ftp_logs' => 'ftp_at',
+      'deleted_users' => 'deleted_at',
     }.freeze
 
     def perform(timestamp)
