@@ -684,7 +684,6 @@ RSpec.describe 'OpenID Connect' do
         acknowledge_and_confirm_personal_key
       end,
       handoff_page_steps: proc do
-        click_button t('webauthn_platform_recommended.skip')
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
         click_agree_and_continue
       end,
