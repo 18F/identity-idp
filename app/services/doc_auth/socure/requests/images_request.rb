@@ -29,7 +29,6 @@ module DocAuth
           # Open the zip stream
           Zip::InputStream.open(zip_io) do |io|
             # Iterate through entries
-            # TODO do we need to protect against possible zip bombs here?
             while (entry = io.get_next_entry) && image_files.keys.count < 3
               raise 'File too large when extracted' if entry.size > MAX_IMAGE_SIZE
               param_name = entry_name_to_type[entry.name]
@@ -39,7 +38,7 @@ module DocAuth
             end
           end
 
-          Idv::IdvImages.new(image_files, socure: true)
+          Idv::IdvImages.new(image_files, binary_image: true)
         end
 
         def entry_name_to_type

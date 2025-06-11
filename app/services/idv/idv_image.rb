@@ -2,13 +2,13 @@
 
 module Idv
   class IdvImage
-    attr_reader :value, :type, :socure
+    attr_reader :value, :type, :binary_image
 
     # @param type [Symbol] image type as described by IdvImages::TYPES
     # @param value [#read, String] an IO object or String that contains the raw image data
-    def initialize(type:, value:, socure: false)
+    def initialize(type:, value:, binary_image: false)
       @type = type
-      @socure = socure
+      @binary_image = binary_image
       @value = as_readable(value)
     end
 
@@ -44,7 +44,7 @@ module Idv
     def as_readable(val)
       if val.respond_to?(:read)
         val
-      elsif socure
+      elsif binary_image
         Idv::BinaryImage.new(val)
       elsif val.is_a? String
         Idv::DataUrlImage.new(val)
