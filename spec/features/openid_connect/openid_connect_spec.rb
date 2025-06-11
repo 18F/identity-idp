@@ -848,18 +848,7 @@ RSpec.describe 'OpenID Connect' do
       sign_in_live_with_2fa(user)
       continue_as(user.email)
 
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
-        state: state2,
-        prompt: 'select_account',
-        nonce: nonce2,
-        code_challenge: code_challenge2,
-        code_challenge_method: 'S256',
-      )
+      click_button t('webauthn_platform_recommended.skip')
 
       redirect_uri2 = URI(oidc_redirect_url)
       expect(redirect_uri2.to_s).to start_with('gov.gsa.openidconnect.test://result')
