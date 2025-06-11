@@ -7,13 +7,13 @@ RSpec.describe Reporting::IrsAuthenticationReport do
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
-      ['System and Application Demand', 'Count',
+      ['Registration Demand', 'Count',
        'The count of new users that started the registration process with Login.gov.'],
-      ['System and Application Errors', 'Count',
+      ['Registration Failures', 'Count',
        'The count of new users who did not complete the registration process'],
-      ['Authentication attempts', 'Count',
+      ['Registration Successes', 'Count',
        'The count of new users who completed the registration process sucessfully'],
-      ['Authentication success rate', 'Percentage',
+      ['Registration Success Rate', 'Percentage',
        'The percentage of new users who completed registration process successfully'],
     ]
   end
@@ -27,10 +27,10 @@ RSpec.describe Reporting::IrsAuthenticationReport do
   let(:expected_funnel_metrics_table) do
     [
       ['Metric', 'Number of accounts', '% of total from start'],
-      ['System and Application Demand', 4, '100.0%'],
-      ['System and Application Errors', 2, '50.0%'],
-      ['Authentication attempts', 2, '50.0%'],
-      ['Authentication success rate', 1, '25.0%'],
+      ['Registration Demand', 4, '100.0%'],
+      ['Registration Failures', 2, '50.0%'],
+      ['Registration Successes', 2, '50.0%'],
+      ['Registration Success Rate', 1, '25.0%'],
     ]
   end
 
