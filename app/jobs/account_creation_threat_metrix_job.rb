@@ -37,11 +37,9 @@ class AccountCreationThreatMetrixJob < ApplicationJob
       profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
     )
     device_profiling_result.update(
-      success: result.success?,
       client: result.client,
       review_status: result.review_status,
       transaction_id: result.transaction_id,
-      reason: result.review_status,
     )
   end
 end

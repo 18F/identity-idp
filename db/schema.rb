@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_11_195441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -89,11 +89,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_152453) do
 
   create_table "device_profiling_results", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.boolean "success", default: false, null: false, comment: "sensitive=false"
     t.string "client", comment: "sensitive=false"
     t.string "review_status", comment: "sensitive=false"
     t.string "transaction_id", comment: "sensitive=false"
-    t.string "reason", comment: "sensitive=false"
     t.datetime "processed_at", comment: "sensitive=false"
     t.string "profiling_type", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
