@@ -202,50 +202,6 @@ module Reporting
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
-
-    def lg99_unique_users_count
-      @lg99_unique_users_count ||= data[Events::IDV_FINAL_RESOLUTION].count
-    end
-
-    def unique_suspended_users_count
-      @unique_suspended_users_count ||= data[Events::SUSPENDED_USERS].count
-    end
-
-    def user_days_to_suspension_avg
-      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).pluck(:created_at, :suspended_at)
-      return 'n/a' if user_data.empty?
-
-      difference = user_data.map { |created_at, suspended_at| suspended_at - created_at }
-      (difference.sum / difference.size).seconds.in_days.round(1)
-    end
-
-    def user_days_proofed_to_suspension_avg
-      user_data = User.where(uuid: data[Events::SUSPENDED_USERS]).includes(:profiles)
-        .merge(Profile.active)
-        .pluck(
-          :activated_at,
-          :suspended_at,
-        )
-
-      return 'n/a' if user_data.empty?
-
-      difference = user_data.map { |activated_at, suspended_at| suspended_at - activated_at }
-      (difference.sum / difference.size).seconds.in_days.round(1)
-    end
-
-    def unique_reinstated_users_count
-      @unique_reinstated_users_count ||= data[Events::REINSTATED_USERS].count
-    end
-
-    def user_days_to_reinstatement_avg
-      user_data = User.where(uuid: data[Events::REINSTATED_USERS]).pluck(
-        :suspended_at,
-        :reinstated_at,
-      )
-      return 'n/a' if user_data.empty?
-
-      difference = user_data.map { |suspended_at, reinstated_at| reinstated_at - suspended_at }
-      (difference.sum / difference.size).seconds.in_days.round(1)
-    end
+    
   end
 end
