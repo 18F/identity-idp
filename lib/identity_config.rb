@@ -45,7 +45,7 @@ module IdentityConfig
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)
-    config.add(:account_reset_request_attempt_window_in_days, type: :integer)
+    config.add(:account_reset_request_attempt_window_in_minutes, type: :integer)
     config.add(:account_reset_request_max_attempts, type: :integer)
     config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_sdk_initialization_creds)

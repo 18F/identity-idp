@@ -162,7 +162,7 @@ RSpec.describe AccountReset::RequestController do
     context 'when the Yes, continue deletion... button is clicked multiple times' do
       it 'rate limits submission and prevents multiple sms and emails' do
         max_attempts = IdentityConfig.store.account_reset_request_max_attempts
-        user = create(:user, :with_piv_or_cac, :with_backup_code)
+        user = create(:user, :fully_registered)
         stub_sign_in_before_2fa(user)
         stub_analytics
 
@@ -172,10 +172,12 @@ RSpec.describe AccountReset::RequestController do
         expect(@analytics).to have_logged_event(
           'Account Reset: request',
           success: true,
-          sms_phone: false,
+          sms_phone: true,
           totp: false,
-          piv_cac: true,
+          piv_cac: false,
           email_addresses: 1,
+          request_id: 'fake-message-request-id',
+          message_id: 'fake-message-id',
         )
           .exactly(max_attempts - 1)
           .times
