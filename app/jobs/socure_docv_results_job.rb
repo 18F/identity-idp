@@ -64,6 +64,8 @@ class SocureDocvResultsJob < ApplicationJob
       else
         image_errors = { image_request: [:network_error] }
       end
+    else
+      images = {}
     end
 
     pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
