@@ -13,6 +13,10 @@ properties:
   device_fingerprint:
     type: string
     description: Hashed cookie device UUID
+  google_analytics_cookies:
+    type: object
+    description: |
+      Any Google Analytics cookie values that are present
   language:
     type: string
     description: The locale set by the user.

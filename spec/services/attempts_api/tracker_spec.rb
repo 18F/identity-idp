@@ -6,6 +6,7 @@ RSpec.describe AttemptsApi::Tracker do
       .and_return(attempts_api_enabled)
     allow(request).to receive(:user_agent).and_return('example/1.0')
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
+    allow(request).to receive(:cookies).and_return(nil)
     allow(request).to receive(:headers).and_return(
       { 'CloudFront-Viewer-Address' => '192.0.2.1:1234' },
     )
@@ -45,6 +46,26 @@ RSpec.describe AttemptsApi::Tracker do
         event = subject.track_event(:test_event, foo: :bar, failure_reason: nil)
         expect(event.event_metadata).to_not have_key(:failure_reason)
       end
+    end
+
+    it 'includes GA cookies' do
+      allow(request).to receive(:cookies).and_return(
+        {
+          '_ga' => 'GA1.ABC',
+          '_ga_ABC' => 'GS2.ABC',
+          'other_cookie' => 'abc',
+        },
+      )
+
+      event = subject.track_event(:test_event)
+      expect(event.event_metadata).to include(
+        {
+          google_analytics_cookies: {
+            '_ga' => 'GA1.ABC',
+            '_ga_ABC' => 'GS2.ABC',
+          },
+        },
+      )
     end
 
     it 'should not omit failure reason when success is false and failure_reason is not blank' do
