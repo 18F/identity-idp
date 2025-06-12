@@ -68,7 +68,6 @@ module Idv
           flow_path:,
         )
       end
-
     end
   end
 end
