@@ -32,26 +32,17 @@ module DocAuth
       # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        self.class.last_uploaded_front_image = image
-        error_response = http_error_response(image, 'front')
-        return error_response if error_response
-        DocAuth::Response.new(success: true)
+        post_image('front', image, instance_id)
       end
 
       def post_back_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        self.class.last_uploaded_back_image = image
-        error_response = http_error_response(image, 'back')
-        return error_response if error_response
-        DocAuth::Response.new(success: true)
+        post_image('back', image, instance_id)
       end
 
       def post_passport_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        self.class.last_uploaded_passport_image = image
-        error_response = http_error_response(image, 'passport')
-        return error_response if error_response
-        DocAuth::Response.new(success: true)
+        post_image('passport', image, instance_id)
       end
 
       def post_images(
@@ -106,11 +97,26 @@ module DocAuth
           last_image,
           overriden_config,
           selfie_required,
+          passport_submittal
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument
 
       private
+
+      def post_image(doc_type, image, instance_id)
+        case doc_type
+        when 'front'
+          self.class.last_uploaded_front_image = image
+        when 'back'
+          self.class.last_uploaded_back_image = image
+        when 'passport'
+          self.class.last_uploaded_passport_image = image
+        end
+        error_response = http_error_response(image, doc_type)
+        return error_response if error_response
+        DocAuth::Response.new(success: true)
+      end
 
       def method_mocked?(method_name)
         mocked_response_for_method(method_name).present?
