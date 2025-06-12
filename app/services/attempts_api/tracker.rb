@@ -42,6 +42,7 @@ module AttemptsApi
         language: user&.email_language || I18n.locale.to_s,
         client_port: CloudFrontHeaderParser.new(request).client_port,
         aws_region: IdentityConfig.store.aws_region,
+        google_analytics_cookies: google_analytics_cookies(request),
       }
 
       event_metadata.merge!(extra_metadata)
@@ -81,6 +82,14 @@ module AttemptsApi
     end
 
     private
+
+    def google_analytics_cookies(request)
+      return nil unless request&.cookies
+      request.cookies.filter do |key, value|
+        key == '_ga' && value.start_with?('GA1.') ||
+          key.start_with?('_ga_') && value.start_with?('GS2.')
+      end
+    end
 
     def agency_uuid(event_type:)
       return nil unless user&.id && sp
