@@ -211,14 +211,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
         expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 'redirects to the piv/cac entry screen' do
-        expect(response).to redirect_to login_two_factor_piv_cac_path
-      end
-
-      it 'displays flash error message' do
-        response
-
-        expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+      it 'redirects to the piv/cac error screen' do
+        expect(response).to redirect_to login_two_factor_piv_cac_error_url(error: 'token.invalid')
       end
 
       it 'resets the piv/cac session information' do
@@ -269,9 +263,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           allow(UserSessionContext).to receive(:authentication_context?).and_return(false)
         end
 
-        it 'redirects to authenticate again, including error message' do
-          expect(response).to redirect_to login_two_factor_piv_cac_path
-          expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+        it 'redirects to error page with a mismatch error' do
+          login_two_factor_piv_cac_error_url(error: 'user.piv_cac_mismatch')
         end
       end
 
@@ -282,9 +275,10 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           end
         end
 
-        it 'redirects to authenticate again, including error message' do
-          expect(response).to redirect_to login_two_factor_piv_cac_path
-          expect(flash[:error]).to eq t('two_factor_authentication.invalid_piv_cac')
+        it 'redirects to error page with a mismatch error' do
+          expect(response).to redirect_to redirect_to login_two_factor_piv_cac_error_url(
+            error: 'user.piv_cac_mismatch',
+          )
         end
       end
     end

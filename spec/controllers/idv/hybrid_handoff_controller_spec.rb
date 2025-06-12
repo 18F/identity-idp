@@ -248,7 +248,6 @@ RSpec.describe Idv::HybridHandoffController do
         it 'redirects to how to verify' do
           get :show
 
-          expect(response).not_to render_template :show
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end

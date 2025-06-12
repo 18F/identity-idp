@@ -28,6 +28,9 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
           .call('socure_document_capture', :view, true)
 
+        @selfie_check_required = resolved_authn_context_result.facial_match?
+        @hybrid_flow = false
+
         if document_capture_session.socure_docv_capture_app_url.present?
           @url = document_capture_session.socure_docv_capture_app_url
           return

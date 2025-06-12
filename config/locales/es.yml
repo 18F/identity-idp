@@ -623,8 +623,6 @@ doc_auth.headings.document_capture_selfie: Fotografía de su cara
 doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
-doc_auth.headings.hybrid_handoff: '¿Cómo desea añadir su identificación?'
-doc_auth.headings.hybrid_handoff_selfie: Ingrese su número telefónico para cambiar dispositivos
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.mailing_address: Ingrese su dirección postal
@@ -647,7 +645,6 @@ doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participa
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
 doc_auth.headings.verify_online_mobile: Verifique su identidad en línea con su teléfono
-doc_auth.headings.verify_with_phone: Verifique su identidad con su teléfono
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
@@ -669,8 +666,8 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.hybrid_handoff: Recopilaremos información sobre usted al leer su identificación.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>¿No tiene un teléfono móvil?</strong> Puede verificar su identidad en una oficina de correos de los Estados Unidos.'
+doc_auth.info.hybrid_handoff_no_selfie: Tomará fotografías de su identificación con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
+doc_auth.info.hybrid_handoff_selfie: Tomará fotografías de su identificación y de usted con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
@@ -704,11 +701,12 @@ doc_auth.info.selfie_capture.action.close: Cerrar
 doc_auth.info.selfie_capture.action.retake: Volver a tomar foto
 doc_auth.info.selfie_capture.action.submit: Se tomó la foto. Enviar la foto.
 doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
+doc_auth.info.socure_basic_idv: '%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación con Socure.'
+doc_auth.info.socure_hybrid_flow_html: Está usando %{app_name} para verificar su identidad y acceder a <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv_finish: Cuando acabe de tomar las fotos, %{app_name} terminará de verificar su información.
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
-doc_auth.info.tag: Recomendado
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
-doc_auth.info.upload_from_phone: No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos. Su teléfono móvil debe tener una cámara y un navegador web.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo puede usar una licencia de conducir de los EE. UU. o una identificación estatal.</strong> Para esta opción, no puede usar un pasaporte estadounidense.
 doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
@@ -1004,17 +1002,17 @@ headings.piv_cac_login.new: Inicie sesión con su identificación de empleado de
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-headings.piv_cac.certificate.bad: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.certificate.expired: El certificado de la tarjeta PIV o CAC que seleccionó ya venció
-headings.piv_cac.certificate.invalid: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
+headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
+headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
+headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
 headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta PIV o CAC
-headings.piv_cac.certificate.revoked: El certificado de la tarjeta PIV o CAC que seleccionó fue revocado para su tarjeta
-headings.piv_cac.certificate.unverified: El certificado de la tarjeta PIV o CAC que seleccionó no es válido
-headings.piv_cac.did_not_work: Su tarjeta PIV o CAC no funcionó
-headings.piv_cac.token.bad: Error interno
+headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
+headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
+headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
+headings.piv_cac.did_not_work: Su identificación de empleado del gobierno no funcionó.
+headings.piv_cac.token.bad: Error interno.
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
-headings.piv_cac.token.missing: Error interno
+headings.piv_cac.token.missing: Error interno.
 headings.redirecting: Redirigiendo
 headings.residential_address: Domicilio actual
 headings.session_timeout_warning: '¿Necesita más tiempo?'
@@ -1441,14 +1439,21 @@ instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente 
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
+instructions.mfa.piv_cac.another_method_text: otro método de autenticación.
 instructions.mfa.piv_cac.back_to_sign_in: Vuelva a iniciar sesión
+instructions.mfa.piv_cac.bullet_1: Elija un certificado diferente, por ejemplo, uno asociado a su nombre.
+instructions.mfa.piv_cac.bullet_2_html: '%{link_html} con su dirección de correo electrónico y contraseña y use %{auth_method_link}'
+instructions.mfa.piv_cac.bullet_3: 'Contacte con el servicio de asistencia de %{app_name} para obtener más ayuda.'
 instructions.mfa.piv_cac.confirm_piv_cac: Inserte la tarjeta PIV o CAC asociada con su cuenta en un lector de tarjetas inteligente.
+instructions.mfa.piv_cac.create_account_html: '<strong>¿No tiene una cuenta de %{app_name}?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: 'Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{please_try_again_html}. Contacte con el administrador de su agencia si persiste este problema.'
+instructions.mfa.piv_cac.having_trouble: 'Si tiene problemas para iniciar sesión con su tarjeta PIV o CAC, intente lo siguiente:'
 instructions.mfa.piv_cac.http_failure: El servidor tardó demasiado en responder. Vuelva a intentarlo.
 instructions.mfa.piv_cac.no_certificate_html: Asegúrese de que su tarjeta PIV o CAC esté insertada correctamente en el lector de tarjetas inteligente e %{try_again_html}. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta. %{please_try_again_html} con un certificado diferente. Contacte con el administrador de su agencia si persiste este problema.
 instructions.mfa.piv_cac.please_try_again: vuelva a intentarlo
 instructions.mfa.piv_cac.sign_in: Asegúrese de tener una cuenta de %{app_name} y de tener configurada una tarjeta de verificación de identidad personal (PIV) o una tarjeta de acceso común (CAC) como método de autenticación de dos factores.
+instructions.mfa.piv_cac.signing_in.text: Inicie sesión
 instructions.mfa.piv_cac.step_1: Asígnele un alias.
 instructions.mfa.piv_cac.step_1_info: Si agrega más de una tarjeta PIV o CAC, podrá distinguirlas.
 instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de tarjetas.
@@ -1492,6 +1497,7 @@ links.resend: Volver a enviar
 links.reverify: Verifique su identidad de nuevo.
 links.sign_in: Iniciar sesión
 links.sign_out: Cerrar sesión
+links.try_again: Volver a intentarlo
 links.two_factor_authentication.send_another_code: Enviar otro código
 links.what_is_totp: '¿Qué es una aplicación de autenticación?'
 login_cancel.account_page: página de su cuenta
@@ -1673,7 +1679,6 @@ titles.confirmations.show: Elija una contraseña
 titles.create_account: Crear una cuenta
 titles.doc_auth.address: Actualice su domicilio actual
 titles.doc_auth.doc_capture: Agregue su identificación
-titles.doc_auth.hybrid_handoff: Verifique su identidad
 titles.doc_auth.link_sent: Vínculo enviado
 titles.doc_auth.processing_images: Procesando sus imágenes
 titles.doc_auth.ssn: Ingrese su número de Seguro Social
@@ -1761,7 +1766,6 @@ two_factor_authentication.important_alert_icon: icono importante de alerta
 two_factor_authentication.invalid_backup_code: Ese código de recuperación no es válido.
 two_factor_authentication.invalid_otp: Ese código de un solo uso no es válido. Inténtelo de nuevo o solicite un nuevo código.
 two_factor_authentication.invalid_personal_key: Esa clave personal no es válida.
-two_factor_authentication.invalid_piv_cac: Esa tarjeta PIV o CAC no funcionó. Asegúrese de que sea la tarjeta PIV o CAC correcta para esta cuenta. Si lo es, puede haber un problema con el PIN de su tarjeta PIV o CAC, o bien el problema es nuestro. Inténtelo de nuevo o elija otro método de autenticación.
 two_factor_authentication.learn_more: Obtenga más información sobre las opciones de autenticación
 two_factor_authentication.login_intro: Usted los configuró cuando creó su cuenta.
 two_factor_authentication.login_intro_reauthentication: Antes de que pueda hacer cambios en su cuenta, debemos usar uno de sus métodos de autenticación para confirmar que se trata de usted.

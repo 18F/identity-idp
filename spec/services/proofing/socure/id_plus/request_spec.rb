@@ -4,6 +4,7 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
       user_uuid: user.uuid,
+      user_email: user.email,
       api_key:,
       base_url:,
       timeout:,
@@ -15,7 +16,6 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
   let(:user) { build(:user) }
   let(:input) do
     Proofing::Socure::IdPlus::Input.new(
-      email: user.email,
       **Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
         consent_given_at: '2024-09-01T00:00:00Z',
       ).slice(

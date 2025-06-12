@@ -28,7 +28,6 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        title: 'IRS Verification Report',
         email: email_addresses,
         subject: "IRS Verification Report - #{report_date.to_date}",
         reports: reports,

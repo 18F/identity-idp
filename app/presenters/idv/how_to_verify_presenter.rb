@@ -20,6 +20,14 @@ class Idv::HowToVerifyPresenter
     t('doc_auth.headings.how_to_verify')
   end
 
+  def hybrid_handoff_text
+    if selfie_required
+      t('doc_auth.info.hybrid_handoff_selfie')
+    else
+      t('doc_auth.info.hybrid_handoff_no_selfie')
+    end
+  end
+
   def online_asset_url
     if mobile_required
       'idv/mobile-phone-icon.svg'
@@ -80,6 +88,10 @@ class Idv::HowToVerifyPresenter
   end
 
   def post_office_instruction
+    t('doc_auth.info.verify_at_post_office_instruction')
+  end
+
+  def post_office_accepted_id_instruction
     t('doc_auth.info.verify_at_post_office_instruction')
   end
 

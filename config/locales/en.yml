@@ -612,8 +612,6 @@ doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
-doc_auth.headings.hybrid_handoff: How would you like to add your ID?
-doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
@@ -636,7 +634,6 @@ doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
-doc_auth.headings.verify_with_phone: Verify your identity using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
@@ -658,8 +655,8 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your ID.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
+doc_auth.info.hybrid_handoff_no_selfie: You’ll take photos of your ID using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
+doc_auth.info.hybrid_handoff_selfie: You’ll take photos of your ID and yourself using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
@@ -693,11 +690,12 @@ doc_auth.info.selfie_capture.action.close: close
 doc_auth.info.selfie_capture.action.retake: retake
 doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
+doc_auth.info.socure_basic_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID with Socure.'
+doc_auth.info.socure_hybrid_flow_html: You are using %{app_name} to verify your identity and access <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
-doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
-doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can only use a U.S. driver’s license or state ID.</strong> You cannot use a U.S. passport book for this option.
 doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
@@ -993,16 +991,16 @@ headings.piv_cac_login.new: Sign in with your government employee ID
 headings.piv_cac_login.success: You successfully set up PIV/CAC as an authentication method.
 headings.piv_cac_setup.already_associated: The PIV/CAC you presented is associated with another user.
 headings.piv_cac_setup.new: Use your PIV/CAC card to secure your account
-headings.piv_cac.certificate.bad: The PIV/CAC certificate you selected is invalid
-headings.piv_cac.certificate.expired: The PIV/CAC certificate you selected has expired
-headings.piv_cac.certificate.invalid: The PIV/CAC certificate you selected is invalid
+headings.piv_cac.certificate.bad: The government employee ID certificate you selected is invalid
+headings.piv_cac.certificate.expired: The government employee ID certificate you selected is expired
+headings.piv_cac.certificate.invalid: The government employee ID certificate you selected is invalid
 headings.piv_cac.certificate.none: We cannot detect a certificate on your government employee ID
-headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your PIV/CAC card
-headings.piv_cac.certificate.revoked: The PIV/CAC certificate you selected has been revoked from your card
-headings.piv_cac.certificate.unverified: The PIV/CAC certificate you selected is invalid
-headings.piv_cac.did_not_work: Your PIV/CAC did not work
+headings.piv_cac.certificate.not_auth_cert: Please choose a different certificate for your government employee ID
+headings.piv_cac.certificate.revoked: The government employee ID certificate you selected has been revoked from your card
+headings.piv_cac.certificate.unverified: The government employee ID certificate you selected is invalid
+headings.piv_cac.did_not_work: Your government employee ID did not work
 headings.piv_cac.token.bad: Internal error.
-headings.piv_cac.token.invalid: The PIV/CAC certificate you selected is invalid.
+headings.piv_cac.token.invalid: The government employee ID certificate you selected is invalid
 headings.piv_cac.token.missing: Internal error.
 headings.redirecting: Redirecting
 headings.residential_address: Current residential address
@@ -1430,14 +1428,21 @@ instructions.mfa.authenticator.manual_entry: Or enter this code manually into yo
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
+instructions.mfa.piv_cac.another_method_text: another authentication method.
 instructions.mfa.piv_cac.back_to_sign_in: Go back to sign in
+instructions.mfa.piv_cac.bullet_1: Choosing a different certificate, such as one associated with your name.
+instructions.mfa.piv_cac.bullet_2_html: '%{link_html} in with your email address and password and using %{auth_method_link}'
+instructions.mfa.piv_cac.bullet_3: 'Contacting %{app_name} support for additional help.'
 instructions.mfa.piv_cac.confirm_piv_cac: Insert your PIV/CAC that you associated with your account into a smart card reader.
+instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name} account?</strong>'
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
+instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
 instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
 instructions.mfa.piv_cac.sign_in: Make sure you have a %{app_name} account and you’ve set up your Personal Identity Verification (PIV) or Common Access Card (CAC) as a two-factor authentication method.
+instructions.mfa.piv_cac.signing_in.text: Signing in
 instructions.mfa.piv_cac.step_1: Give it a nickname
 instructions.mfa.piv_cac.step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
 instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader
@@ -1481,6 +1486,7 @@ links.resend: Resend
 links.reverify: Please verify your identity again.
 links.sign_in: Sign in
 links.sign_out: Sign out
+links.try_again: Try again
 links.two_factor_authentication.send_another_code: Send another code
 links.what_is_totp: What is an authentication app?
 login_cancel.account_page: account page
@@ -1661,7 +1667,6 @@ titles.confirmations.show: Choose a password
 titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
-titles.doc_auth.hybrid_handoff: Verify your ID
 titles.doc_auth.link_sent: Link sent
 titles.doc_auth.processing_images: Processing your images
 titles.doc_auth.ssn: Enter your Social Security number
@@ -1749,7 +1754,6 @@ two_factor_authentication.important_alert_icon: important alert icon
 two_factor_authentication.invalid_backup_code: That backup code is invalid.
 two_factor_authentication.invalid_otp: That one-time code is invalid. Try again or request a new code.
 two_factor_authentication.invalid_personal_key: That personal key is invalid.
-two_factor_authentication.invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for this account. If it is, there may be a problem with your PIV/CAC, PIN, or something went wrong on our end. Try again or choose another authentication method.
 two_factor_authentication.learn_more: Learn more about authentication options
 two_factor_authentication.login_intro: You set these up when you created your account.
 two_factor_authentication.login_intro_reauthentication: Before you can make changes to your account, we need to make sure it’s really you by using one of your authentication methods.

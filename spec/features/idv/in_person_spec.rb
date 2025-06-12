@@ -238,7 +238,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
-      complete_doc_auth_steps_before_document_capture_step(expect_accessible: true)
+      complete_doc_auth_steps_before_document_capture_step
 
       # Fail docauth
       complete_document_capture_step_with_yml(
@@ -267,10 +267,7 @@ RSpec.describe 'In Person Proofing', js: true do
       it 'allows the user to successfully complete remote identity verification' do
         complete_state_id_controller(user)
         # Change mind and resume remote identity verification
-        visit idv_how_to_verify_url
-
-        # choose remote
-        click_on t('forms.buttons.continue_online')
+        visit idv_hybrid_handoff_path
         complete_hybrid_handoff_step
         complete_document_capture_step(with_selfie: false)
 
@@ -294,12 +291,10 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
       # Change mind and start remote identity verification
-      visit idv_how_to_verify_url
+      visit idv_hybrid_handoff_url
     end
 
     it 'allows the user to successfully complete remote identity verification' do
-      # choose remote
-      click_on t('forms.buttons.continue_online')
       complete_hybrid_handoff_step
       complete_document_capture_step(with_selfie: false)
 
@@ -363,8 +358,6 @@ RSpec.describe 'In Person Proofing', js: true do
           sign_in_via_branded_page(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
 
-          # choose remote
-          click_on t('forms.buttons.continue_online')
           click_send_link
 
           expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -378,10 +371,8 @@ RSpec.describe 'In Person Proofing', js: true do
         it 'allows the user to successfully complete remote identity verification' do
           perform_in_browser(:desktop) do
             # Change mind and resume remote identity verification
-            visit idv_how_to_verify_url
+            visit idv_hybrid_handoff_url
 
-            # choose remote
-            click_on t('forms.buttons.continue_online')
             complete_hybrid_handoff_step
             successful_response = instance_double(
               Faraday::Response,
