@@ -27,6 +27,32 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
   end
 
+  context 'with a passport image file' do
+    let(:config) do
+      DocAuth::Mock::Config.new(
+        dpi_threshold: 290,
+        sharpness_threshold: 40,
+        glare_threshold: 40,
+        warn_notifier: warn_notifier,
+      )
+    end
+    let(:passport_submittal) { true }
+    let(:input) { DocAuthImageFixtures.document_passport_image }
+
+    subject(:response) do
+      described_class.new(input, config, false, passport_submittal)
+    end
+
+    it 'returns a successful response with the default passport PII' do
+      expect(response.success?).to eq(true)
+      expect(response.errors).to eq({})
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc.to_h)
+        .to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT)
+      expect(response.attention_with_barcode?).to eq(false)
+    end
+  end
+
   context 'with a yaml file containing PII' do
     let(:input) do
       <<~YAML

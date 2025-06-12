@@ -9,10 +9,11 @@ module DocAuth
 
       attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, config, selfie_required = false)
+      def initialize(uploaded_file, config, selfie_required = false, passport_submittal = false)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @selfie_required = selfie_required
+        @passport_submittal = passport_submittal
         super(
           success: success?,
           errors:,
@@ -93,6 +94,8 @@ module DocAuth
       def pii_from_doc
         if parsed_data_from_uploaded_file.present?
           parsed_pii_from_doc
+        elsif @passport_submittal == true
+          Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT)
         else
           Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
         end
