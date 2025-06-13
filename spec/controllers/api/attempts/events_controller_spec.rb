@@ -47,7 +47,7 @@ RSpec.describe Api::Attempts::EventsController do
       allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
         [{
           'issuer' => sp.issuer,
-          'tokens' => [{ 'value' => hashed_token, 'salt' => salt }],
+          'tokens' => [{ 'value' => hashed_token, 'salt' => salt, 'cost' => cost }],
         }],
       )
       allow(AttemptsApi::RedisClient).to receive(:new).and_return redis_client
