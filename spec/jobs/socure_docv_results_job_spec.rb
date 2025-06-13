@@ -8,11 +8,8 @@ RSpec.describe SocureDocvResultsJob do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider) }
-  let(:document_capture_session) do
-    DocumentCaptureSession.create(user:).tap do |dcs|
-      dcs.socure_docv_transaction_token = '1234'
-    end
-  end
+  let(:socure_docv_transaction_token) { 'abcd' }
+  let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
   let(:decision_value) { 'accept' }
@@ -27,6 +24,10 @@ RSpec.describe SocureDocvResultsJob do
   let(:selfie) { false }
 
   before do
+    document_capture_session.update(
+      socure_docv_transaction_token:,
+      issuer: sp.issuer,
+    )
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
       .and_return(socure_idplus_base_url)
     allow(Analytics).to receive(:new).and_return(fake_analytics)
@@ -39,8 +40,6 @@ RSpec.describe SocureDocvResultsJob do
   end
 
   def enable_attempts_api
-    document_capture_session.update(issuer: sp.issuer)
-
     allow(IdentityConfig.store).to receive(:socure_doc_escrow_enabled).and_return(
       socure_doc_escrow_enabled,
     )
@@ -130,7 +129,7 @@ RSpec.describe SocureDocvResultsJob do
         stub_request(:post, "#{socure_idplus_base_url}/api/3.0/EmailAuthScore")
           .with(body: {
             modules: ['documentverification'],
-            docvTransactionToken: nil,
+            docvTransactionToken: socure_docv_transaction_token,
             customerUserId: user.uuid,
             email: user.last_sign_in_email_address.email,
           })
