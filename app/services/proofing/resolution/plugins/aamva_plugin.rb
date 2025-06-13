@@ -63,6 +63,11 @@ module Proofing
           )
         end
 
+        # @return [Proofing::StateIdResult] A result signifying that the AAMVA plugin was skipped.
+        def skipped_result
+          out_of_aamva_jurisdiction_result
+        end
+
         def proofer
           @proofer ||=
             if IdentityConfig.store.proofer_mock_fallback
