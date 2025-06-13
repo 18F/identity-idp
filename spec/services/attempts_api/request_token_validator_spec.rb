@@ -24,6 +24,7 @@ RSpec.describe AttemptsApi::RequestTokenValidator do
             {
               'value' => hashed_token,
               'salt' => salt,
+              'cost' => cost,
             },
           ],
         },
