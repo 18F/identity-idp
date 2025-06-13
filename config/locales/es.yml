@@ -1593,6 +1593,8 @@ openid_connect.user_info.errors.no_authorization: No se proporcionó ningún enc
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
+profiling_failed.details: No podemos autenticarle ni iniciar sesión. Contacte con su agencia para acceder a los servicios.
+profiling_failed.title: No pudimos iniciar sesión en su cuenta
 report_mailer.deleted_accounts_report.issuers: Emisores
 report_mailer.deleted_accounts_report.name: Nombre
 report_mailer.deleted_accounts_report.subject: Informe de cuentas eliminadas

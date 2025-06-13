@@ -14,6 +14,7 @@ RSpec.describe Funnel::Registration::AddMfa do
       request_ip: Faker::Internet.ip_v4_address,
       threatmetrix_session_id: SecureRandom.uuid,
       email: user.email,
+      in_ab_test_bucket: true,
     }
   end
 
@@ -32,9 +33,12 @@ RSpec.describe Funnel::Registration::AddMfa do
       allow(FeatureManagement)
         .to receive(:account_creation_device_profiling_collecting_enabled?)
         .and_return(:collect_only)
+
+      allow(IdentityConfig).to receive(:account_creation_tmx_processed_percent)
+        .and_return(100)
     end
     it 'triggers threatmetrix job call' do
-      expect(AccountCreationThreatMetrixJob).to receive(:perform_later)
+      expect(AccountCreationThreatMetrixJob).to receive(:perform_now)
       subject.call(user_id, 'phone', analytics, threatmetrix_attrs)
     end
   end

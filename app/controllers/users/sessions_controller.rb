@@ -273,6 +273,8 @@ module Users
         analytics.banned_user_redirect
         sign_out
         banned_user_url
+      elsif user_account_creation_device_profile_failed?
+        device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
       elsif current_user.accepted_rules_of_use_still_valid?
@@ -336,6 +338,14 @@ module Users
     def randomize_check_password?
       SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
         IdentityConfig.store.compromised_password_randomizer_threshold
+    end
+
+    def user_account_creation_device_profile_failed?
+      return false unless IdentityConfig.store.account_creation_device_profiling == :enabled
+      profiling_result = find_device_profiling_result(
+        DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+      )
+      profiling_result&.rejected?
     end
   end
 

@@ -447,6 +447,53 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'with account creation device profiling enabled' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:valid_params) { { user: { email: user.email, password: user.password } } }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:account_creation_device_profiling).and_return(:enabled)
+        allow(controller).to receive(:find_device_profiling_result).and_return(profiling_result)
+        stub_analytics(user: user)
+      end
+
+      context 'when device profiling fails' do
+        let(:profiling_result) { create(:device_profiling_result, :rejected, user: user) }
+
+        it 'redirects to device profiling failed url after successful authentication' do
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
+            success: true,
+          )
+
+          post :create, params: valid_params
+
+          expect(response).to redirect_to(device_profiling_failed_url)
+        end
+
+        it 'signs in the user but redirects to device profiling failed page' do
+          post :create, params: valid_params
+
+          expect(controller.current_user).to eq(user)
+          expect(response).to redirect_to(device_profiling_failed_url)
+        end
+      end
+
+      context 'when device profiling passes' do
+        let(:profiling_result) { nil }
+
+        it 'continues normal authentication flow to 2FA' do
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
+            success: true,
+          )
+
+          post :create, params: valid_params
+
+          expect(response).to redirect_to(user_two_factor_authentication_url)
+        end
+      end
+    end
+
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
