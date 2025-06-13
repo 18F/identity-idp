@@ -605,7 +605,7 @@ RSpec.describe SocureDocvResultsJob do
       end
     end
 
-    context 'when we get a non-200 HTTP respons back from Socure' do
+    context 'when we get a non-200 HTTP response back from Socure' do
       %w[400 403 404 500].each do |http_status|
         context "Socure returns HTTP #{http_status} with an error body" do
           let(:status) { 'Error' }
