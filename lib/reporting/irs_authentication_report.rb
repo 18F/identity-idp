@@ -77,13 +77,13 @@ module Reporting
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
-        ['System and Application Demand', 'Count',
+        ['Registration Demand', 'Count',
          'The count of new users that started the registration process with Login.gov.'],
-        ['System and Application Errors', 'Count',
+        ['Registration Failures', 'Count',
          'The count of new users who did not complete the registration process'],
-        ['Authentication attempts', 'Count',
+        ['Registration Successes', 'Count',
          'The count of new users who completed the registration process sucessfully'],
-        ['Authentication success rate', 'Percentage',
+        ['Registration Success Rate', 'Percentage',
          'The percentage of new users who completed registration process successfully'],
       ]
     end
@@ -101,22 +101,22 @@ module Reporting
       [
         ['Metric', 'Number of accounts', '% of total from start'],
         [
-          'System and Application Demand',
+          'Registration Demand',
           email_confirmation,
           format_as_percent(numerator: email_confirmation, denominator: email_confirmation),
         ],
         [
-          'System and Application Errors',
+          'Registration Failures',
           users_failed_registration,
           format_as_percent(numerator: users_failed_registration, denominator: email_confirmation),
         ],
         [
-          'Authentication attempts',
+          'Registration Successes',
           user_fully_registered,
           format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
         ],
         [
-          'Authentication success rate',
+          'Registration Success Rate',
           sp_redirect_initiated_new_users,
           format_as_percent(
             numerator: sp_redirect_initiated_new_users,
