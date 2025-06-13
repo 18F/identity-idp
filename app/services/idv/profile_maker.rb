@@ -42,6 +42,8 @@ module Idv
       if fraud_pending_reason.present? && !gpo_verification_needed && !in_person_verification_needed
         profile.deactivate_for_fraud_review
       end
+
+      user.reload
       profile
     end
 
