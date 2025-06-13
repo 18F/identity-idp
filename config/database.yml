@@ -121,8 +121,8 @@ production:
     host: <%= IdentityConfig.store.redshift_endpoint_host %>
     port: 5439
     database: "<%= IdentityConfig.store.redshift_database_name %>"
-    username: "<%= IdentityConfig.store.redshift_username %>"
-    password: "<%= IdentityConfig.store.redshift_password %>"
+    username: "<%= JSON.parse(IdentityConfig.store.redshift_credentials).fetch('username', '') %>"
+    password: "<%= JSON.parse(IdentityConfig.store.redshift_credentials).fetch('password', '') %>"
     encoding: utf8
     database_tasks: false
     replica: true
