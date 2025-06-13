@@ -26,6 +26,15 @@ module Idv
       end
     end
 
+    def write_with_data(image_storage_data:)
+      image_storage_data.keys.each do |key|
+        image = send(key)
+        next unless image.present?
+
+        write_image_with_data(image.bytes, data: image_storage_data[key])
+      end
+    end
+
     def submittable_images
       images.each_with_object({}) do |image, obj|
         obj[image.upload_key] = image.bytes
@@ -65,7 +74,11 @@ module Idv
     private
 
     def write_image(image)
-      encrypted_document_storage_writer.write(image: image)
+      encrypted_document_storage_writer.write(image:)
+    end
+
+    def write_image_with_data(image, data:)
+      encrypted_document_storage_writer.write_with_data(image:, data:)
     end
 
     def encrypted_document_storage_writer

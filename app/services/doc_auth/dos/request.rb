@@ -6,7 +6,7 @@ module DocAuth
       attr_accessor :correlation_id
 
       def fetch
-        # return DocAuth::Respose with DocAuth:Error if workflow invalid
+        # return DocAuth::Response with DocAuth:Error if workflow invalid
         http_response = send_http_request
         # log
         return handle_invalid_response(http_response) unless http_response.success?
