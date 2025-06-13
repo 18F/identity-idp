@@ -69,16 +69,6 @@ module Reporting
           table: lg99_metrics_table,
           filename: 'lg99_metrics',
         ),
-        Reporting::EmailableReport.new(
-          title: "Monthly Suspended User Metrics #{stats_month}",
-          table: suspended_metrics_table,
-          filename: 'suspended_metrics',
-        ),
-        Reporting::EmailableReport.new(
-          title: "Monthly Reinstated User Metrics #{stats_month}",
-          table: reinstated_metrics_table,
-          filename: 'reinstated_metrics',
-        ),
       ]
     end
 
@@ -87,10 +77,10 @@ module Reporting
         ['Metric', 'Unit', 'Definition'],
         ['Fraud Rules Catch Count', 'Count',
          'The count of unique accounts flagged for fraud review.'],
-        ['Fraudulent credentials disabled', 'Count',
+        ['Credentials disabled', 'Count',
          'The count of unique accounts suspended due to ' + '
          suspected fraudulent activity within the reporting month.'],
-        ['Fraudulent credentials reinstated', 'Count',
+        ['Credentials reinstated', 'Count',
          'The count of unique suspended accounts ' + '
          that are reinstated within the reporting month.'],
       ]
@@ -110,53 +100,23 @@ module Reporting
         ['Metric', 'Total', 'Range Start', 'Range End'],
         ['Fraud Rules Catch Count', lg99_unique_users_count.to_s, time_range.begin.to_s,
          time_range.end.to_s],
-      ]
-    rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
-      [
-        ['Error', 'Message'],
-        [err.class.name, err.message],
-      ]
-    end
-
-    def suspended_metrics_table
-      [
-        ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Fraudulent credentials disabled',
+          'Credentials disabled',
           unique_suspended_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
-          'Average Days Creation to Suspension',
-          user_days_to_suspension_avg.to_s,
-          time_range.begin.to_s,
-          time_range.end.to_s,
-        ],
-        [
-          'Average Days Proofed to Suspension',
-          user_days_proofed_to_suspension_avg.to_s,
-          time_range.begin.to_s,
-          time_range.end.to_s,
-        ],
-      ]
-    end
-
-    def reinstated_metrics_table
-      [
-        ['Metric', 'Total', 'Range Start', 'Range End'],
-        [
-          'Fraudulent credentials reinstated',
+          'Credentials reinstated',
           unique_reinstated_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-        [
-          'Average Days to Reinstatement',
-          user_days_to_reinstatement_avg.to_s,
-          time_range.begin.to_s,
-          time_range.end.to_s,
-        ],
+      ]
+    rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
+      [
+        ['Error', 'Message'],
+        [err.class.name, err.message],
       ]
     end
 

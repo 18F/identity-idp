@@ -9,10 +9,10 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
       ['Metric', 'Unit', 'Definition'],
       ['Fraud Rules Catch Count', 'Count',
        'The count of unique accounts flagged for fraud review.'],
-      ['Fraudulent credentials disabled', 'Count',
+      ['Credentials disabled', 'Count',
        'The count of unique accounts suspended due to ' + '
          suspected fraudulent activity within the reporting month.'],
-      ['Fraudulent credentials reinstated', 'Count',
+      ['Credentials reinstated', 'Count',
        'The count of unique suspended accounts ' + '
          that are reinstated within the reporting month.'],
     ]
@@ -29,21 +29,8 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
       ['Metric', 'Total', 'Range Start', 'Range End'],
       ['Fraud Rules Catch Count', '5', time_range.begin.to_s,
        time_range.end.to_s],
-    ]
-  end
-  let(:expected_suspended_metrics_table) do
-    [
-      ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraudulent credentials disabled', '2', time_range.begin.to_s, time_range.end.to_s],
-      ['Average Days Creation to Suspension', '1.5', time_range.begin.to_s, time_range.end.to_s],
-      ['Average Days Proofed to Suspension', '2.0', time_range.begin.to_s, time_range.end.to_s],
-    ]
-  end
-  let(:expected_reinstated_metrics_table) do
-    [
-      ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraudulent credentials reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
-      ['Average Days to Reinstatement', '3.0', time_range.begin.to_s, time_range.end.to_s],
+       ['Credentials disabled', '2', time_range.begin.to_s, time_range.end.to_s],
+       ['Credentials reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
@@ -111,28 +98,6 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
         report.lg99_metrics_table.zip(expected_lg99_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
-      end
-    end
-  end
-
-  describe '#suspended_metrics_table' do
-    it 'renders a suspended metrics table' do
-      aggregate_failures do
-        report.suspended_metrics_table.zip(expected_suspended_metrics_table)
-          .each do |actual, expected|
-            expect(actual).to eq(expected)
-          end
-      end
-    end
-  end
-
-  describe '#reinstated_metrics_table' do
-    it 'renders a reinstated metrics table' do
-      aggregate_failures do
-        report.reinstated_metrics_table.zip(expected_reinstated_metrics_table)
-          .each do |actual, expected|
-            expect(actual).to eq(expected)
-          end
       end
     end
   end
@@ -205,16 +170,6 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
           title: 'Monthly Fraud Metrics Jan-2022',
           filename: 'lg99_metrics',
           table: expected_lg99_metrics_table,
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Monthly Suspended User Metrics Jan-2022',
-          filename: 'suspended_metrics',
-          table: expected_suspended_metrics_table,
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Monthly Reinstated User Metrics Jan-2022',
-          filename: 'reinstated_metrics',
-          table: expected_reinstated_metrics_table,
         ),
       ]
     end
