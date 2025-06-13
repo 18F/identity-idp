@@ -425,8 +425,10 @@ sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
+socure_doc_escrow_enabled: false
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
+socure_docv_images_request_endpoint: ''
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
 socure_docv_webhook_repeat_endpoints: '[]'
@@ -643,6 +645,7 @@ test:
   sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
+  socure_docv_images_request_endpoint: 'https://upload.socure.us/api/5.0/documents/'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   socure_idplus_base_url: 'https://sandbox.socure.test'

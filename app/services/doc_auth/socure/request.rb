@@ -6,7 +6,7 @@ module DocAuth
       def fetch
         # return DocAuth::Response with DocAuth::Error if workflow is invalid
         http_response = send_http_request
-        if http_response&.success? && http_response.body.present?
+        if http_response&.success? && http_response.body.length > 0
           handle_http_response(http_response)
         else
           handle_invalid_response(http_response)
@@ -55,8 +55,20 @@ module DocAuth
         )
       end
 
-      def handle_connection_error(exception:, status: nil, status_message: nil, reference_id: nil)
-        raise NotImplementedError
+      def handle_connection_error(exception:, status: nil, status_message: nil,
+                                  reference_id: nil)
+        NewRelic::Agent.notice_error(exception)
+        {
+          success: false,
+          errors: { network: true },
+          exception: exception,
+          extra: {
+            vendor: 'Socure',
+            vendor_status: status,
+            vendor_status_message: status_message,
+            reference_id:,
+          }.compact,
+        }
       end
 
       def send_http_get_request
@@ -105,9 +117,13 @@ module DocAuth
         URI.join(endpoint)
       end
 
+      def content_type
+        'application/json'
+      end
+
       def request_headers(extras = {})
         {
-          'Content-Type': 'application/json',
+          'Content-Type': content_type,
           Authorization: "SocureApiKey #{IdentityConfig.store.socure_idplus_api_key}",
         }.merge(extras)
       end
