@@ -134,6 +134,29 @@ module AttemptsApi
       )
     end
 
+    def idv_image_retrieval_failed(
+      document_back_image_encryption_key: nil,
+      document_back_image_file_id: nil,
+      document_front_image_encryption_key: nil,
+      document_front_image_file_id: nil,
+      document_passport_image_file_id: nil,
+      document_passport_image_encryption_key: nil,
+      document_selfie_image_encryption_key: nil,
+      document_selfie_image_file_id: nil
+    )
+      track_event(
+        :idv_image_retrieval_failed,
+        document_back_image_encryption_key:,
+        document_back_image_file_id:,
+        document_front_image_encryption_key:,
+        document_front_image_file_id:,
+        document_passport_image_file_id:,
+        document_passport_image_encryption_key:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
+      )
+    end
+
     # @param [Boolean] success True if the link user clicked on is valid and not expired
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user clicks the email link to reset their password
