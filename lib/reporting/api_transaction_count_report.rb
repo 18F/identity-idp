@@ -55,7 +55,8 @@ module Reporting
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
-          'Socure (KYC)',
+          'Socure (KYC) - Shadow',
+          'Socure (KYC) - Non-Shadow',
           'Fraud Score and Attribute',
           'Threat Metrix',
         ],
@@ -65,7 +66,8 @@ module Reporting
           instant_verify_table.first,
           phone_finder_table.first,
           socure_table.first,
-          socure_kyc_table.first,
+          socure_kyc_non_shadow_table.first,
+          socure_kyc_shadow_table.first,
           fraud_score_and_attribute_table.first,
           threat_metrix_table.first,
         ],
@@ -100,8 +102,14 @@ module Reporting
       [socure_table_count, result]
     end
 
-    def socure_kyc_table
-      result = fetch_results(query: socure_kyc_query)
+    def socure_kyc_non_shadow_table
+      result = fetch_results(query: socure_kyc_non_shadow_query)
+      socure_table_count = result.count
+      [socure_table_count, result]
+    end
+
+    def socure_kyc_shadow_table
+      result = fetch_results(query: socure_kyc_shadow_query)
       socure_table_count = result.count
       [socure_table_count, result]
     end
@@ -290,7 +298,7 @@ module Reporting
       QUERY
     end
 
-    def socure_kyc_query
+    def socure_kyc_shadow_query
       <<~QUERY
         fields 
           properties.event_properties.socure_result.success as success,
@@ -310,6 +318,16 @@ module Reporting
           properties.event_properties.socure_result.errors.I919 as I919,
           properties.event_properties.socure_result.errors.R354 as R354
         | filter name = "idv_socure_shadow_mode_proofing_result"
+        | stats count(*) as c
+      QUERY
+    end
+
+    def socure_kyc_non_shadow_query
+      <<~QUERY
+        fields @timestamp, @message, @logStream, @log
+        | filter name='IdV: doc auth verify proofing results' 
+        and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
+        | sort @timestamp desc
         | stats count(*) as c
       QUERY
     end
