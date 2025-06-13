@@ -55,49 +55,40 @@ class SocureDocvResultsJob < ApplicationJob
   private
 
   def record_attempt(docv_result_response:, doc_pii_response: nil)
-    image_errors = {}
-
-    if socure_doc_escrow_enabled?
-      result = fetch_images(docv_result_response.to_h[:reference_id])
-      if result.is_a?(Idv::IdvImages)
-        images = result.attempts_file_data
-      else
-        image_errors = { image_request: [:network_error] }
-      end
-    else
-      images = {}
-    end
-
-    pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
-
-    attempts_api_tracker.idv_document_upload_submitted(
-      **images,
+    job_data = {
+      reference_id: docv_result_response.to_h[:reference_id],
+      document_capture_session_uuid:,
+      pii_from_doc: docv_result_response.pii_from_doc.to_h || {},
+      failure_reason: failure_reason(docv_result_response:, doc_pii_response:) || {},
       success: docv_result_response.success? && doc_pii_response.success?,
-      document_state: pii_from_doc[:state],
-      document_number: pii_from_doc[:state_id_number],
-      document_issued: pii_from_doc[:state_id_issued],
-      document_expiration: pii_from_doc[:state_id_expiration],
-      first_name: pii_from_doc[:first_name],
-      last_name: pii_from_doc[:last_name],
-      date_of_birth: pii_from_doc[:dob],
-      address1: pii_from_doc[:address1],
-      address2: pii_from_doc[:address2],
-      city: pii_from_doc[:city],
-      state: pii_from_doc[:state],
-      zip: pii_from_doc[:zipcode],
-      failure_reason: failure_reason(docv_result_response:, doc_pii_response:, image_errors:),
-    )
+    }
+
+    if IdentityConfig.store.ruby_workers_idv_enabled
+      SocureImageRetrievalJob.perform_later(**job_data)
+    else
+      SocureImageRetrievalJob.perform_now(**job_data)
+    end
   end
 
-  def failure_reason(docv_result_response:, image_errors:, doc_pii_response: nil)
+  def failure_reason(docv_result_response:, doc_pii_response: nil)
     if doc_pii_response.present?
-      failures = attempts_api_tracker.parse_failure_reason(doc_pii_response) || {}
+      parse_failure_reason(doc_pii_response)
     else
-      failures = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
-      failures = failures[:socure].presence || failures || {}
+      failures = parse_failure_reason(docv_result_response) || {}
+      failures[:socure].presence || failures
+    end
+  end
+
+  def parse_failure_reason(result)
+    errors = result.to_h[:error_details]
+
+    if errors.present?
+      parsed_errors = errors.keys.index_with do |k|
+        errors[k].keys
+      end
     end
 
-    failures.merge(image_errors).presence
+    parsed_errors || result.errors.presence
   end
 
   def analytics
@@ -106,18 +97,6 @@ class SocureDocvResultsJob < ApplicationJob
       request: nil,
       session: {},
       sp: document_capture_session.issuer,
-    )
-  end
-
-  def attempts_api_tracker
-    @attempts_api_tracker ||= AttemptsApi::Tracker.new(
-      session_id: nil,
-      request: nil,
-      user: document_capture_session.user,
-      sp:,
-      cookie_device_uuid: nil,
-      sp_request_uri: nil,
-      enabled_for_session: sp&.attempts_api_enabled?,
     )
   end
 
@@ -170,13 +149,5 @@ class SocureDocvResultsJob < ApplicationJob
       user: document_capture_session.user,
       rate_limit_type: :idv_doc_auth,
     )
-  end
-
-  def sp
-    @sp ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
-  end
-
-  def socure_doc_escrow_enabled?
-    sp&.attempts_api_enabled? && IdentityConfig.store.socure_doc_escrow_enabled
   end
 end
