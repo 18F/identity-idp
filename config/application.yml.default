@@ -406,6 +406,7 @@ redshift_database_name: 'analytics'
 redshift_endpoint_host: 'test'
 redshift_host: 'test'
 redshift_secret_arn: 'arn:aws'
+redshift_credentials: '{}'
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
