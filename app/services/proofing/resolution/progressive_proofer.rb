@@ -78,7 +78,7 @@ module Proofing
           timer:,
         )
 
-        state_id_result = aamva_plugin.call(
+        state_id_result = process_state_id(
           applicant_pii:,
           current_sp:,
           state_id_address_resolution_result:,
@@ -169,6 +169,29 @@ module Proofing
                   "No cost token present for proofing vendor #{proofing_vendor}"
           end
         end
+      end
+
+      private
+
+      def process_state_id(
+        applicant_pii:,
+        current_sp:,
+        state_id_address_resolution_result:,
+        ipp_enrollment_in_progress:, timer:
+      )
+        return aamva_plugin.skipped_result if passport_applicant?(applicant_pii)
+
+        aamva_plugin.call(
+          applicant_pii:,
+          current_sp:,
+          state_id_address_resolution_result:,
+          ipp_enrollment_in_progress:,
+          timer:,
+        )
+      end
+
+      def passport_applicant?(applicant_pii)
+        applicant_pii[:id_doc_type] == 'passport'
       end
     end
   end
