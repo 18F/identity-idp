@@ -39,13 +39,6 @@ module Identity
       &IdentityConfig::BUILDER
     )
 
-    Identity::Hostdata.load_config!(
-      app_root: Rails.root,
-      rails_env: Rails.env,
-      write_copy_to: nil,
-      &IdentityConfig::DATA_WAREHOUSE_BUILDER
-    )
-
     config.asset_sources = AssetSources.new(
       manifest_path: Rails.public_path.join('packs', 'manifest.json'),
       cache_manifest: Rails.env.production? || Rails.env.test?,
