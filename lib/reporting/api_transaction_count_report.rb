@@ -256,28 +256,13 @@ module Reporting
     def threat_metrix_query
       <<~QUERY
         filter name = "IdV: doc auth verify proofing results"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state, properties.service_provider as sp,
-
-        #OVERALL
-        properties.event_properties.proofing_results.timed_out as overall_process_timed_out_flag,
-        properties.event_properties.success as overall_process_success,
-        properties.event_properties.proofing_components.document_check as document_check_vendor,
-        properties.event_properties.proofing_results.context.stages.residential_address.vendor_name as address_vendor_name,
-
-
-        #TMX --> threatmetrix
-        properties.event_properties.proofing_results.context.stages.threatmetrix.review_status as tmx_review_status,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.session_id as tmx_sessionID,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.timed_out as tmx_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.transaction_id as tmx_transactionID
-
-        | display uuid, id, timestamp, sp, dol_state,
-        overall_process_timed_out_flag,
-        overall_process_success,
-        document_check_vendor,
-        address_vendor_name
+        | fields
+            properties.user_id as uuid,
+            @timestamp as timestamp,
+            properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success
+        
+        | stats max(tmx_success) as max_tmx_success by uuid
+        
       QUERY
     end
 
