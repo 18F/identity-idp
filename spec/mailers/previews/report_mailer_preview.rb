@@ -171,6 +171,20 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def irs_verification_demographics_report
+    irs_quarterly_report = Reports::IrsVerificationDemographicsReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_quarterly_report.irs_verification_demographics_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example IRS Verification Demographics Report - #{Time.zone.now.to_date}",
+      message: irs_quarterly_report.preamble,
+      attachment_format: :csv,
+      reports: irs_quarterly_report.reports,
+    )
+  end
+
   def monthly_irs_verification_report
     monthly_irs_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)
 
