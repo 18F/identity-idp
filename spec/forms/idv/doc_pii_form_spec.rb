@@ -649,28 +649,6 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      xcontext 'when birth place is nil' do # birthdate not needed
-        let(:subject) { Idv::DocPiiForm.new(pii: nil_birth_place_pii) }
-
-        it 'responds with an unsuccessful result' do
-          result = subject.submit
-
-          expect(result.success?).to eq(false)
-          expect(result.errors[:birth_place]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
-          )
-          expect(result.extra).to eq(
-            attention_with_barcode: false,
-            id_doc_type: 'passport',
-            pii_like_keypaths: pii_like_keypaths_passport,
-            id_issued_status: 'missing',
-            id_expiration_status: 'missing',
-            passport_issued_status: 'present',
-            passport_expiration_status: 'present',
-          )
-        end
-      end
-
       context 'when passport is expired' do
         let(:subject) { Idv::DocPiiForm.new(pii: passport_expired_error_pii) }
 
@@ -693,16 +671,14 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      xcontext 'when passport issued is nil' do # not returned by DocV
+      context 'when passport issued is nil' do # not returned by DocV
         let(:subject) { Idv::DocPiiForm.new(pii: nil_passport_issued_pii) }
 
-        it 'responds with an unsuccessful result' do
+        it 'passport_issued_status is missing' do
           result = subject.submit
 
-          expect(result.success?).to eq(false)
-          expect(result.errors[:passport_issued]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
-          )
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
             id_doc_type: 'passport',
@@ -723,28 +699,6 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:issuing_country_code]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
-          )
-          expect(result.extra).to eq(
-            attention_with_barcode: false,
-            id_doc_type: 'passport',
-            pii_like_keypaths: pii_like_keypaths_passport,
-            id_issued_status: 'missing',
-            id_expiration_status: 'missing',
-            passport_issued_status: 'present',
-            passport_expiration_status: 'present',
-          )
-        end
-      end
-
-      xcontext 'when there is an invalid nationality code' do # not returned by DocV - not needed
-        let(:subject) { Idv::DocPiiForm.new(pii: nationality_code_error_pii) }
-
-        it 'responds with an unsuccessful result' do
-          result = subject.submit
-
-          expect(result.success?).to eq(false)
-          expect(result.errors[:nationality_code]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
           expect(result.extra).to eq(

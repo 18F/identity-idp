@@ -6,30 +6,21 @@ module Idv
 
     validates :mrz,
               presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
-    # :nationality_code,
-    # :birth_place,
-    # :passport_issued,
 
     validates :issuing_country_code,
-              # :nationality_code,
               inclusion: {
                 in: 'USA', message: proc { I18n.t('doc_auth.errors.general.no_liveness') }
               }
 
     validate :passport_expired?
 
-    attr_reader :birth_place, :passport_expiration, :passport_issued,
-                :issuing_country_code, :nationality_code, :mrz
+    attr_reader :passport_expiration, :issuing_country_code, :mrz
 
     def initialize(pii:)
       @pii_from_doc = pii
       @passport_expiration = pii[:passport_expiration]
       @issuing_country_code = pii[:issuing_country_code]
       @mrz = pii[:mrz]
-      # below to be removed? - not needed
-      @birth_place = pii[:birth_place]
-      @passport_issued = pii[:passport_issued]
-      @nationality_code = pii[:nationality_code]
     end
 
     def self.pii_like_keypaths
