@@ -272,11 +272,13 @@ RSpec.describe Idv::IdvImages do
       expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: false)
       expect(writer).to receive(:write_with_data).with(
         image: subject.front.bytes,
-        data: image_storage_data[:front],
+        encryption_key: 'front_key',
+        name: 'front_name',
       )
       expect(writer).to receive(:write_with_data).with(
         image: subject.back.bytes,
-        data: image_storage_data[:back],
+        encryption_key: 'back_key',
+        name: 'back_name',
       )
 
       subject.write_with_data(image_storage_data:)

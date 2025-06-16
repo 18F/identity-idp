@@ -29,12 +29,9 @@ module EncryptedDocStorage
       )
     end
 
-    def write_with_data(image:, data:)
-      img_key = data.find { |k, _v| k.match?(/_encryption_key$/) }.last
-      name = data.find { |k, _v| k.match?(/_file_id$/) }.last
-
+    def write_with_data(image:, encryption_key:, name:)
       storage.write_image(
-        encrypted_image: aes_cipher.encrypt(image, Base64.strict_decode64(img_key)),
+        encrypted_image: aes_cipher.encrypt(image, encryption_key),
         name:,
       )
     end

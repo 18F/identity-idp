@@ -38,13 +38,13 @@ RSpec.describe SocureImageRetrievalJob do
   let(:front) do
     {
       document_front_image_file_id: 'name',
-      document_front_image_encryption_key: '12345',
+      document_front_image_encryption_key: Base64.strict_encode64('12345'),
     }
   end
   let(:back) do
     {
       document_back_image_file_id: 'name',
-      document_back_image_encryption_key: '12345',
+      document_back_image_encryption_key: Base64.strict_encode64('12345'),
     }
   end
 

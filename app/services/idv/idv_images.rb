@@ -31,7 +31,12 @@ module Idv
         image = send(key)
         next unless image.present?
 
-        write_image_with_data(image.bytes, data: image_storage_data[key])
+        encryption_key = Base64.strict_decode64(
+          image_storage_data[key][image.attempts_tracker_encryption_key],
+        )
+        name = image_storage_data[key][image.attempts_tracker_file_id_key]
+
+        write_image_with_data(image.bytes, encryption_key:, name:)
       end
     end
 
@@ -77,8 +82,8 @@ module Idv
       encrypted_document_storage_writer.write(image:)
     end
 
-    def write_image_with_data(image, data:)
-      encrypted_document_storage_writer.write_with_data(image:, data:)
+    def write_image_with_data(image, encryption_key:, name:)
+      encrypted_document_storage_writer.write_with_data(image:, encryption_key:, name:)
     end
 
     def encrypted_document_storage_writer

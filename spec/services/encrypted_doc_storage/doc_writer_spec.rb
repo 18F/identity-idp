@@ -85,7 +85,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         name:,
       )
 
-      subject.write_with_data(image:, data:)
+      subject.write_with_data(image:, name:, encryption_key: key)
     end
   end
 
