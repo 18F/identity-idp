@@ -158,5 +158,66 @@ RSpec.describe AccountReset::RequestController do
 
       expect(response).to redirect_to authentication_methods_setup_url
     end
+
+    context 'when the Yes, continue deletion... button is clicked multiple times' do
+      it 'rate limits submission and prevents multiple sms and emails' do
+        max_attempts = IdentityConfig.store.account_reset_request_max_attempts
+        user = create(:user, :fully_registered)
+        stub_sign_in_before_2fa(user)
+        stub_analytics
+
+        post :create
+        post :create
+
+        expect(@analytics).to have_logged_event(
+          'Account Reset: request',
+          success: true,
+          sms_phone: true,
+          totp: false,
+          piv_cac: false,
+          email_addresses: 1,
+          request_id: 'fake-message-request-id',
+          message_id: 'fake-message-id',
+        )
+          .exactly(max_attempts - 1)
+          .times
+      end
+    end
+
+    context 'when returning to deletion page after previous submission expired' do
+      it 'allows the user to submit a deletion request' do
+        user = create(:user, :fully_registered)
+        stub_sign_in_before_2fa(user)
+        stub_analytics
+
+        post :create
+
+        expect(@analytics).to have_logged_event(
+          'Account Reset: request',
+          success: true,
+          sms_phone: true,
+          totp: false,
+          piv_cac: false,
+          email_addresses: 1,
+          request_id: 'fake-message-request-id',
+          message_id: 'fake-message-id',
+        )
+
+        travel_to(Time.zone.now + 2.days) do
+          post :create
+
+          expect(@analytics).to have_logged_event(
+            'Account Reset: request',
+            success: true,
+            sms_phone: true,
+            totp: false,
+            piv_cac: false,
+            email_addresses: 1,
+            request_id: 'fake-message-request-id',
+            message_id: 'fake-message-id',
+          )
+        end
+      end
+    end
   end
 end
