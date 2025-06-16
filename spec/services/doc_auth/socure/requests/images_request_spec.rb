@@ -12,6 +12,13 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
   subject(:images_request) { described_class.new(reference_id:) }
   let(:body) { DocAuthImageFixtures.zipped_files(reference_id:).to_s }
   let(:status) { 200 }
+  let(:message) do
+    [
+      subject.class.name,
+      'Unexpected HTTP response',
+      status,
+    ].join(' ')
+  end
 
   let(:connection_error_attributes) do
     {
@@ -51,13 +58,6 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
     context 'when the response is empty' do
       let(:body) { '' }
-      let(:message) do
-        [
-          subject.class.name,
-          'Unexpected HTTP response',
-          status,
-        ].join(' ')
-      end
 
       it 'returns an error' do
         response = subject.fetch

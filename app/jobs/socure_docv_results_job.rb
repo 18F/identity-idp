@@ -57,7 +57,8 @@ class SocureDocvResultsJob < ApplicationJob
   def record_attempt(docv_result_response:, doc_pii_response: nil)
     image_errors = {}
 
-    if socure_doc_escrow_enabled?
+    if socure_doc_escrow_enabled? &&
+       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
       front = {
         document_front_image_file_id: doc_escrow_name,
         document_front_image_encryption_key: doc_escrow_key,
@@ -209,6 +210,6 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def doc_escrow_key
-    SecureRandom.bytes(32)
+    Base64.strict_encode64(SecureRandom.bytes(32))
   end
 end

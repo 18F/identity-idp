@@ -17,7 +17,7 @@ class SocureImageRetrievalJob < ApplicationJob
       result.write_with_data(image_storage_data:)
     else
       attempts_api_tracker.idv_image_retrieval_failed(
-        **image_storage_data,
+        **image_storage_data.values.reduce({}) { |a, b| a.merge(b) },
       )
     end
   end
