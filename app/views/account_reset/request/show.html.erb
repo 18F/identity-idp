@@ -25,7 +25,7 @@
       url: account_reset_request_path,
       method: 'POST',
     ) do |f| %>
-  <%= f.submit(t('account_reset.request.yes_continue'), data: { disable_with: "Confirming..." }, class: 'margin-bottom-2') %>
+  <%= f.submit(t('account_reset.request.yes_continue'), data: { disable_with: 'Confirming...' }, class: 'margin-bottom-2') %>
 <% end %>
 
 <%= button_to(
