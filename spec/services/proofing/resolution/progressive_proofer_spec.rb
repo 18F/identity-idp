@@ -422,7 +422,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           state_id_address_resolution_result:,
           state_id_result: satisfy do |result|
             expect(result.success?).to eql(true)
-            expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+            expect(result.vendor_name).to eql('CheckSkipped')
           end,
           ipp_enrollment_in_progress:,
           timer: an_instance_of(JobHelpers::Timer),
@@ -436,7 +436,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
           expect(result.state_id_result).to satisfy do |result|
             expect(result.success?).to eql(true)
-            expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+            expect(result.vendor_name).to eql('CheckSkipped')
           end
           expect(result.device_profiling_result).to eql(threatmetrix_result)
           expect(result.residential_resolution_result).to satisfy do |result|

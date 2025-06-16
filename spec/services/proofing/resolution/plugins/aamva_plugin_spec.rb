@@ -357,10 +357,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   end
 
   describe '#skipped_result' do
-    it 'returns a unsupported jurisdiction result' do
+    it 'returns a check skipped result' do
       plugin.skipped_result.tap do |result|
         expect(result.success?).to eql(true)
-        expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+        expect(result.vendor_name).to eql('CheckSkipped')
       end
     end
   end

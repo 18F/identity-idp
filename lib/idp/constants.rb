@@ -19,6 +19,7 @@ module Idp
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
       STATE_ID_MOCK = 'StateIdMock'
+      AAMVA_CHECK_SKIPPED = 'CheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
     end
 

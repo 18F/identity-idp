@@ -65,7 +65,12 @@ module Proofing
 
         # @return [Proofing::StateIdResult] A result signifying that the AAMVA plugin was skipped.
         def skipped_result
-          out_of_aamva_jurisdiction_result
+          Proofing::StateIdResult.new(
+            errors: {},
+            exception: nil,
+            success: true,
+            vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+          )
         end
 
         def proofer
