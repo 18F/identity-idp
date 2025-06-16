@@ -202,6 +202,5 @@ module Reporting
         logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
-    
   end
 end
