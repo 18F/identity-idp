@@ -17,8 +17,26 @@ module Reporting
     attr_reader :time_range
 
     # @param [Range<Time>] time_range
-    def initialize(time_range:)
-      @time_range = time_range || previous_week_range
+    def initialize(
+      time_range:,
+      verbose: false,
+      progress: false,
+      slice: 6.hours,
+      threads: 1
+    )
+      @time_range = time_range
+      @verbose = verbose
+      @progress = progress
+      @slice = slice
+      @threads = threads
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     def as_tables
@@ -155,8 +173,11 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        progress: false,
-        ensure_complete_logs: false,
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
