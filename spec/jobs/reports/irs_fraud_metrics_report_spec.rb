@@ -60,7 +60,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
     allow(report.irs_fraud_metrics_lg99_report).to receive(:lg99_metrics_table)
       .and_return(mock_identity_verification_lg99_data)
-
   end
 
   it 'sends out a report to just to team data' do
