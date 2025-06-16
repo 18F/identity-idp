@@ -12,13 +12,12 @@ module Idv
           bucket = choose_non_socure_bucket
         elsif resolved_authn_context_result.facial_match?
           bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR)
-        elsif idv_session.passport_allowed # doc_auth_passport_vendor A/B routing
+        elsif idv_session.passport_allowed
           bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_VENDOR)
         else
           bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
         end
 
-        # create ticket to get rid of limit and non_socure_bucket
         if bucket == :socure
           if !add_user_to_socure_set
             bucket = choose_non_socure_bucket # force to lexis_nexis if max user reached

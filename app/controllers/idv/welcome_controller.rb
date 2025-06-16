@@ -90,7 +90,7 @@ module Idv
         idv_session.passport_allowed = nil
         return
       end
-      # return if doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+
       idv_session.passport_allowed ||= begin
         if dos_passport_api_healthy?(analytics:)
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
@@ -99,8 +99,7 @@ module Idv
     end
 
     def passport_status
-      if resolved_authn_context_result.facial_match? # ||
-        #  doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+      if resolved_authn_context_result.facial_match?
         idv_session.passport_allowed = nil
       end
 
