@@ -35,18 +35,20 @@ RSpec.describe SocureImageRetrievalJob do
     allow(writer).to receive(:write_with_data).and_return(result)
   end
 
-  let(:image_storage_data) do
+  let(:front) do
     {
-      front: {
-        document_front_image_file_id: 'name',
-        document_front_image_encryption_key: '12345',
-      },
-      back: {
-        document_back_image_file_id: 'name',
-        document_back_image_encryption_key: '12345',
-      },
+      document_front_image_file_id: 'name',
+      document_front_image_encryption_key: '12345',
     }
   end
+  let(:back) do
+    {
+      document_back_image_file_id: 'name',
+      document_back_image_encryption_key: '12345',
+    }
+  end
+
+  let(:image_storage_data) { { front:, back: } }
 
   before do
     stub_request(:post, socure_image_endpoint)
@@ -108,7 +110,8 @@ RSpec.describe SocureImageRetrievalJob do
 
           it 'tracks the attempt with an image-specific network error' do
             expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
-              **image_storage_data,
+              **front,
+              **back,
             )
 
             perform
