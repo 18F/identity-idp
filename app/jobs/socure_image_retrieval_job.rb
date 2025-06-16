@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SocureImageRetrievalJob < ApplicationJob
-  queue_as :high_socure_docv
+  queue_as :default
 
   attr_reader :document_capture_session_uuid
 
