@@ -32,9 +32,9 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       ['Metric', 'Total', 'Range Start', 'Range End'],
       ['Fraud Rules Catch Count', 5, time_range.begin.to_s,
        time_range.end.to_s],
-      ['Credentials disabled', 2, time_range.begin.to_s,
+      ['Credentials Disabled', 2, time_range.begin.to_s,
        time_range.end.to_s],
-      ['Credentials reinstated', 1, time_range.begin.to_s,
+      ['Credentials Reinstated', 1, time_range.begin.to_s,
        time_range.end.to_s],
     ]
   end

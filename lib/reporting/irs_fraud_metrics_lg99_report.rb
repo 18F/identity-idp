@@ -77,10 +77,10 @@ module Reporting
         ['Metric', 'Unit', 'Definition'],
         ['Fraud Rules Catch Count', 'Count',
          'The count of unique accounts flagged for fraud review.'],
-        ['Credentials disabled', 'Count',
+        ['Credentials Disabled', 'Count',
          'The count of unique accounts suspended due to ' + '
          suspected fraudulent activity within the reporting month.'],
-        ['Credentials reinstated', 'Count',
+        ['Credentials Reinstated', 'Count',
          'The count of unique suspended accounts ' + '
          that are reinstated within the reporting month.'],
       ]
@@ -101,13 +101,13 @@ module Reporting
         ['Fraud Rules Catch Count', lg99_unique_users_count.to_s, time_range.begin.to_s,
          time_range.end.to_s],
         [
-          'Credentials disabled',
+          'Credentials Disabled',
           unique_suspended_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
-          'Credentials reinstated',
+          'Credentials Reinstated',
           unique_reinstated_users_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
