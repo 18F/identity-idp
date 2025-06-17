@@ -309,7 +309,7 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous months's irs credentials report
-      monthly_irs_verification_report: {
+      monthly_irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
