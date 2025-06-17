@@ -16,8 +16,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       "#{report_folder}/definitions.csv",
       "#{report_folder}/overview.csv",
       "#{report_folder}/lg99_metrics.csv",
-      "#{report_folder}/suspended_metrics.csv",
-      "#{report_folder}/reinstated_metrics.csv",
     ]
   end
 
@@ -34,25 +32,9 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       ['Metric', 'Total', 'Range Start', 'Range End'],
       ['Fraud Rules Catch Count', 5, time_range.begin.to_s,
        time_range.end.to_s],
-    ]
-  end
-  let(:mock_suspended_metrics_table) do
-    [
-      ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraudulent credentials disabled', 2, time_range.begin.to_s,
+      ['Credentials Disabled', 2, time_range.begin.to_s,
        time_range.end.to_s],
-      ['Average Days Creation to Suspension', 1.5, time_range.begin.to_s,
-       time_range.end.to_s],
-      ['Average Days Proofed to Suspension', 2.0, time_range.begin.to_s,
-       time_range.end.to_s],
-    ]
-  end
-  let(:mock_reinstated_metrics_table) do
-    [
-      ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Fraudulent credentials reinstated', 1, time_range.begin.to_s,
-       time_range.end.to_s],
-      ['Average Days to Reinstatement', 3.0, time_range.begin.to_s,
+      ['Credentials Reinstated', 1, time_range.begin.to_s,
        time_range.end.to_s],
     ]
   end
@@ -78,12 +60,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
     allow(report.irs_fraud_metrics_lg99_report).to receive(:lg99_metrics_table)
       .and_return(mock_identity_verification_lg99_data)
-
-    allow(report.irs_fraud_metrics_lg99_report).to receive(:suspended_metrics_table)
-      .and_return(mock_suspended_metrics_table)
-
-    allow(report.irs_fraud_metrics_lg99_report).to receive(:reinstated_metrics_table)
-      .and_return(mock_reinstated_metrics_table)
   end
 
   it 'sends out a report to just to team data' do
