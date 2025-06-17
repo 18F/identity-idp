@@ -8,16 +8,15 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false
-        properties: 
+        properties:
           token:
             type: array
             description: Errors that explain the failure.
             items:
               type: string
-              enum: 
+              enum:
                 - The link to delete your Login.gov account has expired. Please create another request to delete your account.
       success:
         type: boolean
         description: |
           Indicates whether the account was successfully deleted.
-     

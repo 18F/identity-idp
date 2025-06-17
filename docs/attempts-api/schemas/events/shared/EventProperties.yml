@@ -9,7 +9,7 @@ properties:
     description: AWS Region in which the event occurred.
   client_port:
     type: string
-    description: Known more commonly as ephemeral port numbers associated  with the Client IP – This is NOT the CSP server port 443 or 80.
+    description: Known more commonly as ephemeral port numbers associated with the Client IP – This is NOT the CSP server port 443 or 80.
   device_fingerprint:
     type: string
     description: Hashed cookie device UUID
@@ -32,10 +32,10 @@ properties:
   user_ip_address:
     type: string
     description: The end user’s IP address.
-  user_uuid: 
+  user_uuid:
     type: string
     description: |
-      The primary key identifying a user in Login.gov. This field is populated only for users who have used their accounts to access the Agency Application, since it is generated when a user provides their consent for the first time. 
+      The primary key identifying a user in Login.gov. This field is populated only for users who have used their accounts to access the Agency Application, since it is generated when a user provides their consent for the first time.
   unique_session_id:
     type: string
     description: |

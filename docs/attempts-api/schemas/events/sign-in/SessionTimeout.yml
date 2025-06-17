@@ -1,4 +1,4 @@
-description:  A logged in user has been inactive long enough to cause a session timeout 
+description: A logged in user has been inactive long enough to cause a session timeout
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

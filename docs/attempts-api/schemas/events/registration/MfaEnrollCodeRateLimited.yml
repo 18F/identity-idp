@@ -6,7 +6,7 @@ allOf:
     properties:
       mfa_device_type:
         type: string
-        enum: 
+        enum:
           - backup_code
           - otp
           - personal_key
