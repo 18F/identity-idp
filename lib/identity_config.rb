@@ -460,7 +460,6 @@ module IdentityConfig
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
     config.add(:socure_docv_images_request_endpoint, type: :string)
-    config.add(:socure_docv_passports_enabled, type: :boolean)
     config.add(:socure_docv_verification_data_test_mode, type: :boolean)
     config.add(:socure_docv_verification_data_test_mode_tokens, type: :json)
     config.add(:socure_docv_webhook_repeat_endpoints, type: :json)
