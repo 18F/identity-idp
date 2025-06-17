@@ -7,7 +7,7 @@ get:
     HTTP GET request to the stream’s Status Endpoint.
   operationId: get_status
   security:
-    - BearerAuth: [ ]
+    - BearerAuth: []
   responses:
     200:
       description: |-
@@ -28,7 +28,7 @@ get:
         The 401 (Unauthorized) status code indicates that the request has not
         been applied because it lacks valid authentication credentials for
         the target resource. Please ensure that the request includes a valid Bearer token.
-    403: 
+    403:
       description: |
         The 403 (Forbidden) status code indicates that the server understood
         the request but refuses to authorize it. Please reach out to your account manager

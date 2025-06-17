@@ -1,4 +1,4 @@
-description:  The user has logged in successfully and is being passed back to the service provider.
+description: The user has logged in successfully and is being passed back to the service provider.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object

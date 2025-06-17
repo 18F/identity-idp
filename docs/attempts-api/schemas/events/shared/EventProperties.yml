@@ -9,7 +9,7 @@ properties:
     description: AWS Region in which the event occurred.
   client_port:
     type: string
-    description: Known more commonly as ephemeral port numbers associated  with the Client IP – This is NOT the CSP server port 443 or 80.
+    description: Known more commonly as ephemeral port numbers associated with the Client IP – This is NOT the CSP server port 443 or 80.
   device_fingerprint:
     type: string
     description: Hashed cookie device UUID

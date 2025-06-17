@@ -10,7 +10,7 @@ properties:
   user-registration-email-confirmed:
     $ref: './registration/UserRegistrationEmailConfirmed.yml'
   user-registration-email-submission-rate-limited:
-    $ref:  './registration/UserRegistrationEmailSubmissionRateLimited.yml'
+    $ref: './registration/UserRegistrationEmailSubmissionRateLimited.yml'
   user-registration-email-submitted:
     $ref: './registration/UserRegistrationEmailSubmitted.yml'
   user-registration-password-submitted:

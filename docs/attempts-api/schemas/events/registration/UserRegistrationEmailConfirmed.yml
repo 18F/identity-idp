@@ -1,4 +1,4 @@
-description:  |
+description: |
   User clicks on the confirmation link sent to their provided email address. Note: Internally, Login's meaning of a 'confirmed' email is overloaded, and also requires that a password has been set. This event uses the plain-language meaning of 'confirmed': a user clicked the link in an email, showing ownership of the email account.
 allOf:
   - $ref: '../shared/EventProperties.yml'
@@ -10,20 +10,20 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false
-        properties: 
+        properties:
           email:
             type: array
             description: An OPTIONAL key that describes errors with the email provided
             items:
               type: string
-              enum: 
+              enum:
                 - already_confirmed
           confirmation_token:
             type: array
             description: An OPTIONAL key that describes errors with the confirmation token
-            items: 
+            items:
               type: string
-              enum: 
+              enum:
                 - expired
                 - not_found
       success:
