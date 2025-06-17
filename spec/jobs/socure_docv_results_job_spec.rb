@@ -140,7 +140,7 @@ RSpec.describe SocureDocvResultsJob do
             body: JSON.generate(socure_response_body),
           )
 
-        stub_request(:post, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+        stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
           .to_return(
             headers: {
               'Content-Type' => 'application/zip',
@@ -228,7 +228,7 @@ RSpec.describe SocureDocvResultsJob do
               let(:socure_image_response_body) { { status:, referenceId:, msg: } }
 
               before do
-                stub_request(:post, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+                stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
                   .to_return(
                     status: http_status,
                     headers: {
@@ -627,7 +627,7 @@ RSpec.describe SocureDocvResultsJob do
                 },
                 body: JSON.generate(socure_response_body),
               )
-            stub_request(:post, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+            stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
               .to_return(
                 headers: {
                   'Content-Type' => 'application/zip',
