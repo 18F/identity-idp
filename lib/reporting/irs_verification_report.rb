@@ -110,12 +110,12 @@ module Reporting
           to_percent(phone_verification_success_results, verification_demand_results),
         ],
         [
-          'Total Verified Success',
+          'Verification Successes',
           total_verified_results,
           to_percent(total_verified_results, verification_demand_results),
         ],
         [
-          'Verification Fallouts',
+          'Verification Failures',
           verification_demand_results - total_verified_results,
           to_percent(
             verification_demand_results - total_verified_results,
@@ -133,8 +133,8 @@ module Reporting
          'Users who successfully completed document authentication'],
         ['Information Validation Success', 'Users who successfully validated their information'],
         ['Phone Verification Success', 'Users who successfully verified their using their phone'],
-        ['Total Verified', 'Users who completed the entire process'],
-        ['Verification Fallouts',
+        ['Verification Successes', 'Users who completed the entire process'],
+        ['Verification Failures',
          'The percentage of users that did not complete the identity verification process'],
       ]
     end

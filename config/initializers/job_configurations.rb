@@ -308,6 +308,12 @@ else
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Previous months's irs credentials report
+      monthly_irs_cred_metrics_report: {
+        class: 'Reports::IrsMonthlyCredMetricsReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength

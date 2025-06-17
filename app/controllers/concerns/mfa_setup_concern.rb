@@ -98,6 +98,7 @@ module MfaSetupConcern
       email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
       user_uuid: current_user.uuid,
+      in_ab_test_bucket: in_tmx_ab_test_bucket?,
     }
   end
 
@@ -112,6 +113,10 @@ module MfaSetupConcern
       second_mfa_reminder_conversion: user_session.delete(:second_mfa_reminder_conversion),
       success: true,
     )
+  end
+
+  def in_tmx_ab_test_bucket?
+    ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == (:account_creation_tmx_processed)
   end
 
   def determine_next_mfa

@@ -42,9 +42,12 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:account_creation_tmx_processed_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)
+    config.add(:account_reset_request_attempt_window_in_minutes, type: :integer)
+    config.add(:account_reset_request_max_attempts, type: :integer)
     config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_sdk_initialization_creds)
     config.add(:acuant_sdk_initialization_endpoint)
@@ -449,8 +452,10 @@ module IdentityConfig
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent, type: :integer)
     config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
+    config.add(:socure_doc_escrow_enabled, type: :boolean)
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
+    config.add(:socure_docv_images_request_endpoint, type: :string)
     config.add(:socure_docv_verification_data_test_mode, type: :boolean)
     config.add(:socure_docv_verification_data_test_mode_tokens, type: :json)
     config.add(:socure_docv_webhook_repeat_endpoints, type: :json)

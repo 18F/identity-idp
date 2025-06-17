@@ -16,17 +16,27 @@ RSpec.describe Idv::IdvImage do
     end
 
     context 'when the value is a string' do
-      let(:data) { 'abc' }
-      let(:back_image) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
+      context 'when the value is a valid data URL' do
+        let(:data) { 'abc' }
+        let(:back_image) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
 
-      it 'sets the image value as a readable Idv::DataUrlImage' do
-        expect(subject.value).to be_a_kind_of(Idv::DataUrlImage)
-      end
+        it 'sets the image value as a readable Idv::DataUrlImage' do
+          expect(subject.value).to be_a_kind_of(Idv::DataUrlImage)
+        end
 
-      context 'with bad data' do
-        let(:back_image) { 'not_a_url' }
-        it 'sets the image value as an Idv::DataUrlImage::InvalidUrlFormatError' do
-          expect(subject.value).to be_a_kind_of(Idv::DataUrlImage::InvalidUrlFormatError)
+        context 'with bad data' do
+          let(:back_image) { 'not_a_url' }
+          it 'sets the image value as an Idv::DataUrlImage::InvalidUrlFormatError' do
+            expect(subject.value).to be_a_kind_of(Idv::DataUrlImage::InvalidUrlFormatError)
+          end
+        end
+
+        context 'when binary_image is set to true' do
+          subject(:image) { described_class.new(type:, value:, binary_image: true) }
+
+          it 'sets the image value as an Idv::BinaryImage::InvalidFormatError' do
+            expect(subject.value).to be_a_kind_of(Idv::BinaryImage::InvalidFormatError)
+          end
         end
       end
 
@@ -35,6 +45,22 @@ RSpec.describe Idv::IdvImage do
 
         it 'sets the image value as an Idv::DataUrlImage::InvalidUrlFormatError' do
           expect(subject.value).to be_a_kind_of(Idv::DataUrlImage::InvalidUrlFormatError)
+        end
+      end
+
+      context 'when binary_image is set to true' do
+        subject(:image) { described_class.new(type:, value:, binary_image: true) }
+
+        let(:back_image) { DocAuthImageFixtures.document_back_image }
+        it 'sets the image value as a readable Idv::BinaryImage' do
+          expect(subject.value).to be_a_kind_of(Idv::BinaryImage)
+        end
+
+        context 'when the image is an empty string' do
+          let(:back_image) { '' }
+          it 'sets the image value as an Idv::BinaryImage::InvalidFormatError' do
+            expect(subject.value).to be_a_kind_of(Idv::BinaryImage::InvalidFormatError)
+          end
         end
       end
     end

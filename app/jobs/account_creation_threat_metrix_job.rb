@@ -19,10 +19,27 @@ class AccountCreationThreatMetrixJob < ApplicationJob
     )
   ensure
     user = User.find_by(id: user_id)
+    store_device_profiling_result(user_id, device_profiling_result)
     analytics(user).account_creation_tmx_result(**device_profiling_result.to_h)
   end
 
   def analytics(user)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
+  private
+
+  def store_device_profiling_result(user_id, result)
+    return unless user_id.present?
+    return unless IdentityConfig.store.account_creation_device_profiling == :enabled
+    device_profiling_result = DeviceProfilingResult.find_or_create_by(
+      user_id:,
+      profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+    )
+    device_profiling_result.update(
+      client: result.client,
+      review_status: result.review_status,
+      transaction_id: result.transaction_id,
+    )
   end
 end

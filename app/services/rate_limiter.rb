@@ -215,6 +215,10 @@ class RateLimiter
 
   def self.load_rate_limit_config
     {
+      account_reset_request: {
+        max_attempts: IdentityConfig.store.account_reset_request_max_attempts,
+        attempt_window: IdentityConfig.store.account_reset_request_attempt_window_in_minutes,
+      },
       idv_doc_auth: {
         max_attempts: IdentityConfig.store.doc_auth_max_attempts,
         attempt_window: IdentityConfig.store.doc_auth_attempt_window_in_minutes,

@@ -270,7 +270,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_mfa_setup_path
-    if needs_completion_screen_reason
+    if user_account_creation_device_profile_failed?
+      return device_profiling_failed_url
+    elsif needs_completion_screen_reason
       sign_up_completed_url
     elsif user_needs_to_reactivate_account?
       reactivate_account_url
@@ -519,6 +521,21 @@ class ApplicationController < ActionController::Base
   def user_is_banned?
     return false unless user_signed_in?
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
+  end
+
+  def user_account_creation_device_profile_failed?
+    return false unless IdentityConfig.store.account_creation_device_profiling == :enabled
+    profiling_result = find_device_profiling_result(
+      DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+    )
+    profiling_result&.rejected?
+  end
+
+  def find_device_profiling_result(type)
+    DeviceProfilingResult.for_user(
+      user_id: current_user.id,
+      type: type,
+    ).last
   end
 
   def user_duplicate_profiles_detected?
