@@ -1,7 +1,7 @@
 description: |
   When the user verifies their information when identity proofing.
 allOf:
-  - $ref: '../shared/EventProperties.yml'
+  - $ref: "../shared/EventProperties.yml"
   - type: object
     properties:
       document_state:
@@ -46,7 +46,7 @@ allOf:
                 - resolution
                 - residential_address
                 - state_id
-                - threatmetrix
+                - device_risk_assessment
                 - phone_precheck
           attributes_requiring_additional_verification:
             type: array

@@ -292,7 +292,7 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'tracks the attempts events' do
-          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: true,
             failure_reason: nil,
           )
@@ -328,9 +328,9 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'tracks a failed tmx fraud check' do
-          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
-            failure_reason: { tmx_summary_reason_code: ['Identity_Negative_History'] },
+            failure_reason: { fraud_risk_summary_reason_code: ['Identity_Negative_History'] },
           )
 
           expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
@@ -349,7 +349,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:device_risk_assesment],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },
@@ -439,7 +439,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:device_risk_assesment],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
               device_profiling_adjudication_reason: ['device_profiling_exception'],
             },
@@ -449,10 +449,11 @@ RSpec.describe Idv::VerifyInfoController do
 
         it 'tracks a failed tmx fraud check' do
           stub_attempts_tracker
-          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
             failure_reason: {
-              tmx_summary_reason_code: ['ThreatMetrix review has failed for unknown reasons'],
+              fraud_risk_summary_reason_code:
+                ['Fraud risk assessment has failed for unknown reasons'],
             },
           )
 
@@ -470,10 +471,10 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'tracks a failed tmx fraud check' do
-          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success:,
             failure_reason: {
-              tmx_summary_reason_code: ['Identity_Negative_History'],
+              fraud_risk_summary_reason_code: ['Identity_Negative_History'],
             },
           )
 
@@ -493,7 +494,7 @@ RSpec.describe Idv::VerifyInfoController do
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
             failure_reason: {
-              failed_stages: [:threatmetrix],
+              failed_stages: [:device_risk_assesment],
               device_profiling_adjudication_reason: ['device_profiling_result'],
               resolution_adjudication_reason: ['pass_resolution_and_state_id'],
             },
@@ -513,10 +514,10 @@ RSpec.describe Idv::VerifyInfoController do
 
         it 'tracks a failed tmx fraud check' do
           stub_attempts_tracker
-          expect(@attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
             failure_reason: {
-              tmx_summary_reason_code: ['Identity_Negative_History'],
+              fraud_risk_summary_reason_code: ['Identity_Negative_History'],
             },
           )
 
@@ -543,7 +544,7 @@ RSpec.describe Idv::VerifyInfoController do
         it 'does not track a threatmetrix check' do
           stub_attempts_tracker
 
-          expect(@attempts_api_tracker).not_to receive(:idv_tmx_fraud_check)
+          expect(@attempts_api_tracker).not_to receive(:idv_device_risk_assessment)
 
           get :show
         end

@@ -1,7 +1,7 @@
 description: |
-  This event captures the result of the TMX fraud check during Identity Verification.
+  This event captures the result of the Device Risk Assessment during Identity Verification.
 allOf:
-  - $ref: '../shared/EventProperties.yml'
+  - $ref: "../shared/EventProperties.yml"
   - type: object
     properties:
       failure_reason:
