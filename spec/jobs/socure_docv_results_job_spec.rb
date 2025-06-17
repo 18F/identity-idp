@@ -268,6 +268,8 @@ RSpec.describe SocureDocvResultsJob do
                 expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
                   document_back_image_file_id: doc_escrow_name,
                   document_front_image_file_id: doc_escrow_name,
+                  document_passport_image_file_id: nil,
+                  document_selfie_image_file_id: nil,
                 )
 
                 perform
