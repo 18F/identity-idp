@@ -496,7 +496,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default)
             .and_return(Idp::Constants::Vendors::SOCURE)
           stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-            .to_return({ status: 200, body: { status: 'UP' }.to_json })
+            .to_return_json({ status: 200, body: { status: 'UP' } })
           reload_ab_tests
           DocAuth::Mock::DocAuthMockClient.reset!
           stub_docv_verification_data_pass(
@@ -525,7 +525,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
             @failed_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
-              .to_return({ status: 200, body: { response: 'NO' }.to_json })
+              .to_return_json({ status: 200, body: { response: 'NO' } })
             click_idv_continue
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
@@ -543,7 +543,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
             stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
-              .to_return({ status: 200, body: { response: 'YES' }.to_json })
+              .to_return_json({ status: 200, body: { response: 'YES' } })
             click_idv_continue
             socure_docv_upload_documents(
               docv_transaction_token: @docv_transaction_token,
