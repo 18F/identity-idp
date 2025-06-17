@@ -39,7 +39,8 @@ RSpec.describe Reports::IrsCredentialTenureReport do
   before do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:irs_credential_tenure_report_config).and_return(emails)
-    allow(IdentityConfig.store).to receive(:irs_credential_tenure_report_issuers).and_return(issuers)
+    allow(IdentityConfig.store).to receive(:irs_credential_tenure_report_issuers)
+      .and_return(issuers)
     allow(ReportMailer).to receive(:tables_report).and_call_original
     allow_any_instance_of(described_class).to receive(:upload_to_s3)
     allow(Reporting::IrsCredentialTenureReport).to receive(:new).and_return(tenure_report)
