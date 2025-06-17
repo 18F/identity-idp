@@ -97,10 +97,8 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-            idv_session.flow_path == 'standard' && (
-                # mobile
-                idv_session.skip_hybrid_handoff ||
-                idv_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK)
+            idv_session.flow_path == 'standard' &&
+              idv_session.skip_hybrid_handoff # mobile
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil

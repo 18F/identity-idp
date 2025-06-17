@@ -55,6 +55,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(subject).to receive(:user_session).and_return(user_session)
 
     subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
+    subject.idv_session.skip_hybrid_handoff = true
     allow(IdentityConfig.store)
       .to receive(:socure_docv_verification_data_test_mode)
       .and_return(socure_docv_verification_data_test_mode)
