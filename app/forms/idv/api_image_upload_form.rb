@@ -336,7 +336,7 @@ module Idv
         end
       end
 
-      if document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK &&
+      if !document_capture_session&.doc_auth_vendor == Idp::Constants::Vendors::MOCK &&
          liveness_checking_required && !acuant_sdk_captured?
         errors.add(
           :selfie, t('doc_auth.errors.not_a_file'),
