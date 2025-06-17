@@ -135,6 +135,8 @@ Rails.application.routes.draw do
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
+      get '/login/two_factor/piv_cac/error' => 'two_factor_authentication/piv_cac_verification#error'
+      delete '/login/two_factor/piv_cac/logout' => 'two_factor_authentication/piv_cac_verification#logout'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
@@ -191,6 +193,7 @@ Rails.application.routes.draw do
 
         post '/mock_socure/api/document_request' => 'mock_socure#document_request'
         post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results', as: 'mock_socure_auth_score'
+        post '/mock_socure/api/5.0/documents/:referenceId' => 'mock_socure#images_request', as: 'mock_socure_images_request'
       end
     end
 
@@ -209,6 +212,8 @@ Rails.application.routes.draw do
     get '/duplicate_profiles_detected' => 'duplicate_profiles_detected#show'
     post '/duplicate_profiles_detected/recognize_all_profiles' => 'duplicate_profiles_detected#recognize_all_profiles'
     post '/duplicate_profiles_detected/do_not_recognize_profiles' => 'duplicate_profiles_detected#do_not_recognize_profiles'
+
+    get '/device_profiling_failed', to: 'device_profiling_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'

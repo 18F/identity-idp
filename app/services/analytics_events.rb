@@ -217,12 +217,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks expiration of account reset requests
-  # @param [Integer] count number of requests expired
-  def account_reset_request_expired(count:, **extra)
-    track_event(:account_reset_request_expired, count: count, **extra)
-  end
-
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
@@ -522,6 +516,12 @@ module AnalyticsEvents
   # @param [Integer] count Number of emails sent
   def create_new_device_alert_job_emails_sent(count:, **extra)
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  end
+
+  # User directed to this page after TMX returns a failure
+
+  def device_profiling_failed_visited
+    track_event(:device_profiling_failed_visited)
   end
 
   # @param [String] message the warning
@@ -1555,7 +1555,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     submit_attempts:,
-    selfie_image_fingerprint:,
+    selfie_image_fingerprint: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     passport_image_fingerprint: nil,

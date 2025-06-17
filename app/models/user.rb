@@ -50,6 +50,7 @@ class User < ApplicationRecord
   has_many :in_person_enrollments, dependent: :destroy
   has_many :fraud_review_requests, dependent: :destroy
   has_many :gpo_confirmation_codes, through: :profiles
+  has_many :device_profiling_results, dependent: :destroy
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -237,7 +238,11 @@ class User < ApplicationRecord
   end
 
   def has_in_person_enrollment?
-    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+    active_enrollment.present?
+  end
+
+  def active_enrollment
+    pending_in_person_enrollment || establishing_in_person_enrollment
   end
 
   # @return [Boolean] Whether the user has an establishing in person enrollment.

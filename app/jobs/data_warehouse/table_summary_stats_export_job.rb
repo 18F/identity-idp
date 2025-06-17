@@ -16,6 +16,7 @@ module DataWarehouse
       'sp_return_logs' => 'returned_at',
       'registration_logs' => 'registered_at',
       'letter_requests_to_usps_ftp_logs' => 'ftp_at',
+      'deleted_users' => 'deleted_at',
     }.freeze
 
     def perform(timestamp)
@@ -67,7 +68,6 @@ module DataWarehouse
         fields @timestamp
         | filter #{log_stream_filter_map[log_group_name]}
         | filter @message like /\\{.*/
-        | filter @message not like 'unused_identity_config_keys'
         | stats count() as row_count
       QUERY
     end

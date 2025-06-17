@@ -85,7 +85,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       it 'tracks the successful authentication for existing user' do
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: true,
         )
 
@@ -161,7 +161,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
         it 'tracks as not being from a new device' do
           stub_analytics(user:)
-          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
             success: true,
           )
 
@@ -240,7 +240,7 @@ RSpec.describe Users::SessionsController, devise: true do
       user = create(:user, :fully_registered)
       stub_analytics(user:)
 
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       ).exactly(9).times
 
@@ -291,7 +291,7 @@ RSpec.describe Users::SessionsController, devise: true do
 
       stub_analytics(user:)
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -314,7 +314,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics(user: kind_of(AnonymousUser))
       expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -341,7 +341,7 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -384,7 +384,7 @@ RSpec.describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
 
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: false,
         )
 
@@ -417,7 +417,7 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:sign_in_failure_window) { IdentityConfig.store.max_sign_in_failures_window_in_seconds }
         it 'prevents attempt after exceeding maximum rate limit' do
           allow(IdentityConfig.store).to receive(:max_sign_in_failures).and_return(5)
-          expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
             success: false,
           ).exactly(6).times
 
@@ -447,6 +447,53 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
+    context 'with account creation device profiling enabled' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:valid_params) { { user: { email: user.email, password: user.password } } }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:account_creation_device_profiling).and_return(:enabled)
+        allow(controller).to receive(:find_device_profiling_result).and_return(profiling_result)
+        stub_analytics(user: user)
+      end
+
+      context 'when device profiling fails' do
+        let(:profiling_result) { create(:device_profiling_result, :rejected, user: user) }
+
+        it 'redirects to device profiling failed url after successful authentication' do
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
+            success: true,
+          )
+
+          post :create, params: valid_params
+
+          expect(response).to redirect_to(device_profiling_failed_url)
+        end
+
+        it 'signs in the user but redirects to device profiling failed page' do
+          post :create, params: valid_params
+
+          expect(controller.current_user).to eq(user)
+          expect(response).to redirect_to(device_profiling_failed_url)
+        end
+      end
+
+      context 'when device profiling passes' do
+        let(:profiling_result) { nil }
+
+        it 'continues normal authentication flow to 2FA' do
+          expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
+            success: true,
+          )
+
+          post :create, params: valid_params
+
+          expect(response).to redirect_to(user_two_factor_authentication_url)
+        end
+      end
+    end
+
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
@@ -454,7 +501,7 @@ RSpec.describe Users::SessionsController, devise: true do
       )
 
       stub_analytics(user:)
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       ).exactly(2).times
 
@@ -476,7 +523,7 @@ RSpec.describe Users::SessionsController, devise: true do
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics(user: kind_of(AnonymousUser))
-      expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+      expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
         success: false,
       )
 
@@ -650,7 +697,7 @@ RSpec.describe Users::SessionsController, devise: true do
         )
 
         stub_analytics(user:)
-        expect(@attempts_api_tracker).to receive(:email_and_password_auth).with(
+        expect(@attempts_api_tracker).to receive(:login_email_and_password_auth).with(
           success: true,
         )
 

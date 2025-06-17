@@ -162,7 +162,11 @@ module DocumentCaptureStepHelper
       modules: ['documentverification'],
       docvTransactionToken: docv_transaction_token,
     }
-    request_body[:customerUserId] = user.uuid if user
+
+    if user
+      request_body[:customerUserId] = user.uuid
+      request_body[:email] = user.email
+    end
 
     stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
       .with(body: request_body.to_json)

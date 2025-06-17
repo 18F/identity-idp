@@ -49,7 +49,7 @@ module AttemptsApi
 
     def valid_request_token?
       return if config_data['tokens'].any? do |valid_token|
-        scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(valid_token['salt'])
+        scrypt_salt = valid_token['cost'] + OpenSSL::Digest::SHA256.hexdigest(valid_token['salt'])
         scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
         hashed_req_token = SCrypt::Password.new(scrypted).digest
         ActiveSupport::SecurityUtils.secure_compare(valid_token['value'], hashed_req_token)
@@ -70,10 +70,6 @@ module AttemptsApi
 
     def config_data_exists?
       config_data.present?
-    end
-
-    def cost
-      IdentityConfig.store.scrypt_cost
     end
 
     def service_provider

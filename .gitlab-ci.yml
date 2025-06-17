@@ -236,7 +236,7 @@ migrate:
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
   script:
     - *bundle_install
-    - bundle exec rake db:create db:migrate --trace
+    - bundle exec rake db:migrate:reset --trace
     - git diff db/
     - make lint_database_schema_files
 

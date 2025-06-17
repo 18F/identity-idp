@@ -21,6 +21,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     ipp_enrollment_in_progress:,
+    proofing_vendor:,
     user_id: nil,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
@@ -29,6 +30,8 @@ class ResolutionProofingJob < ApplicationJob
   )
     timer = JobHelpers::Timer.new
 
+    user = User.find_by(id: user_id)
+
     raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
@@ -36,7 +39,6 @@ class ResolutionProofingJob < ApplicationJob
       symbolize_names: true,
     )
 
-    user = User.find_by(id: user_id)
     current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
 
     applicant_pii = decrypted_args[:applicant_pii]
@@ -44,13 +46,14 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii[:uuid] = user.uuid
 
     callback_log_data = make_vendor_proofing_requests(
-      timer: timer,
-      user: user,
-      applicant_pii: applicant_pii,
-      threatmetrix_session_id: threatmetrix_session_id,
-      request_ip: request_ip,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      current_sp: current_sp,
+      timer:,
+      user:,
+      applicant_pii:,
+      threatmetrix_session_id:,
+      request_ip:,
+      ipp_enrollment_in_progress:,
+      current_sp:,
+      proofing_vendor:,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
@@ -65,12 +68,14 @@ class ResolutionProofingJob < ApplicationJob
   ensure
     logger_info_hash(
       name: 'ProofResolution',
+      proofing_vendor:,
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
       residential_resolution_success: callback_log_data&.residential_resolution_success,
       state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
+      user_id: user.uuid,
     )
 
     if use_shadow_mode?(user:, proofing_components:)
@@ -112,17 +117,16 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id:,
     request_ip:,
     ipp_enrollment_in_progress:,
-    current_sp:
+    current_sp:,
+    proofing_vendor:
   )
-    result = progressive_proofer(user:).proof(
+    result = progressive_proofer(user:, proofing_vendor:).proof(
       applicant_pii: applicant_pii,
-      user_email: user_email_for_proofing(user),
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       timer: timer,
       current_sp: current_sp,
-      user_uuid: user.uuid,
       workflow: :idv,
     )
 
@@ -154,8 +158,10 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:)
-    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(user_uuid: user.uuid)
+  def progressive_proofer(user:, proofing_vendor:)
+    @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
+      user_uuid: user.uuid, proofing_vendor:, user_email: user_email_for_proofing(user),
+    )
   end
 
   def shadow_mode_ab_test_bucket(user:)

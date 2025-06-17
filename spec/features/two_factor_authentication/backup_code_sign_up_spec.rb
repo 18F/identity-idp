@@ -34,7 +34,6 @@ RSpec.feature 'sign up with backup code' do
 
       click_continue
 
-      expect(fake_analytics).to have_logged_event('User registration: complete')
       expect(page).to have_title(t('titles.account'))
     end
   end

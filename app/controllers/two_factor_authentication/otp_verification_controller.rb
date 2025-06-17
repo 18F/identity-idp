@@ -45,6 +45,8 @@ module TwoFactorAuthentication
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
+        elsif confirm_eligible_for_platform_upsell?
+          redirect_to webauthn_platform_recommended_path
         else
           redirect_to after_sign_in_path_for(current_user)
         end
@@ -97,6 +99,14 @@ module TwoFactorAuthentication
         ),
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics, threatmetrix_attrs)
+    end
+
+    def confirm_eligible_for_platform_upsell?
+      user_session[:platform_authenticator_available] &&
+        !current_user.webauthn_platform_recommended_dismissed_at? &&
+        phone_configuration.delivery_preference == 'sms' &&
+        mobile? &&
+        current_user.webauthn_configurations.where(platform_authenticator: [false, nil])
     end
 
     def confirm_multiple_factors_enabled

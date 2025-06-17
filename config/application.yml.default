@@ -23,7 +23,10 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
+account_creation_tmx_processed_percent: 0
 account_reset_fraud_user_wait_period_days:
+account_reset_request_attempt_window_in_minutes: 2
+account_reset_request_max_attempts: 2
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
@@ -157,7 +160,6 @@ event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-feature_one_verified_account_log_duplicate_profiles: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -185,9 +187,10 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_resolution_alternate_vendor: none
-idv_resolution_alternate_vendor_percent: 0
 idv_resolution_default_vendor: mock
+idv_resolution_vendor_instant_verify_percent: 0
+idv_resolution_vendor_socure_kyc_percent: 0
+idv_resolution_vendor_switching_enabled: false
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
@@ -234,10 +237,12 @@ irs_authentication_emails: '[]'
 irs_authentication_issuers: '[]'
 irs_credential_tenure_report_config: '[]'
 irs_credential_tenure_report_issuers: '[]'
+irs_credentials_emails: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
 irs_verification_report_config: '[]'
 irs_verification_report_issuers: '[]'
+
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
@@ -425,8 +430,10 @@ sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
+socure_doc_escrow_enabled: false
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
+socure_docv_images_request_endpoint: ''
 socure_docv_verification_data_test_mode: false
 socure_docv_verification_data_test_mode_tokens: '[]'
 socure_docv_webhook_repeat_endpoints: '[]'
@@ -498,6 +505,7 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
+  account_creation_tmx_processed_percent: 100
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   check_user_password_compromised_enabled: true
@@ -562,7 +570,6 @@ production:
   enable_usps_verification: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
-  feature_one_verified_account_log_duplicate_profiles: false
   idv_sp_required: true
   in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''
@@ -644,6 +651,7 @@ test:
   sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'
   socure_docv_document_request_endpoint: 'https://sandbox.socure.test/documnt-request'
+  socure_docv_images_request_endpoint: 'https://upload.socure.us/api/5.0/documents/'
   socure_docv_webhook_secret_key: 'secret-key'
   socure_docv_webhook_secret_key_queue: '["old-key-one", "old-key-two"]'
   socure_idplus_base_url: 'https://sandbox.socure.test'

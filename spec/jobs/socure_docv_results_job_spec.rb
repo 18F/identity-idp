@@ -6,22 +6,49 @@ RSpec.describe SocureDocvResultsJob do
   let(:job) { described_class.new }
   let(:user) { create(:user) }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:document_capture_session) do
-    DocumentCaptureSession.create(user:).tap do |dcs|
-      dcs.socure_docv_transaction_token = '1234'
-    end
-  end
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:sp) { create(:service_provider) }
+  let(:socure_docv_transaction_token) { 'abcd' }
+  let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_type_type) { 'Drivers License' }
   let(:reason_codes) { %w[I831 R810] }
+  let(:writer) { EncryptedDocStorage::DocWriter.new }
+  let(:socure_doc_escrow_enabled) { false }
+  let(:result) do
+    EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+  end
+  let(:selfie) { false }
 
   before do
+    document_capture_session.update(
+      socure_docv_transaction_token:,
+      issuer: sp.issuer,
+    )
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
       .and_return(socure_idplus_base_url)
     allow(Analytics).to receive(:new).and_return(fake_analytics)
+    allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+
+    enable_attempts_api if socure_doc_escrow_enabled
+
+    allow(writer).to receive(:write).and_return(result)
+  end
+
+  def enable_attempts_api
+    allow(IdentityConfig.store).to receive(:socure_doc_escrow_enabled).and_return(
+      socure_doc_escrow_enabled,
+    )
+    allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(
+      socure_doc_escrow_enabled,
+    )
+    allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+      [{ 'issuer' => sp.issuer }],
+    )
   end
 
   describe '#perform' do
@@ -57,7 +84,7 @@ RSpec.describe SocureDocvResultsJob do
               address: '123 Example Street, New York City, NY 10001',
               parsedAddress: {
                 physicalAddress: '123 Example Street',
-                physicalAddress2: 'New York City NY 10001',
+                physicalAddress2: 'Apt 4',
                 city: 'New York City',
                 state: 'NY',
                 country: 'US',
@@ -95,17 +122,54 @@ RSpec.describe SocureDocvResultsJob do
         }
       end
 
+      let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
+      let(:address_data) { pii_from_doc[:parsedAddress] }
+
       before do
-        stub_request(:post, 'https://example.com/api/3.0/EmailAuthScore')
+        stub_request(:post, "#{socure_idplus_base_url}/api/3.0/EmailAuthScore")
+          .with(body: {
+            modules: ['documentverification'],
+            docvTransactionToken: socure_docv_transaction_token,
+            customerUserId: user.uuid,
+            email: user.last_sign_in_email_address.email,
+          })
           .to_return(
             headers: {
               'Content-Type' => 'application/json',
             },
             body: JSON.generate(socure_response_body),
           )
+
+        stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+          .to_return(
+            headers: {
+              'Content-Type' => 'application/zip',
+              'Content-Disposition' => 'attachment; filename=document.zip',
+            },
+            body: DocAuthImageFixtures.zipped_files(
+              reference_id: socure_response_body[:referenceId],
+              selfie:,
+            ).to_s,
+          )
       end
 
       it 'stores the result from the Socure DocV request' do
+        expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+          success: true,
+          document_state: address_data[:state],
+          document_number: pii_from_doc[:documentNumber],
+          document_issued: Date.parse(pii_from_doc[:issueDate]),
+          document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+          first_name: pii_from_doc[:firstName],
+          last_name: pii_from_doc[:surName],
+          date_of_birth: Date.parse(pii_from_doc[:dob]),
+          address1: address_data[:physicalAddress],
+          address2: address_data[:physicalAddress2],
+          city: address_data[:city],
+          state: address_data[:state],
+          zip: address_data[:zip],
+          failure_reason: nil,
+        )
         perform
 
         document_capture_session.reload
@@ -118,10 +182,92 @@ RSpec.describe SocureDocvResultsJob do
         expect(document_capture_session.last_doc_auth_result).to eq('accept')
       end
 
+      context 'document escrow is enabled' do
+        let(:socure_doc_escrow_enabled) { true }
+
+        context 'we get a 200-http response from the image endpoint' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).exactly(2).times
+          end
+
+          it 'stores the images via doc escrow' do
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: address_data[:zip],
+              failure_reason: nil,
+            )
+
+            perform
+          end
+        end
+
+        context 'when we get a non-200 HTTP response back from the image endpoint' do
+          let(:socure_doc_escrow_enabled) { true }
+
+          %w[400 403 404 500].each do |http_status|
+            context "Socure returns HTTP #{http_status} with an error body" do
+              let(:status) { 'Error' }
+              let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
+              let(:msg) { 'InternalServerException' }
+              let(:socure_image_response_body) { { status:, referenceId:, msg: } }
+
+              before do
+                stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+                  .to_return(
+                    status: http_status,
+                    headers: {
+                      'Content-Type' => 'application/json',
+                    },
+                    body: JSON.generate(socure_image_response_body),
+                  )
+              end
+
+              it 'tracks the attempt with an image-specific network error' do
+                expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: true,
+                  document_state: address_data[:state],
+                  document_number: pii_from_doc[:documentNumber],
+                  document_issued: Date.parse(pii_from_doc[:issueDate]),
+                  document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                  first_name: pii_from_doc[:firstName],
+                  last_name: pii_from_doc[:surName],
+                  date_of_birth: Date.parse(pii_from_doc[:dob]),
+                  address1: address_data[:physicalAddress],
+                  address2: address_data[:physicalAddress2],
+                  city: address_data[:city],
+                  state: address_data[:state],
+                  zip: address_data[:zip],
+                  failure_reason: { image_request: [:network_error] },
+                )
+
+                perform
+              end
+            end
+          end
+        end
+      end
+
       context 'facial match' do
         let(:reason_codes_selfie_fail) { ['no match', 'not live'] }
         let(:reason_codes_selfie_not_processed) { ['not procesed'] }
         let(:reason_codes_selfie_pass) { ['match', 'live'] }
+        let(:selfie) { true }
 
         before do
           allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
@@ -141,6 +287,42 @@ RSpec.describe SocureDocvResultsJob do
             document_capture_session_result = document_capture_session.load_result
             expect(document_capture_session_result.selfie_status).to eq(:success)
           end
+
+          context 'document escrow is enabled' do
+            let(:socure_doc_escrow_enabled) { true }
+
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(3).times
+            end
+
+            it 'stores the images via doc escrow' do
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: true,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                document_selfie_image_encryption_key: '12345',
+                document_selfie_image_file_id: 'name',
+                document_state: address_data[:state],
+                document_number: pii_from_doc[:documentNumber],
+                document_issued: Date.parse(pii_from_doc[:issueDate]),
+                document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                first_name: pii_from_doc[:firstName],
+                last_name: pii_from_doc[:surName],
+                date_of_birth: Date.parse(pii_from_doc[:dob]),
+                address1: address_data[:physicalAddress],
+                address2: address_data[:physicalAddress2],
+                city: address_data[:city],
+                state: address_data[:state],
+                zip: address_data[:zip],
+                failure_reason: nil,
+              )
+
+              perform
+            end
+          end
         end
 
         context 'when facial match fails' do
@@ -151,6 +333,40 @@ RSpec.describe SocureDocvResultsJob do
             document_capture_session.reload
             document_capture_session_result = document_capture_session.load_result
             expect(document_capture_session_result.selfie_status).to eq(:fail)
+          end
+
+          context 'and the socure result response is a failure' do
+            let(:decision_value) { 'failed' }
+            context 'doc escrow is enabled' do
+              let(:socure_doc_escrow_enabled) { true }
+
+              it 'stores the images via doc escrow' do
+                expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_back_image_encryption_key: '12345',
+                  document_back_image_file_id: 'name',
+                  document_front_image_encryption_key: '12345',
+                  document_front_image_file_id: 'name',
+                  document_selfie_image_encryption_key: '12345',
+                  document_selfie_image_file_id: 'name',
+                  document_state: address_data[:state],
+                  document_number: pii_from_doc[:documentNumber],
+                  document_issued: Date.parse(pii_from_doc[:issueDate]),
+                  document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                  first_name: pii_from_doc[:firstName],
+                  last_name: pii_from_doc[:surName],
+                  date_of_birth: Date.parse(pii_from_doc[:dob]),
+                  address1: address_data[:physicalAddress],
+                  address2: address_data[:physicalAddress2],
+                  city: address_data[:city],
+                  state: address_data[:state],
+                  zip: address_data[:zip],
+                  failure_reason: { reason_codes: reason_codes_selfie_fail },
+                )
+
+                perform
+              end
+            end
           end
         end
 
@@ -165,7 +381,7 @@ RSpec.describe SocureDocvResultsJob do
           end
         end
 
-        context 'when no facial match does are reeived' do
+        context 'when no facial match docs are received' do
           let(:reason_codes) { ['random code'] }
           it 'selfies status is :not_processed' do
             perform
@@ -214,6 +430,35 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
         end
+
+        context 'doc escrow is enabled' do
+          let(:socure_doc_escrow_enabled) { true }
+
+          it 'stores the images via doc escrow' do
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: address_data[:zip],
+              failure_reason: { unaccepted_id_type: true },
+            )
+
+            perform
+          end
+        end
       end
 
       context 'Socure returns an error' do
@@ -234,6 +479,35 @@ RSpec.describe SocureDocvResultsJob do
             ),
           )
         end
+
+        context 'doc escrow is enabled' do
+          let(:socure_doc_escrow_enabled) { true }
+
+          it 'stores the images via doc escrow' do
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: nil,
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: { unaccepted_id_type: true },
+            )
+
+            perform
+          end
+        end
       end
 
       context 'Pii validation fails' do
@@ -249,6 +523,35 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.success).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.errors).to eq({ pii_validation: 'failed' })
+        end
+
+        context 'doc escrow is enabled' do
+          let(:socure_doc_escrow_enabled) { true }
+
+          it 'tracks the attempt and stores the images via doc escrow' do
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: '10001',
+              failure_reason: { zipcode: [:zipcode] },
+            )
+
+            perform
+          end
         end
       end
 
@@ -295,6 +598,15 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session.load_result).to be_nil
           expect(document_capture_session.last_doc_auth_result).to be_nil
         end
+
+        it 'does not track an event' do
+          expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
+          expect { perform }.to raise_error(
+            RuntimeError,
+            "DocumentCaptureSession not found: #{document_capture_session_uuid}",
+          )
+        end
       end
     end
 
@@ -315,6 +627,17 @@ RSpec.describe SocureDocvResultsJob do
                 },
                 body: JSON.generate(socure_response_body),
               )
+            stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
+              .to_return(
+                headers: {
+                  'Content-Type' => 'application/zip',
+                  'Content-Disposition' => 'attachment; filename=document.zip',
+                },
+                body: DocAuthImageFixtures.zipped_files(
+                  reference_id: socure_response_body[:referenceId],
+                  selfie:,
+                ).to_s,
+              )
           end
 
           it 'logs the status, reference_id, and message' do
@@ -330,6 +653,34 @@ RSpec.describe SocureDocvResultsJob do
                 },
               ),
             )
+          end
+
+          context 'doc escrow is enabled' do
+            let(:socure_doc_escrow_enabled) { true }
+            it 'tracks the attempt and stores the images via doc escrow' do
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                document_state: nil,
+                document_number: nil,
+                document_issued: nil,
+                document_expiration: nil,
+                first_name: nil,
+                last_name: nil,
+                date_of_birth: nil,
+                address1: nil,
+                address2: nil,
+                city: nil,
+                state: nil,
+                zip: nil,
+                failure_reason: { network: true },
+              )
+
+              perform
+            end
           end
         end
 

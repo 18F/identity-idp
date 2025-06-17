@@ -42,9 +42,12 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:account_creation_tmx_processed_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)
+    config.add(:account_reset_request_attempt_window_in_minutes, type: :integer)
+    config.add(:account_reset_request_max_attempts, type: :integer)
     config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_sdk_initialization_creds)
     config.add(:acuant_sdk_initialization_endpoint)
@@ -175,7 +178,6 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
-    config.add(:feature_one_verified_account_log_duplicate_profiles, type: :boolean)
     config.add(:irs_authentication_issuers, type: :json)
     config.add(:irs_authentication_emails, type: :json)
     config.add(:irs_fraud_metrics_issuers, type: :json)
@@ -207,16 +209,13 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(
-      :idv_resolution_alternate_vendor,
-      type: :symbol,
-      enum: [:instant_verify, :socure_kyc, :mock, :none],
-    )
-    config.add(:idv_resolution_alternate_vendor_percent, type: :integer)
-    config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
       enum: [:instant_verify, :socure_kyc, :mock],
     )
+    config.add(:idv_resolution_vendor_instant_verify_percent, type: :integer)
+    config.add(:idv_resolution_vendor_socure_kyc_percent, type: :integer)
+    config.add(:idv_resolution_vendor_switching_enabled, type: :boolean)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_socure_docv_flow_id_only, type: :string)
@@ -455,8 +454,10 @@ module IdentityConfig
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent, type: :integer)
     config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
+    config.add(:socure_doc_escrow_enabled, type: :boolean)
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
+    config.add(:socure_docv_images_request_endpoint, type: :string)
     config.add(:socure_docv_verification_data_test_mode, type: :boolean)
     config.add(:socure_docv_verification_data_test_mode_tokens, type: :json)
     config.add(:socure_docv_webhook_repeat_endpoints, type: :json)
@@ -523,6 +524,7 @@ module IdentityConfig
     config.add(:voice_otp_speech_rate)
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
+    config.add(:irs_credentials_emails, type: :json)
   end.freeze
   # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength

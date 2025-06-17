@@ -14,12 +14,7 @@ module Proofing
           @sp_cost_token = sp_cost_token
         end
 
-        def call(
-          applicant_pii:,
-          current_sp:,
-          ipp_enrollment_in_progress:,
-          timer:
-        )
+        def call(applicant_pii:, current_sp:, ipp_enrollment_in_progress:, timer:)
           return residential_address_unnecessary_result unless ipp_enrollment_in_progress
 
           timer.time('residential address') do

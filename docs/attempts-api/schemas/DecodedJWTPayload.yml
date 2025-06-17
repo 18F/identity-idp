@@ -2,7 +2,7 @@ type: object
 title: 'Decoded JWT Payload'
 description: |
   Default payload body for each event.
-properties: 
+properties:
   aud:
     type: string
     description: Event audience, ie the issuer of the RP's integration.
@@ -19,7 +19,7 @@ properties:
     example: https://secure.login.gov
   jti:
     type: string
-    description: | 
+    description: |
       Transaction ID, a unique identifier for the SET. This functions as the CSP transaction ID.
     example: 6454bc0b-00fc-4404-885c-7f07bef243ce
   events:

@@ -36,12 +36,6 @@ else
         cron: cron_5m,
         args: -> { [Time.zone.now] },
       },
-      # Cancel expired account reset requests
-      expire_account_reset_requests: {
-        class: 'ExpireAccountResetRequestsJob',
-        cron: cron_5m,
-        args: -> { [Time.zone.now] },
-      },
       # Send Total Monthly Auths Report to S3
       total_monthly_auths: {
         class: 'Reports::TotalMonthlyAuthsReport',
@@ -319,6 +313,12 @@ else
       api_transaction_count_report: {
         class: 'Reports::ApiTransactionCountReport',
         cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous months's irs credentials report
+      monthly_irs_cred_metrics_report: {
+        class: 'Reports::IrsMonthlyCredMetricsReport',
+        cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact

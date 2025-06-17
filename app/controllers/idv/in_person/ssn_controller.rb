@@ -48,7 +48,7 @@ module Idv
 
         attempts_api_tracker.idv_ssn_submitted(
           success: form_response.success?,
-          social_security: ssn_params[:ssn],
+          ssn: ssn_params[:ssn],
           failure_reason: attempts_api_tracker.parse_failure_reason(form_response),
         )
 

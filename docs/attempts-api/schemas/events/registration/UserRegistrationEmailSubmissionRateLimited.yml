@@ -1,15 +1,14 @@
 description: |
-  This event can occur during sign up when a user attempts to submit the same email address multiple times without setting up a password. Note that Login.gov does not actually prevent the user from retrying in this case. 
+  This event can occur during sign up when a user attempts to submit the same email address multiple times without setting up a password. Note that Login.gov does not actually prevent the user from retrying in this case.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       email:
         type: string
-      email_already_registered: 
+      email_already_registered:
         type: boolean
         # i'm not sure what this description means, exactly. can we come
         # up with better language to describe this case?
         description: |
           A 'true' value indicates that the user has exceeded the rate limit for submitting an email address that is already registered. A 'false' value indicates that the user has exceeded the rate limit for submitting an email address that has *not* been registered previously.
-

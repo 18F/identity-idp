@@ -26,6 +26,7 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
+
       document_capture_session.requested_at = Time.zone.now
 
       idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -41,6 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_components: ProofingComponents.new(idv_session:),
+        proofing_vendor:,
       )
 
       return true
@@ -56,6 +58,13 @@ module Idv
         { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
       elsif current_user.default_phone_configuration
         { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
+      end
+    end
+
+    def proofing_vendor
+      @proofing_vendor ||= begin
+        # if proofing vendor A/B test is disabled, return default vendor
+        ab_test_bucket(:PROOFING_VENDOR) || IdentityConfig.store.idv_resolution_default_vendor
       end
     end
 
@@ -208,7 +217,6 @@ module Idv
       end
 
       summarize_result_and_rate_limit(form_response)
-      delete_async
 
       if form_response.success?
         save_threatmetrix_status(form_response)
@@ -221,6 +229,7 @@ module Idv
         redirect_to next_step_url
       end
       analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
+      delete_async
     end
 
     def next_step_url
@@ -281,8 +290,9 @@ module Idv
 
     def load_async_state
       dcs_uuid = idv_session.verify_info_step_document_capture_session_uuid
-      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.none if dcs_uuid.nil?
+
+      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingSessionAsyncResult.missing if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
@@ -334,9 +344,9 @@ module Idv
 
       success = (threatmetrix_result[:review_status] == 'pass')
 
-      attempts_api_tracker.idv_tmx_fraud_check(
+      attempts_api_tracker.idv_device_risk_assessment(
         success:,
-        failure_reason: threatmetrix_failure_reason(success, threatmetrix_result),
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
 
       return if success
@@ -365,15 +375,15 @@ module Idv
       threatmetrix_result.delete(:response_body)
     end
 
-    def threatmetrix_failure_reason(success, result)
+    def device_risk_failure_reason(success, result)
       return nil if success
 
-      tmx_summary_reason_code = result.dig(
+      fraud_risk_summary_reason_code = result.dig(
         :response_body,
         :tmx_summary_reason_code,
-      ) || ['ThreatMetrix review has failed for unknown reasons']
+      ) || ['Fraud risk assessment has failed for unknown reasons']
 
-      { tmx_summary_reason_code: }
+      { fraud_risk_summary_reason_code: }
     end
 
     def add_cost(token, transaction_id: nil)
@@ -394,7 +404,10 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address1: pii_from_doc[:address1],
         address2: pii_from_doc[:address2],
-        social_security: idv_session.ssn,
+        ssn: idv_session.ssn,
+        city: pii_from_doc[:city],
+        state: pii_from_doc[:state],
+        zip: pii_from_doc[:zip],
         failure_reason:,
       )
     end
@@ -454,7 +467,9 @@ module Idv
       end
 
       def failed_stages
-        stages.keys.select { |k| !stages[k][:success] }
+        stages.keys.select { |k| !stages[k][:success] }.map do |stage|
+          stage == :threatmetrix ? :device_risk_assesment : stage
+        end
       end
 
       def resolution_adjudication_reason

@@ -15,7 +15,7 @@ module AttemptsApi
 
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
-    def email_and_password_auth(success:)
+    def login_email_and_password_auth(success:)
       track_event(
         'login-email-and-password-auth',
         success:,
@@ -26,31 +26,111 @@ module AttemptsApi
     # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
     # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
     # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
+    # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
+    # @param [String] document_passport_image_encryption_key Base64-encoded AES key for passport
     # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
-    # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfiet
+    # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfie
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason if password was not successfully changed
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason reason the images were not uploaded
     # A user has uploaded documents locally
     def idv_document_uploaded(
         success:,
-        document_back_image_encryption_key:,
-        document_back_image_file_id:,
-        document_front_image_encryption_key:,
-        document_front_image_file_id:,
-        document_selfie_image_encryption_key:,
-        document_selfie_image_file_id:,
+        document_back_image_encryption_key: nil,
+        document_back_image_file_id: nil,
+        document_front_image_encryption_key: nil,
+        document_front_image_file_id: nil,
+        document_passport_image_file_id: nil,
+        document_passport_image_encryption_key: nil,
+        document_selfie_image_encryption_key: nil,
+        document_selfie_image_file_id: nil,
         failure_reason: nil
       )
       track_event(
         'idv-document-uploaded',
         success:,
-        failure_reason:,
         document_back_image_encryption_key:,
         document_back_image_file_id:,
         document_front_image_encryption_key:,
         document_front_image_file_id:,
+        document_passport_image_file_id:,
+        document_passport_image_encryption_key:,
         document_selfie_image_encryption_key:,
         document_selfie_image_file_id:,
+        failure_reason:,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
+    # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
+    # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
+    # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
+    # @param [String] document_passport_image_encryption_key Base64-encoded AES key for passport
+    # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
+    # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfie
+    # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address1
+    # @param [String] address2
+    # @param [String] city
+    # @param [String] state
+    # @param [String] zip
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The document was uploaded during the IDV process
+    def idv_document_upload_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      document_back_image_encryption_key: nil,
+      document_back_image_file_id: nil,
+      document_front_image_encryption_key: nil,
+      document_front_image_file_id: nil,
+      document_passport_image_file_id: nil,
+      document_passport_image_encryption_key: nil,
+      document_selfie_image_encryption_key: nil,
+      document_selfie_image_file_id: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address1: nil,
+      address2: nil,
+      city: nil,
+      state: nil,
+      zip: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_document_upload_submitted,
+        success:,
+        document_state:,
+        document_number:,
+        document_issued:,
+        document_expiration:,
+        document_back_image_encryption_key:,
+        document_back_image_file_id:,
+        document_front_image_encryption_key:,
+        document_front_image_file_id:,
+        document_passport_image_file_id:,
+        document_passport_image_encryption_key:,
+        document_selfie_image_encryption_key:,
+        document_selfie_image_file_id:,
+        first_name:,
+        last_name:,
+        date_of_birth:,
+        address1:,
+        address2:,
+        city:,
+        state:,
+        zip:,
+        failure_reason:,
       )
     end
 
@@ -132,14 +212,14 @@ module AttemptsApi
     end
 
     # @param [Boolean] success
-    # @param [String] social_security
+    # @param [String] ssn Social Security Number
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user inputs their SSN number during Identity verification
-    def idv_ssn_submitted(success:, social_security:, failure_reason: nil)
+    def idv_ssn_submitted(success:, ssn:, failure_reason: nil)
       track_event(
         'idv-ssn-submitted',
         success:,
-        social_security:,
+        ssn:,
         failure_reason:,
       )
     end
@@ -234,13 +314,17 @@ module AttemptsApi
     # @param [String] document_expiration
     # @param [String] first_name
     # @param [String] last_name
-    # @param [String] social_security
+    # @param [String] ssn Social Security Number
+    # @param [String] city
+    # @param [String] state
+    # @param [String] zip
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The verification was submitted during the IDV process
     def idv_verification_submitted(
       success:,
       address1: nil,
       address2: nil,
+      city: nil,
       date_of_birth: nil,
       document_state: nil,
       document_number: nil,
@@ -248,7 +332,9 @@ module AttemptsApi
       document_expiration: nil,
       first_name: nil,
       last_name: nil,
-      social_security: nil,
+      ssn: nil,
+      state: nil,
+      zip: nil,
       failure_reason: nil
     )
       track_event(
@@ -256,6 +342,7 @@ module AttemptsApi
         success:,
         address1:,
         address2:,
+        city:,
         date_of_birth:,
         document_state:,
         document_number:,
@@ -263,7 +350,9 @@ module AttemptsApi
         document_expiration:,
         first_name:,
         last_name:,
-        social_security:,
+        ssn:,
+        state:,
+        zip:,
         failure_reason:,
       )
     end
@@ -416,12 +505,12 @@ module AttemptsApi
       )
     end
 
-    # @param [Boolean] success True means TMX check has a 'pass' review status
+    # @param [Boolean] success True means TMX's device risk check has a 'pass' review status
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    # Tracks the result of the TMX fraud check during Identity Verification
-    def idv_tmx_fraud_check(success:, failure_reason: nil)
+    # Tracks the result of the Device fraud check during Identity Verification
+    def idv_device_risk_assessment(success:, failure_reason: nil)
       track_event(
-        'idv-tmx-fraud-check',
+        'idv-device-risk-assessment',
         success:,
         failure_reason:,
       )

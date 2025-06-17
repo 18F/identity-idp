@@ -1,5 +1,5 @@
 description: |
-  When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call. 
+  When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call.
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -18,10 +18,10 @@ allOf:
         properties:
           telephony_errors:
             type: array
-            description: Errors that describe the failure   
-            items: 
+            description: Errors that describe the failure
+            items:
               type: string
-              enum: 
+              enum:
                 - daily_voice_limit_reached
                 - duplicate_endpoint
                 - generic

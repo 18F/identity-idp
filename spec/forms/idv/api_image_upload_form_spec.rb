@@ -84,6 +84,8 @@ RSpec.describe Idv::ApiImageUploadForm do
     )
   end
 
+  let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
@@ -213,7 +215,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           document_type: document_type,
         )
 
@@ -258,7 +260,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           doc_type_supported: boolean,
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           selfie_live: boolean,
           selfie_quality_good: boolean,
           doc_auth_success: boolean,
@@ -278,14 +280,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          allow(writer).to receive(:write).and_return result
+
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+          end
         end
 
         it 'tracks the event' do
@@ -295,8 +296,27 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
+            failure_reason: nil,
+          )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: true,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: pii_from_doc[:state],
+            document_number: pii_from_doc[:state_id_number],
+            document_issued: pii_from_doc[:state_id_issued],
+            document_expiration: pii_from_doc[:state_id_expiration],
+            first_name: pii_from_doc[:first_name],
+            last_name: pii_from_doc[:last_name],
+            date_of_birth: pii_from_doc[:dob],
+            address1: pii_from_doc[:address1],
+            address2: pii_from_doc[:address2],
+            city: pii_from_doc[:city],
+            state: pii_from_doc[:state],
+            zip: pii_from_doc[:zip],
             failure_reason: nil,
           )
           form.submit
@@ -335,7 +355,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             document_type: document_type,
           )
 
@@ -376,7 +396,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             },
             doc_auth_result: 'Passed',
             errors: {},
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             portrait_match_results: anything,
             remaining_submit_attempts: 3,
             state: 'MT',
@@ -421,15 +441,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            allow(writer).to receive(:write).exactly(3).times
 
-            # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-              .and_return result
-            expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-              .and_return result
-            expect(writer).to receive(:write).with(image: form.send(:selfie_image_bytes))
-              .and_return result
+            allow(writer).to receive(:write).and_return result
+
+            form.send(:images).each do |image|
+              # testing that the storage is happening
+              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+            end
           end
 
           it 'tracks the event' do
@@ -441,6 +459,29 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_front_image_file_id: 'name',
               document_selfie_image_encryption_key: '12345',
               document_selfie_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_selfie_image_encryption_key: '12345',
+              document_selfie_image_file_id: 'name',
+              document_state: pii_from_doc[:state],
+              document_number: pii_from_doc[:state_id_number],
+              document_issued: pii_from_doc[:state_id_issued],
+              document_expiration: pii_from_doc[:state_id_expiration],
+              first_name: pii_from_doc[:first_name],
+              last_name: pii_from_doc[:last_name],
+              date_of_birth: pii_from_doc[:dob],
+              address1: pii_from_doc[:address1],
+              address2: pii_from_doc[:address2],
+              city: pii_from_doc[:city],
+              state: pii_from_doc[:state],
+              zip: pii_from_doc[:zip],
               failure_reason: nil,
             )
             form.submit
@@ -517,7 +558,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           document_type: document_type,
         )
       end
@@ -556,13 +597,12 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
+          allow(writer).to receive(:write)
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+          end
         end
 
         it 'tracks the event' do
@@ -570,12 +610,10 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             document_back_image_encryption_key: '12345',
             document_back_image_file_id: 'name',
-            document_front_image_encryption_key: nil,
-            document_front_image_file_id: nil,
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: { front: [:blank] },
           )
+
+          expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
           form.submit
         end
       end
@@ -618,14 +656,12 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         before do
           expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).exactly(3).times
+          allow(writer).to receive(:write).and_return result
 
-          # testing that the storage is happening
-          expect(writer).to receive(:write).with(image: form.send(:back_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: form.send(:front_image_bytes))
-            .and_return result
-          expect(writer).to receive(:write).with(image: nil).and_call_original
+          form.send(:images).each do |image|
+            # testing that the storage is happening
+            expect(writer).to receive(:write).with(image: image.bytes)
+          end
         end
 
         it 'tracks the event (as a success as doc upload succeeded)' do
@@ -635,10 +671,30 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_back_image_file_id: 'name',
             document_front_image_encryption_key: '12345',
             document_front_image_file_id: 'name',
-            document_selfie_image_encryption_key: nil,
-            document_selfie_image_file_id: nil,
             failure_reason: nil,
           )
+
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: false,
+            document_back_image_encryption_key: '12345',
+            document_back_image_file_id: 'name',
+            document_front_image_encryption_key: '12345',
+            document_front_image_file_id: 'name',
+            document_state: nil,
+            document_number: nil,
+            document_issued: nil,
+            document_expiration: nil,
+            first_name: nil,
+            last_name: nil,
+            date_of_birth: nil,
+            address1: nil,
+            address2: nil,
+            city: nil,
+            state: nil,
+            zip: nil,
+            failure_reason: { front: 'glare' },
+          )
+
           form.submit
         end
       end
@@ -683,7 +739,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             doc_type_supported: boolean,
             doc_auth_success: boolean,
-            liveness_checking_required: boolean,
+            liveness_checking_required: liveness_checking_required,
             selfie_status: :not_processed,
             selfie_live: boolean,
             selfie_quality_good: boolean,
@@ -780,13 +836,14 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
+          liveness_checking_required: liveness_checking_required,
           side: 'both',
           document_type: document_type,
         )
       end
 
       context 'when selfie is checked for liveness' do
+        let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
@@ -808,7 +865,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             user_id: document_capture_session.user.uuid,
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
-            liveness_checking_required: boolean,
+            selfie_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: liveness_checking_required,
             side: 'both',
             document_type: document_type,
           )

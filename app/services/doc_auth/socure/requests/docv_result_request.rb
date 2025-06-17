@@ -9,22 +9,25 @@ module DocAuth
         def initialize(
           customer_user_id:,
           document_capture_session_uuid:,
+          user_email:,
           docv_transaction_token_override: nil
         )
           @customer_user_id = customer_user_id
+          @user_email = user_email
           @document_capture_session_uuid = document_capture_session_uuid
           @docv_transaction_token_override = docv_transaction_token_override
         end
 
         private
 
-        attr_reader :customer_user_id, :docv_transaction_token_override
+        attr_reader :customer_user_id, :docv_transaction_token_override, :user_email
 
         def body
           {
             modules: ['documentverification'],
             docvTransactionToken: docv_transaction_token,
             customerUserId: customer_user_id,
+            email: user_email,
           }.to_json
         end
 
@@ -35,18 +38,7 @@ module DocAuth
         end
 
         def handle_connection_error(exception:, status: nil, status_message: nil, reference_id: nil)
-          NewRelic::Agent.notice_error(exception)
-          DocAuth::Response.new(
-            success: false,
-            errors: { network: true },
-            exception: exception,
-            extra: {
-              vendor: 'Socure',
-              vendor_status: status,
-              vendor_status_message: status_message,
-              reference_id:,
-            }.compact,
-          )
+          DocAuth::Response.new(**super)
         end
 
         def document_capture_session

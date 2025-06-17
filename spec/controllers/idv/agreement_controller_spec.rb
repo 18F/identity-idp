@@ -9,6 +9,7 @@ RSpec.describe Idv::AgreementController do
     stub_sign_in(user)
     stub_up_to(:welcome, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -136,6 +137,49 @@ RSpec.describe Idv::AgreementController do
       }.from(nil)
     end
 
+    context 'with a non-proofed user' do
+      it 'does not track a reproofing event during initial proofing' do
+        expect(@attempts_api_tracker).not_to receive(:idv_reproof)
+
+        put :update, params:
+      end
+    end
+
+    context 'with a previously proofed user' do
+      context 'with a deactivated profile' do
+        before { create(:profile, :deactivated, user:) }
+
+        it 'tracks a reproofing event upon reproofing' do
+          expect(@attempts_api_tracker).to receive(:idv_reproof)
+          put :update, params:
+        end
+      end
+
+      context 'with an activated legacy idv  profile' do
+        it 'does not track a reproofing event during initial proofing' do
+          expect(@attempts_api_tracker).not_to receive(:idv_reproof)
+
+          put :update, params:
+        end
+        context 'when IAL2 is needed' do
+          before do
+            create(:profile, :active, user:)
+            resolved_authn_context_result = Vot::Parser.new(
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+            ).parse
+            allow(subject).to receive(:resolved_authn_context_result).and_return(
+              resolved_authn_context_result,
+            )
+          end
+
+          it 'tracks a reproofing event upon reproofing' do
+            expect(@attempts_api_tracker).to receive(:idv_reproof)
+            put :update, params:
+          end
+        end
+      end
+    end
+
     context 'on success' do
       context 'skip_hybrid_handoff present in params' do
         let(:skip_hybrid_handoff) { '' }
@@ -169,9 +213,9 @@ RSpec.describe Idv::AgreementController do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         end
 
-        it 'redirects to how to verify' do
+        it 'redirects to hybrid handoff with new content' do
           put :update, params: params
-          expect(response).to redirect_to(idv_how_to_verify_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
 
