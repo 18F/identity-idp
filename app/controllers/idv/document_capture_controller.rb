@@ -63,11 +63,9 @@ module Idv
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
           idv_session.flow_path == 'standard' && (
-            # mobile
-            idv_session.skip_doc_auth_from_handoff ||
-              idv_session.skip_hybrid_handoff ||
+            idv_session.skip_hybrid_handoff || # mobile
+              idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required || # desktop but selfie not required
               idv_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK
           )
         },
