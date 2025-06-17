@@ -135,17 +135,21 @@ module DocumentCaptureStepHelper
     end
   end
 
-  def stub_docv_verification_data_pass(docv_transaction_token:, reason_codes: nil, user: nil)
+  def stub_docv_verification_data_pass(
+    docv_transaction_token:, reason_codes: nil, user: nil, document_type: :license
+  )
     stub_docv_verification_data(
-      body: SocureDocvFixtures.pass_json(reason_codes:),
+      body: SocureDocvFixtures.pass_json(reason_codes:, document_type:),
       docv_transaction_token:,
       user:,
     )
   end
 
-  def stub_docv_verification_data_fail_with(docv_transaction_token:, reason_codes:, user: nil)
+  def stub_docv_verification_data_fail_with(
+    docv_transaction_token:, reason_codes:, user: nil, document_type: :license
+  )
     stub_docv_verification_data(
-      body: SocureDocvFixtures.fail_json(reason_codes:),
+      body: SocureDocvFixtures.fail_json(reason_codes:, document_type:),
       docv_transaction_token:,
       user:,
     )
