@@ -35,7 +35,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
   describe '#fetch' do
     before do
-      stub_request(:post, images_request_endpoint)
+      stub_request(:get, images_request_endpoint)
         .to_return(
           status:,
           body:,
@@ -45,7 +45,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
     it 'fetches from the correct url' do
       subject.fetch
 
-      expect(WebMock).to have_requested(:post, images_request_endpoint)
+      expect(WebMock).to have_requested(:get, images_request_endpoint)
         .with(body: {})
     end
 
@@ -90,7 +90,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
       let(:faraday_connection_failed_exception) { Faraday::ConnectionFailed }
 
       before do
-        stub_request(:post, images_request_endpoint).to_raise(faraday_connection_failed_exception)
+        stub_request(:get, images_request_endpoint).to_raise(faraday_connection_failed_exception)
       end
       it 'expect handle_connection_error method to be called' do
         result = subject.fetch

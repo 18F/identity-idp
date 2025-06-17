@@ -134,35 +134,23 @@ module AttemptsApi
       )
     end
 
-    # @param [String] document_back_image_encryption_key Base64-encoded AES key used for back
     # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
-    # @param [String] document_front_image_encryption_key Base64-encoded AES key used for front
     # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
-    # @param [String] document_passport_image_encryption_key Base64-encoded AES key for passport
     # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
-    # @param [String] document_selfie_image_encryption_key Base64-encoded AES key used for selfie
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
     # We were unable to retrieve the images from the identity verification vendor.
     # This is usually due to a timeout or network error.
     def idv_image_retrieval_failed(
-      document_back_image_encryption_key: nil,
       document_back_image_file_id: nil,
-      document_front_image_encryption_key: nil,
       document_front_image_file_id: nil,
       document_passport_image_file_id: nil,
-      document_passport_image_encryption_key: nil,
-      document_selfie_image_encryption_key: nil,
       document_selfie_image_file_id: nil
     )
       track_event(
         :idv_image_retrieval_failed,
-        document_back_image_encryption_key:,
         document_back_image_file_id:,
-        document_front_image_encryption_key:,
         document_front_image_file_id:,
         document_passport_image_file_id:,
-        document_passport_image_encryption_key:,
-        document_selfie_image_encryption_key:,
         document_selfie_image_file_id:,
       )
     end

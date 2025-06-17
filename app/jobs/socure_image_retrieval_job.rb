@@ -16,8 +16,12 @@ class SocureImageRetrievalJob < ApplicationJob
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)
     else
+      # removing the encryption keys from the failure data
+      failure_data = image_storage_data
+        .map { |k, v| v.select { |val| val.match(/file_id$/) } }
+        .reduce({}) { |a, b| a.merge(b) }
       attempts_api_tracker.idv_image_retrieval_failed(
-        **image_storage_data.values.reduce({}) { |a, b| a.merge(b) },
+        **failure_data,
       )
     end
   end

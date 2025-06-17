@@ -266,9 +266,7 @@ RSpec.describe SocureDocvResultsJob do
                 )
 
                 expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
-                  document_back_image_encryption_key: doc_escrow_key,
                   document_back_image_file_id: doc_escrow_name,
-                  document_front_image_encryption_key: doc_escrow_key,
                   document_front_image_file_id: doc_escrow_name,
                 )
 

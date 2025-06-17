@@ -51,7 +51,7 @@ RSpec.describe SocureImageRetrievalJob do
   let(:image_storage_data) { { front:, back: } }
 
   before do
-    stub_request(:post, socure_image_endpoint)
+    stub_request(:get, socure_image_endpoint)
       .to_return(
         headers: {
           'Content-Type' => 'application/zip',
@@ -93,7 +93,7 @@ RSpec.describe SocureImageRetrievalJob do
           let(:socure_image_response_body) { { status:, referenceId:, msg: } }
 
           before do
-            stub_request(:post, socure_image_endpoint)
+            stub_request(:get, socure_image_endpoint)
               .to_return(
                 status: http_status,
                 headers: {
@@ -110,8 +110,8 @@ RSpec.describe SocureImageRetrievalJob do
 
           it 'tracks the attempt with an image-specific network error' do
             expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
-              **front,
-              **back,
+              document_front_image_file_id: 'name',
+              document_back_image_file_id: 'name',
             )
 
             perform
