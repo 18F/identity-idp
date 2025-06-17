@@ -100,7 +100,7 @@ module Idv
             idv_session.flow_path == 'standard' && (
                 # mobile
                 idv_session.skip_hybrid_handoff ||
-                idv_session.desktop_selfie_test_mode_enabled?)
+                idv_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK)
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil

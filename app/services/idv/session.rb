@@ -371,10 +371,6 @@ module Idv
       !!session[:skip_hybrid_handoff]
     end
 
-    def desktop_selfie_test_mode_enabled?
-      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
-    end
-
     def idv_consent_given?
       !!session[:idv_consent_given_at]
     end
