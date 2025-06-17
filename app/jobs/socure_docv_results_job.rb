@@ -53,7 +53,7 @@ class SocureDocvResultsJob < ApplicationJob
           document_capture_session.store_failed_auth_data(
             doc_auth_success: true,
             selfie_status: docv_result_response.selfie_status,
-            errors: { passport: 'failed' }, # mrz_response.errors,
+            errors: { passport: 'failed' },
             front_image_fingerprint: nil,
             back_image_fingerprint: nil,
             passport_image_fingerprint: nil,
