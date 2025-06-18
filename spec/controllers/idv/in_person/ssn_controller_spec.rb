@@ -19,6 +19,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_analytics
     stub_attempts_tracker
     controller.idv_session.flow_path = 'standard'
+    controller.idv_session.skip_doc_auth_from_handoff = true
   end
 
   describe '#step_info' do
