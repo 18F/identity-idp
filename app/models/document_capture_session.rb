@@ -20,7 +20,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   # @param doc_auth_response [DocAuth::Response]
-  def store_result_from_response(doc_auth_response)
+  # @param mrz_status [Symbol, nil] MRZ validation status for passport documents
+  def store_result_from_response(doc_auth_response, mrz_status: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -31,6 +32,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
+    session_result.mrz_status = mrz_status if mrz_status
 
     EncryptedRedisStructStorage.store(
       session_result,
