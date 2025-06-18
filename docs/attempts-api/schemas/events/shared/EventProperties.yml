@@ -10,9 +10,9 @@ properties:
   client_port:
     type: string
     description: Known more commonly as ephemeral port numbers associated with the Client IP – This is NOT the CSP server port 443 or 80.
-  device_fingerprint:
+  device_id:
     type: string
-    description: Hashed cookie device UUID
+    description: Cookie device UUID (version 4). This value is securely randomly generated server-side as 122 bits.
   google_analytics_cookies:
     type: object
     description: |

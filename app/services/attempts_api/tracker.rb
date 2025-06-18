@@ -36,7 +36,7 @@ module AttemptsApi
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
         user_uuid: agency_uuid(event_type: event_type),
-        device_fingerprint: hashed_cookie_device_uuid,
+        device_id: cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         application_url: sp_request_uri,
         language: user&.email_language || I18n.locale.to_s,
@@ -106,11 +106,6 @@ module AttemptsApi
       return nil unless user&.unique_session_id.present?
 
       Digest::SHA1.hexdigest(user&.unique_session_id)
-    end
-
-    def hashed_cookie_device_uuid
-      return nil unless cookie_device_uuid
-      Digest::SHA1.hexdigest(cookie_device_uuid)
     end
 
     def enabled?
