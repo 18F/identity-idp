@@ -120,7 +120,7 @@ module Idv
 
     def validate_form
       success = valid?
-      increment_rate_limiter!
+      increment_rate_limiter! if !final_submission_passed?(success:)
       track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
@@ -133,6 +133,12 @@ module Idv
       track_upload_attempt(response)
 
       response
+    end
+
+    def final_submission_passed?(success:)
+      return unless document_capture_session
+
+      success && errors.empty?
     end
 
     def track_upload_attempt(response)
