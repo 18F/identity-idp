@@ -74,6 +74,10 @@ module DocAuth
           :not_processed
         end
 
+        def liveness_enabled
+          selfie_status != :not_processed
+        end
+
         def extra_attributes
           {
             address_line2_present: address2.present?,
@@ -208,10 +212,6 @@ module DocAuth
 
         def reason_codes_selfie_not_processed
           IdentityConfig.store.idv_socure_reason_codes_docv_selfie_not_processed
-        end
-
-        def liveness_enabled
-          selfie_status != :not_processed
         end
       end
     end

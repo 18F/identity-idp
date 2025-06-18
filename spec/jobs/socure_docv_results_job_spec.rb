@@ -18,9 +18,6 @@ RSpec.describe SocureDocvResultsJob do
   let(:reason_codes) { %w[I831 R810] }
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:socure_doc_escrow_enabled) { false }
-  let(:result) do
-    EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
-  end
   let(:selfie) { false }
 
   before do
@@ -32,20 +29,21 @@ RSpec.describe SocureDocvResultsJob do
       .and_return(socure_idplus_base_url)
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
-    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
     enable_attempts_api if socure_doc_escrow_enabled
-
-    allow(writer).to receive(:write).and_return(result)
   end
 
   def enable_attempts_api
     allow(IdentityConfig.store).to receive(:socure_doc_escrow_enabled).and_return(
       socure_doc_escrow_enabled,
     )
+    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+    allow(writer).to receive(:write_with_data)
+
     allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(
       socure_doc_escrow_enabled,
     )
+
     allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
       [{ 'issuer' => sp.issuer }],
     )
@@ -188,16 +186,16 @@ RSpec.describe SocureDocvResultsJob do
         context 'we get a 200-http response from the image endpoint' do
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(2).times
+            expect(writer).to receive(:write_with_data).exactly(2).times
           end
 
           it 'stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: true,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
+              document_back_image_encryption_key: an_instance_of(String),
+              document_back_image_file_id: an_instance_of(String),
+              document_front_image_encryption_key: an_instance_of(String),
+              document_front_image_file_id: an_instance_of(String),
               document_state: address_data[:state],
               document_number: pii_from_doc[:documentNumber],
               document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -226,6 +224,8 @@ RSpec.describe SocureDocvResultsJob do
               let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
               let(:msg) { 'InternalServerException' }
               let(:socure_image_response_body) { { status:, referenceId:, msg: } }
+              let(:doc_escrow_name) { 'doc_escrow_name' }
+              let(:doc_escrow_key) { 'doc_escrow_key' }
 
               before do
                 stub_request(:get, "https://upload.socure.us/api/5.0/documents/#{socure_response_body[:referenceId]}")
@@ -238,9 +238,18 @@ RSpec.describe SocureDocvResultsJob do
                   )
               end
 
+              before do
+                allow(job).to receive(:doc_escrow_name).and_return(doc_escrow_name)
+                allow(job).to receive(:doc_escrow_key).and_return(doc_escrow_key)
+              end
+
               it 'tracks the attempt with an image-specific network error' do
                 expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: true,
+                  document_back_image_encryption_key: doc_escrow_key,
+                  document_back_image_file_id: doc_escrow_name,
+                  document_front_image_encryption_key: doc_escrow_key,
+                  document_front_image_file_id: doc_escrow_name,
                   document_state: address_data[:state],
                   document_number: pii_from_doc[:documentNumber],
                   document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -253,7 +262,14 @@ RSpec.describe SocureDocvResultsJob do
                   city: address_data[:city],
                   state: address_data[:state],
                   zip: address_data[:zip],
-                  failure_reason: { image_request: [:network_error] },
+                  failure_reason: nil,
+                )
+
+                expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
+                  document_back_image_file_id: doc_escrow_name,
+                  document_front_image_file_id: doc_escrow_name,
+                  document_passport_image_file_id: nil,
+                  document_selfie_image_file_id: nil,
                 )
 
                 perform
@@ -293,18 +309,18 @@ RSpec.describe SocureDocvResultsJob do
 
             before do
               expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-              expect(writer).to receive(:write).exactly(3).times
+              expect(writer).to receive(:write_with_data).exactly(3).times
             end
 
             it 'stores the images via doc escrow' do
               expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                 success: true,
-                document_back_image_encryption_key: '12345',
-                document_back_image_file_id: 'name',
-                document_front_image_encryption_key: '12345',
-                document_front_image_file_id: 'name',
-                document_selfie_image_encryption_key: '12345',
-                document_selfie_image_file_id: 'name',
+                document_back_image_encryption_key: an_instance_of(String),
+                document_back_image_file_id: an_instance_of(String),
+                document_front_image_encryption_key: an_instance_of(String),
+                document_front_image_file_id: an_instance_of(String),
+                document_selfie_image_encryption_key: an_instance_of(String),
+                document_selfie_image_file_id: an_instance_of(String),
                 document_state: address_data[:state],
                 document_number: pii_from_doc[:documentNumber],
                 document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -343,12 +359,12 @@ RSpec.describe SocureDocvResultsJob do
               it 'stores the images via doc escrow' do
                 expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                   success: false,
-                  document_back_image_encryption_key: '12345',
-                  document_back_image_file_id: 'name',
-                  document_front_image_encryption_key: '12345',
-                  document_front_image_file_id: 'name',
-                  document_selfie_image_encryption_key: '12345',
-                  document_selfie_image_file_id: 'name',
+                  document_back_image_encryption_key: an_instance_of(String),
+                  document_back_image_file_id: an_instance_of(String),
+                  document_front_image_encryption_key: an_instance_of(String),
+                  document_front_image_file_id: an_instance_of(String),
+                  document_selfie_image_encryption_key: an_instance_of(String),
+                  document_selfie_image_file_id: an_instance_of(String),
                   document_state: address_data[:state],
                   document_number: pii_from_doc[:documentNumber],
                   document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -437,10 +453,10 @@ RSpec.describe SocureDocvResultsJob do
           it 'stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
+              document_back_image_encryption_key: an_instance_of(String),
+              document_back_image_file_id: an_instance_of(String),
+              document_front_image_encryption_key: an_instance_of(String),
+              document_front_image_file_id: an_instance_of(String),
               document_state: address_data[:state],
               document_number: pii_from_doc[:documentNumber],
               document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -486,10 +502,10 @@ RSpec.describe SocureDocvResultsJob do
           it 'stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
+              document_back_image_encryption_key: an_instance_of(String),
+              document_back_image_file_id: an_instance_of(String),
+              document_front_image_encryption_key: an_instance_of(String),
+              document_front_image_file_id: an_instance_of(String),
               document_state: nil,
               document_number: nil,
               document_issued: nil,
@@ -531,10 +547,10 @@ RSpec.describe SocureDocvResultsJob do
           it 'tracks the attempt and stores the images via doc escrow' do
             expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
               success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
+              document_back_image_encryption_key: an_instance_of(String),
+              document_back_image_file_id: an_instance_of(String),
+              document_front_image_encryption_key: an_instance_of(String),
+              document_front_image_file_id: an_instance_of(String),
               document_state: address_data[:state],
               document_number: pii_from_doc[:documentNumber],
               document_issued: Date.parse(pii_from_doc[:issueDate]),
@@ -660,10 +676,6 @@ RSpec.describe SocureDocvResultsJob do
             it 'tracks the attempt and stores the images via doc escrow' do
               expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                 success: false,
-                document_back_image_encryption_key: '12345',
-                document_back_image_file_id: 'name',
-                document_front_image_encryption_key: '12345',
-                document_front_image_file_id: 'name',
                 document_state: nil,
                 document_number: nil,
                 document_issued: nil,
