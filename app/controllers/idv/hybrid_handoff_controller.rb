@@ -14,7 +14,7 @@ module Idv
     def show
       abandon_any_ipp_progress
 
-      @upload_enabled = document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK
+      @upload_enabled = upload_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -146,6 +146,11 @@ module Idv
 
     def sp_or_app_name
       current_sp&.friendly_name.presence || APP_NAME
+    end
+
+    def upload_enabled?
+      document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK ||
+        ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled
     end
 
     def build_telephony_form_response(telephony_result)
