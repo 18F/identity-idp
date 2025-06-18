@@ -562,7 +562,7 @@ doc_auth.errors.file_type.invalid: 这一文件类型我们不接受。请选择
 doc_auth.errors.general.fallback_field_level: 请添加一个新图像
 doc_auth.errors.general.multiple_back_id_failures: 我们无法验证你身份证件的背面。尝试重拍一张。
 doc_auth.errors.general.multiple_front_id_failures: 我们无法验证你身份证件的正面。尝试重拍一张。
-doc_auth.errors.general.network_error: 我们这边有技术困难。请稍后再提交你的图像。
+doc_auth.errors.general.network_error: 我们在验证你的ID时遇到技术困难。如果你继续看到这个出错信息，请再试一下或稍后再试。
 doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
