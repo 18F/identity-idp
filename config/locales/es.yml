@@ -562,7 +562,7 @@ doc_auth.errors.file_type.invalid: No se acepta este tipo de archivo; elija un a
 doc_auth.errors.general.fallback_field_level: Agregue una imagen nueva
 doc_auth.errors.general.multiple_back_id_failures: No pudimos verificar el reverso de su identificación. Intente tomar una nueva foto.
 doc_auth.errors.general.multiple_front_id_failures: No pudimos verificar el frente de su identificación. Intente tomar una nueva foto.
-doc_auth.errors.general.network_error: Estamos teniendo problemas técnicos. Intente enviar sus imágenes de nuevo más tarde.
+doc_auth.errors.general.network_error: Estamos teniendo problemas técnicos para verificar su identidad. Vuelva a intentarlo o regrese más tarde si sigue recibiendo este error.
 doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
 doc_auth.errors.general.selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
