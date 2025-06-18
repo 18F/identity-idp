@@ -11,10 +11,13 @@ module MfaSetupConcern
     elsif suggest_second_mfa?
       auth_method_confirmation_path
     elsif user_session[:mfa_selections]
-      track_user_registration_mfa_setup_complete_event
-      user_session.delete(:mfa_selections)
-
-      sign_up_completed_path
+      begin
+        track_user_registration_mfa_setup_complete_event
+        user_session.delete(:mfa_selections)
+      rescue ActiveRecord::RecordNotUnique
+        process_already_confirmed_user
+        sign_up_completed_path
+      end
     end
   end
 
