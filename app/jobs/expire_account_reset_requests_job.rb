@@ -4,9 +4,9 @@ class ExpireAccountResetRequestsJob < ApplicationJob
   queue_as :long_running
 
   def perform(now)
-    puts 'reset job ran'
     resets = 0
     expired_days = (
+      IdentityConfig.store.account_reset_wait_period_days +
       IdentityConfig.store.account_reset_token_valid_for_days
     ).days
     AccountResetRequest.where(
@@ -36,7 +36,7 @@ class ExpireAccountResetRequestsJob < ApplicationJob
     <<~SQL
       request_token IS NOT NULL AND
       cancelled_at IS NULL AND
-      granted_at + :tvalue < Time.zone.now
+      granted_at < :tvalue
     SQL
   end
 
