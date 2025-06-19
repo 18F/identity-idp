@@ -5,7 +5,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def handle_stored_result(user: current_user, store_in_session: true)
-      if stored_result&.success? && selfie_requirement_met?
+      if stored_result&.success? && selfie_requirement_met? && mrz_requirement_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -59,6 +59,11 @@ module Idv
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
         stored_result.selfie_check_performed?
+    end
+
+    def mrz_requirement_met?
+      return true unless id_type == 'passport'
+      stored_result.mrz_status == :pass
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
