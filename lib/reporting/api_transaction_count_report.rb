@@ -76,7 +76,8 @@ module Reporting
           'Socure (KYC) - Shadow',
           'Socure (KYC) - Non-Shadow',
           'Fraud Score and Attribute',
-          'Threat Metrix',
+          'Threat Metrix (IDV)',
+          'Threat Metrix (Auth Only)',
         ],
         [
           "#{ time_range.begin.to_date} - #{time_range.end.to_date}",
@@ -87,7 +88,8 @@ module Reporting
           socure_kyc_non_shadow_table.first,
           socure_kyc_shadow_table.first,
           fraud_score_and_attribute_table.first,
-          threat_metrix_table.first,
+          threat_metrix_idv_table.first,
+          threat_metrix_auth_only_table.first,
         ],
       ]
     end
@@ -138,8 +140,14 @@ module Reporting
       [instant_verify_table_count, result]
     end
 
-    def threat_metrix_table
-      result = fetch_results(query: threat_metrix_query)
+    def threat_metrix_idv_table
+      result = fetch_results(query: threat_metrix_idv_query)
+      threat_metrix_table_count = result.count
+      [threat_metrix_table_count, result]
+    end
+
+    def threat_metrix_auth_only_table
+      result = fetch_results(query: threat_metrix_auth_only_query)
       threat_metrix_table_count = result.count
       [threat_metrix_table_count, result]
     end
@@ -274,16 +282,23 @@ module Reporting
       QUERY
     end
 
-    def threat_metrix_query
+    def threat_metrix_idv_query
       <<~QUERY
         filter name = "IdV: doc auth verify proofing results"
         | fields
             properties.user_id as uuid,
             @timestamp as timestamp,
             properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success
-        
         | stats max(tmx_success) as max_tmx_success by uuid
-        
+      QUERY
+    end
+
+    def threat_metrix_auth_only_query
+      <<~QUERY
+        filter name = "account_creation_tmx_result"
+        | fields
+            properties.user_id as uuid,
+            @timestamp as timestamp,
       QUERY
     end
 
