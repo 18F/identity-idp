@@ -72,14 +72,12 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
   end
 
   def chosen_id_type_url(type)
-    id_type_to_route_url[type]
-  end
-
-  def id_type_to_route_url
-    {
-      'passport' => idv_in_person_passport_url,
-      'drivers_license' => idv_in_person_state_id_url,
-    }
+    case type
+    when 'passport'
+      idv_in_person_passport_url
+    when 'drivers_license'
+      idv_in_person_state_id_url
+    end
   end
 
   def set_chosen_id_type

@@ -230,6 +230,9 @@ RSpec.describe Idv::PersonalKeyController do
 
     context 'profile has not been created from idv_session' do
       let(:mint_profile_from_idv_session) { false }
+      before do
+        subject.idv_session.skip_hybrid_handoff = true
+      end
 
       it 'redirects to the enter password screen' do
         get :show

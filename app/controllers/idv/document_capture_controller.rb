@@ -75,7 +75,7 @@ module Idv
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
-          idv_session.doc_auth_vendor = nil # TODO: remove?
+          idv_session.reset_doc_auth_vendor!
         end,
       )
     end
