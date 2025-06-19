@@ -157,10 +157,6 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     context 'empty session' do
-      before do
-        idv_session.doc_auth_vendor = nil
-      end
-
       it 'returns welcome' do
         expect(subject.info_for_latest_step.key).to eq(:welcome)
       end

@@ -206,7 +206,7 @@ RSpec.describe Idv::DocumentCaptureController do
       describe 'facial match is required' do
         let(:facial_match_required) { true }
 
-        it 'does not redirect to Socure controller' do
+        it 'redirects to Socure controller' do
           get :show
 
           expect(response).to redirect_to idv_socure_document_capture_url
