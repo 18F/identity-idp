@@ -153,7 +153,7 @@ RSpec.describe 'Idv::FlowPolicy' do
       allow(Idv::PhoneConfirmationSession).to receive(:from_h)
         .with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
       allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
-      idv_session.doc_auth_vendor = Idp::Constants::Vendors::MOCK
+      subject.idv_session.skip_hybrid_handoff = true
     end
 
     context 'empty session' do
