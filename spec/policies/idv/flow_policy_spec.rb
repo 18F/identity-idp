@@ -153,9 +153,14 @@ RSpec.describe 'Idv::FlowPolicy' do
       allow(Idv::PhoneConfirmationSession).to receive(:from_h)
         .with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
       allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
+      idv_session.doc_auth_vendor = Idp::Constants::Vendors::MOCK
     end
 
     context 'empty session' do
+      before do
+        idv_session.doc_auth_vendor = nil
+      end
+
       it 'returns welcome' do
         expect(subject.info_for_latest_step.key).to eq(:welcome)
       end
