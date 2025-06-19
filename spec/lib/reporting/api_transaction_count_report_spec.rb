@@ -11,15 +11,6 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     ]
   end
 
-  let(:expected_api_transaction_count_table) do
-    [
-      ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
-       'Socure (KYC) - Shadow', 'Socure (KYC) - Non-Shadow',
-       'Fraud Score and Attribute', 'Threat Metrix'],
-      ["#{time_range.begin.to_date} - #{time_range.end.to_date}", 10, 15, 20, 25, 30, 35, 40],
-    ]
-  end
-
   subject(:report) { described_class.new(time_range:) }
 
   before do
@@ -30,7 +21,8 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:socure_kyc_non_shadow_table).and_return([30, mock_results])
     allow(report).to receive(:socure_kyc_shadow_table).and_return([35, mock_results])
     allow(report).to receive(:fraud_score_and_attribute_table).and_return([40, mock_results])
-    allow(report).to receive(:threat_metrix_table).and_return([45, mock_results])
+    allow(report).to receive(:threat_metrix_idv_table).and_return([45, mock_results])
+    allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
   end
 
   describe '#api_transaction_count' do
@@ -46,10 +38,10 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       expect(header_row).to eq(
         ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
          'Socure (KYC) - Shadow', 'Socure (KYC) - Non-Shadow',
-         'Fraud Score and Attribute', 'Threat Metrix'],
+         'Fraud Score and Attribute', 'Threat Metrix (IDV)', 'Threat Metrix (Auth Only)'],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 35, 40, 45])
+      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 35, 40, 45, 50])
     end
   end
 
@@ -65,7 +57,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
         /
           Week,True\ ID,Instant\ verify,Phone\ Finder,
           Socure\ \(DocV\),Socure\ \(KYC\)\s-\sShadow,Socure\ \(KYC\)\s-\sNon-Shadow,
-          Fraud\ Score\ and\ Attribute,Threat\ Metrix
+          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),Threat\ Metrix\s\(Auth\ Only\)
         /x,
       )
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")
