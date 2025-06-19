@@ -66,7 +66,7 @@ module Idv
             idv_session.skip_hybrid_handoff || # mobile
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              idv_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK
+              DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)&.doc_auth_vendor == Idp::Constants::Vendors::MOCK
           )
         },
         undo_step: ->(idv_session:, user:) do
