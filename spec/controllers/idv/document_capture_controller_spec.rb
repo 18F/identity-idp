@@ -50,6 +50,8 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     subject.idv_session.flow_path = flow_path
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+    subject.idv_session.skip_hybrid_handoff = true
+    subject.idv_session.doc_auth_vendor = idv_vendor
 
     vot = facial_match_required ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
@@ -81,30 +83,26 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
     end
 
-    context 'when selfie feature is enabled system wide' do
-      describe 'with sp selfie disabled' do
-        let(:facial_match_required) { false }
+    it 'does satisfy precondition' do
+      expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
+      expect(subject).to receive(:render)
+        .with(:show, locals: an_instance_of(Hash)).and_call_original
+      get :show
+      expect(response).to render_template :show
+    end
 
-        it 'does not satisfy precondition' do
-          expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
-          expect(subject).to receive(:render)
-            .with(:show, locals: an_instance_of(Hash)).and_call_original
-          get :show
-          expect(response).to render_template :show
-        end
+    describe 'without flow_path' do
+      before do
+        subject.idv_session.flow_path = nil
       end
 
-      describe 'with sp selfie enabled' do
-        let(:facial_match_required) { true }
+      it 'does not satisfy precondition' do
+        expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
+        expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
 
-        it 'does satisfy precondition' do
-          expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
-          expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
+        get :show
 
-          get :show
-
-          expect(response).to redirect_to(idv_hybrid_handoff_path)
-        end
+        expect(response).to redirect_to(idv_hybrid_handoff_path)
       end
     end
   end
@@ -142,6 +140,7 @@ RSpec.describe Idv::DocumentCaptureController do
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: facial_match_required,
+        skip_hybrid_handoff: subject.idv_session.skip_hybrid_handoff,
       }
     end
 
@@ -208,10 +207,10 @@ RSpec.describe Idv::DocumentCaptureController do
       describe 'facial match is required' do
         let(:facial_match_required) { true }
 
-        it 'does not redirect to Socure controller' do
+        it 'redirects to Socure controller' do
           get :show
 
-          expect(response).to_not redirect_to idv_socure_document_capture_url
+          expect(response).to redirect_to idv_socure_document_capture_url
         end
       end
     end
@@ -219,39 +218,18 @@ RSpec.describe Idv::DocumentCaptureController do
     context 'when a selfie is requested' do
       let(:facial_match_required) { true }
 
-      describe 'when desktop selfie disabled' do
-        it 'redirect back to handoff page' do
-          expect(subject).not_to receive(:render).with(
-            :show,
-            locals: hash_including(
-              document_capture_session_uuid: document_capture_session_uuid,
-              doc_auth_selfie_capture: true,
-              doc_auth_upload_enabled: false,
-            ),
-          ).and_call_original
+      it 'allows capture' do
+        expect(subject).to receive(:render).with(
+          :show,
+          locals: hash_including(
+            document_capture_session_uuid: document_capture_session_uuid,
+            doc_auth_selfie_capture: true,
+            doc_auth_upload_enabled: true,
+          ),
+        ).and_call_original
 
-          get :show
-
-          expect(response).to redirect_to(idv_hybrid_handoff_path)
-        end
-      end
-
-      describe 'when desktop selfie enabled' do
-        let(:doc_auth_selfie_desktop_test_mode) { true }
-
-        it 'allows capture' do
-          expect(subject).to receive(:render).with(
-            :show,
-            locals: hash_including(
-              document_capture_session_uuid: document_capture_session_uuid,
-              doc_auth_selfie_capture: true,
-              doc_auth_upload_enabled: false,
-            ),
-          ).and_call_original
-
-          get :show
-          expect(response).to render_template :show
-        end
+        get :show
+        expect(response).to render_template :show
       end
     end
 
@@ -366,7 +344,7 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       it 'redirect back when accessed from handoff' do
-        subject.idv_session.skip_hybrid_handoff = nil
+        subject.idv_session.flow_path = nil
 
         get :show, params: { step: 'hybrid_handoff' }
 
@@ -387,6 +365,7 @@ RSpec.describe Idv::DocumentCaptureController do
         step: 'document_capture',
         liveness_checking_required: false,
         selfie_check_required: facial_match_required,
+        skip_hybrid_handoff: subject.idv_session.skip_hybrid_handoff,
       }
     end
 
@@ -438,7 +417,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'stays on document capture' do
           put :update
-          expect(subject.idv_session.doc_auth_vendor).to be_nil
+
           expect(response).to redirect_to idv_document_capture_url
         end
       end
@@ -452,11 +431,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'redirects to ssn' do
           expect(response).to redirect_to idv_ssn_url
-        end
-
-        it 'correctly updates Idv::Session' do
-          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
-          expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
         end
       end
     end

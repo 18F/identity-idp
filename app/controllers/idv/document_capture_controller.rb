@@ -62,14 +62,9 @@ module Idv
         controller: self,
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
-          idv_session.flow_path == 'standard' && (
-            # mobile
-            idv_session.skip_doc_auth_from_handoff ||
-              idv_session.skip_hybrid_handoff ||
-              idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required || # desktop but selfie not required
-              idv_session.desktop_selfie_test_mode_enabled?
-          )
+          idv_session.flow_path == 'standard' ||
+              idv_session.skip_doc_auth_from_handoff || # remove? ... if true, flow_path always standard
+              idv_session.skip_doc_auth_from_how_to_verify # remove? ... if true, flow_path always standard
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -77,7 +72,7 @@ module Idv
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
-          idv_session.doc_auth_vendor = nil
+          idv_session.reset_doc_auth_vendor!
         end,
       )
     end
@@ -85,8 +80,8 @@ module Idv
     private
 
     def doc_auth_upload_enabled?
-      !(resolved_authn_context_result.facial_match? ||
-        ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled)
+      document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK ||
+        ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled
     end
 
     def extra_view_variables
