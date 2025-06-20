@@ -285,6 +285,7 @@ module Idv
       end
     end
 
+    # needs spec for scenario when called
     def reset_doc_auth_vendor!
       if doc_auth_vendor == Idp::Constants::Vendors::USPS
         session[:doc_auth_vendor] = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.doc_auth_vendor
