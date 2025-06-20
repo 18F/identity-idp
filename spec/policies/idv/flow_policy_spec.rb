@@ -64,7 +64,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.phone_for_mobile_flow).to be_nil
 
         expect(idv_session.pii_from_doc).to be_nil
-        expect(idv_session.doc_auth_vendor).to be_nil
+        expect(idv_session.doc_auth_vendor).not_to be_nil
         expect(idv_session.had_barcode_read_failure).to be_nil
         expect(idv_session.had_barcode_attention_error).to be_nil
 
