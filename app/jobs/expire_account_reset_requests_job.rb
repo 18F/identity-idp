@@ -11,7 +11,7 @@ class ExpireAccountResetRequestsJob < ApplicationJob
     ).days
     AccountResetRequest.where(
       sql_query_for_users_with_expired_requests,
-      tvalue: now + expired_days,
+      tvalue: now - expired_days,
     ).order('requested_at ASC').limit(1_000).each do |arr|
       resets += 1 if expire_request(arr)
     end
