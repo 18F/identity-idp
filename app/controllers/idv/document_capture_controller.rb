@@ -62,12 +62,13 @@ module Idv
         controller: self,
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
-          idv_session.flow_path == 'standard' && (
-            idv_session.skip_hybrid_handoff || # mobile
+          idv_session.flow_path == 'standard' || # && (
+            # idv_session.skip_hybrid_handoff || # mobile
+              # doesn't apear the below are needed
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)&.doc_auth_vendor == Idp::Constants::Vendors::MOCK
-          )
+              idv_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK # remove, already in rediect vendor
+          # )
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
