@@ -552,6 +552,9 @@ doc_auth.errors.general.fallback_field_level: Veuillez ajouter une nouvelle imag
 doc_auth.errors.general.multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.network_error: Nous rencontrons actuellement des difficultés techniques pour confirmer votre pièce d’identité. Veuillez réessayer ou revenir plus tard si le problème persiste.
+doc_auth.errors.general.network_error_passport: Nous rencontrons actuellement des difficultés techniques pour vérifier votre passeport. Veuillez réessayer ou
+doc_auth.errors.general.network_error_passport_ending: si vous en avez une.
+doc_auth.errors.general.network_error_passport_link_text: utiliser un autre type de pièce d’identité
 doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
 doc_auth.errors.general.selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une nouvelle photo.
