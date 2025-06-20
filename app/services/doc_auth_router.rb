@@ -120,6 +120,8 @@ module DocAuthRouter
       @client.respond_to?(method_name) || super
     end
 
+    private
+
     def translate_form_response!(response)
       return response unless response.is_a?(DocAuth::Response)
 
@@ -128,8 +130,6 @@ module DocAuthRouter
 
       response
     end
-
-    private
 
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
@@ -153,12 +153,7 @@ module DocAuthRouter
 
     def translate_generic_errors!(response)
       if response.errors[:network] == true
-        if response.extra[:vendor] == 'DoS'
-          response.errors[:network] = I18n.t('doc_auth.errors.general.network_error_passport')
-          response.errors[:passport] = true
-        else
-          response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
-        end
+        response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
       end
     end
   end
