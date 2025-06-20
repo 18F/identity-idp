@@ -59,7 +59,7 @@ module Idv
         doc_pii_response:,
         passport_response:,
       )
-      doc_auth_client.translate_form_response!(response) if response == passport_response
+      response = doc_auth_client.translate_form_response!(response) if response == passport_response
 
       # Store PII and MRZ status after all validations are complete
       if client_response&.success? && doc_pii_response&.success?
