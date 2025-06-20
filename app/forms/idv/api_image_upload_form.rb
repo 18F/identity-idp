@@ -289,9 +289,7 @@ module Idv
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
-      if passport_response.present? && !passport_response.success?
-        return doc_auth_client.translate_form_response!(passport_response)
-      end
+      return passport_response if passport_response.present? && !passport_response.success?
 
       client_response
     end
