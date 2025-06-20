@@ -41,6 +41,10 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
   return err;
 }
 
+function isNetworkError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'network');
+}
+
 function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
@@ -66,6 +70,7 @@ function GeneralError({
   });
 
   const err = getError({ unknownFieldErrors });
+  const isNetwork = isNetworkError(unknownFieldErrors);
 
   if (isFailedDocType && !!altFailedDocTypeMsg) {
     return (
@@ -94,7 +99,18 @@ function GeneralError({
     );
   }
   if (isPassportError) {
-    return <p>{t('doc_auth.info.review_passport')}</p>;
+    if (!isNetwork) {
+      return <p>{t('doc_auth.info.review_passport')}</p>;
+    }
+    return (
+      <p key={err?.message}>
+        {t('doc_auth.errors.general.network_error_passport')}{' '}
+        <Link href="choose_id_type" isExternal={false}>
+          {t('doc_auth.errors.general.network_error_passport_link_text')}
+        </Link>{' '}
+        {t('doc_auth.errors.general.network_error_passport_ending')}
+      </p>
+    );
   }
   if (err && !hasDismissed) {
     return <p key={err.message}>{err.message}</p>;
