@@ -53,7 +53,7 @@ RSpec.describe ExpireAccountResetRequestsJob do
       expect(notification_sent).to eq(1)
     end
 
-    it 'updates the request record' do
+    it 'updates the correct request record' do
       expect(AccountResetRequest.count).to be(0)
 
       account_reset_request
@@ -63,6 +63,7 @@ RSpec.describe ExpireAccountResetRequestsJob do
       perform
 
       expect(AccountResetRequest.first.cancelled_at).to_not be(nil)
+      expect(AccountResetRequest.second.cancelled_at).to be(nil)
     end
   end
 end
