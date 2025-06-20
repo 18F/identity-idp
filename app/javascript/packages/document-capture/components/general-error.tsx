@@ -42,9 +42,7 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
 }
 
 function isNetworkError(unknownFieldErrors) {
-  return unknownFieldErrors.some(
-    (error) => error.field === 'network'
-  );
+  return unknownFieldErrors.some((error) => error.field === 'network');
 }
 
 function GeneralError({
@@ -103,15 +101,16 @@ function GeneralError({
   if (isPassportError) {
     if (!isNetwork) {
       return <p>{t('doc_auth.info.review_passport')}</p>;
-    } else {
-      return <p key={err.message}>
-        {t('doc_auth.errors.general.network_error_passport')} {' '}
-        <Link href={'choose_id_type'} isExternal={false}>
-          {t('doc_auth.errors.general.network_error_passport_link_text')}
-        </Link>
-        {' '}{t('doc_auth.errors.general.network_error_passport_ending')}
-      </p>;
     }
+    return (
+      <p key={err.message}>
+        {t('doc_auth.errors.general.network_error_passport')}{' '}
+        <Link href="choose_id_type" isExternal={false}>
+          {t('doc_auth.errors.general.network_error_passport_link_text')}
+        </Link>{' '}
+        {t('doc_auth.errors.general.network_error_passport_ending')}
+      </p>
+    );
   }
   if (err && !hasDismissed) {
     return <p key={err.message}>{err.message}</p>;
