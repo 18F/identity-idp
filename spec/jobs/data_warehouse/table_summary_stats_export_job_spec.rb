@@ -24,7 +24,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   end
 
   let(:expected_json_cloudwatch) do
-    { 'logs.events' => { 'row_count' => 999 }, 'logs.production' => { 'row_count' => 999 } }
+    { 'logs.events' => { 'row_count' => 999 }, 'logs.production' => { 'row_count' => 949 } }
   end
 
   let(:expected_json_idp_and_cloudwatch) do
@@ -93,6 +93,10 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
 
     context 'when database tables contain data' do
       it 'generates correct JSON from database tables and cloudwatch' do
+        allow(job).to receive(:get_offset_count).and_return(0)
+        allow(job).to receive(:get_offset_count)
+          .with('int_/srv/idp/shared/log/production.log', timestamp)
+          .and_return(50)
         json_data_idp = job.fetch_table_max_ids_and_counts(timestamp)
         json_data_cloudwatch = job.fetch_log_group_counts(timestamp)
         expect(json_data_idp.to_json).to eq(expected_json_idp)
