@@ -59,7 +59,6 @@ module Idv
         doc_pii_response:,
         passport_response:,
       )
-      # response = doc_auth_client.translate_form_response!(response) if response == passport_response
 
       # if there is no client_response, there was no submission attempt
       if doc_escrow_enabled? && client_response
@@ -288,7 +287,9 @@ module Idv
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
-      return passport_response if passport_response.present? && !passport_response.success?
+      if passport_response.present? && !passport_response.success?
+        return doc_auth_client.translate_form_response!(passport_response)
+      end
 
       client_response
     end
