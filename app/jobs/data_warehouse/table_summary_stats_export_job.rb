@@ -65,9 +65,9 @@ module DataWarehouse
         "#{base_log_group}/production.log" => "@logStream like 'idp-i-'",
       }
       <<~QUERY
-        fields @timestamp
+        fields jsonParse(@message) as @messageJson
         | filter #{log_stream_filter_map[log_group_name]}
-        | filter @message like /\\{.*/
+        | filter isPresent(@messageJson)
         | stats count() as row_count
       QUERY
     end
