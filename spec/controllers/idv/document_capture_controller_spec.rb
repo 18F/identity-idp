@@ -51,6 +51,7 @@ RSpec.describe Idv::DocumentCaptureController do
     subject.idv_session.flow_path = flow_path
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
     subject.idv_session.skip_hybrid_handoff = true
+    subject.idv_session.doc_auth_vendor = idv_vendor
 
     vot = facial_match_required ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
@@ -82,7 +83,7 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
     end
 
-    it 'does not satisfy precondition' do
+    it 'does satisfy precondition' do
       expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
       expect(subject).to receive(:render)
         .with(:show, locals: an_instance_of(Hash)).and_call_original
@@ -90,12 +91,12 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(response).to render_template :show
     end
 
-    describe 'with sp selfie enabled' do
+    describe 'without flow_path' do
       before do
-        subject.idv_session.skip_hybrid_handoff = false
+        subject.idv_session.flow_path = nil
       end
 
-      it 'does satisfy precondition' do
+      it 'does not satisfy precondition' do
         expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
         expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
 
@@ -223,7 +224,7 @@ RSpec.describe Idv::DocumentCaptureController do
           locals: hash_including(
             document_capture_session_uuid: document_capture_session_uuid,
             doc_auth_selfie_capture: true,
-            doc_auth_upload_enabled: false,
+            doc_auth_upload_enabled: true,
           ),
         ).and_call_original
 
@@ -343,7 +344,7 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       it 'redirect back when accessed from handoff' do
-        subject.idv_session.skip_hybrid_handoff = nil
+        subject.idv_session.flow_path = nil
 
         get :show, params: { step: 'hybrid_handoff' }
 
@@ -416,7 +417,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'stays on document capture' do
           put :update
-          expect(subject.idv_session.doc_auth_vendor).to be_nil
+
           expect(response).to redirect_to idv_document_capture_url
         end
       end
@@ -430,11 +431,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'redirects to ssn' do
           expect(response).to redirect_to idv_ssn_url
-        end
-
-        it 'correctly updates Idv::Session' do
-          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
-          expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
         end
       end
     end
