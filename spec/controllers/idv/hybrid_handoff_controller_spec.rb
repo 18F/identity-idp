@@ -109,18 +109,6 @@ RSpec.describe Idv::HybridHandoffController do
         expect(assigns(:upload_enabled)).to be true
       end
 
-      context 'when vendor is not MOCK' do
-        before do
-          document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
-
-        it 'defaults to upload enabled being false' do
-          get :show
-
-          expect(assigns(:upload_enabled)).to be true
-        end
-      end
-
       context 'DOC_AUTH_MANUAL_UPLOAD_DISABLED A/B test' do
         before do
           allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
@@ -131,18 +119,6 @@ RSpec.describe Idv::HybridHandoffController do
           get :show
 
           expect(assigns(:upload_enabled)).to be false
-        end
-
-        context 'when vendor is not MOCK' do
-          before do
-            document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::LEXIS_NEXIS)
-          end
-
-          it 'defaults to upload enabled being false' do
-            get :show
-
-            expect(assigns(:upload_enabled)).to be false
-          end
         end
       end
     end

@@ -55,6 +55,7 @@ module Idv
     end
 
     def self.selected_remote(idv_session:)
+      # should this all just be !idv_session.skip_doc_auth_from_how_to_verify
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
          idv_session.service_provider&.in_person_proofing_enabled
@@ -149,8 +150,7 @@ module Idv
     end
 
     def upload_enabled?
-      document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::MOCK ||
-        ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled
+      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled
     end
 
     def build_telephony_form_response(telephony_result)
