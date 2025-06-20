@@ -100,10 +100,7 @@ module DocAuthHelper
     complete_agreement_step
     return if page.current_path == idv_hybrid_handoff_path && remote
     if remote
-      if facial_match_required
-        click_on t('forms.buttons.continue_online_mobile')
-      else
-        click_on t('forms.buttons.continue_online')
+      click_on t('forms.buttons.continue_online')
       end
     else
       click_on t('forms.buttons.continue_ipp')
