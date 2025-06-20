@@ -150,7 +150,8 @@ module Idv
     end
 
     def upload_enabled?
-      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled
+      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) != :manual_upload_disabled &&
+        document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::SOCURE
     end
 
     def build_telephony_form_response(telephony_result)

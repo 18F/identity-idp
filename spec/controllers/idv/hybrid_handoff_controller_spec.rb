@@ -4,14 +4,14 @@ RSpec.describe Idv::HybridHandoffController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
-
+  let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
   let(:sp_selfie_enabled) { false }
-  let(:document_capture_session) { create(:document_capture_session) }
+  let(:document_capture_session) { create(:document_capture_session, doc_auth_vendor:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
 
   before do
@@ -107,6 +107,16 @@ RSpec.describe Idv::HybridHandoffController do
         get :show
 
         expect(assigns(:upload_enabled)).to be true
+      end
+
+      context 'doc_auth_vendor is SOCURE' do
+        let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
+
+        it 'returns true' do
+          get :show
+
+          expect(assigns(:upload_enabled)).to be false
+        end
       end
 
       context 'DOC_AUTH_MANUAL_UPLOAD_DISABLED A/B test' do
