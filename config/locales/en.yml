@@ -701,9 +701,8 @@ doc_auth.info.verify_at_post_office_instruction: Enter your information online, 
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: You’ll add photos of your ID and verify your identity fully online.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone.
-doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself using a phone.
+doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
+doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1a: Have a driver’s license or state ID

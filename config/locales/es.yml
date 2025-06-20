@@ -712,9 +712,8 @@ doc_auth.info.verify_at_post_office_instruction: Ingrese su información en lín
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
-doc_auth.info.verify_online_instruction: Agregará fotografías de su identificación y verificará su identidad por completo en línea.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono.
-doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted con un teléfono.
+doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea.
+doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted para verificar su identidad por completo en línea.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1a: Tener una licencia de conducir o una tarjeta de identificación estatal

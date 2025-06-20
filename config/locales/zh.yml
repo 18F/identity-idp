@@ -712,9 +712,8 @@ doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，�
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_instruction: 你将添加自己身份证件的照片来完全在网上验证身份。
-doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将用手机拍摄你的身份证件照片。
-doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄自己身份证件和你本人的照片。
+doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
+doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1a: 带上驾照或州身份证件

@@ -701,9 +701,8 @@ doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
-doc_auth.info.verify_online_instruction: Vous téléverserez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone.
-doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone.
+doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
+doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1a: Présenter votre permis de conduire ou votre carte d’identité d’un État

@@ -49,11 +49,6 @@
   <%= f.label(
         :selection_remote,
       ) do %>
-          <% if @mobile_required %>
-              <span class='usa-tag usa-tag--informative margin-bottom-2 margin-top-1'>
-                <%= t('doc_auth.tips.mobile_phone_required') %>
-              </span>
-          <% end %>
           <h2 class="margin-top-0"><%= @presenter.verify_online_text %></h2>
           <div>
             <p><%= @presenter.verify_online_instruction %>
