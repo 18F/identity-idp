@@ -103,7 +103,7 @@ function GeneralError({
       return <p>{t('doc_auth.info.review_passport')}</p>;
     }
     return (
-      <p key={err.message}>
+      <p key={err?.message}>
         {t('doc_auth.errors.general.network_error_passport')}{' '}
         <Link href="choose_id_type" isExternal={false}>
           {t('doc_auth.errors.general.network_error_passport_link_text')}

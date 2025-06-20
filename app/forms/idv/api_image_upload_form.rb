@@ -59,7 +59,7 @@ module Idv
         doc_pii_response:,
         passport_response:,
       )
-      doc_auth_client.translate_form_response!(response) if response == passport_response
+      response = doc_auth_client.translate_form_response!(response) if response == passport_response
 
       # if there is no client_response, there was no submission attempt
       if doc_escrow_enabled? && client_response
