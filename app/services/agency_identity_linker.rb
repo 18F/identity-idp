@@ -7,7 +7,7 @@ class AgencyIdentityLinker
   end
 
   def link_identity
-    agency_identity ||
+    find_or_create_agency_identity ||
       AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
   end
 
@@ -45,18 +45,29 @@ class AgencyIdentityLinker
 
   private
 
-  def agency_identity
-    find_agency_identity
+  def find_or_create_agency_identity
+    begin
+      agency_identity
+    rescue ActiveRecord::RecordNotFound
+      create_agency_identity_for_sp
+    end
   end
 
-  def find_agency_identity
-    sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
-    return unless agency_id(sp)
-    AgencyIdentity.create_or_find_by(
+  def create_agency_identity_for_sp
+    return unless agency_id
+    AgencyIdentity.create(
       agency_id: agency_id,
       user_id: @sp_identity.user_id,
       uuid: @sp_identity.uuid,
     )
+  end
+
+  def agency_identity
+    ai = AgencyIdentity.find_by(uuid: @sp_identity.uuid)
+    return ai if ai
+    sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
+    return unless agency_id(sp)
+    AgencyIdentity.find_by(agency_id: agency_id, user_id: @sp_identity.user_id)
   end
 
   def agency_id(service_provider = nil)
