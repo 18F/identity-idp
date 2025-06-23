@@ -633,7 +633,6 @@ doc_auth.headings.upload_from_phone: Utiliser votre téléphone pour prendre des
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
-doc_auth.headings.verify_online_mobile: Confirmer votre identité en ligne à l’aide de votre téléphone
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
@@ -736,7 +735,6 @@ doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre vis
 doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit bien éclairé
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
-doc_auth.tips.mobile_phone_required: Téléphone mobile nécessaire
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -893,7 +891,6 @@ forms.buttons.confirm: Confirmer
 forms.buttons.continue: Suite
 forms.buttons.continue_ipp: Continuer en personne
 forms.buttons.continue_online: Continuer en ligne
-forms.buttons.continue_online_mobile: Continuer sur votre téléphone
 forms.buttons.delete: Supprimer
 forms.buttons.disable: Supprimer
 forms.buttons.edit: Modifier

@@ -633,7 +633,6 @@ doc_auth.headings.upload_from_phone: Use your phone to take photos
 doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
-doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
@@ -736,7 +735,6 @@ doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face
 doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
 doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
-doc_auth.tips.mobile_phone_required: Mobile Phone Required
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -893,7 +891,6 @@ forms.buttons.confirm: Confirm
 forms.buttons.continue: Continue
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_online: Continue online
-forms.buttons.continue_online_mobile: Continue on your phone
 forms.buttons.delete: Delete
 forms.buttons.disable: Delete
 forms.buttons.edit: Edit
