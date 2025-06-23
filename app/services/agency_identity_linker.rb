@@ -52,7 +52,7 @@ class AgencyIdentityLinker
   def create_or_find_by_agency_identity_for_sp
     sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
     return unless agency_id(sp)
-    AgencyIdentity.create_or_find_by(
+    AgencyIdentity.create_or_find_by!(
       agency_id: agency_id,
       user_id: @sp_identity.user_id,
       uuid: @sp_identity.uuid,
