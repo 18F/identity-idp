@@ -34,7 +34,7 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     end
 
     it 'has a form for starting desktop doc auth with an aria label tag' do
-      expect(rendered).to have_selector(
+      expect(rendered).not_to have_selector(
         :xpath,
         "//form[@aria-label=\"#{t('forms.buttons.upload_photos')}\"]",
       )

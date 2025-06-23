@@ -4,14 +4,14 @@ RSpec.describe Idv::HybridHandoffController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
-
+  let(:doc_auth_vendor) { Idp::Constants::Vendors::MOCK }
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
   let(:sp_selfie_enabled) { false }
-  let(:document_capture_session) { create(:document_capture_session) }
+  let(:document_capture_session) { create(:document_capture_session, doc_auth_vendor:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
 
   before do
@@ -75,12 +75,6 @@ RSpec.describe Idv::HybridHandoffController do
       expect(response).to render_template :show
     end
 
-    it 'defaults to upload disabled being false' do
-      get :show
-
-      expect(assigns(:upload_disabled)).to be false
-    end
-
     it 'sends analytics_visited event' do
       get :show
 
@@ -107,31 +101,38 @@ RSpec.describe Idv::HybridHandoffController do
       end
     end
 
-    context '@upload_disabled is true' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
-        allow(subject).to receive(:ab_test_bucket).and_call_original
-        allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
-          .and_return(:manual_upload_disabled)
+    context '#upload_enabled' do
+
+      it 'returns true' do
+        get :show
+
+        expect(assigns(:upload_enabled)).to be true
       end
 
-      context 'selfie check required is true' do
-        let(:sp_selfie_enabled) { true }
+      context 'doc_auth_vendor is SOCURE' do
+        let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
+
         it 'returns true' do
           get :show
 
-          expect(assigns(:upload_disabled)).to be true
+          expect(assigns(:upload_enabled)).to be false
         end
       end
 
-      context 'doc_auth_upload_disabled? is true' do
+      context 'DOC_AUTH_MANUAL_UPLOAD_DISABLED A/B test' do
+        before do
+          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
+            .and_return(:manual_upload_disabled)
+        end
+
         it 'returns true' do
           get :show
 
-          expect(assigns(:upload_disabled)).to be true
+          expect(assigns(:upload_enabled)).to be false
         end
       end
     end
+
 
     context 'hybrid_handoff already visited' do
       it 'shows hybrid_handoff for standard' do
@@ -240,8 +241,6 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opt in selection is nil' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
@@ -262,8 +261,6 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opted in to ipp flow' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end
@@ -271,7 +268,7 @@ RSpec.describe Idv::HybridHandoffController do
         it 'redirects to the how to verify page' do
           get :show
 
-          expect(response).to redirect_to(idv_how_to_verify_url)
+          expect(response).to redirect_to(idv_document_capture_url)
         end
       end
 

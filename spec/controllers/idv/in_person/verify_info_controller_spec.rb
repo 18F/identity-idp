@@ -20,6 +20,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
+    subject.idv_session.skip_doc_auth_from_handoff = true
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     reload_ab_tests

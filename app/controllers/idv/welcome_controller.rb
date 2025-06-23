@@ -71,6 +71,7 @@ module Idv
         doc_auth_vendor:,
         passport_status:,
       )
+      idv_session.doc_auth_vendor = doc_auth_vendor
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 

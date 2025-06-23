@@ -97,16 +97,14 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-            idv_session.flow_path == 'standard' && (
-                # mobile
-                idv_session.skip_hybrid_handoff ||
-                idv_session.desktop_selfie_test_mode_enabled?)
+            idv_session.flow_path == 'standard' &&
+              idv_session.skip_hybrid_handoff # mobile
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
             idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
-            idv_session.doc_auth_vendor = nil
+            idv_session.reset_doc_auth_vendor!
           end,
         )
       end

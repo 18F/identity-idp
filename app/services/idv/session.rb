@@ -285,6 +285,13 @@ module Idv
       end
     end
 
+    # needs spec for scenario when called
+    def reset_doc_auth_vendor!
+      if doc_auth_vendor == Idp::Constants::Vendors::USPS
+        session[:doc_auth_vendor] = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)&.doc_auth_vendor
+      end
+    end
+
     def invalidate_in_person_address_step!
       if has_pii_from_user_in_session?
         user_session['idv/in_person'][:pii_from_user][:address1] = nil
@@ -369,10 +376,6 @@ module Idv
 
     def skip_hybrid_handoff?
       !!session[:skip_hybrid_handoff]
-    end
-
-    def desktop_selfie_test_mode_enabled?
-      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
     end
 
     def idv_consent_given?
