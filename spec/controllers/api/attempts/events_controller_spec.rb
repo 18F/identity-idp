@@ -213,6 +213,25 @@ RSpec.describe Api::Attempts::EventsController do
               it 'returns the oldest events' do
                 expect(JSON.parse(action.body)['sets'].keys).to_not include event_key
               end
+
+              context 'when the maxEvents parameter is greater than the max allowed' do
+                let(:payload) do
+                  {
+                    maxEvents: 5000,
+                    acks:,
+                  }
+                end
+
+                it 'returns a 400' do
+                  expect(action.status).to eq 400
+
+                  expect(@analytics).to have_logged_event(
+                    :attempts_api_poll_events_request,
+                    issuer:,
+                    success: false,
+                  )
+                end
+              end
             end
 
             context 'when there is no maxEvents parameter' do
@@ -254,6 +273,19 @@ RSpec.describe Api::Attempts::EventsController do
               success: true,
             )
           end
+        end
+      end
+
+      context 'with an invalid acks parameter' do
+        let(:payload) { { acks: 'not-an-array' } }
+        it 'returns a 400' do
+          expect(action.status).to eq 400
+
+          expect(@analytics).to have_logged_event(
+            :attempts_api_poll_events_request,
+            issuer:,
+            success: false,
+          )
         end
       end
 
