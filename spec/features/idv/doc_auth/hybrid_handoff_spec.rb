@@ -357,20 +357,9 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       let(:socure_docv_enabled) { true }
       let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
 
-      context 'when socure desktop test mode is not enabled' do
-        it 'shows phone only top content no upload section' do
-          verify_handoff_page_non_selfie_version_content(page)
-          verify_no_upload_photos_section_and_link(page)
-        end
-      end
-
-      context 'when socure desktop test mode is enabled' do
-        let(:desktop_test_mode_enabled) { true }
-
-        it 'shows phone top content and desktop upload content' do
-          verify_handoff_page_non_selfie_version_content(page)
-          expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
-        end
+      it 'shows phone only top content no upload section' do
+        verify_handoff_page_non_selfie_version_content(page)
+        verify_no_upload_photos_section_and_link(page)
       end
     end
 
