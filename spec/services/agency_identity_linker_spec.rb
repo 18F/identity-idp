@@ -7,9 +7,12 @@ RSpec.describe AgencyIdentityLinker do
 
     it 'links identities from 2 sps' do
       sp1 = create_service_provider_identity(user, 'http://localhost:3000', 'UUID1')
-      create_service_provider_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
+      sp2 = create_service_provider_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
       ai = AgencyIdentityLinker.new(sp1).link_identity
+      ai2 = AgencyIdentityLinker.new(sp2).link_identity
       expect(ai.uuid).to eq('UUID1')
+      expect(ai2.uuid).to eq('UUID1')
+
       ai = AgencyIdentity.where(user_id: user.id).first
       expect(ai.uuid).to eq('UUID1')
     end
