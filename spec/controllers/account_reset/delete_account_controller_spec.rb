@@ -44,7 +44,7 @@ RSpec.describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
-    it 'allows deletion after expire reset job has run' do
+    it 'allows deletion after expire reset job has run and reset still qualifies' do
       user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
       create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
       create_list(:webauthn_configuration, 2, user: user)

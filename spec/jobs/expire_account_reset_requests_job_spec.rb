@@ -1,37 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe ExpireAccountResetRequestsJob do
+  include AccountResetHelper
   describe '#perform' do
     subject(:perform) { job.perform(now) }
     let(:job) { ExpireAccountResetRequestsJob.new }
-
-    let(:user) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:requested_at) { Time.zone.now - 3.days }
-    let(:account_reset_request) do
-      AccountResetRequest.create(
-        user_id: user.id,
-        requested_at: requested_at,
-        request_token: SecureRandom.uuid,
-        cancelled_at: nil,
-        granted_at: requested_at,
-        granted_token: SecureRandom.uuid,
-        created_at: requested_at,
-        updated_at: requested_at,
-        requesting_issuer: nil,
-      )
-      AccountResetRequest.create(
-        user_id: user2.id,
-        requested_at: Time.zone.now,
-        request_token: nil,
-        cancelled_at: nil,
-        granted_at: Time.zone.now,
-        granted_token: SecureRandom.uuid,
-        created_at: Time.zone.now,
-        updated_at: Time.zone.now,
-        requesting_issuer: nil,
-      )
-    end
     let(:job_analytics) { FakeAnalytics.new }
     let(:now) { Time.zone.now }
 
@@ -42,28 +15,33 @@ RSpec.describe ExpireAccountResetRequestsJob do
     end
 
     it 'logs the event' do
-      account_reset_request
+      user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
+      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
+      create_list(:webauthn_configuration, 2, user: user)
+      create_account_reset_request_for(user)
+      grant_request(user)
 
-      notification_sent = perform
+      travel_to(Time.zone.now + 3.days) do
+        user2 = create(
+          :user, :fully_registered, :with_backup_code,
+          confirmed_at: Time.zone.now.round
+        )
+        create(:phone_configuration, user: user2, phone: Faker::PhoneNumber.cell_phone)
+        create_list(:webauthn_configuration, 2, user: user2)
+        create_account_reset_request_for(user2)
+        grant_request(user2)
 
-      expect(job_analytics).to have_logged_event(
-        :account_reset_request_expired,
-        count: 1,
-      )
-      expect(notification_sent).to eq(1)
-    end
+        notification_sent = perform
 
-    it 'updates the correct request record' do
-      expect(AccountResetRequest.count).to be(0)
+        expect(job_analytics).to have_logged_event(
+          :account_reset_request_expired,
+          count: 1,
+        )
+        expect(notification_sent).to eq(1)
 
-      account_reset_request
-
-      expect(AccountResetRequest.count).to be(2)
-
-      perform
-
-      expect(AccountResetRequest.first.cancelled_at).to_not be(nil)
-      expect(AccountResetRequest.second.cancelled_at).to be(nil)
+        expect(AccountResetRequest.first.cancelled_at).to_not be(nil)
+        expect(AccountResetRequest.second.cancelled_at).to be(nil)
+      end
     end
   end
 end
