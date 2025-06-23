@@ -12,7 +12,7 @@ properties:
     description: Known more commonly as ephemeral port numbers associated with the Client IP – This is NOT the CSP server port 443 or 80.
   device_id:
     type: string
-    description: Cookie device UUID (version 4). This value is securely randomly generated server-side as 122 bits.
+    description: Cookie device unique identifier. This value is securely randomly generated server-side as 64 bytes and displayed as a string of hexadecimal characters.
   google_analytics_cookies:
     type: object
     description: |
