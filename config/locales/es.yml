@@ -648,13 +648,8 @@ doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participa
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
-doc_auth.hybrid_flow_warning.explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
+doc_auth.hybrid_flow_warning.explanation_html: Está usando <strong>%{app_name}</strong> para acceder a <strong>%{service_provider_name}</strong>. Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
-doc_auth.hybrid_flow_warning.only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN SI:'
-doc_auth.hybrid_flow_warning.only_add_own_account: Está usando su propia cuenta de %{app_name}
-doc_auth.hybrid_flow_warning.only_add_phone_verify: Usted solicitó a %{app_name} que verificara su identificación con su teléfono
-doc_auth.hybrid_flow_warning.only_add_sp_services_html: Está tratando de acceder a los servicios de <strong>%{service_provider_name}</strong>
-doc_auth.info.add_id_consent_with_phone: Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
 doc_auth.info.address: Si su domicilio y su dirección postal no son iguales, también puede intentar verificar su dirección postal.
 doc_auth.info.address_guidance_puerto_rico_html: Residentes en Puerto Rico:<br><br>Edite su dirección para que el edificio de su vivienda o condominio figure en la línea de dirección 2.
 doc_auth.info.capture_status_big_document: Demasiado cerca
@@ -681,8 +676,7 @@ doc_auth.info.learn_more: Obtenga más información sobre cómo protegemos su in
 doc_auth.info.lets_go: 'La verificación de la identidad se efectúa en dos partes:'
 doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su identificación.
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
-doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente.
-doc_auth.info.login_access_sp: Está usando %{app_name} para acceder a %{sp_name}.
+doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente después de que verifique su identidad en su teléfono.
 doc_auth.info.mailing_address: Enviaremos la carta con un código de verificación a esta dirección.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
