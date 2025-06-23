@@ -13,7 +13,7 @@ module MfaSetupConcern
     elsif user_session[:mfa_selections]
       track_user_registration_mfa_setup_complete_event
       user_session.delete(:mfa_selections)
-      process_already_confirmed_user
+
       sign_up_completed_path
     end
   end
