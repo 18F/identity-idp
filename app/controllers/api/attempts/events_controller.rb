@@ -77,11 +77,6 @@ module Api
           render json: { error: 'maxEvents must be between 1 and 1000' },
                  status: :bad_request
         end
-
-        if params[:acks].present? && params[:acks] != poll_params[:acks]
-          track_failure
-          render json: { error: 'acks value must be an array' }, status: :bad_request
-        end
       end
 
       def track_failure

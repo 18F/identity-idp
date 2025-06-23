@@ -276,19 +276,6 @@ RSpec.describe Api::Attempts::EventsController do
         end
       end
 
-      context 'with an invalid acks parameter' do
-        let(:payload) { { acks: 'not-an-array' } }
-        it 'returns a 400' do
-          expect(action.status).to eq 400
-
-          expect(@analytics).to have_logged_event(
-            :attempts_api_poll_events_request,
-            issuer:,
-            success: false,
-          )
-        end
-      end
-
       context 'with an invalid authorization header' do
         context 'with no Authorization header' do
           let(:auth_header) { nil }
