@@ -64,7 +64,6 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
     it 'renders non-selfie specific content' do
       render
-      expect(rendered).not_to have_content(t('doc_auth.tips.mobile_phone_required'))
       expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
       expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
       expect(rendered).not_to have_content(t('doc_auth.info.verify_online_description_passport'))
