@@ -30,9 +30,7 @@ class AgencyIdentityLinker
       agency_id: service_provider.agency_id,
       user_id: user.id,
       uuid: uuid,
-    ) do |ai|
-      ai.uuid = uuid
-    end
+    )
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
