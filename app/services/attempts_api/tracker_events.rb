@@ -134,6 +134,27 @@ module AttemptsApi
       )
     end
 
+    # @param [String] document_back_image_file_id Filename in S3 w/encrypted data for back image
+    # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
+    # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
+    # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
+    # We were unable to retrieve the images from the identity verification vendor.
+    # This is usually due to a timeout or network error.
+    def idv_image_retrieval_failed(
+      document_back_image_file_id: nil,
+      document_front_image_file_id: nil,
+      document_passport_image_file_id: nil,
+      document_selfie_image_file_id: nil
+    )
+      track_event(
+        :idv_image_retrieval_failed,
+        document_back_image_file_id:,
+        document_front_image_file_id:,
+        document_passport_image_file_id:,
+        document_selfie_image_file_id:,
+      )
+    end
+
     # @param [Boolean] success True if the link user clicked on is valid and not expired
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user clicks the email link to reset their password
@@ -505,12 +526,12 @@ module AttemptsApi
       )
     end
 
-    # @param [Boolean] success True means TMX check has a 'pass' review status
+    # @param [Boolean] success True means TMX's device risk check has a 'pass' review status
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    # Tracks the result of the TMX fraud check during Identity Verification
-    def idv_tmx_fraud_check(success:, failure_reason: nil)
+    # Tracks the result of the Device fraud check during Identity Verification
+    def idv_device_risk_assessment(success:, failure_reason: nil)
       track_event(
-        'idv-tmx-fraud-check',
+        'idv-device-risk-assessment',
         success:,
         failure_reason:,
       )

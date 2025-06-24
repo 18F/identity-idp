@@ -146,6 +146,8 @@ class SocureErrorPresenter
       t('idv.errors.technical_difficulties')
     when :unaccepted_id_type
       t('doc_auth.headers.unaccepted_id_type')
+    when :selfie_fail
+      t('doc_auth.errors.selfie_fail_heading')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
       # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
@@ -165,6 +167,8 @@ class SocureErrorPresenter
       t('idv.errors.try_again_later')
     when :unaccepted_id_type
       t('doc_auth.errors.unaccepted_id_type')
+    when :selfie_fail
+      t('doc_auth.errors.general.selfie_failure')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
         I18n.t('doc_auth.errors.underage', app_name: APP_NAME)

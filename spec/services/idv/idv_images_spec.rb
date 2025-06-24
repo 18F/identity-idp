@@ -246,4 +246,42 @@ RSpec.describe Idv::IdvImages do
       end
     end
   end
+
+  describe '#write_with_data' do
+    let(:image_storage_data) do
+      {
+        front: {
+          document_front_image_file_id: 'front_name',
+          document_front_image_encryption_key: Base64.strict_encode64('front_key'),
+        },
+        back:
+        {
+          document_back_image_file_id: 'back_name',
+          document_back_image_encryption_key: Base64.strict_encode64('back_key'),
+        },
+      }
+    end
+    before do
+      allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+      allow(IdentityConfig.store).to receive(:doc_escrow_s3_storage_enabled)
+        .and_return(doc_escrow_s3_storage_enabled)
+      allow(writer).to receive(:write_with_data)
+    end
+
+    it 'writes the image for each given image locally' do
+      expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: false)
+      expect(writer).to receive(:write_with_data).with(
+        image: subject.front.bytes,
+        encryption_key: 'front_key',
+        name: 'front_name',
+      )
+      expect(writer).to receive(:write_with_data).with(
+        image: subject.back.bytes,
+        encryption_key: 'back_key',
+        name: 'back_name',
+      )
+
+      subject.write_with_data(image_storage_data:)
+    end
+  end
 end

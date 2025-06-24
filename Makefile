@@ -249,7 +249,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
-	find ./docs/attempts-api/schemas/events/identity-proofing -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation --disable-sort-keys
+	find ./docs/attempts-api -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation --disable-sort-keys
 
 optimize_svg: ## Optimizes SVG images
 	# Exclusions:

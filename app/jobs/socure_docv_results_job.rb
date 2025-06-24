@@ -57,21 +57,46 @@ class SocureDocvResultsJob < ApplicationJob
   def record_attempt(docv_result_response:, doc_pii_response: nil)
     image_errors = {}
 
-    if socure_doc_escrow_enabled?
-      result = fetch_images(docv_result_response.to_h[:reference_id])
-      if result.is_a?(Idv::IdvImages)
-        images = result.attempts_file_data
-      else
-        image_errors = { image_request: [:network_error] }
+    if socure_doc_escrow_enabled? &&
+       docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
+      front = {
+        document_front_image_file_id: doc_escrow_name,
+        document_front_image_encryption_key: doc_escrow_key,
+      }
+      back = {
+        document_back_image_file_id: doc_escrow_name,
+        document_back_image_encryption_key: doc_escrow_key,
+      }
+
+      image_storage_data = { front:, back: }
+
+      if docv_result_response.liveness_enabled
+        selfie = {
+          document_selfie_image_file_id: doc_escrow_name,
+          document_selfie_image_encryption_key: doc_escrow_key,
+        }
+        image_storage_data[:selfie] = selfie
       end
-    else
-      images = {}
+
+      job_data = {
+        document_capture_session_uuid:,
+        reference_id: docv_result_response.to_h[:reference_id],
+        image_storage_data:,
+      }
+
+      if IdentityConfig.store.ruby_workers_idv_enabled
+        SocureImageRetrievalJob.perform_later(**job_data)
+      else
+        SocureImageRetrievalJob.perform_now(**job_data)
+      end
     end
 
     pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
 
     attempts_api_tracker.idv_document_upload_submitted(
-      **images,
+      **front,
+      **back,
+      **selfie,
       success: docv_result_response.success? && doc_pii_response.success?,
       document_state: pii_from_doc[:state],
       document_number: pii_from_doc[:state_id_number],
@@ -178,5 +203,13 @@ class SocureDocvResultsJob < ApplicationJob
 
   def socure_doc_escrow_enabled?
     sp&.attempts_api_enabled? && IdentityConfig.store.socure_doc_escrow_enabled
+  end
+
+  def doc_escrow_name
+    SecureRandom.uuid
+  end
+
+  def doc_escrow_key
+    Base64.strict_encode64(SecureRandom.bytes(32))
   end
 end

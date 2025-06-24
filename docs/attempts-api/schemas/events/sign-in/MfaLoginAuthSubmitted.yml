@@ -25,12 +25,12 @@ allOf:
         type: object
         description: |
           An OPTIONAL object. An associative array of attributes and errors if success is false.
-        properties: 
+        properties:
           piv_cac:
             type: array
             items:
               type: string
-              enum: 
+              enum:
                 - already_associated
           user:
             type: array
@@ -51,12 +51,12 @@ allOf:
                 - not_auth_cert
                 - revoked
                 - unverified
-          token: 
+          token:
             type: array
-            items: 
+            items:
               type: string
               enum:
-              - bad
-              - http_failure
-              - invalid
-              - missing
+                - bad
+                - http_failure
+                - invalid
+                - missing

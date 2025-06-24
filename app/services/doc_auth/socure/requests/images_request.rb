@@ -14,28 +14,19 @@ module DocAuth
 
         attr_reader :reference_id
 
-        def body
-          {}
-        end
-
         def content_type
           'application/zip'
         end
 
         def handle_http_response(http_response)
-          zip_io = StringIO.new(http_response.body)
-
           image_files = {}
-          # Open the zip stream
-          Zip::InputStream.open(zip_io) do |io|
-            # Iterate through entries
-            while (entry = io.get_next_entry) && image_files.keys.count < 3
-              raise 'File too large when extracted' if entry.size > MAX_IMAGE_SIZE
-              param_name = entry_name_to_type[entry.name]
-              next if param_name.blank?
+          Zip::File.open_buffer(http_response.body).entries.each do |entry|
+            raise 'File too large when extracted' if entry.size > MAX_IMAGE_SIZE
+            raise 'Too many files' if image_files.keys.count > 3
+            param_name = entry_name_to_type[entry.name]
+            next if param_name.blank?
 
-              image_files[param_name] = io.read
-            end
+            image_files[param_name] = entry.get_input_stream.read
           end
 
           Idv::IdvImages.new(image_files, binary_image: true)
@@ -43,14 +34,14 @@ module DocAuth
 
         def entry_name_to_type
           {
-            'documentfrontDoc_Back_1_blob.jpg' => :back,
+            'documentbackDoc_Back_1_blob.jpg' => :back,
             'documentfrontDoc_Front_1_blob.jpg' => :front,
             'Doc_Selfie_1_blob.jpg' => :selfie,
           }
         end
 
         def method
-          :post
+          :get
         end
 
         def endpoint

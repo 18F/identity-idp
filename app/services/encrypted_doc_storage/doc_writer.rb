@@ -18,14 +18,22 @@ module EncryptedDocStorage
 
       name = SecureRandom.uuid
 
-      storage.write_image(
-        encrypted_image: aes_cipher.encrypt(image, key),
+      write_with_data(
+        image:,
+        encryption_key: key,
         name:,
       )
 
       Result.new(
         name:,
         encryption_key: Base64.strict_encode64(key),
+      )
+    end
+
+    def write_with_data(image:, encryption_key:, name:)
+      storage.write_image(
+        encrypted_image: aes_cipher.encrypt(image, encryption_key),
+        name:,
       )
     end
 

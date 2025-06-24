@@ -1,8 +1,8 @@
 type: object
-properties: 
+properties:
   subject_type:
     type: string
-    enum: 
+    enum:
       - session
   session_id:
     type: string
