@@ -25,6 +25,22 @@ RSpec.describe DocumentCaptureSessionResult do
       expect(loaded_result.selfie_status).to eq(:success)
       expect(loaded_result.doc_auth_success).to eq(true)
     end
+
+    it 'persists mrz_status with EncryptedRedisStructStorage' do
+      result = DocumentCaptureSessionResult.new(
+        id: id,
+        success: success,
+        doc_auth_success: success,
+        selfie_status: :success,
+        mrz_status: :pass,
+        pii: pii,
+        attention_with_barcode: false,
+      )
+      EncryptedRedisStructStorage.store(result)
+      loaded_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+
+      expect(loaded_result.mrz_status).to eq(:pass)
+    end
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
@@ -49,6 +65,29 @@ RSpec.describe DocumentCaptureSessionResult do
           selfie_status: 'success',
         )
         expect(result.selfie_status).to be_an_instance_of(Symbol)
+      end
+    end
+
+    describe '#mrz_status' do
+      it 'returns a symbol when present' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: success,
+          pii: pii,
+          attention_with_barcode: false,
+          mrz_status: 'pass',
+        )
+        expect(result.mrz_status).to eq(:pass)
+      end
+
+      it 'returns nil when not present' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: success,
+          pii: pii,
+          attention_with_barcode: false,
+        )
+        expect(result.mrz_status).to be_nil
       end
     end
 
