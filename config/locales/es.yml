@@ -1673,6 +1673,7 @@ time.formats.sms_date: '%m/%d/%Y'
 time.pm: p. m.
 titles.account: Cuenta
 titles.account_locked: Cuenta bloqueada temporalmente
+titles.add_email: Agregar una nueva dirección de correo electrónico
 titles.add_info.phone: Agregar un número de teléfono
 titles.backup_codes: No pierda sus códigos de recuperación
 titles.cancel_exit_login: '¿Está seguro de que desea cancelar y salir de %{app_name}?'

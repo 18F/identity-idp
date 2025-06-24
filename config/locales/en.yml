@@ -1661,6 +1661,7 @@ time.formats.sms_date: '%m/%d/%Y'
 time.pm: PM
 titles.account: Account
 titles.account_locked: Account temporarily locked
+titles.add_email: Add a new email address
 titles.add_info.phone: Add a phone number
 titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
