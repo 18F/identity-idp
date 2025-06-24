@@ -182,7 +182,7 @@ module Reporting
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
         num_threads: @threads,
-        ensure_complete_logs: true,
+        ensure_complete_logs: false,
         slice_interval: @slice,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
