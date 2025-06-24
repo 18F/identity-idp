@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_11_195441) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_160521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -33,7 +33,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_11_195441) do
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "requesting_issuer", comment: "sensitive=false"
+    t.datetime "expired_at", comment: "sensitive=false"
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
+    t.index ["expired_at"], name: "index_account_reset_requests_on_expired_at"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
     t.index ["user_id"], name: "index_account_reset_requests_on_user_id", unique: true
