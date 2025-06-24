@@ -35,7 +35,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_24_160521) do
     t.string "requesting_issuer", comment: "sensitive=false"
     t.datetime "expired_at", comment: "sensitive=false"
     t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
-    t.index ["expired_at"], name: "index_account_reset_requests_on_expired_at"
     t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
     t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
     t.index ["user_id"], name: "index_account_reset_requests_on_user_id", unique: true
