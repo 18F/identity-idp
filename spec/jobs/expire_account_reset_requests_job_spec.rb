@@ -14,20 +14,16 @@ RSpec.describe ExpireAccountResetRequestsJob do
       allow(Analytics).to receive(:new).and_return(job_analytics)
     end
 
-    it 'logs the event' do
-      user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
-      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
-      create_list(:webauthn_configuration, 2, user: user)
+    it 'it expires requests with expired grant tokens and ignores valid grant tokens' do
+      user = create(:user, :fully_registered, confirmed_at: Time.zone.now.round)
       create_account_reset_request_for(user)
       grant_request(user)
 
       travel_to(Time.zone.now + 3.days) do
         user2 = create(
-          :user, :fully_registered, :with_backup_code,
+          :user, :fully_registered,
           confirmed_at: Time.zone.now.round
         )
-        create(:phone_configuration, user: user2, phone: Faker::PhoneNumber.cell_phone)
-        create_list(:webauthn_configuration, 2, user: user2)
         create_account_reset_request_for(user2)
         grant_request(user2)
 
