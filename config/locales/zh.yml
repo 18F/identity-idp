@@ -1674,6 +1674,7 @@ time.formats.sms_date: '%Y/%m/%d'
 time.pm: 下午
 titles.account: 账户
 titles.account_locked: 账户临时锁住
+titles.add_email: 添加一个新电邮地址
 titles.add_info.phone: 添加电话号码
 titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
