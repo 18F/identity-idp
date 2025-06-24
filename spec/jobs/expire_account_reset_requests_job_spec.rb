@@ -35,8 +35,8 @@ RSpec.describe ExpireAccountResetRequestsJob do
         )
         expect(notification_sent).to eq(1)
 
-        expect(AccountResetRequest.first.cancelled_at).to_not be(nil)
-        expect(AccountResetRequest.second.cancelled_at).to be(nil)
+        expect(AccountResetRequest.first.expired_at).to_not be(nil)
+        expect(AccountResetRequest.second.expired_at).to be(nil)
       end
     end
   end
