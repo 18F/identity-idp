@@ -634,7 +634,7 @@ doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste parti
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
-doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>Login.gov</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à Login.gov de vérifier votre identité à l’aide de votre téléphone.
+doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
 doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.

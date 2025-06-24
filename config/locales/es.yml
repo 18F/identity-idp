@@ -645,7 +645,7 @@ doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participa
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
-doc_auth.hybrid_flow_warning.explanation_html: Está usando <strong>Login.gov</strong> para acceder a <strong>%{service_provider_name}</strong>. Solo agregue su identificación si solicitó a Login.gov verificar su identidad usando su teléfono.
+doc_auth.hybrid_flow_warning.explanation_html: Está usando <strong>%{app_name}</strong> para acceder a <strong>%{service_provider_name}</strong>. Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
 doc_auth.info.add_id_consent_with_phone: Solo agregue su identificación si solicitó a %{app_name} verificar su identidad usando su teléfono.
 doc_auth.info.address: Si su domicilio y su dirección postal no son iguales, también puede intentar verificar su dirección postal.
