@@ -41,7 +41,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
          'Fraud Score and Attribute', 'Threat Metrix (IDV)', 'Threat Metrix (Auth Only)'],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 35, 40, 45, 50])
+      expect(data_row[1..]).to eq([10, 15, 20, 25, 35, 30, 40, 45, 50])
     end
   end
 
