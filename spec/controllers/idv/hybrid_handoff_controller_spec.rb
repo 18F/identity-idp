@@ -110,26 +110,24 @@ RSpec.describe Idv::HybridHandoffController do
     context '@upload_disabled is true' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
-        allow(subject).to receive(:ab_test_bucket).and_call_original
-        allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_MANUAL_UPLOAD_DISABLED)
-          .and_return(:manual_upload_disabled)
       end
 
-      context 'selfie check required is true' do
-        let(:sp_selfie_enabled) { true }
-        it 'returns true' do
-          get :show
+      it 'returns true' do
+        get :show
 
-          expect(assigns(:upload_disabled)).to be true
-        end
+        expect(assigns(:upload_disabled)).to be true
+      end
+    end
+
+    context '@upload_disabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
       end
 
-      context 'doc_auth_upload_disabled? is true' do
-        it 'returns true' do
-          get :show
+      it 'returns false' do
+        get :show
 
-          expect(assigns(:upload_disabled)).to be true
-        end
+        expect(assigns(:upload_disabled)).to be false
       end
     end
 
