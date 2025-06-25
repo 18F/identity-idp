@@ -134,6 +134,10 @@ module Idv
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 
+    def choose_id_type_path
+      'choose_id_type'
+    end
+
     private
 
     def track_document_issuing_state(user, state)

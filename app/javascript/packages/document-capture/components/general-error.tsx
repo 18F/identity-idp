@@ -5,6 +5,7 @@ import { FormStepError } from '@18f/identity-form-steps';
 import { Link } from '@18f/identity-components';
 import formatHTML from '@18f/identity-react-i18n/format-html';
 import MarketingSiteContext from '../context/marketing-site';
+import { InPersonContext } from '../context';
 
 interface GeneralErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
@@ -57,6 +58,7 @@ function GeneralError({
 }: GeneralErrorProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const { chooseIdTypePath } = useContext(InPersonContext);
   const helpCenterLink = getHelpCenterURL({
     category: 'verify-your-identity',
     article: 'how-to-add-images-of-your-state-issued-id',
@@ -105,7 +107,7 @@ function GeneralError({
     return (
       <p key={err?.message}>
         {t('doc_auth.errors.general.network_error_passport')}{' '}
-        <Link href="choose_id_type" isExternal={false}>
+        <Link href={chooseIdTypePath} isExternal={false}>
           {t('doc_auth.errors.general.network_error_passport_link_text')}
         </Link>{' '}
         {t('doc_auth.errors.general.network_error_passport_ending')}
