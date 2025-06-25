@@ -636,7 +636,6 @@ doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
-doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
@@ -664,7 +663,6 @@ doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps�
 doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement une fois que vous aurez confirmé votre identité sur votre téléphone.
-doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
 doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
