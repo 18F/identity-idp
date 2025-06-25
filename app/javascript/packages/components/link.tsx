@@ -48,7 +48,6 @@ function Link({
     .filter(Boolean)
     .join(' ');
 
-  console.log('link href:', href);
   const handleClick = () => {
     // Clear the onbeforeunload event to prevent the "Leave site?" prompt
     if (href === '/verify/choose_id_type') {
