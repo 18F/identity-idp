@@ -135,7 +135,7 @@ module Idv
     end
 
     def choose_id_type_path
-      'choose_id_type'
+      idv_choose_id_type_path
     end
 
     private
