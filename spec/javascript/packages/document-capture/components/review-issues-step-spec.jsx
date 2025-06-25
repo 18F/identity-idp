@@ -277,7 +277,7 @@ describe('document-capture/components/review-issues-step', () => {
 
   it('renders alternative error messages with not in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
-      <InPersonContext.Provider value={{ inPersonURL: '', passportEnabled: true }}>
+      <InPersonContext.Provider value={{ chooseIdTypePath:'', inPersonURL: '', passportEnabled: true }}>
         <I18nContext.Provider
           value={
             new I18n({

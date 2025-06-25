@@ -107,7 +107,7 @@ function GeneralError({
     return (
       <p key={err?.message}>
         {t('doc_auth.errors.general.network_error_passport')}{' '}
-        <Link href={chooseIdTypePath} isExternal={false}>
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
           {t('doc_auth.errors.general.network_error_passport_link_text')}
         </Link>{' '}
         {t('doc_auth.errors.general.network_error_passport_ending')}
