@@ -700,6 +700,8 @@ doc_auth.info.selfie_capture.intro: Cámara encendida, lista para tomar selfie
 doc_auth.info.socure_basic_idv: '%{app_name} verificará su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación con Socure.'
 doc_auth.info.socure_hybrid_flow_html: Está usando %{app_name} para verificar su identidad y acceder a <strong>%{sp_name}</strong>.
 doc_auth.info.socure_ial2_idv_finish: Cuando acabe de tomar las fotos, %{app_name} terminará de verificar su información.
+doc_auth.info_socure_passport: Login.gov verificará las fotografías de su identificación por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome las fotografías de su identificación con Socure.
+doc_auth.info_socure_passport_ial2: Login.gov verificará su pasaporte por medio de Socure, un proveedor de servicios de confianza. Al continuar, se le pedirá que tome una fotografía de su pasaporte y una foto suya con Socure.
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
