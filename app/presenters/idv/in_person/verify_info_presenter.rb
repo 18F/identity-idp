@@ -14,6 +14,6 @@ class Idv::InPerson::VerifyInfoPresenter
   end
 
   def passport_flow?
-    @enrollment.passport_book?
+    @enrollment&.passport_book?
   end
 end
