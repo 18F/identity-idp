@@ -148,14 +148,7 @@ module Idv
     end
 
     def upload_disabled?
-      return true if document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-
-      (idv_session.selfie_check_required || doc_auth_upload_disabled?) &&
-        !idv_session.desktop_selfie_test_mode_enabled?
-    end
-
-    def doc_auth_upload_disabled?
-      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled
+      !idv_session.desktop_selfie_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)

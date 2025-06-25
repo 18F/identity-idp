@@ -78,9 +78,8 @@ module Idv
       private
 
       def doc_auth_upload_enabled?
-        !(resolved_authn_context_result.facial_match? ||
-          ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED, user: document_capture_user) ==
-            :manual_upload_disabled)
+        # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
+        false
       end
 
       def analytics_arguments
