@@ -153,7 +153,6 @@ module Reporting
       end
     end
 
-    
     def age_bins_for_event(event_name)
       current_year = Time.zone.today.year
 
@@ -164,7 +163,6 @@ module Reporting
       user_ids.each do |user_id|
         metadata = user_metadata[user_id]
         next unless metadata
-
 
         birth_year = metadata[:birth_year]
         next unless birth_year
@@ -203,7 +201,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         event_names: quote(Events.all_events),
-        sp_redirect_initiated: quote(Events::SP_REDIRECT_INITIATED)
+        sp_redirect_initiated: quote(Events::SP_REDIRECT_INITIATED),
       }
 
       format(<<~QUERY, params)

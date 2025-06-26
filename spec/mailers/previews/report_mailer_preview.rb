@@ -184,7 +184,7 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: irs_quarterly_report.reports,
     )
   end
-  
+
   def irs_credential_tenure_report
     irs_credential_tenure_report = Reports::IrsCredentialTenureReport.new(Time.zone.yesterday)
 

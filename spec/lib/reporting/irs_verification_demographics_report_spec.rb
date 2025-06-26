@@ -49,9 +49,9 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'name' => 'IdV: doc auth verify proofing results',
           'birth_year' => '2014',
           'state' => 'MD' },
-        
+
         { 'user_id' => 'user1',
-          'name' => 'SP redirect initiated'},
+          'name' => 'SP redirect initiated' },
 
         { 'user_id' => 'user2',
           'name' => 'IdV: doc auth verify proofing results',
@@ -59,7 +59,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'state' => 'MD' },
 
         { 'user_id' => 'user2',
-          'name' => 'SP redirect initiated'},
+          'name' => 'SP redirect initiated' },
 
         { 'user_id' => 'user3',
           'name' => 'IdV: doc auth verify proofing results',
@@ -67,7 +67,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'state' => 'DE' },
 
         { 'user_id' => 'user3',
-          'name' => 'SP redirect initiated'},
+          'name' => 'SP redirect initiated' },
 
         { 'user_id' => 'user4',
           'name' => 'IdV: doc auth verify proofing results',
@@ -75,7 +75,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'state' => 'DE' },
 
         { 'user_id' => 'user4',
-          'name' => 'SP redirect initiated'},
+          'name' => 'SP redirect initiated' },
 
         { 'user_id' => 'user5',
           'name' => 'IdV: doc auth verify proofing results',
@@ -83,7 +83,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'state' => 'VA' },
 
         { 'user_id' => 'user5',
-          'name' => 'SP redirect initiated'},
+          'name' => 'SP redirect initiated' },
 
         { 'user_id' => 'user6',
           'name' => 'IdV: doc auth verify proofing results',
@@ -91,8 +91,8 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           'state' => 'VA' },
 
         { 'user_id' => 'user6',
-          'name' => 'SP redirect initiated'},
-          
+          'name' => 'SP redirect initiated' },
+
       ],
     )
   end
