@@ -243,6 +243,20 @@ RSpec.describe 'Hybrid Flow' do
           click_on t('idv.failure.button.warning')
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
           expect(page).to have_content(t('doc_auth.headings.document_capture'))
+
+          # Correct intertitial with passport content
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_update_url)
+
+          # Correct intertitial with passport content
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+          document_capture_session = DocumentCaptureSession.find_by(user_id: user.id)
+          document_capture_session.update(passport_status: 'requested')
+          document_capture_session.save!
+          click_on t('idv.failure.button.warning')
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
+          expect(page).to have_content(t('doc_auth.headings.passport_capture'))
+          expect(page).to have_content(t('doc_auth.info.socure_passport', app_name: APP_NAME))
         end
       end
     end
