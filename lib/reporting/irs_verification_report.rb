@@ -24,9 +24,26 @@ module Reporting
 
     # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
-    def initialize(time_range:, issuers:)
+    def initialize(time_range:,
+                   issuers:,
+                   verbose: false,
+                   progress: false,
+                   slice: 1.day,
+                   threads: 5)
       @issuers = issuers
       @time_range = time_range || previous_week_range
+      @verbose = verbose
+      @progress = progress
+      @slice = slice
+      @threads = threads
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     def as_tables
@@ -172,29 +189,32 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        progress: false,
-        ensure_complete_logs: false,
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
     def verification_demand_results
-      fetch_results(query: query(event: VERIFICATION_DEMAND)).count
+      fetch_results(query: query(event: VERIFICATION_DEMAND)).first['user_count'].to_i
     end
 
     def document_authentication_success_results
-      fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).count
+      fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).first['user_count'].to_i
     end
 
     def information_validation_success_results
-      fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).count
+      fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).first['user_count'].to_i
     end
 
     def phone_verification_success_results
-      fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).count
+      fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).first['user_count'].to_i
     end
 
     def total_verified_results
-      fetch_results(query: query(event: TOTAL_VERIFIED)).count
+      fetch_results(query: query(event: TOTAL_VERIFIED)).first['user_count'].to_i
     end
 
     def to_percent(numerator, denominator)
@@ -206,11 +226,14 @@ module Reporting
         issuers: quote(issuers.inspect),
         event: quote([event.inspect]),
       }
-      format(<<~QUERY, params)
-         filter name IN %{event}
-        | fields @message
+
+      <<~QUERY
+        filter name IN #{params[:event]}
         | filter properties.sp_request.facial_match
-        | filter properties.service_provider IN %{issuers}
+        | filter properties.service_provider IN #{params[:issuers]}
+        | fields (name = #{event.inspect}) as matched_event
+        | stats max(matched_event) as max_matched_event by properties.user_id, bin(1y)
+        | stats sum(max_matched_event) as user_count
       QUERY
     end
   end
