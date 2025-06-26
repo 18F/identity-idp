@@ -644,7 +644,6 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
-doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -712,9 +711,8 @@ doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，�
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_instruction: 你将添加自己身份证件的照片来完全在网上验证身份。
-doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将用手机拍摄你的身份证件照片。
-doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄自己身份证件和你本人的照片。
+doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
+doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1a: 带上驾照或州身份证件
@@ -748,7 +746,6 @@ doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东�
 doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
-doc_auth.tips.mobile_phone_required: 要求有手机
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -905,7 +902,6 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
 forms.buttons.continue_online: 继续在网上验证
-forms.buttons.continue_online_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑

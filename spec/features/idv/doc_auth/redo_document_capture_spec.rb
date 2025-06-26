@@ -598,9 +598,7 @@ RSpec.feature 'document capture step', :js do
                       facial_match_required: true },
                 )
                 sign_in_and_2fa_user(@user)
-                complete_up_to_how_to_verify_step_for_opt_in_ipp(
-                  facial_match_required: true,
-                )
+                complete_up_to_how_to_verify_step_for_opt_in_ipp
               end
             end
 

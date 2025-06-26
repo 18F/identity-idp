@@ -361,6 +361,98 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
+    context 'when the applicant has a passport document type' do
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+      let(:resolution_proofing_results) do
+        # No call is made for residential address on remote unsupervised path
+        [state_id_address_resolution_result]
+      end
+
+      it 'calls ThreatMetrixPlugin' do
+        expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          request_ip:,
+          threatmetrix_session_id:,
+          timer: an_instance_of(JobHelpers::Timer),
+          user_email:,
+          user_uuid:,
+          workflow:,
+        )
+        proof
+      end
+
+      it 'calls ResidentialAddressPlugin' do
+        expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          ipp_enrollment_in_progress:,
+          timer: an_instance_of(JobHelpers::Timer),
+        ).and_call_original
+        proof
+      end
+
+      it 'calls StateIdAddressPlugin' do
+        expect(progressive_proofer.state_id_address_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          residential_address_resolution_result: satisfy do |result|
+            expect(result.success?).to eql(true)
+            expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
+          end,
+          ipp_enrollment_in_progress:,
+          timer: an_instance_of(JobHelpers::Timer),
+        ).and_call_original
+        proof
+      end
+
+      it 'skips calling AamvaPlugin' do
+        expect(progressive_proofer.aamva_plugin).not_to receive(:call).and_call_original
+        proof
+      end
+
+      it 'calls PhoneFinderPlugin' do
+        expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          residential_address_resolution_result: satisfy do |result|
+            expect(result.success?).to eql(true)
+            expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
+          end,
+          state_id_address_resolution_result:,
+          state_id_result: satisfy do |result|
+            expect(result.success?).to eql(true)
+            expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+          end,
+          ipp_enrollment_in_progress:,
+          timer: an_instance_of(JobHelpers::Timer),
+        ).and_call_original
+        proof
+      end
+
+      it 'returns a ResultAdjudicator' do
+        proof.tap do |result|
+          expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+          expect(result.resolution_result).to eql(state_id_address_resolution_result)
+          expect(result.state_id_result).to satisfy do |result|
+            expect(result.success?).to eql(true)
+            expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+          end
+          expect(result.device_profiling_result).to eql(threatmetrix_result)
+          expect(result.residential_resolution_result).to satisfy do |result|
+            expect(result.success?).to eql(true)
+            expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
+          end
+          expect(result.phone_finder_result).to satisfy do |phone_finder_result|
+            expect(phone_finder_result.success?).to eq(false)
+            expect(phone_finder_result.vendor_name).to eq('NoPhoneNumberAvailable')
+          end
+          expect(result.ipp_enrollment_in_progress).to eql(false)
+          expect(result.same_address_as_id).to eql(nil)
+        end
+      end
+    end
+
     context 'when applicant_pii includes best_effort_phone_number_for_socure' do
       let(:applicant_pii) do
         Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(

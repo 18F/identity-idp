@@ -60,6 +60,12 @@ module Idv
         passport_response:,
       )
 
+      # Store PII and MRZ status after all validations are complete
+      if client_response&.success? && doc_pii_response&.success?
+        mrz_status = determine_mrz_status(passport_response)
+        store_pii(client_response, mrz_status)
+      end
+
       # if there is no client_response, there was no submission attempt
       if doc_escrow_enabled? && client_response
         pii_from_doc = client_response.pii_from_doc.to_h || {}
@@ -195,10 +201,6 @@ module Idv
         response.to_h.merge(side_classification)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
-
-      if client_response.success? && response.success?
-        store_pii(client_response)
-      end
 
       response
     end
@@ -490,8 +492,8 @@ module Idv
       end
     end
 
-    def store_pii(client_response)
-      document_capture_session.store_result_from_response(client_response)
+    def store_pii(client_response, mrz_status = nil)
+      document_capture_session.store_result_from_response(client_response, mrz_status:)
     end
 
     def user_id
@@ -581,6 +583,12 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def determine_mrz_status(passport_response)
+      return :not_processed unless passport_submittal && passport_response
+      return :pass if passport_response.success?
+      :failed
     end
   end
 end

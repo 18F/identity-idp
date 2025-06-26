@@ -93,18 +93,13 @@ module DocAuthHelper
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
-                                                       facial_match_required: false)
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
     return if page.current_path == idv_hybrid_handoff_path && remote
     if remote
-      if facial_match_required
-        click_on t('forms.buttons.continue_online_mobile')
-      else
-        click_on t('forms.buttons.continue_online')
-      end
+      click_on t('forms.buttons.continue_online')
     else
       click_on t('forms.buttons.continue_ipp')
     end

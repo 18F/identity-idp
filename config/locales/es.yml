@@ -644,7 +644,6 @@ doc_auth.headings.upload_from_phone: Utilice su teléfono para tomar fotos
 doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
-doc_auth.headings.verify_online_mobile: Verifique su identidad en línea con su teléfono
 doc_auth.headings.welcome: Verifiquemos su identidad para %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad y acceder a <strong>%{service_provider_name}</strong> y sus servicios.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Está utilizando <strong>%{app_name}</strong> para verificar su identidad.
@@ -712,9 +711,8 @@ doc_auth.info.verify_at_post_office_instruction: Ingrese su información en lín
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
-doc_auth.info.verify_online_instruction: Agregará fotografías de su identificación y verificará su identidad por completo en línea.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Tomará fotografías de su identificación con un teléfono.
-doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted con un teléfono.
+doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea.
+doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted para verificar su identidad por completo en línea.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1a: Tener una licencia de conducir o una tarjeta de identificación estatal
@@ -748,7 +746,6 @@ doc_auth.tips.document_capture_selfie_text1: Quite cualquier prenda o accesorio 
 doc_auth.tips.document_capture_selfie_text2: Tómese la foto en un lugar bien iluminado
 doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
-doc_auth.tips.mobile_phone_required: Se necesita un teléfono móvil
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -905,7 +902,6 @@ forms.buttons.confirm: Confirmar
 forms.buttons.continue: Continuar
 forms.buttons.continue_ipp: Continúe en persona
 forms.buttons.continue_online: Continúe en línea
-forms.buttons.continue_online_mobile: Continúe en su teléfono
 forms.buttons.delete: Eliminar
 forms.buttons.disable: Eliminar
 forms.buttons.edit: Editar

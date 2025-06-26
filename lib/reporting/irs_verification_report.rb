@@ -90,7 +90,7 @@ module Reporting
 
         ],
         [
-          'Verfication Demand',
+          'Verification Demand',
           verification_demand_results,
           to_percent(verification_demand_results, verification_demand_results),
         ],
