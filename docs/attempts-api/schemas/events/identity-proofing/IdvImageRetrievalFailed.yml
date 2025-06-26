@@ -3,18 +3,18 @@ description: |
   Therefore, document upload failed.
   These image file names and encryption keys are invalid, and are not saved in the document escrow.
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       document_front_image_file_id:
         type: string
-        description: If this image existed, the ID  generated for storage
+        description: If this image existed, the ID generated for storage
       document_back_image_file_id:
         type: string
-        description: If this image existed, the ID  generated for storage
+        description: If this image existed, the ID generated for storage
       document_selfie_image_file_id:
         type: string
-        description: If this image existed, the ID  generated for storage
+        description: If this image existed, the ID generated for storage
       document_front_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key generated to encrypt the front image file if it exists.
