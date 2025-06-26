@@ -49,6 +49,8 @@
             <%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %>
           </p>
         </div>
+      <% elsif attribute_key == :verified_at %>
+        <%= render TimeComponent.new(time: attribute_value) %>
       <% else %>
         <%= attribute_value.to_s %>
       <% end %>
