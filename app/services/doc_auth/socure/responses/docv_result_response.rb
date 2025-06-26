@@ -254,10 +254,10 @@ module DocAuth
         def passports_enabled?
           IdentityConfig.store.doc_auth_passports_enabled && (
             (
-              IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled &&
-              IdentityConfig.store.doc_auth_selfie_vendor_socure_percent > 0
+              IdentityConfig.store.doc_auth_passport_vendor_switching_enabled &&
+              IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
             ) ||
-            IdentityConfig.store.doc_auth_selfie_vendor_default == Idp::Constants::Vendors::SOCURE
+            IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
           )
         end
       end
