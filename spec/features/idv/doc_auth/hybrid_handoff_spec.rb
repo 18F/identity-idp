@@ -363,6 +363,16 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       end
     end
 
+    context 'when manual upload is enabled in test mode' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(true)
+      end
+
+      it 'shows the upload section and link' do
+        verify_upload_photos_section_and_link(page)
+      end
+    end
+
     context 'when ipp is available system wide' do
       context 'when in person proofing opt in enabled' do
         context 'when sp ipp is available' do
@@ -377,7 +387,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -396,7 +405,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -422,7 +430,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -435,7 +442,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                   no ipp option section' do
                 verify_handoff_page_non_selfie_version_content(page)
                 verify_handoff_page_no_ipp_option_shown(page)
-                verify_upload_photos_section_and_link(page)
               end
             end
           end
@@ -464,7 +470,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -485,7 +490,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -510,7 +514,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
@@ -531,7 +534,6 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
               verify_handoff_page_no_ipp_option_shown(page)
-              verify_upload_photos_section_and_link(page)
             end
           end
         end
