@@ -5,6 +5,7 @@ import { FormStepError } from '@18f/identity-form-steps';
 import { Link } from '@18f/identity-components';
 import formatHTML from '@18f/identity-react-i18n/format-html';
 import MarketingSiteContext from '../context/marketing-site';
+import { InPersonContext } from '../context';
 
 interface GeneralErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
@@ -41,6 +42,10 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
   return err;
 }
 
+function isNetworkError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'network');
+}
+
 function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
@@ -53,6 +58,7 @@ function GeneralError({
 }: GeneralErrorProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const { chooseIdTypePath } = useContext(InPersonContext);
   const helpCenterLink = getHelpCenterURL({
     category: 'verify-your-identity',
     article: 'how-to-add-images-of-your-state-issued-id',
@@ -66,6 +72,7 @@ function GeneralError({
   });
 
   const err = getError({ unknownFieldErrors });
+  const isNetwork = isNetworkError(unknownFieldErrors);
 
   if (isFailedDocType && !!altFailedDocTypeMsg) {
     return (
@@ -94,7 +101,18 @@ function GeneralError({
     );
   }
   if (isPassportError) {
-    return <p>{t('doc_auth.info.review_passport')}</p>;
+    if (!isNetwork) {
+      return <p>{t('doc_auth.info.review_passport')}</p>;
+    }
+    return (
+      <p key={err?.message}>
+        {t('doc_auth.errors.general.network_error_passport')}{' '}
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
+          {t('doc_auth.errors.general.network_error_passport_link_text')}
+        </Link>{' '}
+        {t('doc_auth.errors.general.network_error_passport_ending')}
+      </p>
+    );
   }
   if (err && !hasDismissed) {
     return <p key={err.message}>{err.message}</p>;

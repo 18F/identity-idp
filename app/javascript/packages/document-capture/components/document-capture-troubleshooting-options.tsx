@@ -29,7 +29,7 @@ function DocumentCaptureTroubleshootingOptions({
   showDocumentTips = true,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { inPersonURL, passportEnabled } = useContext(InPersonContext);
+  const { chooseIdTypePath, inPersonURL, passportEnabled } = useContext(InPersonContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
 
   return (
@@ -40,7 +40,7 @@ function DocumentCaptureTroubleshootingOptions({
         options={
           [
             passportEnabled && {
-              url: 'choose_id_type',
+              url: chooseIdTypePath,
               text: t('idv.troubleshooting.options.use_another_id_type'),
               isExternal: false,
             },

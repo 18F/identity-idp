@@ -8,6 +8,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
   let(:id_type) { 'state_id' }
+  let(:choose_id_type_path) { 'choose_id_type' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuer) { nil }
@@ -55,6 +56,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
+      choose_id_type_path: choose_id_type_path,
       doc_auth_selfie_capture: selfie_capture_enabled,
       doc_auth_upload_enabled: upload_enabled,
       skip_doc_auth_from_how_to_verify: skip_doc_auth_from_how_to_verify,
