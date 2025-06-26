@@ -98,4 +98,33 @@ module DocAuthImageFixtures
   def self.load_image_data(filename)
     File.read(fixture_path(filename))
   end
+
+  def self.zipped_files(reference_id:, selfie: false, passport: false)
+    temp_dir = Dir.mktmpdir(reference_id)
+
+    if passport
+      # i don't think this is possible with socure?
+      FileUtils.cp(fixture_path('passport.jpg'), temp_dir)
+    else
+      FileUtils.cp(fixture_path('id-back.jpg'), "#{temp_dir}/documentbackDoc_Back_1_blob.jpg")
+      FileUtils.cp(fixture_path('id-front.jpg'), "#{temp_dir}/documentfrontDoc_Front_1_blob.jpg")
+    end
+
+    if selfie
+      FileUtils.cp(fixture_path('selfie.jpg'), "#{temp_dir}/Doc_Selfie_1_blob.jpg")
+    end
+
+    zip_filename = "#{temp_dir}/document.zip"
+
+    Zip::File.open(zip_filename, Zip::File::CREATE) do |zipfile|
+      Dir.glob(File.join(temp_dir, '*')).each do |file|
+        next if File.directory?(file)
+        zipfile.add(File.basename(file), file)
+      end
+    end
+    zip_contents = File.read(zip_filename)
+    zip_contents
+  ensure
+    FileUtils.remove_entry_secure(temp_dir)
+  end
 end

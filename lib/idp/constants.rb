@@ -19,6 +19,7 @@ module Idp
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
       STATE_ID_MOCK = 'StateIdMock'
+      AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
     end
 
@@ -139,6 +140,29 @@ module Idp
     MOCK_IPP_PASSPORT_APPLICANT = {
       passport_number: '123456789',
       passport_expiration_date: (DateTime.now.utc + 1.year).to_s,
+    }.freeze
+
+    MOCK_IDV_PROOFING_PASSPORT_APPLICANT = {
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      dob: '1938-10-06',
+      sex: 'Male',
+      birth_place: 'birthplace',
+      passport_expiration: '2030-03-15',
+      issuing_country_code: 'USA',
+      mrz:
+      'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+      passport_issued: '2015-03-15',
+      nationality_code: 'USA',
+      document_number: '000000',
+      id_doc_type: 'passport',
+      ssn: '666111111',
+      consent_given_at: '2025-06-12 20:16:23 UTC',
+      state: 'VA',
+      zipcode: '12345-4321',
+      city: 'Best City',
+      address1: '123 Way St',
+      address2: '2nd Address Line',
     }.freeze
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|

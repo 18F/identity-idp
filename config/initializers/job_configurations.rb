@@ -309,10 +309,23 @@ else
         cron: s3_cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Monthly report checking in on key metrics
+      irs_credential_tenure_report: {
+        class: 'Reports::IrsCredentialTenureReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
       # Previoius week API transaction count reprot
       api_transaction_count_report: {
         class: 'Reports::ApiTransactionCountReport',
         cron: cron_every_monday_2am,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+      # Previous months's irs credentials report
+      monthly_irs_cred_metrics_report: {
+        class: 'Reports::IrsMonthlyCredMetricsReport',
+        cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
     }.compact

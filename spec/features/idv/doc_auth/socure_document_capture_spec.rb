@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'document capture step', :js do
+RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -53,7 +53,7 @@ RSpec.feature 'document capture step', :js do
       before do
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
+        complete_doc_auth_steps_before_hybrid_handoff_step
         click_idv_continue
       end
 
@@ -116,7 +116,7 @@ RSpec.feature 'document capture step', :js do
           # Try Socure again
           click_on t('idv.failure.button.warning')
           expect(page).to have_current_path(idv_socure_document_capture_path)
-          expect(page).to have_content(t('doc_auth.headings.verify_with_phone'))
+          expect(page).to have_content(t('doc_auth.headings.document_capture'))
         end
       end
 
@@ -289,7 +289,7 @@ RSpec.feature 'document capture step', :js do
             visit_idp_from_oidc_sp_with_ial2
             sign_in_and_2fa_user(user)
 
-            complete_doc_auth_steps_before_document_capture_step
+            complete_doc_auth_steps_before_hybrid_handoff_step
 
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
@@ -434,7 +434,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
 
-    context 'standard mobile flow' do
+    context 'webhook repearter repeats all webhooks' do
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
@@ -446,7 +446,7 @@ RSpec.feature 'document capture step', :js do
         perform_in_browser(:mobile) do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
-          complete_doc_auth_steps_before_document_capture_step
+          complete_doc_auth_steps_before_hybrid_handoff_step
 
           expect(page).to have_current_path(idv_socure_document_capture_url)
           expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -490,7 +490,7 @@ RSpec.feature 'document capture step', :js do
         allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
         visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
         sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
+        complete_doc_auth_steps_before_hybrid_handoff_step
       end
 
       it 'proceeds to the next page with valid info' do
@@ -591,7 +591,7 @@ RSpec.feature 'document capture step', :js do
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(user)
 
-      complete_doc_auth_steps_before_document_capture_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       click_idv_continue
       socure_docv_upload_documents(
         docv_transaction_token: @docv_transaction_token,
@@ -651,7 +651,7 @@ RSpec.feature 'document capture step', :js do
       visit_idp_from_oidc_sp_with_ial2
       sign_in_and_2fa_user(user)
 
-      complete_doc_auth_steps_before_document_capture_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       click_idv_continue
 
       socure_docv_upload_documents(

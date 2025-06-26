@@ -344,9 +344,9 @@ module Idv
 
       success = (threatmetrix_result[:review_status] == 'pass')
 
-      attempts_api_tracker.idv_tmx_fraud_check(
+      attempts_api_tracker.idv_device_risk_assessment(
         success:,
-        failure_reason: threatmetrix_failure_reason(success, threatmetrix_result),
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
 
       return if success
@@ -375,15 +375,15 @@ module Idv
       threatmetrix_result.delete(:response_body)
     end
 
-    def threatmetrix_failure_reason(success, result)
+    def device_risk_failure_reason(success, result)
       return nil if success
 
-      tmx_summary_reason_code = result.dig(
+      fraud_risk_summary_reason_code = result.dig(
         :response_body,
         :tmx_summary_reason_code,
-      ) || ['ThreatMetrix review has failed for unknown reasons']
+      ) || ['Fraud risk assessment has failed for unknown reasons']
 
-      { tmx_summary_reason_code: }
+      { fraud_risk_summary_reason_code: }
     end
 
     def add_cost(token, transaction_id: nil)
@@ -467,7 +467,9 @@ module Idv
       end
 
       def failed_stages
-        stages.keys.select { |k| !stages[k][:success] }
+        stages.keys.select { |k| !stages[k][:success] }.map do |stage|
+          stage == :threatmetrix ? :device_risk_assesment : stage
+        end
       end
 
       def resolution_adjudication_reason

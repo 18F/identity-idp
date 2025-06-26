@@ -612,8 +612,6 @@ doc_auth.headings.document_capture_selfie: Photo of your face
 doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
-doc_auth.headings.hybrid_handoff: How would you like to add your ID?
-doc_auth.headings.hybrid_handoff_selfie: Enter your phone number to switch devices
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
@@ -635,8 +633,6 @@ doc_auth.headings.upload_from_phone: Use your phone to take photos
 doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
-doc_auth.headings.verify_online_mobile: Verify your identity online using your phone
-doc_auth.headings.verify_with_phone: Verify your identity using your phone
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
@@ -658,8 +654,8 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff: We’ll collect information about you by reading your ID.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Don’t have a mobile phone?</strong> You can verify your identity at a United States Post Office instead.'
+doc_auth.info.hybrid_handoff_no_selfie: You’ll take photos of your ID using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
+doc_auth.info.hybrid_handoff_selfie: You’ll take photos of your ID and yourself using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
@@ -693,19 +689,19 @@ doc_auth.info.selfie_capture.action.close: close
 doc_auth.info.selfie_capture.action.retake: retake
 doc_auth.info.selfie_capture.action.submit: Photo taken. Submit photo.
 doc_auth.info.selfie_capture.intro: Camera is on, ready for selfie
+doc_auth.info.socure_basic_idv: '%{app_name} will verify your ID using a trusted service provider, Socure. When you continue, you’ll be asked to take photos of your ID with Socure.'
+doc_auth.info.socure_hybrid_flow_html: You are using %{app_name} to verify your identity and access <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv_finish: When you are done taking photos, %{app_name} will finish verifying your information.
 doc_auth.info.ssn: We need your Social Security number to verify your name, date of birth and address.
 doc_auth.info.stepping_up_html: Verify your identity again to access this service. %{link_html}
-doc_auth.info.tag: Recommended
 doc_auth.info.upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
-doc_auth.info.upload_from_phone: You won’t have to sign in again, and you’ll switch back to this computer after you take photos. Your mobile phone must have a camera and a web browser.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can only use a U.S. driver’s license or state ID.</strong> You cannot use a U.S. passport book for this option.
 doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: You’ll add photos of your ID and verify your identity fully online.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: You’ll take photos of your ID using a phone.
-doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself using a phone.
+doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
+doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1a: Have a driver’s license or state ID
@@ -739,7 +735,6 @@ doc_auth.tips.document_capture_selfie_text1: Remove any items covering your face
 doc_auth.tips.document_capture_selfie_text2: Take photo in a well-lit place
 doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
-doc_auth.tips.mobile_phone_required: Mobile Phone Required
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -896,7 +891,6 @@ forms.buttons.confirm: Confirm
 forms.buttons.continue: Continue
 forms.buttons.continue_ipp: Continue in person
 forms.buttons.continue_online: Continue online
-forms.buttons.continue_online_mobile: Continue on your phone
 forms.buttons.delete: Delete
 forms.buttons.disable: Delete
 forms.buttons.edit: Edit
@@ -1583,6 +1577,8 @@ openid_connect.user_info.errors.no_authorization: No Authorization header provid
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
+profiling_failed.details: We are unable to authenticate or sign you in. Reach out to your agency to access services.
+profiling_failed.title: We couldn’t sign you into your account
 report_mailer.deleted_accounts_report.issuers: Issuers
 report_mailer.deleted_accounts_report.name: Name
 report_mailer.deleted_accounts_report.subject: Deleted accounts report
@@ -1661,6 +1657,7 @@ time.formats.sms_date: '%m/%d/%Y'
 time.pm: PM
 titles.account: Account
 titles.account_locked: Account temporarily locked
+titles.add_email: Add a new email address
 titles.add_info.phone: Add a phone number
 titles.backup_codes: Don’t lose your backup codes
 titles.cancel_exit_login: Are you sure you want to cancel and exit %{app_name}?
@@ -1669,7 +1666,6 @@ titles.confirmations.show: Choose a password
 titles.create_account: Create an account
 titles.doc_auth.address: Update your current residential address
 titles.doc_auth.doc_capture: Add your ID
-titles.doc_auth.hybrid_handoff: Verify your ID
 titles.doc_auth.link_sent: Link sent
 titles.doc_auth.processing_images: Processing your images
 titles.doc_auth.ssn: Enter your Social Security number

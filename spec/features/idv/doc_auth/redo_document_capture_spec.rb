@@ -598,9 +598,7 @@ RSpec.feature 'document capture step', :js do
                       facial_match_required: true },
                 )
                 sign_in_and_2fa_user(@user)
-                complete_up_to_how_to_verify_step_for_opt_in_ipp(
-                  facial_match_required: true,
-                )
+                complete_up_to_how_to_verify_step_for_opt_in_ipp
               end
             end
 
@@ -670,8 +668,7 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).not_to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.send_link')
               expect(page).to have_current_path(idv_link_sent_path)
@@ -689,8 +686,7 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.upload_photos')
               expect(page).to have_current_path(idv_document_capture_url)
@@ -722,6 +718,10 @@ RSpec.feature 'document capture step', :js do
             before do
               allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
                 .and_return(in_person_doc_auth_button_enabled)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+                .and_return(true)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                .and_return(true)
               allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
                 .and_return(sp_ipp_enabled)
             end
@@ -734,8 +734,8 @@ RSpec.feature 'document capture step', :js do
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # still have option to continue handoff, since it's desktop no skip_hand_off
                   expect(page).to have_current_path(idv_hybrid_handoff_path)
-                  expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-                  click_on t('in_person_proofing.headings.prepare')
+                  expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+                  click_on t('forms.buttons.continue_ipp')
                   expect(page).to have_current_path(
                     idv_document_capture_path({ step: 'hybrid_handoff' }),
                   )

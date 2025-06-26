@@ -184,6 +184,18 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: irs_quarterly_report.reports,
     )
   end
+  
+  def irs_credential_tenure_report
+    irs_credential_tenure_report = Reports::IrsCredentialTenureReport.new(Time.zone.yesterday)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example IRS Credential Tenure Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Credentual Tenure Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: irs_credential_tenure_report.reports,
+    )
+  end
 
   def monthly_irs_verification_report
     monthly_irs_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)

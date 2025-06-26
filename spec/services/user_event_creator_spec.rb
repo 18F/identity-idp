@@ -83,7 +83,8 @@ RSpec.describe UserEventCreator do
         it 'assigns one to the device' do
           event, _disavowal_token = subject.create_user_event(event_type, user)
 
-          expect(event.device.cookie_uuid.length).to eq(UserEventCreator::COOKIE_LENGTH)
+          # One byte is represented as 2 hexadecimal characters
+          expect(event.device.cookie_uuid.length).to eq(UserEventCreator::COOKIE_BYTES * 2)
         end
 
         it 'saves the cookie permanently' do

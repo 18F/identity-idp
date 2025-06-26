@@ -355,4 +355,13 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       end
     end
   end
+
+  describe '#skipped_result' do
+    it 'returns a check skipped result' do
+      plugin.skipped_result.tap do |result|
+        expect(result.success?).to eql(true)
+        expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+      end
+    end
+  end
 end

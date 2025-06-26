@@ -36,12 +36,13 @@ module AttemptsApi
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
         user_uuid: agency_uuid(event_type: event_type),
-        device_fingerprint: hashed_cookie_device_uuid,
+        device_id: cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         application_url: sp_request_uri,
         language: user&.email_language || I18n.locale.to_s,
         client_port: CloudFrontHeaderParser.new(request).client_port,
         aws_region: IdentityConfig.store.aws_region,
+        google_analytics_cookies: google_analytics_cookies(request),
       }
 
       event_metadata.merge!(extra_metadata)
@@ -82,6 +83,14 @@ module AttemptsApi
 
     private
 
+    def google_analytics_cookies(request)
+      return nil unless request&.cookies
+      request.cookies.filter do |key, value|
+        key == '_ga' && value.start_with?('GA1.') ||
+          key.start_with?('_ga_') && value.start_with?('GS2.')
+      end
+    end
+
     def agency_uuid(event_type:)
       return nil unless user&.id && sp
       skip_create = SKIP_AGENCY_UUID_CREATION_EVENT_TYPES.include?(event_type)
@@ -97,11 +106,6 @@ module AttemptsApi
       return nil unless user&.unique_session_id.present?
 
       Digest::SHA1.hexdigest(user&.unique_session_id)
-    end
-
-    def hashed_cookie_device_uuid
-      return nil unless cookie_device_uuid
-      Digest::SHA1.hexdigest(cookie_device_uuid)
     end
 
     def enabled?

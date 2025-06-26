@@ -612,8 +612,6 @@ doc_auth.headings.document_capture_selfie: Photo de votre visage
 doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
-doc_auth.headings.hybrid_handoff: Comment voulez-vous ajouter votre pièce d’identité ?
-doc_auth.headings.hybrid_handoff_selfie: Saisir votre numéro de téléphone pour changer d’appareil
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
@@ -635,8 +633,6 @@ doc_auth.headings.upload_from_phone: Utiliser votre téléphone pour prendre des
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
-doc_auth.headings.verify_online_mobile: Confirmer votre identité en ligne à l’aide de votre téléphone
-doc_auth.headings.verify_with_phone: Confirmer votre identité à l’aide de votre téléphone
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
@@ -658,8 +654,8 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.hybrid_handoff: Nous recueillerons les informations vous concernant en lisant votre pièce d’identité.
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>Vous n’avez pas de téléphone portable?</strong> Vous pouvez confirmer votre identité dans un bureau de poste américain participant.'
+doc_auth.info.hybrid_handoff_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
+doc_auth.info.hybrid_handoff_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
@@ -693,19 +689,19 @@ doc_auth.info.selfie_capture.action.close: fermer
 doc_auth.info.selfie_capture.action.retake: nouvelle photo
 doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
+doc_auth.info.socure_basic_idv: '%{app_name} vérifiera votre pièce d’identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d’identité avec Socure.'
+doc_auth.info.socure_hybrid_flow_html: Vous utilisez %{app_name} pour vérifier votre identité et accéder à <strong>%{sp_name}</strong>.
+doc_auth.info.socure_ial2_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
-doc_auth.info.tag: Recommandation
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.
-doc_auth.info.upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos. Votre téléphone portable doit être équipé d’un appareil photo et d’un navigateur web.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Vous pouvez seulement utiliser un permis de conduire ou une carte d’identité d’un État des États-Unis.</strong> Le passeport des États-Unis n’est pas accepté dans ce cas.
 doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en ligne puis confirmez votre identité en personne dans un bureau de poste participant.
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
-doc_auth.info.verify_online_instruction: Vous téléverserez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
-doc_auth.info.verify_online_instruction_mobile_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone.
-doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone.
+doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
+doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1a: Présenter votre permis de conduire ou votre carte d’identité d’un État
@@ -739,7 +735,6 @@ doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre vis
 doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit bien éclairé
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
-doc_auth.tips.mobile_phone_required: Téléphone mobile nécessaire
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -896,7 +891,6 @@ forms.buttons.confirm: Confirmer
 forms.buttons.continue: Suite
 forms.buttons.continue_ipp: Continuer en personne
 forms.buttons.continue_online: Continuer en ligne
-forms.buttons.continue_online_mobile: Continuer sur votre téléphone
 forms.buttons.delete: Supprimer
 forms.buttons.disable: Supprimer
 forms.buttons.edit: Modifier
@@ -1583,6 +1577,8 @@ openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisati
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré
 pages.page_took_too_long.body: Nous vous recommandons de patienter quelques minutes, puis de réessayer. (503)
 pages.page_took_too_long.header: Le serveur a mis trop de temps à traiter votre demande.
+profiling_failed.details: Nous ne sommes pas en mesure de vous authentifier pour vous connecter. Veuillez contacter votre organisme pour accéder à ses services.
+profiling_failed.title: Nous n’avons pas pu vous connecter à votre compte
 report_mailer.deleted_accounts_report.issuers: Émetteurs
 report_mailer.deleted_accounts_report.name: Nom
 report_mailer.deleted_accounts_report.subject: Rapport sur les comptes supprimés
@@ -1661,6 +1657,7 @@ time.formats.sms_date: '%d/%m/%Y'
 time.pm: P.M.
 titles.account: Compte
 titles.account_locked: Compte temporairement verrouillé
+titles.add_email: Ajouter une nouvelle adresse e-mail
 titles.add_info.phone: Ajouter un numéro de téléphone
 titles.backup_codes: Ne perdez pas vos codes de sauvegarde
 titles.cancel_exit_login: Êtes-vous sûr de vouloir annuler et quitter %{app_name}?
@@ -1669,7 +1666,6 @@ titles.confirmations.show: Choisir un mot de passe
 titles.create_account: Créer un compte
 titles.doc_auth.address: Mettre à jour votre adresse personnelle
 titles.doc_auth.doc_capture: Ajouter votre pièce d’identité
-titles.doc_auth.hybrid_handoff: Vérifier votre identité
 titles.doc_auth.link_sent: Lien envoyé
 titles.doc_auth.processing_images: Traitement de vos images en cours
 titles.doc_auth.ssn: Saisir votre numéro de sécurité sociale

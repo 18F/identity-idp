@@ -623,8 +623,6 @@ doc_auth.headings.document_capture_selfie: 你面部照片
 doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
-doc_auth.headings.hybrid_handoff: 你想怎么添加身份证件？
-doc_auth.headings.hybrid_handoff_selfie: 输入电话号码来切换设备
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.mailing_address: 输入你的邮寄地址
@@ -646,8 +644,6 @@ doc_auth.headings.upload_from_phone: 使用手机拍照
 doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
-doc_auth.headings.verify_online_mobile: 使用手机在网上验证你的身份
-doc_auth.headings.verify_with_phone: 使用你的电话来验证你的身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
@@ -669,8 +665,8 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.hybrid_handoff: 我们会通过读取你的身份证件来收集你的信息。
-doc_auth.info.hybrid_handoff_ipp_html: '<strong>没有手机？</strong>你可以去一个美国邮局验证身份。'
+doc_auth.info.hybrid_handoff_no_selfie: 你将用手机拍摄你的身份证件照片。你不必重新登录，而且拍完照后可以转回到该电脑。
+doc_auth.info.hybrid_handoff_selfie: 你将用手机拍摄自己身份证件和你本人的照片。你不必重新登录，而且拍完照后可以转回到该电脑。
 doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
 doc_auth.info.image_loaded: 图像已加载
 doc_auth.info.image_loading: 图像加载中
@@ -704,19 +700,19 @@ doc_auth.info.selfie_capture.action.close: 关闭
 doc_auth.info.selfie_capture.action.retake: 重拍
 doc_auth.info.selfie_capture.action.submit: 照片拍摄完毕。提交照片。
 doc_auth.info.selfie_capture.intro: 相机已打开，准备自拍
+doc_auth.info.socure_basic_idv: '%{app_name}会使用一家受信任的服务提供商 - Socure – 来验证你的ID。如果你继续，系统会要求你使用 Socure 拍摄你的ID的照片。'
+doc_auth.info.socure_hybrid_flow_html: 你正在使用 %{app_name} 验证你的身份并访问 <strong>%{sp_name}</strong>。
+doc_auth.info.socure_ial2_idv_finish: 拍完照片后，%{app_name} 会完成你的信息验证。
 doc_auth.info.ssn: 我们需要你的社会保障号码来证实你的姓名、生日和地址。
 doc_auth.info.stepping_up_html: 再次验证你的身份以使用这项服务。 %{link_html}
-doc_auth.info.tag: 建议
 doc_auth.info.upload_from_computer: 没有手机？从该电脑上传你身份证件的照片。
-doc_auth.info.upload_from_phone: 你不必重新登录，而且拍完照后可以转回到该电脑。你的手机必须带有相机和网络浏览器。
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能使用美国驾照或州身份证件。</strong>就这一选项你不能使用美国护照。
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_instruction: 你将添加自己身份证件的照片来完全在网上验证身份。
-doc_auth.info.verify_online_instruction_mobile_no_selfie: 你将用手机拍摄你的身份证件照片。
-doc_auth.info.verify_online_instruction_selfie: 你将用手机拍摄自己身份证件和你本人的照片。
+doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
+doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1a: 带上驾照或州身份证件
@@ -750,7 +746,6 @@ doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东�
 doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
-doc_auth.tips.mobile_phone_required: 要求有手机
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.heading: We believe you may have another account
 duplicate_profiles_detected.intro: We have found another %{app_name} account that we believe may be yours. Do you recognize the following accounts as yours?
@@ -907,7 +902,6 @@ forms.buttons.confirm: 确认
 forms.buttons.continue: 继续
 forms.buttons.continue_ipp: 继续亲身验证
 forms.buttons.continue_online: 继续在网上验证
-forms.buttons.continue_online_mobile: 在手机上继续
 forms.buttons.delete: 删除
 forms.buttons.disable: 删除
 forms.buttons.edit: 编辑
@@ -1596,6 +1590,8 @@ openid_connect.user_info.errors.no_authorization: 未提供授权标头
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。
 pages.page_took_too_long.body: 你也许想等几分钟后再试。（503）
 pages.page_took_too_long.header: 服务器处理你请求的时间过长。
+profiling_failed.details: 我们无法证实你的身份并让你登录。请联系你的机构以获取服务。
+profiling_failed.title: 我们无法把你登入你的帐户。
 report_mailer.deleted_accounts_report.issuers: 发放方
 report_mailer.deleted_accounts_report.name: 姓名
 report_mailer.deleted_accounts_report.subject: 已删除账户报告
@@ -1674,6 +1670,7 @@ time.formats.sms_date: '%Y/%m/%d'
 time.pm: 下午
 titles.account: 账户
 titles.account_locked: 账户临时锁住
+titles.add_email: 添加一个新电邮地址
 titles.add_info.phone: 添加电话号码
 titles.backup_codes: 别丢了你的备用代码
 titles.cancel_exit_login: 你确定要取消并退出 %{app_name} 吗？
@@ -1682,7 +1679,6 @@ titles.confirmations.show: 选择一个密码
 titles.create_account: 设立账户
 titles.doc_auth.address: 更新你当前的居住地址
 titles.doc_auth.doc_capture: 添加你的身份证件
-titles.doc_auth.hybrid_handoff: 验证你的身份证件
 titles.doc_auth.link_sent: 链接已发送
 titles.doc_auth.processing_images: 正在处理你的图像
 titles.doc_auth.ssn: 输入你的社会保障号码

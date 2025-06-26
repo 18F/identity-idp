@@ -9,11 +9,11 @@ module Idv
     # @returns [Hash{Symbol => Hash}] errors are keyed by Idv::Image#type
     attr_accessor :errors
 
-    def initialize(params)
+    def initialize(params, binary_image: false)
       @images = TYPES.map do |type|
         next unless params[type].present?
 
-        Idv::IdvImage.new(type:, value: params[type])
+        Idv::IdvImage.new(type:, value: params[type], binary_image:)
       end.compact
       @errors = {}
     end
@@ -23,6 +23,20 @@ module Idv
         result = write_image(image.bytes)
         obj[image.attempts_tracker_file_id_key] = result.name
         obj[image.attempts_tracker_encryption_key] = result.encryption_key
+      end
+    end
+
+    def write_with_data(image_storage_data:)
+      image_storage_data.keys.each do |key|
+        image = send(key)
+        next unless image.present?
+
+        encryption_key = Base64.strict_decode64(
+          image_storage_data[key][image.attempts_tracker_encryption_key],
+        )
+        name = image_storage_data[key][image.attempts_tracker_file_id_key]
+
+        write_image_with_data(image.bytes, encryption_key:, name:)
       end
     end
 
@@ -65,7 +79,11 @@ module Idv
     private
 
     def write_image(image)
-      encrypted_document_storage_writer.write(image: image)
+      encrypted_document_storage_writer.write(image:)
+    end
+
+    def write_image_with_data(image, encryption_key:, name:)
+      encrypted_document_storage_writer.write_with_data(image:, encryption_key:, name:)
     end
 
     def encrypted_document_storage_writer

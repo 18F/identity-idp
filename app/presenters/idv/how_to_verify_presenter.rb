@@ -20,12 +20,16 @@ class Idv::HowToVerifyPresenter
     t('doc_auth.headings.how_to_verify')
   end
 
-  def online_asset_url
-    if mobile_required
-      'idv/mobile-phone-icon.svg'
+  def hybrid_handoff_text
+    if selfie_required
+      t('doc_auth.info.hybrid_handoff_selfie')
     else
-      'idv/remote.svg'
+      t('doc_auth.info.hybrid_handoff_no_selfie')
     end
+  end
+
+  def online_asset_url
+    'idv/mobile-phone-icon.svg'
   end
 
   def online_asset_alt_text
@@ -37,16 +41,11 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_text
-    if mobile_required
-      t('doc_auth.headings.verify_online_mobile')
-    else
-      t('doc_auth.headings.verify_online')
-    end
+    t('doc_auth.headings.verify_online')
   end
 
   def verify_online_instruction
     return t('doc_auth.info.verify_online_instruction_selfie') if selfie_required
-    return t('doc_auth.info.verify_online_instruction_mobile_no_selfie') if mobile_required
 
     t('doc_auth.info.verify_online_instruction')
   end
@@ -60,11 +59,7 @@ class Idv::HowToVerifyPresenter
   end
 
   def online_submit
-    if mobile_required
-      t('forms.buttons.continue_online_mobile')
-    else
-      t('forms.buttons.continue_online')
-    end
+    t('forms.buttons.continue_online')
   end
 
   def post_office_asset_url
@@ -80,6 +75,10 @@ class Idv::HowToVerifyPresenter
   end
 
   def post_office_instruction
+    t('doc_auth.info.verify_at_post_office_instruction')
+  end
+
+  def post_office_accepted_id_instruction
     t('doc_auth.info.verify_at_post_office_instruction')
   end
 

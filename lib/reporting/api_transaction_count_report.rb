@@ -17,8 +17,26 @@ module Reporting
     attr_reader :time_range
 
     # @param [Range<Time>] time_range
-    def initialize(time_range:)
-      @time_range = time_range || previous_week_range
+    def initialize(
+      time_range:,
+      verbose: false,
+      progress: false,
+      slice: 1.day,
+      threads: 5
+    )
+      @time_range = time_range
+      @verbose = verbose
+      @progress = progress
+      @slice = slice
+      @threads = threads
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     def as_tables
@@ -55,9 +73,11 @@ module Reporting
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
-          'Socure (KYC)',
+          'Socure (KYC) - Shadow',
+          'Socure (KYC) - Non-Shadow',
           'Fraud Score and Attribute',
-          'Threat Metrix',
+          'Threat Metrix (IDV)',
+          'Threat Metrix (Auth Only)',
         ],
         [
           "#{ time_range.begin.to_date} - #{time_range.end.to_date}",
@@ -65,9 +85,11 @@ module Reporting
           instant_verify_table.first,
           phone_finder_table.first,
           socure_table.first,
-          socure_kyc_table.first,
+          socure_kyc_shadow_table.first,
+          socure_kyc_non_shadow_table.first,
           fraud_score_and_attribute_table.first,
-          threat_metrix_table.first,
+          threat_metrix_idv_table.first,
+          threat_metrix_auth_only_table.first,
         ],
       ]
     end
@@ -100,8 +122,14 @@ module Reporting
       [socure_table_count, result]
     end
 
-    def socure_kyc_table
-      result = fetch_results(query: socure_kyc_query)
+    def socure_kyc_non_shadow_table
+      result = fetch_results(query: socure_kyc_non_shadow_query)
+      socure_table_count = result.count
+      [socure_table_count, result]
+    end
+
+    def socure_kyc_shadow_table
+      result = fetch_results(query: socure_kyc_shadow_query)
       socure_table_count = result.count
       [socure_table_count, result]
     end
@@ -112,8 +140,14 @@ module Reporting
       [instant_verify_table_count, result]
     end
 
-    def threat_metrix_table
-      result = fetch_results(query: threat_metrix_query)
+    def threat_metrix_idv_table
+      result = fetch_results(query: threat_metrix_idv_query)
+      threat_metrix_table_count = result.count
+      [threat_metrix_table_count, result]
+    end
+
+    def threat_metrix_auth_only_table
+      result = fetch_results(query: threat_metrix_auth_only_query)
       threat_metrix_table_count = result.count
       [threat_metrix_table_count, result]
     end
@@ -147,8 +181,11 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        progress: false,
-        ensure_complete_logs: false,
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
@@ -171,6 +208,7 @@ module Reporting
         properties.event_properties.vendor as vendor
         | display uuid, id, timestamp, sp, dol_state, success,
         billed, vendor, product_status, transaction_status, conversation_id, request_id, referenceID, decision_status, submit_attempts, remaining_submit_attempts
+        | limit 10000
       QUERY
     end
 
@@ -192,6 +230,7 @@ module Reporting
         | display uuid, id, timestamp, sp, dol_state, success,
           phoneFinder_referenceID, phoneFinder_transactionID, phoneFinder_pass,
           coalesce(temp_checks,"passed_all","") as phoneFinder_checks
+        | limit 10000
       QUERY
     end
 
@@ -207,6 +246,7 @@ module Reporting
         properties.event_properties.reference_id as reference_id, properties.event_properties.submit_attempts as submit_attempts,
         replace(replace(strcontains(name, "front"),"1","front"),"0","back") as side
         | display uuid, id, timestamp, sp, dol_state, success, decision_result, side, docv_transaction_token, reference_id, submit_attempts
+        | limit 10000
       QUERY
     end
 
@@ -242,34 +282,29 @@ module Reporting
         resolution_transactionID,
         resolution_success,
         resolution_timed_out_flag
+        | limit 10000
       QUERY
     end
 
-    def threat_metrix_query
+    def threat_metrix_idv_query
       <<~QUERY
         filter name = "IdV: doc auth verify proofing results"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state, properties.service_provider as sp,
+        | fields
+            properties.user_id as uuid,
+            @timestamp as timestamp,
+            properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success
+        | stats max(tmx_success) as max_tmx_success by uuid
+        | limit 10000
+      QUERY
+    end
 
-        #OVERALL
-        properties.event_properties.proofing_results.timed_out as overall_process_timed_out_flag,
-        properties.event_properties.success as overall_process_success,
-        properties.event_properties.proofing_components.document_check as document_check_vendor,
-        properties.event_properties.proofing_results.context.stages.residential_address.vendor_name as address_vendor_name,
-
-
-        #TMX --> threatmetrix
-        properties.event_properties.proofing_results.context.stages.threatmetrix.review_status as tmx_review_status,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.session_id as tmx_sessionID,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.timed_out as tmx_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.threatmetrix.transaction_id as tmx_transactionID
-
-        | display uuid, id, timestamp, sp, dol_state,
-        overall_process_timed_out_flag,
-        overall_process_success,
-        document_check_vendor,
-        address_vendor_name
+    def threat_metrix_auth_only_query
+      <<~QUERY
+        filter name = "account_creation_tmx_result"
+        | fields
+            properties.user_id as uuid,
+            @timestamp as timestamp,
+         | limit 10000
       QUERY
     end
 
@@ -287,10 +322,11 @@ module Reporting
           properties.event_properties.response_body.fraudpoint.vulnerable_victim_index as vulnerable_victim_index,
           properties.event_properties.response_body.fraudpoint.risk_indicators_codes as risk_indicators_codes,
           properties.event_properties.response_body.fraudpoint.risk_indicators_descriptions as risk_indicators_descriptions
+        | limit 10000
       QUERY
     end
 
-    def socure_kyc_query
+    def socure_kyc_shadow_query
       <<~QUERY
         fields 
           properties.event_properties.socure_result.success as success,
@@ -310,7 +346,17 @@ module Reporting
           properties.event_properties.socure_result.errors.I919 as I919,
           properties.event_properties.socure_result.errors.R354 as R354
         | filter name = "idv_socure_shadow_mode_proofing_result"
-        | stats count(*) as c
+        | limit 10000
+      QUERY
+    end
+
+    def socure_kyc_non_shadow_query
+      <<~QUERY
+        fields @timestamp, @message, @logStream, @log
+        | filter name='IdV: doc auth verify proofing results' 
+        and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
+        | sort @timestamp desc
+        | limit 10000
       QUERY
     end
   end

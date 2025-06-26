@@ -19,12 +19,15 @@
 <p><%= t('account_reset.request.delete_email2_html', interval: @account_reset_deletion_period_interval) %></p>
 
 <p><strong><%= t('account_reset.request.continue_deletion') %></strong></p>
-<%= button_to(
-      account_reset_request_path,
-      form_class: 'margin-top-4 margin-bottom-2',
-      class: 'usa-button usa-button--big usa-button--wide',
-      method: :post,
-    ) { t('account_reset.request.yes_continue') } %>
+
+<%= simple_form_for(
+      :account_reset,
+      url: account_reset_request_path,
+      method: 'POST',
+    ) do |f| %>
+  <%= f.submit(t('account_reset.request.yes_continue'), data: { disable_with: 'Confirming...' }, class: 'margin-bottom-2') %>
+<% end %>
+
 <%= button_to(
       root_url,
       method: :get,

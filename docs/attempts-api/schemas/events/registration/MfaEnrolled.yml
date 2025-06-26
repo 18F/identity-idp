@@ -1,4 +1,4 @@
-description: The user has set up multi-factor authentication 
+description: The user has set up multi-factor authentication
 allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
@@ -21,7 +21,7 @@ allOf:
         description: OPTIONAL UNLESS mfa_device_type is phone. The enrolled phone number.
       otp_delivery_method:
         type: string
-        enum: 
+        enum:
           - sms
           - voice
-        description: OPTIONAL UNLESS mfa_device_type is phone. The `otp_delivery_method` is included. 
+        description: OPTIONAL UNLESS mfa_device_type is phone. The `otp_delivery_method` is included.

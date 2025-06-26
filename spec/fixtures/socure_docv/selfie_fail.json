@@ -1,0 +1,40 @@
+{
+  "referenceId": "a1234b56-e789-0123-4fga-56b7c890d123",
+  "previousReferenceId": "e9c170f2-b3e4-423b-a373-5d6e1e9b23f8",
+  "documentVerification": {
+    "reasonCodes": [
+      "R810"
+    ],
+    "documentType": {
+      "type": "Drivers License",
+      "country": "USA",
+      "state": "NY"
+    },
+    "decision": {
+      "name": "lenient",
+      "value": "accept"
+    },
+    "documentData": {
+      "firstName": "Dwayne",
+      "surName": "Denver",
+      "fullName": "Dwayne Denver",
+      "address": "123 Example Street, New York City, NY 10001",
+      "parsedAddress": {
+        "physicalAddress": "123 Example Street",
+        "physicalAddress2": "New York City NY 10001",
+        "city": "New York City",
+        "state": "NY",
+        "country": "US",
+        "zip": "10001"
+      },
+      "documentNumber": "000000000",
+      "dob": "2002-01-01",
+      "issueDate": "2024-01-01",
+      "expirationDate": "2070-01-01"
+    }
+  },
+  "customerProfile": {
+    "customerUserId": "129",
+    "userId": "u8JpWn4QsF3R7tA2"
+  }
+}
