@@ -13,7 +13,7 @@ module Idv
 
     def show
       abandon_any_ipp_progress
-      @upload_disabled = upload_disabled?
+      @upload_enabled = upload_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -147,8 +147,8 @@ module Idv
       current_sp&.friendly_name.presence || APP_NAME
     end
 
-    def upload_disabled?
-      !idv_session.desktop_selfie_test_mode_enabled?
+    def upload_enabled?
+      idv_session.desktop_selfie_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)
