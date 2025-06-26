@@ -18,6 +18,7 @@ module Reporting
 
     module Events
       IDV_DOC_AUTH_PROOFING_RESULTS = 'IdV: doc auth verify proofing results'
+      SP_REDIRECT_INITIATED = 'SP redirect initiated'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -96,7 +97,7 @@ module Reporting
 
     def age_metrics_table
       rows = [['Age Range', 'User Count']]
-      bins = age_bins_for_event(Events::IDV_DOC_AUTH_PROOFING_RESULTS)
+      bins = age_bins_for_event(Events::SP_REDIRECT_INITIATED)
 
       bins.each do |range, count|
         rows << [range, count.to_s]
@@ -107,7 +108,7 @@ module Reporting
 
     def state_metrics_table
       rows = [['State', 'User Count']]
-      counts = state_counts_for_event(Events::IDV_DOC_AUTH_PROOFING_RESULTS)
+      counts = state_counts_for_event(Events::SP_REDIRECT_INITIATED)
 
       counts.each do |state, count|
         rows << [state, count.to_s]
@@ -134,15 +135,38 @@ module Reporting
       end
     end
 
+    def user_metadata
+      @user_metadata ||= begin
+        metadata = {}
+
+        data[Events::IDV_DOC_AUTH_PROOFING_RESULTS].each do |entry|
+          user_id = entry[:user_id]
+          next unless user_id.present?
+
+          metadata[user_id] = {
+            birth_year: entry[:birth_year]&.to_i,
+            state: entry[:state]&.upcase,
+          }
+        end
+
+        metadata
+      end
+    end
+
+    
     def age_bins_for_event(event_name)
       current_year = Time.zone.today.year
 
-      user_records = data[event_name].uniq { |entry| entry[:user_id] }
+      user_ids = data[event_name].map { |entry| entry[:user_id] }.uniq
 
       bins = Hash.new(0)
 
-      user_records.each do |entry|
-        birth_year = entry[:birth_year]
+      user_ids.each do |user_id|
+        metadata = user_metadata[user_id]
+        next unless metadata
+
+
+        birth_year = metadata[:birth_year]
         next unless birth_year
 
         age = current_year - birth_year
@@ -157,12 +181,12 @@ module Reporting
     end
 
     def state_counts_for_event(event_name)
-      user_records = data[event_name].uniq { |entry| entry[:user_id] }
+      user_ids = data[event_name].map { |entry| entry[:user_id] }.uniq
 
       counts = Hash.new(0)
 
-      user_records.each do |entry|
-        state = entry[:state]
+      user_ids.each do |user_id|
+        state = user_metadata[user_id]&.dig(:state)
         next unless state.present?
 
         counts[state] += 1
@@ -179,6 +203,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         event_names: quote(Events.all_events),
+        sp_redirect_initiated: quote(Events::SP_REDIRECT_INITIATED)
       }
 
       format(<<~QUERY, params)
@@ -188,6 +213,8 @@ module Reporting
           , properties.event_properties.proofing_results.biographical_info.birth_year as birth_year
           , properties.event_properties.proofing_results.biographical_info.state_id_jurisdiction as state
         | filter properties.service_provider IN %{issuers}
+        | filter (name = %{sp_redirect_initiated} and properties.event_properties.ial = 2 and properties.sp_request.facial_match = 1)
+                 or (name != %{sp_redirect_initiated})
         | filter name in %{event_names}
         | limit 10000
       QUERY
