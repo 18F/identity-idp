@@ -26,7 +26,7 @@ class AgencyIdentityLinker
     )
 
     uuid = spi&.uuid || SecureRandom.uuid
-    AgencyIdentity.find_or_create_by(
+    AgencyIdentity.create(
       agency_id: service_provider.agency_id,
       user_id: user.id,
       uuid: uuid,
