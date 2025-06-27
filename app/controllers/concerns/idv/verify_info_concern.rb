@@ -194,6 +194,7 @@ module Idv
           last_name_spaced: pii[:last_name].split(' ').many?,
           previous_ssn_edit_distance: previous_ssn_edit_distance,
           pii_like_keypaths: [
+            [:device_fingerprint],
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
@@ -345,6 +346,7 @@ module Idv
       success = (threatmetrix_result[:review_status] == 'pass')
 
       attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint: result.dig(:device_fingerprint),
         success:,
         failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
