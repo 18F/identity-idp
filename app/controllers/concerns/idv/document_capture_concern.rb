@@ -62,10 +62,8 @@ module Idv
     end
 
     def mrz_requirement_met?
-      return false if idv_session.pii_from_doc.blank?
-
       if !IdentityConfig.store.doc_auth_passports_enabled &&
-         idv_session.pii_from_doc.id_doc_type.downcase == 'passport'
+         idv_session.pii_from_doc&.id_doc_type&.downcase == 'passport'
         return false
       end
 
