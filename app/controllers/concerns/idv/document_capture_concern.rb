@@ -153,7 +153,6 @@ module Idv
       doc_auth_log.save!
     end
 
-    # unused?
     def id_type
       document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
