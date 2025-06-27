@@ -42,7 +42,6 @@ class ExpireAccountResetRequestsJob < ApplicationJob
 
   def expire_request(arr)
     arr.update!(
-      expired_at: Time.zone.now,
       request_token: nil,
       granted_token: nil,
     )
