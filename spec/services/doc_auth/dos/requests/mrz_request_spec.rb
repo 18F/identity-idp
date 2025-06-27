@@ -105,4 +105,46 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       )
     end
   end
+
+  context 'when the request fails with "Invalid Client" error' do
+    let(:http_status) { 401 }
+    let(:response_body) do
+      { error: 'Invalid Client' }.to_json
+    end
+
+    it 'handles the string error without throwing an exception' do
+      response = subject.fetch
+      expect(response.success?).to be(false)
+      expect(response.errors).to include(network: true)
+      expect(response.extra).to include(
+        vendor: 'DoS',
+        error_code: nil,
+        error_message: 'Invalid Client',
+        error_reason: nil,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
+      )
+    end
+  end
+
+  context 'when the request fails with "Authentication denied." error' do
+    let(:http_status) { 403 }
+    let(:response_body) do
+      { error: 'Authentication denied.' }.to_json
+    end
+
+    it 'handles the string error without throwing an exception' do
+      response = subject.fetch
+      expect(response.success?).to be(false)
+      expect(response.errors).to include(network: true)
+      expect(response.extra).to include(
+        vendor: 'DoS',
+        error_code: nil,
+        error_message: 'Authentication denied.',
+        error_reason: nil,
+        correlation_id_sent: correlation_id,
+        correlation_id_received: correlation_id,
+      )
+    end
+  end
 end
