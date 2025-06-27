@@ -195,4 +195,19 @@ module AbTests
       service_provider:, user:, user_session:,
     )
   end.freeze
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth Passport Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_passport_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_vendor_passport_nexis_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end
