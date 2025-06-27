@@ -27,14 +27,6 @@ function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProp
   const serviceProviderName = spContext.name;
   const appName = getConfigValue('appName');
 
-  const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
-  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account', {
-    app_name: appName,
-  });
-  const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify', {
-    app_name: appName,
-  });
-  let spServicesItemText;
   let warningText = t('doc_auth.hybrid_flow_warning.explanation_non_sp_html', {
     app_name: appName,
   });
@@ -44,22 +36,11 @@ function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProp
       app_name: appName,
       service_provider_name: serviceProviderName,
     });
-    spServicesItemText = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html', {
-      service_provider_name: serviceProviderName,
-    });
   }
 
   return (
     <Alert textTag="div" className={className} type="warning">
       <p>{formatWithStrong(warningText)}</p>
-      <p>
-        <strong>{listHeadingText}</strong>
-      </p>
-      <ul>
-        <li>{ownAccountItemText}</li>
-        <li>{formatWithStrong(phoneVerifyItemText)}</li>
-        {serviceProviderName && <li>{formatWithStrong(spServicesItemText)}</li>}
-      </ul>
     </Alert>
   );
 }
