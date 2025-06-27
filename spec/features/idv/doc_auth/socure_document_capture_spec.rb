@@ -493,7 +493,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
           allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default)
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
             .and_return(Idp::Constants::Vendors::SOCURE)
           stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
             .to_return_json({ status: 200, body: { status: 'UP' } })
