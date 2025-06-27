@@ -27,7 +27,7 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   def redirect_unless_user_has_active_duplicate_profile_confirmation
     if current_user&.active_profile.present?
-      if user_session[:duplicate_profile_id].nil?
+      if !user_session[:duplicate_profile_id].nil?
         return
       end
     end

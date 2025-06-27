@@ -18,7 +18,6 @@ class DuplicateProfileChecker
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
     associated_profiles = duplicate_ssn_finder.associated_facial_match_profiles_with_ssn
     if !duplicate_ssn_finder.ial2_profile_ssn_is_unique?
-
       ids = associated_profiles.map(&:id)
       user_session[:duplicate_profile_id] = ids
     end
