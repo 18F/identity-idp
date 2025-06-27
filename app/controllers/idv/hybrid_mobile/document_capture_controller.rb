@@ -77,11 +77,6 @@ module Idv
 
       private
 
-      def doc_auth_upload_enabled?
-        # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
-        false
-      end
-
       def analytics_arguments
         {
           flow_path: 'hybrid',
