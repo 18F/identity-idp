@@ -3,13 +3,11 @@
 class DuplicateProfilesDetectedPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :dupe_profile_confirmation
+  attr_reader :user, :user_session
 
-  def initialize(user:)
+  def initialize(user:, user_session:)
     @user = user
-    @dupe_profile_confirmation = DuplicateProfileConfirmation.where(
-      profile_id: user.active_profile.id,
-    ).last
+    @user_session = user_session
   end
 
   def heading
@@ -21,7 +19,7 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def duplicate_profiles
-    profile_ids = dupe_profile_confirmation.duplicate_profile_ids
+    profile_ids = user_session[:duplicate_profile_id]
 
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|
@@ -55,6 +53,6 @@ class DuplicateProfilesDetectedPresenter
   private
 
   def multiple_dupe_profiles?
-    dupe_profile_confirmation.duplicate_profile_ids.count > 1
+    user_session[:duplicate_profile_id].count > 1
   end
 end

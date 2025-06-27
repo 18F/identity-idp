@@ -542,10 +542,7 @@ class ApplicationController < ActionController::Base
     return false unless sp_eligible_for_one_account?
     profile = current_user&.active_profile
     return false unless profile
-    DuplicateProfileConfirmation.where(
-      profile_id: profile.id,
-      confirmed_all: nil,
-    ).present?
+    user_session[:duplicate_profile_id].present?
   end
 
   def sp_eligible_for_one_account?
