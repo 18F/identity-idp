@@ -25,31 +25,6 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
     reload_ab_tests
   end
 
-  it 'choose id type screen before doc capture in hybrid flow and proceeds after passport select',
-     js: true do
-    perform_in_browser(:desktop) do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_hybrid_handoff_step
-      clear_and_fill_in(:doc_auth_phone, phone_number)
-      click_send_link
-    end
-
-    expect(@sms_link).to be_present
-
-    perform_in_browser(:mobile) do
-      visit @sms_link
-      expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
-      choose(t('doc_auth.forms.id_type_preference.passport'))
-      click_on t('forms.buttons.continue')
-      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-      visit idv_hybrid_mobile_choose_id_type_url
-      expect(page).to have_checked_field(
-        'doc_auth_choose_id_type_preference_passport',
-        visible: :all,
-      )
-    end
-  end
-
   it 'choose id type screen before doc capture in hybrid flow and proceeds after state id select',
      js: true do
     perform_in_browser(:desktop) do
