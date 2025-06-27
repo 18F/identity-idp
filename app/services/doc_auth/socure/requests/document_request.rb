@@ -4,21 +4,21 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :customer_user_id, :document_type, :redirect_url, :language,
-                    :liveness_checking_required
+        attr_reader :customer_user_id, :redirect_url, :language,
+                    :liveness_checking_required, :passport_requested
 
         def initialize(
           customer_user_id:,
           redirect_url:,
           language:,
-          document_type: 'license',
-          liveness_checking_required: false
+          liveness_checking_required: false,
+          passport_requested: false
         )
           @customer_user_id = customer_user_id
           @redirect_url = redirect_url
-          @document_type = document_type
           @language = language
           @liveness_checking_required = liveness_checking_required
+          @passport_requested = passport_requested
         end
 
         def body
@@ -73,6 +73,10 @@ module DocAuth
           else
             IdentityConfig.store.idv_socure_docv_flow_id_only
           end
+        end
+
+        def document_type
+          passport_requested ? 'passport' : 'license'
         end
       end
     end
