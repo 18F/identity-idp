@@ -41,7 +41,7 @@ module Idv
           preconditions: ->(idv_session:, user:) do
             idv_session.ssn && idv_session.ipp_document_capture_complete? &&
               threatmetrix_session_id_present_or_not_required?(idv_session:) &&
-              user.establishing_in_person_enrollment.present?
+              user.has_establishing_in_person_enrollment?
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.residential_resolution_vendor = nil
