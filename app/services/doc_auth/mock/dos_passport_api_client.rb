@@ -3,7 +3,7 @@
 module DocAuth
   module Mock
     class DosPassportApiClient
-      def initialize(mock_client_response)
+      def initialize(mock_client_response = nil)
         @mock_client_response = mock_client_response
       end
 
