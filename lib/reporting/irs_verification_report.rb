@@ -198,23 +198,28 @@ module Reporting
     end
 
     def verification_demand_results
-      fetch_results(query: query(event: VERIFICATION_DEMAND)).first['user_count'].to_i
+      result = fetch_results(query: query(event: VERIFICATION_DEMAND)).first || {}
+      result['user_count'].to_i
     end
 
     def document_authentication_success_results
-      fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).first['user_count'].to_i
+      result = fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).first || {}
+      result['user_count'].to_i
     end
 
     def information_validation_success_results
-      fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).first['user_count'].to_i
+      result = fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).first || {}
+      result['user_count'].to_i
     end
 
     def phone_verification_success_results
-      fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).first['user_count'].to_i
+      result = fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).first || {}
+      result['user_count'].to_i
     end
 
     def total_verified_results
-      fetch_results(query: query(event: TOTAL_VERIFIED)).first['user_count'].to_i
+      result = fetch_results(query: query(event: TOTAL_VERIFIED)).first || {}
+      result['user_count'].to_i
     end
 
     def to_percent(numerator, denominator)
