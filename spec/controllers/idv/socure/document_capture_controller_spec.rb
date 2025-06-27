@@ -158,7 +158,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
-              document_type: 'license',
+              passport_requested: false,
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
