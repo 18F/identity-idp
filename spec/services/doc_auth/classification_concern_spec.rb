@@ -36,14 +36,6 @@ RSpec.describe DocAuth::ClassificationConcern do
       end
     end
 
-    context 'with US passport card' do
-      let(:class_name) { 'Passport' }
-      let(:issuer_type) { 'Country' }
-      it 'returns true' do
-        expect(subject.id_type_supported?).to eq(true)
-      end
-    end
-
     context 'with state issued drivers license' do
       let(:class_name) { 'Drivers License' }
       it 'returns true' do

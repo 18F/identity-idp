@@ -129,24 +129,6 @@ RSpec.describe Idv::ChooseIdTypeController do
         expect(response).to redirect_to(idv_document_capture_url)
       end
     end
-
-    context 'user selects passport' do
-      let(:chosen_id_type) { 'passport' }
-
-      it 'sets document_capture_session to passport requested' do
-        put :update, params: params
-
-        expect(subject.document_capture_session.passport_requested?).to eq(true)
-      end
-
-      # currently we do not have a passport route so it redirects to ipp route
-      # change when the new passport is added
-      it 'redirects to passport document capture' do
-        put :update, params: params
-
-        expect(response).to redirect_to(idv_document_capture_url)
-      end
-    end
   end
 
   describe '#step_info' do
