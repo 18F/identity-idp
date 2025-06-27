@@ -1,7 +1,7 @@
 description: |
   When the user verifies their information when identity proofing.
 allOf:
-  - $ref: "../shared/EventProperties.yml"
+  - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
       document_state:

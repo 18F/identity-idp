@@ -25,7 +25,7 @@ properties:
     format: float64
     description: The time when the event occurred.
   subject:
-    $ref: "./Subject.yml"
+    $ref: './Subject.yml'
   useragent_string:
     type: string
     description: The end user's browser's useragent string, which identifies the type of browser, device and operating system being used as well as the version of the browser.
