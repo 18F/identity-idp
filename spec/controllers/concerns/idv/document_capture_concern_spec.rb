@@ -1,6 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
+  let(:user_session) do
+    {}
+  end
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session:,
+      current_user: user,
+      service_provider: nil,
+    )
+  end
+
+  let(:user) { build(:user) }
+  let(:document_capture_session) { instance_double(DocumentCaptureSession) }
+
   idv_document_capture_controller_class = Class.new(ApplicationController) do
     def self.name
       'AnonymousController'
@@ -13,25 +27,18 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
   end
 
+  before do
+    idv_session.pii_from_doc = { id_doc_type: 'drivers_license' }
+    allow(controller).to receive(:idv_session).and_return(idv_session)
+    allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
+  end
   describe '#handle_stored_result' do
     controller(idv_document_capture_controller_class) do
     end
 
-    let(:user) { build(:user) }
-    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:mrz_status) { nil }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
-    let(:user_session) do
-      {}
-    end
-    let(:idv_session) do
-      Idv::Session.new(
-        user_session:,
-        current_user: user,
-        service_provider: nil,
-      )
-    end
 
     before do
       id = SecureRandom.hex
@@ -54,19 +61,16 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
-      allow(controller).to receive(:idv_session).and_return(idv_session)
     end
 
     context 'when passports' do
       before do
         idv_session.pii_from_doc = { id_doc_type: 'passport' }
-        allow(controller).to receive(:idv_session).and_return(idv_session)
       end
 
       context 'when passports are enabled' do
         before do
           allow(document_capture_session).to receive(:passport_requested?).and_return(true)
-          allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
           allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
         end
 
@@ -96,7 +100,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'when doc_auth_passports_enabled is false' do
         before do
           allow(document_capture_session).to receive(:passport_requested?).and_return(false)
-          allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
           allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
         end
 
