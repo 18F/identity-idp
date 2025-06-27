@@ -22,6 +22,16 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     let(:mrz_status) { nil }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
+    let(:user_session) do
+      {}
+    end
+    let(:idv_session) do
+      Idv::Session.new(
+        user_session:,
+        current_user: user,
+        service_provider: nil,
+      )
+    end
 
     before do
       id = SecureRandom.hex
@@ -44,31 +54,73 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
+      allow(controller).to receive(:idv_session).and_return(idv_session)
     end
 
-    context 'when document is a passport with failed MRZ check' do
-      let(:mrz_status) { :failed }
-
+    context 'when passports' do
       before do
-        allow(controller).to receive(:id_type).and_return('passport')
+        idv_session.pii_from_doc = { id_doc_type: 'passport' }
+        allow(controller).to receive(:idv_session).and_return(idv_session)
       end
 
-      it 'returns failure response' do
-        response = controller.handle_stored_result(user: user)
-        expect(response.success?).to eq(false)
+      context 'when passports are enabled' do
+        before do
+          allow(document_capture_session).to receive(:passport_requested?).and_return(true)
+          allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        end
+
+        context 'when document is a passport with failed MRZ check' do
+          let(:mrz_status) { :failed }
+
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user)
+            expect(response.success?).to eq(false)
+          end
+        end
+
+        context 'when document is a passport with passed MRZ check' do
+          let(:mrz_status) { :pass }
+
+          before do
+            allow(controller).to receive(:id_type).and_return('passport')
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(true)
+          end
+        end
       end
-    end
 
-    context 'when document is a passport with passed MRZ check' do
-      let(:mrz_status) { :pass }
+      context 'when doc_auth_passports_enabled is false' do
+        before do
+          allow(document_capture_session).to receive(:passport_requested?).and_return(false)
+          allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+        end
 
-      before do
-        allow(controller).to receive(:id_type).and_return('passport')
-      end
+        context 'when document is a passport with failed MRZ check' do
+          let(:mrz_status) { :failed }
 
-      it 'returns success response' do
-        response = controller.handle_stored_result(user: user, store_in_session: false)
-        expect(response.success?).to eq(true)
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user)
+            expect(response.success?).to eq(false)
+          end
+        end
+
+        context 'when document is a passport with passed MRZ check' do
+          let(:mrz_status) { :pass }
+
+          before do
+            allow(controller).to receive(:id_type).and_return('passport')
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(false)
+          end
+        end
       end
     end
 
