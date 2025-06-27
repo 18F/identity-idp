@@ -63,7 +63,7 @@ module Idv
 
     def mrz_requirement_met?
       if !IdentityConfig.store.doc_auth_passports_enabled &&
-         stored_result.pii_from_doc.id_doc_type&.downcase == 'passport'
+         stored_result.pii_from_doc&.dig(:id_doc_type)&.downcase == 'passport'
         return false
       end
 
