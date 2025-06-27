@@ -43,6 +43,7 @@ module Proofing
           errors: errors,
           extra: {
             exception: exception,
+            device_fingerprint: device_profiling_result.device_fingerprint,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
             phone_finder_precheck_passed: phone_finder_result.success?,

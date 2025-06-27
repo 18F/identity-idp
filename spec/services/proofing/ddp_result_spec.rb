@@ -111,8 +111,7 @@ RSpec.describe Proofing::DdpResult do
     context 'when provided' do
       it 'is present' do
         transaction_id = 'foo'
-        result = Proofing::DdpResult.new
-        result.transaction_id = transaction_id
+        result = Proofing::DdpResult.new(transaction_id:)
         expect(result.transaction_id).to eq(transaction_id)
       end
     end
@@ -141,6 +140,31 @@ RSpec.describe Proofing::DdpResult do
         result = Proofing::DdpResult.new(response_body: '')
 
         expect(result.to_h[:response_body]).to eq('')
+      end
+    end
+  end
+
+  describe '#device_fingerprint' do
+    let(:response_body) { { fuzzy_device_id: '12345' } }
+    subject { described_class.new(response_body:) }
+
+    context 'when response_body is present' do
+      it 'returns the device fingerprint' do
+        expect(subject.device_fingerprint).to eq('12345')
+      end
+    end
+
+    context 'when response_body is nil' do
+      let(:response_body) { nil }
+      it 'returns nil' do
+        expect(subject.device_fingerprint).to be_nil
+      end
+    end
+
+    context 'when response_body does not contain fuzzy_device_id' do
+      let(:response_body) { { some_other_key: 'value' } }
+      it 'returns nil' do
+        expect(subject.device_fingerprint).to be_nil
       end
     end
   end

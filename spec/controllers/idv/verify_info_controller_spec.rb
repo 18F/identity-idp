@@ -187,6 +187,7 @@ RSpec.describe Idv::VerifyInfoController do
       let(:review_status) { 'pass' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
       let(:success) { true }
+      let(:device_fingerprint) { SecureRandom.hex(32) }
 
       let(:idv_result) do
         {
@@ -206,6 +207,7 @@ RSpec.describe Idv::VerifyInfoController do
               },
             },
           },
+          device_fingerprint:,
           errors: {},
           exception: nil,
           success: true,
@@ -284,6 +286,10 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
           expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_excluding(device_fingerprint:),
+          )
+          expect(@analytics).to have_logged_event(
             :idv_threatmetrix_response_body,
             response_body: hash_including(
               client: threatmetrix_client_id,
@@ -294,6 +300,7 @@ RSpec.describe Idv::VerifyInfoController do
         it 'tracks the attempts events' do
           expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: true,
+            device_fingerprint:,
             failure_reason: nil,
           )
           expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
@@ -330,6 +337,7 @@ RSpec.describe Idv::VerifyInfoController do
         it 'tracks a failed tmx fraud check' do
           expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
+            device_fingerprint:,
             failure_reason: { fraud_risk_summary_reason_code: ['Identity_Negative_History'] },
           )
 
@@ -380,6 +388,7 @@ RSpec.describe Idv::VerifyInfoController do
                 },
               },
             },
+            device_fingerprint:,
             success: false,
           }
         end
@@ -420,6 +429,11 @@ RSpec.describe Idv::VerifyInfoController do
               ),
             ),
           )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_excluding(device_fingerprint:),
+          )
         end
 
         it 'tracks the event for the attempts api' do
@@ -451,6 +465,7 @@ RSpec.describe Idv::VerifyInfoController do
           stub_attempts_tracker
           expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
+            device_fingerprint:,
             failure_reason: {
               fraud_risk_summary_reason_code:
                 ['Fraud risk assessment has failed for unknown reasons'],
@@ -473,6 +488,7 @@ RSpec.describe Idv::VerifyInfoController do
         it 'tracks a failed tmx fraud check' do
           expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success:,
+            device_fingerprint:,
             failure_reason: {
               fraud_risk_summary_reason_code: ['Identity_Negative_History'],
             },
@@ -516,6 +532,7 @@ RSpec.describe Idv::VerifyInfoController do
           stub_attempts_tracker
           expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
             success: false,
+            device_fingerprint:,
             failure_reason: {
               fraud_risk_summary_reason_code: ['Identity_Negative_History'],
             },

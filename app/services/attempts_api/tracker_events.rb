@@ -527,12 +527,14 @@ module AttemptsApi
     end
 
     # @param [Boolean] success True means TMX's device risk check has a 'pass' review status
+    # @param [String] device_fingerprint 32-character string based on device attributes
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # Tracks the result of the Device fraud check during Identity Verification
-    def idv_device_risk_assessment(success:, failure_reason: nil)
+    def idv_device_risk_assessment(success:, device_fingerprint: nil, failure_reason: nil)
       track_event(
         'idv-device-risk-assessment',
         success:,
+        device_fingerprint:,
         failure_reason:,
       )
     end
