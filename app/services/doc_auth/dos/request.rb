@@ -107,7 +107,7 @@ module DocAuth
             error_reason: error_reason,
             correlation_id_sent: correlation_id,
             correlation_id_received:,
-          }.compact,
+          },
         )
       end
 

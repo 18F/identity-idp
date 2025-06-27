@@ -97,7 +97,7 @@ RSpec.describe DocAuth::Dos::Request do
 
       it 'extracts error details from nested hash' do
         response = subject.send(:handle_invalid_response, http_response)
-        
+
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
@@ -117,7 +117,7 @@ RSpec.describe DocAuth::Dos::Request do
 
       it 'extracts error message from string' do
         response = subject.send(:handle_invalid_response, http_response)
-        
+
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
@@ -137,7 +137,7 @@ RSpec.describe DocAuth::Dos::Request do
 
       it 'handles the error without throwing an exception' do
         response = subject.send(:handle_invalid_response, http_response)
-        
+
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
@@ -155,7 +155,7 @@ RSpec.describe DocAuth::Dos::Request do
 
       it 'handles non-JSON response gracefully' do
         response = subject.send(:handle_invalid_response, http_response)
-        
+
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
@@ -173,7 +173,7 @@ RSpec.describe DocAuth::Dos::Request do
 
       it 'handles empty response gracefully' do
         response = subject.send(:handle_invalid_response, http_response)
-        
+
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
