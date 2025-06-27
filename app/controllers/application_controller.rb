@@ -540,11 +540,12 @@ class ApplicationController < ActionController::Base
 
   def user_duplicate_profiles_detected?
     return false unless sp_eligible_for_one_account?
-    profile = current_user&.active_profile
-    DuplicateProfileConfirmation.where(
-      profile_id: profile.id,
-      confirmed_all: nil,
-    ).present?
+    # profile = current_user&.active_profile
+    # DuplicateProfileConfirmation.where(
+    #   profile_id: profile.id,
+    #   confirmed_all: nil,
+    # ).present?
+    user_session[:duplicate_profile_id]
   end
 
   def sp_eligible_for_one_account?
