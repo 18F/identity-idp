@@ -19,7 +19,7 @@ RSpec.describe ExpireAccountResetRequestsJob do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      travel_to(Time.zone.now + 3.days) do
+      travel_to(Time.zone.now + 2.days) do
         user2 = create(
           :user, :fully_registered,
           confirmed_at: Time.zone.now.round
@@ -35,8 +35,8 @@ RSpec.describe ExpireAccountResetRequestsJob do
         )
         expect(notification_sent).to eq(1)
 
-        expect(AccountResetRequest.first.expired_at).to_not be(nil)
-        expect(AccountResetRequest.second.expired_at).to be(nil)
+        expect(AccountResetRequest.first.request_token).to be(nil)
+        expect(AccountResetRequest.second.request_token).to_not be(nil)
       end
     end
   end
