@@ -67,12 +67,24 @@ module DocAuth
           {}
         end
 
+        # Handle both nested error format and simple string error format
+        error_value = response_body['error']
+        error_code, error_message, error_reason = case error_value
+        when Hash
+          # Nested format: {"error": {"code": "...", "message": "...", "reason": "..."}}
+          [error_value['code'], error_value['message'], error_value['reason']]
+        when String
+          # Simple format: {"error": "Invalid Client"} or {"error": "Authentication denied."}
+          [nil, error_value, nil]
+        else
+          [nil, nil, nil]
+        end
+
         handle_connection_error(
           exception: exception,
-          # TODO: update for DoS
-          error_code: response_body.dig('error', 'code'),
-          error_message: response_body.dig('error', 'message'),
-          error_reason: response_body.dig('error', 'reason'),
+          error_code: error_code,
+          error_message: error_message,
+          error_reason: error_reason,
           correlation_id_received: http_response.headers['X-Correlation-ID'],
         )
       end
