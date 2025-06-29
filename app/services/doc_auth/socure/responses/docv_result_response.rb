@@ -201,7 +201,7 @@ module DocAuth
         end
 
         def id_type_supported?
-          DocAuth::Response::SOCURE_ID_TYPE_SLUGS.key?(document_id_type)
+          DocAuth::Response::STATE_ID_TYPE_SLUGS.key?(document_id_type)
         end
 
         def reason_codes_selfie_pass

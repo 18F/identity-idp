@@ -5,7 +5,7 @@ RSpec.describe Idv::ChooseIdTypeForm do
 
   describe '#submit' do
     context 'when the form is valid' do
-      let(:params) { { choose_id_type_preference: DocAuth::Response::ID_TYPE_SLUGS.values.sample } }
+      let(:params) { { choose_id_type_preference: 'passport' } }
 
       it 'returns a successful form response' do
         result = subject.submit(params)

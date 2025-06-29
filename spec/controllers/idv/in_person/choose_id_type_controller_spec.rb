@@ -141,6 +141,49 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
 
         context 'when the form submission is successful' do
+          context 'when the chosen ID type is "passport"' do
+            let(:chosen_id_type) { 'passport' }
+            let(:params) do
+              {
+                doc_auth: {
+                  choose_id_type_preference: chosen_id_type,
+                },
+              }
+            end
+            let(:analytics_arguments) do
+              {
+                flow_path: 'standard',
+                step: 'choose_id_type',
+                analytics_id: 'In Person Proofing',
+                skip_hybrid_handoff: false,
+                opted_in_to_in_person_proofing: true,
+                chosen_id_type: chosen_id_type,
+                success: true,
+              }
+            end
+
+            before do
+              subject.idv_session.opted_in_to_in_person_proofing =
+                analytics_arguments[:opted_in_to_in_person_proofing]
+              subject.idv_session.skip_hybrid_handoff = analytics_arguments[:skip_hybrid_handoff]
+              put :update, params: params
+            end
+
+            it 'logs the idv_in_person_proofing_choose_id_type_submitted event' do
+              expect(@analytics).to have_logged_event(
+                :idv_in_person_proofing_choose_id_type_submitted, analytics_arguments
+              )
+            end
+
+            it 'updates the passport status to "requested" in document capture session' do
+              expect(controller.document_capture_session.passport_status).to eq('requested')
+            end
+
+            it 'redirects to the in person passport page' do
+              expect(response).to redirect_to(idv_in_person_passport_path)
+            end
+          end
+
           context 'when the chosen ID type is "drivers_license"' do
             let(:chosen_id_type) { 'drivers_license' }
             let(:params) do
