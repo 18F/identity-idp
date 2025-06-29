@@ -287,6 +287,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
     end
 
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+    end
+
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
       expect(response.to_h[:vendor]).to eq('TrueID')
@@ -736,6 +740,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the dob is incorrectly parsed in passport' do
     let(:response) { described_class.new(success_with_passport_failed_to_ocr_dob, config) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+    end
 
     it 'does not throw an exception when getting pii from doc' do
       expect(response.pii_from_doc.dob).to be_nil
