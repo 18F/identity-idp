@@ -32,26 +32,28 @@ class IdentityLinker
 
     process_ial(ial)
 
-    identity.update!(
-      identity_attributes.merge(
-        code_challenge: code_challenge,
-        ial: ial,
-        aal: aal,
-        acr_values: acr_values,
-        vtr: vtr,
-        requested_aal_value: requested_aal_value,
-        nonce: nonce,
-        rails_session_id: rails_session_id,
-        scope: scope,
-        verified_attributes: combined_verified_attributes(verified_attributes),
-        email_address_id: email_address_id,
-      ).tap do |hash|
-        hash[:last_consented_at] = last_consented_at if last_consented_at
-        hash[:deleted_at] = nil if clear_deleted_at
-      end,
-    )
+    ServiceProviderIdentity.transaction do
+      identity.update!(
+        identity_attributes.merge(
+          code_challenge: code_challenge,
+          ial: ial,
+          aal: aal,
+          acr_values: acr_values,
+          vtr: vtr,
+          requested_aal_value: requested_aal_value,
+          nonce: nonce,
+          rails_session_id: rails_session_id,
+          scope: scope,
+          verified_attributes: combined_verified_attributes(verified_attributes),
+          email_address_id: email_address_id,
+        ).tap do |hash|
+          hash[:last_consented_at] = last_consented_at if last_consented_at
+          hash[:deleted_at] = nil if clear_deleted_at
+        end,
+      )
+      AgencyIdentityLinker.new(identity).link_identity
+    end
 
-    AgencyIdentityLinker.new(identity).link_identity
     identity
   end
 
