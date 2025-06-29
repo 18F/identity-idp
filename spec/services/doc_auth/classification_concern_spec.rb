@@ -37,6 +37,10 @@ RSpec.describe DocAuth::ClassificationConcern do
     end
 
     context 'with US passport card' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      end
+
       let(:class_name) { 'Passport' }
       let(:issuer_type) { 'Country' }
       it 'returns true' do
