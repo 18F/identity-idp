@@ -19,6 +19,8 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_analytics
     stub_attempts_tracker
     controller.idv_session.flow_path = 'standard'
+    controller.idv_session.opted_in_to_in_person_proofing = true
+    allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
   end
 
   describe '#step_info' do
@@ -31,7 +33,6 @@ RSpec.describe Idv::InPerson::SsnController do
     before do
       stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
       subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-      allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
     end
     it 'redirects if address page not completed' do
       get :show

@@ -13,6 +13,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     subject.user_session['idv/in_person'] = { pii_from_user: {} }
     subject.idv_session.ssn = nil # This made specs pass. Might need more investigation.
+    subject.idv_session.opted_in_to_in_person_proofing = true
     stub_analytics
   end
 

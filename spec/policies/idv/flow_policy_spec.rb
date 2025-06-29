@@ -225,6 +225,7 @@ RSpec.describe 'Idv::FlowPolicy' do
       before do
         stub_up_to(:ipp_address, idv_session: idv_session)
         allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+        idv_session.opted_in_to_in_person_proofing = true
         idv_session.send(:user_session)['idv/in_person'] = {
           pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
         }
@@ -263,6 +264,10 @@ RSpec.describe 'Idv::FlowPolicy' do
     end
 
     context 'preconditions for in_person verify_info are present' do
+      before do
+        idv_session.opted_in_to_in_person_proofing = true
+      end
+
       it 'returns ipp_verify_info' do
         stub_up_to(:ipp_ssn, idv_session: idv_session)
         allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)

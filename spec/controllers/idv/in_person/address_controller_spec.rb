@@ -14,6 +14,7 @@ RSpec.describe Idv::InPerson::AddressController do
     stub_sign_in(user)
     stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+    subject.idv_session.opted_in_to_in_person_proofing = true
     subject.user_session['idv/in_person'] = {
       pii_from_user: pii_from_user,
     }

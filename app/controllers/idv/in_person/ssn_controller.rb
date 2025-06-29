@@ -71,9 +71,10 @@ module Idv
           key: :ipp_ssn,
           controller: self,
           next_steps: [:ipp_verify_info],
-          preconditions: ->(idv_session:, user:) {
-            idv_session.ipp_document_capture_complete?
-          },
+          preconditions: ->(idv_session:, user:) do
+            idv_session.ipp_document_capture_complete? &&
+              user.has_establishing_in_person_enrollment?
+          end,
           undo_step: ->(idv_session:, user:) {
             idv_session.invalidate_ssn_step!
           },

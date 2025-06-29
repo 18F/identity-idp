@@ -69,12 +69,12 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
-        preconditions: ->(idv_session:, user:) {
-                         idv_session.idv_consent_given? &&
-                         (self.selected_remote(idv_session: idv_session) || # from opt-in screen
-                             # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff)
-                       },
+        preconditions: ->(idv_session:, user:) do
+          idv_session.idv_consent_given? &&
+          (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+            # back from ipp doc capture screen
+            idv_session.skip_doc_auth_from_handoff)
+        end,
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil

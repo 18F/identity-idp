@@ -79,7 +79,10 @@ module Idv
           key: :ipp_state_id,
           controller: self,
           next_steps: [:ipp_address, :ipp_ssn],
-          preconditions: ->(idv_session:, user:) { user.has_establishing_in_person_enrollment? },
+          preconditions: ->(idv_session:, user:) do
+            user.has_establishing_in_person_enrollment? &&
+              !idv_session.opted_in_to_in_person_proofing.nil?
+          end,
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!
           end,
