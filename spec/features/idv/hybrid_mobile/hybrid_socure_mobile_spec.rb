@@ -148,6 +148,95 @@ RSpec.describe 'Hybrid Flow' do
       end
     end
 
+    context 'when a passport is submitted' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+          .and_return(Idp::Constants::Vendors::SOCURE)
+        stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+          .to_return_json({ status: 200, body: { status: 'UP' } })
+        reload_ab_tests
+        DocAuth::Mock::DocAuthMockClient.reset!
+        stub_docv_verification_data_pass(
+          docv_transaction_token: @docv_transaction_token,
+          reason_codes: ['not_processed'],
+          document_type: :passport,
+          user:,
+        )
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return('https://fake-socure.test/mrz')
+      end
+
+      it 'proofs and hands off to mobile', js: true do
+        expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
+
+        perform_in_browser(:desktop) do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+
+          expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+          choose(t('doc_auth.forms.id_type_preference.passport'))
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+
+          @failed_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+            .to_return_json({ status: 200, body: { response: 'NO' } })
+
+          click_idv_continue
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_content(t('idv.errors.try_again_later'))
+
+          click_on t('idv.failure.button.warning')
+
+          remove_request_stub(@failed_stub)
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+          stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+            .to_return_json({ status: 200, body: { response: 'YES' } })
+          click_idv_continue
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+          expect(page).to have_current_path(idv_ssn_path)
+          expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+          expect(@analytics).to have_logged_event(:idv_socure_verification_data_requested)
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+          )
+          fill_out_ssn_form_ok
+          click_idv_continue
+        end
+      end
+    end
+
     it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 

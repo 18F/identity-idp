@@ -1,0 +1,37 @@
+{
+  "referenceId": "526dfccc-1fd1-4bb6-b449-2a15949484bf",
+  "documentVerification": {
+    "reasonCodes": [
+      "I823",
+      "R810",
+      "I845",
+      "I820",
+      "I838",
+      "I822",
+      "I833"
+    ],
+    "documentType": {
+      "type": "Passport",
+      "country": "USA",
+      "state": "USA"
+    },
+    "decision": {
+      "name": "standard",
+      "value": "accept"
+    },
+    "documentData": {
+      "firstName": "DWAYNE",
+      "surName": "DENVER",
+      "fullName": "DWAYNE DENVER",
+      "documentNumber": "E00009999",
+      "dob": "1965-02-05",
+      "expirationDate": "2030-07-09",
+      "customFields": {
+        "documentNumber": "E00009999"
+      }
+    },
+    "rawData": {
+      "mrz": "P<DENVER<<DWAYNE<<<<<<<<<<<<<<<<<<<<<<<<\n0123456789USA1234567F1234567890123456<123456"
+    }
+  }
+}
