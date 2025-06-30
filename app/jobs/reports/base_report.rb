@@ -20,16 +20,24 @@ module Reports
       end
     end
 
+    # def self.data_warehouse_transaction_with_timeout
+    #   original_config = ActiveRecord::Base.connection_pool.db_config.configuration_hash
+    #   ActiveRecord::Base.establish_connection(:data_warehouse)
+    #   ActiveRecord::Base.transaction do
+    #     quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
+    #     ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+    #     yield
+    #   end
+    # ensure
+    #   ActiveRecord::Base.establish_connection(original_config)
+    # end
+
     def self.data_warehouse_transaction_with_timeout
-      original_config = ActiveRecord::Base.connection_pool.db_config.configuration_hash
-      ActiveRecord::Base.establish_connection(:data_warehouse)
-      ActiveRecord::Base.transaction do
-        quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
-        ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
-        yield
-      end
-    ensure
-      ActiveRecord::Base.establish_connection(original_config)
+      ActiveRecord::Base.connected_to(role: :reading, shard: :data_warehouse) do
+        ActiveRecord::Base.transaction do
+          quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
+          ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+          yield
     end
 
     private
