@@ -595,6 +595,146 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#user_duplicate_profiles_detected?' do
+    controller do
+      def index
+        render plain: user_duplicate_profiles_detected?.to_s
+      end
+    end
+
+    let(:user) { create(:user) }
+    let(:issuer) { 'https://example.gov' }
+
+    let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
+
+    before do
+      sign_in user
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return([issuer])
+      allow(controller).to receive(:sp_from_sp_session)
+        .and_return(sp)
+    end
+
+    context 'when SP is not eligible for one account' do
+      let(:issuer2) { 'wrong.com' }
+      let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+      before do
+      end
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+
+      it 'returns false even with duplicate profile confirmations' do
+        profile = create(:profile, :active, user: user)
+        create(:duplicate_profile_confirmation, profile: profile, confirmed_all: nil)
+
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+
+    context 'when SP is eligible for one account' do
+      context 'when user has no active profile' do
+        it 'returns false' do
+          get :index
+          expect(response.body).to eq('false')
+        end
+      end
+
+      context 'when user has active profile' do
+        let!(:active_profile) { create(:profile, :active, user: user) }
+
+        context 'when no duplicate profile confirmations exist' do
+          it 'returns false' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
+        context 'when duplicate profile confirmations exist but are already confirmed' do
+          before do
+            create(
+              :duplicate_profile_confirmation,
+              profile: active_profile, confirmed_all: Time.zone.now,
+            )
+          end
+
+          it 'returns false' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
+        context 'when unconfirmed duplicate profile confirmations exist' do
+          before do
+            create(
+              :duplicate_profile_confirmation,
+              profile: active_profile,
+              confirmed_all: nil,
+            )
+          end
+
+          it 'returns true' do
+            get :index
+            expect(response.body).to eq('true')
+          end
+        end
+      end
+    end
+  end
+
+  describe '#sp_eligible_for_one_account?' do
+    controller do
+      def index
+        render plain: sp_eligible_for_one_account?.to_s
+      end
+    end
+
+    let(:result) { controller.sp_eligible_for_one_account? }
+    let(:user) { create(:user) }
+    let(:issuer) { 'https://example.gov' }
+
+    let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
+
+    before do
+      sign_in user
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return([issuer])
+      allow(controller).to receive(:sp_from_sp_session)
+        .and_return(sp)
+    end
+
+    context 'when SP issuer is in eligible providers list' do
+      it 'returns true' do
+        get :index
+        expect(response.body).to eq('true')
+      end
+    end
+
+    context 'when SP issuer is not in eligible providers list' do
+      let(:issuer2) { 'wrong.com' }
+      let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+
+    context 'when sp_from_sp_session returns nil' do
+      before do
+        allow(controller).to receive(:sp_from_sp_session).and_return(nil)
+      end
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+  end
+
   describe '#attempts_api_tracker' do
     let(:enabled) { true }
     let(:sp) { create(:service_provider) }
