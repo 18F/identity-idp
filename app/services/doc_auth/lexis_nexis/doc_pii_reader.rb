@@ -26,7 +26,9 @@ module DocAuth
         return nil unless id_auth_field_data.present?
 
         id_doc_type_slug = id_auth_field_data['Fields_DocumentClassName']
-        @id_doc_type = DocAuth::Response::ID_TYPE_SLUGS[id_doc_type_slug]
+        @id_doc_type = IdentityConfig.store.doc_auth_passports_enabled ?
+          DocAuth::Response::ID_TYPE_SLUGS[id_doc_type_slug] :
+          DocAuth::Response::STATE_ID_TYPE_SLUGS[id_doc_type_slug]
 
         if id_doc_type == 'drivers_license' || id_doc_type == 'state_id_card'
           generate_state_id_pii
