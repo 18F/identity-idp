@@ -20,7 +20,7 @@ module DocAuth
 
     alias_method :doc_type_supported?, :id_type_supported?
 
-  private
+    private
 
     # @param [Object] classification_info assureid classification info
     # @param [String] doc_side value of ['Front', 'Back']
@@ -54,5 +54,5 @@ module DocAuth
     def supported_country_codes
       IdentityConfig.store.doc_auth_supported_country_codes
     end
-end
+  end
 end
