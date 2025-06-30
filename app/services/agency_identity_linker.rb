@@ -51,15 +51,10 @@ class AgencyIdentityLinker
     sp = ServiceProvider.find_by(issuer: @sp_identity.service_provider)
     return unless agency_id(sp)
 
-    begin
-      AgencyIdentity.create(
-        agency_id: agency_id,
-        user_id: @sp_identity.user_id,
-        uuid: @sp_identity.uuid,
-      )
-    rescue ActiveRecord::RecordNotUnique
-      AgencyIdentity.find_by(agency_id: agency_id, user_id: @sp_identity.user_id)
-    end
+    AgencyIdentity.create_or_find_by(
+      agency_id: agency_id, user_id: @sp_identity.user_id,
+      uuid: @sp_identity.uuid
+    )
   end
 
   def agency_id(service_provider = nil)
