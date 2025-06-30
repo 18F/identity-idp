@@ -13,5 +13,10 @@ class ApplicationRecord < ActiveRecord::Base
       writing: :read_replica,
       reading: :read_replica,
     },
+    data_warehouse: {
+      # writing to the data_warehouse won't work, but AR needs to have something here
+      writing: :data_warehouse,
+      reading: :data_warehouse,
+    },
   }
 end
