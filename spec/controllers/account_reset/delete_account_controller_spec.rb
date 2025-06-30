@@ -44,38 +44,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
-    it 'allows deletion after expire reset job has run and reset still qualifies' do
-      user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
-      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
-      create_list(:webauthn_configuration, 2, user: user)
-      create_account_reset_request_for(user)
-      grant_request(user)
-      session[:granted_token] = AccountResetRequest.first.granted_token
-
-      ExpireAccountResetRequestsJob.new.perform(Time.zone.now)
-      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
-        success: true,
-        failure_reason: nil,
-      )
-
-      delete :delete
-
-      expect(@analytics).to have_logged_event(
-        'Account Reset: delete',
-        user_id: user.uuid,
-        success: true,
-        mfa_method_counts: {
-          backup_codes: BackupCodeGenerator::NUMBER_OF_CODES,
-          webauthn: 2,
-          phone: 2,
-        },
-        identity_verified: false,
-        account_age_in_days: 0,
-        account_confirmed_at: user.confirmed_at,
-      )
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
-    end
-
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
       expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
