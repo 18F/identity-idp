@@ -551,7 +551,10 @@ doc_auth.errors.file_type.invalid: This file type is not accepted, please choose
 doc_auth.errors.general.fallback_field_level: Please add a new image
 doc_auth.errors.general.multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
 doc_auth.errors.general.multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking a new picture.
-doc_auth.errors.general.network_error: We are having technical difficulties on our end. Please try to submit your images again later.
+doc_auth.errors.general.network_error: We are having technical difficulties verifying your ID. Try again or come back later if you continue to see this error.
+doc_auth.errors.general.network_error_passport: We are having technical difficulties verifying your passport. Try again or
+doc_auth.errors.general.network_error_passport_ending: if you have one.
+doc_auth.errors.general.network_error_passport_link_text: use another type of ID
 doc_auth.errors.general.new_network_error: Try again later.
 doc_auth.errors.general.no_liveness: Try taking new pictures.
 doc_auth.errors.general.selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.

@@ -50,7 +50,7 @@ function Link({
 
   const handleClick = () => {
     // Clear the onbeforeunload event to prevent the "Leave site?" prompt
-    if (href === 'choose_id_type') {
+    if (href === '/verify/choose_id_type') {
       window.onbeforeunload = null;
     }
   };
