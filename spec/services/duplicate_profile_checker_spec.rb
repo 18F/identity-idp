@@ -30,68 +30,6 @@ RSpec.describe DuplicateProfileChecker do
     end
 
     context 'when user has active IAL2 profile' do
-      context 'when user has already been verified for duplicate profile' do
-        let(:user2) { create(:user, :fully_registered) }
-        let!(:profile2) do
-          profile2 = create(
-            :profile, :active,
-            :facial_match_proof,
-            user: user2,
-            initiating_service_provider_issuer: sp.issuer
-          )
-          profile2.encrypt_pii(active_pii, user2.password)
-          profile2.save
-          profile2
-        end
-
-        before do
-          DuplicateProfileConfirmation.create(
-            profile_id: profile.id,
-            confirmed_at: Time.zone.now,
-            duplicate_profile_ids: [profile2.id],
-          )
-        end
-
-        it 'does not create a new duplicate profile confirmation' do
-          expect(DuplicateProfileConfirmation.where(profile_id: profile.id).size).to eq(1)
-          dupe_profile_checker = DuplicateProfileChecker.new(
-            user: user, user_session: session,
-            sp: sp
-          )
-          dupe_profile_checker.check_for_duplicate_profiles
-
-          expect(DuplicateProfileConfirmation.where(profile_id: profile.id).size).to eq(1)
-        end
-
-        context 'when a new duplicate profile has been added since last login' do
-          let(:user3) { create(:user, :fully_registered) }
-          let!(:profile3) do
-            profile3 = create(
-              :profile, :active,
-              :facial_match_proof,
-              user: user3,
-              initiating_service_provider_issuer: sp.issuer
-            )
-            profile3.encrypt_pii(active_pii, user3.password)
-            profile3.save
-            profile3
-          end
-
-          it 'should update duplicate confirmation to include all ids' do
-            confirmation = DuplicateProfileConfirmation.where(profile_id: profile.id).first
-            expect(confirmation.duplicate_profile_ids).to eq([profile2.id])
-
-            dupe_profile_checker = DuplicateProfileChecker.new(
-              user: user, user_session: session,
-              sp: sp
-            )
-            dupe_profile_checker.check_for_duplicate_profiles
-            confirmation.reload
-            expect(confirmation.duplicate_profile_ids).to eq([profile2.id, profile3.id])
-          end
-        end
-      end
-
       context 'when user has not been checked for duplicate profile' do
         context 'when user does not have other accounts with matching profile' do
           let(:user2) { create(:user, :proofed_with_selfie) }
@@ -103,7 +41,7 @@ RSpec.describe DuplicateProfileChecker do
             )
             dupe_profile_checker.check_for_duplicate_profiles
 
-            expect(DuplicateProfileConfirmation.where(profile_id: profile.id)).to be_empty
+            expect(session[:duplicate_profile_id]).to be(nil)
           end
         end
 
@@ -128,15 +66,16 @@ RSpec.describe DuplicateProfileChecker do
           end
 
           it 'creates a new duplicate profile confirmation entry' do
-            expect(DuplicateProfileConfirmation.where(profile_id: profile.id).first).to eq(nil)
+            allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+              .and_return([sp.issuer])
+            expect(session[:duplicate_profile_id]).to be(nil)
 
             dupe_profile_checker = DuplicateProfileChecker.new(
               user: user, user_session: session,
               sp: sp
             )
             dupe_profile_checker.check_for_duplicate_profiles
-
-            expect(DuplicateProfileConfirmation.where(profile_id: profile.id).first).to be_present
+            expect(session[:duplicate_profile_id]).to eq([user2.profiles.last.id])
           end
         end
       end
@@ -160,7 +99,7 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(DuplicateProfileConfirmation.where(profile_id: user.active_profile.id)).to be_empty
+        expect(session[:duplicate_profile_id]).to be(nil)
       end
     end
 
@@ -174,7 +113,7 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(DuplicateProfileConfirmation.where(profile_id: profile.id)).to be_empty
+        expect(session[:duplicate_profile_id]).to be(nil)
       end
     end
   end
