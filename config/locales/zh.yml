@@ -648,13 +648,8 @@ doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
-doc_auth.hybrid_flow_warning.explanation_html: 你在使用 <strong>%{app_name}</strong> 验证身份以访问 <strong>%{service_provider_name}</strong> 及其服务。
+doc_auth.hybrid_flow_warning.explanation_html: 你在使用<strong>%{app_name}</strong>访问<strong>%{service_provider_name}</strong>。仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
-doc_auth.hybrid_flow_warning.only_add_if_text: 只有在以下情况下才添加你的身份证件：
-doc_auth.hybrid_flow_warning.only_add_own_account: 你在使用自己的 %{app_name} 账户
-doc_auth.hybrid_flow_warning.only_add_phone_verify: 你要求 %{app_name} 使用你的电话来验证你的身份证件。
-doc_auth.hybrid_flow_warning.only_add_sp_services_html: 你在试图访问 <strong>%{service_provider_name}</strong> 服务。
-doc_auth.info.add_id_consent_with_phone: 仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
 doc_auth.info.address_guidance_puerto_rico_html: 波多黎各居民：<br><br>编辑你的地址，在地址第 2 行列出你的 urbanization 或 condominium。
 doc_auth.info.capture_status_big_document: 太近了
@@ -681,8 +676,7 @@ doc_auth.info.learn_more: 对于我们如何保护你的敏感信息获得更多
 doc_auth.info.lets_go: 身份验证包括两部分：
 doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你身份证件的照片。
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
-doc_auth.info.link_sent_complete_polling: 下一步会自动加载。
-doc_auth.info.login_access_sp: 你在使用%{app_name}访问 %{sp_name}。
+doc_auth.info.link_sent_complete_polling: 你在手机上验证身份后，下一步将会自动加载。
 doc_auth.info.mailing_address: 我们会将包含验证码的信件邮寄到这个地址。
 doc_auth.info.no_ssn: 你必须有社会保障号码才能完成身份验证。
 doc_auth.info.passport_capture: 拍摄一张你护照本的数据页的照片。数据页上有你的护照照片和个人信息。

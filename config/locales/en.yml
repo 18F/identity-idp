@@ -637,13 +637,8 @@ doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
-doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to verify your identity for access to <strong>%{service_provider_name}</strong> and its services.
+doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to access <strong>%{service_provider_name}</strong>. Only add your ID if you asked %{app_name} to verify your ID using your phone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
-doc_auth.hybrid_flow_warning.only_add_if_text: 'ONLY ADD YOUR ID IF:'
-doc_auth.hybrid_flow_warning.only_add_own_account: You are using your own %{app_name} account
-doc_auth.hybrid_flow_warning.only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
-doc_auth.hybrid_flow_warning.only_add_sp_services_html: You are trying to access <strong>%{service_provider_name}</strong> services
-doc_auth.info.add_id_consent_with_phone: Only add your ID if you asked %{app_name} to verify your ID using your phone.
 doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.
 doc_auth.info.address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your address to list your urbanization or condominium on address line 2.
 doc_auth.info.capture_status_big_document: Too Close
@@ -670,8 +665,7 @@ doc_auth.info.learn_more: Learn more about how we protect your sensitive informa
 doc_auth.info.lets_go: 'Identity verification happens in two parts:'
 doc_auth.info.link_sent: Please check your phone and follow instructions to take a photo of your ID.
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
-doc_auth.info.link_sent_complete_polling: The next step will load automatically.
-doc_auth.info.login_access_sp: You’re using %{app_name} to access %{sp_name}.
+doc_auth.info.link_sent_complete_polling: The next step will load automatically after you verify your ID on your phone.
 doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
