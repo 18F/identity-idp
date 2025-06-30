@@ -110,6 +110,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       let(:params) do
         { doc_auth: { choose_id_type_preference: chosen_id_type } }
       end
+
       it 'sets passport_status to requested and redirects to vendor that supports passport' do
         put :update, params: params
         expect(document_capture_session.passport_status).to eq('requested')
