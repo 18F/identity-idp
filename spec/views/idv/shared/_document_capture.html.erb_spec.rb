@@ -15,7 +15,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:selfie_capture_enabled) { true }
-  let(:upload_enabled) { true }
+  let(:upload_enabled) { false }
 
   let(:acuant_version) { '1.3.3.7' }
   let(:skip_doc_auth_from_how_to_verify) { false }
@@ -154,7 +154,6 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
     end
 
     context 'when doc_auth_upload_enabled is false' do
-      let(:upload_enabled) { false }
       it 'does not send doc_auth_upload_enabled to the FE' do
         render_partial
         expect(rendered).to have_css(

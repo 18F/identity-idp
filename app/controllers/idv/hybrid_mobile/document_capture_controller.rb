@@ -77,12 +77,6 @@ module Idv
 
       private
 
-      def doc_auth_upload_enabled?
-        !(resolved_authn_context_result.facial_match? ||
-          ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED, user: document_capture_user) ==
-            :manual_upload_disabled)
-      end
-
       def analytics_arguments
         {
           flow_path: 'hybrid',
