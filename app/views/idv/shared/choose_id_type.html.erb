@@ -11,8 +11,11 @@
 
 <% if presenter.hybrid_flow? %>
     <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-    <%= t('doc_auth.info.login_access_sp', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
-    <%= t('doc_auth.info.add_id_consent_with_phone', app_name: APP_NAME) %>
+      <%= t(
+            'doc_auth.hybrid_flow_warning.explanation_html',
+            app_name: APP_NAME,
+            service_provider_name: decorated_sp_session.sp_name,
+          ) %>
     <% end %>
 <% end %>
 

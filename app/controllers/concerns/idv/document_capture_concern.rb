@@ -134,6 +134,15 @@ module Idv
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 
+    def choose_id_type_path
+      idv_choose_id_type_path
+    end
+
+    def doc_auth_upload_enabled?
+      # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
+      false
+    end
+
     private
 
     def track_document_issuing_state(user, state)

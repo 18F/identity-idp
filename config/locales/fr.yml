@@ -551,7 +551,10 @@ doc_auth.errors.file_type.invalid: Ce type de fichier n’est pas accepté ; ve
 doc_auth.errors.general.fallback_field_level: Veuillez ajouter une nouvelle image
 doc_auth.errors.general.multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce d’identité. Essayez de prendre une nouvelle photo.
 doc_auth.errors.general.multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce d’identité. Essayez de prendre une nouvelle photo.
-doc_auth.errors.general.network_error: Nous rencontrons actuellement des difficultés techniques de notre côté. Veuillez réessayer d’envoyer vos images ultérieurement.
+doc_auth.errors.general.network_error: Nous rencontrons actuellement des difficultés techniques pour confirmer votre pièce d’identité. Veuillez réessayer ou revenir plus tard si le problème persiste.
+doc_auth.errors.general.network_error_passport: Nous rencontrons actuellement des difficultés techniques pour vérifier votre passeport. Veuillez réessayer ou
+doc_auth.errors.general.network_error_passport_ending: si vous en avez une.
+doc_auth.errors.general.network_error_passport_link_text: utiliser un autre type de pièce d’identité
 doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
 doc_auth.errors.general.selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une nouvelle photo.
@@ -634,13 +637,8 @@ doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste parti
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
-doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité et accéder à <strong>%{service_provider_name}</strong> et à ses services.
+doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
-doc_auth.hybrid_flow_warning.only_add_if_text: 'N’AJOUTEZ VOTRE PIÈCE D’IDENTITÉ QUE SI :'
-doc_auth.hybrid_flow_warning.only_add_own_account: Vous utilisez votre propre compte %{app_name}
-doc_auth.hybrid_flow_warning.only_add_phone_verify: Vous avez demandé à %{app_name} de confirmer votre identité à l’aide de votre téléphone
-doc_auth.hybrid_flow_warning.only_add_sp_services_html: Vous essayez d’accéder aux services de <strong>%{service_provider_name}</strong>
-doc_auth.info.add_id_consent_with_phone: Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
 doc_auth.info.address_guidance_puerto_rico_html: Résidents de Porto Rico :<br><br>modifiez votre adresse pour indiquer votre lotissement ou votre condominium à la ligne 2.
 doc_auth.info.capture_status_big_document: Trop près
@@ -667,8 +665,7 @@ doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
 doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
-doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement.
-doc_auth.info.login_access_sp: Vous utilisez %{app_name} pour accéder à %{sp_name}.
+doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement une fois que vous aurez confirmé votre identité sur votre téléphone.
 doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.

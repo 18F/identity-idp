@@ -23,6 +23,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     reload_ab_tests
+    allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
   end
 
   describe '#step_info' do
@@ -243,8 +244,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     context 'when idv/in_person data is missing' do
       before do
         stub_up_to(:ipp_verify_info, idv_session: subject.idv_session)
-        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
         subject.user_session['idv/in_person'] = {}
+        subject.idv_session.opted_in_to_in_person_proofing = true
       end
 
       it 'redirects to the in person state id page' do
@@ -542,6 +543,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     before do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
       allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      subject.idv_session.opted_in_to_in_person_proofing = true
     end
 
     context 'when idv_session is missing threatmetrix_session_id' do

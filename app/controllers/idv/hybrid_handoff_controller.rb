@@ -13,7 +13,7 @@ module Idv
 
     def show
       abandon_any_ipp_progress
-      @upload_disabled = upload_disabled?
+      @upload_enabled = upload_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -69,12 +69,12 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
-        preconditions: ->(idv_session:, user:) {
-                         idv_session.idv_consent_given? &&
-                         (self.selected_remote(idv_session: idv_session) || # from opt-in screen
-                             # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff)
-                       },
+        preconditions: ->(idv_session:, user:) do
+          idv_session.idv_consent_given? &&
+          (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+            # back from ipp doc capture screen
+            idv_session.skip_doc_auth_from_handoff)
+        end,
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
@@ -147,15 +147,8 @@ module Idv
       current_sp&.friendly_name.presence || APP_NAME
     end
 
-    def upload_disabled?
-      return true if document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-
-      (idv_session.selfie_check_required || doc_auth_upload_disabled?) &&
-        !idv_session.desktop_selfie_test_mode_enabled?
-    end
-
-    def doc_auth_upload_disabled?
-      ab_test_bucket(:DOC_AUTH_MANUAL_UPLOAD_DISABLED) == :manual_upload_disabled
+    def upload_enabled?
+      idv_session.desktop_selfie_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)

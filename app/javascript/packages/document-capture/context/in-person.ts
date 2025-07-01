@@ -51,6 +51,12 @@ export interface InPersonContextProps {
   skipDocAuthFromSocure?: boolean;
 
   /**
+   * path to choose ID type page, used when passports is enabled
+   */
+
+  chooseIdTypePath?: string;
+
+  /**
    * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
    */
   howToVerifyURL?: string;
