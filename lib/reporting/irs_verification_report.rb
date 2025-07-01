@@ -16,11 +16,17 @@ module Reporting
 
     attr_reader :issuers, :time_range
 
-    VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
-    DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
-    INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
-    PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_visited'
-    TOTAL_VERIFIED = 'User registration: complete'
+    module Events
+      VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
+      DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
+      INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
+      PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_visited'
+      TOTAL_VERIFIED = 'User registration: complete'
+
+      def self.all_events
+        constants.map { |c| const_get(c) }
+      end
+    end
 
     # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
@@ -198,28 +204,28 @@ module Reporting
     end
 
     def verification_demand_results
-      result = fetch_results(query: query(event: VERIFICATION_DEMAND)).first || {}
-      result['user_count'].to_i
+      results = fetch_results(query: query(Events::VERIFICATION_DEMAND))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def document_authentication_success_results
-      result = fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).first || {}
-      result['user_count'].to_i
+      results = fetch_results(query: query(Events::DOCUMENT_AUTHENTICATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def information_validation_success_results
-      result = fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).first || {}
-      result['user_count'].to_i
+      results = fetch_results(query: query(Events::INFORMATION_VALIDATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def phone_verification_success_results
-      result = fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).first || {}
-      result['user_count'].to_i
+      results = fetch_results(query: query(Events::PHONE_VERIFICATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def total_verified_results
-      result = fetch_results(query: query(event: TOTAL_VERIFIED)).first || {}
-      result['user_count'].to_i
+      results = fetch_results(query: query(Events::TOTAL_VERIFIED))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def to_percent(numerator, denominator)
@@ -231,11 +237,10 @@ module Reporting
         issuers: quote(issuers.inspect),
         event: quote([event.inspect]),
       }
-
-      <<~QUERY
-        filter name IN #{params[:event]}
+      format(<<~QUERY, params)
+        filter name IN #{event.inspect}
         | filter properties.sp_request.facial_match
-        | filter properties.service_provider IN #{params[:issuers]}
+        | filter properties.service_provider IN #{issuers.inspect}
         | fields (name = #{event.inspect}) as matched_event
         | stats max(matched_event) as max_matched_event by properties.user_id, bin(1y)
         | stats sum(max_matched_event) as user_count
