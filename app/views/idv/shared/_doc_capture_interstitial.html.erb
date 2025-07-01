@@ -37,7 +37,11 @@
 <% end %>
 
 <p>
+<% if @passport_requested %>
+  <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+<% else %>
   <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
+<% end %>
 </p>
 
 <%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
