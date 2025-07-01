@@ -49,7 +49,7 @@
           {
             "Group": "AUTHENTICATION_RESULT",
             "Name": "DocIssuerType",
-            "Values": [{ "Value": "StateProvince" }]
+            "Values": [{ "Value": "Country" }]
           },
           {
             "Group": "AUTHENTICATION_RESULT",
@@ -1044,4 +1044,3 @@
       }
     ]
   }
-  

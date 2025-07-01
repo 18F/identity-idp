@@ -13,6 +13,7 @@ module Idv
               }
 
     validate :passport_expired?
+    validate :passport_book? # we don't support passport cards
 
     attr_reader :passport_expiration, :issuing_country_code, :mrz
 
@@ -38,6 +39,12 @@ module Idv
     def passport_expired?
       if passport_expiration && DateParser.parse_legacy(passport_expiration).past?
         errors.add(:passport_expiration, generic_error, type: :passport_expiration)
+      end
+    end
+
+    def passport_book?
+      if pii_from_doc[:id_doc_type] == 'passport_card'
+        errors.add(:id_doc_type, generic_error, type: :id_doc_type)
       end
     end
   end
