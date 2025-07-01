@@ -7,6 +7,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   before do
     stub_sign_in(user)
     stub_analytics
+    session[:duplicate_profile_id] = profile2.id
   end
 
   describe '#show' do
@@ -21,11 +22,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
 
     context 'when user has an active duplicate profile confirmation' do
       before do
-        DuplicateProfileConfirmation.create(
-          profile_id: user.active_profile.id,
-          confirmed_at: Time.zone.now,
-          duplicate_profile_ids: [profile2.id],
-        )
+        allow(controller).to receive(:user_session).and_return(session)
       end
 
       it 'renders the show template' do
@@ -34,7 +31,8 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
 
       it 'initializes the DuplicateProfilesDetectedPresenter' do
-        expect(DuplicateProfilesDetectedPresenter).to receive(:new).with(user: user)
+        expect(DuplicateProfilesDetectedPresenter).to receive(:new)
+          .with(user: user, user_session: session)
         get :show
       end
 
@@ -50,11 +48,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
 
   describe '#do_not_recognize_profiles' do
     before do
-      @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
-        profile_id: user.active_profile.id,
-        confirmed_at: Time.zone.now,
-        duplicate_profile_ids: [profile2.id],
-      )
+      allow(controller).to receive(:user_session).and_return(session)
     end
 
     it 'logs an event' do
@@ -64,34 +58,16 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
         :one_account_unknown_profile_detected,
       )
     end
-
-    it 'marks some accounts as not recognized' do
-      post :do_not_recognize_profiles
-      @dupe_profile_confirmation.reload
-      expect(@dupe_profile_confirmation.confirmed_all).to eq(false)
-    end
   end
 
   describe '#recognize_all_profiles' do
     before do
-      @dupe_profile_confirmation = DuplicateProfileConfirmation.create(
-        profile_id: user.active_profile.id,
-        confirmed_at: Time.zone.now,
-        duplicate_profile_ids: [profile2.id],
-      )
+      allow(controller).to receive(:user_session).and_return(session)
     end
 
     it 'logs an analytics event' do
       post :recognize_all_profiles
       expect(@analytics).to have_logged_event
-    end
-
-    it 'marks profile dupe confirmation as recognized' do
-      post :recognize_all_profiles
-
-      @dupe_profile_confirmation.reload
-
-      expect(@dupe_profile_confirmation.confirmed_all).to eq(true)
     end
   end
 
