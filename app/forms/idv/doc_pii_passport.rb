@@ -4,11 +4,12 @@ module Idv
   class DocPiiPassport
     include ActiveModel::Model
 
-    validates :birth_place,
-              :passport_issued,
-              :nationality_code,
+    validates :nationality_code,
               :mrz,
               presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+              #:birth_place,
+              #:passport_issued,
+
 
     validates :issuing_country_code,
               :nationality_code,
@@ -27,7 +28,7 @@ module Idv
       @passport_expiration = pii[:passport_expiration]
       @passport_issued = pii[:passport_issued]
       @issuing_country_code = pii[:issuing_country_code]
-      @nationality_code = pii[:nationality_code]
+      @nationality_code = issuing_country_code # pii[:nationality_code]
       @mrz = pii[:mrz]
     end
 

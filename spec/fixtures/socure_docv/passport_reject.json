@@ -24,12 +24,12 @@
     "documentData": {
       "firstName": "DWAYNE",
       "surName": "DENVER",
-      "fullName": "DWAYNE",
-      "documentNumber": "E00009349",
+      "fullName": "DWAYNE DENVER",
+      "documentNumber": "E00009999",
       "dob": "1965-02-05",
       "expirationDate": "2030-07-09",
       "customFields": {
-        "documentNumber": "E00009349"
+        "documentNumber": "E00009999"
       }
     },
     "rawData": {
