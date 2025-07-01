@@ -32,7 +32,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
-    session_result.mrz_status = mrz_status if mrz_status
+    session_result.mrz_status = mrz_status # if mrz_status
 
     EncryptedRedisStructStorage.store(
       session_result,
