@@ -86,65 +86,64 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
   end
 
   context 'when the request fails' do
-    let(:http_status) { 500 }
-    let(:response_body) do
-      { error: { code: 'ERR', message: 'issues @ State', reason: 'just because' } }.to_json
-    end
-
-    it 'fails with a message' do
-      response = subject.fetch
-      expect(response.success?).to be(false)
-      expect(response.errors).to include(network: true)
-      expect(response.extra).to include(
-        vendor: 'DoS',
-        error_code: 'ERR',
-        error_message: 'issues @ State',
-        error_reason: 'just because',
-        correlation_id_sent: correlation_id,
-        correlation_id_received: correlation_id,
-      )
-    end
-  end
-
-  context 'when the request fails with "Invalid Client" error' do
     let(:http_status) { 401 }
-    let(:response_body) do
-      { error: 'Invalid Client' }.to_json
+
+    context 'when the response error is a hash' do
+      let(:response_body) do
+        { error: { code: 'ERR', message: 'issues @ State', reason: 'just because' } }.to_json
+      end
+
+      it 'handles the nested error without throwing an exception' do
+        response = subject.fetch
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: 'ERR',
+          error_message: 'issues @ State',
+          error_reason: 'just because',
+          correlation_id_sent: correlation_id,
+          correlation_id_received: correlation_id,
+        )
+      end
     end
 
-    it 'handles the string error without throwing an exception' do
-      response = subject.fetch
-      expect(response.success?).to be(false)
-      expect(response.errors).to include(network: true)
-      expect(response.extra).to include(
-        vendor: 'DoS',
-        error_code: nil,
-        error_message: 'Invalid Client',
-        error_reason: nil,
-        correlation_id_sent: correlation_id,
-        correlation_id_received: correlation_id,
-      )
-    end
-  end
+    context 'when the response error is a string' do
+      let(:response_body) do
+        { error: 'Authentication denied.' }.to_json
+      end
 
-  context 'when the request fails with "Authentication denied." error' do
-    let(:http_status) { 403 }
-    let(:response_body) do
-      { error: 'Authentication denied.' }.to_json
+      it 'handles the string error without throwing an exception' do
+        response = subject.fetch
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: nil,
+          error_message: 'Authentication denied.',
+          error_reason: nil,
+          correlation_id_sent: correlation_id,
+          correlation_id_received: correlation_id,
+        )
+      end
     end
 
-    it 'handles the string error without throwing an exception' do
-      response = subject.fetch
-      expect(response.success?).to be(false)
-      expect(response.errors).to include(network: true)
-      expect(response.extra).to include(
-        vendor: 'DoS',
-        error_code: nil,
-        error_message: 'Authentication denied.',
-        error_reason: nil,
-        correlation_id_sent: correlation_id,
-        correlation_id_received: correlation_id,
-      )
+    context 'when the response error is empty' do
+      let(:response_body) { '' }
+
+      it 'handles empty response gracefully' do
+        response = subject.fetch
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: nil,
+          error_message: nil,
+          error_reason: nil,
+          correlation_id_sent: correlation_id,
+          correlation_id_received: correlation_id,
+        )
+      end
     end
   end
 end

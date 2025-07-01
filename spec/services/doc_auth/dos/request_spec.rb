@@ -112,30 +112,10 @@ RSpec.describe DocAuth::Dos::Request do
 
     context 'with simple string error format' do
       let(:response_body) do
-        { error: 'Invalid Client' }.to_json
-      end
-
-      it 'extracts error message from string' do
-        response = subject.send(:handle_invalid_response, http_response)
-
-        expect(response.success?).to be(false)
-        expect(response.errors).to include(network: true)
-        expect(response.extra).to include(
-          vendor: 'DoS',
-          error_code: nil,
-          error_message: 'Invalid Client',
-          error_reason: nil,
-          correlation_id_received: '12345',
-        )
-      end
-    end
-
-    context 'with Authentication denied error' do
-      let(:response_body) do
         { error: 'Authentication denied.' }.to_json
       end
 
-      it 'handles the error without throwing an exception' do
+      it 'extracts error message from string' do
         response = subject.send(:handle_invalid_response, http_response)
 
         expect(response.success?).to be(false)
