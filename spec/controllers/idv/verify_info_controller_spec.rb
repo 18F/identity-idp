@@ -197,6 +197,7 @@ RSpec.describe Idv::VerifyInfoController do
             stages: {
               threatmetrix: {
                 success:,
+                device_fingerprint:,
                 client: threatmetrix_client_id,
                 transaction_id: 1,
                 review_status: review_status,
@@ -207,7 +208,6 @@ RSpec.describe Idv::VerifyInfoController do
               },
             },
           },
-          device_fingerprint:,
           errors: {},
           exception: nil,
           success: true,
@@ -287,8 +287,17 @@ RSpec.describe Idv::VerifyInfoController do
           )
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
-            hash_excluding(device_fingerprint:),
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    threatmetrix: hash_excluding(device_fingerprint:),
+                  ),
+                ),
+              ),
+            ),
           )
+
           expect(@analytics).to have_logged_event(
             :idv_threatmetrix_response_body,
             response_body: hash_including(
@@ -379,6 +388,7 @@ RSpec.describe Idv::VerifyInfoController do
               stages: {
                 threatmetrix: {
                   client: nil,
+                  device_fingerprint:,
                   errors: {},
                   exception: "Unexpected ThreatMetrix review_status value: #{review_status}",
                   response_body: nil,
@@ -388,7 +398,6 @@ RSpec.describe Idv::VerifyInfoController do
                 },
               },
             },
-            device_fingerprint:,
             success: false,
           }
         end
@@ -432,7 +441,15 @@ RSpec.describe Idv::VerifyInfoController do
 
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
-            hash_excluding(device_fingerprint:),
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    threatmetrix: hash_excluding(device_fingerprint:),
+                  ),
+                ),
+              ),
+            ),
           )
         end
 
