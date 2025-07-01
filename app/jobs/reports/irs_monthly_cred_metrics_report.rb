@@ -81,7 +81,7 @@ module Reports
         message: preamble,
         reports: reports,
         attachment_format: :csv,
-      )
+      ).deliver_now
       csv
     end
 
