@@ -180,6 +180,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_success_passport.json')
     end
 
+    def true_id_response_passport_card
+      read_fixture_file_at_path('true_id/true_id_response_success_passport_card.json')
+    end
+
     def true_id_response_success_with_liveness
       read_fixture_file_at_path('true_id/true_id_response_success_with_liveness.json')
     end
