@@ -13,20 +13,20 @@
     <% end %>
     <%= c.with_item(heading: t('duplicate_profiles_detected.delete_duplicates.heading')) do %>
       <p><%= t(
-              'duplicate_profiles_detected.delete_duplicates.details_html',
-              link_html: new_tab_link_to(
-                t('duplicate_profiles_detected.delete_duplicates.link_html'),
-                MarketingSite.help_center_article_url(
-                  category: 'manage-your-account',
-                  article: 'delete-your-account',
-                ),
+               'duplicate_profiles_detected.delete_duplicates.details_html',
+               link_html: new_tab_link_to(
+                 t('duplicate_profiles_detected.delete_duplicates.link_html'),
+                 MarketingSite.help_center_article_url(
+                   category: 'manage-your-account',
+                   article: 'delete-your-account',
+                 ),
           )) %></p>
     <% end %>
     <%= c.with_item(heading: t('duplicate_profiles_detected.sign_back_in.heading', app_name: APP_NAME)) do %>
       <p><%= t(
-              'duplicate_profiles_detected.sign_back_in.details',
-              app_name: APP_NAME,
-            ) %></p>
+               'duplicate_profiles_detected.sign_back_in.details',
+               app_name: APP_NAME,
+             ) %></p>
     <% end %>
   <% end %>
 
@@ -45,16 +45,16 @@
     <%= link_to(t('duplicate_profile_detected.dont_recognize_account'), '/') %>
   </div>
 
-  <div class="margin-top-4 grid-col-6">
-    <%= new_tab_link_to(t('duplicate_profile_detected.get_help'), '/', class: 'usa-button') %>
+  <div class="margin-top-4 grid-col-4">
+    <%= new_tab_link_to(t('duplicate_profile_detected.get_help'), '/', class: 'usa-button usa-button--full-width usa-button--big') %>
   </div>
 
-  <div class=" margin-top-2 grid-col-6">
+  <div class="margin-top-2 grid-col-4">
     <%= render ButtonComponent.new(
           url: logout_path,
           outline: true,
           method: :delete,
-          class: 'usa-button usa-button--outline',
+          class: 'usa-button usa-button--outline usa-button--full-width usa-button--big',
         ).with_content(t('duplicate_profile_detected.sign_out')) %>
   </div>
 <% end %>
