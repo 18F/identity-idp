@@ -36,7 +36,7 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
-      passport_response = nil
+      mrz_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -48,7 +48,7 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
           if doc_pii_response.success? && passport_submittal
-            passport_response = validate_mrz(client_response)
+            mrz_response = validate_mrz(client_response)
           end
         end
       end
@@ -57,13 +57,13 @@ module Idv
         form_response:,
         client_response:,
         doc_pii_response:,
-        passport_response:,
+        mrz_response:,
       )
 
       # Store PII and MRZ status after all validations are complete
       if client_response&.success? && doc_pii_response&.success?
-        mrz_status = determine_mrz_status(passport_response)
-        store_pii(client_response, mrz_status)
+        mrz_status = determine_mrz_status(mrz_response)
+        store_pii(client_response, mrz_response)
       end
 
       # if there is no client_response, there was no submission attempt
@@ -283,14 +283,14 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:, passport_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, mrz_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
-      return passport_response if passport_response.present? && !passport_response.success?
+      return mrz_response if mrz_response.present? && !mrz_response.success?
 
       client_response
     end
@@ -493,8 +493,8 @@ module Idv
       end
     end
 
-    def store_pii(client_response, mrz_status = nil)
-      document_capture_session.store_result_from_response(client_response, mrz_status:)
+    def store_pii(client_response, mrz_response)
+      document_capture_session.store_result_from_response(client_response, mrz_response:)
     end
 
     def user_id
@@ -584,12 +584,6 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
-    end
-
-    def determine_mrz_status(passport_response)
-      return :not_processed unless passport_submittal && passport_response
-      return :pass if passport_response.success?
-      :failed
     end
   end
 end
