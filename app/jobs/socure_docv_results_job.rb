@@ -247,7 +247,7 @@ class SocureDocvResultsJob < ApplicationJob
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
-      document_type:, # id_type_requested:,
+      document_type:,
       remaining_submit_attempts:,
       submit_attempts:,
       user_id: user_uuid,

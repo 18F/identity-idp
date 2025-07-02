@@ -31,7 +31,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.attention_with_barcode = doc_auth_response.attention_with_barcode?
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
-    session_result.errors = doc_auth_response.errors #  mrz_response.errors if mrz_response
+    session_result.errors = doc_auth_response.errors
     session_result.mrz_status = determine_mrz_status(mrz_response)
 
     EncryptedRedisStructStorage.store(

@@ -671,7 +671,7 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
-      context 'when passport issued is nil' do # not returned by DocV
+      context 'when passport issued is nil' do
         let(:subject) { Idv::DocPiiForm.new(pii: nil_passport_issued_pii) }
 
         it 'passport_issued_status is missing' do

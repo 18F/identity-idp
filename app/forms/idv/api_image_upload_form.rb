@@ -48,7 +48,6 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
           if doc_pii_response.success? && passport_submittal
-            # && document_capture_session.passport_requested?
             mrz_response = validate_mrz(client_response)
           end
         end
