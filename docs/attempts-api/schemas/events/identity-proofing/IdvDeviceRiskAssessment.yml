@@ -4,6 +4,10 @@ allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
+      device_fingerprint:
+        type: string
+        description: |
+          A 32-character string based exclusively on device attributes to improve detection of returning visitors, especially those trying to elude identification.
       failure_reason:
         type: object
         description: |
@@ -38,4 +42,4 @@ allOf:
       success:
         type: boolean
         description: |
-          Indicates whether the TMX response status pass.
+          Indicates whether the user has passed the device risk assessment.
