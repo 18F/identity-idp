@@ -459,7 +459,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_204517) do
   create_table "piv_cac_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "x509_dn_uuid", null: false, comment: "sensitive=false"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", null: false, comment: "sensitive=true"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "x509_issuer", comment: "sensitive=false"
