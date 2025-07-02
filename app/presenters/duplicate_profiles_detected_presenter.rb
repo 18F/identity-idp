@@ -19,7 +19,7 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def duplicate_profiles
-    profile_ids = user_session[:duplicate_profile_id]
+    profile_ids = user_session[:duplicate_profile_ids]
 
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|
@@ -53,6 +53,6 @@ class DuplicateProfilesDetectedPresenter
   private
 
   def multiple_dupe_profiles?
-    user_session[:duplicate_profile_id].count > 1
+    user_session[:duplicate_profile_ids].count > 1
   end
 end

@@ -7,7 +7,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   before do
     stub_sign_in(user)
     stub_analytics
-    session[:duplicate_profile_id] = profile2.id
+    session[:duplicate_profile_ids] = profile2.id
   end
 
   describe '#show' do

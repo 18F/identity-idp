@@ -41,7 +41,7 @@ RSpec.describe DuplicateProfileChecker do
             )
             dupe_profile_checker.check_for_duplicate_profiles
 
-            expect(session[:duplicate_profile_id]).to be(nil)
+            expect(session[:duplicate_profile_ids]).to be(nil)
           end
         end
 
@@ -68,14 +68,14 @@ RSpec.describe DuplicateProfileChecker do
           it 'creates a new duplicate profile confirmation entry' do
             allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
               .and_return([sp.issuer])
-            expect(session[:duplicate_profile_id]).to be(nil)
+            expect(session[:duplicate_profile_ids]).to be(nil)
 
             dupe_profile_checker = DuplicateProfileChecker.new(
               user: user, user_session: session,
               sp: sp
             )
             dupe_profile_checker.check_for_duplicate_profiles
-            expect(session[:duplicate_profile_id]).to eq([user2.profiles.last.id])
+            expect(session[:duplicate_profile_ids]).to eq([user2.profiles.last.id])
           end
         end
       end
@@ -99,7 +99,7 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(session[:duplicate_profile_id]).to be(nil)
+        expect(session[:duplicate_profile_ids]).to be(nil)
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(session[:duplicate_profile_id]).to be(nil)
+        expect(session[:duplicate_profile_ids]).to be(nil)
       end
     end
   end

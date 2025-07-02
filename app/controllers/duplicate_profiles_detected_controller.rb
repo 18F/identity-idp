@@ -14,7 +14,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   def do_not_recognize_profiles
     analytics.one_account_unknown_profile_detected
 
-    user_session.delete(:duplicate_profile_id)
+    user_session.delete(:duplicate_profile_ids)
 
     redirect_to after_sign_in_path_for(current_user)
   end
@@ -22,7 +22,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   def recognize_all_profiles
     analytics.one_account_recognize_all_profiles
 
-    user_session.delete(:duplicate_profile_id)
+    user_session.delete(:duplicate_profile_ids)
     redirect_to after_sign_in_path_for(current_user)
   end
 
@@ -30,7 +30,7 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   def redirect_unless_user_has_active_duplicate_profile_confirmation
     if current_user&.active_profile.present?
-      if !user_session[:duplicate_profile_id].nil?
+      if user_session[:duplicate_profile_ids].present?
         return
       end
     end
