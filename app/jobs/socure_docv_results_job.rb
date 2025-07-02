@@ -28,6 +28,8 @@ class SocureDocvResultsJob < ApplicationJob
     last_doc_auth_result = docv_result_response.extra_attributes.dig(:decision, :value)
     document_capture_session.update!(last_doc_auth_result:) if last_doc_auth_result
 
+    mrz_response = nil
+
     if docv_result_response.success?
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
       log_pii_validation(doc_pii_response:)
@@ -58,6 +60,7 @@ class SocureDocvResultsJob < ApplicationJob
             back_image_fingerprint: nil,
             passport_image_fingerprint: nil,
             selfie_image_fingerprint: nil,
+            mrz_status: :failed,
           )
           return
         end
@@ -65,7 +68,7 @@ class SocureDocvResultsJob < ApplicationJob
     end
 
     record_attempt(docv_result_response:, doc_pii_response:)
-    document_capture_session.store_result_from_response(docv_result_response)
+    document_capture_session.store_result_from_response(docv_result_response, mrz_response)
   end
 
   private
