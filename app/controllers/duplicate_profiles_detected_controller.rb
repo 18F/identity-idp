@@ -14,12 +14,15 @@ class DuplicateProfilesDetectedController < ApplicationController
   def do_not_recognize_profiles
     analytics.one_account_unknown_profile_detected
 
+    user_session.delete(:duplicate_profile_id)
+
     redirect_to after_sign_in_path_for(current_user)
   end
 
   def recognize_all_profiles
     analytics.one_account_recognize_all_profiles
 
+    user_session.delete(:duplicate_profile_id)
     redirect_to after_sign_in_path_for(current_user)
   end
 
