@@ -60,36 +60,6 @@ RSpec.describe 'webauthn hide' do
           expect(webauthn_option_hidden?).to eq(true)
         end
 
-        context 'when in ab test for desktop setup' do
-          before do
-            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
-              .and_return(100)
-            reload_ab_tests
-          end
-
-          it 'displays the authenticator option' do
-            sign_up_and_set_password
-            simulate_platform_authenticator_available
-
-            expect(webauthn_option_hidden?).to eq(false)
-          end
-        end
-
-        context 'when A/B test is disabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
-              .and_return(0)
-            reload_ab_tests
-          end
-
-          it 'hides the authenticator option' do
-            sign_up_and_set_password
-            simulate_platform_authenticator_available
-
-            expect(webauthn_option_hidden?).to eq(true)
-          end
-        end
-
         context 'with supported browser and platform authenticator available',
                 driver: :headless_chrome_mobile do
           it 'displays the authenticator option' do

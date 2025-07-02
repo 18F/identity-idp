@@ -145,18 +145,6 @@ module AbTests
     },
   ).freeze
 
-  DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
-    experiment_name: 'Desktop F/T unlock setup',
-    should_log: [
-      'User Registration: 2FA Setup visited',
-      'WebAuthn Setup Visited',
-      :webauthn_setup_submitted,
-      'Multi-Factor Authentication Setup',
-    ].to_set,
-    buckets: { desktop_ft_unlock_option_shown:
-        IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
-  ).freeze
-
   DOC_AUTH_PASSPORT = AbTest.new(
     experiment_name: 'Passport allowed',
     should_log: /^idv/i,

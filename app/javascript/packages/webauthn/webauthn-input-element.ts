@@ -6,10 +6,6 @@ export class WebauthnInputElement extends HTMLElement {
     this.toggleVisibleIfPasskeySupported();
   }
 
-  get isOptedInToAbTest(): boolean {
-    return this.hasAttribute('desktop-ft-unlock-option');
-  }
-
   get isPlatform(): boolean {
     return this.hasAttribute('platform');
   }
@@ -23,10 +19,7 @@ export class WebauthnInputElement extends HTMLElement {
       return;
     }
 
-    if (
-      (isWebauthnPasskeySupported() || this.isOptedInToAbTest) &&
-      (await isWebauthnPlatformAuthenticatorAvailable())
-    ) {
+    if (isWebauthnPasskeySupported() && (await isWebauthnPlatformAuthenticatorAvailable())) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;

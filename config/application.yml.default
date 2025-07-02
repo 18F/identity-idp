@@ -96,7 +96,6 @@ database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
-desktop_ft_unlock_setup_option_percent_tested: 0
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disposable_email_services: '[]'
@@ -517,7 +516,6 @@ development:
   compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
-  desktop_ft_unlock_setup_option_percent_tested: 100
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false
