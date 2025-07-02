@@ -62,7 +62,6 @@ module Idv
 
       # Store PII and MRZ status after all validations are complete
       if client_response&.success? && doc_pii_response&.success?
-        mrz_status = determine_mrz_status(mrz_response)
         store_pii(client_response, mrz_response)
       end
 
