@@ -687,8 +687,10 @@ doc_auth.info.selfie_capture.action.retake: nouvelle photo
 doc_auth.info.selfie_capture.action.submit: Photo prise. Envoyer la photo.
 doc_auth.info.selfie_capture.intro: Caméra prête à prendre la photo
 doc_auth.info.socure_basic_idv: '%{app_name} vérifiera votre pièce d’identité en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre des photos de votre pièce d’identité avec Socure.'
-doc_auth.info.socure_hybrid_flow_html: Vous utilisez %{app_name} pour vérifier votre identité et accéder à <strong>%{sp_name}</strong>.
 doc_auth.info.socure_ial2_idv_finish: Quand vous aurez terminé de prendre les photos, %{app_name} finira de vérifier vos renseignements.
+doc_auth.info.socure_ial2_idv_finish_passport: Quand vous aurez terminé de prendre la photo, %{app_name} finira de vérifier vos renseignements.
+doc_auth.info.socure_passport: '%{app_name} vérifiera votre passeport en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre une photo de votre passeport avec Socure.'
+doc_auth.info.socure_passport_ial2: '%{app_name} vérifiera votre passeport en faisant appel à Socure, un prestataire de confiance. Il va vous être demandé de prendre une photo de votre passeport et de vous prendre en photo avec Socure.'
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.

@@ -13,26 +13,35 @@
 </div>
 
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.document_capture') %>
-<% end %>
-
-<% if @hybrid_flow %>
-  <% if decorated_sp_session.sp_name.present? %>
-    <p>
-      <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
-    </p>
+  <% if @passport_requested %>
+    <%= t('doc_auth.headings.passport_capture') %>
   <% else %>
-    <p>
-      <%= t('doc_auth.info.socure_hybrid_flow_html', app_name: APP_NAME, sp_name: APP_NAME) %>
-    </p>
+    <%= t('doc_auth.headings.document_capture') %>
   <% end %>
 <% end %>
 
+<% if @passport_requested %>
+  <% if @selfie_check_required %>
+    <p>
+      <%= t('doc_auth.info.socure_passport_ial2', app_name: APP_NAME) %>
+    </p>
+  <% else %>
+    <p>
+      <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
+    </p>
+  <% end %>
+<% else %>
+  <p>
+    <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
+  </p>
+<% end %>
+
 <p>
-  <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
-</p>
-<p>
+<% if @passport_requested %>
+  <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+<% else %>
   <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
+<% end %>
 </p>
 
 <%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
