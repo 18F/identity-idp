@@ -68,7 +68,7 @@ class SocureDocvResultsJob < ApplicationJob
     end
 
     record_attempt(docv_result_response:, doc_pii_response:)
-    document_capture_session.store_result_from_response(docv_result_response, mrz_response)
+    document_capture_session.store_result_from_response(docv_result_response, mrz_response:)
   end
 
   private
