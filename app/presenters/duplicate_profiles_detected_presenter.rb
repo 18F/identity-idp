@@ -37,10 +37,4 @@ class DuplicateProfilesDetectedPresenter
       }
     end
   end
-
-  private
-
-  def multiple_dupe_profiles?
-    dupe_profile_confirmation.duplicate_profile_ids.count > 1
-  end
 end
