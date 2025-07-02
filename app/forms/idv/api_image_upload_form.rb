@@ -127,7 +127,6 @@ module Idv
     def validate_form
       success = valid?
       increment_rate_limiter!
-      track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -136,6 +135,7 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response)
+      track_rate_limited if rate_limited?
       track_upload_attempt(response)
 
       response
@@ -382,7 +382,10 @@ module Idv
     end
 
     def track_rate_limited
-      analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
+      analytics.rate_limit_reached(
+        limiter_type: :idv_doc_auth,
+        user_id: user_uuid,
+      )
       attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 
