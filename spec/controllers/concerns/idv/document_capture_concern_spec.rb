@@ -1,6 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
+  let(:user_session) do
+    {}
+  end
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session:,
+      current_user: user,
+      service_provider: nil,
+    )
+  end
+
+  let(:user) { build(:user) }
+  let(:document_capture_session) { instance_double(DocumentCaptureSession) }
+
   idv_document_capture_controller_class = Class.new(ApplicationController) do
     def self.name
       'AnonymousController'
@@ -13,12 +27,15 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
   end
 
+  before do
+    idv_session.pii_from_doc = { id_doc_type: 'drivers_license' }
+    allow(controller).to receive(:idv_session).and_return(idv_session)
+    allow(document_capture_session).to receive(:doc_auth_vendor).and_return('mock')
+  end
   describe '#handle_stored_result' do
     controller(idv_document_capture_controller_class) do
     end
 
-    let(:user) { build(:user) }
-    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:mrz_status) { nil }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
@@ -46,29 +63,67 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
     end
 
-    context 'when document is a passport with failed MRZ check' do
-      let(:mrz_status) { :failed }
-
+    context 'when passports' do
       before do
-        allow(controller).to receive(:id_type).and_return('passport')
+        idv_session.pii_from_doc = { id_doc_type: 'passport' }
       end
 
-      it 'returns failure response' do
-        response = controller.handle_stored_result(user: user)
-        expect(response.success?).to eq(false)
+      context 'when passports are enabled' do
+        before do
+          allow(document_capture_session).to receive(:passport_requested?).and_return(true)
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+        end
+
+        context 'when document is a passport with failed MRZ check' do
+          let(:mrz_status) { :failed }
+
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user)
+            expect(response.success?).to eq(false)
+          end
+        end
+
+        context 'when document is a passport with passed MRZ check' do
+          let(:mrz_status) { :pass }
+
+          before do
+            allow(controller).to receive(:id_type).and_return('passport')
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(true)
+          end
+        end
       end
-    end
 
-    context 'when document is a passport with passed MRZ check' do
-      let(:mrz_status) { :pass }
+      context 'when doc_auth_passports_enabled is false' do
+        before do
+          allow(document_capture_session).to receive(:passport_requested?).and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+        end
 
-      before do
-        allow(controller).to receive(:id_type).and_return('passport')
-      end
+        context 'when document is a passport with failed MRZ check' do
+          let(:mrz_status) { :failed }
 
-      it 'returns success response' do
-        response = controller.handle_stored_result(user: user, store_in_session: false)
-        expect(response.success?).to eq(true)
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user)
+            expect(response.success?).to eq(false)
+          end
+        end
+
+        context 'when document is a passport with passed MRZ check' do
+          let(:mrz_status) { :pass }
+
+          before do
+            allow(controller).to receive(:id_type).and_return('passport')
+          end
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(false)
+          end
+        end
       end
     end
 
