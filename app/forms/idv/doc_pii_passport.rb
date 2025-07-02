@@ -13,7 +13,7 @@ module Idv
               }
 
     validate :passport_not_expired?
-    validate :not_passport_card? # we don't support passport cards
+    validate :passport_book? # we don't support passport cards
 
     attr_reader :passport_expiration, :issuing_country_code, :mrz
 
@@ -43,8 +43,8 @@ module Idv
       false
     end
 
-    def not_passport_card?
-      return true if pii_from_doc[:id_doc_type] != 'passport_card'
+    def passport_book?
+      return true if pii_from_doc[:id_doc_type] == 'passport'
 
       errors.add(:id_doc_type, generic_error, type: :id_doc_type)
       false
