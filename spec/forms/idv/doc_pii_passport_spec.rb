@@ -29,39 +29,6 @@ RSpec.describe Idv::DocPiiPassport do
     end
   end
 
-  context 'when birth_place is missing' do
-    let(:birth_place) { nil }
-
-    it 'is not valid' do
-      expect(subject).not_to be_valid
-      expect(subject.errors[:birth_place]).to include(
-        I18n.t('doc_auth.errors.general.no_liveness'),
-      )
-    end
-  end
-
-  context 'when passport_issued is missing' do
-    let(:passport_issued) { nil }
-
-    it 'is not valid' do
-      expect(subject).not_to be_valid
-      expect(subject.errors[:passport_issued]).to include(
-        I18n.t('doc_auth.errors.general.no_liveness'),
-      )
-    end
-  end
-
-  context 'when nationality_code is missing' do
-    let(:nationality_code) { '' }
-
-    it 'is not valid' do
-      expect(subject).not_to be_valid
-      expect(subject.errors[:nationality_code]).to include(
-        I18n.t('doc_auth.errors.general.no_liveness'),
-      )
-    end
-  end
-
   context 'when mrz is missing' do
     let(:mrz) { nil }
 
@@ -79,17 +46,6 @@ RSpec.describe Idv::DocPiiPassport do
     it 'is not valid' do
       expect(subject).not_to be_valid
       expect(subject.errors[:issuing_country_code]).to include(
-        I18n.t('doc_auth.errors.general.no_liveness'),
-      )
-    end
-  end
-
-  context 'when nationality_code is not USA' do
-    let(:nationality_code) { 'CAN' }
-
-    it 'is not valid' do
-      expect(subject).not_to be_valid
-      expect(subject.errors[:nationality_code]).to include(
         I18n.t('doc_auth.errors.general.no_liveness'),
       )
     end

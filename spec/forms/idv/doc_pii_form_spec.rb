@@ -4,9 +4,16 @@ RSpec.describe Idv::DocPiiForm do
   include DocPiiHelper
 
   let(:user) { create(:user) }
+  let(:pii) { nil }
   let(:subject) { Idv::DocPiiForm.new(pii: pii) }
+  let(:first_name) { Faker::Name.first_name }
+  let(:last_name) { Faker::Name.last_name }
+  let(:address1) { Faker::Address.street_address }
+  let(:zipcode) { Faker::Address.zip_code }
+  let(:state) { Faker::Address.state_abbr }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
-  let(:valid_state_id_expiration) { Time.zone.today.to_s }
+  let(:valid_expiration) { Time.zone.today.to_s }
+  let(:invalid_expiration) { (Time.zone.today - 1.day).to_s }
   let(:id_doc_type) { 'drivers_license' }
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
@@ -26,9 +33,30 @@ RSpec.describe Idv::DocPiiForm do
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
-      state_id_expiration: valid_state_id_expiration,
+      state_id_expiration: valid_expiration,
     }
   end
+  let(:nil_id_doc_type_pii) { good_state_id_pii.merge(id_doc_type: nil) }
+  let(:name_errors_pii) { good_state_id_pii.merge(first_name: nil, last_name: nil) }
+  let(:name_and_dob_errors_pii) do
+    good_state_id_pii.merge(
+      first_name: nil,
+      last_name: nil,
+      dob: nil,
+    )
+  end
+  let(:dob_min_age_error_pii) { good_state_id_pii.merge(dob: too_young_dob) }
+  let(:state_id_expired_error_pii) do
+    good_state_id_pii.merge(state_id_expiration: invalid_expiration)
+  end
+  let(:state_id_expiration_error_pii) { good_state_id_pii.merge(state_id_expiration: nil) }
+  let(:non_string_zipcode_pii) { good_state_id_pii.merge(zipcode: 12345) }
+  let(:nil_zipcode_pii) { good_state_id_pii.merge(zipcode: nil) }
+  let(:state_error_pii) { good_state_id_pii.merge(state: 'YORK') }
+  let(:jurisdiction_error_pii) { good_state_id_pii.merge(state_id_jurisdiction: 'XX') }
+  let(:address1_error_pii) { good_state_id_pii.merge(address1: nil) }
+  let(:nil_state_id_number_pii) { good_state_id_pii.merge(state_id_number: nil) }
+
   let(:good_passport_pii) do
     {
       first_name: Faker::Name.first_name,
@@ -43,256 +71,15 @@ RSpec.describe Idv::DocPiiForm do
       mrz: mrz,
     }
   end
-  let(:nil_id_doc_type_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: nil,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_issued: '2024-01-01',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:name_errors_pii) do
-    {
-      first_name: nil,
-      last_name: nil,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:name_and_dob_errors_pii) do
-    {
-      first_name: nil,
-      last_name: nil,
-      dob: nil,
-      address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:dob_min_age_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: too_young_dob,
-      address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:state_id_expired_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_issued: '2024-01-01',
-      state_id_expiration: '2024-07-25',
-    }
-  end
-  let(:state_id_expiration_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_issued: '2024-01-01',
-      state_id_expiration: nil,
-    }
-  end
-  let(:non_string_zipcode_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr,
-      zipcode: 12345,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:nil_zipcode_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      state: Faker::Address.state_abbr,
-      zipcode: nil,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:state_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      zipcode: Faker::Address.zip_code,
-      state: 'YORK',
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:jurisdiction_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: Faker::Address.street_address,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'XX',
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:address1_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: nil,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: 'S59397998',
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:nil_state_id_number_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      address1: nil,
-      zipcode: Faker::Address.zip_code,
-      state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
-      state_id_jurisdiction: 'AL',
-      state_id_number: nil,
-      state_id_expiration: valid_state_id_expiration,
-    }
-  end
-  let(:nil_birth_place_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: nil,
-      passport_issued: '2024-01-01',
-      passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'USA',
-      nationality_code: 'USA',
-      mrz: mrz,
-    }
-  end
+  let(:nil_birth_place_pii) { good_passport_pii.merge(birth_place: nil) }
   let(:passport_expired_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: 'WASHINGTON D.C.. U.S.A.',
-      passport_issued: '2024-01-01',
-      passport_expiration: '2022-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'USA',
-      nationality_code: 'USA',
-      mrz: mrz,
-    }
+    good_passport_pii.merge(passport_expiration: invalid_expiration)
   end
-  let(:nil_passport_issued_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: 'WASHINGTON D.C.. U.S.A.',
-      passport_issued: nil,
-      passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'USA',
-      nationality_code: 'USA',
-      mrz: mrz,
-    }
-  end
-  let(:issuing_country_code_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: 'WASHINGTON D.C.. U.S.A.',
-      passport_issued: '2024-01-01',
-      passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'XYZ',
-      nationality_code: 'USA',
-      mrz: mrz,
-    }
-  end
-  let(:nationality_code_error_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: 'WASHINGTON D.C.. U.S.A.',
-      passport_issued: '2024-01-01',
-      passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'USA',
-      nationality_code: 'XYZ',
-      mrz: mrz,
-    }
-  end
-  let(:nil_mrz_pii) do
-    {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      birth_place: 'WASHINGTON D.C.. U.S.A.',
-      passport_issued: '2024-01-01',
-      passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
-      issuing_country_code: 'USA',
-      nationality_code: 'USA',
-      mrz: nil,
-    }
-  end
-  let(:pii) { nil }
+  let(:nil_passport_issued_pii) { good_passport_pii.merge(passport_issued: nil) }
+  let(:issuing_country_code_error_pii) { good_passport_pii.merge(issuing_country_code: 'XYZ') }
+  let(:nationality_code_error_pii) { good_passport_pii.merge(nationality_code: 'XYZ') }
+  let(:nil_mrz_pii) { good_passport_pii.merge(mrz: nil) }
+  let(:passport_card_pii) { good_passport_pii.merge(id_doc_type: 'passport_card') }
 
   describe '#submit' do
     context 'when the form is valid' do
@@ -343,7 +130,7 @@ RSpec.describe Idv::DocPiiForm do
           attention_with_barcode: false,
           id_doc_type: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
-          id_issued_status: 'missing',
+          id_issued_status: 'present',
           id_expiration_status: 'present',
           passport_issued_status: 'missing',
           passport_expiration_status: 'missing',
@@ -363,14 +150,12 @@ RSpec.describe Idv::DocPiiForm do
           .to contain_exactly(
             :name,
             :dob,
-            :zipcode,
-            :jurisdiction,
           )
         expect(result.extra).to eq(
           attention_with_barcode: false,
           id_doc_type: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
-          id_issued_status: 'missing',
+          id_issued_status: 'present',
           id_expiration_status: 'present',
           passport_issued_status: 'missing',
           passport_expiration_status: 'missing',
@@ -393,7 +178,7 @@ RSpec.describe Idv::DocPiiForm do
           attention_with_barcode: false,
           id_doc_type: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
-          id_issued_status: 'missing',
+          id_issued_status: 'present',
           id_expiration_status: 'present',
           passport_issued_status: 'missing',
           passport_expiration_status: 'missing',
@@ -529,7 +314,7 @@ RSpec.describe Idv::DocPiiForm do
             attention_with_barcode: false,
             id_doc_type: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
-            id_issued_status: 'missing',
+            id_issued_status: 'present',
             id_expiration_status: 'present',
             passport_issued_status: 'missing',
             passport_expiration_status: 'missing',
@@ -552,7 +337,7 @@ RSpec.describe Idv::DocPiiForm do
             attention_with_barcode: false,
             id_doc_type: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
-            id_issued_status: 'missing',
+            id_issued_status: 'present',
             id_expiration_status: 'present',
             passport_issued_status: 'missing',
             passport_expiration_status: 'missing',
@@ -583,7 +368,7 @@ RSpec.describe Idv::DocPiiForm do
             attention_with_barcode: false,
             id_doc_type: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
-            id_issued_status: 'missing',
+            id_issued_status: 'present',
             id_expiration_status: 'present',
             passport_issued_status: 'missing',
             passport_expiration_status: 'missing',
@@ -726,6 +511,28 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.extra).to eq(
             attention_with_barcode: false,
             id_doc_type: 'passport',
+            pii_like_keypaths: pii_like_keypaths_passport,
+            id_issued_status: 'missing',
+            id_expiration_status: 'missing',
+            passport_issued_status: 'present',
+            passport_expiration_status: 'present',
+          )
+        end
+      end
+
+      context 'when the passport is a passport card' do
+        let(:subject) { Idv::DocPiiForm.new(pii: passport_card_pii) }
+
+        it 'returns an unsuccessful result' do
+          result = subject.submit
+
+          expect(result.success?).to eq(false)
+          expect(result.errors[:id_doc_type]).to eq(
+            [I18n.t('doc_auth.errors.general.no_liveness')],
+          )
+          expect(result.extra).to eq(
+            attention_with_barcode: false,
+            id_doc_type: 'passport_card',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
