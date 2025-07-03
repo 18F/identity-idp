@@ -342,7 +342,7 @@ RSpec.describe 'Identity verification', :js do
       'source_check' => 'StateIdMock',
       'threatmetrix' => true,
       'address_check' => 'lexis_nexis_address',
-      'document_type' => 'state_id',
+      'document_type' => 'drivers_license',
       'document_check' => 'mock',
       'residential_resolution_check' => 'ResidentialAddressNotRequired',
       'resolution_check' => 'ResolutionMock',
