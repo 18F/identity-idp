@@ -239,7 +239,8 @@ module Idv
         session[:pii_from_doc] = nil
       else
         new_pii_from_doc_hash = new_pii_from_doc.to_h
-        if !SUPPORTED_ID_DOC_TYPES.include?(new_pii_from_doc_hash[:id_doc_type])
+        if new_pii_from_doc_hash[:id_doc_type].present? &&
+           !SUPPORTED_ID_DOC_TYPES.include?(new_pii_from_doc_hash[:id_doc_type])
           raise "Unexpected doc type #{new_pii_from_doc_hash[:id_doc_type]}"
         end
         session[:pii_from_doc] = new_pii_from_doc_hash
