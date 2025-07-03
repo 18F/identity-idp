@@ -94,6 +94,13 @@ module Idv
       welcome_visited
     ].freeze
 
+    SUPPORTED_ID_DOC_TYPES = [
+      'passport',
+      'passport_card',
+      'state_id',
+      'drivers_license',
+    ].freeze
+
     attr_reader :current_user, :gpo_otp, :service_provider
 
     VALID_SESSION_ATTRIBUTES.each do |attr|
@@ -302,11 +309,10 @@ module Idv
     def remote_submitted_doc_type
       return nil if session[:pii_from_doc].blank?
 
-      if session[:pii_from_doc][:id_doc_type] == 'passport'
-        'passport'
-      else
-        'state_id'
+      if SUPPORTED_ID_DOC_TYPES.include?(session[:pii_from_doc][:id_doc_type])
+        return session[:pii_from_doc][:id_doc_type]
       end
+      raise "Unexpected doc type #{session[:pii_from_doc][:id_doc_type]}"
     end
 
     def ipp_document_capture_complete?
