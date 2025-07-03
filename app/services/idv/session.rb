@@ -96,7 +96,6 @@ module Idv
 
     SUPPORTED_ID_DOC_TYPES = [
       'passport',
-      'passport_card',
       'state_id',
       'drivers_license',
     ].freeze
