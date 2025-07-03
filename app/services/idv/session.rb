@@ -300,9 +300,7 @@ module Idv
     end
 
     def remote_submitted_doc_type
-      return nil if session[:pii_from_doc].blank?
-
-      session[:pii_from_doc][:id_doc_type]
+      session.dig(:pii_from_doc, :id_doc_type)
     end
 
     def ipp_document_capture_complete?
