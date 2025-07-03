@@ -120,7 +120,7 @@ RSpec.describe Proofing::DdpResult do
   describe '#to_h' do
     context 'when response_body is present' do
       it 'is redacted' do
-        response_body = { first_name: 'Jonny Proofs' }
+        response_body = { 'first_name' => 'Jonny Proofs' }
         result = Proofing::DdpResult.new(response_body:)
 
         expect(result.to_h[:response_body]).to eq({})
@@ -145,7 +145,7 @@ RSpec.describe Proofing::DdpResult do
   end
 
   describe '#device_fingerprint' do
-    let(:response_body) { { fuzzy_device_id: '12345' } }
+    let(:response_body) { { 'fuzzy_device_id' => '12345' } }
     subject { described_class.new(response_body:) }
 
     context 'when response_body is present' do

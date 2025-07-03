@@ -83,7 +83,7 @@ module Proofing
     end
 
     def device_fingerprint
-      response_body&.dig(:fuzzy_device_id)
+      response_body&.dig('fuzzy_device_id')
     end
 
     private
