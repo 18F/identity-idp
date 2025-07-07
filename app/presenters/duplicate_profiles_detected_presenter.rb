@@ -21,7 +21,7 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def associated_profiles
-    profile_ids = [user.active_profile] + dupe_profile_confirmation.duplicate_profile_ids 
+    profile_ids = [user.active_profile] + dupe_profile_confirmation.duplicate_profile_ids
 
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|

@@ -46,16 +46,16 @@
     <%= link_to(t('duplicate_profile_detected.dont_recognize_account'), '/') %>
   </div>
 
-  <div class="margin-top-4 grid-col-4">
-    <%= new_tab_link_to(t('duplicate_profile_detected.get_help'), '/', class: 'usa-button usa-button--full-width usa-button--big') %>
+  <div class="margin-top-4 grid-row">
+    <%= new_tab_link_to(t('duplicate_profile_detected.get_help'), '/', class: 'usa-button usa-button usa-button--wide usa-button--big') %>
   </div>
 
-  <div class="margin-top-2 grid-col-4">
+  <div class="margin-top-3 grid-col-4">
     <%= render ButtonComponent.new(
           url: logout_path,
           outline: true,
           method: :delete,
-          class: 'usa-button usa-button--outline usa-button--full-width usa-button--big',
+          class: 'usa-button usa-button usa-button--outline usa-button--wide usa-button--big',
         ).with_content(t('duplicate_profile_detected.sign_out')) %>
   </div>
 <% end %>
