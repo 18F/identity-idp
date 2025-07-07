@@ -47,7 +47,8 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          if doc_pii_response.success? && passport_submittal
+
+          if doc_pii_response.success? && passport_requested? && passport_submittal
             mrz_response = validate_mrz(client_response)
           end
         end
@@ -185,7 +186,7 @@ module Idv
     def document_type
       return nil if document_capture_session.nil?
 
-      @document_type ||= document_capture_session.passport_requested? \
+      @document_type ||= passport_requested? \
         ? 'Passport' : 'DriversLicense'
     end
 
@@ -505,6 +506,10 @@ module Idv
 
     def user_uuid
       document_capture_session&.user&.uuid
+    end
+
+    def passport_requested?
+      document_capture_session&.passport_requested?
     end
 
     def rate_limiter
