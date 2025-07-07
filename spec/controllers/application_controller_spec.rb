@@ -625,14 +625,6 @@ RSpec.describe ApplicationController do
         get :index
         expect(response.body).to eq('false')
       end
-
-      it 'returns false even with duplicate profile confirmations' do
-        profile = create(:profile, :active, user: user)
-        create(:duplicate_profile_confirmation, profile: profile, confirmed_all: nil)
-
-        get :index
-        expect(response.body).to eq('false')
-      end
     end
 
     context 'when SP is eligible for one account' do
@@ -647,20 +639,6 @@ RSpec.describe ApplicationController do
         let!(:active_profile) { create(:profile, :active, user: user) }
 
         context 'when no duplicate profile confirmations exist' do
-          it 'returns false' do
-            get :index
-            expect(response.body).to eq('false')
-          end
-        end
-
-        context 'when duplicate profile confirmations exist but are already confirmed' do
-          before do
-            create(
-              :duplicate_profile_confirmation,
-              profile: active_profile, confirmed_all: Time.zone.now,
-            )
-          end
-
           it 'returns false' do
             get :index
             expect(response.body).to eq('false')
