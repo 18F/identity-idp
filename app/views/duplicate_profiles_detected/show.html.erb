@@ -15,7 +15,7 @@
       <p><%= t(
                'duplicate_profiles_detected.delete_duplicates.details_html',
                link_html: new_tab_link_to(
-                 t('duplicate_profiles_detected.delete_duplicates.link_html'),
+                 t('duplicate_profiles_detected.delete_duplicates.link'),
                  MarketingSite.help_center_article_url(
                    category: 'manage-your-account',
                    article: 'delete-your-account',
@@ -43,11 +43,11 @@
     </ul>
   </div>
   <div class="margin-top-2">
-    <%= link_to(t('duplicate_profile_detected.dont_recognize_account'), '/') %>
+    <%= link_to(t('duplicate_profiles_detected.dont_recognize_account'), '/') %>
   </div>
 
   <div class="margin-top-4 grid-row">
-    <%= new_tab_link_to(t('duplicate_profile_detected.get_help'), '/', class: 'usa-button usa-button usa-button--wide usa-button--big') %>
+    <%= new_tab_link_to(t('duplicate_profiles_detected.get_help'), '/', class: 'usa-button usa-button usa-button--wide usa-button--big') %>
   </div>
 
   <div class="margin-top-3 grid-col-4">
@@ -56,7 +56,7 @@
           outline: true,
           method: :delete,
           class: 'usa-button usa-button usa-button--outline usa-button--wide usa-button--big',
-        ).with_content(t('duplicate_profile_detected.sign_out')) %>
+        ).with_content(t('duplicate_profiles_detected.sign_out')) %>
   </div>
 <% end %>
   

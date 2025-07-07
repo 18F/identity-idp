@@ -745,16 +745,15 @@ doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东�
 doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
-duplicate_profile_detected.dont_recognize_account: I don’t recognize an account above
-duplicate_profile_detected.get_help: Get Help
-duplicate_profile_detected.sign_out: Sign out
 duplicate_profiles_detected.accounts_list.heading: Accounts with the same SSN
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
-duplicate_profiles_detected.delete_duplicates.heading: Delete the duplicate account(s)
-duplicate_profiles_detected.delete_duplicates.link_html: How to delete your account.
+duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate accounts'
+duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
+duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
+duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: You have multiple accounts with the same SSN
 duplicate_profiles_detected.intro: For security purposes, you can only verify your identity on one %{app_name} account. Learn more about duplicate accounts
 duplicate_profiles_detected.intro2: 'You need to delete the duplicate accounts before signing into %{app_name}. Here’s what to do:'
@@ -764,6 +763,7 @@ duplicate_profiles_detected.select_an_account.details: Keep the account that you
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Once you’ve deleted the duplicate accounts return to %{app_name} and sign in.
 duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
+duplicate_profiles_detected.sign_out: Sign out
 duplicate_profiles_detected.signed_in: Signed In
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
