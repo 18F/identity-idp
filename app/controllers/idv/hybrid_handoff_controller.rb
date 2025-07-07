@@ -49,6 +49,7 @@ module Idv
       elsif params[:type] == 'mobile'
         handle_phone_submission
       else
+        doc_auth_mock_upload if upload_enabled?
         bypass_send_link_steps
       end
     end
@@ -270,6 +271,12 @@ module Idv
       params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def doc_auth_mock_upload
+      if IdentityConfig.store.doc_auth_mock_upload_enabled
+        document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
+      end
     end
   end
 end
