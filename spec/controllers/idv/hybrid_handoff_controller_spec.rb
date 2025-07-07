@@ -128,6 +128,19 @@ RSpec.describe Idv::HybridHandoffController do
 
         expect(assigns(:upload_enabled)).to be true
       end
+
+      context 'Socure is doc auth vendor' do
+        before do
+          allow(subject.document_capture_session).to receive(:doc_auth_vendor)
+            .and_return(Idp::Constants::Vendors::SOCURE)
+        end
+
+        it 'returns false' do
+          get :show
+
+          expect(assigns(:upload_enabled)).to be false
+        end
+      end
     end
 
     context 'hybrid_handoff already visited' do

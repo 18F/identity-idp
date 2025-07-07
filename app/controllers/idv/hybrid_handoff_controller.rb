@@ -148,6 +148,8 @@ module Idv
     end
 
     def upload_enabled?
+      return false if document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
+
       idv_session.desktop_selfie_test_mode_enabled?
     end
 
