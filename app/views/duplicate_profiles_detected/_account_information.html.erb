@@ -15,11 +15,15 @@
                 ) %>
         </p>
       <% else %>
-        <p> <%= t(
-                  'duplicate_profiles_detected.last_sign_in_at_html',
-                  timestamp_html: t('duplicate_profiles_detected.never_logged_in'),
-                ) %>
+     
       <% end %>
+      <p> 
+        <%= t(
+              'duplicate_profiles_detected.connected_acct_html',
+              count: dupe_profile[:connected_accts],
+            ) %>
+      </p>
+
     </div>
     <div class="grid-col-4">
       <%= render BadgeComponent.new(icon: :check_circle).with_content(t('duplicate_profiles_detected.signed_in')) %>
@@ -47,6 +51,10 @@
               ) %>
         </p>
       <% else %>
+        <p> <%= t(
+                  'duplicate_profiles_detected.last_sign_in_at_html',
+                  timestamp_html: t('duplicate_profiles_detected.never_logged_in'),
+                ) %>
       <% end %>
     </div>
     <div class="grid-col-4">

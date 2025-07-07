@@ -738,6 +738,7 @@ duplicate_profile_detected.dont_recognize_account: I don’t recognize an accoun
 duplicate_profile_detected.get_help: Get Help
 duplicate_profile_detected.sign_out: Sign out
 duplicate_profiles_detected.accounts_list.heading: Accounts with the same SSN
+duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: Delete the duplicate account(s)
