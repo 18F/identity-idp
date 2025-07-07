@@ -196,7 +196,7 @@ module DocAuthRouter
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor_for_bucket(bucket, selfie: false)
+  def self.doc_auth_vendor_for_bucket(bucket, selfie: false, passport_allowed: false)
     case bucket
     when :socure
       Idp::Constants::Vendors::SOCURE
@@ -207,8 +207,13 @@ module DocAuthRouter
     when :mock_socure
       Idp::Constants::Vendors::SOCURE_MOCK
     else # e.g., nil
-      selfie ? IdentityConfig.store.doc_auth_selfie_vendor_default :
+      if selfie
+        IdentityConfig.store.doc_auth_selfie_vendor_default
+      elsif passport_allowed
+        IdentityConfig.store.doc_auth_passport_vendor_default
+      else
         IdentityConfig.store.doc_auth_vendor_default
+      end
     end
   end
 end

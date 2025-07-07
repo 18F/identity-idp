@@ -12,6 +12,8 @@ module Idv
           bucket = choose_non_socure_bucket
         elsif resolved_authn_context_result.facial_match?
           bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR)
+        elsif idv_session.passport_allowed
+          bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_VENDOR)
         else
           bucket = ab_test_bucket(:DOC_AUTH_VENDOR)
         end
@@ -25,6 +27,7 @@ module Idv
         DocAuthRouter.doc_auth_vendor_for_bucket(
           bucket,
           selfie: resolved_authn_context_result.facial_match?,
+          passport_allowed: idv_session.passport_allowed,
         )
       end
     end

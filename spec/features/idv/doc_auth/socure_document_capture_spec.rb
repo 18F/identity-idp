@@ -117,6 +117,20 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           click_on t('idv.failure.button.warning')
           expect(page).to have_current_path(idv_socure_document_capture_path)
           expect(page).to have_content(t('doc_auth.headings.document_capture'))
+
+          # Go to the wait page
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_document_capture_update_path)
+
+          # Correct intertitial with passport content
+          visit idv_socure_document_capture_update_path
+          document_capture_session = DocumentCaptureSession.find_by(user_id: user.id)
+          document_capture_session.update(passport_status: 'requested')
+          document_capture_session.save!
+          click_on t('idv.failure.button.warning')
+          expect(page).to have_current_path(idv_socure_document_capture_path)
+          expect(page).to have_content(t('doc_auth.headings.passport_capture'))
+          expect(page).to have_content(t('doc_auth.info.socure_passport', app_name: APP_NAME))
         end
       end
 
@@ -472,6 +486,89 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           click_idv_continue
           complete_verify_step
           expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+
+      context 'when a passport is submitted' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+            .and_return(Idp::Constants::Vendors::SOCURE)
+          stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
+            .to_return_json({ status: 200, body: { status: 'UP' } })
+          reload_ab_tests
+          DocAuth::Mock::DocAuthMockClient.reset!
+          stub_docv_verification_data_pass(
+            docv_transaction_token: @docv_transaction_token,
+            reason_codes: ['not_processed'],
+            document_type: :passport,
+            user:,
+          )
+          allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+            .and_return('https://fake-socure.test/mrz')
+
+          ### below stubs should not be required for this spec, to be removed in LG-16388
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          ###
+        end
+
+        it 'proceeds to the next page with valid info' do
+          perform_in_browser(:mobile) do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
+
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            expect(page).to have_current_path(idv_choose_id_type_url)
+            choose(t('doc_auth.forms.id_type_preference.passport'))
+            click_on t('forms.buttons.continue')
+
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            @failed_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+              .to_return_json({ status: 200, body: { response: 'NO' } })
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+            expect(page).to have_content(t('idv.errors.try_again_later'))
+
+            click_on t('idv.failure.button.warning')
+
+            remove_request_stub(@failed_stub)
+
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+              .to_return_json({ status: 200, body: { response: 'YES' } })
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+          end
         end
       end
     end

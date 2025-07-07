@@ -469,51 +469,6 @@ RSpec.describe AbTests do
     end
   end
 
-  describe 'DESKTOP_FT_UNLOCK_SETUP' do
-    let(:user) { nil }
-    let(:user_session) { {} }
-
-    subject(:bucket) do
-      AbTests::DESKTOP_FT_UNLOCK_SETUP.bucket(
-        request: nil,
-        service_provider: nil,
-        session: nil,
-        user:,
-        user_session:,
-      )
-    end
-
-    context 'when A/B test is disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
-          .and_return(0)
-        reload_ab_tests
-      end
-
-      context 'when it would otherwise assign a bucket' do
-        let(:user) { build(:user) }
-
-        it 'does not return a bucket' do
-          expect(bucket).to be_nil
-        end
-      end
-    end
-
-    context 'when A/B test is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:desktop_ft_unlock_setup_option_percent_tested)
-          .and_return(100)
-        reload_ab_tests
-      end
-
-      let(:user) { build(:user) }
-
-      it 'returns a bucket' do
-        expect(bucket).not_to be_nil
-      end
-    end
-  end
-
   describe 'DOC_AUTH_PASSPORT' do
     let(:ab_test) { :DOC_AUTH_PASSPORT }
 
@@ -529,30 +484,6 @@ RSpec.describe AbTests do
     let(:disable_ab_test) do
       -> {
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-          .and_return(false)
-      }
-    end
-
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
-  end
-
-  describe 'DOC_AUTH_MANUAL_UPLOAD_DISABLED' do
-    let(:ab_test) { :DOC_AUTH_MANUAL_UPLOAD_DISABLED }
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
-          .and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_manual_upload_disabled_a_b_testing_percent)
-          .and_return(50)
-      }
-    end
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_manual_upload_disabled_a_b_testing_enabled)
           .and_return(false)
       }
     end

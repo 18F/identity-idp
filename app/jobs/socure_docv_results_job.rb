@@ -28,6 +28,8 @@ class SocureDocvResultsJob < ApplicationJob
     last_doc_auth_result = docv_result_response.extra_attributes.dig(:decision, :value)
     document_capture_session.update!(last_doc_auth_result:) if last_doc_auth_result
 
+    mrz_response = nil
+
     if docv_result_response.success?
       doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
       log_pii_validation(doc_pii_response:)
@@ -46,10 +48,27 @@ class SocureDocvResultsJob < ApplicationJob
         record_attempt(docv_result_response:, doc_pii_response:)
         return
       end
+
+      if document_capture_session.passport_requested?
+        mrz_response = validate_mrz(doc_pii_response)
+        unless mrz_response.success?
+          document_capture_session.store_failed_auth_data(
+            doc_auth_success: true,
+            selfie_status: docv_result_response.selfie_status,
+            errors: { passport: 'failed' },
+            front_image_fingerprint: nil,
+            back_image_fingerprint: nil,
+            passport_image_fingerprint: nil,
+            selfie_image_fingerprint: nil,
+            mrz_status: :failed,
+          )
+          return
+        end
+      end
     end
 
     record_attempt(docv_result_response:, doc_pii_response:)
-    document_capture_session.store_result_from_response(docv_result_response)
+    document_capture_session.store_result_from_response(docv_result_response, mrz_response:)
   end
 
   private
@@ -149,8 +168,8 @@ class SocureDocvResultsJob < ApplicationJob
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
     analytics.idv_socure_verification_data_requested(
       **docv_result_response.to_h.merge(
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
+        submit_attempts:,
+        remaining_submit_attempts:,
         vendor_request_time_in_ms:,
         async:,
         pii_like_keypaths: [[:pii]],
@@ -162,8 +181,8 @@ class SocureDocvResultsJob < ApplicationJob
   def log_pii_validation(doc_pii_response:)
     analytics.idv_doc_auth_submitted_pii_validation(
       **doc_pii_response.to_h.merge(
-        submit_attempts: rate_limiter&.attempts,
-        remaining_submit_attempts: rate_limiter&.remaining_count,
+        submit_attempts:,
+        remaining_submit_attempts:,
         flow_path: nil,
         liveness_checking_required: nil,
       ),
@@ -172,7 +191,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def socure_document_verification_result
     DocAuth::Socure::Requests::DocvResultRequest.new(
-      customer_user_id: document_capture_session&.user&.uuid,
+      customer_user_id: user_uuid,
       document_capture_session_uuid:,
       docv_transaction_token_override:,
       user_email: document_capture_session&.user&.last_sign_in_email_address&.email,
@@ -211,5 +230,48 @@ class SocureDocvResultsJob < ApplicationJob
 
   def doc_escrow_key
     Base64.strict_encode64(SecureRandom.bytes(32))
+  end
+
+  def validate_mrz(doc_pii_response)
+    id_type = doc_pii_response.extra[:id_doc_type]
+    unless id_type == 'passport'
+      return DocAuth::Response.new(
+        success: false,
+        errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
+      )
+    end
+
+    mrz_client = Rails.env.development? ?
+                    DocAuth::Mock::DosPassportApiClient.new :
+                    DocAuth::Dos::Requests::MrzRequest.new(mrz: doc_pii_response.pii_from_doc[:mrz])
+    response = mrz_client.fetch
+
+    analytics.idv_dos_passport_verification(
+      document_type:,
+      remaining_submit_attempts:,
+      submit_attempts:,
+      user_id: user_uuid,
+      response: response.extra[:response],
+      success: response.success?,
+    )
+
+    response
+  end
+
+  def document_type
+    @document_type ||= document_capture_session.passport_requested? \
+      ? 'Passport' : 'DriversLicense'
+  end
+
+  def user_uuid
+    @user_uuid ||= document_capture_session.user&.uuid
+  end
+
+  def submit_attempts
+    rate_limiter&.attempts
+  end
+
+  def remaining_submit_attempts
+    rate_limiter&.remaining_count
   end
 end

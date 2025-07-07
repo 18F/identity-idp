@@ -10,11 +10,9 @@ module Reporting
     end
 
     def time_range
-      today = Time.zone.today
-      last_sunday = today.beginning_of_week(:sunday) - 7.days
-      last_saturday = last_sunday + 6.days
-
-      last_sunday.beginning_of_day..last_saturday.end_of_day
+      start_of_month = report_date.beginning_of_month.beginning_of_day
+      end_of_month = report_date.end_of_month.end_of_day
+      start_of_month..end_of_month
     end
 
     def irs_credential_tenure_report_definition

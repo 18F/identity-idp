@@ -40,6 +40,9 @@ module DocAuth
         ## returns full check success status, considering all checks:
         #    vendor (document and selfie if requested)
         def successful_result?
+          return false if passport_detected_but_not_allowed?
+          return false if passport_card_detected?
+
           doc_auth_success? &&
             (@liveness_checking_enabled ? selfie_passed? : true)
         end
@@ -55,7 +58,11 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          if with_authentication_result?
+          if passport_detected_but_not_allowed?
+            { passport: true }
+          elsif passport_card_detected?
+            { passport_card: true }
+          elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
             ErrorGenerator.wrapped_general_error
@@ -122,7 +129,10 @@ module DocAuth
         end
 
         def passport_pii?
-          @passport_pii ||= pii_from_doc&.id_doc_type == 'passport'
+          @passport_pii ||= begin
+            pii_from_doc&.id_doc_type == 'passport' ||
+              pii_from_doc&.id_doc_type == 'passport_card'
+          end
         end
 
         def transaction_status
@@ -226,6 +236,19 @@ module DocAuth
 
         def doc_issuer_type
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssuerType)
+        end
+
+        def doc_issue_type
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssueType)
+        end
+
+        def passport_detected_but_not_allowed?
+          passport_detected = doc_class_name == 'Passport' || passport_card_detected?
+          !IdentityConfig.store.doc_auth_passports_enabled && passport_detected
+        end
+
+        def passport_card_detected?
+          doc_issue_type == 'Passport Card'
         end
 
         def classification_info

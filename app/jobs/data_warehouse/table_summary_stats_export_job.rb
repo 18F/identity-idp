@@ -37,39 +37,79 @@ module DataWarehouse
           to: timestamp.end_of_day,
         )[0]
         # set row count to 0 if nil or else convert to int
-        result[table_name].nil? ? result[table_name] =
-                                    { row_count: 0 } : result[table_name]['row_count'] =
-                                                         result[table_name]['row_count'].to_i
+        offset = get_offset_count(log_group_name, timestamp)
+        if result[table_name].nil?
+          result[table_name] = { row_count: 0 }
+        else
+          result[table_name]['row_count'] = result[table_name]['row_count'].to_i - offset
+        end
       end
     end
 
     def log_groups
-      env = Identity::Hostdata.env
       [
         "#{env}_/srv/idp/shared/log/events.log",
         "#{env}_/srv/idp/shared/log/production.log",
       ]
     end
 
-    def cloudwatch_client(log_group_name: nil)
+    def env
+      Identity::Hostdata.env
+    end
+
+    def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
       Reporting::CloudwatchClient.new(
         log_group_name: log_group_name,
         ensure_complete_logs: false,
+        num_threads: 6,
+        slice_interval: slice_interval,
       )
     end
 
-    def cloudwatch_query(log_group_name)
-      base_log_group = "#{Identity::Hostdata.env}_/srv/idp/shared/log"
-      log_stream_filter_map = {
+    def log_stream_filter_map
+      base_log_group = "#{env}_/srv/idp/shared/log"
+      {
         "#{base_log_group}/events.log" => "@logStream like 'worker-i-' or @logStream like 'idp-i-'",
         "#{base_log_group}/production.log" => "@logStream like 'idp-i-'",
       }
+    end
+
+    def cloudwatch_query(log_group_name)
       <<~QUERY
-        fields @timestamp
+        fields jsonParse(@message) as @messageJson
         | filter #{log_stream_filter_map[log_group_name]}
-        | filter @message like /\\{.*/
+        | filter isPresent(@messageJson)
         | stats count() as row_count
       QUERY
+    end
+
+    def production_offset_query
+      log_group_name = "#{env}_/srv/idp/shared/log/production.log"
+      <<~QUERY
+        fields jsonParse(@message) as @messageJson, concat(@timestamp, @message) as ts_plus_message
+        | filter #{log_stream_filter_map[log_group_name]}
+        | filter isPresent(@messageJson)
+        | stats count() as cnt by ts_plus_message
+        | stats sum(cnt - 1) as offset_count
+      QUERY
+    end
+
+    def get_offset_count(log_group_name, timestamp)
+      if log_group_name == "#{env}_/srv/idp/shared/log/production.log"
+        # For production logs, exclude count of duplicates with same message & timestamp
+        cw_client = cloudwatch_client(
+          log_group_name: log_group_name,
+          slice_interval: 30.minutes,
+        )
+        result = cw_client.fetch(
+          query: production_offset_query,
+          from: timestamp.beginning_of_day,
+          to: timestamp.end_of_day,
+        )
+        result.sum { |h| h['offset_count'].to_i }
+      else
+        0
+      end
     end
 
     def fetch_table_max_ids_and_counts(timestamp)

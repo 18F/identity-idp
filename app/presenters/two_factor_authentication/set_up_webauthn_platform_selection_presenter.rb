@@ -13,7 +13,6 @@ module TwoFactorAuthentication
           passkey_supported_only: true,
           show_unsupported_passkey:
             IdentityConfig.store.show_unsupported_passkey_platform_authentication_setup,
-          desktop_ft_unlock_option: desktop_ft_ab_test,
         ),
         &block
       )

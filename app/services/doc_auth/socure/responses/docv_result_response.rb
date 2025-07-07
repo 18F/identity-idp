@@ -35,6 +35,7 @@ module DocAuth
           customer_profile: %w[customerProfile],
           socure_customer_user_id: %w[customerProfile customerUserId],
           socure_user_id: %w[customerProfile userId],
+          mrz: %w[documentVerification rawData mrz],
         }.freeze
 
         def initialize(http_response:)
@@ -120,6 +121,24 @@ module DocAuth
         end
 
         def read_pii
+          if id_doc_type == 'passport'
+            return Pii::Passport.new(
+              first_name: get_data(DATA_PATHS[:first_name]),
+              middle_name: get_data(DATA_PATHS[:middle_name]),
+              last_name: get_data(DATA_PATHS[:last_name]),
+              dob:,
+              mrz: get_data(DATA_PATHS[:mrz]),
+              issuing_country_code:,
+              nationality_code: issuing_country_code,
+              document_number: get_data(DATA_PATHS[:document_number]),
+              id_doc_type:,
+              passport_expiration: expiration_date,
+              sex: nil,
+              birth_place: nil,
+              passport_issued: nil,
+            )
+          end
+
           Pii::StateId.new(
             first_name: get_data(DATA_PATHS[:first_name]),
             middle_name: get_data(DATA_PATHS[:middle_name]),
@@ -137,10 +156,10 @@ module DocAuth
             eye_color: nil,
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued:,
-            state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
-            id_doc_type: id_doc_type,
+            state_id_expiration: expiration_date,
+            id_doc_type:,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
-            issuing_country_code: get_data(DATA_PATHS[:issuing_country]),
+            issuing_country_code:,
           )
         end
 
@@ -156,6 +175,10 @@ module DocAuth
           rescue JSON::JSONError
             {}
           end
+        end
+
+        def expiration_date
+          parse_date(get_data(DATA_PATHS[:expiration_date]))
         end
 
         def state
@@ -186,6 +209,10 @@ module DocAuth
           get_data(DATA_PATHS[:address2])
         end
 
+        def issuing_country_code
+          get_data(DATA_PATHS[:issuing_country])
+        end
+
         def reason_codes
           get_data(DATA_PATHS[:reason_codes])
         end
@@ -201,7 +228,11 @@ module DocAuth
         end
 
         def id_type_supported?
-          DocAuth::Response::SOCURE_ID_TYPE_SLUGS.key?(document_id_type)
+          if passports_enabled?
+            DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
+          else
+            DocAuth::Response::STATE_ID_TYPE_SLUGS.key?(document_id_type)
+          end
         end
 
         def reason_codes_selfie_pass
@@ -218,6 +249,16 @@ module DocAuth
 
         def portrait_matching_failed?
           selfie_status == :fail
+        end
+
+        def passports_enabled?
+          IdentityConfig.store.doc_auth_passports_enabled && (
+            (
+              IdentityConfig.store.doc_auth_passport_vendor_switching_enabled &&
+              IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
+            ) ||
+            IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
+          )
         end
       end
     end

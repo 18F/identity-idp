@@ -30,6 +30,7 @@ module Idv
 
         @selfie_check_required = resolved_authn_context_result.facial_match?
         @hybrid_flow = false
+        @passport_requested = document_capture_session.passport_requested?
 
         if document_capture_session.socure_docv_capture_app_url.present?
           @url = document_capture_session.socure_docv_capture_app_url
@@ -42,6 +43,7 @@ module Idv
           redirect_url: idv_socure_document_capture_update_url,
           language: I18n.locale,
           liveness_checking_required: resolved_authn_context_result.facial_match?,
+          passport_requested: document_capture_session.passport_requested?,
         )
         timer = JobHelpers::Timer.new
         document_response = timer.time('vendor_request') do

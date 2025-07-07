@@ -33,13 +33,6 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       )
     end
 
-    it 'has a form for starting desktop doc auth with an aria label tag' do
-      expect(rendered).to have_selector(
-        :xpath,
-        "//form[@aria-label=\"#{t('forms.buttons.upload_photos')}\"]",
-      )
-    end
-
     it 'displays the expected headings from the "a" case' do
       expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
