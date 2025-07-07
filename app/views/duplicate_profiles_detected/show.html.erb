@@ -21,11 +21,13 @@
                       timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
                     ) %>
             </p>
+            <% if dupe_profile[:last_sign_in] %>
             <p> <%= t(
                       'duplicate_profiles_detected.last_sign_in_at_html',
                       timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
                     ) %>
             </p>
+            <% end %>
           </div>
         </li>
       <% end %>
