@@ -20,7 +20,8 @@
                    category: 'manage-your-account',
                    article: 'delete-your-account',
                  ),
-          )) %></p>
+               ),
+             ) %></p>
     <% end %>
     <%= c.with_item(heading: t('duplicate_profiles_detected.sign_back_in.heading', app_name: APP_NAME)) do %>
       <p><%= t(
@@ -30,13 +31,13 @@
     <% end %>
   <% end %>
 
-  <h3><%= t('duplicate_profiles_detected.accounts_list.heading')%> </h3>
+  <h3><%= t('duplicate_profiles_detected.accounts_list.heading') %> </h3>
 
   <div class="cardborder-primary-light">
     <ul class="add-list-reset border-bottom border-primary-light">
       <li>
         <% @dupe_profiles_detected_presenter.associated_profiles.each do |dupe_profile| %>
-            <%= render('duplicate_profiles_detected/account_information', dupe_profile: dupe_profile)%>
+            <%= render('duplicate_profiles_detected/account_information', dupe_profile: dupe_profile) %>
         <% end %>
       </li>
     </ul>

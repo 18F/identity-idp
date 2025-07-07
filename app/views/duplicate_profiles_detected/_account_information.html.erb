@@ -4,9 +4,9 @@
       <p> <%= dupe_profile[:email] %> </p>
       <p> 
         <%= t(
-                'duplicate_profiles_detected.created_at_html',
-                timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
-              ) %>
+              'duplicate_profiles_detected.created_at_html',
+              timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+            ) %>
       </p>
       <% if dupe_profile[:last_sign_in] %>
         <p> <%= t(
@@ -27,24 +27,24 @@
   <% else %>
     <div class="grid-col-8">
       <p> <%= render(
-          'shared/masked_text',
-          text: dupe_profile[:email],
-          masked_text: dupe_profile[:masked_email],
-          accessible_masked_text: dupe_profile[:email],
-        ) %>
+                'shared/masked_text',
+                text: dupe_profile[:email],
+                masked_text: dupe_profile[:masked_email],
+                accessible_masked_text: dupe_profile[:email],
+              ) %>
       </p>
       <p> 
         <%= t(
-                'duplicate_profiles_detected.created_at_html',
-                timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
-              ) %>
+              'duplicate_profiles_detected.created_at_html',
+              timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+            ) %>
       </p>
       <% if dupe_profile[:last_sign_in] %>
         <p> 
           <%= t(
-                  'duplicate_profiles_detected.last_sign_in_at_html',
-                  timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
-                ) %>
+                'duplicate_profiles_detected.last_sign_in_at_html',
+                timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
+              ) %>
         </p>
       <% else %>
       <% end %>
