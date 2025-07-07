@@ -7,19 +7,24 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     subject { described_class.new(ssn: ssn, user: user) }
 
+    before do
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+    end
+
     context 'when the ssn is unique' do
       it { expect(subject.ssn_is_unique?).to eq(true) }
     end
 
     context 'when ssn is already taken by another profile' do
       it 'returns false' do
-        create(:profile, pii: { ssn: ssn })
+        create(:profile, :facial_match_proof, pii: { ssn: ssn })
 
         expect(subject.ssn_is_unique?).to eq false
       end
 
       it 'recognizes fingerprint regardless of HMAC key age' do
-        create(:profile, pii: { ssn: ssn })
+        create(:profile, :facial_match_proof, pii: { ssn: ssn })
         rotate_hmac_key
 
         expect(subject.ssn_is_unique?).to eq false
@@ -27,21 +32,21 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
       it 'recognizes fingerprint without dashes' do
         ssn_without_dashes = '123456789'
-        create(:profile, pii: { ssn: ssn_without_dashes })
+        create(:profile, :facial_match_proof, pii: { ssn: ssn_without_dashes })
 
         expect(subject.ssn_is_unique?).to eq false
       end
 
       it 'recognizes fingerprint when SSN has only the first dash' do
         ssn_with_first_dash = '123-456789'
-        create(:profile, pii: { ssn: ssn_with_first_dash })
+        create(:profile, :facial_match_proof, pii: { ssn: ssn_with_first_dash })
 
         expect(subject.ssn_is_unique?).to eq false
       end
 
       it 'recognizes fingerprint when SSN has only the second dash' do
         ssn_with_second_dash = '12345-6789'
-        create(:profile, pii: { ssn: ssn_with_second_dash })
+        create(:profile, :facial_match_proof, pii: { ssn: ssn_with_second_dash })
 
         expect(subject.ssn_is_unique?).to eq false
       end
@@ -49,13 +54,13 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     context 'when ssn is already taken by same profile' do
       it 'is valid' do
-        create(:profile, pii: { ssn: ssn }, user: user)
+        create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user)
 
         expect(subject.ssn_is_unique?).to eq true
       end
 
       it 'recognizes fingerprint regardless of HMAC key age' do
-        create(:profile, pii: { ssn: ssn }, user: user)
+        create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user)
         rotate_hmac_key
 
         expect(subject.ssn_is_unique?).to eq true
@@ -68,6 +73,12 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:user) { create(:user) }
 
     subject { described_class.new(ssn: ssn, user: user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+    end
+
     context 'when profile is IAL2' do
       context 'when ssn is taken by different profile by and is IAL2' do
         it 'returns list different profile' do
@@ -101,6 +112,11 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:user) { create(:user) }
 
     subject { described_class.new(ssn: ssn, user: user) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+    end
     context 'when profile is IAL2' do
       context 'when ssn is taken by different profile by and is IAL2' do
         it 'returns false' do

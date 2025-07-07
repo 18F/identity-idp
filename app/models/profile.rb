@@ -16,7 +16,6 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
-  has_many :duplicate_profile_confirmations, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
