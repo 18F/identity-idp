@@ -765,6 +765,7 @@ duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Once you’ve deleted the duplicate accounts return to %{app_name} and sign in.
 duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
 duplicate_profiles_detected.signed_in: Signed In
+email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
 email_addresses.delete.bullet1: Si usa esta dirección de correo electrónico, no podrá iniciar sesión en %{app_name} (ni en ninguna de las aplicaciones gubernamentales vinculadas a su cuenta).
