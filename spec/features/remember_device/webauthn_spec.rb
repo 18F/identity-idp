@@ -97,12 +97,6 @@ RSpec.describe 'Remembering a webauthn device' do
     end
 
     context 'sign up' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:show_unsupported_passkey_platform_authentication_setup)
-          .and_return(true)
-      end
-
       def click_2fa_option(option)
         find("label[for='two_factor_options_form_selection_#{option}']").click
       end
