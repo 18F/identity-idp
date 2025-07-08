@@ -4,6 +4,7 @@ module Users
   class PivCacRecommendedController < ApplicationController
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
+    include ThreatMetrixHelper
     include SecureHeadersConcern
 
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -13,6 +14,7 @@ module Users
     def show
       @recommended_presenter = PivCacRecommendedPresenter.new(current_user)
       analytics.piv_cac_recommended_visited
+      render :show, locals: threatmetrix_variables
     end
 
     def confirm
@@ -26,6 +28,21 @@ module Users
       current_user.update!(piv_cac_recommended_dismissed_at: Time.zone.now)
       analytics.piv_cac_recommended(action: :skipped)
       redirect_to after_sign_in_path_for(current_user)
+    end
+
+    def threatmetrix_variables
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      session_id = generate_threatmetrix_session_id
+
+      {
+        threatmetrix_session_id: session_id,
+        threatmetrix_javascript_urls: threatmetrix_javascript_urls(session_id),
+        threatmetrix_iframe_url: threatmetrix_iframe_url(session_id),
+      }
+    end
+
+    def generate_threatmetrix_session_id
+      user_session[:sign_up_threatmetrix_session_id] ||= SecureRandom.uuid
     end
 
     private
