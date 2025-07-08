@@ -75,7 +75,6 @@ RSpec.describe DuplicateProfilesDetectedPresenter do
       it 'should return singular text' do
         expect(presenter.dont_recognize_some_profiles)
           .to eq(I18n.t('duplicate_profiles_detected.no_recognize_single'))
->>>>>>> origin/main
       end
     end
   end
