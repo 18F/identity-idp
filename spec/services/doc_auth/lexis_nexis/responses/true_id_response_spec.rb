@@ -65,6 +65,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   # rubocop:enable Layout/LineLength
 
+  let(:passport_requested) { false }
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
@@ -80,7 +81,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   context 'when the response is a success' do
     let(:response) do
-      described_class.new(success_response, config, liveness_checking_enabled, request_context)
+      described_class.new(
+        http_response: success_response,
+        passport_requested: passport_requested,
+        config: config,
+        liveness_checking_enabled: liveness_checking_enabled,
+        request_context: request_context,
+      )
     end
 
     it 'is a successful result' do
@@ -95,8 +102,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when selfie status is failed' do
         let(:response) do
           described_class.new(
-            doc_auth_success_with_face_match_fail, config,
-            liveness_checking_enabled, request_context
+            http_response: doc_auth_success_with_face_match_fail,
+            passport_requested: passport_requested,
+            config: config,
+            liveness_checking_enabled: liveness_checking_enabled,
+            request_context: request_context,
           )
         end
         it 'is a failed result' do
@@ -109,8 +119,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when selfie status passes' do
         let(:response) do
           described_class.new(
-            success_with_liveness_response, config, liveness_checking_enabled,
-            request_context
+            http_response: success_with_liveness_response,
+            passport_requested: passport_requested,
+            config: config,
+            liveness_checking_enabled: liveness_checking_enabled,
+            request_context: request_context,
           )
         end
         it 'is a successful result' do
@@ -283,14 +296,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   context 'when the response is a success with passport card' do
     let(:response) do
       described_class.new(
-        success_with_passport_card_response,
-        config,
-        liveness_checking_enabled,
-        request_context,
+        http_response: success_with_passport_card_response,
+        passport_requested:,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
       )
     end
 
     context 'when passports are enabled' do
+      let(:passport_requested) { true }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       end
@@ -324,12 +339,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the response is a success for passport' do
+    let(:passport_requested) { true }
     let(:response) do
       described_class.new(
-        success_with_passport_response,
-        config,
-        liveness_checking_enabled,
-        request_context,
+        http_response: success_with_passport_response,
+        passport_requested:,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
       )
     end
 
@@ -456,7 +473,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces appropriate errors with passport tampering' do
-      response = described_class.new(failure_response_passport_tampering, config)
+      response = described_class.new(
+        http_response: failure_response_passport_tampering,
+        config: config,
+      )
       output = response.to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to include(
@@ -696,7 +716,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
     it 'produces appropriate errors with document tampering' do
-      output = described_class.new(failure_response_tampering, config).to_h
+      output = described_class.new(http_response: failure_response_tampering, config: config).to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to include(
         document_tampering_detection: { no_side: 'Failed' },
@@ -801,7 +821,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#parse_date' do
-    let(:response) { described_class.new(success_response, config) }
+    let(:response) { described_class.new(http_response: success_response, config: config) }
 
     it 'handles an invalid month' do
       allow(Rails.logger).to receive(:info)
@@ -829,7 +849,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#attention_with_barcode?' do
-    let(:response) { described_class.new(success_response, config) }
+    let(:response) { described_class.new(http_response: success_response, config: config) }
     subject(:attention_with_barcode) { response.attention_with_barcode? }
 
     it { expect(attention_with_barcode).to eq(false) }

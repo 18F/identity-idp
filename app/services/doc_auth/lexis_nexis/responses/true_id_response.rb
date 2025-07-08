@@ -11,7 +11,7 @@ module DocAuth
 
         attr_reader :config, :http_response, :passport_requested
 
-        def initialize(http_response:, passport_requested:, config:,
+        def initialize(http_response:, passport_requested: false, config:,
                        liveness_checking_enabled: false, request_context: {})
           @config = config
           @http_response = http_response
@@ -133,7 +133,7 @@ module DocAuth
         end
 
         def id_type_expected?
-          expected_id_type = passport_requested? ? 'passport' : 'drivers_license'
+          expected_id_type = passport_requested ? 'passport' : 'drivers_license'
 
           expected_id_type == pii_from_doc&.id_doc_type
         end
