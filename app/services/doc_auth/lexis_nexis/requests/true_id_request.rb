@@ -54,6 +54,11 @@ module DocAuth
           settings.merge(document).to_json
         end
 
+        def document_capture_session
+          @document_capture_session ||=
+            DocumentCaptureSession.find_by!(user_uuid: user_uuid)
+        end
+
         def id_front_image
           # TrueID front_image required whether driver's license or passport
           case document_type
@@ -66,9 +71,10 @@ module DocAuth
 
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
-            http_response,
-            config,
-            liveness_checking_required,
+            http_response: http_response,
+            passport_requested: document_capture_session&.passport_requested?,
+            config: config,
+            liveness_checking_required: liveness_checking_required,
             request_context:,
           )
         end
