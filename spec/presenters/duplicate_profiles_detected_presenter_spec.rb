@@ -19,10 +19,6 @@ RSpec.describe DuplicateProfilesDetectedPresenter do
     end
 
     context 'when a single duplicate profiles were found for user' do
-<<<<<<< HEAD
-      it 'should return 2 elements, 1 plus duplicate element' do
-        expect(presenter.associated_profiles.count).to eq(2)
-=======
       before do
         user_session[:duplicate_profile_ids] = [profile2.id]
       end
