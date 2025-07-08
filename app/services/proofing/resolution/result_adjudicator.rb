@@ -54,7 +54,7 @@ module Proofing
                 resolution: resolution_result.to_h,
                 residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
-                threatmetrix: device_profiling_result.to_h,
+                threatmetrix:,
                 phone_precheck: phone_finder_result.to_h,
               },
             },
@@ -81,6 +81,12 @@ module Proofing
           residential_resolution_result.exception ||
           state_id_result.exception ||
           device_profiling_result.exception
+      end
+
+      def threatmetrix
+        device_profiling_result.to_h.merge(
+          device_fingerprint: device_profiling_result.device_fingerprint,
+        )
       end
 
       def timed_out?

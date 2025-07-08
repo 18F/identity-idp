@@ -204,21 +204,6 @@ RSpec.describe Idv::WelcomeController do
           end
         end
       end
-
-      context 'bucketed vendor is Socure' do
-        before do
-          subject.idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
-        end
-
-        it 'passports are not bucketed' do
-          get :show
-
-          expect(subject.idv_session.passport_allowed).to be_nil
-          expect(@analytics).not_to have_logged_event(
-            :passport_api_health_check,
-          )
-        end
-      end
     end
   end
 
@@ -250,7 +235,7 @@ RSpec.describe Idv::WelcomeController do
         .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
-    it 'create document capture session without passport allowed' do
+    it 'create document capture session with passport allowed' do
       put :update
 
       expect(subject.document_capture_session.passport_status).to be_nil
@@ -265,20 +250,6 @@ RSpec.describe Idv::WelcomeController do
         put :update
 
         expect(subject.document_capture_session.passport_allowed?).to eq(true)
-      end
-
-      context 'when doc_auth_vendor is Socure' do
-        before do
-          subject.idv_session.passport_allowed = true
-          subject.idv_session.bucketed_doc_auth_vendor = Idp::Constants::Vendors::SOCURE
-        end
-
-        it 'create document capture session without passport allowed' do
-          put :update
-
-          expect(subject.idv_session.passport_allowed).to be_nil
-          expect(subject.document_capture_session.passport_status).to be_nil
-        end
       end
 
       context 'when facial match is required' do

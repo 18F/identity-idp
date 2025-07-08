@@ -345,6 +345,7 @@ module Idv
       success = (threatmetrix_result[:review_status] == 'pass')
 
       attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
         success:,
         failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
@@ -372,6 +373,7 @@ module Idv
       )
       return if threatmetrix_result.blank?
 
+      threatmetrix_result.delete(:device_fingerprint)
       threatmetrix_result.delete(:response_body)
     end
 

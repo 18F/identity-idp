@@ -666,21 +666,6 @@ RSpec.describe ApplicationController do
             expect(response.body).to eq('false')
           end
         end
-
-        context 'when unconfirmed duplicate profile confirmations exist' do
-          before do
-            create(
-              :duplicate_profile_confirmation,
-              profile: active_profile,
-              confirmed_all: nil,
-            )
-          end
-
-          it 'returns true' do
-            get :index
-            expect(response.body).to eq('true')
-          end
-        end
       end
     end
   end

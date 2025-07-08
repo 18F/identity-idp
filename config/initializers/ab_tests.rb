@@ -145,18 +145,6 @@ module AbTests
     },
   ).freeze
 
-  DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
-    experiment_name: 'Desktop F/T unlock setup',
-    should_log: [
-      'User Registration: 2FA Setup visited',
-      'WebAuthn Setup Visited',
-      :webauthn_setup_submitted,
-      'Multi-Factor Authentication Setup',
-    ].to_set,
-    buckets: { desktop_ft_unlock_option_shown:
-        IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
-  ).freeze
-
   DOC_AUTH_PASSPORT = AbTest.new(
     experiment_name: 'Passport allowed',
     should_log: /^idv/i,
@@ -182,5 +170,20 @@ module AbTests
     verify_info_step_document_capture_session_uuid_discriminator(
       service_provider:, user:, user_session:,
     )
+  end.freeze
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth Passport Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_passport_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
   end.freeze
 end

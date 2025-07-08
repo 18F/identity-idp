@@ -12,6 +12,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_passport_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport)
   end
+  let(:success_with_passport_card_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_card)
+  end
   let(:doc_auth_success_with_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -277,6 +280,49 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
+  context 'when the response is a success with passport card' do
+    let(:response) do
+      described_class.new(
+        success_with_passport_card_response,
+        config,
+        liveness_checking_enabled,
+        request_context,
+      )
+    end
+
+    context 'when passports are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'records the id_doc_type as passport_card' do
+        expect(response.pii_from_doc.id_doc_type).to eq('passport_card')
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:passport_card]).to eq(true)
+      end
+    end
+
+    context 'when passports are not enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:passport]).to eq(true)
+      end
+    end
+  end
+
   context 'when the response is a success for passport' do
     let(:response) do
       described_class.new(
@@ -368,7 +414,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssuerName' => 'United States',
         'DocIssue' => '2016',
         'DocIsGeneric' => 'false',
-        'DocIssuerType' => 'StateProvince',
+        'DocIssuerType' => 'Country',
         'DocIssueType' => 'Passport - STAR',
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
@@ -405,6 +451,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the response is a failure for passport' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+    end
+
     it 'produces appropriate errors with passport tampering' do
       response = described_class.new(failure_response_passport_tampering, config)
       output = response.to_h

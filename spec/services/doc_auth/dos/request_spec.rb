@@ -78,4 +78,92 @@ RSpec.describe DocAuth::Dos::Request do
       end
     end
   end
+
+  describe '#handle_invalid_response' do
+    let(:http_response) do
+      instance_double(
+        Faraday::Response,
+        status: status,
+        body: response_body,
+        headers: { 'X-Correlation-ID' => '12345' },
+      )
+    end
+    let(:status) { 401 }
+
+    context 'with nested error format' do
+      let(:response_body) do
+        { error: { code: 'ERR001', message: 'Invalid request', reason: 'Bad format' } }.to_json
+      end
+
+      it 'extracts error details from nested hash' do
+        response = subject.send(:handle_invalid_response, http_response)
+
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: 'ERR001',
+          error_message: 'Invalid request',
+          error_reason: 'Bad format',
+          correlation_id_received: '12345',
+        )
+      end
+    end
+
+    context 'with simple string error format' do
+      let(:response_body) do
+        { error: 'Authentication denied.' }.to_json
+      end
+
+      it 'extracts error message from string' do
+        response = subject.send(:handle_invalid_response, http_response)
+
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: nil,
+          error_message: 'Authentication denied.',
+          error_reason: nil,
+          correlation_id_received: '12345',
+        )
+      end
+    end
+
+    context 'with invalid JSON' do
+      let(:response_body) { 'Not JSON' }
+
+      it 'handles non-JSON response gracefully' do
+        response = subject.send(:handle_invalid_response, http_response)
+
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: nil,
+          error_message: nil,
+          error_reason: nil,
+          correlation_id_received: '12345',
+        )
+      end
+    end
+
+    context 'with empty response body' do
+      let(:response_body) { '' }
+
+      it 'handles empty response gracefully' do
+        response = subject.send(:handle_invalid_response, http_response)
+
+        expect(response.success?).to be(false)
+        expect(response.errors).to include(network: true)
+        expect(response.extra).to include(
+          vendor: 'DoS',
+          error_code: nil,
+          error_message: nil,
+          error_reason: nil,
+          correlation_id_received: '12345',
+        )
+      end
+    end
+  end
 end

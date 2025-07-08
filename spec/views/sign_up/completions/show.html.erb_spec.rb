@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'sign_up/completions/show.html.erb' do
-  let(:user) { create(:user, :fully_registered) }
+  let(:user) { create(:user, :proofed) }
   let(:service_provider) { create(:service_provider) }
   let(:selected_email_id) { user.email_addresses.first.id }
   let(:decrypted_pii) { {} }
@@ -88,7 +88,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
   context 'ial2' do
     let(:ial2_requested) { true }
-    let(:requested_attributes) { [:email, :social_security_number] }
+    let(:requested_attributes) { [:email, :social_security_number, :verified_at] }
     let(:decrypted_pii) do
       {
         first_name: 'Testy',
@@ -106,8 +106,16 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
 
     it 'masks the SSN' do
       render
-
       expect(rendered).to include('9**-**-***6')
+    end
+
+    it 'renders verified_at in the local timezone' do
+      render
+      formatted_verified_at = l(
+        user.active_profile.verified_at.in_time_zone('UTC'),
+        format: t('time.formats.event_timestamp'),
+      )
+      expect(rendered).to include(formatted_verified_at)
     end
   end
 

@@ -131,6 +131,20 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('doc_auth.errors.rate_limited_heading')])
       end
+
+      it 'logs the analytics event' do
+        RateLimiter.new(
+          rate_limit_type: :idv_doc_auth,
+          user: document_capture_session.user,
+        ).increment_to_limited!
+        form.submit
+
+        expect(fake_analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
+          user_id: document_capture_session.user.uuid,
+        )
+      end
     end
 
     context 'when liveness check is required' do
