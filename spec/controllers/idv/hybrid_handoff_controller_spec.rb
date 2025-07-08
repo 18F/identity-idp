@@ -382,10 +382,36 @@ RSpec.describe Idv::HybridHandoffController do
         }
       end
 
-      it 'sends analytics_submitted event for desktop' do
-        put :update, params: params
+      context 'vendor is socure' do
+        before do
+          subject.document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::SOCURE)
+        end
 
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        it 'sends analytics_submitted event for desktop' do
+          put :update, params: params
+
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+          expect(subject.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'when doc_auth_mock_upload is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+              .and_return(true)
+            allow(IdentityConfig.store).to receive(:doc_auth_mock_upload_enabled).and_return(true)
+          end
+
+          it 'sends analytics_submitted event for desktop' do
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+            put :update, params: params
+
+            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
       end
 
       context 'passports are not enabled' do
