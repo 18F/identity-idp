@@ -1018,6 +1018,44 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(response.errors[:passport]).to eq(message)
         end
       end
+
+      context 'Passport doc auth succeeds but PII validation fails' do
+        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
+        let(:successful_doc_auth_response) do
+          DocAuth::Mock::ResultResponse.new(
+            passport_image.read,
+            image_config,
+          )
+        end
+        let(:failed_pii_response) do
+          Idv::DocAuthFormResponse.new(
+            success: false,
+            errors: { doc_pii: 'bad' },
+            extra: {
+              pii_like_keypaths: pii_like_keypaths_passport,
+              attention_with_barcode: false,
+              id_issued_status: 'missing',
+              id_expiration_status: 'missing',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
+            },
+          )
+        end
+
+        before do
+          allow_any_instance_of(described_class)
+            .to receive(:post_images_to_client)
+            .and_return(successful_doc_auth_response)
+          allow_any_instance_of(Idv::DocPiiForm).to receive(:submit).and_return(failed_pii_response)
+        end
+
+        it 'does not raise NameError when passport fingerprint variable is accessed' do
+          expect { form.submit }.not_to raise_error
+
+          response = form.submit
+          expect(response.success?).to eq(false)
+        end
+      end
     end
 
     describe 'image source' do
