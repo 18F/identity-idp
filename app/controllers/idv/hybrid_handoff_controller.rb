@@ -10,7 +10,6 @@ module Idv
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
-    before_action :doc_auth_mock_upload, only: :update
 
     def show
       abandon_any_ipp_progress
@@ -50,6 +49,7 @@ module Idv
       elsif params[:type] == 'mobile'
         handle_phone_submission
       else
+        update_vendor_if_test_mode_enabled
         bypass_send_link_steps
       end
     end
@@ -269,7 +269,7 @@ module Idv
       ActionController::Parameters.new(selection: [])
     end
 
-    def doc_auth_mock_upload
+    def update_vendor_if_test_mode_enabled
       if idv_session.desktop_selfie_test_mode_enabled? &&
          document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
         document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
