@@ -11,7 +11,7 @@ module DocAuth
 
         attr_reader :config, :http_response, :passport_requested
 
-        def initialize(http_response:, passport_requested: false, config:,
+        def initialize(http_response:, config:, passport_requested: false,
                        liveness_checking_enabled: false, request_context: {})
           @config = config
           @http_response = http_response
@@ -53,19 +53,18 @@ module DocAuth
         #  document_type
         def doc_auth_success?
           # really it's everything else excluding selfie
-          # transaction_status_passed? && id_type_supported? && id_type_expected?
-          transaction_status_passed? && id_type_supported?
+          transaction_status_passed? && id_type_supported? && id_type_expected?
         end
 
         def error_messages
           return {} if successful_result?
 
-          if !id_type_expected?
-            { unexpected_id_type: true }
-          elsif passport_detected_but_not_allowed?
+          if passport_detected_but_not_allowed?
             { passport: true }
           elsif passport_card_detected?
             { passport_card: true }
+          elsif !id_type_expected?
+            { unexpected_id_type: true }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
@@ -133,9 +132,12 @@ module DocAuth
         end
 
         def id_type_expected?
-          expected_id_type = passport_requested ? 'passport' : 'drivers_license'
+          # return if pii_from_doc.nil?
 
-          expected_id_type == pii_from_doc&.id_doc_type
+          expected_id_type = passport_requested ? ['passport', 'passport_card'] :
+            ['drivers_license', 'state_id_card']
+
+          expected_id_type.include?(pii_from_doc&.id_doc_type)
         end
 
         def passport_pii?
