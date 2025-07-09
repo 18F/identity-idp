@@ -441,7 +441,6 @@ module IdentityConfig
     config.add(:session_timeout_in_seconds, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
-    config.add(:show_unsupported_passkey_platform_authentication_setup, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:short_term_phone_otp_max_attempts, type: :integer)
     config.add(:short_term_phone_otp_max_attempt_window_in_seconds, type: :integer)
