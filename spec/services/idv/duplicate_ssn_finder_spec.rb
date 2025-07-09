@@ -170,7 +170,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     end
 
     context 'when ssn belongs to another profile with a different sp' do
-      it 'returns matching profile id' do
+      it 'does not return matching profile' do
         sp2 = 'urn:gov:gsa:openidconnect:inactive:sp:test2'
         create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
 
@@ -183,6 +183,19 @@ RSpec.describe Idv::DuplicateSsnFinder do
           active: true,
           initiating_service_provider_issuer: sp2,
         )
+        expect(subject.associated_facial_match_profiles_with_ssn.last).to eq(nil)
+      end
+    end
+
+    context 'when ssn belongs to another provider but sp has not opted in' do
+      before do
+        allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+          .and_return([])
+      end
+
+      it 'does not return matching profile' do
+        create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
+        create(:profile, :facial_match_proof, id: 2, pii: { ssn: ssn }, user: user2, active: true)
         expect(subject.associated_facial_match_profiles_with_ssn.last).to eq(nil)
       end
     end
