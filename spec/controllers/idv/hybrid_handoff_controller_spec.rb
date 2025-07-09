@@ -395,11 +395,10 @@ RSpec.describe Idv::HybridHandoffController do
             .to eq(Idp::Constants::Vendors::SOCURE)
         end
 
-        context 'when doc_auth_mock_upload is enabled' do
+        context 'when selfie_deskto_test_mode is enabled' do
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
               .and_return(true)
-            allow(IdentityConfig.store).to receive(:doc_auth_mock_upload_enabled).and_return(true)
           end
 
           it 'sends analytics_submitted event for desktop' do

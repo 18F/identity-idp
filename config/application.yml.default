@@ -109,7 +109,6 @@ doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
-doc_auth_mock_upload_enabled: false
 doc_auth_passport_vendor_default: 'mock'
 doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_passport_vendor_socure_percent: 0

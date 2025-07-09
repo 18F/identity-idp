@@ -10,10 +10,11 @@ module Idv
     before_action :confirm_not_rate_limited
     before_action :confirm_step_allowed
     before_action :confirm_hybrid_handoff_needed, only: :show
+    before_action :doc_auth_mock_upload, only: :update
 
     def show
       abandon_any_ipp_progress
-      @upload_enabled = upload_enabled?
+      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -49,7 +50,6 @@ module Idv
       elsif params[:type] == 'mobile'
         handle_phone_submission
       else
-        doc_auth_mock_upload if upload_enabled?
         bypass_send_link_steps
       end
     end
@@ -148,7 +148,7 @@ module Idv
       current_sp&.friendly_name.presence || APP_NAME
     end
 
-    def upload_enabled?
+    def desktop_test_mode_enabled?
       idv_session.desktop_selfie_test_mode_enabled?
     end
 
@@ -274,7 +274,8 @@ module Idv
     end
 
     def doc_auth_mock_upload
-      if IdentityConfig.store.doc_auth_mock_upload_enabled
+      if idv_session.desktop_selfie_test_mode_enabled? &&
+         document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
         document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
       end
     end
