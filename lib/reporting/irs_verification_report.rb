@@ -234,16 +234,14 @@ module Reporting
 
     def query(event)
       params = {
-        issuers: quote(issuers.inspect),
-        event: quote([event.inspect]),
+        issuers: "[#{issuers.map { |i| "'#{i}'" }.join(', ')}]",
+        event: "'#{event}'",
       }
       format(<<~QUERY, params)
-        filter name IN #{event.inspect}
+        filter name IN [%{event}]
         | filter properties.sp_request.facial_match
-        | filter properties.service_provider IN #{issuers.inspect}
-        | fields (name = #{event.inspect}) as matched_event
-        | stats max(matched_event) as max_matched_event by properties.user_id, bin(1y)
-        | stats sum(max_matched_event) as user_count
+        | filter properties.service_provider IN %{issuers}
+        | fields properties.user_id
       QUERY
     end
   end
