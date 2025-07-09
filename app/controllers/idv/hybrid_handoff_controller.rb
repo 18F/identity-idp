@@ -148,10 +148,6 @@ module Idv
       current_sp&.friendly_name.presence || APP_NAME
     end
 
-    def desktop_test_mode_enabled?
-      idv_session.desktop_selfie_test_mode_enabled?
-    end
-
     def build_telephony_form_response(telephony_result)
       FormResponse.new(
         success: telephony_result.success?,
