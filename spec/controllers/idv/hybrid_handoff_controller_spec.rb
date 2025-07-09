@@ -396,10 +396,7 @@ RSpec.describe Idv::HybridHandoffController do
         end
 
         context 'when selfie_deskto_test_mode is enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-              .and_return(true)
-          end
+          let(:desktop_test_mode_enabled) { true }
 
           it 'sends analytics_submitted event for desktop' do
             expect(subject.document_capture_session.doc_auth_vendor)
