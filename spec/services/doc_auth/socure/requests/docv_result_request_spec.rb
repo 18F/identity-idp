@@ -51,6 +51,24 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
       it 'returns a DocvResultResponse' do
         expect(response).to be_instance_of(DocAuth::Socure::Responses::DocvResultResponse)
       end
+
+      context 'fails if doc types do not match' do
+        before do
+          document_capture_session.update!(
+            passport_status: 'requested',
+          )
+        end
+
+        it 'returns a DocAuth::Response failure' do
+          expect(response.to_h).to include(
+            success: false,
+            errors: {
+              unaccepted_id_type: true,
+            },
+            vendor: 'Socure',
+          )
+        end
+      end
     end
 
     context 'when the docv request fails' do

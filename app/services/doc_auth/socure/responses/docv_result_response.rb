@@ -119,6 +119,8 @@ module DocAuth
             { socure: { reason_codes: } }
           elsif portrait_matching_failed?
             { selfie_fail: true }
+          elsif !id_type_expected?
+            { unexpected_id_type: true }
           else
             {}
           end
