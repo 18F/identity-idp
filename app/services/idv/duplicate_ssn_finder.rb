@@ -18,6 +18,7 @@ module Idv
 
     def associated_facial_match_profiles_with_ssn
       Profile.active.facial_match.where(ssn_signature: ssn_signatures)
+        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
         .where(initiating_service_provider_issuer: @sp)
         .where.not(user_id: user.id)
     end
