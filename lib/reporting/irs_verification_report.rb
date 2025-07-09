@@ -105,45 +105,43 @@ module Reporting
     end
 
     def funnel_table
-      [
-        [
-          'Metric',
-          'Count',
-          'Rate',
+      verification_demand = verification_demand_results
+      document_auth_success = document_authentication_success_results
+      info_validation_success = information_validation_success_results
+      phone_verification_success = phone_verification_success_results
+      total_verified = total_verified_results
 
-        ],
+      [
+        ['Metric', 'Count', 'Rate'],
         [
           'Verification Demand',
-          verification_demand_results,
-          to_percent(verification_demand_results, verification_demand_results),
+          verification_demand,
+          to_percent(verification_demand, verification_demand),
         ],
         [
           'Document Authentication Success',
-          document_authentication_success_results,
-          to_percent(document_authentication_success_results, verification_demand_results),
+          document_auth_success,
+          to_percent(document_auth_success, verification_demand),
         ],
         [
           'Information Verification Success',
-          information_validation_success_results,
-          to_percent(information_validation_success_results, verification_demand_results),
+          info_validation_success,
+          to_percent(info_validation_success, verification_demand),
         ],
         [
           'Phone Verification Success',
-          phone_verification_success_results,
-          to_percent(phone_verification_success_results, verification_demand_results),
+          phone_verification_success,
+          to_percent(phone_verification_success, verification_demand),
         ],
         [
           'Verification Successes',
-          total_verified_results,
-          to_percent(total_verified_results, verification_demand_results),
+          total_verified,
+          to_percent(total_verified, verification_demand),
         ],
         [
           'Verification Failures',
-          verification_demand_results - total_verified_results,
-          to_percent(
-            verification_demand_results - total_verified_results,
-            verification_demand_results,
-          ),
+          verification_demand - total_verified,
+          to_percent(verification_demand - total_verified, verification_demand),
         ],
       ]
     end
@@ -242,6 +240,7 @@ module Reporting
         | filter properties.sp_request.facial_match
         | filter properties.service_provider IN %{issuers}
         | fields properties.user_id
+        | limit 10000
       QUERY
     end
   end
