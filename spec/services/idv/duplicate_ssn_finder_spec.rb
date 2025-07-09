@@ -187,7 +187,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
       end
     end
 
-    context 'when ssn belongs to another provider but sp has not opted in' do
+    context 'when ssn belongs to same provider but sp has not opted in' do
       before do
         allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
           .and_return([])
