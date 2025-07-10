@@ -14,10 +14,6 @@ class DuplicateProfilesDetectedPresenter
     I18n.t('duplicate_profiles_detected.heading')
   end
 
-  def intro
-    I18n.t('duplicate_profiles_detected.intro', app_name: APP_NAME)
-  end
-
   def associated_profiles
     profile_ids = [user.active_profile] + user_session[:duplicate_profile_ids]
     profiles = Profile.where(id: profile_ids)
