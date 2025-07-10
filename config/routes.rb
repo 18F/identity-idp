@@ -337,6 +337,7 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
+    get '/duplicate_profiles_please_call/:source' => 'users/duplicate_profiles_please_call#show', as: :duplicate_profiles_please_call
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
