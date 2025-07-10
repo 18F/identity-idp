@@ -290,6 +290,7 @@ module Idv
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
+      # mrz validation failed
       return mrz_response if mrz_response.present? && !mrz_response.success?
 
       client_response
@@ -509,7 +510,7 @@ module Idv
     end
 
     def passport_requested?
-      document_capture_session&.passport_requested?
+      !!document_capture_session&.passport_requested?
     end
 
     def rate_limiter
