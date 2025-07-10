@@ -735,7 +735,7 @@ doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit 
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 duplicate_profiles_detected.accounts_list.heading: Accounts with the same verified information
-duplicate_profiles_detected.cant_access: "I can't access an account"
+duplicate_profiles_detected.cant_access: 'I can’t access an account'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
