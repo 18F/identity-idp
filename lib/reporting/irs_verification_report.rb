@@ -16,17 +16,40 @@ module Reporting
 
     attr_reader :issuers, :time_range
 
-    VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
-    DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
-    INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
-    PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_visited'
-    TOTAL_VERIFIED = 'User registration: complete'
+    module Events
+      VERIFICATION_DEMAND = 'IdV: doc auth welcome visited'
+      DOCUMENT_AUTHENTICATION_SUCCESS = 'IdV: doc auth ssn visited'
+      INFORMATION_VALIDATION_SUCCESS = 'IdV: phone of record visited'
+      PHONE_VERIFICATION_SUCCESS = 'idv_enter_password_visited'
+      TOTAL_VERIFIED = 'User registration: complete'
+
+      def self.all_events
+        constants.map { |c| const_get(c) }
+      end
+    end
 
     # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
-    def initialize(time_range:, issuers:)
+    def initialize(time_range:,
+                   issuers:,
+                   verbose: false,
+                   progress: false,
+                   slice: 1.day,
+                   threads: 5)
       @issuers = issuers
       @time_range = time_range || previous_week_range
+      @verbose = verbose
+      @progress = progress
+      @slice = slice
+      @threads = threads
+    end
+
+    def verbose?
+      @verbose
+    end
+
+    def progress?
+      @progress
     end
 
     def as_tables
@@ -82,45 +105,43 @@ module Reporting
     end
 
     def funnel_table
-      [
-        [
-          'Metric',
-          'Count',
-          'Rate',
+      verification_demand = verification_demand_results
+      document_auth_success = document_authentication_success_results
+      info_validation_success = information_validation_success_results
+      phone_verification_success = phone_verification_success_results
+      total_verified = total_verified_results
 
-        ],
+      [
+        ['Metric', 'Count', 'Rate'],
         [
           'Verification Demand',
-          verification_demand_results,
-          to_percent(verification_demand_results, verification_demand_results),
+          verification_demand,
+          to_percent(verification_demand, verification_demand),
         ],
         [
           'Document Authentication Success',
-          document_authentication_success_results,
-          to_percent(document_authentication_success_results, verification_demand_results),
+          document_auth_success,
+          to_percent(document_auth_success, verification_demand),
         ],
         [
           'Information Verification Success',
-          information_validation_success_results,
-          to_percent(information_validation_success_results, verification_demand_results),
+          info_validation_success,
+          to_percent(info_validation_success, verification_demand),
         ],
         [
           'Phone Verification Success',
-          phone_verification_success_results,
-          to_percent(phone_verification_success_results, verification_demand_results),
+          phone_verification_success,
+          to_percent(phone_verification_success, verification_demand),
         ],
         [
           'Verification Successes',
-          total_verified_results,
-          to_percent(total_verified_results, verification_demand_results),
+          total_verified,
+          to_percent(total_verified, verification_demand),
         ],
         [
           'Verification Failures',
-          verification_demand_results - total_verified_results,
-          to_percent(
-            verification_demand_results - total_verified_results,
-            verification_demand_results,
-          ),
+          verification_demand - total_verified,
+          to_percent(verification_demand - total_verified, verification_demand),
         ],
       ]
     end
@@ -172,29 +193,37 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
-        progress: false,
-        ensure_complete_logs: false,
+        num_threads: @threads,
+        ensure_complete_logs: true,
+        slice_interval: @slice,
+        progress: progress?,
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
     def verification_demand_results
-      fetch_results(query: query(event: VERIFICATION_DEMAND)).count
+      results = fetch_results(query: query(Events::VERIFICATION_DEMAND))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def document_authentication_success_results
-      fetch_results(query: query(event: DOCUMENT_AUTHENTICATION_SUCCESS)).count
+      results = fetch_results(query: query(Events::DOCUMENT_AUTHENTICATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def information_validation_success_results
-      fetch_results(query: query(event: INFORMATION_VALIDATION_SUCCESS)).count
+      results = fetch_results(query: query(Events::INFORMATION_VALIDATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def phone_verification_success_results
-      fetch_results(query: query(event: PHONE_VERIFICATION_SUCCESS)).count
+      results = fetch_results(query: query(Events::PHONE_VERIFICATION_SUCCESS))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def total_verified_results
-      fetch_results(query: query(event: TOTAL_VERIFIED)).count
+      results = fetch_results(query: query(Events::TOTAL_VERIFIED))
+      results.map { |row| row['properties.user_id'] }.uniq.count
     end
 
     def to_percent(numerator, denominator)
@@ -203,14 +232,15 @@ module Reporting
 
     def query(event)
       params = {
-        issuers: quote(issuers.inspect),
-        event: quote([event.inspect]),
+        issuers: "[#{issuers.map { |i| "'#{i}'" }.join(', ')}]",
+        event: "'#{event}'",
       }
       format(<<~QUERY, params)
-         filter name IN %{event}
-        | fields @message
+        filter name IN [%{event}]
         | filter properties.sp_request.facial_match
         | filter properties.service_provider IN %{issuers}
+        | fields properties.user_id
+        | limit 10000
       QUERY
     end
   end
