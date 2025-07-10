@@ -64,6 +64,31 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       before do
         allow(controller).to receive(:id_type).and_return('passport')
+        # Update the stored result to include valid passport PII
+        id = SecureRandom.hex
+        result = DocumentCaptureSessionResult.new(
+          id:,
+          success:,
+          doc_auth_success: true,
+          selfie_status:,
+          mrz_status:,
+          pii: {
+            first_name: 'Test',
+            last_name: 'User',
+            state: 'MD',
+            mrz: "P<USADOE<<JOHN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n" \
+                 "123456789<USA7006100M2501017<<<<<<<<<<<<<<06\n",
+            document_number: '123456789',
+            passport_expiration: '2030-01-01',
+            issuing_country_code: 'USA',
+            nationality_code: 'USA',
+            dob: '1970-06-10',
+          },
+          attention_with_barcode: false,
+        )
+        EncryptedRedisStructStorage.store(result)
+        stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+        allow(controller).to receive(:stored_result).and_return(stored_result)
       end
 
       it 'returns success response' do
@@ -206,6 +231,31 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'when mrz_status is pass' do
         let(:mrz_status) { :pass }
 
+        before do
+          # Update the stored result to include valid passport PII
+          id = SecureRandom.hex
+          result = DocumentCaptureSessionResult.new(
+            id:,
+            success: true,
+            doc_auth_success: true,
+            selfie_status: :not_processed,
+            mrz_status:,
+            pii: {
+              mrz: "P<USADOE<<JOHN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n" \
+                 "123456789<USA7006100M2501017<<<<<<<<<<<<<<06\n",
+              document_number: '123456789',
+              passport_expiration: '2030-01-01',
+              issuing_country_code: 'USA',
+              nationality_code: 'USA',
+              dob: '1970-06-10',
+            },
+            attention_with_barcode: false,
+          )
+          EncryptedRedisStructStorage.store(result)
+          stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+          allow(controller).to receive(:stored_result).and_return(stored_result)
+        end
+
         it 'returns true' do
           expect(controller.mrz_requirement_met?).to eq(true)
         end
@@ -232,6 +282,88 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
         it 'returns false' do
           expect(controller.mrz_requirement_met?).to eq(false)
+        end
+      end
+
+      context 'when mrz_status is pass but additional checks fail' do
+        let(:mrz_status) { :pass }
+
+        context 'when passport is expired' do
+          before do
+            id = SecureRandom.hex
+            result = DocumentCaptureSessionResult.new(
+              id:,
+              success: true,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              mrz_status:,
+              pii: {
+                passport_expiration: '2020-01-01', # Expired
+                issuing_country_code: 'USA',
+                dob: '1970-06-10',
+              },
+              attention_with_barcode: false,
+            )
+            EncryptedRedisStructStorage.store(result)
+            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+            allow(controller).to receive(:stored_result).and_return(stored_result)
+          end
+
+          it 'returns false' do
+            expect(controller.mrz_requirement_met?).to eq(false)
+          end
+        end
+
+        context 'when issuing country is not supported' do
+          before do
+            id = SecureRandom.hex
+            result = DocumentCaptureSessionResult.new(
+              id:,
+              success: true,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              mrz_status:,
+              pii: {
+                passport_expiration: '2030-01-01',
+                issuing_country_code: 'CAN', # Not supported
+                dob: '1970-06-10',
+              },
+              attention_with_barcode: false,
+            )
+            EncryptedRedisStructStorage.store(result)
+            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+            allow(controller).to receive(:stored_result).and_return(stored_result)
+          end
+
+          it 'returns false' do
+            expect(controller.mrz_requirement_met?).to eq(false)
+          end
+        end
+
+        context 'when all validation checks pass' do
+          before do
+            id = SecureRandom.hex
+            result = DocumentCaptureSessionResult.new(
+              id:,
+              success: true,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              mrz_status:,
+              pii: {
+                passport_expiration: '2030-01-01',
+                issuing_country_code: 'USA',
+                dob: '1970-06-10',
+              },
+              attention_with_barcode: false,
+            )
+            EncryptedRedisStructStorage.store(result)
+            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+            allow(controller).to receive(:stored_result).and_return(stored_result)
+          end
+
+          it 'returns true' do
+            expect(controller.mrz_requirement_met?).to eq(true)
+          end
         end
       end
     end
