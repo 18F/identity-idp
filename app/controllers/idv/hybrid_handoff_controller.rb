@@ -13,7 +13,7 @@ module Idv
 
     def show
       abandon_any_ipp_progress
-      @upload_enabled = upload_enabled?
+      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
 
       @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
                                         Idv::InPersonConfig.enabled_for_issuer?(
@@ -49,6 +49,7 @@ module Idv
       elsif params[:type] == 'mobile'
         handle_phone_submission
       else
+        update_vendor_if_test_mode_enabled
         bypass_send_link_steps
       end
     end
@@ -145,10 +146,6 @@ module Idv
 
     def sp_or_app_name
       current_sp&.friendly_name.presence || APP_NAME
-    end
-
-    def upload_enabled?
-      idv_session.desktop_selfie_test_mode_enabled?
     end
 
     def build_telephony_form_response(telephony_result)
@@ -270,6 +267,13 @@ module Idv
       params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
     rescue ActionController::ParameterMissing
       ActionController::Parameters.new(selection: [])
+    end
+
+    def update_vendor_if_test_mode_enabled
+      if idv_session.desktop_selfie_test_mode_enabled? &&
+         document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
+        document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
+      end
     end
   end
 end

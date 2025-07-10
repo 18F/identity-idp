@@ -18,9 +18,8 @@ class DuplicateProfilesDetectedPresenter
     I18n.t('duplicate_profiles_detected.intro', app_name: APP_NAME)
   end
 
-  def duplicate_profiles
-    profile_ids = user_session[:duplicate_profile_ids]
-
+  def associated_profiles
+    profile_ids = [user.active_profile] + user_session[:duplicate_profile_ids]
     profiles = Profile.where(id: profile_ids)
     profiles.map do |profile|
       dupe_user = profile.user
@@ -30,29 +29,9 @@ class DuplicateProfilesDetectedPresenter
         masked_email: EmailMasker.mask(email),
         last_sign_in: dupe_user.last_sign_in_email_address.last_sign_in_at,
         created_at: dupe_user.created_at,
+        connected_accts: user.connected_apps.count,
+        current_account: dupe_user.id == user.id,
       }
     end
-  end
-
-  def recognize_all_profiles
-    if multiple_dupe_profiles?
-      I18n.t('duplicate_profiles_detected.yes_many')
-    else
-      I18n.t('duplicate_profiles_detected.yes_single')
-    end
-  end
-
-  def dont_recognize_some_profiles
-    if multiple_dupe_profiles?
-      I18n.t('duplicate_profiles_detected.no_recognize_many')
-    else
-      I18n.t('duplicate_profiles_detected.no_recognize_single')
-    end
-  end
-
-  private
-
-  def multiple_dupe_profiles?
-    user_session[:duplicate_profile_ids].count > 1
   end
 end

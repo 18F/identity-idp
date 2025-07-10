@@ -1,0 +1,64 @@
+<div class="padding-1 border-top border-left border-right border-primary-light grid-row">
+  <% if dupe_profile[:current_account] %>
+    <div class="grid-col-8">
+      <p> <%= dupe_profile[:email] %> </p>
+      <p> 
+        <%= t(
+              'duplicate_profiles_detected.created_at_html',
+              timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+            ) %>
+      </p>
+      <% if dupe_profile[:last_sign_in] %>
+        <p> <%= t(
+                  'duplicate_profiles_detected.last_sign_in_at_html',
+                  timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
+                ) %>
+        </p>
+      <% else %>
+     
+      <% end %>
+      <p> 
+        <%= t(
+              'duplicate_profiles_detected.connected_acct_html',
+              count: dupe_profile[:connected_accts],
+            ) %>
+      </p>
+
+    </div>
+    <div class="grid-col-4">
+      <%= render BadgeComponent.new(icon: :check_circle).with_content(t('duplicate_profiles_detected.signed_in')) %>
+    </div>
+  <% else %>
+    <div class="grid-col-8">
+      <p> <%= render(
+                'shared/masked_text',
+                text: dupe_profile[:email],
+                masked_text: dupe_profile[:masked_email],
+                accessible_masked_text: dupe_profile[:email],
+              ) %>
+      </p>
+      <p> 
+        <%= t(
+              'duplicate_profiles_detected.created_at_html',
+              timestamp_html: render(TimeComponent.new(time: dupe_profile[:created_at])),
+            ) %>
+      </p>
+      <% if dupe_profile[:last_sign_in] %>
+        <p> 
+          <%= t(
+                'duplicate_profiles_detected.last_sign_in_at_html',
+                timestamp_html: render(TimeComponent.new(time: dupe_profile[:last_sign_in])),
+              ) %>
+        </p>
+      <% else %>
+        <p> <%= t(
+                  'duplicate_profiles_detected.last_sign_in_at_html',
+                  timestamp_html: t('duplicate_profiles_detected.never_logged_in'),
+                ) %>
+      <% end %>
+    </div>
+    <div class="grid-col-4">
+      <%= render BadgeComponent.new(icon: :warning).with_content(t('duplicate_profiles_detected.duplicate')) %>
+    </div>
+  <% end %>
+</div>
