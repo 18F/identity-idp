@@ -299,10 +299,6 @@ module Idv
       pii_from_doc.present?
     end
 
-    def remote_submitted_doc_type
-      session.dig(:pii_from_doc, :id_doc_type)
-    end
-
     def ipp_document_capture_complete?
       has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
