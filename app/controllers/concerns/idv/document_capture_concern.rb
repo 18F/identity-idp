@@ -63,7 +63,33 @@ module Idv
 
     def mrz_requirement_met?
       return true unless id_type == 'passport'
-      stored_result.mrz_status == :pass
+
+      return false unless stored_result.mrz_status == :pass
+
+      pii = stored_result.pii_from_doc
+      return true unless pii.present?
+
+      validate_passport_issuing_country(pii) && validate_passport_expiration(pii)
+    end
+
+    private
+
+    def validate_passport_issuing_country(pii)
+      issuing_country = pii&.dig(:issuing_country_code)
+      return true unless issuing_country.present?
+
+      # Currently only USA passports are supported
+      issuing_country.upcase == 'USA'
+    end
+
+    def validate_passport_expiration(pii)
+      expiration_date = pii&.dig(:passport_expiration)
+      return true unless expiration_date
+
+      parsed_date = DateParser.parse_legacy(expiration_date)
+      return true if parsed_date.nil?
+
+      !parsed_date.past?
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
