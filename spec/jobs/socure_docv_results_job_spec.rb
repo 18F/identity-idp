@@ -496,6 +496,8 @@ RSpec.describe SocureDocvResultsJob do
           end
 
           it 'logs the Socure verification data requested event' do
+            perform
+
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
