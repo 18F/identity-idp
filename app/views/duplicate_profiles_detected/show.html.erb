@@ -43,7 +43,11 @@
     </ul>
   </div>
   <div class="margin-top-2">
-    <%= link_to(t('duplicate_profiles_detected.dont_recognize_account'), '/') %>
+    <%= render ButtonComponent.new(
+          url: root_url,
+          method: :get,
+          unstyled: true,
+      ).with_content(t('duplicate_profiles_detected.dont_recognize_account')) %>
   </div>
 
   <div class="margin-top-4 grid-row">
@@ -57,6 +61,14 @@
           method: :delete,
           class: 'usa-button usa-button usa-button--outline usa-button--wide usa-button--big',
         ).with_content(t('duplicate_profiles_detected.sign_out')) %>
+  </div>
+
+  <div class="margin-top-2">
+    <%= render ButtonComponent.new(
+          url: root_url,
+          method: :get,
+          unstyled: true,
+      ).with_content(t('duplicate_profiles_detected.cant_access')) %>
   </div>
 <% end %>
   
