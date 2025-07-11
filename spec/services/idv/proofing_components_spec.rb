@@ -26,8 +26,6 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   describe '#to_h' do
-    let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
-
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
@@ -40,18 +38,58 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.doc_auth_vendor = 'feedabee'
     end
 
-    it 'returns expected result' do
-      expect(subject.to_h).to eql(
-        {
-          document_check: 'feedabee',
-          document_type: 'state_id',
-          source_check: 'aamva',
-          resolution_check: 'lexis_nexis',
-          address_check: 'gpo_letter',
-          threatmetrix: true,
-          threatmetrix_review_status: 'pass',
-        },
-      )
+    context 'with drivers_license' do
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type: 'drivers_license',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
+    end
+
+    context 'with state_id' do
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type: 'state_id',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
+    end
+
+    context 'with passport' do
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type: 'passport',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
     end
   end
 
@@ -93,7 +131,15 @@ RSpec.describe Idv::ProofingComponents do
         let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
 
         it 'returns doc auth vendor' do
-          expect(subject.document_type).to eql('state_id')
+          expect(subject.document_type).to eql('drivers_license')
+        end
+      end
+
+      context 'after doc auth completed successfully with passport' do
+        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+
+        it 'returns doc auth vendor' do
+          expect(subject.document_type).to eql('passport')
         end
       end
     end

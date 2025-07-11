@@ -180,7 +180,7 @@ RSpec.describe Idv::LinkSentController do
             idv_session: subject.idv_session,
           )
           expect(proofing_components.document_check).to eq('mock')
-          expect(proofing_components.document_type).to eq('state_id')
+          expect(proofing_components.document_type).to eq('drivers_license')
         end
 
         context 'redo document capture' do

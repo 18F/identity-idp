@@ -100,7 +100,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
         expect(analytics.called_kwargs).to eql(
           extra: true,
           proofing_components: {
-            document_type: 'state_id',
+            document_type: 'drivers_license',
           },
         )
       end

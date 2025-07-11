@@ -11,7 +11,7 @@ module Idv
     end
 
     def document_type
-      return 'state_id' if idv_session.remote_document_capture_complete?
+      idv_session.pii_from_doc&.id_doc_type
     end
 
     def source_check

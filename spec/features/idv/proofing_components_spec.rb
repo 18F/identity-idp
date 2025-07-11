@@ -30,7 +30,7 @@ RSpec.describe 'proofing components' do
       it 'records proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
-        expect(proofing_components['document_type']).to eq('state_id')
+        expect(proofing_components['document_type']).to eq('drivers_license')
         expect(proofing_components['source_check']).to eq('StateIdMock')
       end
     end
