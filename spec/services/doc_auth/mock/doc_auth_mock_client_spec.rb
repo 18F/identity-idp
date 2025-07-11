@@ -5,20 +5,14 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
   let(:liveness_checking_required) { false }
 
-  let(:instance_id) { 'fake-instance-id' }
-
   it 'allows doc auth without any external requests' do
     post_front_image_response = client.post_front_image(
-      instance_id: instance_id,
       image: DocAuthImageFixtures.document_front_image,
     )
     post_back_image_response = client.post_back_image(
-      instance_id: instance_id,
       image: DocAuthImageFixtures.document_back_image,
     )
-    get_results_response = client.get_results(
-      instance_id: instance_id,
-    )
+    get_results_response = client.get_results
 
     expect(post_front_image_response.success?).to eq(true)
     expect(post_back_image_response.success?).to eq(true)
@@ -52,21 +46,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
   context 'when given passport yaml' do
     let(:passport_yaml) { 'needs to be set' }
-
-    let(:post_passport_image_response) do
-      client.post_passport_image(
-        instance_id: instance_id,
-        image: passport_yaml,
-      )
-    end
-
-    let(:get_results_response) do
-      client.get_results(
-        instance_id: instance_id,
-        passport_submittal: true,
-      )
-    end
-
+    let(:post_passport_image_response) { client.post_passport_image(image: passport_yaml) }
+    let(:get_results_response) { client.get_results(passport_submittal: true) }
     let(:expected_pii_hash) do
       Pii::Passport.new(
         first_name: 'Joe',
@@ -134,17 +115,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    client.post_front_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    client.post_back_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    get_results_response = client.get_results(
-      instance_id: instance_id,
-    )
+    client.post_front_image(image: yaml)
+    client.post_back_image(image: yaml)
+    get_results_response = client.get_results
 
     expect(get_results_response.pii_from_doc).to eq(
       Pii::StateId.new(
@@ -182,17 +155,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    client.post_front_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    client.post_back_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    get_results_response = client.get_results(
-      instance_id: instance_id,
-    )
+    client.post_front_image(image: yaml)
+    client.post_back_image(image: yaml)
+    get_results_response = client.get_results
 
     expect(get_results_response.pii_from_doc).to eq(
       Pii::StateId.new(
@@ -230,17 +195,10 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
             ClassName: Tribal Identification
     YAML
 
-    client.post_front_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    client.post_back_image(
-      instance_id: instance_id,
-      image: yaml,
-    )
-    get_results_response = client.get_results(
-      instance_id: instance_id,
-    )
+    client.post_front_image(image: yaml)
+    client.post_back_image(image: yaml)
+    get_results_response = client.get_results
+
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
     expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -263,7 +221,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(
       described_class.new.post_front_image(
         image: DocAuthImageFixtures.document_front_image,
-        instance_id: 'fake-instance-id',
       ),
     ).to eq(response)
 
@@ -272,7 +229,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(
       described_class.new.post_front_image(
         image: DocAuthImageFixtures.document_front_image,
-        instance_id: 'fake-instance-id',
       ),
     ).to_not eq(response)
   end
@@ -384,10 +340,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         front: 500
         back: 500
       YAML
-      response = client.post_front_image(
-        image: image,
-        instance_id: nil,
-      )
+      response = client.post_front_image(image: image)
+
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['network'])
@@ -398,13 +352,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         http_status:
           result: 500
       YAML
-      client.post_back_image(
-        image: image,
-        instance_id: nil,
-      )
-      response = client.get_results(
-        instance_id: nil,
-      )
+      client.post_back_image(image: image)
+      response = client.get_results
+
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(general: ['network'])
@@ -415,10 +365,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         http_status:
           front: 440
       YAML
-      response = client.post_front_image(
-        image: image,
-        instance_id: nil,
-      )
+      response = client.post_front_image(image: image)
+
       expect(response).to be_a(DocAuth::Response)
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(

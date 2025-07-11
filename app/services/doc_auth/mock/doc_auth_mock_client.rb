@@ -30,19 +30,19 @@ module DocAuth
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
-      def post_front_image(image:, instance_id:)
+      def post_front_image(image:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        post_image('front', image, instance_id)
+        post_image('front', image)
       end
 
-      def post_back_image(image:, instance_id:)
+      def post_back_image(image:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        post_image('back', image, instance_id)
+        post_image('back', image)
       end
 
-      def post_passport_image(image:, instance_id:)
+      def post_passport_image(image:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-        post_image('passport', image, instance_id)
+        post_image('passport', image)
       end
 
       def post_images(
@@ -59,29 +59,24 @@ module DocAuth
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
-        instance_id = SecureRandom.uuid
         if document_type == 'Passport'
-          passport_image_response = post_passport_image(
-            image: passport_image,
-            instance_id: instance_id,
-          )
+          passport_image_response = post_passport_image(image: passport_image)
           return passport_image_response unless passport_image_response.success?
         else
-          front_image_response = post_front_image(image: front_image, instance_id: instance_id)
+          front_image_response = post_front_image(image: front_image)
           return front_image_response unless front_image_response.success?
 
-          back_image_response = post_back_image(image: back_image, instance_id: instance_id)
+          back_image_response = post_back_image(image: back_image)
           return back_image_response unless back_image_response.success?
         end
 
         get_results(
-          instance_id: instance_id,
           selfie_required: liveness_checking_required,
           passport_submittal: passport_image.present?,
         )
       end
 
-      def get_results(instance_id:, selfie_required: false, passport_submittal: false)
+      def get_results(selfie_required: false, passport_submittal: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
         last_image = passport_submittal ?
                        self.class.last_uploaded_passport_image : self.class.last_uploaded_back_image
@@ -104,7 +99,7 @@ module DocAuth
 
       private
 
-      def post_image(image_type, image, _instance_id)
+      def post_image(image_type, image)
         case image_type
         when 'front'
           self.class.last_uploaded_front_image = image
