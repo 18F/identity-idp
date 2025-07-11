@@ -1030,19 +1030,16 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
 
         it 'does not do MRZ validation' do
-          response
           expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
+
+          response
         end
 
         it 'does not call the MRZ analytics event' do
+          response
+
           expect(fake_analytics).to_not have_logged_event(
             :idv_dos_passport_verification,
-            success: true,
-            response: 'YES',
-            submit_attempts: 1,
-            remaining_submit_attempts: 3,
-            user_id: document_capture_session.user.uuid,
-            document_type: document_type,
           )
         end
       end
