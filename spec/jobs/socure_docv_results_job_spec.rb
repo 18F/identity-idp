@@ -12,6 +12,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
+  let(:dos_passport_mrz_endpoint) { 'https://mrz.example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_type_type) { 'Drivers License' }
@@ -19,6 +20,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:socure_doc_escrow_enabled) { false }
   let(:selfie) { false }
+  let(:mrz_response) { 'YES'}
 
   before do
     document_capture_session.update(
@@ -27,6 +29,10 @@ RSpec.describe SocureDocvResultsJob do
     )
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
       .and_return(socure_idplus_base_url)
+    allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+      .and_return(dos_passport_mrz_endpoint)
+    stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+      .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
 
@@ -476,7 +482,7 @@ RSpec.describe SocureDocvResultsJob do
             document_capture_session.reload
             document_capture_session_result = document_capture_session.load_result
             expect(document_capture_session_result.success).to eq(false)
-            expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+            expect(document_capture_session_result.pii).to be_nil
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
             expect(fake_analytics).to have_logged_event(
@@ -514,9 +520,10 @@ RSpec.describe SocureDocvResultsJob do
               document_capture_session.reload
               document_capture_session_result = document_capture_session.load_result
               expect(document_capture_session_result.success).to eq(false)
-              expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+              expect(document_capture_session_result.pii).to be_nil
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.mrz_status).to eq(:not_processed)
             end
 
             context 'when docv passports are enabled' do
@@ -529,7 +536,7 @@ RSpec.describe SocureDocvResultsJob do
                 )
               end
 
-              it 'doc auth succeeds' do
+              it 'result succeeds' do
                 perform
 
                 document_capture_session.reload
@@ -538,12 +545,30 @@ RSpec.describe SocureDocvResultsJob do
                 expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
                 expect(document_capture_session_result.doc_auth_success).to eq(true)
                 expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                expect(document_capture_session_result.attention_with_barcode).to eq(false)
+                expect(document_capture_session_result.mrz_status).to eq(:pass)
+              end
+
+              context 'when the MRZ is not valid' do
+                let(:mrz_response) { 'NO' }
+
+                it 'result fails' do
+                  perform
+
+                  document_capture_session.reload
+                  document_capture_session_result = document_capture_session.load_result
+                  expect(document_capture_session_result.success).to eq(false)
+                  expect(document_capture_session_result.pii).to be_nil
+                  expect(document_capture_session_result.doc_auth_success).to eq(true)
+                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.mrz_status).to eq(:failed)
+                end
               end
 
               context 'when pii validation fails' do
                 let(:mrz) { nil }
 
-                it 'doc auth fails' do
+                it 'result fails' do
                   perform
 
                   document_capture_session.reload
@@ -552,6 +577,7 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.errors[:pii_validation]).to eq('failed')
                   expect(document_capture_session_result.doc_auth_success).to eq(true)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.mrz_status).to eq(:not_processed)
                 end
               end
 
@@ -566,6 +592,7 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.success).to eq(false)
                   expect(document_capture_session_result.doc_auth_success).to eq(false)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.mrz_status).to eq(:not_processed)
                 end
               end
             end
@@ -581,11 +608,11 @@ RSpec.describe SocureDocvResultsJob do
           document_capture_session.reload
           document_capture_session_result = document_capture_session.load_result
           expect(document_capture_session_result.success).to eq(false)
-          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.pii).to be_nil
           expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
-          expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session_result.mrz_status).to eq(:not_processed)
         end
 
         context 'doc escrow is enabled' do
