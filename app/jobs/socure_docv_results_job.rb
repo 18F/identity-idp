@@ -63,7 +63,6 @@ class SocureDocvResultsJob < ApplicationJob
     end
 
     mrz_response = validate_mrz(doc_pii_response)
-    record_attempt(docv_result_response:, doc_pii_response:) # todo: include mrz_response?
     if mrz_response && !mrz_response.success?
       document_capture_session.store_failed_auth_data(
         doc_auth_success: true,
@@ -75,10 +74,11 @@ class SocureDocvResultsJob < ApplicationJob
         selfie_image_fingerprint: nil,
         mrz_status: :failed,
       )
-      record_attempt(docv_result_response:, doc_pii_response:)# Todo: include mrz_response?
+      record_attempt(docv_result_response:, doc_pii_response:)
       return
     end
 
+    record_attempt(docv_result_response:, doc_pii_response:)
     document_capture_session.store_result_from_response(docv_result_response, mrz_response:)
   end
 
