@@ -30,44 +30,55 @@ class SocureDocvResultsJob < ApplicationJob
 
     mrz_response = nil
 
-    if docv_result_response.success?
-      doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
-      log_pii_validation(doc_pii_response:)
+    unless docv_result_response.success?
+      document_capture_session.store_failed_auth_data(
+        doc_auth_success: docv_result_response.doc_auth_success?,
+        selfie_status: docv_result_response.selfie_status,
+        errors: docv_result_response.errors,
+        front_image_fingerprint: nil,
+        back_image_fingerprint: nil,
+        passport_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
+      )
 
-      unless doc_pii_response&.success?
-        document_capture_session.store_failed_auth_data(
-          doc_auth_success: true,
-          selfie_status: docv_result_response.selfie_status,
-          errors: { pii_validation: 'failed' },
-          front_image_fingerprint: nil,
-          back_image_fingerprint: nil,
-          passport_image_fingerprint: nil,
-          selfie_image_fingerprint: nil,
-        )
-
-        record_attempt(docv_result_response:, doc_pii_response:)
-        return
-      end
-
-      if document_capture_session.passport_requested?
-        mrz_response = validate_mrz(doc_pii_response)
-        unless mrz_response.success?
-          document_capture_session.store_failed_auth_data(
-            doc_auth_success: true,
-            selfie_status: docv_result_response.selfie_status,
-            errors: { passport: 'failed' },
-            front_image_fingerprint: nil,
-            back_image_fingerprint: nil,
-            passport_image_fingerprint: nil,
-            selfie_image_fingerprint: nil,
-            mrz_status: :failed,
-          )
-          return
-        end
-      end
+      record_attempt(docv_result_response:)
+      return
     end
 
-    record_attempt(docv_result_response:, doc_pii_response:)
+    doc_pii_response = Idv::DocPiiForm.new(pii: docv_result_response.pii_from_doc.to_h).submit
+    log_pii_validation(doc_pii_response:)
+
+    unless doc_pii_response&.success?
+      document_capture_session.store_failed_auth_data(
+        doc_auth_success: true,
+        selfie_status: docv_result_response.selfie_status,
+        errors: { pii_validation: 'failed' },
+        front_image_fingerprint: nil,
+        back_image_fingerprint: nil,
+        passport_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
+      )
+      record_attempt(docv_result_response:, doc_pii_response:)
+      return
+    end
+
+    mrz_response = validate_mrz(doc_pii_response)
+    record_attempt(docv_result_response:, doc_pii_response:) # todo: include mrz_response?
+    if mrz_response && !mrz_response.success?
+      document_capture_session.store_failed_auth_data(
+        doc_auth_success: true,
+        selfie_status: docv_result_response.selfie_status,
+        errors: mrz_response.errors,
+        front_image_fingerprint: nil,
+        back_image_fingerprint: nil,
+        passport_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
+        mrz_status: :failed,
+      )
+      record_attempt(docv_result_response:, doc_pii_response:)# Todo: include mrz_response?
+      return
+    end
+
     document_capture_session.store_result_from_response(docv_result_response, mrz_response:)
   end
 
@@ -235,6 +246,7 @@ class SocureDocvResultsJob < ApplicationJob
   def validate_mrz(doc_pii_response)
     id_type = doc_pii_response.extra[:id_doc_type]
     unless id_type == 'passport'
+      return unless document_capture_session.passport_requested?
       return DocAuth::Response.new(
         success: false,
         errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
