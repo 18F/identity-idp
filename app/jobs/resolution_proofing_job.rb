@@ -59,6 +59,7 @@ class ResolutionProofingJob < ApplicationJob
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
       ssn: applicant_pii[:ssn],
       user: user,
+      issuer: current_sp&.issuer || nil,
     ).ssn_is_unique?
 
     callback_log_data.result[:ssn_is_unique] = ssn_is_unique
