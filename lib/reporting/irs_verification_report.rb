@@ -232,11 +232,11 @@ module Reporting
 
     def query(event)
       params = {
-        issuers: "[#{issuers.map { |i| "'#{i}'" }.join(', ')}]",
-        event: "'#{event}'",
+        issuers: quote(issuers),
+        event_names: quote([event]), 
       }
       format(<<~QUERY, params)
-        filter name IN [%{event}]
+        | filter name in %{event_names}
         | filter properties.sp_request.facial_match
         | filter properties.service_provider IN %{issuers}
         | fields properties.user_id
