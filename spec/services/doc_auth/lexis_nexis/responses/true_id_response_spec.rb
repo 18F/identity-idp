@@ -303,10 +303,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:response) do
         described_class.new(
           http_response: success_response,
-          passport_requested:,
-          config:,
-          liveness_checking_enabled:,
-          request_context:,
+          passport_requested: passport_requested,
+          config: config,
+          liveness_checking_enabled: liveness_checking_enabled,
+          request_context: request_context,
         )
       end
 
@@ -328,10 +328,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:response) do
         described_class.new(
           http_response: success_with_passport_response,
-          passport_requested:,
-          config:,
-          liveness_checking_enabled:,
-          request_context:,
+          passport_requested: passport_requested,
+          config: config,
+          liveness_checking_enabled: liveness_checking_enabled,
+          request_context: request_context,
         )
       end
 
@@ -395,10 +395,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:response) do
       described_class.new(
         http_response: success_with_passport_response,
-        passport_requested:,
-        config:,
-        liveness_checking_enabled:,
-        request_context:,
+        passport_requested: passport_requested,
+        config: config,
+        liveness_checking_enabled: liveness_checking_enabled,
+        request_context: request_context,
       )
     end
 
@@ -1121,8 +1121,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end
         let(:response) do
           described_class.new(
-            http_response: success_response, config: config,
-            liveness_checking_enabled: true, request_context: request_context
+            http_response: success_response,
+            config: config,
+            liveness_checking_enabled: true,
+            request_context: request_context,
           )
         end
         it 'returns :not_processed when missing selfie in response' do
