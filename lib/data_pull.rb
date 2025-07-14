@@ -205,7 +205,7 @@ class DataPull
       require 'data_requests/deployed'
       ssns = args
 
-      ssn_finders = ssns.map { |ssn| Idv::DuplicateSsnFinder.new(user: nil, ssn: ssn) }
+      ssn_finders = ssns.map { |ssn| Idv::DuplicateSsnFinder.new(user: nil, ssn: ssn, issuer: nil) }
       ssn_signatures = ssn_finders.flat_map do |ssn_finder|
         ssn_finder.ssn_signatures
       end
