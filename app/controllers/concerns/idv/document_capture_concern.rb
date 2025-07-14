@@ -62,10 +62,26 @@ module Idv
     end
 
     def mrz_requirement_met?
-      return true unless id_type == 'passport'
+      # If passport not requested, return true
+      return true unless document_capture_session.passport_requested?
 
+      # If passport requested but not submitted (not a passport doc type), return false
+      return false unless id_type == 'passport'
+
+      # If passport submitted, verify ALL conditions are met:
+      # 1. Verify passports are enabled
+      return false unless IdentityConfig.store.doc_auth_passports_enabled
+
+      # 2. Verify passport was requested (redundant but per AC)
+      return false unless document_capture_session.passport_requested?
+
+      # 3. Verify MRZ validation passed
       return false unless stored_result.mrz_status == :pass
 
+      # 4. Verify doc_auth_vendor is enabled for passports
+      return false unless vendor_enabled_for_passports?
+
+      # Additional security checks
       pii = stored_result.pii_from_doc
       return true unless pii.present?
 
@@ -90,6 +106,18 @@ module Idv
       return true if parsed_date.nil?
 
       !parsed_date.past?
+    end
+
+    def vendor_enabled_for_passports?
+      vendor = document_capture_session.doc_auth_vendor
+      case vendor
+      when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
+        true # Socure supports passports
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        true # LexisNexis supports passports
+      else
+        false
+      end
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
