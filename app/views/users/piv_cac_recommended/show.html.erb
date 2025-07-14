@@ -25,3 +25,14 @@
       unstyled: true,
     ).with_content(@recommended_presenter.skip_text) %>
 
+<% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+  <div class="margin-bottom-2">
+    <%= render partial: 'shared/threat_metrix_profiling',
+               locals: {
+                 threatmetrix_session_id:,
+                 threatmetrix_javascript_urls:,
+                 threatmetrix_iframe_url:,
+               } %>
+  </div>
+<% end %>
+

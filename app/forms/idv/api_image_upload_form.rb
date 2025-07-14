@@ -541,11 +541,12 @@ module Idv
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
+      failed_front_fingerprint = nil
+      failed_back_fingerprint = nil
+      failed_passport_fingerprint = nil
+
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        failed_front_fingerprint = nil
-        failed_back_fingerprint = nil
-        failed_passport_fingerprint = nil
 
         if errors_hash[:front] || errors_hash[:back] || errors_hash[:passport]
           if errors_hash[:front]

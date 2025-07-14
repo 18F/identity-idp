@@ -110,20 +110,20 @@ RSpec.describe Idv::HybridHandoffController do
       end
     end
 
-    context '@upload_enabled is false' do
+    context 'when selfie_desktop_test_mode is disabled' do
       let(:desktop_test_mode_enabled) { false }
 
-      it 'returns false' do
+      it '@upload_enabled is false' do
         get :show
 
         expect(assigns(:upload_enabled)).to be false
       end
     end
 
-    context '@upload_enabled is true' do
+    context 'when selfie_desktop_test_mode is enabled' do
       let(:desktop_test_mode_enabled) { true }
 
-      it 'returns true' do
+      it '@upload_enabled is true' do
         get :show
 
         expect(assigns(:upload_enabled)).to be true
@@ -237,8 +237,6 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opt in selection is nil' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
@@ -259,8 +257,6 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opted in to ipp flow' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end
@@ -382,10 +378,32 @@ RSpec.describe Idv::HybridHandoffController do
         }
       end
 
-      it 'sends analytics_submitted event for desktop' do
-        put :update, params: params
+      context 'vendor is socure' do
+        before do
+          subject.document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::SOCURE)
+        end
 
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        it 'sends analytics_submitted event for desktop' do
+          put :update, params: params
+
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+          expect(subject.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'when selfie_desktop_test_mode is enabled' do
+          let(:desktop_test_mode_enabled) { true }
+
+          it 'sends analytics_submitted event for desktop' do
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+            put :update, params: params
+
+            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
       end
 
       context 'passports are not enabled' do

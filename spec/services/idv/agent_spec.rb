@@ -147,7 +147,7 @@ RSpec.describe Idv::Agent do
         expect(ResolutionProofingJob).to receive(:perform_later).with(
           hash_including(
             proofing_components: {
-              document_type: 'state_id',
+              document_type: 'drivers_license',
             },
           ),
         )
