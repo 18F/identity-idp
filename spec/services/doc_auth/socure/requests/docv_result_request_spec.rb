@@ -6,6 +6,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   let(:user_email) { Faker::Internet.email }
   let(:document_capture_session_uuid) { 'fake uuid' }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:doc_type) { '' }
+  let(:decision_value) { '' }
 
   subject(:docv_result_request) do
     described_class.new(
@@ -20,9 +22,11 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
     let(:fake_socure_api_endpoint) { 'https://fake-socure.test/api/3.0/EmailAuthScore' }
     let(:docv_transaction_token) { 'fake docv transaction token' }
     let(:document_capture_session) do
-      DocumentCaptureSession.create(user:).tap do |dcs|
-        dcs.socure_docv_transaction_token = docv_transaction_token
-      end
+      create(
+        :document_capture_session,
+        user:,
+        socure_docv_transaction_token: docv_transaction_token,
+      )
     end
 
     before do
@@ -44,7 +48,16 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
           })
           .to_return(
             status: 200,
-            body: {}.to_json,
+            body: {
+              documentVerification: {
+                decision: {
+                  value: decision_value,
+                },
+                documentType: {
+                  type: doc_type,
+                },
+              },
+            }.to_json,
           )
       end
 
@@ -52,21 +65,56 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
         expect(response).to be_instance_of(DocAuth::Socure::Responses::DocvResultResponse)
       end
 
-      context 'fails if doc types do not match' do
+      context 'passports enabled' do
         before do
-          document_capture_session.update!(
-            passport_status: 'requested',
-          )
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+            .and_return(Idp::Constants::Vendors::SOCURE)
         end
 
-        it 'returns a DocAuth::Response failure' do
-          expect(response.to_h).to include(
-            success: false,
-            errors: {
-              unaccepted_id_type: true,
-            },
-            vendor: 'Socure',
-          )
+        context 'fails if doc types do not match passport request dl submitted' do
+          let(:document_capture_session) do
+            create(
+              :document_capture_session,
+              user:,
+              socure_docv_transaction_token: docv_transaction_token,
+              passport_status: 'requested',
+            )
+          end
+          let(:doc_type) { 'Drivers License' }
+          let(:decision_value) { 'accept' }
+
+          it 'returns a DocAuth::Response failure' do
+            expect(response.to_h).to include(
+              success: false,
+              errors: {
+                unexpected_id_type: true,
+              },
+              vendor: 'Socure',
+            )
+          end
+        end
+        context 'fails if doc types do not match dl requested passport submitted' do
+          let(:document_capture_session) do
+            create(
+              :document_capture_session,
+              user:,
+              socure_docv_transaction_token: docv_transaction_token,
+              passport_status: 'allowed',
+            )
+          end
+          let(:doc_type) { 'Passport' }
+          let(:decision_value) { 'accept' }
+
+          it 'returns a DocAuth::Response failure' do
+            expect(response.to_h).to include(
+              success: false,
+              errors: {
+                unexpected_id_type: true,
+              },
+              vendor: 'Socure',
+            )
+          end
         end
       end
     end
