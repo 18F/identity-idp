@@ -4,7 +4,14 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   let(:user) { create(:user) }
   let(:customer_user_id) { user.uuid }
   let(:user_email) { Faker::Internet.email }
-  let(:document_capture_session_uuid) { 'fake uuid' }
+  let(:docv_transaction_token) { 'fake docv transaction token' }
+  let(:document_capture_session) do
+    create(
+      :document_capture_session,
+      user:,
+      socure_docv_transaction_token: docv_transaction_token,
+    )
+  end
   let(:fake_analytics) { FakeAnalytics.new }
   let(:doc_type) { '' }
   let(:decision_value) { '' }
@@ -12,7 +19,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   subject(:docv_result_request) do
     described_class.new(
       customer_user_id:,
-      document_capture_session_uuid:,
+      document_capture_session_uuid: document_capture_session.uuid,
       user_email:,
     )
   end
@@ -20,19 +27,10 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   describe '#fetch' do
     let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
     let(:fake_socure_api_endpoint) { 'https://fake-socure.test/api/3.0/EmailAuthScore' }
-    let(:docv_transaction_token) { 'fake docv transaction token' }
-    let(:document_capture_session) do
-      create(
-        :document_capture_session,
-        user:,
-        socure_docv_transaction_token: docv_transaction_token,
-      )
-    end
 
     before do
       allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
         .and_return(fake_socure_endpoint)
-      allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     end
 
     context 'when the docv request is successful' do
