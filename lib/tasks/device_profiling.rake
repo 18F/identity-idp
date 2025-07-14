@@ -2,8 +2,8 @@
 
 namespace :device_profiling do
   desc 'Approve rejected device profiling results to pass for list of UUIDs'
-  task :approve_rejected_users, [:user_uuids] => :environment do |_task, args|
-    user_uuids = args[:user_uuids]
+  task :approve_rejected_users, [:user_uuids] => :environment do |_task, _args|
+    user_uuids = ARGV[1]
 
     if user_uuids.blank?
       puts 'Error: user_uuids is required'
@@ -36,7 +36,7 @@ namespace :device_profiling do
         # Find device profiling results for this user (reject or pass)
         result = DeviceProfilingResult.where(
           user_id: user.id,
-          type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+          profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
         ).first
 
         if result.nil?
