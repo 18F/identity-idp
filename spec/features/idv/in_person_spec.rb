@@ -382,8 +382,8 @@ RSpec.describe 'In Person Proofing', js: true do
             DocAuth::Mock::DocAuthMockClient.mock_response!(
               method: :get_results,
               response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-                successful_response,
-                DocAuth::LexisNexis::Config.new,
+                http_response: successful_response,
+                config: DocAuth::LexisNexis::Config.new,
               ),
             )
             complete_document_capture_step(with_selfie: false)
