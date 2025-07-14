@@ -30,6 +30,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:passport_image) { nil }
+  let(:passport_requested) { false }
   let(:selfie_image) { nil }
   let(:liveness_checking_required) { false }
   let(:front_image_file_name) { 'front.jpg' }
@@ -89,6 +90,8 @@ RSpec.describe Idv::ApiImageUploadForm do
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
+    allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
+      .and_return(passport_requested)
   end
 
   describe '#valid?' do
@@ -899,6 +902,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         )
       end
       let(:response) { form.submit }
+      let(:passport_requested) { true }
 
       before do
         allow_any_instance_of(described_class)
@@ -919,6 +923,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             },
           )
         end
+        let(:document_type) { 'Passport' }
 
         before do
           allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
@@ -955,6 +960,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       context 'Passport MRZ validation succeeds' do
         let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
+        let(:document_type) { 'Passport' }
 
         let(:successful_passport_mrz_response) do
           DocAuth::Response.new(
@@ -1016,6 +1022,25 @@ RSpec.describe Idv::ApiImageUploadForm do
           message = 'Cannot validate MRZ for id type: drivers_license'
           expect(response.success?).to eq(false)
           expect(response.errors[:passport]).to eq(message)
+        end
+      end
+
+      context 'User submits passport but passport is not requested' do
+        let(:passport_requested) { false }
+        let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
+
+        it 'does not do MRZ validation' do
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
+
+          response
+        end
+
+        it 'does not call the MRZ analytics event' do
+          response
+
+          expect(fake_analytics).to_not have_logged_event(
+            :idv_dos_passport_verification,
+          )
         end
       end
 
