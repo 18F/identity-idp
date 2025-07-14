@@ -55,7 +55,7 @@ namespace :device_profiling do
 
         # Update rejected results to pass
         puts "Updating rejected result for: #{user_uuid}"
-        result.update!(review_status: 'pass')
+        result.update!(review_status: 'pass', notes: 'Manually overridden')
         total_results_updated += 1
 
         puts "Successfully updated result for: #{user_uuid}"
