@@ -29,7 +29,7 @@ namespace :device_profiling do
         # Find user by UUID
         user = User.find_by(uuid: user_uuid)
         if user.blank?
-          puts " User not found: #{user_uuid}"
+          puts "User not found: #{user_uuid}"
           next
         end
 
