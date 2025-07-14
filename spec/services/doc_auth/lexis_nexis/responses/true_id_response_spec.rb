@@ -293,6 +293,58 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
+  context 'when the id type requested does not match the id type submitted' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+    end
+
+    context 'when passport is requested but drivers_license is submitted' do
+      let(:passport_requested) { true }
+      let(:response) do
+        described_class.new(
+          http_response: success_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:unexpected_id_type]).to eq(true)
+      end
+    end
+
+    context 'when passport is not requested but passport is submitted' do
+      let(:passport_requested) { false }
+      let(:response) do
+        described_class.new(
+          http_response: success_with_passport_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:unexpected_id_type]).to eq(true)
+      end
+    end
+  end
+
   context 'when the response is a success with passport card' do
     let(:response) do
       described_class.new(
