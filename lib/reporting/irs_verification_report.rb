@@ -233,7 +233,7 @@ module Reporting
     def query(event)
       params = {
         issuers: quote(issuers),
-        event_names: quote([event]), 
+        event_names: quote([event]),
       }
       format(<<~QUERY, params)
         | filter name in %{event_names}
