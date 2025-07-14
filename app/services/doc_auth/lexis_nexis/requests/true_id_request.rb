@@ -72,7 +72,7 @@ module DocAuth
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
             http_response: http_response,
-            passport_requested: document_capture_session&.passport_requested?,
+            passport_requested: document_capture_session.passport_requested?,
             config: config,
             liveness_checking_required: liveness_checking_required,
             request_context:,

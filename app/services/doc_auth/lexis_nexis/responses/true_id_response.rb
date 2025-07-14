@@ -63,7 +63,7 @@ module DocAuth
             { passport: true }
           elsif passport_card_detected?
             { passport_card: true }
-          elsif !id_type_expected?
+          elsif unexpected_id_type?
             { unexpected_id_type: true }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
@@ -132,12 +132,14 @@ module DocAuth
         end
 
         def id_type_expected?
-          # return if pii_from_doc.nil?
-
           expected_id_type = passport_requested ? ['passport', 'passport_card'] :
             ['drivers_license', 'state_id_card']
 
           expected_id_type.include?(pii_from_doc&.id_doc_type)
+        end
+
+        def unexpected_id_type?
+          !id_type_expected? && pii_from_doc&.id_doc_type.present?
         end
 
         def passport_pii?
