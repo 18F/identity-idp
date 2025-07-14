@@ -34,7 +34,7 @@ module DocAuth
         def handle_http_response(http_response)
           DocAuth::Socure::Responses::DocvResultResponse.new(
             http_response: http_response,
-            passport_requested: document_capture_session&.passport_requested?,
+            passport_requested: document_capture_session.passport_requested?,
           )
         end
 
