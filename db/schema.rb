@@ -58,7 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_184424) do
   create_table "auth_app_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "encrypted_otp_secret_key", null: false, comment: "sensitive=true"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", null: false, comment: "sensitive=true"
     t.integer "totp_timestamp", comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
@@ -460,7 +460,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_184424) do
   create_table "piv_cac_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "x509_dn_uuid", null: false, comment: "sensitive=false"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", null: false, comment: "sensitive=true"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "x509_issuer", comment: "sensitive=false"
@@ -691,7 +691,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_184424) do
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", null: false, comment: "sensitive=true"
     t.text "credential_id", null: false, comment: "sensitive=false"
     t.text "credential_public_key", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"

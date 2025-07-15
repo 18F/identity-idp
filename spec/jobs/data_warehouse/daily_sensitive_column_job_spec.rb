@@ -18,17 +18,17 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
             "table-name": 'auth_app_configurations',
           },
         },
+        {
+          "object-locator": {
+            "column-name": 'name',
+            "table-name": 'auth_app_configurations',
+          },
+        },
       ],
       insensitive: [
         {
           "object-locator": {
             "column-name": 'user_id',
-            "table-name": 'auth_app_configurations',
-          },
-        },
-        {
-          "object-locator": {
-            "column-name": 'name',
             "table-name": 'auth_app_configurations',
           },
         },
