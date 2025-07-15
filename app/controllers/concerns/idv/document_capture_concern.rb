@@ -76,25 +76,10 @@ module Idv
       return false unless document_capture_session.passport_requested?
 
       # 3. Verify MRZ validation passed
-      return false unless stored_result.mrz_status == :pass
-
-      # 4. Verify doc_auth_vendor is enabled for passports
-      vendor_enabled_for_passports?
+      stored_result.mrz_status == :pass
     end
 
     private
-
-    def vendor_enabled_for_passports?
-      vendor = document_capture_session.doc_auth_vendor
-      case vendor
-      when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
-        true # Socure supports passports
-      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
-        true # LexisNexis supports passports
-      else
-        false
-      end
-    end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
