@@ -339,36 +339,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           end
         end
 
-        context 'when vendor does not support passports' do
-          before do
-            allow(document_capture_session).to receive(:doc_auth_vendor)
-              .and_return('unsupported_vendor')
-            # Update the stored result to include valid passport PII
-            id = SecureRandom.hex
-            result = DocumentCaptureSessionResult.new(
-              id:,
-              success: true,
-              doc_auth_success: true,
-              selfie_status: :not_processed,
-              mrz_status:,
-              pii: {
-                passport_expiration: '2030-01-01',
-                issuing_country_code: 'USA',
-                dob: '1970-06-10',
-              },
-              attention_with_barcode: false,
-            )
-            EncryptedRedisStructStorage.store(result)
-            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
-            allow(controller).to receive(:stored_result).and_return(stored_result)
-          end
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
-
-        context 'when vendor and feature checks pass' do
+        context 'when feature checks pass' do
           before do
             id = SecureRandom.hex
             result = DocumentCaptureSessionResult.new(
