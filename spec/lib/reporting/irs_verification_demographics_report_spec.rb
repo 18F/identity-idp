@@ -8,8 +8,8 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
     [
       ['Metric', 'Unit', 'Definition'],
       ['Age range/Verification Demographics', 'Count',
-       'The number of IRS users who verified within the reporting period, grouped by age in 10 ' + '
-       year range.'],
+       'The number of IRS users who verified within the reporting period, grouped by age in ' + '
+         10 year range.'],
       ['Geographic area/Verification Demographics', 'Count',
        'The number of IRS users who verified within the reporting period, grouped by state.'],
     ]
