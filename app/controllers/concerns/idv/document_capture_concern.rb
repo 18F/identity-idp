@@ -79,34 +79,10 @@ module Idv
       return false unless stored_result.mrz_status == :pass
 
       # 4. Verify doc_auth_vendor is enabled for passports
-      return false unless vendor_enabled_for_passports?
-
-      # Additional security checks
-      pii = stored_result.pii_from_doc
-      return true unless pii.present?
-
-      validate_passport_issuing_country(pii) && validate_passport_expiration(pii)
+      vendor_enabled_for_passports?
     end
 
     private
-
-    def validate_passport_issuing_country(pii)
-      issuing_country = pii&.dig(:issuing_country_code)
-      return true unless issuing_country.present?
-
-      # Currently only USA passports are supported
-      issuing_country.upcase == 'USA'
-    end
-
-    def validate_passport_expiration(pii)
-      expiration_date = pii&.dig(:passport_expiration)
-      return true unless expiration_date
-
-      parsed_date = DateParser.parse_legacy(expiration_date)
-      return true if parsed_date.nil?
-
-      !parsed_date.past?
-    end
 
     def vendor_enabled_for_passports?
       vendor = document_capture_session.doc_auth_vendor

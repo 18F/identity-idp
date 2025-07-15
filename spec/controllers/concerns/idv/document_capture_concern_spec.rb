@@ -368,59 +368,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           end
         end
 
-        context 'when passport is expired' do
-          before do
-            id = SecureRandom.hex
-            result = DocumentCaptureSessionResult.new(
-              id:,
-              success: true,
-              doc_auth_success: true,
-              selfie_status: :not_processed,
-              mrz_status:,
-              pii: {
-                passport_expiration: '2020-01-01', # Expired
-                issuing_country_code: 'USA',
-                dob: '1970-06-10',
-              },
-              attention_with_barcode: false,
-            )
-            EncryptedRedisStructStorage.store(result)
-            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
-            allow(controller).to receive(:stored_result).and_return(stored_result)
-          end
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
-
-        context 'when issuing country is not supported' do
-          before do
-            id = SecureRandom.hex
-            result = DocumentCaptureSessionResult.new(
-              id:,
-              success: true,
-              doc_auth_success: true,
-              selfie_status: :not_processed,
-              mrz_status:,
-              pii: {
-                passport_expiration: '2030-01-01',
-                issuing_country_code: 'CAN', # Not supported
-                dob: '1970-06-10',
-              },
-              attention_with_barcode: false,
-            )
-            EncryptedRedisStructStorage.store(result)
-            stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
-            allow(controller).to receive(:stored_result).and_return(stored_result)
-          end
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
-
-        context 'when all validation checks pass' do
+        context 'when vendor and feature checks pass' do
           before do
             id = SecureRandom.hex
             result = DocumentCaptureSessionResult.new(
