@@ -222,6 +222,8 @@ module Reporting
     end
 
     def total_verified_results
+      verification_demand = verification_demand_results
+      return 0.0 if verification_demand.zero?
       results = fetch_results(query: query(Events::TOTAL_VERIFIED))
       results.map { |row| row['properties.user_id'] }.uniq.count
     end
