@@ -21,6 +21,11 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       trueid_liveness_nocropping_workflow: 'LIVENESS.NOCROPPING.WORKFLOW',
     )
   end
+  let(:document_capture_session) { DocumentCaptureSession.new(uuid: SecureRandom.uuid) }
+
+  before do
+    allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
+  end
 
   describe '#post_images' do
     before do

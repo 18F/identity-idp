@@ -56,7 +56,7 @@ module DocAuth
 
         def document_capture_session
           @document_capture_session ||=
-            DocumentCaptureSession.find_by!(user_uuid: user_uuid)
+            DocumentCaptureSession.find_by!(uuid: user_uuid)
         end
 
         def id_front_image
@@ -74,7 +74,7 @@ module DocAuth
             http_response: http_response,
             passport_requested: document_capture_session.passport_requested?,
             config: config,
-            liveness_checking_required: liveness_checking_required,
+            liveness_checking_enabled: liveness_checking_required,
             request_context:,
           )
         end
