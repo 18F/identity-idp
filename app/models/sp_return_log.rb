@@ -10,5 +10,6 @@ class SpReturnLog < ApplicationRecord
              class_name: 'ServiceProvider',
              foreign_key: 'profile_requested_issuer',
              primary_key: 'issuer'
+  belongs_to :profile
   # rubocop:enable Rails/InverseOf
 end
