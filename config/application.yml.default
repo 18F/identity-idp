@@ -421,7 +421,6 @@ session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
-show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 sign_in_recaptcha_annotation_enabled: false
 sign_in_recaptcha_percent_tested: 0
@@ -543,7 +542,6 @@ development:
   saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"}]'
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
-  show_unsupported_passkey_platform_authentication_setup: true
   sign_in_recaptcha_annotation_enabled: true
   sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
