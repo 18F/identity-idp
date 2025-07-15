@@ -236,7 +236,7 @@ module Reporting
         event_names: quote([event]),
       }
       format(<<~QUERY, params)
-        | filter name in %{event_names}
+        filter name in %{event_names}
         | filter properties.sp_request.facial_match
         | filter properties.service_provider IN %{issuers}
         | fields properties.user_id
