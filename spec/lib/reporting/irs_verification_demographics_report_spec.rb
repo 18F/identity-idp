@@ -7,10 +7,11 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
-      ['Verified users by age', 'Count',
-       'The number of users grouped by age in 10 year range.'],
-      ['Verified users by state', 'Count',
-       'The number of users grouped by state.'],
+      ['Age range/Verification Demographics', 'Count',
+       'The number of IRS users who verified within the reporting period, grouped by age in 10 ' + '
+       year range.'],
+      ['Geographic area/Verification Demographics', 'Count',
+       'The number of IRS users who verified within the reporting period, grouped by state.'],
     ]
   end
   let(:expected_overview_table) do
