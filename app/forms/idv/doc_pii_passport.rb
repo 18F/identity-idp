@@ -12,7 +12,8 @@ module Idv
                 in: 'USA', message: proc { I18n.t('doc_auth.errors.general.no_liveness') }
               }
 
-    validate :passport_expired?
+    validate :passport_not_expired?
+    validate :passport_book? # we don't support passport cards
 
     attr_reader :passport_expiration, :issuing_country_code, :mrz
 
@@ -35,10 +36,18 @@ module Idv
       I18n.t('doc_auth.errors.general.no_liveness')
     end
 
-    def passport_expired?
-      if passport_expiration && DateParser.parse_legacy(passport_expiration).past?
-        errors.add(:passport_expiration, generic_error, type: :passport_expiration)
-      end
+    def passport_not_expired?
+      return true unless passport_expiration && DateParser.parse_legacy(passport_expiration).past?
+
+      errors.add(:passport_expiration, generic_error, type: :passport_expiration)
+      false
+    end
+
+    def passport_book?
+      return true if pii_from_doc[:id_doc_type] == 'passport'
+
+      errors.add(:id_doc_type, generic_error, type: :id_doc_type)
+      false
     end
   end
 end

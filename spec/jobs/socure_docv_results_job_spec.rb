@@ -433,6 +433,117 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
+      context 'Passport is submitted' do
+        let(:document_type_type) { 'Passport' }
+        let(:mrz) { 'P<USADWAYNE<<DENVER<<<<<<<<<<<<<<<<<<<<<<<<<' }
+        let(:socure_response_body) do
+          # ID+ v3.0 API Predictive Document Verification response
+          {
+            referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
+            previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
+            documentVerification: {
+              reasonCodes: reason_codes,
+              documentType: {
+                type: document_type_type,
+                country: 'USA',
+              },
+              decision: {
+                name: 'lenient',
+                value: decision_value,
+              },
+              documentData: {
+                firstName: 'Dwayne',
+                surName: 'Denver',
+                fullName: 'Dwayne Denver',
+                documentNumber: '000000000',
+                dob: '2000-01-01',
+                issueDate: '2020-01-01',
+                expirationDate: expiration_date,
+              },
+              rawData: { mrz: },
+            },
+            customerProfile: {
+              customerUserId: user.uuid,
+              userId: 'u8JpWn4QsF3R7tA2',
+            },
+          }
+        end
+
+        context 'when docv passports are NOT enabled' do
+          it 'doc auth fails' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.success).to eq(false)
+            expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+            expect(document_capture_session_result.doc_auth_success).to eq(false)
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+              ),
+            )
+          end
+        end
+
+        context 'when passports are enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          end
+
+          context 'when a passport result is returned' do
+            it 'doc auth fails' do
+              perform
+
+              document_capture_session.reload
+              document_capture_session_result = document_capture_session.load_result
+              expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+              expect(document_capture_session_result.doc_auth_success).to eq(false)
+              expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+                hash_including(
+                  :customer_user_id,
+                  :decision,
+                  :reference_id,
+                ),
+              )
+            end
+
+            context 'when docv passports are enabled' do
+              before do
+                allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+                  .and_return(Idp::Constants::Vendors::SOCURE)
+              end
+
+              it 'doc auth succeeds' do
+                perform
+
+                document_capture_session.reload
+                document_capture_session_result = document_capture_session.load_result
+                expect(document_capture_session_result.success).to eq(true)
+                expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+                expect(document_capture_session_result.doc_auth_success).to eq(true)
+                expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                expect(fake_analytics).to have_logged_event(
+                  :idv_socure_verification_data_requested,
+                  hash_including(
+                    :customer_user_id,
+                    :decision,
+                    :reference_id,
+                  ),
+                )
+              end
+            end
+          end
+        end
+      end
+
       context 'not accepted document type' do
         let(:document_type_type) { 'Non-Document-Type' }
         it 'doc auth fails' do

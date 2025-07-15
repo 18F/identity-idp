@@ -42,7 +42,7 @@ module Idv
 
     def self.pii_like_keypaths(document_type:)
       keypaths = [[:pii]]
-      document_attrs = document_type&.downcase == 'passport' ?
+      document_attrs = document_type&.downcase&.include?('passport') ?
         DocPiiPassport.pii_like_keypaths :
         DocPiiStateId.pii_like_keypaths
 
@@ -106,7 +106,7 @@ module Idv
       when *STATE_ID_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
-      when 'passport'
+      when 'passport', 'passport_card'
         passport_validation = DocPiiPassport.new(pii: pii_from_doc)
         passport_validation.valid? || errors.merge!(passport_validation.errors)
       else

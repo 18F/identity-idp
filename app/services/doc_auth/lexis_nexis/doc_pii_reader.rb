@@ -26,13 +26,16 @@ module DocAuth
         return nil unless id_auth_field_data.present?
 
         id_doc_type_slug = id_auth_field_data['Fields_DocumentClassName']
-        @id_doc_type = IdentityConfig.store.doc_auth_passports_enabled ?
-          DocAuth::Response::ID_TYPE_SLUGS[id_doc_type_slug] :
-          DocAuth::Response::STATE_ID_TYPE_SLUGS[id_doc_type_slug]
+        id_doc_issue_type = authentication_result_field_data['DocIssueType']
+
+        @id_doc_type = determine_id_doc_type(
+          doc_class_name: id_doc_type_slug,
+          doc_issue_type: id_doc_issue_type,
+        )
 
         if id_doc_type == 'drivers_license' || id_doc_type == 'state_id_card'
           generate_state_id_pii
-        elsif id_doc_type == 'passport'
+        elsif id_doc_type == 'passport' || id_doc_type == 'passport_card'
           generate_passport_pii
         end
       end
@@ -178,6 +181,22 @@ module DocAuth
           nationality_code: id_auth_field_data['Fields_NationalityCode'],
           mrz: id_auth_field_data['Fields_MRZ'],
         )
+      end
+
+      def determine_id_doc_type(doc_class_name:, doc_issue_type:)
+        val = if IdentityConfig.store.doc_auth_passports_enabled
+                DocAuth::Response::ID_TYPE_SLUGS[doc_class_name]
+              else
+                DocAuth::Response::STATE_ID_TYPE_SLUGS[doc_class_name]
+              end
+
+        # If the DocIssueType is 'Passport Card',
+        # LN is returning 'Identification Card' as the DocClassName so we need to differentiate
+        # between a passport card and a state-issued identification card.
+        if doc_issue_type == 'Passport Card'
+          val = 'passport_card'
+        end
+        val
       end
     end
   end

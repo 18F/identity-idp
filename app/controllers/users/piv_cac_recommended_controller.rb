@@ -4,6 +4,7 @@ module Users
   class PivCacRecommendedController < ApplicationController
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
+    include ThreatMetrixHelper
     include SecureHeadersConcern
 
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -13,6 +14,7 @@ module Users
     def show
       @recommended_presenter = PivCacRecommendedPresenter.new(current_user)
       analytics.piv_cac_recommended_visited
+      render :show, locals: threatmetrix_variables
     end
 
     def confirm

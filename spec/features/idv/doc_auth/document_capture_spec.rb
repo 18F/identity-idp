@@ -75,6 +75,7 @@ RSpec.feature 'document capture step', :js do
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
       end
 
@@ -425,6 +426,7 @@ RSpec.feature 'document capture step', :js do
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
       end
 

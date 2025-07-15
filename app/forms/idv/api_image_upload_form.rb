@@ -47,7 +47,8 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          if doc_pii_response.success? && passport_submittal
+
+          if doc_pii_response.success? && passport_requested? && passport_submittal
             mrz_response = validate_mrz(client_response)
           end
         end
@@ -126,7 +127,6 @@ module Idv
     def validate_form
       success = valid?
       increment_rate_limiter!
-      track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -135,6 +135,7 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response)
+      track_rate_limited if rate_limited?
       track_upload_attempt(response)
 
       response
@@ -185,7 +186,7 @@ module Idv
     def document_type
       return nil if document_capture_session.nil?
 
-      @document_type ||= document_capture_session.passport_requested? \
+      @document_type ||= passport_requested? \
         ? 'Passport' : 'DriversLicense'
     end
 
@@ -289,6 +290,7 @@ module Idv
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
 
+      # mrz validation failed
       return mrz_response if mrz_response.present? && !mrz_response.success?
 
       client_response
@@ -382,7 +384,10 @@ module Idv
     end
 
     def track_rate_limited
-      analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
+      analytics.rate_limit_reached(
+        limiter_type: :idv_doc_auth,
+        user_id: user_uuid,
+      )
       attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 
@@ -504,6 +509,10 @@ module Idv
       document_capture_session&.user&.uuid
     end
 
+    def passport_requested?
+      !!document_capture_session&.passport_requested?
+    end
+
     def rate_limiter
       @rate_limiter ||= RateLimiter.new(
         user: document_capture_session.user,
@@ -532,11 +541,12 @@ module Idv
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
+      failed_front_fingerprint = nil
+      failed_back_fingerprint = nil
+      failed_passport_fingerprint = nil
+
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        failed_front_fingerprint = nil
-        failed_back_fingerprint = nil
-        failed_passport_fingerprint = nil
 
         if errors_hash[:front] || errors_hash[:back] || errors_hash[:passport]
           if errors_hash[:front]
