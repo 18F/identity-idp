@@ -11,18 +11,17 @@ module Idv
     end
 
     def ssn_is_unique?
-      Profile.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
-        .where.not(user_id: user.id).empty?
+      Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
     def associated_facial_match_profiles_with_ssn
-      Profile.active.facial_match.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
-        .where(
-          initiating_service_provider_issuer: issuer,
-        )
+      Profile.joins(:sp_return_logs)
+        .active
+        .facial_match
+        .where(ssn_signature: ssn_signatures)
+        .where(sp_return_logs: { issuer: sp_eligible_for_one_account })
         .where.not(user_id: user.id)
+        .distinct
     end
 
     def ial2_profile_ssn_is_unique?
