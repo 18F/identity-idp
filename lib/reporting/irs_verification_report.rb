@@ -47,8 +47,7 @@ module Reporting
 
     def as_tables
       [overview_table,
-       funnel_table
-      ]
+       funnel_table]
     end
 
     def as_emailable_reports
@@ -59,7 +58,7 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: data_definition_table,
-          filename: 'Definitions'
+          filename: 'Definitions',
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
@@ -67,7 +66,7 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: overview_table,
-          filename: 'Overview Report'
+          filename: 'Overview Report',
         ),
         Reporting::EmailableReport.new(
           title: 'Funnel Metrics',
@@ -75,8 +74,8 @@ module Reporting
           float_as_percent: true,
           precision: 2,
           table: funnel_table,
-          filename: 'Funnel Metrics'
-        )
+          filename: 'Funnel Metrics',
+        ),
       ]
     end
 
@@ -92,7 +91,7 @@ module Reporting
       [
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
         ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
-        ['Issuer', issuers.join(', ')]
+        ['Issuer', issuers.join(', ')],
       ]
     end
 
@@ -116,7 +115,7 @@ module Reporting
         ['Verification Successes', total_verified,
          to_percent(total_verified, verification_demand)],
         ['Verification Failures', verification_demand - total_verified,
-         to_percent(verification_demand - total_verified, verification_demand)]
+         to_percent(verification_demand - total_verified, verification_demand)],
       ]
     end
 
@@ -124,11 +123,13 @@ module Reporting
       [
         ['Metric', 'Definition'],
         ['Verification Demand', 'The count of users who started the identity verification process'],
-        ['Document Authentication Success', 'Users who successfully completed document authentication'],
+        ['Document Authentication Success',
+         'Users who successfully completed document authentication'],
         ['Information Validation Success', 'Users who successfully validated their information'],
         ['Phone Verification Success', 'Users who successfully verified using their phone'],
         ['Verification Successes', 'Users who completed the entire process'],
-        ['Verification Failures', 'The percentage of users that did not complete the identity verification process']
+        ['Verification Failures',
+         'The percentage of users that did not complete the identity verification process'],
       ]
     end
 
@@ -147,7 +148,7 @@ module Reporting
         ensure_complete_logs: true,
         slice_interval: @slice,
         progress: progress?,
-        logger: verbose? ? Logger.new(STDERR) : nil
+        logger: verbose? ? Logger.new(STDERR) : nil,
       )
     end
 
@@ -190,11 +191,11 @@ module Reporting
     end
 
     def fetch_results
-      Rails.logger.info("Executing unified query")
+      Rails.logger.info('Executing unified query')
       results = cloudwatch_client.fetch(
         query: query,
         from: time_range.begin.beginning_of_day,
-        to: time_range.end.end_of_day
+        to: time_range.end.end_of_day,
       )
       Rails.logger.info("Results: #{results.inspect}")
       results
@@ -229,7 +230,7 @@ module Reporting
 
     def to_percent(numerator, denominator)
       return 0.0 if denominator.nil? || denominator.zero?
-      ((numerator.to_f / denominator) ).round(2)
+      ((numerator.to_f / denominator)).round(2)
     end
   end
 end
