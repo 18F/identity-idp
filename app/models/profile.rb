@@ -16,7 +16,7 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :sp_return_logs
+  has_many :identities, class_name: 'ServiceProviderIdentity'
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_one :in_person_enrollment, dependent: :destroy
 

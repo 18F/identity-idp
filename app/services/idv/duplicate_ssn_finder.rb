@@ -15,11 +15,13 @@ module Idv
     end
 
     def associated_facial_match_profiles_with_ssn
-      Profile.joins(:sp_return_logs)
+      Profile.joins("INNER JOIN identities ON identities.user_id = profiles.user_id")
         .active
         .facial_match
         .where(ssn_signature: ssn_signatures)
-        .where(sp_return_logs: { issuer: sp_eligible_for_one_account })
+        .where(identities: { service_provider: sp_eligible_for_one_account })
+        .where(identities: { deleted_at: nil })
+        .where(identities: { ial: 2 })
         .where.not(user_id: user.id)
         .distinct
     end
