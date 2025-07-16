@@ -21,11 +21,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       trueid_liveness_nocropping_workflow: 'LIVENESS.NOCROPPING.WORKFLOW',
     )
   end
-  let(:document_capture_session) { DocumentCaptureSession.new(uuid: SecureRandom.uuid) }
-
-  before do
-    allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
-  end
+  let(:user) { create(:user) }
+  let(:document_capture_session) { create(:document_capture_session, user:) }
 
   describe '#post_images' do
     before do
@@ -40,6 +37,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
 
       it 'sends an upload image request for the front and back DL images' do
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -55,6 +53,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
 
       it 'sends an upload image request for the front and back DL images' do
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -72,6 +71,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         )
 
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -87,6 +87,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       stub_request(:post, image_upload_url).to_return(body: '', status: 500)
 
       result = client.post_images(
+        user_uuid: document_capture_session.uuid,
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
         images_cropped: images_cropped,
@@ -105,6 +106,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       stub_request(:post, image_upload_url).to_raise(Faraday::TimeoutError.new('Connection failed'))
 
       result = client.post_images(
+        user_uuid: document_capture_session.uuid,
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
         images_cropped: images_cropped,
@@ -121,6 +123,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
   context 'with selfie check enabled' do
     ## enable feature
     let(:workflow) { 'LIVENESS.CROPPING.WORKFLOW' }
+
     describe 'when success response returned' do
       before do
         stub_request(:post, image_upload_url).to_return(
@@ -129,6 +132,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       end
       it 'returns a successful response' do
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -153,6 +157,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
 
       it 'returns a response indicate all failures' do
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -187,6 +192,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
           )
 
         result = client.post_images(
+          user_uuid: document_capture_session.uuid,
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
           images_cropped: images_cropped,
@@ -218,6 +224,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
             )
 
           result = client.post_images(
+            user_uuid: document_capture_session.uuid,
             front_image: DocAuthImageFixtures.document_front_image,
             back_image: DocAuthImageFixtures.document_back_image,
             images_cropped: images_cropped,

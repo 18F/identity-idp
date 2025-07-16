@@ -132,7 +132,7 @@ module DocAuth
         end
 
         def id_type_expected?
-          expected_id_type = passport_requested ? ['passport', 'passport_card'] :
+          expected_id_type = passport_requested ? ['passport'] :
             ['drivers_license', 'state_id_card']
 
           expected_id_type.include?(pii_from_doc&.id_doc_type)

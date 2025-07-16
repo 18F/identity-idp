@@ -49,14 +49,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       document_type: document_type,
     )
   end
-  let(:document_capture_session) { DocumentCaptureSession.new(uuid: applicant[:uuid]) }
+  let(:document_capture_session) { build(:document_capture_session, uuid: applicant[:uuid]) }
 
   before do
     allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
-    allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
-      .and_return(passport_requested)
+    document_capture_session.passport_status = passport_requested ? 'requested' : 'not_requested'
   end
 
   shared_examples 'a successful request' do
