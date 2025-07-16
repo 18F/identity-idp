@@ -27,14 +27,17 @@ module Reports
         [
           'New identity verification/Credentials Authorized for Partner',
           'Count',
-          'The number of users without existing IAL2 credentials
-          who complete IAL2 IdV for the partner.',
+          'The number of users who are in their first IdV proofing year
+           and authenticate with the IRS.
+           This count correlates with the billing report charges for Newly Billed
+           IdV users (Year 1), Agreement-Level Count.',
         ],
         [
           'Existing identity verification/Credentials Authorized for Partner',
           'Count',
-          'The existing users who are already IAL2 verified
-          and added authentication with the IRS; ' \
+          'The number of users who are in IdV proofing years 2 - 5 and authenticate with the IRS.
+          This count correlates with the billing report charges for Newly Billed
+          IdV users (Years 2 - 5+), Agreement-Level Count. ' \
           'count of users who share credentials with these applications.',
         ],
       ]
