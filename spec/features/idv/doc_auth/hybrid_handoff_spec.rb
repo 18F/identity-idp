@@ -364,6 +364,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
           describe 'when selfie is required by sp' do
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)
+              verify_handoff_page_ipp_section_and_link(page)
               verify_no_upload_photos_section_and_link(page)
               verify_handoff_page_ipp_option_is_shown(page)
             end
