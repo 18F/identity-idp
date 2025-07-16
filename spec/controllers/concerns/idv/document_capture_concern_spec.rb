@@ -54,7 +54,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       let(:mrz_status) { :failed }
 
       before do
-        allow(controller).to receive(:id_type).and_return('passport')
         allow(document_capture_session).to receive(:passport_requested?).and_return(true)
       end
 
@@ -68,7 +67,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       let(:mrz_status) { :pass }
 
       before do
-        allow(controller).to receive(:id_type).and_return('passport')
         allow(document_capture_session).to receive(:passport_requested?).and_return(true)
         # Update the stored result to include valid passport PII
         id = SecureRandom.hex
@@ -89,6 +87,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             issuing_country_code: 'USA',
             nationality_code: 'USA',
             dob: '1970-06-10',
+            id_doc_type: 'passport',
           },
           attention_with_barcode: false,
         )
@@ -105,7 +104,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
     context 'when document is a state ID' do
       before do
-        allow(controller).to receive(:id_type).and_return('state_id')
       end
 
       it 'returns success response regardless of MRZ status' do
@@ -226,7 +224,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     context 'when passport not requested' do
       before do
         allow(document_capture_session).to receive(:passport_requested?).and_return(false)
-        allow(controller).to receive(:id_type).and_return('state_id')
       end
 
       it 'returns true' do
@@ -237,7 +234,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     context 'when passport requested but state ID submitted' do
       before do
         allow(document_capture_session).to receive(:passport_requested?).and_return(true)
-        allow(controller).to receive(:id_type).and_return('state_id')
       end
 
       it 'returns false' do
@@ -247,7 +243,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
     context 'when document is a passport' do
       before do
-        allow(controller).to receive(:id_type).and_return('passport')
         allow(document_capture_session).to receive(:passport_requested?).and_return(true)
       end
 
@@ -271,6 +266,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
               issuing_country_code: 'USA',
               nationality_code: 'USA',
               dob: '1970-06-10',
+              id_doc_type: 'passport',
             },
             attention_with_barcode: false,
           )
@@ -326,6 +322,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
                 passport_expiration: '2030-01-01',
                 issuing_country_code: 'USA',
                 dob: '1970-06-10',
+                id_doc_type: 'passport',
               },
               attention_with_barcode: false,
             )
@@ -352,6 +349,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
                 passport_expiration: '2030-01-01',
                 issuing_country_code: 'USA',
                 dob: '1970-06-10',
+                id_doc_type: 'passport',
               },
               attention_with_barcode: false,
             )

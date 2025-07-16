@@ -5,7 +5,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def handle_stored_result(user: current_user, store_in_session: true)
-      if stored_result&.success? && selfie_requirement_met? && mrz_requirement_met?
+      if stored_result&.success? && requested_document_type_requirements_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -62,24 +62,45 @@ module Idv
     end
 
     def mrz_requirement_met?
-      # If passport not requested, return true
       return true unless document_capture_session.passport_requested?
-
-      # If passport requested but not submitted (not a passport doc type), return false
-      return false unless id_type == 'passport'
-
-      # If passport submitted, verify ALL conditions are met:
-      # 1. Verify passports are enabled
       return false unless IdentityConfig.store.doc_auth_passports_enabled
 
-      # 2. Verify passport was requested (redundant but per AC)
-      return false unless document_capture_session.passport_requested?
-
-      # 3. Verify MRZ validation passed
       stored_result.mrz_status == :pass
     end
 
     private
+
+    def requested_document_type_requirements_met?
+      return false if document_type_mismatch?
+
+      # Passports require both selfie and MRZ validation to pass
+      if document_capture_session.passport_requested?
+        selfie_requirement_met? && mrz_requirement_met?
+      else
+        # State IDs only require selfie validation (no MRZ)
+        selfie_requirement_met?
+      end
+    end
+
+    def document_type_mismatch?
+      # Reject passports when feature is disabled but user submitted a passport
+      return true if !IdentityConfig.store.doc_auth_passports_enabled &&
+                     submitted_id_type == 'passport'
+
+      # Reject when user requested passport flow but submitted a different document type
+      return true if document_capture_session.passport_requested? &&
+                     submitted_id_type != 'passport'
+
+      # Reject when user didn't request passport flow but submitted a passport
+      return true if !document_capture_session.passport_requested? &&
+                     submitted_id_type == 'passport'
+
+      false
+    end
+
+    def submitted_id_type
+      stored_result.pii_from_doc&.dig(:id_doc_type)
+    end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
@@ -166,10 +187,6 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
-    end
-
-    def id_type
-      document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
   end
 end
