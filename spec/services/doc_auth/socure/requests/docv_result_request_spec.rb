@@ -13,8 +13,8 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
     )
   end
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:doc_type) { '' }
-  let(:decision_value) { '' }
+  let(:doc_type) { 'Drivers License' }
+  let(:decision_value) { 'accept' }
 
   subject(:docv_result_request) do
     described_class.new(
@@ -79,8 +79,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
               passport_status: 'requested',
             )
           end
-          let(:doc_type) { 'Drivers License' }
-          let(:decision_value) { 'accept' }
 
           it 'returns a DocAuth::Response failure' do
             expect(response.to_h).to include(
@@ -102,7 +100,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
             )
           end
           let(:doc_type) { 'Passport' }
-          let(:decision_value) { 'accept' }
 
           it 'returns a DocAuth::Response failure' do
             expect(response.to_h).to include(
