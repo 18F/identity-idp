@@ -477,6 +477,7 @@ RSpec.describe SocureDocvResultsJob do
               document_capture_session.reload
               document_capture_session_result = document_capture_session.load_result
               expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.pii).to be_nil
               expect(document_capture_session_result.doc_auth_success).to eq(true)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
               expect(document_capture_session_result.mrz_status).to eq(:failed)
