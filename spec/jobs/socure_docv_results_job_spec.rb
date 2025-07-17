@@ -519,6 +519,9 @@ RSpec.describe SocureDocvResultsJob do
               before do
                 allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
                   .and_return(Idp::Constants::Vendors::SOCURE)
+                document_capture_session.update!(
+                  passport_status: 'requested',
+                )
               end
 
               it 'doc auth succeeds' do

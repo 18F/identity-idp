@@ -241,7 +241,7 @@ class SocureDocvResultsJob < ApplicationJob
       )
     end
 
-    mrz_client = Rails.env.development? ?
+    mrz_client = Rails.env.local? ?
                     DocAuth::Mock::DosPassportApiClient.new :
                     DocAuth::Dos::Requests::MrzRequest.new(mrz: doc_pii_response.pii_from_doc[:mrz])
     response = mrz_client.fetch
