@@ -213,7 +213,7 @@ module Idv
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
         )
       end
-      mrz_client = document_capture_session.doc_auth_vendor == 'mock' ?
+      mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
                      DocAuth::Mock::DosPassportApiClient.new(client_response) :
                      DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
       response = mrz_client.fetch
