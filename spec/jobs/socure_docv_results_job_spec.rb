@@ -437,6 +437,54 @@ RSpec.describe SocureDocvResultsJob do
             ),
           )
         end
+
+        context 'when passports are enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+              .and_return(Idp::Constants::Vendors::SOCURE)
+          end
+
+          it 'doc auth succeeds' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.success).to eq(true)
+            expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+            expect(document_capture_session_result.attention_with_barcode).to eq(false)
+            expect(document_capture_session_result.doc_auth_success).to eq(true)
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+            expect(document_capture_session.last_doc_auth_result).to eq('accept')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+              ),
+            )
+          end
+
+          context 'when a passport was requested' do
+            before do
+              document_capture_session.update(passport_status: 'requested')
+            end
+
+            it 'doc auth fails' do
+              perform
+
+              document_capture_session.reload
+              document_capture_session_result = document_capture_session.load_result
+              expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.doc_auth_success).to eq(true)
+              expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.mrz_status).to eq(:failed)
+              expect(document_capture_session_result.errors)
+                .to eq({ passport: 'Cannot validate MRZ for id type: identification_card' })
+            end
+          end
+        end
       end
 
       context 'Passport is submitted' do
