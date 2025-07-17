@@ -89,6 +89,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
     allow(writer).to receive(:write).and_return result
     allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
       .and_return(passport_requested)
