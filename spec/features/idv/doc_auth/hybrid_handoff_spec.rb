@@ -287,14 +287,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     expect(page).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
   end
 
-  def verify_handoff_page_ipp_section_and_link(page)
+  def verify_handoff_page_ipp_option_is_shown(page)
     expect(page).to have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
-    click_on t('forms.buttons.continue_ipp')
-    expect(page).to have_current_path(idv_document_capture_path({ step: 'hybrid_handoff' }))
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('headings.verify'))
-    click_on t('forms.buttons.back')
-    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
   def verify_upload_photos_section_and_link(page)
@@ -360,6 +354,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
       it 'shows phone only top content no upload section' do
         verify_handoff_page_non_selfie_version_content(page)
         verify_no_upload_photos_section_and_link(page)
+        verify_handoff_page_no_ipp_option_shown(page)
       end
     end
 
@@ -370,13 +365,14 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows selfie version of top content and ipp option section' do
               verify_handoff_page_selfie_version_content(page)
               verify_no_upload_photos_section_and_link(page)
+              verify_handoff_page_ipp_option_is_shown(page)
             end
           end
           describe 'when selfie is not required by sp' do
             let(:facial_match_required) { false }
-            it 'shows non selfie version of top content and upload section,
-                no ipp option section' do
+            it 'shows non selfie version of top content and upload section' do
               verify_handoff_page_non_selfie_version_content(page)
+              verify_handoff_page_ipp_option_is_shown(page)
             end
           end
         end
@@ -398,6 +394,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
             it 'shows non selfie version of top content and upload section,
                 no ipp option section' do
               verify_handoff_page_non_selfie_version_content(page)
+              verify_handoff_page_no_ipp_option_shown(page)
             end
           end
         end
