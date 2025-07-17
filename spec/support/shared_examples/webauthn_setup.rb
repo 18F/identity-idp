@@ -45,8 +45,6 @@ RSpec.shared_examples 'webauthn setup' do
 
     before do
       allow(IdentityConfig.store)
-        .to receive(:show_unsupported_passkey_platform_authentication_setup)
-        .and_return(true)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       mock_webauthn_setup_challenge
