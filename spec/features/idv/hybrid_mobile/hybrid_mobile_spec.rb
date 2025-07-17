@@ -19,6 +19,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)

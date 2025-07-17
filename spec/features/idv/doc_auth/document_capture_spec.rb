@@ -21,6 +21,7 @@ RSpec.feature 'document capture step', :js do
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
   end
 
   before(:all) do
