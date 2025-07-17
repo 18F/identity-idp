@@ -20,7 +20,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:socure_doc_escrow_enabled) { false }
   let(:selfie) { false }
-  let(:mrz_response) { 'YES'}
+  let(:mrz_response) { 'YES' }
 
   before do
     document_capture_session.update(

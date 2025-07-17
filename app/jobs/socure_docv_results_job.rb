@@ -28,8 +28,6 @@ class SocureDocvResultsJob < ApplicationJob
     last_doc_auth_result = docv_result_response.extra_attributes.dig(:decision, :value)
     document_capture_session.update!(last_doc_auth_result:) if last_doc_auth_result
 
-    mrz_response = nil
-
     unless docv_result_response.success?
       document_capture_session.store_failed_auth_data(
         doc_auth_success: docv_result_response.doc_auth_success?,
