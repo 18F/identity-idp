@@ -102,6 +102,10 @@ module Idv
       stored_result.pii_from_doc&.dig(:id_doc_type)
     end
 
+    def id_type
+      document_capture_session.passport_requested? ? 'passport' : 'state_id'
+    end
+
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
