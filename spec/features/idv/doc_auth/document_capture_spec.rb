@@ -704,10 +704,10 @@ RSpec.feature 'document capture step', :js do
             end
 
             before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-              allow(IdentityConfig.store).to receive(
-                :in_person_proofing_opt_in_enabled,
-              ).and_return(true)
+              # allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+              # allow(IdentityConfig.store).to receive(
+              #   :in_person_proofing_opt_in_enabled,
+              # ).and_return(true)
               allow_any_instance_of(ServiceProvider).to receive(
                 :in_person_proofing_enabled,
               ).and_return(true)
