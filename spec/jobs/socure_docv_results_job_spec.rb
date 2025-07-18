@@ -480,11 +480,10 @@ RSpec.describe SocureDocvResultsJob do
               document_capture_session_result = document_capture_session.load_result
               expect(document_capture_session_result.success).to eq(false)
               expect(document_capture_session_result.pii).to be_nil
-              expect(document_capture_session_result.doc_auth_success).to eq(true)
+              expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-              expect(document_capture_session_result.mrz_status).to eq(:failed)
-              expect(document_capture_session_result.errors)
-                .to eq({ passport: 'Cannot validate MRZ for id type: identification_card' })
+              expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+              expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
             end
           end
         end
@@ -579,7 +578,6 @@ RSpec.describe SocureDocvResultsJob do
 
             context 'when docv passports are enabled' do
               before do
-                allow(Rails.env).to receive(:development?).and_return(true)
                 allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
                   .and_return(Idp::Constants::Vendors::SOCURE)
                 document_capture_session.update!(
@@ -613,6 +611,8 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.doc_auth_success).to eq(true)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.mrz_status).to eq(:failed)
+                  expect(document_capture_session_result.errors)
+                    .to eq({ passport: 'Please add a new image' })
                 end
               end
 
