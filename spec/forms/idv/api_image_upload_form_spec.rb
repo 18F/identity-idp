@@ -1107,6 +1107,33 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
+      context 'uses mock dos if flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+        it 'calls the mock dos api client' do
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to_not receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+          form.submit
+        end
+      end
+
+      context 'uses mock dos if flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+          allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+
+        it 'does not call the mock dos api client' do
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+          form.submit
+        end
+      end
+
       context 'Passport MRZ validation succeeds' do
         let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
         let(:document_type) { 'Passport' }
