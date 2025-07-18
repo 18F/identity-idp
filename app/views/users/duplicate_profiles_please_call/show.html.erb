@@ -1,0 +1,9 @@
+<%= render(
+      'idv/shared/error',
+      heading: t('users.duplicate_profiles_please_call.heading'),
+    ) do %>
+    <p>
+      <%= t('users.duplicate_profiles_please_call.error_details_html', contact_number: IdentityConfig.store.idv_contact_phone_number, help_url: MarketingSite.help_url) %>
+      <%# TODO Change help_url to be more specific %>
+    </p>
+<% end %>

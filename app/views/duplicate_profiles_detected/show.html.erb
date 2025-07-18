@@ -44,7 +44,7 @@
   </div>
   <div class="margin-top-2">
     <%= render ButtonComponent.new(
-          url: root_url,
+          url: duplicate_profiles_please_call_path('dont_recognize'),
           method: :get,
           unstyled: true,
         ).with_content(t('duplicate_profiles_detected.dont_recognize_account')) %>
@@ -65,7 +65,7 @@
 
   <div class="margin-top-2">
     <%= render ButtonComponent.new(
-          url: root_url,
+          url: duplicate_profiles_please_call_path('cant_access'),
           method: :get,
           unstyled: true,
         ).with_content(t('duplicate_profiles_detected.cant_access')) %>

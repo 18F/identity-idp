@@ -2070,6 +2070,8 @@ users.delete.bullet_4: Nous informerons les organismes auxquels vous accédez av
 users.delete.heading: Êtes-vous sûr de vouloir supprimer votre compte ?
 users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez supprimer votre compte.
 users.delete.subheading: 'Si vous supprimez votre compte :'
+users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
+users.duplicate_profiles_please_call.heading: Please give us a call
 users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle

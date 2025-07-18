@@ -2070,6 +2070,8 @@ users.delete.bullet_4: We will notify the agencies you access with %{app_name} t
 users.delete.heading: Are you sure you want to delete your account?
 users.delete.instructions: Enter your password to confirm that you want to delete your account.
 users.delete.subheading: 'If you delete your account:'
+users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
+users.duplicate_profiles_please_call.heading: Please give us a call
 users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview
