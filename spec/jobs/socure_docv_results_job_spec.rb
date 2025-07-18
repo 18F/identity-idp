@@ -580,61 +580,9 @@ RSpec.describe SocureDocvResultsJob do
               before do
                 allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
                   .and_return(Idp::Constants::Vendors::SOCURE)
-                document_capture_session.update!(
-                  passport_status: 'requested',
-                )
               end
 
-              it 'result succeeds' do
-                perform
-
-                document_capture_session.reload
-                document_capture_session_result = document_capture_session.load_result
-                expect(document_capture_session_result.success).to eq(true)
-                expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
-                expect(document_capture_session_result.doc_auth_success).to eq(true)
-                expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                expect(document_capture_session_result.attention_with_barcode).to eq(false)
-                expect(document_capture_session_result.mrz_status).to eq(:pass)
-              end
-
-              context 'when the MRZ is not valid' do
-                let(:mrz_response) { 'NO' }
-
-                it 'result fails' do
-                  perform
-
-                  document_capture_session.reload
-                  document_capture_session_result = document_capture_session.load_result
-                  expect(document_capture_session_result.success).to eq(false)
-                  expect(document_capture_session_result.pii).to be_nil
-                  expect(document_capture_session_result.doc_auth_success).to eq(true)
-                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                  expect(document_capture_session_result.mrz_status).to eq(:failed)
-                  expect(document_capture_session_result.errors)
-                    .to eq({ passport: 'Please add a new image' })
-                end
-              end
-
-              context 'when pii validation fails' do
-                let(:mrz) { nil }
-
-                it 'result fails' do
-                  perform
-
-                  document_capture_session.reload
-                  document_capture_session_result = document_capture_session.load_result
-                  expect(document_capture_session_result.success).to eq(false)
-                  expect(document_capture_session_result.errors[:pii_validation]).to eq('failed')
-                  expect(document_capture_session_result.doc_auth_success).to eq(true)
-                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                  expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-                end
-              end
-
-              context 'when decision is not "accept"' do
-                let(:decision_value) { 'reject' }
-
+              context 'when a passport was NOT requested' do
                 it 'doc auth fails' do
                   perform
 
@@ -644,6 +592,76 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.doc_auth_success).to eq(false)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                end
+              end
+
+              context 'when a passport was requested' do
+                before do
+                  document_capture_session.update!(
+                    passport_status: 'requested',
+                  )
+                end
+
+                it 'result succeeds' do
+                  perform
+
+                  document_capture_session.reload
+                  document_capture_session_result = document_capture_session.load_result
+                  expect(document_capture_session_result.success).to eq(true)
+                  expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+                  expect(document_capture_session_result.doc_auth_success).to eq(true)
+                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.attention_with_barcode).to eq(false)
+                  expect(document_capture_session_result.mrz_status).to eq(:pass)
+                end
+
+                context 'when the MRZ is not valid' do
+                  let(:mrz_response) { 'NO' }
+
+                  it 'result fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.pii).to be_nil
+                    expect(document_capture_session_result.doc_auth_success).to eq(true)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:failed)
+                    expect(document_capture_session_result.errors)
+                      .to eq({ passport: 'Please add a new image' })
+                  end
+                end
+
+                context 'when pii validation fails' do
+                  let(:mrz) { nil }
+
+                  it 'result fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.errors[:pii_validation]).to eq('failed')
+                    expect(document_capture_session_result.doc_auth_success).to eq(true)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                  end
+                end
+
+                context 'when decision is not "accept"' do
+                  let(:decision_value) { 'reject' }
+
+                  it 'doc auth fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.doc_auth_success).to eq(false)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                  end
                 end
               end
             end
