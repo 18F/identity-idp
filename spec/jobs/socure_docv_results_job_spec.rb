@@ -517,8 +517,12 @@ RSpec.describe SocureDocvResultsJob do
 
             context 'when docv passports are enabled' do
               before do
+                allow(Rails.env).to receive(:development?).and_return(true)
                 allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
                   .and_return(Idp::Constants::Vendors::SOCURE)
+                document_capture_session.update!(
+                  passport_status: 'requested',
+                )
               end
 
               it 'doc auth succeeds' do

@@ -47,12 +47,12 @@ RSpec.describe Reporting::IrsVerificationReport do
 
       expect(table).to include(
         ['Metric', 'Count', 'Rate'],
-        ['Verification Demand', 100, 100.0],
-        ['Document Authentication Success', 80, 80.0],
-        ['Information Verification Success', 70, 70.0],
-        ['Phone Verification Success', 60, 60.0],
-        ['Verification Successes', 50, 50.0],
-        ['Verification Failures', 50, 50.0],
+        ['Verification Demand', 100, 1.0],
+        ['Document Authentication Success', 80, 0.8],
+        ['Information Verification Success', 70, 0.7],
+        ['Phone Verification Success', 60, 0.6],
+        ['Verification Successes', 50, 0.5],
+        ['Verification Failures', 50, 0.5],
       )
     end
   end

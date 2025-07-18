@@ -4,13 +4,22 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   let(:user) { create(:user) }
   let(:customer_user_id) { user.uuid }
   let(:user_email) { Faker::Internet.email }
-  let(:document_capture_session_uuid) { 'fake uuid' }
+  let(:docv_transaction_token) { 'fake docv transaction token' }
+  let(:document_capture_session) do
+    create(
+      :document_capture_session,
+      user:,
+      socure_docv_transaction_token: docv_transaction_token,
+    )
+  end
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:doc_type) { 'Drivers License' }
+  let(:decision_value) { 'accept' }
 
   subject(:docv_result_request) do
     described_class.new(
       customer_user_id:,
-      document_capture_session_uuid:,
+      document_capture_session_uuid: document_capture_session.uuid,
       user_email:,
     )
   end
@@ -18,17 +27,10 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
   describe '#fetch' do
     let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
     let(:fake_socure_api_endpoint) { 'https://fake-socure.test/api/3.0/EmailAuthScore' }
-    let(:docv_transaction_token) { 'fake docv transaction token' }
-    let(:document_capture_session) do
-      DocumentCaptureSession.create(user:).tap do |dcs|
-        dcs.socure_docv_transaction_token = docv_transaction_token
-      end
-    end
 
     before do
       allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
         .and_return(fake_socure_endpoint)
-      allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     end
 
     context 'when the docv request is successful' do
@@ -44,12 +46,71 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
           })
           .to_return(
             status: 200,
-            body: {}.to_json,
+            body: {
+              documentVerification: {
+                decision: {
+                  value: decision_value,
+                },
+                documentType: {
+                  type: doc_type,
+                },
+              },
+            }.to_json,
           )
       end
 
       it 'returns a DocvResultResponse' do
         expect(response).to be_instance_of(DocAuth::Socure::Responses::DocvResultResponse)
+      end
+
+      context 'passports enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+            .and_return(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'fails if doc types do not match passport request dl submitted' do
+          let(:document_capture_session) do
+            create(
+              :document_capture_session,
+              user:,
+              socure_docv_transaction_token: docv_transaction_token,
+              passport_status: 'requested',
+            )
+          end
+
+          it 'returns a DocAuth::Response failure' do
+            expect(response.to_h).to include(
+              success: false,
+              errors: {
+                unexpected_id_type: true,
+              },
+              vendor: 'Socure',
+            )
+          end
+        end
+        context 'fails if doc types do not match dl requested passport submitted' do
+          let(:document_capture_session) do
+            create(
+              :document_capture_session,
+              user:,
+              socure_docv_transaction_token: docv_transaction_token,
+              passport_status: 'allowed',
+            )
+          end
+          let(:doc_type) { 'Passport' }
+
+          it 'returns a DocAuth::Response failure' do
+            expect(response.to_h).to include(
+              success: false,
+              errors: {
+                unexpected_id_type: true,
+              },
+              vendor: 'Socure',
+            )
+          end
+        end
       end
     end
 
