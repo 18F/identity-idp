@@ -14,11 +14,6 @@ module Idv
     def show
       abandon_any_ipp_progress
       @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
-
-      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                                        Idv::InPersonConfig.enabled_for_issuer?(
-                                          decorated_sp_session.sp_issuer,
-                                        )
       @post_office_enabled = IdentityConfig.store.in_person_proofing_enabled &&
                              IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                              IdentityConfig.store.in_person_doc_auth_button_enabled &&
