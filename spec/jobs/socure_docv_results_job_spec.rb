@@ -592,6 +592,7 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.doc_auth_success).to eq(false)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                  expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
                 end
               end
 
@@ -661,6 +662,8 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                    expect(document_capture_session_result.errors)
+                      .to eq({ socure: { reason_codes: } })
                   end
                 end
               end
