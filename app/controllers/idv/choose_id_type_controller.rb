@@ -54,11 +54,7 @@ module Idv
             doc_session = DocumentCaptureSession.find_by(
               uuid: idv_session.document_capture_session_uuid,
             )
-            if doc_session
-              unless doc_session.passport_status == 'requested'
-                doc_session.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
-              end
-            end
+            doc_session&.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
           end
         end,
       )
