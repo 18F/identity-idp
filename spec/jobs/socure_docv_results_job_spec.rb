@@ -544,6 +544,29 @@ RSpec.describe SocureDocvResultsJob do
               ),
             )
           end
+
+          context 'when passport card is submitted' do
+            let(:document_type_type) { 'Passport Card' }
+
+            it 'doc auth fails' do
+              perform
+
+              document_capture_session.reload
+              document_capture_session_result = document_capture_session.load_result
+              expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.pii).to be_nil
+              expect(document_capture_session_result.doc_auth_success).to eq(false)
+              expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+                hash_including(
+                  :customer_user_id,
+                  :decision,
+                  :reference_id,
+                ),
+              )
+            end
+          end
         end
 
         context 'when passports are enabled' do
@@ -664,6 +687,29 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ socure: { reason_codes: } })
+                  end
+                end
+
+                context 'when passport card is submitted' do
+                  let(:document_type_type) { 'Passport Card' }
+
+                  it 'doc auth fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.pii).to be_nil
+                    expect(document_capture_session_result.doc_auth_success).to eq(false)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(fake_analytics).to have_logged_event(
+                      :idv_socure_verification_data_requested,
+                      hash_including(
+                        :customer_user_id,
+                        :decision,
+                        :reference_id,
+                      ),
+                    )
                   end
                 end
               end
