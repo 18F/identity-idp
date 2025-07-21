@@ -368,6 +368,7 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
               verify_handoff_page_ipp_option_is_shown(page)
             end
           end
+
           describe 'when selfie is not required by sp' do
             let(:facial_match_required) { false }
             it 'shows non selfie version of top content and upload section' do
