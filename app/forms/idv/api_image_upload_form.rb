@@ -71,7 +71,7 @@ module Idv
         pii_from_doc = client_response.pii_from_doc.to_h || {}
 
         attempts_api_tracker.idv_document_upload_submitted(
-          **images_metadata.attempts_file_data,
+          **doc_escrow_images,
           success: response.success?,
           document_state: pii_from_doc[:state],
           document_number: pii_from_doc[:state_id_number],
@@ -145,7 +145,7 @@ module Idv
       return unless doc_escrow_enabled?
 
       attempts_api_tracker.idv_document_uploaded(
-        **images_metadata.attempts_file_data,
+        **doc_escrow_images,
         success: response.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
@@ -318,6 +318,12 @@ module Idv
 
     def images_metadata
       @images_metadata ||= IdvImages.new(params)
+    end
+
+    def doc_escrow_images
+      return {} unless service_provider.attempts_api_enabled?
+
+      images_metadata.attempts_file_data
     end
 
     def passport_submittal

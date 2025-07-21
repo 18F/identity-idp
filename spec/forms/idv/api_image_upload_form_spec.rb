@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
   include DocPiiHelper
+  let(:service_provider) { create(:service_provider) }
 
   subject(:form) do
     Idv::ApiImageUploadForm.new(
@@ -18,7 +19,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           document_capture_session_uuid: document_capture_session_uuid,
         }.compact,
       ),
-      service_provider: build(:service_provider, issuer: 'test_issuer'),
+      service_provider:,
       analytics: fake_analytics,
       attempts_api_tracker:,
       liveness_checking_required:,
@@ -27,6 +28,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:attempts_api_enabled_for_sp) { false }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:passport_image) { nil }
@@ -90,6 +92,9 @@ RSpec.describe Idv::ApiImageUploadForm do
   before do
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return doc_escrow_enabled
     allow(writer).to receive(:write).and_return result
+    allow(service_provider).to receive(:attempts_api_enabled?)
+      .and_return(attempts_api_enabled_for_sp)
+
     allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
       .and_return(passport_requested)
   end
@@ -295,48 +300,87 @@ RSpec.describe Idv::ApiImageUploadForm do
       context 'the attempts_api_tracker is enabled' do
         let(:doc_escrow_enabled) { true }
 
-        before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+        context 'the attempts api is enabled for the service provider' do
+          let(:attempts_api_enabled_for_sp) { true }
 
-          allow(writer).to receive(:write).and_return result
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-          form.send(:images).each do |image|
-            # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+            allow(writer).to receive(:write).and_return result
+
+            form.send(:images).each do |image|
+              # testing that the storage is happening
+              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+            end
+          end
+
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: pii_from_doc[:state],
+              document_number: pii_from_doc[:state_id_number],
+              document_issued: pii_from_doc[:state_id_issued],
+              document_expiration: pii_from_doc[:state_id_expiration],
+              first_name: pii_from_doc[:first_name],
+              last_name: pii_from_doc[:last_name],
+              date_of_birth: pii_from_doc[:dob],
+              address1: pii_from_doc[:address1],
+              address2: pii_from_doc[:address2],
+              city: pii_from_doc[:city],
+              state: pii_from_doc[:state],
+              zip: pii_from_doc[:zip],
+              failure_reason: nil,
+            )
+            form.submit
           end
         end
 
-        it 'tracks the event' do
-          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: true,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            failure_reason: nil,
-          )
+        context 'the attempts api is not enabled for the service provider' do
+          let(:attempts_api_enabled_for_sp) { false }
 
-          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            success: true,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            document_state: pii_from_doc[:state],
-            document_number: pii_from_doc[:state_id_number],
-            document_issued: pii_from_doc[:state_id_issued],
-            document_expiration: pii_from_doc[:state_id_expiration],
-            first_name: pii_from_doc[:first_name],
-            last_name: pii_from_doc[:last_name],
-            date_of_birth: pii_from_doc[:dob],
-            address1: pii_from_doc[:address1],
-            address2: pii_from_doc[:address2],
-            city: pii_from_doc[:city],
-            state: pii_from_doc[:state],
-            zip: pii_from_doc[:zip],
-            failure_reason: nil,
-          )
-          form.submit
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+
+            expect(writer).not_to receive(:write)
+          end
+
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_state: pii_from_doc[:state],
+              document_number: pii_from_doc[:state_id_number],
+              document_issued: pii_from_doc[:state_id_issued],
+              document_expiration: pii_from_doc[:state_id_expiration],
+              first_name: pii_from_doc[:first_name],
+              last_name: pii_from_doc[:last_name],
+              date_of_birth: pii_from_doc[:dob],
+              address1: pii_from_doc[:address1],
+              address2: pii_from_doc[:address2],
+              city: pii_from_doc[:city],
+              state: pii_from_doc[:state],
+              zip: pii_from_doc[:zip],
+              failure_reason: nil,
+            )
+            form.submit
+          end
         end
       end
 
@@ -456,52 +500,89 @@ RSpec.describe Idv::ApiImageUploadForm do
         context 'the attempts_api_tracker is enabled' do
           let(:doc_escrow_enabled) { true }
 
-          before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+          context 'the attempts api is enabled for the service provider' do
+            let(:attempts_api_enabled_for_sp) { true }
 
-            allow(writer).to receive(:write).and_return result
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
-            form.send(:images).each do |image|
-              # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+              allow(writer).to receive(:write).and_return result
+
+              form.send(:images).each do |image|
+                # testing that the storage is happening
+                expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+              end
+            end
+
+            it 'tracks the event' do
+              expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: true,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                document_selfie_image_encryption_key: '12345',
+                document_selfie_image_file_id: 'name',
+                failure_reason: nil,
+              )
+
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: true,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                document_selfie_image_encryption_key: '12345',
+                document_selfie_image_file_id: 'name',
+                document_state: pii_from_doc[:state],
+                document_number: pii_from_doc[:state_id_number],
+                document_issued: pii_from_doc[:state_id_issued],
+                document_expiration: pii_from_doc[:state_id_expiration],
+                first_name: pii_from_doc[:first_name],
+                last_name: pii_from_doc[:last_name],
+                date_of_birth: pii_from_doc[:dob],
+                address1: pii_from_doc[:address1],
+                address2: pii_from_doc[:address2],
+                city: pii_from_doc[:city],
+                state: pii_from_doc[:state],
+                zip: pii_from_doc[:zip],
+                failure_reason: nil,
+              )
+              form.submit
             end
           end
 
-          it 'tracks the event' do
-            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
-              success: true,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
-              document_selfie_image_encryption_key: '12345',
-              document_selfie_image_file_id: 'name',
-              failure_reason: nil,
-            )
+          context 'the attempts api is not enabled for the service provider' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
 
-            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-              success: true,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
-              document_selfie_image_encryption_key: '12345',
-              document_selfie_image_file_id: 'name',
-              document_state: pii_from_doc[:state],
-              document_number: pii_from_doc[:state_id_number],
-              document_issued: pii_from_doc[:state_id_issued],
-              document_expiration: pii_from_doc[:state_id_expiration],
-              first_name: pii_from_doc[:first_name],
-              last_name: pii_from_doc[:last_name],
-              date_of_birth: pii_from_doc[:dob],
-              address1: pii_from_doc[:address1],
-              address2: pii_from_doc[:address2],
-              city: pii_from_doc[:city],
-              state: pii_from_doc[:state],
-              zip: pii_from_doc[:zip],
-              failure_reason: nil,
-            )
-            form.submit
+              expect(writer).not_to receive(:write)
+            end
+
+            it 'tracks the event' do
+              expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: true,
+                failure_reason: nil,
+              )
+
+              expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                success: true,
+                document_state: pii_from_doc[:state],
+                document_number: pii_from_doc[:state_id_number],
+                document_issued: pii_from_doc[:state_id_issued],
+                document_expiration: pii_from_doc[:state_id_expiration],
+                first_name: pii_from_doc[:first_name],
+                last_name: pii_from_doc[:last_name],
+                date_of_birth: pii_from_doc[:dob],
+                address1: pii_from_doc[:address1],
+                address2: pii_from_doc[:address2],
+                city: pii_from_doc[:city],
+                state: pii_from_doc[:state],
+                zip: pii_from_doc[:zip],
+                failure_reason: nil,
+              )
+              form.submit
+            end
           end
         end
       end
@@ -612,26 +693,47 @@ RSpec.describe Idv::ApiImageUploadForm do
       context 'the attempts_api_tracker is enabled' do
         let(:doc_escrow_enabled) { true }
 
-        before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write)
+        context 'the attempts api is enabled for the service provider' do
+          let(:attempts_api_enabled_for_sp) { true }
 
-          form.send(:images).each do |image|
-            # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes).and_return result
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            allow(writer).to receive(:write)
+
+            form.send(:images).each do |image|
+              # testing that the storage is happening
+              expect(writer).to receive(:write).with(image: image.bytes).and_return result
+            end
+          end
+
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              failure_reason: { front: [:blank] },
+            )
+
+            expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+            form.submit
           end
         end
 
-        it 'tracks the event' do
-          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: false,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            failure_reason: { front: [:blank] },
-          )
+        context 'the attempts api is not enabled for the service provider' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
 
-          expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
-          form.submit
+          it 'tracks the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              failure_reason: { front: [:blank] },
+            )
+
+            expect(attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+            form.submit
+          end
         end
       end
     end
@@ -668,51 +770,86 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.pii_from_doc).to eq(nil)
       end
 
-      context 'the attempts_api_tracker is enabled' do
+      context 'doc escrow  is enabled' do
         let(:doc_escrow_enabled) { true }
 
-        before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          allow(writer).to receive(:write).and_return result
+        context 'the attempts api is enabled for the service provider' do
+          let(:attempts_api_enabled_for_sp) { true }
 
-          form.send(:images).each do |image|
-            # testing that the storage is happening
-            expect(writer).to receive(:write).with(image: image.bytes)
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            allow(writer).to receive(:write).and_return result
+
+            form.send(:images).each do |image|
+              # testing that the storage is happening
+              expect(writer).to receive(:write).with(image: image.bytes)
+            end
+          end
+          it 'tracks the event (as a success as doc upload succeeded)' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              document_state: nil,
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: { front: 'glare' },
+            )
+
+            form.submit
           end
         end
 
-        it 'tracks the event (as a success as doc upload succeeded)' do
-          expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: true,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            failure_reason: nil,
-          )
+        context 'the attempts api is not enabled for the service provider' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+          it 'does not write the event' do
+            expect(attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              failure_reason: nil,
+            )
 
-          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            success: false,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            document_state: nil,
-            document_number: nil,
-            document_issued: nil,
-            document_expiration: nil,
-            first_name: nil,
-            last_name: nil,
-            date_of_birth: nil,
-            address1: nil,
-            address2: nil,
-            city: nil,
-            state: nil,
-            zip: nil,
-            failure_reason: { front: 'glare' },
-          )
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_state: nil,
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: { front: 'glare' },
+            )
 
-          form.submit
+            form.submit
+          end
         end
       end
 
