@@ -263,6 +263,39 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def dupe_profile_created(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('user_mailer.dupe_profile.created.heading', app_name: APP_NAME))
+    end
+  end
+
+  def dupe_profile_sign_in_attempted(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('user_mailer.dupe_profile.sign_in.heading'))
+    end
+  end
+
+
+  def dupe_profile_account_review_complete_unable(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('user_mailer.dupe_profile.review_complete.unable_heading'))
+    end
+  end
+
+  def dupe_profile_account_review_complete_locked(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('user_mailer.dupe_profile.review_complete.locked_heading'))
+    end
+  end
+
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
