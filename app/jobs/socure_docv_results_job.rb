@@ -245,10 +245,6 @@ class SocureDocvResultsJob < ApplicationJob
     id_type = doc_pii_response.extra[:id_doc_type]
     unless id_type == 'passport'
       return unless document_capture_session.passport_requested?
-      return DocAuth::Response.new(
-        success: false,
-        errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
-      )
     end
 
     mrz_client = Rails.env.development? ?
