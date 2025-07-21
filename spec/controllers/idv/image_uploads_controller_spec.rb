@@ -15,11 +15,27 @@ RSpec.describe Idv::ImageUploadsController do
     EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
   end
   let(:doc_escrow_enabled) { false }
+
+  let(:sp) { create(:service_provider) }
+  let(:sp_session) do
+    {
+      issuer: sp.issuer,
+      acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+    }
+  end
+  let(:attempts_api_enabled_for_sp) { false }
+
   before do
     stub_attempts_tracker
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
     allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
     allow(writer).to receive(:write).and_return result
+    allow(controller).to receive(:sp_session).and_return(sp_session)
+    if attempts_api_enabled_for_sp
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
+        .and_return([{ 'issuer' => sp.issuer }])
+    end
     stub_sign_in(user) if user
   end
 
@@ -85,21 +101,28 @@ RSpec.describe Idv::ImageUploadsController do
 
       context 'when document escrow is enabled' do
         let(:doc_escrow_enabled) { true }
-
-        before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          expect(writer).to receive(:write).and_return result
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).and_return result
+          end
         end
 
-        it 'tracks the event' do
-          expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: false,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            failure_reason: { front: [:blank] },
-          )
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
 
-          action
+          it 'does not upload the images' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              failure_reason: { front: [:blank] },
+            )
+
+            action
+          end
         end
       end
     end
@@ -131,26 +154,43 @@ RSpec.describe Idv::ImageUploadsController do
 
       context 'when the attempts_api_tracker is enabled' do
         let(:doc_escrow_enabled) { true }
-        before do
-          expect(writer).to receive(:write).with(image: nil).and_call_original
-          allow(writer).to receive(:write).and_return result
+
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).with(image: nil).and_call_original
+            allow(writer).to receive(:write).and_return result
+          end
+
+          it 'tracks the event' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: nil,
+              document_front_image_file_id: nil,
+              failure_reason: { front: [:not_a_file] },
+            )
+
+            action
+          end
         end
 
-        before do
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-        end
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
 
-        it 'tracks the event' do
-          expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: false,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: nil,
-            document_front_image_file_id: nil,
-            failure_reason: { front: [:not_a_file] },
-          )
+          it 'does not upload the images' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              failure_reason: { front: [:not_a_file] },
+            )
 
-          action
+            action
+          end
         end
       end
     end
@@ -175,22 +215,40 @@ RSpec.describe Idv::ImageUploadsController do
             allow(writer).to receive(:write).and_return result
           end
 
-          before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(2).times
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+
+            it 'records the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
           end
 
-          it 'tracks the event' do
-            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-              success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
-              failure_reason: { document_capture_session: [:blank] },
-            )
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { document_capture_session: [:blank] },
+              )
 
-            action
+              action
+            end
           end
         end
       end
@@ -216,22 +274,39 @@ RSpec.describe Idv::ImageUploadsController do
             allow(writer).to receive(:write).and_return result
           end
 
-          before do
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(2).times
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+            it 'records the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
           end
 
-          it 'tracks the event' do
-            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-              success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
-              failure_reason: { document_capture_session: [:blank] },
-            )
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { document_capture_session: [:blank] },
+              )
 
-            action
+              action
+            end
           end
         end
       end
@@ -303,25 +378,44 @@ RSpec.describe Idv::ImageUploadsController do
         context 'when the attempts_api_tracker is enabled' do
           let(:doc_escrow_enabled) { true }
 
-          before do
-            allow(writer).to receive(:write).and_return result
-            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(2).times
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              allow(writer).to receive(:write).and_return result
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+            it 'tracks the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { limit: [:rate_limited] },
+              )
+
+              expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
+              action
+            end
           end
 
-          it 'tracks the event' do
-            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-              success: false,
-              document_back_image_encryption_key: '12345',
-              document_back_image_file_id: 'name',
-              document_front_image_encryption_key: '12345',
-              document_front_image_file_id: 'name',
-              failure_reason: { limit: [:rate_limited] },
-            )
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { limit: [:rate_limited] },
+              )
 
-            expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+              expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
 
-            action
+              action
+            end
           end
         end
       end
@@ -398,48 +492,87 @@ RSpec.describe Idv::ImageUploadsController do
       context 'when the attempts_api_tracker is enabled' do
         let(:doc_escrow_enabled) { true }
 
-        before do
-          allow(writer).to receive(:write).and_return result
-          expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-          expect(writer).to receive(:write).exactly(4).times
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            allow(writer).to receive(:write).and_return result
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).exactly(4).times
+          end
+
+          it 'tracks the event' do
+            # the local upload succeeds
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_expiration: nil,
+              document_issued: nil,
+              document_number: nil,
+              document_state: nil,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: {
+                front: ['image_size_failure_field'],
+                general: ['image_size_failure'],
+              },
+            )
+
+            action
+          end
         end
 
-        it 'tracks the event' do
-          # the local upload succeeds
-          expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
-            success: true,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            failure_reason: nil,
-          )
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+          it 'does not upload the images' do
+            # the local upload succeeds
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              failure_reason: nil,
+            )
 
-          expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            success: false,
-            document_expiration: nil,
-            document_issued: nil,
-            document_number: nil,
-            document_state: nil,
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            first_name: nil,
-            last_name: nil,
-            date_of_birth: nil,
-            address1: nil,
-            address2: nil,
-            city: nil,
-            state: nil,
-            zip: nil,
-            failure_reason: {
-              front: ['image_size_failure_field'],
-              general: ['image_size_failure'],
-            },
-          )
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_expiration: nil,
+              document_issued: nil,
+              document_number: nil,
+              document_state: nil,
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: {
+                front: ['image_size_failure_field'],
+                general: ['image_size_failure'],
+              },
+            )
 
-          action
+            action
+          end
         end
       end
     end
@@ -504,30 +637,62 @@ RSpec.describe Idv::ImageUploadsController do
 
       context 'when doc escrow is enabled' do
         let(:doc_escrow_enabled) { true }
-        it 'records attempts api events' do
-          pii = Idp::Constants::MOCK_IDV_APPLICANT
-          expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            success: true,
-            document_expiration: pii[:state_id_expiration],
-            document_issued: pii[:state_id_issued],
-            document_number: pii[:state_id_number],
-            document_state: pii[:state],
-            document_back_image_encryption_key: '12345',
-            document_back_image_file_id: 'name',
-            document_front_image_encryption_key: '12345',
-            document_front_image_file_id: 'name',
-            first_name: pii[:first_name],
-            last_name: pii[:last_name],
-            date_of_birth: pii[:dob],
-            address1: pii[:address1],
-            address2: pii[:address2],
-            city: pii[:city],
-            state: pii[:state],
-            zip: pii[:zip_code],
-            failure_reason: nil,
-          )
 
-          action
+        context 'when the service provider is  on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          it 'does not upload the images' do
+            pii = Idp::Constants::MOCK_IDV_APPLICANT
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_expiration: pii[:state_id_expiration],
+              document_issued: pii[:state_id_issued],
+              document_number: pii[:state_id_number],
+              document_state: pii[:state],
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              first_name: pii[:first_name],
+              last_name: pii[:last_name],
+              date_of_birth: pii[:dob],
+              address1: pii[:address1],
+              address2: pii[:address2],
+              city: pii[:city],
+              state: pii[:state],
+              zip: pii[:zip_code],
+              failure_reason: nil,
+            )
+
+            action
+          end
+        end
+
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+          it 'does not upload the images' do
+            pii = Idp::Constants::MOCK_IDV_APPLICANT
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_expiration: pii[:state_id_expiration],
+              document_issued: pii[:state_id_issued],
+              document_number: pii[:state_id_number],
+              document_state: pii[:state],
+              first_name: pii[:first_name],
+              last_name: pii[:last_name],
+              date_of_birth: pii[:dob],
+              address1: pii[:address1],
+              address2: pii[:address2],
+              city: pii[:city],
+              state: pii[:state],
+              zip: pii[:zip_code],
+              failure_reason: nil,
+            )
+
+            action
+          end
         end
       end
 
@@ -750,29 +915,56 @@ RSpec.describe Idv::ImageUploadsController do
 
           context 'when doc escrow is enabled' do
             let(:doc_escrow_enabled) { true }
-            it 'records attempts api events' do
-              expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-                success: false,
-                document_expiration: state_id_expiration,
-                document_issued: nil,
-                document_number: state_id_number,
-                document_state: state,
-                document_back_image_encryption_key: '12345',
-                document_back_image_file_id: 'name',
-                document_front_image_encryption_key: '12345',
-                document_front_image_file_id: 'name',
-                first_name: nil,
-                last_name: last_name,
-                date_of_birth: dob,
-                address1: address1,
-                address2: nil,
-                city: nil,
-                state: state,
-                zip: nil,
-                failure_reason: { name: [:name] },
-              )
 
-              action
+            context 'when the service provider is on the attempts api allowlist' do
+              let(:attempts_api_enabled_for_sp) { true }
+              it 'records attempts api events' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  document_back_image_encryption_key: '12345',
+                  document_back_image_file_id: 'name',
+                  document_front_image_encryption_key: '12345',
+                  document_front_image_file_id: 'name',
+                  first_name: nil,
+                  last_name: last_name,
+                  date_of_birth: dob,
+                  address1: address1,
+                  address2: nil,
+                  city: nil,
+                  state: state,
+                  zip: nil,
+                  failure_reason: { name: [:name] },
+                )
+
+                action
+              end
+            end
+
+            context 'when the service provider is not on the attempts api allowlist' do
+              it 'does not upload the images' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  first_name: nil,
+                  last_name: last_name,
+                  date_of_birth: dob,
+                  address1: address1,
+                  address2: nil,
+                  city: nil,
+                  state: state,
+                  zip: nil,
+                  failure_reason: { name: [:name] },
+                )
+
+                action
+              end
             end
           end
         end
@@ -859,29 +1051,60 @@ RSpec.describe Idv::ImageUploadsController do
 
           context 'when doc escrow is enabled' do
             let(:doc_escrow_enabled) { true }
-            it 'records attempts api events' do
-              expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-                success: false,
-                document_expiration: state_id_expiration,
-                document_issued: nil,
-                document_number: state_id_number,
-                document_state: state,
-                document_back_image_encryption_key: '12345',
-                document_back_image_file_id: 'name',
-                document_front_image_encryption_key: '12345',
-                document_front_image_file_id: 'name',
-                first_name:,
-                last_name:,
-                date_of_birth: dob,
-                address1:,
-                address2: nil,
-                city: nil,
-                state:,
-                zip: nil,
-                failure_reason: { state: [:inclusion] },
-              )
 
-              action
+            context 'when the service provider is on the attempts api allowlist' do
+              let(:attempts_api_enabled_for_sp) { true }
+              it 'records attempts api events' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  document_back_image_encryption_key: '12345',
+                  document_back_image_file_id: 'name',
+                  document_front_image_encryption_key: '12345',
+                  document_front_image_file_id: 'name',
+                  first_name:,
+                  last_name:,
+                  date_of_birth: dob,
+                  address1:,
+                  address2: nil,
+                  city: nil,
+                  state:,
+                  zip: nil,
+                  failure_reason: { state: [:inclusion] },
+                )
+
+                action
+              end
+            end
+
+            context 'when the service provider is not on the attempts api allowlist' do
+              before do
+                expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+                expect(writer).not_to receive(:write)
+              end
+              it 'does not upload the images' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  first_name:,
+                  last_name:,
+                  date_of_birth: dob,
+                  address1:,
+                  address2: nil,
+                  city: nil,
+                  state:,
+                  zip: nil,
+                  failure_reason: { state: [:inclusion] },
+                )
+
+                action
+              end
             end
           end
         end

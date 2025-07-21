@@ -321,7 +321,7 @@ module Idv
     end
 
     def doc_escrow_images
-      return {} unless service_provider.attempts_api_enabled?
+      return {} unless service_provider&.attempts_api_enabled?
 
       images_metadata.attempts_file_data
     end
