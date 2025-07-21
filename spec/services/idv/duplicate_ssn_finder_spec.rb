@@ -5,7 +5,6 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
-
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
     before do
@@ -72,8 +71,24 @@ RSpec.describe Idv::DuplicateSsnFinder do
   describe '#associated_facial_match_profiles_with_ssn' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
+    let(:user2) { create(:user) }
     let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
-
+    let(:identity) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
+    let(:identity2) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
     before do
@@ -85,8 +100,10 @@ RSpec.describe Idv::DuplicateSsnFinder do
       context 'when ssn is taken by different profile by and is IAL2' do
         it 'returns list different profile' do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
+          user.identities << identity
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user2, active: true)
+          user2.identities << identity2
 
-          create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
           expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(1)
         end
       end
@@ -112,7 +129,24 @@ RSpec.describe Idv::DuplicateSsnFinder do
   describe '#ial2_profile_ssn_is_unique?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
+    let(:user2) { create(:user) }
     let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    let(:identity) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
+    let(:identity2) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
 
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
@@ -124,8 +158,9 @@ RSpec.describe Idv::DuplicateSsnFinder do
       context 'when ssn is taken by different profile by and is IAL2' do
         it 'returns false' do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
-
-          create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
+          user.identities << identity
+          create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user2, active: true)
+          user2.identities << identity2
           expect(subject.ial2_profile_ssn_is_unique?).to eq false
         end
       end
@@ -153,7 +188,22 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
-
+    let(:identity) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
+    let(:identity2) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
     before do
@@ -166,8 +216,9 @@ RSpec.describe Idv::DuplicateSsnFinder do
     context 'when ssn belongs to another profile with the same sp' do
       it 'returns matching profile id' do
         create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
-
+        user.identities << identity
         create(:profile, :facial_match_proof, id: 2, pii: { ssn: ssn }, user: user2, active: true)
+        user2.identities << identity2
         expect(subject.associated_facial_match_profiles_with_ssn.last.id).to eq(2)
       end
     end

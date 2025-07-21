@@ -15,7 +15,7 @@ module Idv
     end
 
     def associated_facial_match_profiles_with_ssn
-      Profile.joins("INNER JOIN identities ON identities.user_id = profiles.user_id")
+      Profile.joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
         .active
         .facial_match
         .where(ssn_signature: ssn_signatures)

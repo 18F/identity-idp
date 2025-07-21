@@ -60,10 +60,30 @@ RSpec.describe DuplicateProfileChecker do
             profile.save
           end
 
+          let(:identity) do
+            build(
+              :service_provider_identity,
+              service_provider: sp.issuer,
+              session_uuid: SecureRandom.uuid,
+              ial: 2,
+            )
+          end
+
+          let(:identity2) do
+            build(
+              :service_provider_identity,
+              service_provider: sp.issuer,
+              session_uuid: SecureRandom.uuid,
+              ial: 2,
+            )
+          end
+
           before do
             session[:encrypted_profiles] = {
               profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
             }
+            user.identities << identity
+            user2.identities << identity2
           end
 
           it 'creates a new duplicate profile confirmation entry' do
