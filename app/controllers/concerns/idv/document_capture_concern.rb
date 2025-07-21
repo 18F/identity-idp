@@ -62,7 +62,13 @@ module Idv
     end
 
     def mrz_requirement_met?
+      # If passport not requested, return true
       return true unless document_capture_session.passport_requested?
+
+      # If passport requested but not submitted (document type mismatch), return false
+      return false unless submitted_id_type == 'passport'
+
+      # If passport submitted, verify all conditions are met
       return false unless IdentityConfig.store.doc_auth_passports_enabled
 
       stored_result.mrz_status == :pass
@@ -103,7 +109,11 @@ module Idv
     end
 
     def id_type
-      document_capture_session.passport_requested? ? 'passport' : 'state_id'
+      if respond_to?(:session) && session[:chosen_id_type] == 'passport'
+        'passport'
+      else
+        document_capture_session.passport_requested? ? 'passport' : 'state_id'
+      end
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
