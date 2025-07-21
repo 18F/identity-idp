@@ -34,8 +34,6 @@ development:
     <<: *defaults
     database: identity_idp_worker_jobs_<%= Rails.env %>
     migrations_paths: db/worker_jobs_migrate
-  data_warehouse:
-    <<: *defaults
 
 test:
   primary: &test
@@ -55,8 +53,11 @@ test:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
+<% if IdentityConfig.store.data_warehouse_enabled && IdentityConfig.store.data_warehouse_v3_enabled %>
   data_warehouse:
     <<: *test
+<% end %>
+
 <%
   worker_pool = if Identity::Hostdata.instance_role == 'worker'
     GoodJobConnectionPoolSize.calculate_worker_pool_size(
