@@ -181,77 +181,114 @@ RSpec.describe Idv::AgreementController do
     end
 
     context 'on success' do
-      context 'skip_hybrid_handoff present in params' do
-        let(:skip_hybrid_handoff) { '' }
+      let(:current_time) { Time.zone.now }
 
-        it 'sets flow_path to standard' do
-          expect do
+      before do
+        freeze_time
+        travel_to(current_time)
+      end
+
+      context 'when passports are allowed' do
+        before do
+          subject.idv_session.passport_allowed = true
+        end
+
+        context 'when skip_hybrid_handoff is set to true in params' do
+          let(:skip_hybrid_handoff) { true }
+
+          before do
             put :update, params: params
-          end.to change {
-            subject.idv_session.flow_path
-          }.from(nil).to('standard').and change {
-            subject.idv_session.skip_hybrid_handoff
-          }.from(nil).to(true)
+          end
+
+          it 'sets opted_in_to_in_person_proofing to false on IDV session' do
+            expect(subject.idv_session.opted_in_to_in_person_proofing).to be(false)
+          end
+
+          it 'sets an idv_consent_given_at timestamp' do
+            expect(subject.idv_session.idv_consent_given_at).to eq(current_time)
+          end
+
+          it 'redirects to idv_choose_id_type' do
+            expect(response).to redirect_to(idv_choose_id_type_url)
+          end
         end
 
-        it 'redirects to hybrid handoff' do
-          put :update, params: params
+        context 'when skip_hybrid_handoff is not set in params' do
+          let(:skip_hybrid_handoff) { nil }
 
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
-        end
+          before do
+            put :update, params: params
+          end
 
-        it 'sets an idv_consent_given_at timestamp' do
-          put :update, params: params
+          it 'sets an idv_consent_given_at timestamp' do
+            expect(subject.idv_session.idv_consent_given_at).to eq(current_time)
+          end
 
-          expect(subject.idv_session.idv_consent_given_at).to be_within(3.seconds).of(Time.zone.now)
-        end
-      end
+          it 'sets opted_in_to_in_person_proofing to false on IDV session' do
+            expect(subject.idv_session.opted_in_to_in_person_proofing).to be(false)
+          end
 
-      context 'when both ipp and opt-in ipp are enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-        end
+          it 'sets skip_doc_auth_from_how_to_verify to false on IDV session' do
+            expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be(false)
+          end
 
-        it 'redirects to hybrid handoff with new content' do
-          put :update, params: params
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
-        end
-      end
-
-      context 'when ipp is enabled but opt-in ipp is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-        end
-
-        it 'redirects to hybrid handoff' do
-          put :update, params: params
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
+          it 'redirects to hybrid handoff with new content' do
+            expect(response).to redirect_to(idv_hybrid_handoff_url)
+          end
         end
       end
 
-      context 'when ipp is disabled and opt-in ipp is enabled' do
+      context 'when passports are not allowed' do
         before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
+          subject.idv_session.passport_allowed = false
         end
 
-        it 'redirects to hybrid handoff' do
-          put :update, params: params
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
-        end
-      end
+        context 'when skip_hybrid_handoff is set to true in params' do
+          let(:skip_hybrid_handoff) { true }
 
-      context 'when both ipp and opt-in ipp are disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { false }
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
+          before do
+            put :update, params: params
+          end
+
+          it 'sets an idv_consent_given_at timestamp' do
+            expect(subject.idv_session.idv_consent_given_at).to eq(current_time)
+          end
+
+          it 'sets opted_in_to_in_person_proofing to false on IDV session' do
+            expect(subject.idv_session.opted_in_to_in_person_proofing).to be(false)
+          end
+
+          it 'sets skip_doc_auth_from_how_to_verify to false on IDV session' do
+            expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be(false)
+          end
+
+          it 'redirects to hybrid handoff with new content' do
+            expect(response).to redirect_to(idv_hybrid_handoff_url)
+          end
         end
 
-        it 'redirects to hybrid handoff' do
-          put :update, params: params
-          expect(response).to redirect_to(idv_hybrid_handoff_url)
+        context 'when skip_hybrid_handoff is not set in params' do
+          let(:skip_hybrid_handoff) { nil }
+
+          before do
+            put :update, params: params
+          end
+
+          it 'sets an idv_consent_given_at timestamp' do
+            expect(subject.idv_session.idv_consent_given_at).to eq(current_time)
+          end
+
+          it 'sets opted_in_to_in_person_proofing to false on IDV session' do
+            expect(subject.idv_session.opted_in_to_in_person_proofing).to be(false)
+          end
+
+          it 'sets skip_doc_auth_from_how_to_verify to false on IDV session' do
+            expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be(false)
+          end
+
+          it 'redirects to hybrid handoff with new content' do
+            expect(response).to redirect_to(idv_hybrid_handoff_url)
+          end
         end
       end
     end
