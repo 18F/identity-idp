@@ -181,4 +181,8 @@ class FeatureManagement
   def self.allow_ipp_enrollment_approval?
     IdentityConfig.store.in_person_enrollments_immediate_approval_enabled
   end
+
+  def self.doc_escrow_enabled?(service_provider)
+    IdentityConfig.store.doc_escrow_enabled && service_provider&.attempts_api_enabled?
+  end
 end

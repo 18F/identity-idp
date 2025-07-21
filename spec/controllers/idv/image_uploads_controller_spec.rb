@@ -28,14 +28,12 @@ RSpec.describe Idv::ImageUploadsController do
   before do
     stub_attempts_tracker
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-    allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
+    # allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
     allow(writer).to receive(:write).and_return result
     allow(controller).to receive(:sp_session).and_return(sp_session)
-    if attempts_api_enabled_for_sp
-      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
-        .and_return([{ 'issuer' => sp.issuer }])
-    end
+    allow(FeatureManagement).to receive(:doc_escrow_enabled?).and_return(
+      doc_escrow_enabled && attempts_api_enabled_for_sp,
+    )
     stub_sign_in(user) if user
   end
 
