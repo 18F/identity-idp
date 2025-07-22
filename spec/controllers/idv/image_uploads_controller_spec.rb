@@ -495,7 +495,7 @@ RSpec.describe Idv::ImageUploadsController do
           before do
             allow(writer).to receive(:write).and_return result
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(4).times
+            expect(writer).to receive(:write).exactly(2).times
           end
 
           it 'tracks the event' do

@@ -322,7 +322,9 @@ module Idv
     def doc_escrow_images
       return {} unless doc_escrow_enabled?
 
-      images_metadata.attempts_file_data
+      return @doc_escrow_images if defined?(@doc_escrow_images)
+      @doc_escrow_images = images_metadata.attempts_file_data
+      @doc_escrow_images
     end
 
     def passport_submittal
