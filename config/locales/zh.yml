@@ -1947,6 +1947,22 @@ user_mailer.add_email.footer: 这个链接会在 %{confirmation_period} 后作�
 user_mailer.add_email.header: 感谢添加电邮。请点击下面的链接或把整个链接复制并黏贴进浏览器。
 user_mailer.add_email.subject: 确认你的电邮
 user_mailer.contact_link_text: 联系我们
+user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
+user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn't you contact the %{help_center_link_html}.
+user_mailer.dupe_profile.created.heading: 你的个人信息在另一个 %{app_name} 账户上得到了验证
+user_mailer.dupe_profile.created.help_center_link_html: "%{app_name} Help Center"
+user_mailer.dupe_profile.created.steps_link_html: steps outlined here
+user_mailer.dupe_profile.review_complete.unable_heading: 我们无法让你登录
+user_mailer.dupe_profile.review_complete.unable_info: 我们完成了对你帐户的审核，但无法让你登录。 请联系  %{sp_or_app_name} 获取进一步帮助。
+user_mailer.dupe_profile.review_complete.success_heading: 你可以使用这个帐户重新登录
+user_mailer.dupe_profile.review_complete.success_info: 我们完成了对你帐户的审核，你现在可以使用这个帐户重新登录 {sp_or_app_name}。
+user_mailer.dupe_profile.review_complete.locked_heading: 这个帐户现已被锁
+user_mailer.dupe_profile.review_complete.locked_info: 我们完成了对你帐户的审核，这个帐户已被锁住。请联系 %{sp_or_app_name} 获取进一步帮助。 
+user_mailer.dupe_profile.sign_in.description: Someone just signed into a %{app_name} that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+user_mailer.dupe_profile.sign_in.description2_html: If this was you, you should delete the duplicate account by following the %{steps_link_html} and use only one account for. If this wasn't you contact the %{help_center_link_html}.
+user_mailer.dupe_profile.sign_in.heading: Another account using your personal information has signed in
+user_mailer.dupe_profile.sign_in.help_center_link_html: "%{app_name} Help Center"
+user_mailer.dupe_profile.sign_in.steps_link_html: steps outlined here
 user_mailer.email_added.header: 一个新电邮地址加进了你的 %{app_name} 用户资料中。
 user_mailer.email_added.help: 如果你没有作此更改，请登录你的用户资料来管理电邮地址。我们推荐你也更改密码。
 user_mailer.email_added.subject: 新电邮地址已添加

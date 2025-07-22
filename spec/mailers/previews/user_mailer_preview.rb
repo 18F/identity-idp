@@ -238,7 +238,7 @@ class UserMailerPreview < ActionMailer::Preview
       user: user,
       email_address: email_address_record,
     ).dupe_profile_created(
-      agency_name: 'Test',
+      agency_name: 'Sample APP',
     )
   end
 
@@ -247,7 +247,16 @@ class UserMailerPreview < ActionMailer::Preview
       user: user,
       email_address: email_address_record,
     ).dupe_profile_sign_in_attempted(
-      agency_name: 'Test',
+      agency_name: 'Sample APP',
+    )
+  end
+
+  def dupe_profile_account_review_complete_success
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_account_review_complete_unable(
+      agency_name: 'Sample APP',
     )
   end
 
@@ -256,7 +265,7 @@ class UserMailerPreview < ActionMailer::Preview
       user: user,
       email_address: email_address_record,
     ).dupe_profile_account_review_complete_unable(
-      agency_name: 'Test',
+      agency_name: 'Sample APP',
     )
   end
 
@@ -265,7 +274,7 @@ class UserMailerPreview < ActionMailer::Preview
       user: user,
       email_address: email_address_record,
     ).dupe_profile_account_review_complete_locked(
-      agency_name: 'Test',
+      agency_name: 'Sample APP',
     )
   end
 
