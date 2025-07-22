@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response
+        attr_reader :http_response, :passport_requested
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -38,9 +38,10 @@ module DocAuth
           mrz: %w[documentVerification rawData mrz],
         }.freeze
 
-        def initialize(http_response:)
+        def initialize(http_response:, passport_requested: false)
           @http_response = http_response
           @pii_from_doc = read_pii
+          @passport_requested = passport_requested
 
           super(
             success: doc_auth_success?,
@@ -61,7 +62,10 @@ module DocAuth
         end
 
         def doc_auth_success?
-          id_type_supported? && successful_result? && !portrait_matching_failed?
+          id_type_supported? &&
+            successful_result? &&
+            !portrait_matching_failed? &&
+            id_type_expected?
         end
 
         def selfie_status
@@ -115,6 +119,8 @@ module DocAuth
             { socure: { reason_codes: } }
           elsif portrait_matching_failed?
             { selfie_fail: true }
+          elsif !id_type_expected?
+            { unexpected_id_type: true }
           else
             {}
           end
@@ -232,6 +238,14 @@ module DocAuth
             DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
           else
             DocAuth::Response::STATE_ID_TYPE_SLUGS.key?(document_id_type)
+          end
+        end
+
+        def id_type_expected?
+          if id_doc_type == 'passport'
+            passport_requested
+          else
+            !passport_requested
           end
         end
 

@@ -12,6 +12,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
+  let(:dos_passport_mrz_endpoint) { 'https://mrz.example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
   let(:document_type_type) { 'Drivers License' }
@@ -19,6 +20,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:socure_doc_escrow_enabled) { false }
   let(:selfie) { false }
+  let(:mrz_response) { 'YES' }
 
   before do
     document_capture_session.update(
@@ -27,6 +29,10 @@ RSpec.describe SocureDocvResultsJob do
     )
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
       .and_return(socure_idplus_base_url)
+    allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+      .and_return(dos_passport_mrz_endpoint)
+    stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+      .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
 
@@ -431,6 +437,56 @@ RSpec.describe SocureDocvResultsJob do
             ),
           )
         end
+
+        context 'when passports are enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+              .and_return(Idp::Constants::Vendors::SOCURE)
+          end
+
+          it 'doc auth succeeds' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              pii: include(first_name: 'Dwayne'),
+              attention_with_barcode: false,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+            )
+            expect(document_capture_session.last_doc_auth_result).to eq('accept')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+              ),
+            )
+          end
+
+          context 'when a passport was requested' do
+            before do
+              document_capture_session.update(passport_status: 'requested')
+            end
+
+            it 'doc auth fails' do
+              perform
+
+              document_capture_session.reload
+              document_capture_session_result = document_capture_session.load_result
+              expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.pii).to be_nil
+              expect(document_capture_session_result.doc_auth_success).to eq(false)
+              expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+              expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
+            end
+          end
+        end
       end
 
       context 'Passport is submitted' do
@@ -476,7 +532,7 @@ RSpec.describe SocureDocvResultsJob do
             document_capture_session.reload
             document_capture_session_result = document_capture_session.load_result
             expect(document_capture_session_result.success).to eq(false)
-            expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+            expect(document_capture_session_result.pii).to be_nil
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
             expect(fake_analytics).to have_logged_event(
@@ -488,23 +544,20 @@ RSpec.describe SocureDocvResultsJob do
               ),
             )
           end
-        end
 
-        context 'when passports are enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-          end
+          context 'when passport card is submitted' do
+            let(:document_type_type) { 'Passport Card' }
 
-          context 'when a passport result is returned' do
             it 'doc auth fails' do
               perform
 
               document_capture_session.reload
               document_capture_session_result = document_capture_session.load_result
               expect(document_capture_session_result.success).to eq(false)
-              expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+              expect(document_capture_session_result.pii).to be_nil
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
               expect(fake_analytics).to have_logged_event(
                 :idv_socure_verification_data_requested,
                 hash_including(
@@ -514,6 +567,38 @@ RSpec.describe SocureDocvResultsJob do
                 ),
               )
             end
+          end
+        end
+
+        context 'when passports are enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+          end
+
+          it 'logs the Socure verification data requested event' do
+            perform
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+              ),
+            )
+          end
+          context 'when a passport result is returned' do
+            it 'doc auth fails' do
+              perform
+
+              document_capture_session.reload
+              document_capture_session_result = document_capture_session.load_result
+              expect(document_capture_session_result.success).to eq(false)
+              expect(document_capture_session_result.pii).to be_nil
+              expect(document_capture_session_result.doc_auth_success).to eq(false)
+              expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+            end
 
             context 'when docv passports are enabled' do
               before do
@@ -521,23 +606,115 @@ RSpec.describe SocureDocvResultsJob do
                   .and_return(Idp::Constants::Vendors::SOCURE)
               end
 
-              it 'doc auth succeeds' do
-                perform
+              context 'when a passport was NOT requested' do
+                it 'doc auth fails' do
+                  perform
 
-                document_capture_session.reload
-                document_capture_session_result = document_capture_session.load_result
-                expect(document_capture_session_result.success).to eq(true)
-                expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
-                expect(document_capture_session_result.doc_auth_success).to eq(true)
-                expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                expect(fake_analytics).to have_logged_event(
-                  :idv_socure_verification_data_requested,
-                  hash_including(
-                    :customer_user_id,
-                    :decision,
-                    :reference_id,
-                  ),
-                )
+                  document_capture_session.reload
+                  document_capture_session_result = document_capture_session.load_result
+                  expect(document_capture_session_result.success).to eq(false)
+                  expect(document_capture_session_result.doc_auth_success).to eq(false)
+                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                  expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
+                end
+              end
+
+              context 'when a passport was requested' do
+                before do
+                  document_capture_session.update!(
+                    passport_status: 'requested',
+                  )
+                end
+
+                it 'result succeeds' do
+                  perform
+
+                  document_capture_session.reload
+                  document_capture_session_result = document_capture_session.load_result
+                  expect(document_capture_session_result.success).to eq(true)
+                  expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
+                  expect(document_capture_session_result.doc_auth_success).to eq(true)
+                  expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                  expect(document_capture_session_result.attention_with_barcode).to eq(false)
+                  expect(document_capture_session_result.mrz_status).to eq(:pass)
+                end
+
+                context 'when the MRZ is not valid' do
+                  let(:mrz_response) { 'NO' }
+
+                  it 'result fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.pii).to be_nil
+                    expect(document_capture_session_result.doc_auth_success).to eq(true)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:failed)
+                    expect(document_capture_session_result.errors)
+                      .to eq({ passport: 'Please add a new image' })
+                  end
+                end
+
+                context 'when pii validation fails' do
+                  let(:mrz) { nil }
+
+                  it 'result fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.errors[:pii_validation]).to eq('failed')
+                    expect(document_capture_session_result.doc_auth_success).to eq(true)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                  end
+                end
+
+                context 'when decision is not "accept"' do
+                  let(:decision_value) { 'reject' }
+
+                  it 'doc auth fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.doc_auth_success).to eq(false)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                    expect(document_capture_session_result.errors)
+                      .to eq({ socure: { reason_codes: } })
+                  end
+                end
+
+                context 'when passport card is submitted' do
+                  let(:document_type_type) { 'Passport Card' }
+
+                  it 'doc auth fails' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.success).to eq(false)
+                    expect(document_capture_session_result.pii).to be_nil
+                    expect(document_capture_session_result.doc_auth_success).to eq(false)
+                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.errors)
+                      .to eq({ unaccepted_id_type: true })
+                    expect(fake_analytics).to have_logged_event(
+                      :idv_socure_verification_data_requested,
+                      hash_including(
+                        :customer_user_id,
+                        :decision,
+                        :reference_id,
+                      ),
+                    )
+                  end
+                end
               end
             end
           end
@@ -552,11 +729,11 @@ RSpec.describe SocureDocvResultsJob do
           document_capture_session.reload
           document_capture_session_result = document_capture_session.load_result
           expect(document_capture_session_result.success).to eq(false)
-          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.pii).to be_nil
           expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
-          expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session_result.mrz_status).to eq(:not_processed)
         end
 
         context 'doc escrow is enabled' do

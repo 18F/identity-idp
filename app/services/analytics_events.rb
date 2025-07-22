@@ -6501,6 +6501,12 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profiles_detected)
   end
 
+  # Tracks when user with duplicate profiles lands on page asking them to call the contact center
+  # @param [String] source The link that the user followed to visit the page
+  def one_account_duplicate_profiles_please_call_visited(source:, **extra)
+    track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
+  end
+
   # Tracks when user says they recognize all accounts that has same profile information.
   def one_account_recognize_all_profiles
     track_event(:one_account_recognize_all_profiles)
