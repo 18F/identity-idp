@@ -241,6 +241,14 @@ RSpec.feature 'document capture step', :js do
           'passport_credential.yml'
         )
       end
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return_json({ status: 200, body: { response: 'YES' } })
+      end
 
       it 'happy path' do
         # Navigate to choose ID type page and select passport

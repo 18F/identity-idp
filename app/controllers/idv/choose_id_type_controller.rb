@@ -54,7 +54,10 @@ module Idv
             doc_session = DocumentCaptureSession.find_by(
               uuid: idv_session.document_capture_session_uuid,
             )
-            doc_session&.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+            # Only reset if user made an explicit choice, not default 'allowed' state
+            if doc_session&.passport_status&.in?(['requested', 'not_requested'])
+              doc_session.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+            end
           end
         end,
       )
