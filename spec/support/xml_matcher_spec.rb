@@ -76,7 +76,7 @@ RSpec.describe 'match_xml custom matcher' do
             Expected XML documents to be the same, but they differed:
             Diff:
 
-            @@ -1,5 +1,5 @@
+            @@ -1,4 +1,4 @@
             -<VEGETABLE>
             +<vegetable>
                <name>Carrot</name>
@@ -104,7 +104,7 @@ RSpec.describe 'match_xml custom matcher' do
             Expected XML documents to be the same, but they differed:
             Diff:
 
-            @@ -1,5 +1,5 @@
+            @@ -1,4 +1,4 @@
              <vegetable>
             -  <color>Orange (usually)</color>
                <name>Carrot</name>
@@ -129,7 +129,7 @@ RSpec.describe 'match_xml custom matcher' do
           assert_error_messages_equal(e, <<~ERROR)
             Expected XML documents to be the same, but they differed:
             Diff:
-            @@ -1,5 +1,5 @@
+            @@ -1,4 +1,4 @@
             -<tubers>
             -  <carrot/>
             -  <potato/>
