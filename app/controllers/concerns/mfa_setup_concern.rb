@@ -116,7 +116,7 @@ module MfaSetupConcern
   end
 
   def in_tmx_ab_test_bucket?
-    ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == (:account_creation_tmx_processed)
+    ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == :account_creation_tmx_processed
   end
 
   def determine_next_mfa

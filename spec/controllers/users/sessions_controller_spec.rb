@@ -199,7 +199,7 @@ RSpec.describe Users::SessionsController, devise: true do
         current_time = Time.zone.now
         time_in_hours = distance_of_time_in_words(
           current_time,
-          (locked_at + sign_in_failure_window.seconds),
+          locked_at + sign_in_failure_window.seconds,
           true,
         )
 
@@ -426,7 +426,7 @@ RSpec.describe Users::SessionsController, devise: true do
             current_time = Time.zone.now
             rate_limit_time_left = distance_of_time_in_words(
               current_time,
-              (locked_at + sign_in_failure_window.seconds),
+              locked_at + sign_in_failure_window.seconds,
               true,
             )
             6.times do
