@@ -1120,7 +1120,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
-      context 'uses mock dos if flag is enabled' do
+      context 'uses actual dos if flag is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
           allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
@@ -1128,8 +1128,8 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
 
         it 'does not call the mock dos api client' do
-          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
           expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
           form.submit
         end
       end
