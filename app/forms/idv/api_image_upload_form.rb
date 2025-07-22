@@ -61,10 +61,13 @@ module Idv
         mrz_response:,
       )
 
-      # Store PII and MRZ status after all validations are complete
-      if client_response&.success? && doc_pii_response&.success?
+      # Store PII and MRZ status after all validations are complete and successful
+      if response.success?
         store_pii(client_response, mrz_response)
       end
+
+      failed_fingerprints = store_failed_images(client_response, doc_pii_response, mrz_response)
+      response.extra[:failed_image_fingerprints] = failed_fingerprints
 
       # if there is no client_response, there was no submission attempt
       if client_response
@@ -89,8 +92,6 @@ module Idv
         )
       end
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
-      response.extra[:failed_image_fingerprints] = failed_fingerprints
       abandon_any_ipp_progress
       response
     end
@@ -528,14 +529,14 @@ module Idv
       rate_limiter.limited? if document_capture_session
     end
 
-    ##
     # Store failed image fingerprints in document_capture_session_result
     # when client_response is not successful and not a network error
     # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
-    # @param [Object] client_response
-    # @param [Object] doc_pii_response
-    # @return [Object] latest failed fingerprints
-    def store_failed_images(client_response, doc_pii_response)
+    # @param client_response [DocAuth::Response] The response from the Image upload request.
+    # @param doc_pii_response [DocAuth::Response] The response from PII validation.
+    # @param mrz_response [DocAuth::Response] The response from the MRZ api request.
+    # @return [Hash<Symbol => Array<String>>] latest failed fingerprints
+    def store_failed_images(client_response, doc_pii_response, mrz_response)
       unless image_resubmission_check?
         return {
           front: [],
@@ -583,6 +584,17 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+        )
+      elsif mrz_response && !mrz_response.success?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
+          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: extra_attributes[:passport_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          errors: mrz_response.errors,
+          mrz_status: :failed,
         )
       end
       # retrieve updated data from session
