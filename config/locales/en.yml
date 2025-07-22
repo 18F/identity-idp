@@ -1819,7 +1819,7 @@ two_factor_authentication.phone_fee_disclosure: Message and data rates may apply
 two_factor_authentication.phone_info: We’ll send you a one-time code each time you sign in.
 two_factor_authentication.phone_label: Phone number
 two_factor_authentication.phone_verification.troubleshooting.change_number: Use another phone number
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: I didn’t receive my one-time code
+two_factor_authentication.phone_verification.troubleshooting.code_not_received: I'm not receiving a one-time code through SMS/Text or phone call
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Insert your government employee ID
