@@ -94,6 +94,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     allow(FeatureManagement).to receive(:doc_escrow_enabled?).and_return(
       doc_escrow_enabled && attempts_api_enabled_for_sp,
     )
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
     allow(writer).to receive(:write).and_return result
 
     allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
@@ -1103,6 +1104,33 @@ RSpec.describe Idv::ApiImageUploadForm do
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
           )
+        end
+      end
+
+      context 'uses mock dos if flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+        it 'calls the mock dos api client' do
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to_not receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+          form.submit
+        end
+      end
+
+      context 'uses actual dos if flag is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+          allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+
+        it 'does not call the mock dos api client' do
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
+          form.submit
         end
       end
 
