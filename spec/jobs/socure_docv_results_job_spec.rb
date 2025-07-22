@@ -703,7 +703,8 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.pii).to be_nil
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                    expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
+                    expect(document_capture_session_result.errors)
+                      .to eq({ unaccepted_id_type: true })
                     expect(fake_analytics).to have_logged_event(
                       :idv_socure_verification_data_requested,
                       hash_including(
