@@ -38,7 +38,11 @@ module Idv
           idv_session.skip_doc_auth_from_how_to_verify = false
           idv_session.flow_path = 'standard'
           abandon_any_ipp_progress
-          redirect_to idv_document_capture_url
+          if idv_session.passport_allowed
+            redirect_to idv_choose_id_type_url
+          else
+            redirect_to idv_document_capture_url
+          end
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
@@ -59,7 +63,7 @@ module Idv
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,
-        next_steps: [:hybrid_handoff, :document_capture],
+        next_steps: [:choose_id_type, :hybrid_handoff, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
