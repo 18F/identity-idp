@@ -166,6 +166,7 @@ module Idv
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
           document_type: document_type,
+          passport_requested: document_capture_session.passport_requested?,
         )
       end
 

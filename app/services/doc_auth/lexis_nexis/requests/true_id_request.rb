@@ -5,7 +5,7 @@ module DocAuth
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
         attr_reader :front_image, :back_image, :passport_image, :selfie_image,
-                    :liveness_checking_required, :document_type
+                    :liveness_checking_required, :document_type, :passport_requested
 
         def initialize(
           config:,
@@ -18,7 +18,8 @@ module DocAuth
           selfie_image: nil,
           image_source: nil,
           images_cropped: false,
-          liveness_checking_required: false
+          liveness_checking_required: false,
+          passport_requested: false
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
@@ -30,6 +31,7 @@ module DocAuth
           # when set to required, be sure to pass in selfie_imaged
           @liveness_checking_required = liveness_checking_required
           @document_type = document_type
+          @passport_requested = passport_requested
         end
 
         def request_context
@@ -54,11 +56,6 @@ module DocAuth
           settings.merge(document).to_json
         end
 
-        def document_capture_session
-          @document_capture_session ||=
-            DocumentCaptureSession.find_by!(uuid: user_uuid)
-        end
-
         def id_front_image
           # TrueID front_image required whether driver's license or passport
           case document_type
@@ -72,7 +69,7 @@ module DocAuth
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
             http_response:,
-            passport_requested: document_capture_session.passport_requested?,
+            passport_requested:,
             config:,
             liveness_checking_enabled: liveness_checking_required,
             request_context:,

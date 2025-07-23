@@ -47,15 +47,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       selfie_image: selfie_image,
       liveness_checking_required: liveness_checking_required,
       document_type: document_type,
+      passport_requested:,
     )
   end
-  let(:document_capture_session) { build(:document_capture_session, uuid: applicant[:uuid]) }
 
   before do
-    allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
-    document_capture_session.passport_status = passport_requested ? 'requested' : 'not_requested'
   end
 
   shared_examples 'a successful request' do
