@@ -78,11 +78,6 @@ module Idv
       }.merge(ab_test_analytics_buckets)
     end
 
-    def in_person_proofing_route_enabled?
-      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-        IdentityConfig.store.in_person_proofing_enabled
-    end
-
     def skip_to_capture
       idv_session.flow_path = 'standard'
 
