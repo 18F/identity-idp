@@ -12,12 +12,6 @@ RSpec.describe Idv::AgreementController do
     stub_attempts_tracker
   end
 
-  describe '#step_info' do
-    it 'returns a valid StepInfo object' do
-      expect(Idv::AgreementController.step_info).to be_valid
-    end
-  end
-
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -315,6 +309,33 @@ RSpec.describe Idv::AgreementController do
 
         expect(subject.idv_session.idv_consent_given?).to eq(false)
         expect(subject.idv_session.idv_consent_given_at).to be_nil
+      end
+    end
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::AgreementController.step_info).to be_valid
+    end
+
+    context 'undo_step' do
+      before do
+        subject.idv_session.idv_consent_given_at = Time.zone.now
+        subject.idv_session.skip_hybrid_handoff = false
+        subject.idv_session.opted_in_to_in_person_proofing = false
+        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+      end
+
+      it 'sets the idv session idv_consent_given_at to nil' do
+        expect(subject.idv_session.idv_consent_given_at).to be_nil
+      end
+
+      it 'sets the idv session skip_hybrid_handoff to nil' do
+        expect(subject.idv_session.skip_hybrid_handoff).to be_nil
+      end
+
+      it 'sets the idv session opted_in_to_in_person_proofing to nil' do
+        expect(subject.idv_session.opted_in_to_in_person_proofing).to be_nil
       end
     end
   end

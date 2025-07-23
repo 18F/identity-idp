@@ -63,6 +63,7 @@ module Idv
         undo_step: ->(idv_session:, user:) do
           idv_session.idv_consent_given_at = nil
           idv_session.skip_hybrid_handoff = nil
+          idv_session.opted_in_to_in_person_proofing = nil
         end,
       )
     end
