@@ -64,7 +64,7 @@ module DocAuth
           elsif passport_card_detected?
             { passport_card: true }
           elsif id_type.present? && !id_doc_type_expected?
-            { unexpected_id_type: true }
+            { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?

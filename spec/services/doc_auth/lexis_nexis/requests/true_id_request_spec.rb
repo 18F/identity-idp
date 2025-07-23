@@ -202,7 +202,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({ unexpected_id_type: true })
+        expect(response.errors)
+          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
       end
     end
 
@@ -228,7 +229,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({ unexpected_id_type: true })
+        expect(response.errors)
+          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
       end
     end
   end

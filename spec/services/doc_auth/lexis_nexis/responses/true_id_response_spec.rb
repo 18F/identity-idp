@@ -319,7 +319,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
 
       it 'has error messages' do
-        expect(response.error_messages[:unexpected_id_type]).to eq(true)
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(I18n.t('doc_auth.errors.general.no_liveness'))
       end
     end
 
@@ -340,7 +341,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
 
       it 'has error messages' do
-        expect(response.error_messages[:unexpected_id_type]).to eq(true)
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(I18n.t('doc_auth.errors.general.no_liveness'))
       end
     end
   end
