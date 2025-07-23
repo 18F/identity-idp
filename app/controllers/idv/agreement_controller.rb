@@ -42,8 +42,11 @@ module Idv
       if result.success?
         idv_session.idv_consent_given_at = Time.zone.now
 
-        if idv_session.passport_allowed && params[:skip_hybrid_handoff]
-          redirect_to idv_choose_id_type_url
+        puts "idv_consent given: #{idv_session.idv_consent_given?}"
+        puts "idv_sp_ipp enabled: #{idv_session.service_provider&.in_person_proofing_enabled}"
+
+        if params[:skip_hybrid_handoff]
+          redirect_to idv_how_to_verify_url
         else
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
