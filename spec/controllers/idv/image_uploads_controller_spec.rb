@@ -471,6 +471,7 @@ RSpec.describe Idv::ImageUploadsController do
               uuid_prefix: nil,
               liveness_checking_required: true,
               images_cropped: false,
+              passport_requested: false,
             ).and_call_original
 
           action
@@ -493,6 +494,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
@@ -1348,6 +1350,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: true,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
@@ -1373,6 +1376,7 @@ RSpec.describe Idv::ImageUploadsController do
             liveness_checking_required: false,
             images_cropped: false,
             document_type: an_instance_of(String),
+            passport_requested: false,
           ).and_call_original
 
         action
