@@ -17,16 +17,17 @@ module EncryptedDocStorage
       end
 
       name = SecureRandom.uuid
+      encryption_key = SecureRandom.bytes(32)
 
       write_with_data(
         image:,
-        encryption_key: key,
+        encryption_key:,
         name:,
       )
 
       Result.new(
         name:,
-        encryption_key: Base64.strict_encode64(key),
+        encryption_key: Base64.strict_encode64(encryption_key),
       )
     end
 
@@ -47,10 +48,6 @@ module EncryptedDocStorage
       @storage ||= begin
         @s3_enabled ? S3Storage.new : LocalStorage.new
       end
-    end
-
-    def key
-      @key ||= SecureRandom.bytes(32)
     end
   end
 end
