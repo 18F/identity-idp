@@ -97,13 +97,9 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-
     return if page.current_path == idv_hybrid_handoff_path && remote
-
     if remote
-      if page.current_path == idv_hybrid_handoff_path
-        click_on t('forms.buttons.continue_online')
-      end
+      click_on t('forms.buttons.continue_online')
     else
       click_on t('forms.buttons.continue_ipp')
     end
