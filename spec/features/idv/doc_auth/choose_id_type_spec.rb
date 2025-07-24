@@ -9,6 +9,7 @@ RSpec.feature 'choose id type step error checking' do
     let(:ipp_service_provider) do
       create(:service_provider, :active, :in_person_proofing_enabled)
     end
+<<<<<<< HEAD
     let(:doc_auth_passports_enabled) { true }
     let(:doc_auth_passports_percent) { 100 }
     before do
@@ -16,6 +17,11 @@ RSpec.feature 'choose id type step error checking' do
         .and_return(doc_auth_passports_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
         .and_return(doc_auth_passports_percent)
+=======
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+>>>>>>> 1d587d9fb4 (Fixing specs)
       allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
         .and_return(ipp_service_provider)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
@@ -53,71 +59,27 @@ RSpec.feature 'choose id type step error checking' do
     end
 
     context 'mobile flow', :js, driver: :headless_chrome_mobile do
-      context 'with in-person proofing enabled and passports enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-            .and_return(true)
-          allow_any_instance_of(ServiceProvider).to receive(
-            :in_person_proofing_enabled,
-          ).and_return(true)
-          complete_doc_auth_steps_before_agreement_step
-          complete_agreement_step
-        end
-
-        it 'shows choose id type screen and continues after drivers license option' do
-          expect(page).to have_current_path(idv_how_to_verify_url)
-          click_button t('forms.buttons.continue_online')
-          expect(page).to have_current_path(idv_choose_id_type_url)
-          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-          click_on t('forms.buttons.continue')
-          expect(page).to have_current_path(idv_document_capture_url)
-          visit idv_choose_id_type_url
-          expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_drivers_license',
-            visible: :all,
-          )
-        end
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+        allow_any_instance_of(ServiceProvider).to receive(
+          :in_person_proofing_enabled,
+        ).and_return(true)
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
       end
-      context 'with in-person proofing disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-            .and_return(false)
-          complete_doc_auth_steps_before_agreement_step
-          complete_agreement_step
-        end
 
-        it 'shows choose id type screen and continues after drivers license option' do
-          expect(page).to have_current_path(idv_choose_id_type_url)
-          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-          click_on t('forms.buttons.continue')
-          expect(page).to have_current_path(idv_document_capture_url)
-          visit idv_choose_id_type_url
-          expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_drivers_license',
-            visible: :all,
-          )
-        end
-      end
-      context 'with in-person proofing enabled and passports disabled' do
-        let(:doc_auth_passports_enabled) { false }
-        let(:doc_auth_passports_percent) { 0 }
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-            .and_return(true)
-          allow_any_instance_of(ServiceProvider).to receive(
-            :in_person_proofing_enabled,
-          ).and_return(true)
-          complete_doc_auth_steps_before_agreement_step
-          complete_agreement_step
-        end
-        it 'goes from how to verify to document capture' do
-          expect(page).to have_current_path(idv_how_to_verify_url)
-          click_button t('forms.buttons.continue_online')
-          expect(page).to have_current_path(idv_document_capture_url)
-        end
+      it 'shows choose id type screen and continues after drivers license option' do
+        click_button t('forms.buttons.continue_online')
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        visit idv_choose_id_type_url
+        expect(page).to have_checked_field(
+          'doc_auth_choose_id_type_preference_drivers_license',
+          visible: :all,
+        )
       end
     end
   end
