@@ -60,9 +60,9 @@ module DocAuth
           return {} if successful_result?
 
           if passport_detected_but_not_allowed?
-            { passport: true }
+            { passport: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif passport_card_detected?
-            { passport_card: true }
+            { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif id_type.present? && !id_doc_type_expected?
             { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
           elsif with_authentication_result?
