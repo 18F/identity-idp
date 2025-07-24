@@ -9,12 +9,13 @@ module DocAuth
         include ClassificationConcern
         include SelfieConcern
 
-        attr_reader :config, :http_response
+        attr_reader :config, :http_response, :passport_requested
 
-        def initialize(http_response, config, liveness_checking_enabled = false,
-                       request_context = {})
+        def initialize(http_response:, config:, passport_requested: false,
+                       liveness_checking_enabled: false, request_context: {})
           @config = config
           @http_response = http_response
+          @passport_requested = passport_requested
           @request_context = request_context
           @liveness_checking_enabled = liveness_checking_enabled
           @pii_from_doc = read_pii(true_id_product)
@@ -52,7 +53,7 @@ module DocAuth
         #  document_type
         def doc_auth_success?
           # really it's everything else excluding selfie
-          transaction_status_passed? && id_type_supported?
+          transaction_status_passed? && id_type_supported? && id_doc_type_expected?
         end
 
         def error_messages
@@ -62,6 +63,8 @@ module DocAuth
             { passport: true }
           elsif passport_card_detected?
             { passport_card: true }
+          elsif id_type.present? && !id_doc_type_expected?
+            { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
@@ -128,11 +131,19 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
+        def id_doc_type_expected?
+          expected_id_type = passport_requested ? ['passport'] :
+            ['drivers_license', 'state_id_card']
+
+          expected_id_type.include?(id_type)
+        end
+
+        def id_type
+          pii_from_doc&.id_doc_type
+        end
+
         def passport_pii?
-          @passport_pii ||= begin
-            pii_from_doc&.id_doc_type == 'passport' ||
-              pii_from_doc&.id_doc_type == 'passport_card'
-          end
+          @passport_pii ||= ['passport', 'passport_card'].include?(id_type)
         end
 
         def transaction_status

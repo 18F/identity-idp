@@ -219,8 +219,8 @@ module DocAuthHelper
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        attention_with_barcode_response,
-        DocAuth::LexisNexis::Config.new,
+        http_response: attention_with_barcode_response,
+        config: DocAuth::LexisNexis::Config.new,
       ),
     )
   end
