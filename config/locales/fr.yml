@@ -1819,7 +1819,7 @@ two_factor_authentication.phone_fee_disclosure: Des tarifs de messagerie et de d
 two_factor_authentication.phone_info: Nous vous enverrons un code à usage unique à chaque fois que vous vous connecterez.
 two_factor_authentication.phone_label: Numéro de téléphone
 two_factor_authentication.phone_verification.troubleshooting.change_number: Utiliser un autre numéro de téléphone
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: Je n’ai pas reçu mon code à usage unique
+two_factor_authentication.phone_verification.troubleshooting.code_not_received: Je ne reçois pas de code à usage unique par SMS/texto ou appel téléphonique
 two_factor_authentication.phone.delete.failure: Impossible de supprimer votre téléphone.
 two_factor_authentication.phone.delete.success: Votre téléphone a été supprimé.
 two_factor_authentication.piv_cac_header_text: Insérer votre carte d’employé fédéral
