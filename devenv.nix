@@ -8,12 +8,17 @@
 
 {
   packages = with pkgs; [
+    aws-iam-authenticator
+    aws-vault
+    awscli
+    chromedriver
     git
     gnumake
     jq
     libyaml
     openssl
-    yarn
+    ssm-session-manager-plugin
+    yubikey-manager
     zlib
   ];
 
@@ -22,6 +27,10 @@
       enable = true;
       bundler.enable = true;
       versionFile = ./.ruby-version;
+    };
+    javascript = {
+      enable = true;
+      yarn.enable = true;
     };
   };
 
@@ -36,10 +45,6 @@
       status = "bundle check";
       before = [ "devenv:enterShell" ];
     };
-    "yarn:install_packages" = {
-      exec = "yarn install --check-files";
-      before = [ "devenv:enterShell" ];
-    };
   };
 
   services = {
@@ -52,5 +57,4 @@
       enable = true;
     };
   };
-
 }
