@@ -14,7 +14,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:cropping_liveness_flow) { 'test_workflow_liveness_cropping' }
   let(:images_cropped) { false }
   let(:document_type) { 'DriversLicense' }
+  let(:document_class_name) { 'Drivers License' }
   let(:back_image_required) { true }
+  let(:passports_enabled) { false }
+  let(:passport_requested) { false }
 
   let(:config) do
     DocAuth::LexisNexis::Config.new(
@@ -26,14 +29,16 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       trueid_liveness_nocropping_workflow: non_cropping_liveness_flow,
     )
   end
+  let(:front_image) { DocAuthImageFixtures.document_front_image }
+  let(:back_image) { DocAuthImageFixtures.document_back_image }
   let(:selfie_image) { DocAuthImageFixtures.selfie_image }
   let(:passport_image) { nil }
   let(:liveness_checking_required) { false }
   let(:subject) do
     described_class.new(
       config: config,
-      front_image: DocAuthImageFixtures.document_front_image,
-      back_image: DocAuthImageFixtures.document_back_image,
+      front_image: front_image,
+      back_image: back_image,
       passport_image: passport_image,
       image_source: image_source,
       images_cropped: images_cropped,
@@ -42,7 +47,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       selfie_image: selfie_image,
       liveness_checking_required: liveness_checking_required,
       document_type: document_type,
+      passport_requested:,
     )
+  end
+
+  before do
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
   end
 
   shared_examples 'a successful request' do
@@ -159,10 +170,69 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
   context 'with a Passport document_type' do
     let(:document_type) { 'Passport' }
+    let(:document_class_name) { 'Passport' }
     let(:back_image_required) { false }
     let(:passport_image) { DocAuthImageFixtures.document_passport_image }
+    let(:passports_enabled) { true }
+    let(:passport_requested) { true }
 
     it_behaves_like 'a successful request'
+  end
+
+  context 'with the wrong id type submitted' do
+    context 'user requests DriversLicense but submits Passport' do
+      let(:document_type) { 'DriversLicense' }
+      let(:document_class_name) { 'Passport' }
+      let(:front_image) { DocAuthImageFixtures.document_passport_image }
+      let(:back_image) { DocAuthImageFixtures.document_passport_image }
+      let(:passports_enabled) { true }
+      let(:passport_requested) { false }
+
+      it 'fails with an unexpected_id_type error' do
+        stub_request(:post, full_url).with do |request|
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          !request_json[:Document][:Selfie].present?
+        end.to_return(
+          body: response_body_with_doc_auth_errors(liveness_checking_required),
+          status: 201,
+        )
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.errors)
+          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
+      end
+    end
+
+    context 'user requests Passport but submits DriversLicense' do
+      let(:document_type) { 'Passport' }
+      let(:document_class_name) { 'Drivers License' }
+      let(:back_image_required) { false }
+      let(:passport_image) { DocAuthImageFixtures.document_front_image }
+      let(:passports_enabled) { true }
+      let(:passport_requested) { true }
+
+      it 'fails with an unexpected_id_type error' do
+        stub_request(:post, full_url).with do |request|
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          !request_json[:Document][:Selfie].present?
+        end.to_return(
+          body: response_body_with_doc_auth_errors(liveness_checking_required),
+          status: 201,
+        )
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.errors)
+          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
+      end
+    end
   end
 
   context 'with non 200 http status code' do
@@ -205,6 +275,15 @@ def response_body(include_liveness)
               },
             ],
           },
+          {
+            Group: 'IDAUTH_FIELD_DATA',
+            Name: 'Fields_DocumentClassName',
+            Values: [
+              {
+                Value: document_class_name,
+              },
+            ],
+          },
           *(
             if include_liveness
               [
@@ -236,6 +315,15 @@ def response_body_with_doc_auth_errors(include_liveness)
             Values: [
               {
                 Value: 'Failed',
+              },
+            ],
+          },
+          {
+            Group: 'IDAUTH_FIELD_DATA',
+            Name: 'Fields_DocumentClassName',
+            Values: [
+              {
+                Value: document_class_name,
               },
             ],
           },

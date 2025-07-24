@@ -94,6 +94,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     allow(FeatureManagement).to receive(:doc_escrow_enabled?).and_return(
       doc_escrow_enabled && attempts_api_enabled_for_sp,
     )
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
     allow(writer).to receive(:write).and_return result
 
     allow_any_instance_of(DocumentCaptureSession).to receive(:passport_requested?)
@@ -311,7 +312,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+              expect(writer).to receive(:write).with(image: image.bytes).exactly(1).time
             end
           end
 
@@ -511,7 +512,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
               form.send(:images).each do |image|
                 # testing that the storage is happening
-                expect(writer).to receive(:write).with(image: image.bytes).exactly(2).times
+                expect(writer).to receive(:write).with(image: image.bytes).exactly(1).time
               end
             end
 
@@ -1081,6 +1082,16 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(response.errors).to eq({ passport: 'invalid MRZ' })
         end
 
+        it 'stores the unsuccessful result in the document_capture_session' do
+          response
+
+          expect(document_capture_session.reload.load_result).to have_attributes(
+            success: false,
+            pii: nil,
+            failed_passport_image_fingerprints: a_kind_of(Array),
+          )
+        end
+
         it 'logs the check event' do
           response
 
@@ -1093,6 +1104,33 @@ RSpec.describe Idv::ApiImageUploadForm do
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
           )
+        end
+      end
+
+      context 'uses mock dos if flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
+          allow_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+        it 'calls the mock dos api client' do
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to_not receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to receive(:fetch)
+          form.submit
+        end
+      end
+
+      context 'uses actual dos if flag is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+          allow_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+            .and_return(DocAuth::Response.new(success: true, errors: {}))
+        end
+
+        it 'does not call the mock dos api client' do
+          expect_any_instance_of(DocAuth::Dos::Requests::MrzRequest).to receive(:fetch)
+          expect_any_instance_of(DocAuth::Mock::DosPassportApiClient).to_not receive(:fetch)
+          form.submit
         end
       end
 
@@ -1324,77 +1362,172 @@ RSpec.describe Idv::ApiImageUploadForm do
   describe '#store_failed_images' do
     let(:doc_pii_response) { instance_double(Idv::DocAuthFormResponse) }
     let(:client_response) { instance_double(DocAuth::Response) }
+
     context 'when client_response is not success and not network error' do
+      before do
+        allow(client_response).to receive(:success?).and_return(false)
+        allow(client_response).to receive(:network_error?).and_return(false)
+        allow(client_response).to receive(:doc_auth_success?).and_return(false)
+        allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+      end
+
       context 'when both sides error message missing' do
         let(:errors) { {} }
-        it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
+
+        before do
           allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+        end
+
+        it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
+          expect(capture_result[:passport]).to be_empty
         end
       end
+
       context 'when both sides error message exist' do
         let(:errors) { { front: 'blurry', back: 'dpi' } }
-        it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
+
+        before do
           allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+        end
+
+        it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
+          expect(capture_result[:passport]).to be_empty
         end
       end
+
       context 'when one sides error message exists' do
         let(:errors) { { front: 'blurry', back: nil } }
-        it 'stores only the error side as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(false)
+
+        before do
           allow(client_response).to receive(:errors).and_return(errors)
-          allow(client_response).to receive(:doc_auth_success?).and_return(false)
-          allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+        end
+
+        it 'stores only the error side as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).to be_empty
+          expect(capture_result[:passport]).to be_empty
         end
       end
     end
 
     context 'when client_response is not success and is network error' do
       let(:errors) { {} }
+
+      before do
+        allow(client_response).to receive(:success?).and_return(false)
+        allow(client_response).to receive(:network_error?).and_return(true)
+        allow(client_response).to receive(:errors).and_return(errors)
+        allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+      end
+
       context 'when doc_pii_response is success' do
-        it 'stores neither of the side as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(true)
-          allow(client_response).to receive(:errors).and_return(errors)
+        before do
+          allow(client_response).to receive(:doc_auth_success?).and_return(true)
           allow(doc_pii_response).to receive(:success?).and_return(true)
-          form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
-          expect(capture_result[:front]).to be_empty
-          expect(capture_result[:back]).to be_empty
+        end
+
+        context 'when mrz_response is nil' do
+          it 'stores neither of the side as failed' do
+            form.send(:validate_form)
+            capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+            expect(capture_result[:front]).to be_empty
+            expect(capture_result[:back]).to be_empty
+            expect(capture_result[:passport]).to be_empty
+          end
+        end
+
+        context 'when mrz_response is not successful' do
+          let(:front_image) { nil }
+          let(:back_image) { nil }
+          let(:passport_image) { DocAuthImageFixtures.passport_failed_yaml }
+          let(:mrz_response) do
+            DocAuth::Response.new(
+              success: false,
+              errors: { passport: 'invalid MRZ' },
+              extra: {
+                vendor: 'DoS',
+                correlation_id_sent: 'something',
+                correlation_id_received: 'something else',
+                response: 'NO',
+              },
+            )
+          end
+
+          before do
+            allow(mrz_response).to receive(:success?).and_return(false)
+          end
+
+          it 'stores the failed passport image' do
+            form.send(:validate_form)
+            capture_result = form.send(
+              :store_failed_images,
+              client_response,
+              doc_pii_response,
+              mrz_response,
+            )
+            expect(capture_result[:front]).to be_empty
+            expect(capture_result[:back]).to be_empty
+            expect(capture_result[:passport]).to_not be_empty
+          end
+        end
+
+        context 'when mrz_response is successful' do
+          let(:passport_image) { DocAuthImageFixtures.passport_passed_yaml }
+          let(:mrz_response) do
+            DocAuth::Response.new(
+              success: true,
+              errors: {},
+              extra: {
+                vendor: 'DoS',
+                correlation_id_sent: 'something',
+                correlation_id_received: 'something else',
+                response: 'YES',
+              },
+            )
+          end
+
+          before do
+            allow(mrz_response).to receive(:success?).and_return(true)
+          end
+
+          it 'does not store the failed images' do
+            form.send(:validate_form)
+            capture_result = form.send(
+              :store_failed_images,
+              client_response,
+              doc_pii_response,
+              mrz_response,
+            )
+            expect(capture_result[:front]).to be_empty
+            expect(capture_result[:back]).to be_empty
+            expect(capture_result[:passport]).to be_empty
+          end
         end
       end
+
       context 'when doc_pii_response is failure' do
-        it 'stores both sides as failed' do
-          allow(client_response).to receive(:success?).and_return(false)
-          allow(client_response).to receive(:network_error?).and_return(true)
-          allow(client_response).to receive(:errors).and_return(errors)
+        before do
           allow(client_response).to receive(:doc_auth_success?).and_return(false)
           allow(doc_pii_response).to receive(:success?).and_return(false)
           allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+        end
+
+        it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response)
+          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
+          expect(capture_result[:passport]).to be_empty
         end
       end
     end

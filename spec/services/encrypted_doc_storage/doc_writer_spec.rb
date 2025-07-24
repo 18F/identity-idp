@@ -22,6 +22,16 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       expect(written_image).to eq(image)
     end
 
+    context 'when two images are written with the same writer object' do
+      it 'each image has a different key' do
+        result = subject.write(image:)
+        result1 = subject.write(image:)
+
+        expect(result.name).not_to eq(result1.name)
+        expect(result.encryption_key).not_to eq(result1.encryption_key)
+      end
+    end
+
     it 'uses LocalStorage by default' do
       expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(:write_image).once
       expect_any_instance_of(EncryptedDocStorage::S3Storage).to_not receive(:write_image)

@@ -97,13 +97,9 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-
     return if page.current_path == idv_hybrid_handoff_path && remote
-
     if remote
-      if page.current_path == idv_hybrid_handoff_path
-        click_on t('forms.buttons.continue_online')
-      end
+      click_on t('forms.buttons.continue_online')
     else
       click_on t('forms.buttons.continue_ipp')
     end
@@ -219,8 +215,8 @@ module DocAuthHelper
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        attention_with_barcode_response,
-        DocAuth::LexisNexis::Config.new,
+        http_response: attention_with_barcode_response,
+        config: DocAuth::LexisNexis::Config.new,
       ),
     )
   end

@@ -19,6 +19,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
@@ -314,10 +315,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       before do
-        user = nil
-
         perform_in_browser(:desktop) do
-          user = sign_in_and_2fa_user
+          sign_in_and_2fa_user
 
           complete_doc_auth_steps_before_hybrid_handoff_step
           clear_and_fill_in(:doc_auth_phone, phone_number)
@@ -346,6 +345,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           expect(page).to have_content(t('doc_auth.info.review_passport'))
           expect_to_try_again(is_hybrid: true)
           expect(page).to have_content(t('doc_auth.info.review_passport'))
+        end
+
+        perform_in_browser(:desktop) do
+          page.refresh
+          expect(page).to have_current_path(idv_link_sent_url)
         end
       end
 
@@ -380,6 +384,11 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             expect(page).to have_content(t('doc_auth.errors.general.network_error'))
             expect_rate_limit_warning(max_attempts - 1)
           end
+
+          perform_in_browser(:desktop) do
+            page.refresh
+            expect(page).to have_current_path(idv_link_sent_url)
+          end
         end
       end
 
@@ -406,10 +415,15 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
             expect_rate_limit_warning(max_attempts - 1)
           end
+
+          perform_in_browser(:desktop) do
+            page.refresh
+            expect(page).to have_current_path(idv_link_sent_url)
+          end
         end
       end
 
-      context 'api 400 error' do
+      context 'when MRZ request responds with 400 error' do
         let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
         before do
@@ -431,10 +445,15 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
             expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
           end
+
+          perform_in_browser(:desktop) do
+            page.refresh
+            expect(page).to have_current_path(idv_link_sent_url)
+          end
         end
       end
 
-      context 'api 500 error' do
+      context 'when MRZ request responds with 500 error' do
         let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
         before do
@@ -443,6 +462,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           stub_request(:post, fake_dos_api_endpoint)
             .to_return(status: 500, body: '{}', headers: {})
         end
+
         it 'shows the error message' do
           expect(@sms_link).to be_present
 
@@ -456,16 +476,19 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             expect(page).not_to have_current_path(idv_hybrid_mobile_capture_complete_url)
             expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
           end
+
+          perform_in_browser(:desktop) do
+            page.refresh
+            expect(page).to have_current_path(idv_link_sent_url)
+          end
         end
       end
     end
   end
 
   it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
-    user = nil
-
     perform_in_browser(:desktop) do
-      user = sign_in_and_2fa_user
+      sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
@@ -507,10 +530,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     end
 
     it 'shows capture complete on mobile and error page on desktop', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -598,11 +619,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       DocAuth::Mock::DocAuthMockClient.reset!
     end
 
-    it 'succefully captures image on last attempt', js: true do
-      user = nil
-
+    it 'successfully captures image on last attempt', js: true do
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -631,10 +650,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   context 'barcode read error on mobile (redo document capture)', allow_browser_log: true do
     it 'continues to ssn on desktop when user selects Continue', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
@@ -707,10 +724,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   context 'barcode read error on desktop, redo document capture on mobile' do
     it 'continues to ssn on desktop when user selects Continue', js: true do
-      user = nil
-
       perform_in_browser(:desktop) do
-        user = sign_in_and_2fa_user
+        sign_in_and_2fa_user
         complete_doc_auth_steps_before_document_capture_step
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images

@@ -1831,7 +1831,7 @@ two_factor_authentication.phone_fee_disclosure: Se pueden aplicar tarifas por me
 two_factor_authentication.phone_info: Le enviaremos un código de un solo uso cada vez que inicie sesión.
 two_factor_authentication.phone_label: Número de teléfono
 two_factor_authentication.phone_verification.troubleshooting.change_number: Use otro número de teléfono
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: No recibí mi código de un solo uso
+two_factor_authentication.phone_verification.troubleshooting.code_not_received: No estoy recibiendo el código de un solo uso por mensaje de texto (SMS) ni por llamada telefónica
 two_factor_authentication.phone.delete.failure: No se puede eliminar su teléfono.
 two_factor_authentication.phone.delete.success: Su teléfono fue eliminado.
 two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado del gobierno

@@ -20,7 +20,8 @@ module DocAuth
         images_cropped: false,
         user_uuid: nil,
         uuid_prefix: nil,
-        liveness_checking_required: false
+        liveness_checking_required: false,
+        passport_requested: false
       )
         Requests::TrueIdRequest.new(
           config: config,
@@ -34,6 +35,7 @@ module DocAuth
           images_cropped: images_cropped,
           liveness_checking_required: liveness_checking_required,
           document_type: document_type,
+          passport_requested: passport_requested,
         ).fetch
       end
     end

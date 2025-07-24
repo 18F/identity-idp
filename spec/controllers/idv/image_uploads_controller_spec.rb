@@ -495,7 +495,7 @@ RSpec.describe Idv::ImageUploadsController do
           before do
             allow(writer).to receive(:write).and_return result
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).exactly(4).times
+            expect(writer).to receive(:write).exactly(2).times
           end
 
           it 'tracks the event' do
@@ -602,6 +602,7 @@ RSpec.describe Idv::ImageUploadsController do
               uuid_prefix: nil,
               liveness_checking_required: true,
               images_cropped: false,
+              passport_requested: false,
             ).and_call_original
 
           action
@@ -624,6 +625,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
@@ -1569,6 +1571,7 @@ RSpec.describe Idv::ImageUploadsController do
             uuid_prefix: nil,
             liveness_checking_required: true,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
@@ -1594,6 +1597,7 @@ RSpec.describe Idv::ImageUploadsController do
             liveness_checking_required: false,
             images_cropped: false,
             document_type: an_instance_of(String),
+            passport_requested: false,
           ).and_call_original
 
         action

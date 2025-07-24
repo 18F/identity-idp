@@ -1832,7 +1832,7 @@ two_factor_authentication.phone_fee_disclosure: 可能会收短信和数据费�
 two_factor_authentication.phone_info: 你每次登录我们会给你发个一次性代码。
 two_factor_authentication.phone_label: 电话号码
 two_factor_authentication.phone_verification.troubleshooting.change_number: 使用另一个电话号码
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没收到一次性代码
+two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没有通过SMS/短信或电话收到一个一次性代码
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
