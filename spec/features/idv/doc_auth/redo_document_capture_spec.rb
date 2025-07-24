@@ -463,7 +463,9 @@ RSpec.feature 'document capture step', :js do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
-                click_continue
+                if page.current_path == idv_how_to_verify_path
+                  click_button t('forms.buttons.continue_online')
+                end
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
                 click_button 'Take photo'
