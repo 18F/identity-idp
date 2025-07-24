@@ -58,7 +58,7 @@ RSpec.feature 'choose id type step error checking' do
       end
     end
 
-    context 'mobile flow', :js, driver: :headless_chrome_mobile do
+    context 'mobile flow w ipp', :js, driver: :headless_chrome_mobile do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
@@ -70,7 +70,29 @@ RSpec.feature 'choose id type step error checking' do
       end
 
       it 'shows choose id type screen and continues after drivers license option' do
+        expect(page).to have_current_path(idv_how_to_verify_url)
         click_button t('forms.buttons.continue_online')
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        visit idv_choose_id_type_url
+        expect(page).to have_checked_field(
+          'doc_auth_choose_id_type_preference_drivers_license',
+          visible: :all,
+        )
+      end
+    end
+
+    context 'mobile flow no ipp', :js, driver: :headless_chrome_mobile do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(false)
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'shows choose id type screen and continues after drivers license option' do
         expect(page).to have_current_path(idv_choose_id_type_url)
         choose(t('doc_auth.forms.id_type_preference.drivers_license'))
         click_on t('forms.buttons.continue')
