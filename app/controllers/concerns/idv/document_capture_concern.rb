@@ -5,7 +5,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def handle_stored_result(user: current_user, store_in_session: true)
-      if stored_result&.success? && requested_document_type_requirements_met?
+      if stored_result&.success? && validation_requirements_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -76,16 +76,10 @@ module Idv
 
     private
 
-    def requested_document_type_requirements_met?
+    def validation_requirements_met?
       return false if document_type_mismatch?
 
-      # Passports require both selfie and MRZ validation to pass
-      if document_capture_session.passport_requested?
-        selfie_requirement_met? && mrz_requirement_met?
-      else
-        # State IDs only require selfie validation (no MRZ)
-        selfie_requirement_met?
-      end
+      selfie_requirement_met? && mrz_requirement_met?
     end
 
     def document_type_mismatch?
@@ -110,12 +104,8 @@ module Idv
       stored_result.pii_from_doc&.dig(:id_doc_type)
     end
 
-    def id_type
-      if respond_to?(:session) && session[:chosen_id_type] == 'passport'
-        'passport'
-      else
-        document_capture_session.passport_requested? ? 'passport' : 'state_id'
-      end
+    def id_type_requested
+      document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
