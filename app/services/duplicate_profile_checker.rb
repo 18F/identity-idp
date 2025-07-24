@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class DuplicateProfileChecker
-  attr_reader :user, :user_session, :sp, :profile
+  attr_reader :user, :user_session, :sp, :profile, :type
 
-  def initialize(user:, user_session:, sp:)
+  def initialize(user:, user_session:, sp:, type:)
     @user = user
     @user_session = user_session
     @sp = sp
     @profile = user&.active_profile
+    @type = type
   end
 
   def check_for_duplicate_profiles
@@ -20,6 +21,11 @@ class DuplicateProfileChecker
     if !duplicate_ssn_finder.ial2_profile_ssn_is_unique?
       ids = associated_profiles.map(&:id)
       user_session[:duplicate_profile_ids] = ids
+      AlertUserDuplicateProfileDiscoveredJob.new.perform(
+        user: user,
+        agency: sp.friendly_name || sp.agency&.name,
+        type: type,
+      )
     end
   end
 
