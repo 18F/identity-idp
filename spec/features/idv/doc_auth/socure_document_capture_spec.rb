@@ -507,6 +507,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           )
           allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
             .and_return('https://fake-socure.test/mrz')
+
+          ### below stubs should not be required for this spec, to be removed in LG-16388
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          ###
         end
 
         it 'proceeds to the next page with valid info' do
