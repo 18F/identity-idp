@@ -6,17 +6,20 @@
   ...
 }:
 
+let
+  pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
+in
 {
   packages = with pkgs; [
     aws-iam-authenticator
     aws-vault
     awscli
-    chromedriver
     git
     gnumake
     jq
     libyaml
     openssl
+    pkgs-unstable.chromedriver
     ssm-session-manager-plugin
     yubikey-manager
     zlib
