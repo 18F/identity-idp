@@ -56,7 +56,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
         email_addresses.each do |email|
           expect(UserMailer).to receive(:with).with(user: user, email_address: email)
         end
-        expect(mailer_double).to receive(:dupe_profile_created).twice.with(agency_name: agency)
+        expect(user_mailer).to receive(:dupe_profile_created).twice.with(agency_name: agency)
 
         subject.perform(user: user, agency: agency, type: :account_created)
       end

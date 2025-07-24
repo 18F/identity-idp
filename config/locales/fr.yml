@@ -1937,18 +1937,18 @@ user_mailer.contact_link_text: nous contacter
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si c’est vous qui avez confirmé un autre compte, veuillez supprimer le compte en double en suivant %{steps_link_html}. Si vous n’avez pas effectué cette action, veuillez prendre contact avec le %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: Vos renseignements personnels ont été confirmés pour un autre compte %{app_name}
-user_mailer.dupe_profile.created.help_center_link_html: "service d’assistance de  %{app_name}"
+user_mailer.dupe_profile.created.help_center_link_html: 'service d’assistance de %{app_name}'
 user_mailer.dupe_profile.created.steps_link_html: les étapes présentées ici
-user_mailer.dupe_profile.review_complete.unable_heading: Nous ne pouvons pas vous connecter à votre compte
-user_mailer.dupe_profile.review_complete.unable_info: Nous avons passé vos comptes en revue et ne pouvons pas vous y connecter. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
+user_mailer.dupe_profile.review_complete.locked_heading: Ce compte est désormais verrouillé
+user_mailer.dupe_profile.review_complete.locked_info: Nous avons passé vos comptes en revue et ce compte a été verrouillé. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Vous pouvez vous connecter à nouveau avec ce compte
 user_mailer.dupe_profile.review_complete.success_info: Nous avons passé vos comptes en revue ; vous pouvez maintenant vous reconnecter à {sp_or_app_name} avec ce compte.
-user_mailer.dupe_profile.review_complete.locked_heading: Ce compte est désormais verrouillé
-user_mailer.dupe_profile.review_complete.locked_info: Nous avons passé vos comptes en revue et ce compte a été verrouillé. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}. 
-user_mailer.dupe_profile.sign_in.description: Quelqu’un vient de se connecter sur un compte %{app_name} qui avait été confirmé à l'aide de vos renseignements personnels. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
+user_mailer.dupe_profile.review_complete.unable_heading: Nous ne pouvons pas vous connecter à votre compte
+user_mailer.dupe_profile.review_complete.unable_info: Nous avons passé vos comptes en revue et ne pouvons pas vous y connecter. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
+user_mailer.dupe_profile.sign_in.description: Quelqu’un vient de se connecter sur un compte %{app_name} qui avait été confirmé à l’aide de vos renseignements personnels. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description2_html: Si vous êtes à l’origine de cette action, vous devez supprimer le compte en double en suivant %{steps_link_html} et n’en utiliser qu’un seul pour votre sécurité. Si vous n’êtes pas à l’origine de cette action, veuillez prendre contact avec %{help_center_link_html}.
 user_mailer.dupe_profile.sign_in.heading: Quelqu’un s’est connecté à un autre compte utilisant vos renseignements personnels.
-user_mailer.dupe_profile.sign_in.help_center_link_html: "le service d’assistance de %{app_name}"
+user_mailer.dupe_profile.sign_in.help_center_link_html: 'le service d’assistance de %{app_name}'
 user_mailer.dupe_profile.sign_in.steps_link_html: les étapes présentées ici
 user_mailer.email_added.header: Une nouvelle adresse e-mail a été ajoutée à votre profil %{app_name}.
 user_mailer.email_added.help: Si vous n’avez pas apporté cette modification, connectez-vous à votre profil et gérez vos adresses e-mail. Nous vous recommandons de changer également votre mot de passe.
