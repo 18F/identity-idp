@@ -9,10 +9,8 @@ module Idv
     def set_passport_requested
       if chosen_id_type == 'passport'
         document_capture_session.update!(passport_status: 'requested')
-        session[:chosen_id_type] = 'passport'
       else
         document_capture_session.update!(passport_status: 'not_requested')
-        session[:chosen_id_type] = 'state_id'
       end
     end
 
