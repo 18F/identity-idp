@@ -5,11 +5,11 @@
   <%= t(
         'user_mailer.dupe_profile.created.description2_html',
         steps_link_html: link_to(
-          t('user_mailer.dupe_profile.created.steps_link_html'),
+          t('user_mailer.dupe_profile.created.steps_link'),
           root_url,
         ),
         help_center_link_html: link_to(
-          t('user_mailer.dupe_profile.created.help_center_link_html', app_name: APP_NAME),
+          t('user_mailer.dupe_profile.created.help_center_link', app_name: APP_NAME),
           MarketingSite.help_url,
         ),
       ) %>

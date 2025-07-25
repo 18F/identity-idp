@@ -1949,8 +1949,8 @@ user_mailer.contact_link_text: contáctenos
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó otra cuenta, elimine la cuenta duplicada siguiendo %{steps_link_html}. Si no fue usted, contacte con %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: Su información personal fue verificada en otra cuenta de %{app_name}
-user_mailer.dupe_profile.created.help_center_link_html: 'el centro de ayuda de %{app_name}'
-user_mailer.dupe_profile.created.steps_link_html: los pasos que se describen aquí
+user_mailer.dupe_profile.created.help_center_link: 'el centro de ayuda de %{app_name}'
+user_mailer.dupe_profile.created.steps_link: los pasos que se describen aquí
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con esta cuenta
@@ -1960,8 +1960,8 @@ user_mailer.dupe_profile.review_complete.unable_info: Hicimos una revisión de s
 user_mailer.dupe_profile.sign_in.description: Alguien acaba de iniciar sesión en una cuenta de %{app_name} que ya había sido verificada antes con la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description2_html: Si fue usted, debe eliminar la cuenta duplicada siguiendo %{steps_link_html}, y use solo una cuenta para proteger su seguridad. Si no fue usted, contacte con %{help_center_link_html}.
 user_mailer.dupe_profile.sign_in.heading: Se inició sesión en otra cuenta usando la información personal de usted
-user_mailer.dupe_profile.sign_in.help_center_link_html: 'el centro de ayuda de %{app_name}'
-user_mailer.dupe_profile.sign_in.steps_link_html: los pasos que se describen aquí
+user_mailer.dupe_profile.sign_in.help_center_link: 'el centro de ayuda de %{app_name}'
+user_mailer.dupe_profile.sign_in.steps_link: los pasos que se describen aquí
 user_mailer.email_added.header: Se agregó una nueva dirección de correo electrónico a su perfil de %{app_name}.
 user_mailer.email_added.help: Si usted no hizo este cambio, inicie sesión en su perfil y administre sus direcciones de correo electrónico. Le recomendamos que también cambie su contraseña.
 user_mailer.email_added.subject: Se añadió una nueva dirección de correo electrónico

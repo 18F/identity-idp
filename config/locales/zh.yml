@@ -1950,8 +1950,8 @@ user_mailer.contact_link_text: 联系我们
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
 user_mailer.dupe_profile.created.description2_html: 如果另一个账户是你本人验证的，请按照这里列出的 %{steps_link_html}。如果不是你本人，请联系 %{help_center_link_html}.
 user_mailer.dupe_profile.created.heading: 你的个人信息在另一个 %{app_name} 账户上得到了验证
-user_mailer.dupe_profile.created.help_center_link_html: '%{app_name} 帮助中心。'
-user_mailer.dupe_profile.created.steps_link_html: 步骤删除那个重复账户
+user_mailer.dupe_profile.created.help_center_link: '%{app_name} 帮助中心。'
+user_mailer.dupe_profile.created.steps_link: 步骤删除那个重复账户
 user_mailer.dupe_profile.review_complete.locked_heading: 这个帐户现已被锁
 user_mailer.dupe_profile.review_complete.locked_info: 我们完成了对你帐户的审核，这个帐户已被锁住。请联系 %{sp_or_app_name} 获取进一步帮助。
 user_mailer.dupe_profile.review_complete.success_heading: 你可以使用这个帐户重新登录
@@ -1961,8 +1961,8 @@ user_mailer.dupe_profile.review_complete.unable_info: 我们完成了对你帐�
 user_mailer.dupe_profile.sign_in.description: 有人刚刚登录进入了一个以前使用你的个人信息验证过的 %{app_name} 账户。为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权。
 user_mailer.dupe_profile.sign_in.description2_html: 如果刚才登录的是你本人，请按照这里列出的 %{steps_link_html}, 并且为了你的安全以后只使用一个帐户。如果刚才登录的不是你本人，请联系 %{help_center_link_html}。
 user_mailer.dupe_profile.sign_in.heading: 另一个使用你个人信息的账户已做了登录
-user_mailer.dupe_profile.sign_in.help_center_link_html: '%{app_name} 帮助中心'
-user_mailer.dupe_profile.sign_in.steps_link_html: 步骤删除重复帐户
+user_mailer.dupe_profile.sign_in.help_center_link: '%{app_name} 帮助中心'
+user_mailer.dupe_profile.sign_in.steps_link: 步骤删除重复帐户
 user_mailer.email_added.header: 一个新电邮地址加进了你的 %{app_name} 用户资料中。
 user_mailer.email_added.help: 如果你没有作此更改，请登录你的用户资料来管理电邮地址。我们推荐你也更改密码。
 user_mailer.email_added.subject: 新电邮地址已添加
