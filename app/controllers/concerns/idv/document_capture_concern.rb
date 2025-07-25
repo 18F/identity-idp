@@ -5,7 +5,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def handle_stored_result(user: current_user, store_in_session: true)
-      if stored_result&.success? && selfie_requirement_met? && mrz_requirement_met?
+      if stored_result&.success? && validation_requirements_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -62,7 +62,15 @@ module Idv
     end
 
     def mrz_requirement_met?
-      return true unless id_type == 'passport'
+      # If passport not requested, return true
+      return true unless document_capture_session.passport_requested?
+
+      # If passport requested but not submitted (document type mismatch), return false
+      return false unless submitted_id_type == 'passport'
+
+      # If passport submitted, verify all conditions are met
+      return false unless IdentityConfig.store.doc_auth_passports_enabled
+
       stored_result.mrz_status == :pass
     end
 
@@ -145,16 +153,44 @@ module Idv
 
     private
 
+    def validation_requirements_met?
+      return false if document_type_mismatch?
+
+      selfie_requirement_met? && mrz_requirement_met?
+    end
+
+    def document_type_mismatch?
+      # Reject passports when feature is disabled but user submitted a passport
+      return true if !IdentityConfig.store.doc_auth_passports_enabled &&
+                     submitted_id_type == 'passport'
+
+      # Reject when user requested passport flow but submitted a different document type
+      return true if document_capture_session.passport_requested? &&
+                     submitted_id_type != 'passport'
+
+      # Reject when user didn't request passport flow but submitted a passport
+      # Allow passports if passport_status is 'allowed' (passports enabled for this flow)
+      return true if !document_capture_session.passport_requested? &&
+                     submitted_id_type == 'passport' &&
+                     document_capture_session.passport_status != 'allowed'
+
+      false
+    end
+
+    def submitted_id_type
+      stored_result.pii_from_doc&.dig(:id_doc_type)
+    end
+
+    def id_type_requested
+      document_capture_session.passport_requested? ? 'passport' : 'state_id'
+    end
+
     def track_document_issuing_state(user, state)
       return unless IdentityConfig.store.state_tracking_enabled && state
       doc_auth_log = DocAuthLog.find_by(user_id: user.id)
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
-    end
-
-    def id_type
-      document_capture_session.passport_requested? ? 'passport' : 'state_id'
     end
   end
 end

@@ -65,11 +65,21 @@ module Idv
     end
 
     def create_document_capture_session
+      existing_session = if idv_session.document_capture_session_uuid
+                           DocumentCaptureSession.find_by(
+                             uuid: idv_session.document_capture_session_uuid,
+                           )
+                         end
+
+      if existing_session
+        return
+      end
+
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
         doc_auth_vendor:,
-        passport_status:,
+        passport_status: passport_status,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
