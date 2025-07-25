@@ -87,11 +87,7 @@ module Idv
 
     def in_person_proofing_route_enabled?
       IdentityConfig.store.in_person_proofing_enabled &&
-        IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-        IdentityConfig.store.in_person_doc_auth_button_enabled &&
-        Idv::InPersonConfig.enabled_for_issuer?(
-          decorated_sp_session.sp_issuer,
-        )
+        IdentityConfig.store.in_person_proofing_opt_in_enabled
     end
 
     def skip_to_capture
