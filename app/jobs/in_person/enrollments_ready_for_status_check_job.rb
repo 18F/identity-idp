@@ -43,7 +43,6 @@ module InPerson
 
     delegate :poll, to: :sqs_batch_wrapper
     delegate :process_batch, to: :batch_processor
-    delegate :analytics, to: :analytics_factory
 
     def batch_processor
       @batch_processor ||= begin

@@ -80,7 +80,7 @@ RSpec.describe Proofing::Socure::ReasonCodes::ApiClient do
 
       expect { described_class.new.download_reason_codes }.to raise_error(
         Proofing::Socure::ReasonCodes::ApiClient::ApiClientError,
-        "expected object key, got ';*[(\" at line 1 column 2",
+        "expected object key, got ';*[(\"' at line 1 column 2",
       )
     end
   end

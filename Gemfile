@@ -100,7 +100,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 8.0'
   gem 'capybara-webmock', github: '18F/capybara-webmock', branch: 'add-support-for-rack-3'
-  gem 'erb_lint', '~> 0.7.0', require: false
+  gem 'erb_lint', '~> 0.9.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
