@@ -535,10 +535,10 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#account_delete_submitted' do
+  describe '#account_delete_completed' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .account_delete_submitted
+        .account_delete_completed
     end
 
     it_behaves_like 'a system email'

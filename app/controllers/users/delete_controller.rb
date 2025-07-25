@@ -16,7 +16,7 @@ module Users
       send_push_notifications
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
-      analytics.account_delete_submitted(success: true)
+      analytics.account_delete_controller(success: true)
       attempts_api_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out
@@ -37,7 +37,7 @@ module Users
       return if valid_password?
 
       flash.now[:error] = t('idv.errors.incorrect_password')
-      analytics.account_delete_submitted(success: false)
+      analytics.account_delete_completed(success: false)
       attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
     end
@@ -59,7 +59,7 @@ module Users
     def notify_user_via_email_of_deletion
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: current_user, email_address: email_address)
-          .account_delete_submitted.deliver_now
+          .account_delete_completed.deliver_now
       end
     end
     # rubocop:enable IdentityIdp/MailLaterLinter
