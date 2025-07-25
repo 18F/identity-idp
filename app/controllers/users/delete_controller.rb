@@ -16,7 +16,7 @@ module Users
       send_push_notifications
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
-      analytics.account_delete_controller(success: true)
+      analytics.account_delete_submitted(success: true)
       attempts_api_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out
@@ -37,7 +37,7 @@ module Users
       return if valid_password?
 
       flash.now[:error] = t('idv.errors.incorrect_password')
-      analytics.account_delete_completed(success: false)
+      analytics.account_delete_submitted(success: false)
       attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
     end
