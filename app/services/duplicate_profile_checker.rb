@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class DuplicateProfileChecker
-  attr_reader :user, :user_session, :sp, :profile, :type
+  attr_reader :user, :user_session, :sp, :profile
 
   def initialize(user:, user_session:, sp:)
     @user = user
     @user_session = user_session
     @sp = sp
     @profile = user&.active_profile
-    @type = type
   end
 
   def check_for_duplicate_profiles

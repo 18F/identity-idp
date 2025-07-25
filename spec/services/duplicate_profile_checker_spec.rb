@@ -39,7 +39,6 @@ RSpec.describe DuplicateProfileChecker do
               user: user,
               user_session: session,
               sp: sp,
-              type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
             )
             dupe_profile_checker.check_for_duplicate_profiles
 
@@ -76,7 +75,6 @@ RSpec.describe DuplicateProfileChecker do
               user: user,
               user_session: session,
               sp: sp,
-              type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
             )
             dupe_profile_checker.check_for_duplicate_profiles
             expect(session[:duplicate_profile_ids]).to eq([user2.profiles.last.id])
@@ -100,7 +98,6 @@ RSpec.describe DuplicateProfileChecker do
           user: user,
           user_session: session,
           sp: sp,
-          type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
@@ -115,7 +112,6 @@ RSpec.describe DuplicateProfileChecker do
           user: user,
           user_session: session,
           sp: sp,
-          type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
