@@ -111,8 +111,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
   end
 
-  def account_delete_submitted
-    UserMailer.with(user: user, email_address: email_address_record).account_delete_submitted
+  def account_delete_completed
+    UserMailer.with(user: user, email_address: email_address_record).account_delete_completed
   end
 
   def account_reset_cancel
