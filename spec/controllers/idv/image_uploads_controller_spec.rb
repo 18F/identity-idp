@@ -157,7 +157,7 @@ RSpec.describe Idv::ImageUploadsController do
           let(:attempts_api_enabled_for_sp) { true }
           before do
             expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
-            expect(writer).to receive(:write).with(image: nil).and_call_original
+            expect(writer).to receive(:write).with(issuer: sp.issuer, image: nil).and_call_original
             allow(writer).to receive(:write).and_return result
           end
 

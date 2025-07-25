@@ -11,12 +11,14 @@ module EncryptedDocStorage
       @s3_enabled = s3_enabled
     end
 
-    def write(image: nil)
+    def write(issuer:, image: nil)
+      raise if issuer.blank?
+
       if image.blank?
         return Result.new(name: nil, encryption_key: nil)
       end
 
-      name = SecureRandom.uuid
+      name = "#{issuer}/#{SecureRandom.uuid}"
       encryption_key = SecureRandom.bytes(32)
 
       write_with_data(
@@ -45,9 +47,7 @@ module EncryptedDocStorage
     end
 
     def storage
-      @storage ||= begin
-        @s3_enabled ? S3Storage.new : LocalStorage.new
-      end
+      @storage ||= @s3_enabled ? S3Storage.new : LocalStorage.new
     end
   end
 end

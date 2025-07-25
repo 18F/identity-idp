@@ -234,7 +234,7 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def doc_escrow_name
-    SecureRandom.uuid
+    "#{sp.issuer}/#{SecureRandom.uuid}"
   end
 
   def doc_escrow_key

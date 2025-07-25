@@ -328,7 +328,7 @@ module Idv
       return {} unless doc_escrow_enabled?
 
       return @doc_escrow_images if defined?(@doc_escrow_images)
-      @doc_escrow_images = images_metadata.attempts_file_data
+      @doc_escrow_images = images_metadata.attempts_file_data(issuer: service_provider.issuer)
       @doc_escrow_images
     end
 

@@ -18,9 +18,9 @@ module Idv
       @errors = {}
     end
 
-    def attempts_file_data
+    def attempts_file_data(issuer:)
       images.each_with_object({}) do |image, obj|
-        result = write_image(image.bytes)
+        result = write_image(issuer:, image: image.bytes)
         obj[image.attempts_tracker_file_id_key] = result.name
         obj[image.attempts_tracker_encryption_key] = result.encryption_key
       end
@@ -78,8 +78,8 @@ module Idv
 
     private
 
-    def write_image(image)
-      encrypted_document_storage_writer.write(image:)
+    def write_image(issuer:, image:)
+      encrypted_document_storage_writer.write(issuer:, image:)
     end
 
     def write_image_with_data(image, encryption_key:, name:)

@@ -312,7 +312,10 @@ RSpec.describe Idv::ApiImageUploadForm do
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).exactly(1).time
+              expect(writer).to receive(:write).with(
+                issuer: service_provider.issuer,
+                image: image.bytes,
+              ).exactly(1).time
             end
           end
 
@@ -512,7 +515,10 @@ RSpec.describe Idv::ApiImageUploadForm do
 
               form.send(:images).each do |image|
                 # testing that the storage is happening
-                expect(writer).to receive(:write).with(image: image.bytes).exactly(1).time
+                expect(writer).to receive(:write).with(
+                  issuer: service_provider.issuer,
+                  image: image.bytes,
+                ).exactly(1).time
               end
             end
 
@@ -704,7 +710,10 @@ RSpec.describe Idv::ApiImageUploadForm do
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes).and_return result
+              expect(writer).to receive(:write).with(
+                issuer: service_provider.issuer,
+                image: image.bytes,
+              ).exactly(1).time.and_return(result)
             end
           end
 
@@ -784,7 +793,10 @@ RSpec.describe Idv::ApiImageUploadForm do
 
             form.send(:images).each do |image|
               # testing that the storage is happening
-              expect(writer).to receive(:write).with(image: image.bytes)
+              expect(writer).to receive(:write).with(
+                issuer: service_provider.issuer,
+                image: image.bytes,
+              ).exactly(1).time
             end
           end
           it 'tracks the event (as a success as doc upload succeeded)' do
