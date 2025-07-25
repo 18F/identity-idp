@@ -1955,7 +1955,7 @@ user_mailer.dupe_profile.created.steps_link_html: 步骤删除那个重复账户
 user_mailer.dupe_profile.review_complete.locked_heading: 这个帐户现已被锁
 user_mailer.dupe_profile.review_complete.locked_info: 我们完成了对你帐户的审核，这个帐户已被锁住。请联系 %{sp_or_app_name} 获取进一步帮助。
 user_mailer.dupe_profile.review_complete.success_heading: 你可以使用这个帐户重新登录
-user_mailer.dupe_profile.review_complete.success_info: 我们完成了对你帐户的审核，你现在可以使用这个帐户重新登录 {sp_or_app_name}。
+user_mailer.dupe_profile.review_complete.success_info: 我们完成了对你帐户的审核，你现在可以使用这个帐户重新登录 %{sp_or_app_name}。
 user_mailer.dupe_profile.review_complete.unable_heading: 我们无法让你登录
 user_mailer.dupe_profile.review_complete.unable_info: 我们完成了对你帐户的审核，但无法让你登录。 请联系 %{sp_or_app_name} 获取进一步帮助。
 user_mailer.dupe_profile.sign_in.description: 有人刚刚登录进入了一个以前使用你的个人信息验证过的 %{app_name} 账户。为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权。

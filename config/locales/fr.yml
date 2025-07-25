@@ -1942,7 +1942,7 @@ user_mailer.dupe_profile.created.steps_link_html: les étapes présentées ici
 user_mailer.dupe_profile.review_complete.locked_heading: Ce compte est désormais verrouillé
 user_mailer.dupe_profile.review_complete.locked_info: Nous avons passé vos comptes en revue et ce compte a été verrouillé. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Vous pouvez vous connecter à nouveau avec ce compte
-user_mailer.dupe_profile.review_complete.success_info: Nous avons passé vos comptes en revue ; vous pouvez maintenant vous reconnecter à {sp_or_app_name} avec ce compte.
+user_mailer.dupe_profile.review_complete.success_info: Nous avons passé vos comptes en revue ; vous pouvez maintenant vous reconnecter à %{sp_or_app_name} avec ce compte.
 user_mailer.dupe_profile.review_complete.unable_heading: Nous ne pouvons pas vous connecter à votre compte
 user_mailer.dupe_profile.review_complete.unable_info: Nous avons passé vos comptes en revue et ne pouvons pas vous y connecter. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description: Quelqu’un vient de se connecter sur un compte %{app_name} qui avait été confirmé à l’aide de vos renseignements personnels. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.

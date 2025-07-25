@@ -1954,7 +1954,7 @@ user_mailer.dupe_profile.created.steps_link_html: los pasos que se describen aqu
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con esta cuenta
-user_mailer.dupe_profile.review_complete.success_info: Hicimos una revisión de sus cuentas y ya puede volver a iniciar sesión en {sp_or_app_name} con esta cuenta.
+user_mailer.dupe_profile.review_complete.success_info: Hicimos una revisión de sus cuentas y ya puede volver a iniciar sesión en %{sp_or_app_name} con esta cuenta.
 user_mailer.dupe_profile.review_complete.unable_heading: No podemos verificar su inicio de sesión
 user_mailer.dupe_profile.review_complete.unable_info: Hicimos una revisión de sus cuentas y no podemos verificar su información para que inicie sesión. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description: Alguien acaba de iniciar sesión en una cuenta de %{app_name} que ya había sido verificada antes con la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

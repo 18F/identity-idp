@@ -3,11 +3,15 @@ require 'rails_helper'
 RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   let(:user) { create(:user, :proofed_with_selfie) }
   let(:profile2) { create(:profile, :facial_match_proof) }
+  let(:current_sp) do
+    create(:service_provider, issuer: 'test-sp', friendly_name: 'Test Service Provider')
+  end
 
   before do
     stub_sign_in(user)
     stub_analytics
-    session[:duplicate_profile_ids] = profile2.id
+    session[:duplicate_profile_ids] = [profile2.id]
+    allow(controller).to receive(:current_sp).and_return(current_sp)
   end
 
   describe '#show' do
@@ -34,6 +38,16 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
         expect(DuplicateProfilesDetectedPresenter).to receive(:new)
           .with(user: user, user_session: session)
         get :show
+      end
+
+      it 'enqueues an alert job for each duplicate profile' do
+        expect(AlertUserDuplicateProfileDiscoveredJob).to receive(:perform_later).with(
+          user: profile2.user,
+          agency: current_sp.friendly_name,
+          type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
+        )
+
+        controller.send(:notify_users_of_duplicate_profile_sign_in)
       end
 
       it 'logs an event' do

@@ -255,7 +255,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(
       user: user,
       email_address: email_address_record,
-    ).dupe_profile_account_review_complete_unable(
+    ).dupe_profile_account_review_complete_success(
       agency_name: 'Sample APP',
     )
   end
