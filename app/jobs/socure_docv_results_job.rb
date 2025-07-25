@@ -257,8 +257,11 @@ class SocureDocvResultsJob < ApplicationJob
       remaining_submit_attempts:,
       submit_attempts:,
       user_id: user_uuid,
-      response: response.extra[:response],
       success: response.success?,
+      **response.extra.slice(
+          :response,:correlation_id_sent, :correlation_id_received,
+          :error_code, :error_message, :error_reason, :exception,
+        ),
     )
 
     response

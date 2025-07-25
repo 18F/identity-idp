@@ -1103,6 +1103,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
+            correlation_id_received: 'something else',
+            correlation_id_sent: 'something',
           )
         end
       end
@@ -1172,6 +1174,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
+            correlation_id_received: 'something else',
+            correlation_id_sent: 'something',
           )
         end
       end

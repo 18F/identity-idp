@@ -2455,11 +2455,16 @@ module AnalyticsEvents
   # @param [String] document_type The document type (should always be 'Passport' here)
   def idv_dos_passport_verification(
     success:,
-    response:,
     submit_attempts:,
     remaining_submit_attempts:,
-    user_id:,
     document_type:,
+    response: nil,
+    correlation_id_received: nil,
+    correlation_id_sent: nil,
+    exception: nil,
+    error_code: nil,
+    error_message: nil,
+    error_reason: nil,
     **extra
   )
     track_event(
@@ -2468,8 +2473,13 @@ module AnalyticsEvents
       response:,
       submit_attempts:,
       remaining_submit_attempts:,
-      user_id:,
       document_type:,
+      correlation_id_sent:,
+      correlation_id_received:,
+      error_code:,
+      error_message:,
+      error_reason:,
+      exception:,
       **extra,
     )
   end
