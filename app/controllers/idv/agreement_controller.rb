@@ -86,8 +86,8 @@ module Idv
     end
 
     def in_person_proofing_route_enabled?
-      IdentityConfig.store.in_person_proofing_enabled &&
-        IdentityConfig.store.in_person_proofing_opt_in_enabled
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+        IdentityConfig.store.in_person_proofing_enabled
     end
 
     def skip_to_capture
