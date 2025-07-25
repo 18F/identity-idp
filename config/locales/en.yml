@@ -1934,6 +1934,22 @@ user_mailer.add_email.footer: This link will expire in %{confirmation_period}.
 user_mailer.add_email.header: Thanks for adding an email. Please click the link below or copy and paste the entire link into your browser.
 user_mailer.add_email.subject: Confirm your email
 user_mailer.contact_link_text: contact us
+user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn’t you contact the %{help_center_link_html}.
+user_mailer.dupe_profile.created.heading: Your personal information was verified on another %{app_name} account
+user_mailer.dupe_profile.created.help_center_link: '%{app_name} Help Center'
+user_mailer.dupe_profile.created.steps_link: steps outlined here
+user_mailer.dupe_profile.review_complete.locked_heading: This account is now locked
+user_mailer.dupe_profile.review_complete.locked_info: We completed a review of your accounts and this account has been locked. Please contact %{sp_or_app_name} for further assistance.
+user_mailer.dupe_profile.review_complete.success_heading: You can sign back in with this account
+user_mailer.dupe_profile.review_complete.success_info: We completed a review of your accounts and you can now sign back into %{sp_or_app_name} with this account.
+user_mailer.dupe_profile.review_complete.unable_heading: We are not able to sign you in
+user_mailer.dupe_profile.review_complete.unable_info: We completed a review of your accounts and are not able to sign you in. Please contact %{sp_or_app_name} for further assistance.
+user_mailer.dupe_profile.sign_in.description: Someone just signed into a %{app_name} that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+user_mailer.dupe_profile.sign_in.description2_html: If this was you, you should delete the duplicate account by following the %{steps_link_html} and use only one account for. If this wasn’t you contact the %{help_center_link_html}.
+user_mailer.dupe_profile.sign_in.heading: Another account using your personal information has signed in
+user_mailer.dupe_profile.sign_in.help_center_link: '%{app_name} Help Center'
+user_mailer.dupe_profile.sign_in.steps_link: steps outlined here
 user_mailer.email_added.header: A new email address was added to your %{app_name} profile.
 user_mailer.email_added.help: If you did not make this change, sign in to your profile and manage your email addresses. We recommend that you also change your password.
 user_mailer.email_added.subject: New email address added
