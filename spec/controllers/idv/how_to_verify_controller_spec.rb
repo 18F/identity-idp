@@ -7,6 +7,7 @@ RSpec.describe Idv::HowToVerifyController do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
   let(:document_capture_session) { create(:document_capture_session, user:) }
+  let(:passport_allowed) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -17,6 +18,7 @@ RSpec.describe Idv::HowToVerifyController do
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
+    subject.idv_session.passport_allowed = passport_allowed
   end
 
   describe 'before_actions' do
@@ -231,6 +233,17 @@ RSpec.describe Idv::HowToVerifyController do
           }
             .from('establishing')
             .to('cancelled')
+        end
+      end
+
+      context 'passport allowed' do
+        let(:passport_allowed) { true }
+
+        it 'redirects to choose id type' do
+          put :update, params: params
+
+          expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
+          expect(response).to redirect_to(idv_choose_id_type_url)
         end
       end
     end
