@@ -109,17 +109,17 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def irs_authentication_report
-    irs_authentication_report = Reports::IrsAuthenticationReport.new(Time.zone.yesterday)
+  def irs_registration_funnel_report
+    irs_registration_funnel_report = Reports::IrsRegistrationFunnelReport.new(Time.zone.yesterday)
 
-    stub_cloudwatch_client(irs_authentication_report.irs_authentication_report)
+    stub_cloudwatch_client(irs_registration_funnel_report.irs_registration_funnel_report)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example IRS Authentication Report - #{Time.zone.now.to_date}",
-      message: irs_authentication_report.preamble,
+      subject: "Example IRS Registration Funnel Report - #{Time.zone.now.to_date}",
+      message: irs_registration_funnel_report.preamble,
       attachment_format: :csv,
-      reports: irs_authentication_report.reports,
+      reports: irs_registration_funnel_report.reports,
     )
   end
 

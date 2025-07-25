@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsAuthenticationReport
+  class IrsRegistrationFunnelReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
@@ -67,7 +67,7 @@ module Reporting
           filename: 'overview',
         ),
         Reporting::EmailableReport.new(
-          title: 'Authentication Funnel Metrics',
+          title: 'Registration Funnel Metrics',
           table: funnel_metrics_table,
           filename: 'funnel_metrics',
         ),

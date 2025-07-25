@@ -245,8 +245,8 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send previous week's authentication reports to irs
-      irs_weekly_authentication_report: {
-        class: 'Reports::IrsAuthenticationReport',
+      irs_weekly_registration_funnel_report: {
+        class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
