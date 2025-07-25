@@ -373,7 +373,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
 
       it 'has error messages' do
-        expect(response.error_messages[:passport_card]).to eq(true)
+        expect(response.error_messages[:passport_card]).to eq(
+          I18n.t('doc_auth.errors.doc.doc_type_check'),
+        )
       end
     end
 
@@ -387,7 +389,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
 
       it 'has error messages' do
-        expect(response.error_messages[:passport]).to eq(true)
+        expect(response.error_messages[:passport]).to eq(
+          I18n.t('doc_auth.errors.doc.doc_type_check'),
+        )
       end
     end
   end
