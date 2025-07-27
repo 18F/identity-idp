@@ -56,14 +56,14 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     allow(IdentityConfig.store).to receive(:irs_authentication_emails)
       .and_return(mock_test_auth_emails)
 
-    allow(report.irs_authentication_report).to receive(:funnel_metrics_table)
+    allow(report.irs_registration_funnel_report).to receive(:funnel_metrics_table)
       .and_return(mock_funnel_metrics_data)
   end
 
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'IRS Authentication Report - 2021-03-02',
+      subject: 'IRS Registration Funnel Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
