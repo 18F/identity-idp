@@ -34,7 +34,7 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
     ]
   end
 
-  subject(:report) { Reporting::IrsAuthenticationReport.new(issuers: [issuer], time_range:) }
+  subject(:report) { Reporting::IrsRegistrationFunnelReport.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day
