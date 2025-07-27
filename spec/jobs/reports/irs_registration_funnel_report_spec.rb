@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsAuthenticationReport do
+RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  subject(:report) { Reports::IrsAuthenticationReport.new(report_date) }
+  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date) }
 
-  let(:name) { 'irs-authentication-report' }
+  let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/irs-authentication-report/2021/2021-03-02.irs-authentication-report'
+    'int/irs-registration-funnel-report/2021/2021-03-02.irs-authentication-report'
   end
 
   let(:expected_s3_paths) do
