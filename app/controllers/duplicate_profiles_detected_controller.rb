@@ -40,6 +40,7 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   def notify_users_of_duplicate_profile_sign_in
     return unless user_session[:duplicate_profile_ids].present?
+    return if user_session[:dupe_profiles_notified]
     agency_name = current_sp.friendly_name || current_sp.agency&.name
 
     user_session[:duplicate_profile_ids].each do |profile_id|
@@ -50,5 +51,7 @@ class DuplicateProfilesDetectedController < ApplicationController
         type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
       )
     end
+
+    user_session[:dupe_profiles_notified] = true
   end
 end
