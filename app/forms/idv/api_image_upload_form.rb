@@ -225,6 +225,7 @@ module Idv
         submit_attempts:,
         user_id: user_uuid,
         success: response.success?,
+        errors: response.errors.to_h,
         **response.extra.slice(
           :response, :correlation_id_sent, :correlation_id_received,
           :error_code, :error_message, :error_reason, :exception

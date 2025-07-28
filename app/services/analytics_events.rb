@@ -2465,6 +2465,7 @@ module AnalyticsEvents
     error_code: nil,
     error_message: nil,
     error_reason: nil,
+    errors: nil,
     **extra
   )
     track_event(
@@ -2479,6 +2480,7 @@ module AnalyticsEvents
       error_code:,
       error_message:,
       error_reason:,
+      errors:,
       exception:,
       **extra,
     )
