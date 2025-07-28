@@ -2451,7 +2451,6 @@ module AnalyticsEvents
   # @param [Integer] submit_attempts Times that user has tried submitting document capture
   # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
   #                  we rate limit them.
-  # @param [String] user_id
   # @param [String] document_type The document type (should always be 'Passport' here)
   def idv_dos_passport_verification(
     success:,
