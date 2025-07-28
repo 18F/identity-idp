@@ -64,10 +64,12 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       allow(controller).to receive(:current_user).and_return(user)
       allow(controller).to receive(:flash).and_return({})
       allow(controller).to receive(:track_document_issuing_state)
-      allow(document_capture_session).to receive(:passport_requested?).and_return(passport_requested)
+      allow(document_capture_session).to receive(:passport_requested?)
+        .and_return(passport_requested)
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(passports_enabled)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+        .and_return(passports_enabled)
 
       resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
