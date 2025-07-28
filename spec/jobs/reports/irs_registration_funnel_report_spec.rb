@@ -8,7 +8,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/irs-registration-funnel-report/2021/2021-03-02.irs-authentication-report'
+    'int/irs-registration-funnel-report/2021/2021-03-02.irs-registration-funnel-report'
   end
 
   let(:expected_s3_paths) do
