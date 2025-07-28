@@ -1105,6 +1105,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_type: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
+            errors: { passport: 'invalid MRZ' },
           )
         end
 
@@ -1214,6 +1215,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_type: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
+            errors: {},
           )
         end
       end
