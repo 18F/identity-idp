@@ -1129,20 +1129,20 @@ RSpec.describe Idv::ApiImageUploadForm do
             response
 
             expect(fake_analytics).to have_logged_event(
-            :idv_dos_passport_verification,
-            success: false,
-            submit_attempts: 1,
-            remaining_submit_attempts: 3,
-            user_id: document_capture_session.user.uuid,
-            document_type: document_type,
-            correlation_id_received: 'something else',
-            correlation_id_sent: 'something',
-            error_code: 'ERR',
-            error_message: 'issues @ State',
-            error_reason: 'just because',
-            exception: 'Exception message',
-            errors: { network: 'true' },
-          )
+              :idv_dos_passport_verification,
+              success: false,
+              submit_attempts: 1,
+              remaining_submit_attempts: 3,
+              user_id: document_capture_session.user.uuid,
+              document_type: document_type,
+              correlation_id_received: 'something else',
+              correlation_id_sent: 'something',
+              error_code: 'ERR',
+              error_message: 'issues @ State',
+              error_reason: 'just because',
+              exception: 'Exception message',
+              errors: { network: 'true' },
+            )
           end
         end
       end
