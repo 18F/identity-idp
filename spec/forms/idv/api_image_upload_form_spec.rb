@@ -1467,10 +1467,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
           end
 
-          before do
-            allow(mrz_response).to receive(:success?).and_return(false)
-          end
-
           it 'stores the failed passport image' do
             form.send(:validate_form)
             capture_result = form.send(
