@@ -99,6 +99,7 @@ module MfaSetupConcern
       uuid_prefix: current_sp&.app_id,
       user_uuid: current_user.uuid,
       in_ab_test_bucket: in_tmx_ab_test_bucket?,
+      in_account_creation_flow: in_account_creation_flow?,
     }
   end
 
