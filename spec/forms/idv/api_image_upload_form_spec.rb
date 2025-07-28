@@ -1496,10 +1496,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
           end
 
-          before do
-            allow(mrz_response).to receive(:success?).and_return(true)
-          end
-
           it 'does not store the failed images' do
             form.send(:validate_form)
             capture_result = form.send(
