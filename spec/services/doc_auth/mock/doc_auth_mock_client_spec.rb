@@ -563,4 +563,23 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       end
     end
   end
+
+  describe '.post_images' do
+    subject(:client) { described_class.new }
+
+    let(:post_images_response) do
+      client.post_images(
+        passport_image: DocAuthImageFixtures.document_front_image_data_uri,
+        document_type: 'Passport',
+      )
+    end
+
+    context 'when the document type is passport' do
+      it 'returns a successful mock doc auth response with passport pii' do
+        expect(post_images_response).to be_a(DocAuth::Mock::ResultResponse)
+        expect(post_images_response.success?).to be(true)
+        expect(post_images_response.pii_from_doc).to have_attributes(id_doc_type: 'passport')
+      end
+    end
+  end
 end
