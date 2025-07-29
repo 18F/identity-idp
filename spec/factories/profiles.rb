@@ -104,7 +104,7 @@ FactoryBot.define do
 
     trait :facial_match_proof do
       idv_level { :unsupervised_with_selfie }
-      initiating_service_provider_issuer { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+      initiating_service_provider_issuer { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     end
 
     after(:build) do |profile, evaluator|
