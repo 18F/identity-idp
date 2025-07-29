@@ -36,7 +36,7 @@ module DocAuth
 
         def extra
           {
-            body:,
+            body: parsed_body,
           }
         end
 
