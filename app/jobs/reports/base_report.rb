@@ -6,12 +6,12 @@ module Reports
   class BaseReport < ApplicationJob
     queue_as :long_running
 
-    def self.transaction_with_timeout(rails_env = Rails.env)
+    def self.transaction_with_timeout(rails_env = Rails.env, shard: :read_replica)
       # rspec-rails's use_transactional_tests does not seem to act as expected when switching
       # connections mid-test, so we just skip for now :[
       return yield if rails_env.test?
 
-      ActiveRecord::Base.connected_to(role: :reading, shard: :read_replica) do
+      ActiveRecord::Base.connected_to(role: :reading, shard:) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
