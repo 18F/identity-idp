@@ -57,7 +57,10 @@ function DocumentSideAcuantCapture({
   isReviewStep,
   showSelfieHelp,
 }: DocumentSideAcuantCaptureProps) {
-  const error = errors.find(({ field }) => field === side)?.error;
+  const isPassport = side === 'passport';
+  /* Passport errors default to 'front' see app/services/doc_auth/error_generator.rb line 28 */
+  const errorSide = isPassport ? 'front' : side;
+  const error = errors.find(({ field }) => field === errorSide)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
   const { isSelfieDesktopTestMode, isUploadEnabled } = useContext(SelfieCaptureContext);
   const isUploadAllowed = isSelfieDesktopTestMode || isUploadEnabled;

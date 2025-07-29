@@ -15,6 +15,7 @@ RSpec.describe Funnel::Registration::AddMfa do
       threatmetrix_session_id: SecureRandom.uuid,
       email: user.email,
       in_ab_test_bucket: true,
+      in_account_creation_flow: true,
     }
   end
 

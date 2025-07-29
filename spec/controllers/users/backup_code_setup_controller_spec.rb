@@ -21,6 +21,8 @@ RSpec.describe Users::BackupCodeSetupController do
         request_ip: Faker::Internet.ip_v4_address,
         threatmetrix_session_id: 'test-session',
         email: user.email,
+        in_ab_test_bucket: true,
+        in_account_creation_flow: true,
       }
     end
 

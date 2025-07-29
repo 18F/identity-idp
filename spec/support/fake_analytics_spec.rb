@@ -185,7 +185,7 @@ RSpec.describe FakeAnalytics do
                    got: {arg1: 42, arg2: 43}
 
               Diff:
-              @@ -1,2 +1,3 @@
+              @@ -1 +1,2 @@
                :arg1 => 42,
               +:arg2 => 43,
             MESSAGE

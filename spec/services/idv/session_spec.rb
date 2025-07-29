@@ -10,12 +10,10 @@ RSpec.describe Idv::Session do
 
   describe '#initialize' do
     context 'without idv user session' do
-      it 'initializes user session' do
-        expect_any_instance_of(Idv::Session).to receive(:new_idv_session).twice.and_call_original
-
+      it 'initializes user session with empty hash' do
         subject
 
-        expect(user_session[:idv]).to eq(subject.new_idv_session)
+        expect(user_session[:idv]).to eq({})
       end
     end
 
@@ -25,7 +23,7 @@ RSpec.describe Idv::Session do
       let(:user_session) { { idv: idv_session } }
 
       it 'does not initialize user session' do
-        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+        expect(subject).not_to receive(:new_idv_session)
 
         subject
 
@@ -38,7 +36,7 @@ RSpec.describe Idv::Session do
       let(:user_session) { { idv: idv_session } }
 
       it 'does not initialize user session' do
-        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+        expect(subject).not_to receive(:new_idv_session)
 
         subject
 
