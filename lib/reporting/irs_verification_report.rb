@@ -37,9 +37,13 @@ module Reporting
       @threads = threads
     end
 
-    def verbose? = @verbose
+    def verbose?
+      @verbose
+    end
 
-    def progress? = @progress
+    def progress?
+      @progress
+    end
 
     def as_tables
       [overview_table, funnel_table]
@@ -76,27 +80,35 @@ module Reporting
 
     def to_csvs
       as_emailable_reports.map do |report|
-        CSV.generate { |csv| report.table.each { |row| csv << row } }
+        CSV.generate do |csv|
+          report.table.each { |row| csv << row }
+        end
       end
     end
 
     def overview_table
       [
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', Date.today.to_s],
+        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['Issuer', issuers.join(', ')],
       ]
     end
 
     def funnel_table
+      verification_demand = verification_demand_results
+      document_auth_success = document_authentication_success_results
+      info_validation_success = information_validation_success_results
+      phone_verification_success = phone_verification_success_results
+      total_verified = total_verified_results
+
       [
         ['Metric', 'Count', 'Rate'],
         ['Verification Demand', verification_demand,
          to_percent(verification_demand, verification_demand)],
-        ['Document Authentication Success', document_authentication_success,
-         to_percent(document_authentication_success, verification_demand)],
-        ['Information Validation Success', information_validation_success,
-         to_percent(information_validation_success, verification_demand)],
+        ['Document Authentication Success', document_auth_success,
+         to_percent(document_auth_success, verification_demand)],
+        ['Information Verification Success', info_validation_success,
+         to_percent(info_validation_success, verification_demand)],
         ['Phone Verification Success', phone_verification_success,
          to_percent(phone_verification_success, verification_demand)],
         ['Verification Successes', total_verified, to_percent(total_verified, verification_demand)],
@@ -145,60 +157,67 @@ module Reporting
       }
 
       format(<<~QUERY, params)
-        filter properties.sp_request.facial_match and name in %{event_names}
-        | fields
-            (name = '#{Events::VERIFICATION_DEMAND}') as @IdV_IAL2_start,
-            (name = '#{Events::DOCUMENT_AUTHENTICATION_SUCCESS}') as @Doc_auth_success,
-            (name = '#{Events::INFORMATION_VALIDATION_SUCCESS}') as @Verify_info_success,
-            (name = '#{Events::PHONE_VERIFICATION_SUCCESS}') as @Verify_phone_success,
-            (name = '#{Events::TOTAL_VERIFIED}' and properties.event_properties.ial2) as @Verified,
-            properties.user_id
-        | stats
-            max(@IdV_IAL2_start) as max_idv_ial2_start,
-            max(@Doc_auth_success) as max_doc_auth_success,
-            max(@Verify_info_success) as max_verify_info_success,
-            max(@Verify_phone_success) as max_verify_phone_success,
-            max(@Verified) as max_verified
-          by properties.user_id
-        | filter max_idv_ial2_start = 1
+                filter properties.sp_request.facial_match
+                  and name in %{event_names}
+                  and properties.sp_request.issuer in %{issuers}
+                | fields
+                    (name = '#{Events::VERIFICATION_DEMAND}') as @IdV_IAL2_start,
+                    (name = '#{Events::DOCUMENT_AUTHENTICATION_SUCCESS}') as @Doc_auth_success,
+                    (name = '#{Events::INFORMATION_VALIDATION_SUCCESS}') as @Verify_info_success,
+                    (name = '#{Events::PHONE_VERIFICATION_SUCCESS}') as @Verify_phone_success,
+                    (name = '#{Events::TOTAL_VERIFIED}' and properties.event_properties.ial2) as @Verified,
+                    properties.user_id
+                | stats
+                    max(@IdV_IAL2_start) as idv_ial2_start,
+                    max(@Doc_auth_success) as doc_auth_success,
+                    max(@Verify_info_success) as verify_info_success,
+                    max(@Verify_phone_success) as verify_phone_success,
+                    max(@Verified) as verified
+                  by properties.user_id
         | limit 10000
       QUERY
     end
 
     def fetch_results
       Rails.logger.info('Executing unified query')
-      cloudwatch_client.fetch(
+      results = cloudwatch_client.fetch(
         query: query,
         from: time_range.begin.beginning_of_day,
         to: time_range.end.end_of_day,
       )
+      Rails.logger.info("Results: #{results.inspect}")
+      results
     rescue StandardError => e
       Rails.logger.error("Failed to fetch results for unified query: #{e.message}")
       []
     end
 
     def data
-      @data ||= fetch_results
+      @data ||= fetch_results || []
     end
 
-    def verification_demand
-      data.sum { |row| row['max_idv_ial2_start'].to_i }
+    def started_users
+      @started_users ||= data.select { |row| row['idv_ial2_start'].to_i == 1 }
     end
 
-    def document_authentication_success
-      data.sum { |row| row['max_doc_auth_success'].to_i }
+    def verification_demand_results
+      started_users.size
     end
 
-    def information_validation_success
-      data.sum { |row| row['max_verify_info_success'].to_i }
+    def document_authentication_success_results
+      started_users.count { |row| row['doc_auth_success'].to_i == 1 }
     end
 
-    def phone_verification_success
-      data.sum { |row| row['max_verify_phone_success'].to_i }
+    def information_validation_success_results
+      started_users.count { |row| row['verify_info_success'].to_i == 1 }
     end
 
-    def total_verified
-      data.sum { |row| row['max_verified'].to_i }
+    def phone_verification_success_results
+      started_users.count { |row| row['verify_phone_success'].to_i == 1 }
+    end
+
+    def total_verified_results
+      started_users.count { |row| row['verified'].to_i == 1 }
     end
 
     def to_percent(numerator, denominator)
@@ -208,8 +227,9 @@ module Reporting
   end
 end
 
-# Run via Rails runner or CLI
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
-  Reporting::IrsVerificationReport.new(**options).to_csvs.each { |csv| puts csv }
+  Reporting::IrsVerificationReport.new(**options).to_csvs.each do |csv|
+    puts csv
+  end
 end
