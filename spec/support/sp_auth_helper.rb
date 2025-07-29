@@ -45,8 +45,10 @@ module SpAuthHelper
 
     expect(page).to have_current_path(sign_up_completed_path)
     click_agree_and_continue
+    expect(page).to_not have_current_path(sign_up_completed_path)
 
     visit sign_out_url
+    expect(page).to have_current_path(new_user_session_path, ignore_query: true)
     user.reload
   end
 end

@@ -66,6 +66,7 @@ RSpec.describe 'webauthn hide' do
             sign_up_and_set_password
             simulate_platform_authenticator_available
 
+            expect(page).to have_current_path(authentication_methods_setup_path)
             expect(webauthn_option_hidden?).to eq(false)
           end
         end
@@ -124,6 +125,7 @@ RSpec.describe 'webauthn hide' do
 
               # Can change to authenticator if they choose
               click_on t('two_factor_authentication.login_options_link_text')
+              expect(page).to have_current_path(login_two_factor_options_path)
               choose t('two_factor_authentication.login_options.webauthn_platform')
               click_continue
               expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))

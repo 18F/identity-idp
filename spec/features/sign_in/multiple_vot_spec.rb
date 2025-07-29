@@ -52,6 +52,11 @@ RSpec.feature 'Sign in with multiple vectors of trust' do
 
         expect(page).to have_current_path(sign_up_completed_path)
         click_agree_and_continue
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
 
         user_info = OpenidConnectUserInfoPresenter.new(user.identities.last).user_info
 

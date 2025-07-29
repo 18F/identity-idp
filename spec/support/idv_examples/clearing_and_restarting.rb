@@ -1,14 +1,18 @@
 RSpec.shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.gpo.address_accordion.title')
+    expect(page).to have_current_path idv_verify_by_mail_enter_code_path
     click_on t('idv.gpo.address_accordion.cta_link')
+    expect(page).to have_current_path idv_confirm_start_over_path
     click_idv_continue
+    expect(page).to have_current_path(idv_welcome_path)
 
     expect(user.reload.pending_profile?).to eq(false)
 
     complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: user.password
     click_idv_continue
+    expect(page).to have_current_path idv_personal_key_path
     acknowledge_and_confirm_personal_key
 
     expect(page).to have_current_path(sign_up_completed_path)
@@ -17,20 +21,20 @@ RSpec.shared_examples 'clearing and restarting idv' do
 
   it 'allows the user to retry verification with gpo', js: true do
     click_on t('idv.gpo.address_accordion.title')
+    expect(page).to have_current_path idv_verify_by_mail_enter_code_path
     click_on t('idv.gpo.address_accordion.cta_link')
+    expect(page).to have_current_path idv_confirm_start_over_path
     click_idv_continue
+    expect(page).to have_current_path(idv_welcome_path)
 
     expect(user.reload.pending_profile?).to eq(false)
 
     complete_all_doc_auth_steps
     click_on t('idv.troubleshooting.options.verify_by_mail')
-    if page.has_button?(t('idv.buttons.mail.send'))
-      click_on t('idv.buttons.mail.send')
-    else
-      click_on t('idv.gpo.request_another_letter.button')
-    end
+    click_on t('idv.buttons.mail.send')
     fill_in 'Password', with: user.password
     click_idv_continue
+    expect(page).to have_current_path(idv_letter_enqueued_path)
 
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
@@ -45,6 +49,7 @@ RSpec.shared_examples 'clearing and restarting idv' do
     click_on t('idv.gpo.address_accordion.title')
     click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
+    expect(page).to have_current_path(idv_welcome_path)
 
     visit account_path
 

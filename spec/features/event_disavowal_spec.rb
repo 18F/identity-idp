@@ -214,6 +214,7 @@ RSpec.feature 'disavowing an action' do
     fill_in t('forms.passwords.edit.labels.password'), with: password
     fill_in t('components.password_confirmation.confirm_label'), with: password
     click_button t('forms.passwords.edit.buttons.submit')
+    expect(page).to have_current_path(new_user_session_path)
   end
 
   def disavow_last_action_and_reset_password

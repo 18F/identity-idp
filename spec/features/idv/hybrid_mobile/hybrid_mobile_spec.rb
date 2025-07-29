@@ -37,6 +37,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
+      expect(page).to have_current_path(idv_link_sent_path)
       expect(page).to have_content(t('doc_auth.headings.text_message'))
       expect(page).to have_content(t('doc_auth.info.you_entered'))
       expect(page).to have_content('+1 415-555-0199')
@@ -133,6 +134,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_path)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
         expect(page).to have_content(t('doc_auth.info.you_entered'))
         expect(page).to have_content('+1 415-555-0199')
@@ -246,6 +248,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           clear_and_fill_in(:doc_auth_phone, phone_number)
           click_send_link
 
+          expect(page).to have_current_path(idv_link_sent_path)
           expect(page).to have_content(t('doc_auth.headings.text_message'))
           expect(page).to have_content(t('doc_auth.info.you_entered'))
           expect(page).to have_content('+1 415-555-0199')
@@ -322,6 +325,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
           clear_and_fill_in(:doc_auth_phone, phone_number)
           click_send_link
 
+          expect(page).to have_current_path(idv_link_sent_path)
           expect(page).to have_content(t('doc_auth.headings.text_message'))
           expect(page).to have_content(t('doc_auth.info.you_entered'))
           expect(page).to have_content('+1 415-555-0199')
@@ -496,6 +500,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
+      expect(page).to have_current_path(idv_link_sent_path)
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
 
@@ -514,6 +519,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
+      expect(page).to have_current_path(idv_link_sent_path)
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
   end
@@ -539,6 +545,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_path)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
 
@@ -587,6 +594,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       expect(@sms_link).to be_present
@@ -629,6 +637,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_path)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
 
@@ -659,6 +668,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_path)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
 
@@ -695,6 +705,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       perform_in_browser(:mobile) do
@@ -751,6 +762,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       perform_in_browser(:mobile) do
@@ -799,6 +811,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
+      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     expect(@sms_link).to be_present

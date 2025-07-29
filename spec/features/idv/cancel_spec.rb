@@ -20,13 +20,13 @@ RSpec.describe 'cancel IdV' do
   end
 
   it 'shows the user a cancellation message with the option to go back to the step' do
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_content(t('doc_auth.headings.verify_identity'))
-    original_path = current_path
 
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -39,8 +39,8 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
     click_on(t('idv.cancel.actions.keep_going'))
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_content(t('doc_auth.headings.lets_go'))
-    expect(page).to have_current_path(original_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
       step: 'agreement',

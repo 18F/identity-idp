@@ -150,10 +150,10 @@ RSpec.feature 'Password Recovery' do
         click_link t('links.passwords.forgot')
         fill_in t('account.index.email'), with: @user.email
         click_button t('forms.buttons.continue')
+        expect(page).to have_current_path(forgot_password_path)
       end
 
-      set_current_email(last_email)
-      click_email_link_matching(Regexp.new(edit_user_password_path))
+      click_reset_password_link_from_email
     end
 
     it 'lands on the reset password page' do

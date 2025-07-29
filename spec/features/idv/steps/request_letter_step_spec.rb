@@ -9,8 +9,8 @@ RSpec.feature 'idv request letter step' do
     complete_idv_steps_before_gpo_step
     click_on t('idv.buttons.mail.send')
 
-    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     expect(page).to have_current_path(idv_enter_password_path)
+    expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
 
     complete_enter_password_step
     expect(page).to have_content(t('idv.messages.gpo.letter_on_the_way'))
@@ -23,8 +23,10 @@ RSpec.feature 'idv request letter step' do
       visit_idp_from_ial2_oidc_sp
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(page).to have_current_path(reactivate_account_path)
       click_on(t('links.account.reactivate.without_key'))
       click_continue
       complete_all_doc_auth_steps
@@ -57,8 +59,10 @@ RSpec.feature 'idv request letter step' do
       visit_idp_from_ial2_oidc_sp
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user, new_password)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(page).to have_current_path(reactivate_account_path)
       click_on(t('links.account.reactivate.without_key'))
       click_continue
       complete_all_doc_auth_steps
@@ -69,6 +73,7 @@ RSpec.feature 'idv request letter step' do
       set_new_browser_session
       visit_idp_from_ial2_oidc_sp
       signin(user.email, new_password)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       fill_in_code_with_last_phone_otp
       click_submit_default
 

@@ -5,8 +5,10 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   sign_in_user(user)
   case sms_or_totp
   when :sms
+    expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
     fill_in_code_with_last_phone_otp
   when :totp
+    expect(page).to have_current_path(login_two_factor_authenticator_path)
     fill_in_code_with_last_totp(user)
   end
   click_submit_default
@@ -216,6 +218,7 @@ RSpec.feature 'IdV Outage Spec' do
 
     it 'prevents an existing ial1 user from verifying their identity' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
+      expect(page).to have_current_path(idv_unavailable_path)
       expect(page).to have_content(
         strip_tags(t('idv.unavailable.idv_explanation.with_sp_html', sp: 'Test SP')),
       )
@@ -223,7 +226,11 @@ RSpec.feature 'IdV Outage Spec' do
 
     it 'prevents a user from creating an account' do
       visit_idp_from_sp_with_ial2(:oidc)
+      expect(page).to have_current_path(new_user_session_path)
       click_link t('links.create_account')
+      expect(page).to have_current_path(
+        idv_unavailable_path(from: SignUp::RegistrationsController::CREATE_ACCOUNT),
+      )
       expect(page).to have_content(
         strip_tags(
           t(
@@ -249,9 +256,11 @@ RSpec.feature 'IdV Outage Spec' do
 
         visit new_user_session_path
         signin(user.email, new_password)
+        expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
         fill_in_code_with_last_phone_otp
         click_submit_default
 
+        expect(page).to have_current_path(account_path)
         click_link t('account.index.reactivation.link')
         click_on t('links.account.reactivate.without_key')
         click_on t('forms.buttons.continue')

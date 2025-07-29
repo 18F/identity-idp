@@ -217,6 +217,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             docv_transaction_token: @docv_transaction_token,
           )
           visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_document_capture_errors_path)
           expect(page).to have_content(
             strip_tags(
               t(
@@ -231,6 +232,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             docv_transaction_token: @docv_transaction_token,
           )
           visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_document_capture_errors_path)
           expect(page).to have_content(strip_tags(t('doc_auth.rate_limit_warning_html.one')))
         end
       end
@@ -692,6 +694,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     end
 
     it 'shows the correct error page' do
+      expect(page).to have_current_path(idv_socure_document_capture_errors_path)
       expect(page).to have_content(t(expected_header_key))
       expect(fake_analytics).to have_logged_event(
         :idv_socure_document_request_submitted,
@@ -751,6 +754,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       )
       visit idv_socure_document_capture_update_path
 
+      expect(page).to have_current_path(idv_socure_document_capture_errors_path)
       expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
     end
   end

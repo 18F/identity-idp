@@ -28,6 +28,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       it 'allows the user to continue down the happy path selecting to opt in',
          allow_browser_log: true do
         visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+        expect(page).to have_current_path(new_user_session_path)
         sign_in_via_branded_page(user)
 
         # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
@@ -43,6 +44,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         complete_state_id_controller(user)
 
         # ssn page
+        expect(page).to have_current_path(idv_in_person_ssn_path)
         select 'Reject', from: :mock_profiling_result
         complete_ssn_step(user)
 
@@ -87,6 +89,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         click_submit_default
 
         # password confirm page
+        expect(page).to have_current_path idv_enter_password_path
         expect_in_person_step_indicator_current_step(
           t('step_indicator.flows.idv.re_enter_password'),
         )
@@ -94,6 +97,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         complete_enter_password_step(user)
 
         # personal key page
+        expect(page).to have_current_path idv_personal_key_path
         expect_in_person_step_indicator_current_step(
           t('step_indicator.flows.idv.go_to_the_post_office'),
         )
@@ -149,11 +153,12 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_prepare_step(user)
 
       # location page
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
       expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
       complete_location_step
 
       # state ID page
+      expect(page).to have_current_path(idv_in_person_state_id_path)
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.verify_info'),
       )
@@ -167,6 +172,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_state_id_controller(user)
 
       # ssn page
+      expect(page).to have_current_path(idv_in_person_ssn_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('doc_auth.headings.ssn'))
       complete_ssn_step(user)
@@ -235,11 +241,13 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       click_submit_default
 
       # password confirm page
+      expect(page).to have_current_path idv_enter_password_path
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       complete_enter_password_step(user)
 
       # personal key page
+      expect(page).to have_current_path idv_personal_key_path
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
@@ -254,6 +262,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       end
 
       # ready to verify page
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
@@ -318,6 +327,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       sign_in_via_branded_page(user)
 
       # complete welcome step, agreement step, how to verify step (and opts out of Opt-in Ipp)
+      expect(page).to have_current_path(idv_welcome_path)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_out
 
       # hybrid handoff
@@ -344,6 +354,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_location_step
 
       # state ID page
+      expect(page).to have_current_path(idv_in_person_state_id_path)
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.verify_info'),
       )
@@ -357,6 +368,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_state_id_controller(user)
 
       # ssn page
+      expect(page).to have_current_path(idv_in_person_ssn_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('doc_auth.headings.ssn'))
       complete_ssn_step(user)
@@ -402,11 +414,13 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       click_submit_default
 
       # password confirm page
+      expect(page).to have_current_path idv_enter_password_path
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       complete_enter_password_step(user)
 
       # personal key page
+      expect(page).to have_current_path idv_personal_key_path
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
@@ -444,6 +458,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      expect(page).to have_current_path account_path
       visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 

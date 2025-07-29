@@ -681,11 +681,18 @@ RSpec.describe 'OpenID Connect' do
         fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
         click_continue
 
+        expect(page).to have_current_path(idv_personal_key_path)
         acknowledge_and_confirm_personal_key
       end,
       handoff_page_steps: proc do
+        expect(page).to have_current_path(sign_up_completed_path)
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
         click_agree_and_continue
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
       end,
     )
 

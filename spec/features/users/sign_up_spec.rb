@@ -229,6 +229,7 @@ RSpec.feature 'Sign Up' do
 
         visit sign_up_email_path
         submit_form_with_valid_email(email)
+        expect(page).to have_current_path(sign_up_verify_email_path)
         click_confirmation_link_in_email(email)
 
         fill_in 'Password', with: email

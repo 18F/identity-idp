@@ -69,14 +69,16 @@ RSpec.feature 'idv resend letter step' do
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path)
       expect_user_to_be_unverified(user)
       click_on t('idv.messages.gpo.resend')
+      expect(page).to have_current_path(idv_resend_letter_path)
 
       # And then actually ask for a resend
-      expect { click_on t('idv.gpo.request_another_letter.button') }
-        .to change { GpoConfirmation.count }.from(1).to(2)
-      expect_user_to_be_unverified(user)
+      expect do
+        click_on t('idv.gpo.request_another_letter.button')
+        expect(page).to have_current_path(idv_letter_enqueued_path)
+      end.to change { GpoConfirmation.count }.from(1).to(2)
       expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(page).to have_current_path(idv_letter_enqueued_path)
+      expect_user_to_be_unverified(user)
 
       # Confirm that user cannot visit other IdV pages while unverified
       visit idv_agreement_path
@@ -91,6 +93,7 @@ RSpec.feature 'idv resend letter step' do
       sign_in_live_with_2fa(user)
 
       complete_gpo_verification(user)
+      expect(page).to have_current_path idv_personal_key_path
       expect(user.identity_verified?).to be(true)
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
     end
@@ -108,6 +111,7 @@ RSpec.feature 'idv resend letter step' do
 
       complete_gpo_verification(user)
 
+      expect(page).to have_current_path idv_personal_key_path
       expect(user.identity_verified?).to be(true)
 
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
@@ -117,10 +121,14 @@ RSpec.feature 'idv resend letter step' do
   def complete_idv_by_mail_and_sign_out
     start_idv_from_sp
     complete_idv_steps_before_gpo_step(user)
+    expect(page).to have_current_path(idv_request_letter_path)
     click_on t('idv.buttons.mail.send')
+    expect(page).to have_current_path(idv_enter_password_path)
     fill_in 'Password', with: user_password
     click_continue
+    expect(page).to have_current_path(idv_letter_enqueued_path)
     sign_out
+    expect(page).to have_current_path(new_user_session_path, ignore_query: true)
   end
 
   def expect_user_to_be_unverified(user)

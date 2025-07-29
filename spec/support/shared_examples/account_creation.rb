@@ -44,6 +44,7 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
+    expect(page).to have_current_path(sign_up_completed_path)
 
     click_agree_and_continue
     if sp == :saml
@@ -51,9 +52,11 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     end
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
     end
   end
 end
@@ -92,6 +95,7 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
+    expect(page).to have_current_path(sign_up_completed_path)
 
     click_agree_and_continue
     if sp == :saml
@@ -99,9 +103,11 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     end
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
     end
   end
 end

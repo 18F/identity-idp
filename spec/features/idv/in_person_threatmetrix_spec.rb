@@ -134,10 +134,11 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       complete_enter_password_step(user)
 
       # personal key page
+      expect(page).to have_current_path idv_personal_key_path
+      expect(page).to have_content(t('titles.idv.personal_key'))
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
-      expect(page).to have_content(t('titles.idv.personal_key'))
       deadline = nil
       freeze_time do
         acknowledge_and_confirm_personal_key
@@ -148,6 +149,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       end
 
       # ready to verify page
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
@@ -170,6 +172,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      expect(page).to have_current_path(account_path)
       visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
@@ -204,6 +207,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
     context 'Fraud decisioning is completed' do
       before do
         complete_entire_ipp_flow(user, tmx_status)
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       end
 
       context 'User passes IPP and passes TMX Review' do
@@ -298,6 +302,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
     before do
       complete_entire_ipp_flow(user, tmx_status)
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
 
     context 'User passes IPP and rejects for TMX review' do

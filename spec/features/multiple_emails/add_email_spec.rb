@@ -18,7 +18,7 @@ RSpec.feature 'adding email address' do
       subject: t('user_mailer.add_email.subject'),
     )
 
-    click_on_link_in_confirmation_email
+    click_confirmation_link_in_email(email)
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('devise.confirmations.confirmed'))
@@ -48,7 +48,7 @@ RSpec.feature 'adding email address' do
 
     Capybara.reset_session!
 
-    click_on_link_in_confirmation_email
+    click_confirmation_link_in_email(email)
     expect(page).to have_current_path(root_path)
     expect(page).to have_content(t('devise.confirmations.confirmed_but_sign_in'))
 
@@ -69,9 +69,8 @@ RSpec.feature 'adding email address' do
 
     Capybara.reset_session!
 
-    email_to_click_on = last_email_sent
-    click_on_link_in_confirmation_email(email_to_click_on)
-    click_on_link_in_confirmation_email(email_to_click_on)
+    click_confirmation_link_in_email(email)
+    click_confirmation_link_in_email(email)
 
     expect(page).to have_current_path(root_path)
     action = t('devise.confirmations.sign_in')
@@ -88,9 +87,8 @@ RSpec.feature 'adding email address' do
     user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
-    email_to_click_on = last_email_sent
-    click_on_link_in_confirmation_email(email_to_click_on)
-    click_on_link_in_confirmation_email(email_to_click_on)
+    click_confirmation_link_in_email(email)
+    click_confirmation_link_in_email(email)
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(t('devise.confirmations.already_confirmed', action: nil).strip)
@@ -106,9 +104,8 @@ RSpec.feature 'adding email address' do
     user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
-    email_to_click_on = last_email_sent
     create(:user, :fully_registered, email: email)
-    click_on_link_in_confirmation_email(email_to_click_on)
+    click_confirmation_link_in_email(email)
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(
@@ -246,7 +243,7 @@ RSpec.feature 'adding email address' do
     Capybara.reset_session!
 
     travel_to(25.hours.from_now) do
-      click_on_link_in_confirmation_email
+      click_confirmation_link_in_email(email)
       expect(page).to have_current_path(root_path)
       expect(page).to_not have_content(t('devise.confirmations.confirmed_but_sign_in'))
     end
@@ -297,11 +294,5 @@ RSpec.feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_verify_email_path)
     expect(page).to have_content email
-  end
-
-  def click_on_link_in_confirmation_email(email_to_click_on = last_email_sent)
-    set_current_email(email_to_click_on)
-
-    click_email_link_matching(%r{add/email/confirm\?confirmation_token})
   end
 end

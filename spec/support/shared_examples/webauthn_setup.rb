@@ -55,6 +55,7 @@ RSpec.shared_examples 'webauthn setup' do
 
       fill_in_nickname_and_click_continue
       mock_submit_without_pressing_button_on_hardware_key_on_setup
+      expect(page).to have_current_path webauthn_setup_path(error: 'SecurityError')
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
         errors: { SecurityError:
@@ -79,6 +80,7 @@ RSpec.shared_examples 'webauthn setup' do
       fill_in_nickname_and_click_continue
       mock_press_button_on_hardware_key_on_setup
 
+      expect(page).to have_current_path(auth_method_confirmation_path)
       expect(fake_analytics).to have_logged_event(
         :webauthn_setup_submitted,
         success: true,

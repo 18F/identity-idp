@@ -24,6 +24,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
       fill_in t('forms.registration.labels.email'), with: Faker::Internet.email
       check t('sign_up.terms', app_name: APP_NAME)
       click_button t('forms.buttons.submit.default')
+      expect(page).to have_current_path(sign_up_verify_email_path)
       user = confirm_last_user
       set_password(user)
 
@@ -73,6 +74,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
         fill_in t('forms.registration.labels.email'), with: Faker::Internet.email
         check t('sign_up.terms', app_name: APP_NAME)
         click_button t('forms.buttons.submit.default')
+        expect(page).to have_current_path(sign_up_verify_email_path)
         user = confirm_last_user
         set_password(user)
 

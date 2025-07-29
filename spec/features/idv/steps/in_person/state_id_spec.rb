@@ -42,12 +42,12 @@ RSpec.describe 'state id controller enabled', :js do
       complete_steps_before_state_id_controller
       fill_out_state_id_form_ok(same_address_as_id: true)
       click_idv_continue
+      expect(page).to have_current_path(idv_in_person_ssn_path)
 
-      expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
       complete_ssn_step
 
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      expect(page).to have_current_path(idv_in_person_verify_info_url)
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -132,6 +132,7 @@ RSpec.describe 'state id controller enabled', :js do
         before do
           complete_state_id_controller(user, same_address_as_id: true)
           complete_ssn_step(user)
+          expect(page).to have_current_path(idv_in_person_verify_info_path)
           click_link t('idv.buttons.change_state_id_label')
         end
 
@@ -144,8 +145,6 @@ RSpec.describe 'state id controller enabled', :js do
             fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
             click_button t('forms.buttons.submit.update')
             # expect to be back on verify page
-            expect(page).to have_content(t('headings.verify'))
-            expect(page).to have_current_path(idv_in_person_verify_info_path)
             expect(page).to have_content(t('headings.verify'))
             # expect to see state ID address update on verify twice
             # for state id address and address update
@@ -183,6 +182,7 @@ RSpec.describe 'state id controller enabled', :js do
             # click update state id address
             click_link t('idv.buttons.change_state_id_label')
             # expect to be on the state ID page
+            expect(page).to have_current_path(idv_in_person_state_id_path)
             expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
             # check that the "No, I live at a different address" is checked"
             expect(page).to have_checked_field(
@@ -198,6 +198,7 @@ RSpec.describe 'state id controller enabled', :js do
           complete_state_id_controller(user, same_address_as_id: false)
           complete_address_step(user)
           complete_ssn_step(user)
+          expect(page).to have_current_path(idv_in_person_verify_info_path)
           click_link t('idv.buttons.change_state_id_label')
         end
 
@@ -210,8 +211,6 @@ RSpec.describe 'state id controller enabled', :js do
             fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
             click_button t('forms.buttons.submit.update')
             # expect to be back on verify page
-            expect(page).to have_content(t('headings.verify'))
-            expect(page).to have_current_path(idv_in_person_verify_info_path)
             expect(page).to have_content(t('headings.verify'))
             # expect to see state ID address update on verify
             expect(page).to have_text('test update address').once # only state id address update
@@ -260,6 +259,7 @@ RSpec.describe 'state id controller enabled', :js do
     it 'validates zip code input', allow_browser_log: true do
       complete_steps_before_state_id_controller
 
+      expect(page).to have_current_path(idv_in_person_state_id_path)
       fill_out_state_id_form_ok(same_address_as_id: true)
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: ''
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: 'invalid input'
@@ -268,6 +268,7 @@ RSpec.describe 'state id controller enabled', :js do
       # enter valid characters, but invalid length
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: '123'
       click_idv_continue
+      expect(page).to have_current_path(idv_in_person_state_id_path)
       expect(page).to have_css(
         '.usa-error-message',
         text: t('idv.errors.pattern_mismatch.zipcode'),
@@ -290,6 +291,7 @@ RSpec.describe 'state id controller enabled', :js do
 
       less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
 
+      expect(page).to have_current_path(idv_in_person_state_id_path)
       fill_in t('components.memorable_date.month'), with: less_than_13_years_ago.month
       fill_in t('components.memorable_date.day'), with: less_than_13_years_ago.day
       fill_in t('components.memorable_date.year'), with: less_than_13_years_ago.year

@@ -42,6 +42,7 @@ RSpec.describe 'Identity verification', :js do
 
     validate_enter_password_page
     complete_enter_password_step(user)
+    expect(page).to have_current_path(idv_personal_key_path)
     validate_enter_password_submit(user)
 
     validate_personal_key_page
@@ -118,6 +119,7 @@ RSpec.describe 'Identity verification', :js do
     sign_in_live_with_2fa(user)
 
     complete_gpo_verification(user)
+    expect(page).to have_current_path idv_personal_key_path
     expect(user.identity_verified?).to be(true)
 
     acknowledge_and_confirm_personal_key
@@ -332,7 +334,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_enter_password_submit(user)
-    expect(user.events.account_verified.size).to be(1)
+    expect(user.events.account_verified.size).to eq(1)
     expect(user.profiles.count).to eq 1
 
     profile = user.profiles.first

@@ -28,9 +28,9 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
 
       click_agree_and_continue
 
-      expect(user.events.account_verified.size).to be(1)
       expect_successful_oidc_handoff if sp == :oidc
       expect_successful_saml_handoff if sp == :saml
+      expect(user.events.account_verified.size).to be(1)
     end
   end
 
@@ -58,9 +58,9 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
 
       click_agree_and_continue
 
-      expect(user.events.account_verified.size).to be(1)
       expect_successful_oidc_handoff if sp == :oidc
       expect_successful_saml_handoff if sp == :saml
+      expect(user.events.account_verified.size).to be(1)
     end
   end
 
@@ -73,7 +73,8 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key
-      first(:button, t('links.sign_out')).click
+      click_button(t('links.sign_out'), match: :first)
+      expect(page).to have_current_path(new_user_session_path)
     end
 
     it 'does not require verification and hands off successfully' do
@@ -81,6 +82,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       sign_in_user(user)
       fill_in_code_with_last_totp(user)
       click_submit_default
+      expect(page).to have_current_path(sign_up_completed_path)
 
       expect_csp_headers_to_be_present if sp == :oidc
 
@@ -106,9 +108,13 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(sign_up_completed_path)
       click_agree_and_continue
+      expect(page).to_not have_current_path(sign_up_completed_path)
       visit account_path
-      first(:button, t('links.sign_out')).click
+      expect(page).to have_current_path(account_path)
+      click_button(t('links.sign_out'), match: :first)
+      expect(page).to have_current_path(new_user_session_path)
     end
 
     it 'does not require idv or requested attribute verification and hands off successfully' do
@@ -135,6 +141,12 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_successful_oidc_handoff
+    expect(page).to have_current_path(
+      'http://localhost:7654/auth/result',
+      url: true,
+      ignore_query: true,
+    )
+
     token_response = oidc_decoded_token
     decoded_id_token = oidc_decoded_id_token
 
@@ -166,15 +178,16 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_successful_saml_handoff
-    profile_phone = user.active_profile.decrypt_pii(Features::SessionHelper::VALID_PASSWORD).phone
-    xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-
-    expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
     if javascript_enabled?
       expect(page).to have_current_path test_saml_decode_assertion_path
     else
       expect(page).to have_current_path(@saml_authn_request, url: true)
     end
+
+    profile_phone = user.active_profile.decrypt_pii(Features::SessionHelper::VALID_PASSWORD).phone
+    xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+    expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
     expect(xmldoc.phone_number.children.children.to_s).to eq(Phonelib.parse(profile_phone).e164)
   end
 end

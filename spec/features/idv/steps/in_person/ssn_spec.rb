@@ -34,6 +34,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       complete_ssn_step(user)
 
       # verify page (next page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
@@ -47,6 +48,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # ssn page (first visit)
       complete_ssn_step(user)
       # verify page (next page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       # click update ssn button on verify page
@@ -63,6 +65,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       ## ssn page (first visit)
       complete_ssn_step(user)
       # verify page
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       # click update ssn button on verify page
@@ -75,6 +78,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       click_on t('forms.buttons.back')
 
       # verify page (previous page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
     end
@@ -85,6 +89,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # ssn page (first visit)
       complete_ssn_step(user)
       # verify page (next page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       # click update ssn button on verify page
@@ -94,6 +99,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       click_idv_update
 
       # verify page (next page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
@@ -112,9 +118,11 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # state ID page
       fill_out_state_id_form_ok(same_address_as_id: false)
       click_idv_continue
+      expect(page).to have_current_path(idv_in_person_address_path)
       fill_out_address_form_ok(same_address_as_id: false)
       click_idv_continue
       # ssn page
+      expect(page).to have_current_path(idv_in_person_ssn_path)
       expect(page).to have_content(t('doc_auth.headings.ssn'))
     end
 
@@ -129,11 +137,13 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # state ID page
       fill_out_state_id_form_ok(same_address_as_id: false)
       click_idv_continue
+      expect(page).to have_current_path(idv_in_person_address_path)
       fill_out_address_form_ok(same_address_as_id: false)
       click_idv_continue
       # ssn page (first visit)
       complete_ssn_step(user)
       # verify page (next page)
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
       # click update ssn button on verify page

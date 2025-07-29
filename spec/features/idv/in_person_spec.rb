@@ -52,9 +52,9 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_ssn_step(user)
 
     # verify page
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -79,10 +79,11 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # click update address link
     click_link t('idv.buttons.change_address_label')
+    expect(page).to have_current_path(idv_in_person_address_url)
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     click_button t('forms.buttons.submit.update')
-    expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
+    expect(page).to have_content(t('headings.verify'))
 
     # click update ssn button
     click_on t('idv.buttons.change_ssn_label')
@@ -111,15 +112,17 @@ RSpec.describe 'In Person Proofing', js: true do
     click_submit_default
 
     # password confirm page
+    expect(page).to have_current_path idv_enter_password_path
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
     expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     complete_enter_password_step(user)
 
     # personal key page
+    expect(page).to have_current_path idv_personal_key_path
+    expect(page).to have_content(t('titles.idv.personal_key'))
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.go_to_the_post_office'),
     )
-    expect(page).to have_content(t('titles.idv.personal_key'))
     deadline = nil
     freeze_time do
       acknowledge_and_confirm_personal_key
@@ -129,6 +132,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     # ready to verify page
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.go_to_the_post_office'),
     )
@@ -152,6 +156,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # signing in again before completing in-person proofing at a post office
     Capybara.reset_session!
     sign_in_live_with_2fa(user)
+    expect(page).to have_current_path account_path
     visit_idp_from_sp_with_ial2(:oidc)
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
@@ -210,11 +215,6 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'after in-person proofing is completed and passed for a partner' do
-    let(:sp) { nil }
-    before do
-      create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
-    end
-
     [
       :oidc,
       :saml,
@@ -223,6 +223,12 @@ RSpec.describe 'In Person Proofing', js: true do
         let(:sp) { service_provider }
         it 'sends a survey when they share information with that partner',
            allow_browser_log: true do
+          user = create_in_person_ial2_account_go_back_to_sp_and_sign_out(sp)
+          expect_delivered_email(
+            to: user.email_addresses.first.email,
+            subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
+            body: IdentityConfig.store.in_person_opt_in_available_completion_survey_url,
+          )
           expect(last_email.html_part.body)
             .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",
@@ -266,8 +272,10 @@ RSpec.describe 'In Person Proofing', js: true do
     context 'then navigates to how to verify and resumes remote with successful images' do
       it 'allows the user to successfully complete remote identity verification' do
         complete_state_id_controller(user)
+        expect(page).to have_current_path(idv_in_person_ssn_path)
         # Change mind and resume remote identity verification
         visit idv_hybrid_handoff_path
+        expect(page).to have_current_path idv_hybrid_handoff_path
         complete_hybrid_handoff_step
         complete_document_capture_step(with_selfie: false)
 
@@ -321,6 +329,7 @@ RSpec.describe 'In Person Proofing', js: true do
         clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_url)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
 
@@ -340,6 +349,7 @@ RSpec.describe 'In Person Proofing', js: true do
         clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 
+        expect(page).to have_current_path(idv_link_sent_url)
         expect(page).to have_content(t('doc_auth.headings.text_message'))
       end
 
@@ -360,6 +370,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
           click_send_link
 
+          expect(page).to have_current_path(idv_link_sent_url)
           expect(page).to have_content(t('doc_auth.headings.text_message'))
         end
 
@@ -403,7 +414,7 @@ RSpec.describe 'In Person Proofing', js: true do
             click_send_link
 
             # Test that user stays on the link sent page
-            sleep(5)
+            expect(page).to have_current_path(idv_link_sent_url)
             expect(page).to(have_content(t('doc_auth.headings.text_message')))
 
             # Test that user doesn't automatically get moved forward to the state id page on desktop
@@ -429,6 +440,7 @@ RSpec.describe 'In Person Proofing', js: true do
           clear_and_fill_in(:doc_auth_phone, '415-555-0199')
           click_send_link
 
+          expect(page).to have_current_path(idv_link_sent_url)
           expect(page).to have_content(t('doc_auth.headings.text_message'))
         end
 
@@ -634,11 +646,13 @@ RSpec.describe 'In Person Proofing', js: true do
       click_submit_default
 
       # password confirm page
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
+      expect(page).to have_current_path idv_enter_password_path
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
       complete_enter_password_step(user)
 
       # personal key page
+      expect(page).to have_current_path idv_personal_key_path
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
@@ -675,6 +689,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
       sign_in_live_with_2fa(user)
+      expect(page).to have_current_path account_path
       visit_idp_from_sp_with_ial2(:oidc)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end

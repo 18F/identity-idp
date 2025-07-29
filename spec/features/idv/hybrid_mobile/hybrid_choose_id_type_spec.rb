@@ -32,6 +32,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
+      expect(page).to have_current_path(idv_link_sent_url)
     end
 
     expect(@sms_link).to be_present
@@ -57,6 +58,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
+      expect(page).to have_current_path(idv_link_sent_url)
     end
 
     expect(@sms_link).to be_present
@@ -84,6 +86,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'DOWN' }.to_json })
       click_send_link
+      expect(page).to have_current_path(idv_link_sent_url)
     end
 
     expect(@sms_link).to be_present

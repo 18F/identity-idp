@@ -23,9 +23,12 @@ RSpec.feature 'Second MFA Reminder' do
     context 'after sign in count threshold' do
       before do
         sign_in_user(user)
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
         fill_in_code_with_last_phone_otp
         click_submit_default
+        expect(page).to have_current_path(account_path)
         first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path(new_user_session_path)
       end
 
       it 'prompts the user on sign in and allows them to continue', :js do

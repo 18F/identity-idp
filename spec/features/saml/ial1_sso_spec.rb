@@ -79,6 +79,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       fill_in_credentials_and_submit(user.email, user.password)
 
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session']['last_request_at'] = 30.minutes.ago.to_i
@@ -89,6 +90,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_call_original
 
       fill_in_credentials_and_submit(user.email, user.password)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
       fill_in_code_with_last_phone_otp
       click_submit_default
 

@@ -859,6 +859,7 @@ RSpec.feature 'GetUspsProofingResultsJob Scenarios', js: true do
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password
     click_on t('forms.passwords.edit.buttons.submit')
+    expect(page).to have_current_path(new_user_session_path)
     user.reload
   end
 

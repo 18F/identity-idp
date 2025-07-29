@@ -30,6 +30,7 @@ RSpec.feature 'sign in with backup code' do
 
   context 'with javascript enabled', :js do
     it 'validates input format before allowing submission' do
+      expect(page).to have_current_path(login_two_factor_backup_code_path)
       input = page.find_field(t('forms.two_factor.backup_code'))
 
       # Validate empty field as required

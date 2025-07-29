@@ -17,6 +17,7 @@ RSpec.feature 'Password recovery via personal key' do
     trigger_reset_password_and_click_email_link(user.email)
 
     reset_password_and_sign_back_in(user, new_password)
+    expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
     fill_in_code_with_last_phone_otp
     click_submit_default
 
@@ -36,6 +37,7 @@ RSpec.feature 'Password recovery via personal key' do
     personal_key_from_pii(user, pii)
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
+    expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
     fill_in_code_with_last_phone_otp
     click_submit_default
 
@@ -71,6 +73,7 @@ RSpec.feature 'Password recovery via personal key' do
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
+    expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
     click_link t('two_factor_authentication.login_options_link_text')
 
     expect(page)
@@ -82,6 +85,7 @@ RSpec.feature 'Password recovery via personal key' do
       personal_key_from_pii(user, pii)
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user, new_password)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: :sms))
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
