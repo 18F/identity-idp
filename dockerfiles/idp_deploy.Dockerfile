@@ -6,7 +6,7 @@
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.4.1-slim as builder
+FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -15,7 +15,7 @@ ENV NODE_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV YARN_VERSION 1.22.5
+ENV YARN_VERSION 1.22.22
 ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.6.3
 
@@ -61,7 +61,7 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=1.22.5-1
+RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=$YARN_VERSION-1
 
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
@@ -140,7 +140,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.4.1-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app

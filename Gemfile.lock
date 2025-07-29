@@ -429,7 +429,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    matrix (0.4.2)
+    matrix (0.4.3)
     maxminddb (0.1.22)
     memory_profiler (1.0.1)
     method_source (1.1.0)
@@ -512,7 +512,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.0.16)
+    rack (3.0.18)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -890,7 +890,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.12)
 
 RUBY VERSION
-   ruby 3.4.1p0
+   ruby 3.4.5p51
 
 BUNDLED WITH
    2.6.9
