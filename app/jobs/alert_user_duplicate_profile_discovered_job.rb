@@ -9,9 +9,9 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
 
       case type
       when ACCOUNT_CREATED
-        mailer.dupe_profile_created(agency_name: agency)
+        mailer.dupe_profile_created(agency_name: agency).deliver_now_or_later
       when SIGN_IN_ATTEMPTED
-        mailer.dupe_profile_sign_in_attempted(agency_name: agency)
+        mailer.dupe_profile_sign_in_attempted(agency_name: agency).deliver_now_or_later
       else
         analytics(user: user).duplicate_profile_email_type_not_found(type: type)
       end
