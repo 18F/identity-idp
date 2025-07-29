@@ -66,7 +66,7 @@ module Reports
           , service_providers.iaa
         SQL
 
-        results = data_warehouse_transaction_with_timeout do
+        results = transaction_with_timeout(shard: :data_warehouse) do
           ActiveRecord::Base.connection.execute(sql)
         end
 
