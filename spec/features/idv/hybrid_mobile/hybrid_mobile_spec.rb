@@ -427,11 +427,13 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
         before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
           allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
             .and_return(fake_dos_api_endpoint)
           stub_request(:post, fake_dos_api_endpoint)
             .to_return(status: 400, body: '{}', headers: {})
         end
+
         it 'shows the error message' do
           expect(@sms_link).to be_present
 
@@ -457,6 +459,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
         before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
           allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
             .and_return(fake_dos_api_endpoint)
           stub_request(:post, fake_dos_api_endpoint)
