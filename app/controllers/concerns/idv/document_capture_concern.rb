@@ -164,10 +164,8 @@ module Idv
                      submitted_id_type != 'passport'
 
       # Reject when user didn't request passport flow but submitted a passport
-      # Allow passports if passport_status is 'allowed' (passports enabled for this flow)
       return true if !document_capture_session.passport_requested? &&
-                     submitted_id_type == 'passport' &&
-                     document_capture_session.passport_status != 'allowed'
+                     submitted_id_type == 'passport'
 
       false
     end
