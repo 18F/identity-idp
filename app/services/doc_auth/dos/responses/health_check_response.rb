@@ -36,7 +36,7 @@ module DocAuth
 
         def extra
           {
-            body:,
+            body: parsed_body,
           }
         end
 
@@ -46,7 +46,7 @@ module DocAuth
         end
 
         def parsed_body
-          @parsed_body ||= body && JSON.parse(body, symbolize_names: true)
+          @parsed_body ||= body.present? && JSON.parse(body, symbolize_names: true)
         end
 
         def errors
