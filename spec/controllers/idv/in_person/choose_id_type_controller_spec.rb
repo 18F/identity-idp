@@ -318,6 +318,8 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
     end
 
     context 'undo_step' do
+      let(:user) { create(:user, :with_establishing_in_person_enrollment) }
+
       before do
         subject.document_capture_session.update!(passport_status: 'requested')
       end
