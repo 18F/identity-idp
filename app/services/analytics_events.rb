@@ -2452,9 +2452,9 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
   #                  we rate limit them.
   # @param [String] document_type The document type (should always be 'Passport' here)
-  # @param [String] correlation_id The correlation ID received in the response
-  # @param [String] correlation_id The correlation ID sent in the request
-  # @param [String] exception The excpetion message if an exception occurred
+  # @param [String] correlation_id_received The correlation ID received in the response
+  # @param [String] correlation_id_sent The correlation ID sent in the request
+  # @param [String] exception The exception message if an exception occurred
   # @param [String] error_code The error code if provided in a failed response
   # @param [String] error_message The error message if provided in a failed response
   # @param [String] error_reason The error reason if provided in a failed response
