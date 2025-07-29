@@ -5,6 +5,7 @@ RSpec.describe Idv::IdvImages do
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:selfie_image) { nil }
   let(:passport_image) { nil }
+  let(:issuer) { 'issuer' }
 
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:result) do
@@ -58,11 +59,11 @@ RSpec.describe Idv::IdvImages do
       expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: false)
       expect(writer).to receive(:write).exactly(2).times
 
-      subject.attempts_file_data
+      subject.attempts_file_data(issuer: issuer)
     end
 
     it 'returns a hash of objects' do
-      expect(subject.attempts_file_data).to be_a_kind_of(Hash)
+      expect(subject.attempts_file_data(issuer: issuer)).to be_a_kind_of(Hash)
     end
 
     context 'when s3 storage is turned on' do
@@ -72,7 +73,7 @@ RSpec.describe Idv::IdvImages do
         expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: true)
         expect(writer).to receive(:write).exactly(2).times
 
-        subject.attempts_file_data
+        subject.attempts_file_data(issuer: issuer)
       end
     end
   end
