@@ -1103,7 +1103,48 @@ RSpec.describe Idv::ApiImageUploadForm do
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
+            correlation_id_received: 'something else',
+            correlation_id_sent: 'something',
+            errors: { passport: 'invalid MRZ' },
           )
+        end
+
+        context 'when error is present in mrz_response' do
+          let(:failed_passport_mrz_response) do
+            DocAuth::Response.new(
+              success: false,
+              errors: { network: 'true' },
+              extra: {
+                vendor: 'DoS',
+                correlation_id_sent: 'something',
+                correlation_id_received: 'something else',
+                error_code: 'ERR',
+                error_message: 'issues @ State',
+                error_reason: 'just because',
+                exception: 'Exception message',
+              },
+            )
+          end
+
+          it 'logs error attributes' do
+            response
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_dos_passport_verification,
+              success: false,
+              submit_attempts: 1,
+              remaining_submit_attempts: 3,
+              user_id: document_capture_session.user.uuid,
+              document_type: document_type,
+              correlation_id_received: 'something else',
+              correlation_id_sent: 'something',
+              error_code: 'ERR',
+              error_message: 'issues @ State',
+              error_reason: 'just because',
+              exception: 'Exception message',
+              errors: { network: 'true' },
+            )
+          end
         end
       end
 
@@ -1172,6 +1213,9 @@ RSpec.describe Idv::ApiImageUploadForm do
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
             document_type: document_type,
+            correlation_id_received: 'something else',
+            correlation_id_sent: 'something',
+            errors: {},
           )
         end
       end
@@ -1463,10 +1507,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
           end
 
-          before do
-            allow(mrz_response).to receive(:success?).and_return(false)
-          end
-
           it 'stores the failed passport image' do
             form.send(:validate_form)
             capture_result = form.send(
@@ -1494,10 +1534,6 @@ RSpec.describe Idv::ApiImageUploadForm do
                 response: 'YES',
               },
             )
-          end
-
-          before do
-            allow(mrz_response).to receive(:success?).and_return(true)
           end
 
           it 'does not store the failed images' do
