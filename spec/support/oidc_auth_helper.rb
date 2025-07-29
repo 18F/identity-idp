@@ -6,6 +6,7 @@ module OidcAuthHelper
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
   OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
   OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
+  OIDC_FACIAL_MATCH_ISSUER = 'urn:gov:gsa:openidconnect:test'.freeze
 
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp

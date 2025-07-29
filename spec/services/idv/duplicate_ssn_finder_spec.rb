@@ -9,7 +9,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+        .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
     end
 
     context 'when the ssn is unique' do
@@ -76,7 +76,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+        .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
     end
 
     context 'when profile is IAL2' do
@@ -115,7 +115,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-        .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+        .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
     end
     context 'when profile is IAL2' do
       context 'when ssn is taken by different profile by and is IAL2' do
