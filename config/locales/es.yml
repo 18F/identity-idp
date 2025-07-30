@@ -2082,8 +2082,8 @@ users.delete.bullet_4: Notificaremos a las agencias a las que acceda con %{app_n
 users.delete.heading: '¿Está seguro de que desea eliminar su cuenta?'
 users.delete.instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
 users.delete.subheading: 'Si elimina su cuenta:'
-users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
-users.duplicate_profiles_please_call.heading: Please give us a call
+users.duplicate_profiles_please_call.error_details_html: <p>Si no reconoce o no puede eliminar una de las cuentas duplicadas que vio en la página que muestra varias cuentas, llame a nuestro centro de contacto al <strong>%{contact_number}</strong> y mencione el código de error <strong>LG33</strong>.</p><p>¿Tiene preguntas acerca de las cuentas duplicadas o de lo que debe hacer? Obtenga más información acerca <a href="%{help_url}">de cómo resolver las cuentas duplicadas</a>.</p>
+users.duplicate_profiles_please_call.heading: Llámenos
 users.password_compromised.warning: Hemos encontrado su contraseña en una filtración de datos en otro sitio o aplicación. %{app_name} requiere que cambie su contraseña para proteger su cuenta.
 users.personal_key.accessible_labels.code_example: Un ejemplo de clave personal con 16 caracteres
 users.personal_key.accessible_labels.preview: Vista previa de la clave personal

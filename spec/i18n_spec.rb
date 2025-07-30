@@ -107,8 +107,6 @@ module I18n
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb1' }, # for failed proofing emails
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb2' }, # for failed proofing emails
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb3_html' }, # for failed proofing emails
-        { key: 'users.duplicate_profiles_please_call.heading', locales: %i[es fr zh] }, # This currently doesnt have translations but under feature toggle, will be addressed after initial english only launch
-        { key: 'users.duplicate_profiles_please_call.error_details_html', locales: %i[es fr zh] }, # This currently doesnt have translations but under feature toggle, will be addressed after initial english only launch
       ].freeze
       # rubocop:enable Layout/LineLength
 
