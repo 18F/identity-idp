@@ -152,7 +152,7 @@ lint_migrations:
 
 lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
-	@git diff-index --verbose --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
+	@GIT_TRACE=1 git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
 
 lint_package_lock: package.json package-lock.json ## Lints the package.json and its lockfile
 	@npm install --ignore-scripts
