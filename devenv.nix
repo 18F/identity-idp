@@ -61,4 +61,11 @@ in
       enable = true;
     };
   };
+
+  dotenv.enable = true;
+
+  env = {
+    AWS_VAULT_KEYCHAIN_NAME = "login";
+    AWS_VAULT_PROMPT = "ykman";
+  };
 }
