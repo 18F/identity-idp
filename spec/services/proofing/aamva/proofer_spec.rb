@@ -524,6 +524,17 @@ RSpec.describe Proofing::Aamva::Proofer do
           },
         )
       end
+
+      context 'AAMVA returns a newline in the transaction_id' do
+        let(:verification_response) do
+          AamvaFixtures.verification_response_with_newline_in_transaction_id
+        end
+
+        it 'removes trailing whitespace from the transaction id' do
+          result = subject.proof(applicant)
+          expect(result.transaction_id).to eq('1234-abcd-efgh')
+        end
+      end
     end
 
     context 'when verification is unsuccessful' do
