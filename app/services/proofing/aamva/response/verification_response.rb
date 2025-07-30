@@ -89,7 +89,7 @@ module Proofing
           @transaction_locator_id = (
             node_for_match_indicator('TransactionLocatorId') ||
             node_for_match_indicator('TransactionLocatorID')
-          )&.text
+          )&.text&.strip
         end
 
         def rexml_document
