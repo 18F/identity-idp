@@ -600,7 +600,7 @@ describe('FormSteps', () => {
 
     const { getByRole } = render(<FormSteps steps={steps} />);
     const button = getByRole('button', { name: 'Create Step Error' });
-    await await userEvent.click(button);
+    await userEvent.click(button);
 
     expect(getByRole('alert')).to.equal(document.activeElement);
   });
