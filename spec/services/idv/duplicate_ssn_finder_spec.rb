@@ -190,8 +190,6 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:user2) { create(:user) }
     let(:user3) { create(:user) }
     let(:user4) { create(:user) }
-    let(:user5) { create(:user) }
-    let(:user6) { create(:user) }
     let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
     let(:sp2) { 'urn:gov:gsa:openidconnect:sp:test2' }
     let(:identity) do
