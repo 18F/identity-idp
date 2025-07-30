@@ -1,0 +1,34 @@
+<p>
+  <%= t('user_mailer.dupe_profile.created.description', app_name: APP_NAME, sp_or_app_name: @service_provider_or_app_name) %>
+</p>
+<p>
+  <%= t(
+        'user_mailer.dupe_profile.created.description2_html',
+        steps_link_html: link_to(
+          t('user_mailer.dupe_profile.created.steps_link'),
+          root_url,
+        ),
+        help_center_link_html: link_to(
+          t('user_mailer.dupe_profile.created.help_center_link', app_name: APP_NAME),
+          MarketingSite.help_url,
+        ),
+      ) %>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
