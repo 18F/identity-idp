@@ -4,7 +4,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
   describe '#ssn_is_unique?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
+    let(:sp) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
     before do
@@ -72,7 +72,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
+    let(:sp) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     let(:identity) do
       build(
         :service_provider_identity,
@@ -130,7 +130,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
+    let(:sp) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     let(:identity) do
       build(
         :service_provider_identity,
@@ -190,7 +190,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:user2) { create(:user) }
     let(:user3) { create(:user) }
     let(:user4) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
+    let(:sp) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     let(:sp2) { 'urn:gov:gsa:openidconnect:sp:test2' }
     let(:identity) do
       build(
@@ -246,7 +246,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
         .and_return([
-                      'urn:gov:gsa:openidconnect:sp:test',
+                      OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER,
                       'urn:gov:gsa:openidconnect:sp:test2',
                     ])
       create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
@@ -270,7 +270,6 @@ RSpec.describe Idv::DuplicateSsnFinder do
     context 'when a profile has a unique ssn but belongs to matching opted in sp' do
       subject { described_class.new(ssn: ssn2, user: user4, issuer: sp) }
       it 'does not return matching profile' do
-
         expect(subject.associated_facial_match_profiles_with_ssn.last).to eq(nil)
       end
     end
