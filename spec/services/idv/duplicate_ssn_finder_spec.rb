@@ -4,7 +4,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
   describe '#ssn_is_unique?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
     subject { described_class.new(ssn: ssn, user: user, issuer: sp) }
 
     before do
@@ -72,7 +72,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
     let(:identity) do
       build(
         :service_provider_identity,
@@ -130,7 +130,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
     let(:identity) do
       build(
         :service_provider_identity,
@@ -185,14 +185,26 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
   describe '#associated_facial_match_profiles_with_ssn' do
     let(:ssn) { '123-45-6789' }
+    let(:ssn2) { '123-45-9999' }
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let(:sp) { 'urn:gov:gsa:openidconnect:inactive:sp:test' }
+    let(:user3) { create(:user) }
+    let(:user4) { create(:user) }
+    let(:user5) { create(:user) }
+    let(:user6) { create(:user) }
+    let(:sp) { 'urn:gov:gsa:openidconnect:sp:test' }
+    let(:sp2) { 'urn:gov:gsa:openidconnect:sp:test2' }
     let(:identity) do
       build(
         :service_provider_identity,
         service_provider: sp,
-        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
+    let(:identity1a) do
+      build(
+        :service_provider_identity,
+        service_provider: sp2,
         ial: 2,
       )
     end
@@ -200,7 +212,34 @@ RSpec.describe Idv::DuplicateSsnFinder do
       build(
         :service_provider_identity,
         service_provider: sp,
-        session_uuid: SecureRandom.uuid,
+        ial: 2,
+      )
+    end
+    let(:identity2a) do
+      build(
+        :service_provider_identity,
+        service_provider: sp2,
+        ial: 2,
+      )
+    end
+    let(:identity3) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        ial: 2,
+      )
+    end
+    let(:identity4) do
+      build(
+        :service_provider_identity,
+        service_provider: sp,
+        ial: 2,
+      )
+    end
+    let(:identity4a) do
+      build(
+        :service_provider_identity,
+        service_provider: sp2,
         ial: 2,
       )
     end
@@ -209,47 +248,31 @@ RSpec.describe Idv::DuplicateSsnFinder do
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
         .and_return([
-                      'urn:gov:gsa:openidconnect:inactive:sp:test',
-                      'urn:gov:gsa:openidconnect:inactive:sp:test2',
+                      'urn:gov:gsa:openidconnect:sp:test',
+                      'urn:gov:gsa:openidconnect:sp:test2',
                     ])
+      create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
+      user.identities << [identity, identity1a]
+      create(:profile, :facial_match_proof, id: 2, pii: { ssn: ssn }, user: user2, active: true)
+      user2.identities << [identity2, identity2a]
+      create(:profile, :facial_match_proof, id: 3, pii: { ssn: ssn }, user: user3, active: true)
+      user3.identities << [identity3]
+      create(:profile, :facial_match_proof, id: 4, pii: { ssn: ssn2 }, user: user4, active: true)
+      user4.identities << [identity4, identity4a]
     end
-    context 'when ssn belongs to another profile with the same sp' do
-      it 'returns matching profile id' do
-        create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
-        user.identities << identity
-        create(:profile, :facial_match_proof, id: 2, pii: { ssn: ssn }, user: user2, active: true)
-        user2.identities << identity2
-        expect(subject.associated_facial_match_profiles_with_ssn.last.id).to eq(2)
+
+    context 'when ssn belongs to profiles with matching opted in sp' do
+      it 'returns matching profile ids' do
+        expect(subject.associated_facial_match_profiles_with_ssn.count).to eq(2)
+        expect(subject.associated_facial_match_profiles_with_ssn[0].id).to eq(2)
+        expect(subject.associated_facial_match_profiles_with_ssn[1].id).to eq(3)
       end
     end
 
-    context 'when ssn belongs to another profile with a different sp' do
+    context 'when a profile has a unique ssn but belongs to matching opted in sp' do
+      subject { described_class.new(ssn: ssn2, user: user4, issuer: sp) }
       it 'does not return matching profile' do
-        sp2 = 'urn:gov:gsa:openidconnect:inactive:sp:test2'
-        create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
 
-        create(
-          :profile,
-          :facial_match_proof,
-          id: 2,
-          pii: { ssn: ssn },
-          user: user2,
-          active: true,
-          initiating_service_provider_issuer: sp2,
-        )
-        expect(subject.associated_facial_match_profiles_with_ssn.last).to eq(nil)
-      end
-    end
-
-    context 'when ssn belongs to same provider but sp has not opted in' do
-      before do
-        allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-          .and_return([])
-      end
-
-      it 'does not return matching profile' do
-        create(:profile, :facial_match_proof, id: 1, pii: { ssn: ssn }, user: user, active: true)
-        create(:profile, :facial_match_proof, id: 2, pii: { ssn: ssn }, user: user2, active: true)
         expect(subject.associated_facial_match_profiles_with_ssn.last).to eq(nil)
       end
     end

@@ -64,7 +64,6 @@ RSpec.describe DuplicateProfileChecker do
             build(
               :service_provider_identity,
               service_provider: sp.issuer,
-              session_uuid: SecureRandom.uuid,
               ial: 2,
             )
           end
@@ -73,7 +72,6 @@ RSpec.describe DuplicateProfileChecker do
             build(
               :service_provider_identity,
               service_provider: sp.issuer,
-              session_uuid: SecureRandom.uuid,
               ial: 2,
             )
           end
