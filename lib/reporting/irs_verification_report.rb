@@ -88,7 +88,7 @@ module Reporting
     def overview_table
       [
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', Date.today.to_s],
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.join(', ')],
       ]
     end
