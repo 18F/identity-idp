@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_authentication_report'
+require 'reporting/irs_registration_funnel_report'
 
 module Reports
-  class IrsAuthenticationReport < BaseReport
-    REPORT_NAME = 'irs-authentication-report'
+  class IrsRegistrationFunnelReport < BaseReport
+    REPORT_NAME = 'irs-registration-funnel-report'
 
     attr_reader :report_date
 
@@ -19,7 +19,7 @@ module Reports
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - Authentication Report NOT SENT'
+        Rails.logger.warn 'No email addresses received - Registration Funnel Report NOT SENT'
         return false
       end
 
@@ -29,7 +29,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Authentication Report - #{report_date.to_date}",
+        subject: "IRS Registration Funnel Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
@@ -60,11 +60,11 @@ module Reports
     end
 
     def reports
-      @reports ||= irs_authentication_report.as_emailable_reports
+      @reports ||= irs_registration_funnel_report.as_emailable_reports
     end
 
-    def irs_authentication_report
-      @irs_authentication_report ||= Reporting::IrsAuthenticationReport.new(
+    def irs_registration_funnel_report
+      @irs_registration_funnel_report ||= Reporting::IrsRegistrationFunnelReport.new(
         issuers: issuers,
         time_range: report_date.all_week,
       )
