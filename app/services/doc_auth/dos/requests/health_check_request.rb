@@ -17,7 +17,7 @@ module DocAuth
           @endpoint = endpoint
         end
 
-        def fetch(analytics)
+        def fetch(analytics, step: nil)
           begin
             faraday_response = connection.get do |req|
               req.options.context = { service_name: metric_name }
@@ -30,7 +30,10 @@ module DocAuth
           analytics.passport_api_health_check(
             **response.to_h
                 .except(*UNUSED_RESPONSE_KEYS)
-                .merge(response.extra),
+                .merge(response.extra)
+                .merge({
+                  step:,
+                }),
           )
         end
 
