@@ -40,7 +40,7 @@ module Idv
     end
 
     def locals_attrs(analytics:, presenter:, form_submit_url: nil)
-      dos_passport_api_down = dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+      dos_passport_api_down = !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
       {
         presenter:,
         form_submit_url:,
