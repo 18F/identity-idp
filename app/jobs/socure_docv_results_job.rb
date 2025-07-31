@@ -234,7 +234,7 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def doc_escrow_name
-    SecureRandom.uuid
+    "#{sp.issuer}/#{SecureRandom.uuid}"
   end
 
   def doc_escrow_key
@@ -257,8 +257,12 @@ class SocureDocvResultsJob < ApplicationJob
       remaining_submit_attempts:,
       submit_attempts:,
       user_id: user_uuid,
-      response: response.extra[:response],
       success: response.success?,
+      errors: response.errors.to_h,
+      **response.extra.slice(
+        :response, :correlation_id_sent, :correlation_id_received,
+        :error_code, :error_message, :error_reason, :exception
+      ),
     )
 
     response

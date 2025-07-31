@@ -84,6 +84,12 @@ module AamvaFixtures
     read_fixture_file('proofing/aamva/requests/verification_request.xml')
   end
 
+  def self.verification_response_with_newline_in_transaction_id
+    read_fixture_file(
+      'proofing/aamva/responses/verification_response_with_newline_in_transaction_id.xml',
+    )
+  end
+
   def self.verification_response
     read_fixture_file('proofing/aamva/responses/verification_response.xml')
   end

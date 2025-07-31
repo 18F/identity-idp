@@ -25,7 +25,6 @@ module Idv
       clear_future_steps!
 
       @choose_id_type_form = Idv::ChooseIdTypeForm.new
-
       result = @choose_id_type_form.submit(choose_id_type_form_params)
 
       analytics.idv_doc_auth_choose_id_type_submitted(
@@ -52,8 +51,9 @@ module Idv
         },
         undo_step: ->(idv_session:, user:) do
           if idv_session.document_capture_session_uuid
-            DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
-              &.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+            DocumentCaptureSession.find_by(
+              uuid: idv_session.document_capture_session_uuid,
+            )&.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
           end
         end,
       )

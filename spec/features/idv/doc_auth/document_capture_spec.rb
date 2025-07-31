@@ -216,8 +216,9 @@ RSpec.feature 'document capture step', :js do
         :in_person_proofing_enabled,
       ).and_return(true)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-      stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-        .to_return({ status: 200, body: { status: api_status }.to_json })
+      # Use proper health check helpers
+      stub_health_check_settings
+      stub_health_check_endpoints_success
       reload_ab_tests
 
       visit_idp_from_sp_with_ial2(
@@ -225,7 +226,8 @@ RSpec.feature 'document capture step', :js do
         **{ client_id: ipp_service_provider.issuer },
       )
       sign_in_and_2fa_user(@user)
-      complete_doc_auth_steps_before_document_capture_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      click_on t('forms.buttons.upload_photos')
     end
 
     after do
@@ -239,15 +241,28 @@ RSpec.feature 'document capture step', :js do
           'passport_credential.yml'
         )
       end
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return_json({ status: 200, body: { response: 'YES' } })
+      end
 
       it 'happy path' do
-        choose_id_type(:passport)
+        # Navigate to choose ID type page and select passport
+        visit idv_choose_id_type_url
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+
+        expect(page).to have_current_path(idv_document_capture_url, wait: 10)
         expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
-        expect(page).to have_current_path(idv_document_capture_url)
 
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
         submit_images
+
         expect(page).to have_content(t('doc_auth.headings.capture_complete'))
         fill_out_ssn_form_ok
         click_idv_continue
@@ -276,7 +291,8 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'fails due to mrz' do
-        choose_id_type(:passport)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -308,7 +324,8 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose_id_type(:passport)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -328,7 +345,8 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'fails pii check' do
-        choose_id_type(:passport)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -340,10 +358,17 @@ RSpec.feature 'document capture step', :js do
       end
     end
 
-    context 'api 400 error' do
+    context 'when the MRZ API response with a 400 error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        )
+      end
       let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
       before do
+        allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
         allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
           .and_return(fake_dos_api_endpoint)
         stub_request(:post, fake_dos_api_endpoint)
@@ -351,20 +376,22 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose_id_type(:passport)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-        attach_passport_image
+        attach_passport_image(passport_image)
         submit_images
-        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+        expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
         expect(page).to have_current_path(idv_document_capture_url)
       end
     end
 
-    context 'api 500 error' do
+    context 'when the MRZ API response with a 500 error' do
       let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
 
       before do
+        allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
         allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
           .and_return(fake_dos_api_endpoint)
         stub_request(:post, fake_dos_api_endpoint)
@@ -372,12 +399,13 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose_id_type(:passport)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image
         submit_images
-        expect(page).to have_content(t('doc_auth.headings.review_issues_passport'))
+        expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
         expect(page).to have_current_path(idv_document_capture_url)
       end
     end

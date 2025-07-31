@@ -106,7 +106,8 @@ module DocAuth
         ResultResponse.new(
           last_image,
           overriden_config,
-          selfie_required,
+          selfie_required:,
+          passport_submittal:,
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument

@@ -63,7 +63,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       context 'when the SSN is not unique' do
         before do
           allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-            .and_return(['urn:gov:gsa:openidconnect:inactive:sp:test'])
+            .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
           create(:profile, :facial_match_proof, pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
         end
 

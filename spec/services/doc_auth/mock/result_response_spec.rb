@@ -3,27 +3,64 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
   let(:selfie_required) { false }
-  subject(:response) do
-    config = DocAuth::Mock::Config.new(
+  let(:config) do
+    DocAuth::Mock::Config.new(
       dpi_threshold: 290,
       sharpness_threshold: 40,
       glare_threshold: 40,
       warn_notifier: warn_notifier,
     )
-    described_class.new(input, config, selfie_required)
+  end
+
+  subject(:response) do
+    described_class.new(input, config, selfie_required:)
   end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
-    let(:selfie_required) { true }
-    it 'returns a successful response with the default PII' do
-      expect(response.success?).to eq(true)
-      expect(response.errors).to eq({})
-      expect(response.exception).to eq(nil)
-      expect(response.pii_from_doc.to_h)
-        .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
-      expect(response.attention_with_barcode?).to eq(false)
-      expect(response.selfie_status).to eq(:success)
+
+    context 'when passport submittal is nil' do
+      it 'returns a successful response with State-ID PII' do
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.exception).to eq(nil)
+        expect(response.pii_from_doc.to_h)
+          .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.selfie_status).to eq(:not_processed)
+      end
+    end
+
+    context 'when passport submittal is false' do
+      subject(:response) do
+        described_class.new(input, config, selfie_required:, passport_submittal: false)
+      end
+
+      it 'returns a successful response with State-ID PII' do
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.exception).to eq(nil)
+        expect(response.pii_from_doc.to_h)
+          .to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.selfie_status).to eq(:not_processed)
+      end
+    end
+
+    context 'when passport submittal is true' do
+      subject(:response) do
+        described_class.new(input, config, selfie_required:, passport_submittal: true)
+      end
+
+      it 'returns a successful response with Passport PII' do
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.exception).to eq(nil)
+        expect(response.pii_from_doc.to_h)
+          .to eq(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.selfie_status).to eq(:not_processed)
+      end
     end
   end
 

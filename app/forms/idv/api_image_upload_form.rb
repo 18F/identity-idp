@@ -224,8 +224,12 @@ module Idv
         remaining_submit_attempts:,
         submit_attempts:,
         user_id: user_uuid,
-        response: response.extra[:response],
         success: response.success?,
+        errors: response.errors.to_h,
+        **response.extra.slice(
+          :response, :correlation_id_sent, :correlation_id_received,
+          :error_code, :error_message, :error_reason, :exception
+        ),
       )
 
       response.extra.merge!(extra_attributes)
@@ -324,7 +328,7 @@ module Idv
       return {} unless doc_escrow_enabled?
 
       return @doc_escrow_images if defined?(@doc_escrow_images)
-      @doc_escrow_images = images_metadata.attempts_file_data
+      @doc_escrow_images = images_metadata.attempts_file_data(issuer: service_provider.issuer)
       @doc_escrow_images
     end
 

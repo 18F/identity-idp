@@ -20,7 +20,7 @@ RSpec.describe DuplicateProfileChecker do
   end
   let(:issuer) { sp.issuer }
 
-  describe '#validate_user_does_not_have_duplicate_profile' do
+  describe '#check_for_duplicate_profiles' do
     before do
       profile.encrypt_pii(active_pii, user.password)
       profile.save
@@ -36,8 +36,9 @@ RSpec.describe DuplicateProfileChecker do
 
           it 'does not create a new duplicate profile confirmation' do
             dupe_profile_checker = DuplicateProfileChecker.new(
-              user: user, user_session: session,
-              sp: sp
+              user: user,
+              user_session: session,
+              sp: sp,
             )
             dupe_profile_checker.check_for_duplicate_profiles
 
@@ -71,8 +72,9 @@ RSpec.describe DuplicateProfileChecker do
             expect(session[:duplicate_profile_ids]).to be(nil)
 
             dupe_profile_checker = DuplicateProfileChecker.new(
-              user: user, user_session: session,
-              sp: sp
+              user: user,
+              user_session: session,
+              sp: sp,
             )
             dupe_profile_checker.check_for_duplicate_profiles
             expect(session[:duplicate_profile_ids]).to eq([user2.profiles.last.id])
