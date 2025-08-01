@@ -35,7 +35,7 @@ module Idv
       return true if endpoint.blank?
 
       request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
-      response = request.fetch(analytics, step)
+      response = request.fetch(analytics, context_analytics: { step: })
       response.success?
     end
 
