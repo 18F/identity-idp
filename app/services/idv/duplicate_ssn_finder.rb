@@ -2,23 +2,28 @@
 
 module Idv
   class DuplicateSsnFinder
-    attr_reader :ssn, :user
+    attr_reader :ssn, :user, :issuer
 
-    def initialize(user:, ssn:)
+    def initialize(user:, ssn:, issuer:)
       @user = user
       @ssn = ssn
+      @issuer = issuer
     end
 
     def ssn_is_unique?
-      Profile.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
-        .where.not(user_id: user.id).empty?
+      Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
     def associated_facial_match_profiles_with_ssn
-      Profile.active.facial_match.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
+      Profile.joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
+        .active
+        .facial_match
+        .where(ssn_signature: ssn_signatures)
+        .where(identities: { service_provider: sp_eligible_for_one_account })
+        .where(identities: { deleted_at: nil })
+        .where(identities: { ial: 2 })
         .where.not(user_id: user.id)
+        .distinct
     end
 
     def ial2_profile_ssn_is_unique?
