@@ -69,12 +69,12 @@ module Reporting
           filename: 'Overview Report',
         ),
         Reporting::EmailableReport.new(
-          title: 'Funnel Metrics',
+          title: 'Verification Funnel Metrics',
           subtitle: '',
           float_as_percent: true,
           precision: 2,
           table: funnel_table,
-          filename: 'Funnel Metrics',
+          filename: 'Verification Funnel Metrics',
         ),
       ]
     end
