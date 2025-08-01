@@ -8,6 +8,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
   end
 
   let(:analytics) { FakeAnalytics.new }
+  let(:step) { 'choose_id_type' }
 
   before do
     stub_health_check_settings
@@ -16,7 +17,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
 
   shared_examples 'a DOS healthcheck endpoint' do |endpoint, success_body|
     describe '#fetch' do
-      let(:result) { health_check_request_for(endpoint).fetch(analytics) }
+      let(:result) { health_check_request_for(endpoint).fetch(analytics, step) }
 
       describe 'happy path' do
         it 'hits the endpoint' do
@@ -30,6 +31,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
             :passport_api_health_check,
             success: true,
             errors: {},
+            step: step,
             body: success_body.to_json,
           )
         end
@@ -61,6 +63,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
               errors: hash_including(
                 network: 'faraday exception',
               ),
+              step: step,
               exception: a_string_matching(/Faraday::TimeoutError/),
             ),
           )

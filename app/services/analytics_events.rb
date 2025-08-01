@@ -6717,7 +6717,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the passport api health check succeeded.
   # @param [Hash] body The health check body, if present.
   # @param [Hash] errors Any additional error information we have
-  # @param [String] step The error message, if present.
+  # @param [String] step The page which calls the health check
   # @param [String] exception The Faraday or other exception, if one happened
   def passport_api_health_check(
     success:,
