@@ -17,7 +17,7 @@ module DocAuth
           @endpoint = endpoint
         end
 
-        def fetch(analytics, step)
+        def fetch(analytics, context_analytics: { step: nil })
           begin
             faraday_response = connection.get do |req|
               req.options.context = { service_name: metric_name }
@@ -31,9 +31,7 @@ module DocAuth
             **response.to_h
                 .except(*UNUSED_RESPONSE_KEYS)
                 .merge(response.extra)
-                .merge({
-                  step:,
-                }),
+                .merge(context_analytics),
           )
         end
 

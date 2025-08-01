@@ -9,6 +9,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
 
   let(:analytics) { FakeAnalytics.new }
   let(:step) { 'choose_id_type' }
+  let(:context_analytics) { { step: } }
 
   before do
     stub_health_check_settings
@@ -17,7 +18,9 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
 
   shared_examples 'a DOS healthcheck endpoint' do |endpoint, success_body|
     describe '#fetch' do
-      let(:result) { health_check_request_for(endpoint).fetch(analytics, step) }
+      let(:result) do
+        health_check_request_for(endpoint).fetch(analytics, context_analytics: context_analytics)
+      end
 
       describe 'happy path' do
         it 'hits the endpoint' do

@@ -9,13 +9,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
   let(:analytics) { FakeAnalytics.new }
   let(:step) { 'choose_id_type' }
+  let(:context_analytics) { { step: step } }
   let(:document_capture_session) { double(DocumentCaptureSession) }
-  let(:fetch_arguments) do
-    {
-      analytics:,
-      step:,
-    }
-  end
   let(:parameters) do
     ActionController::Parameters.new(
       {
@@ -152,7 +147,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           :dos_passport_composite_healthcheck_endpoint,
         ).and_return('http://dostest.com/status')
         allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-        allow(request).to receive(:fetch).with(analytics, step).and_return(response)
+        allow(request).to receive(:fetch).with(analytics, context_analytics: context_analytics)
+          .and_return(response)
       end
 
       context 'when the dos response is successful' do
@@ -194,7 +190,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         :dos_passport_composite_healthcheck_endpoint,
       ).and_return('http://dostest.com/status')
       allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-      allow(request).to receive(:fetch).with(analytics, step).and_return(response)
+      allow(request).to receive(:fetch).with(analytics, context_analytics: context_analytics)
+        .and_return(response)
     end
 
     context 'when the dos passport api is healthy' do
