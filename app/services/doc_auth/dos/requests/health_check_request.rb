@@ -17,7 +17,7 @@ module DocAuth
           @endpoint = endpoint
         end
 
-        def fetch(analytics, step: nil)
+        def fetch(analytics, step)
           begin
             faraday_response = connection.get do |req|
               req.options.context = { service_name: metric_name }
