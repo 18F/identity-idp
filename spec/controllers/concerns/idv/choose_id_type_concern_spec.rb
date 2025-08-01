@@ -152,7 +152,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           :dos_passport_composite_healthcheck_endpoint,
         ).and_return('http://dostest.com/status')
         allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-        allow(request).to receive(:fetch).and_return(response)
+        allow(request).to receive(:fetch).with(analytics, step).and_return(response)
       end
 
       context 'when the dos response is successful' do
@@ -194,7 +194,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         :dos_passport_composite_healthcheck_endpoint,
       ).and_return('http://dostest.com/status')
       allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-      allow(request).to receive(:fetch).and_return(response)
+      allow(request).to receive(:fetch).with(analytics, step).and_return(response)
     end
 
     context 'when the dos passport api is healthy' do
