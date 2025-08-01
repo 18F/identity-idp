@@ -16,7 +16,6 @@ module Idv
         before_action -> do
           redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
         end, only: :show
-        before_action :fetch_test_verification_data, only: [:update]
 
         def show
           if rate_limiter.limited?
@@ -126,6 +125,14 @@ module Idv
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
+            # create this event
+            # analytics.idv_socure_verification_webhooks_missing
+
+            fetch_test_verification_data
+
+            document_capture_session.reload
+            return false if document_capture_session.load_result.present?
+
             redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
               error_code: :timeout,
             )
