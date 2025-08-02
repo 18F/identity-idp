@@ -13,14 +13,14 @@ module Idv
       Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
-    def associated_facial_match_profiles_with_ssn
+    def duplicate_facial_match_profiles
       Profile.active.facial_match.where(ssn_signature: ssn_signatures)
         .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
         .where.not(user_id: user.id)
     end
 
-    def ial2_profile_ssn_is_unique?
-      associated_facial_match_profiles_with_ssn.empty?
+    def profile_unique_within_facial_match_profiles?
+      duplicate_facial_match_profiles.empty?
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:

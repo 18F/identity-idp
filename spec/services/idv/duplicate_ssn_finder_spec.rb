@@ -7,11 +7,6 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     subject { described_class.new(ssn: ssn, user: user) }
 
-    before do
-      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-        .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
-    end
-
     context 'when the ssn is unique' do
       it { expect(subject.ssn_is_unique?).to eq(true) }
     end
@@ -68,7 +63,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     end
   end
 
-  describe '#associated_facial_match_profiles_with_ssn' do
+  describe '#duplicate_facial_match_profiles' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
 
@@ -85,7 +80,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
 
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
-          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(1)
+          expect(subject.duplicate_facial_match_profiles.size).to eq(1)
         end
       end
 
@@ -94,20 +89,20 @@ RSpec.describe Idv::DuplicateSsnFinder do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
 
           create(:profile, pii: { ssn: ssn }, active: true)
-          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(0)
+          expect(subject.duplicate_facial_match_profiles.size).to eq(0)
         end
       end
 
       context 'when ssn is not taken by other profiles' do
         it 'returns empty array' do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
-          expect(subject.associated_facial_match_profiles_with_ssn.size).to eq(0)
+          expect(subject.duplicate_facial_match_profiles.size).to eq(0)
         end
       end
     end
   end
 
-  describe '#ial2_profile_ssn_is_unique?' do
+  describe '#profile_unique_within_facial_match_profiles?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
 
@@ -123,7 +118,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
 
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
-          expect(subject.ial2_profile_ssn_is_unique?).to eq false
+          expect(subject.profile_unique_within_facial_match_profiles?).to eq false
         end
       end
 
@@ -132,14 +127,14 @@ RSpec.describe Idv::DuplicateSsnFinder do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
 
           create(:profile, pii: { ssn: ssn }, active: true)
-          expect(subject.ial2_profile_ssn_is_unique?).to eq true
+          expect(subject.profile_unique_within_facial_match_profiles?).to eq true
         end
       end
 
       context 'when ssn is not taken by other profiles' do
         it 'returns true' do
           create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
-          expect(subject.ial2_profile_ssn_is_unique?).to eq true
+          expect(subject.profile_unique_within_facial_match_profiles?).to eq true
         end
       end
     end
