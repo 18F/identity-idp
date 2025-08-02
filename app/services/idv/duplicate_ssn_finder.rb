@@ -13,14 +13,20 @@ module Idv
       Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
-    def duplicate_facial_match_profiles
-      Profile.active.facial_match.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
+    def duplicate_facial_match_profiles(service_provider:)
+      Profile
+        .active
+        .facial_match
+        .where(ssn_signature: ssn_signatures)
+        .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
+        .where(identities: { service_provider: service_provider })
+        .where(identities: { deleted_at: nil })
         .where.not(user_id: user.id)
+        .distinct
     end
 
-    def profile_unique_within_facial_match_profiles?
-      duplicate_facial_match_profiles.empty?
+    def profile_unique_within_facial_match_profiles?(...)
+      duplicate_facial_match_profiles(...).empty?
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:

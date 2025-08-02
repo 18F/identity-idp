@@ -64,35 +64,85 @@ RSpec.describe Idv::DuplicateSsnFinder do
   end
 
   describe '#duplicate_facial_match_profiles' do
+    let(:service_provider) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
+    let(:other_service_provider) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
+    let(:profile) do
+      create(
+        :profile,
+        idv_level: :unsupervised_with_selfie,
+        pii: { ssn: ssn },
+        user: user,
+        active: true,
+      )
+    end
+    let!(:identity) do
+      create(
+        :service_provider_identity,
+        service_provider: service_provider,
+        user: user,
+      )
+    end
+    let(:other_profile_idv_level) { :unsupervised_with_selfie }
+    let(:other_profile_ssn) { ssn }
+    let(:other_profile_active) { true }
+    let!(:other_profile) do
+      create(
+        :profile,
+        idv_level: other_profile_idv_level,
+        pii: { ssn: other_profile_ssn },
+        user: other_user,
+        active: other_profile_active,
+      )
+    end
+    let!(:other_identity) do
+      create(
+        :service_provider_identity,
+        service_provider: other_service_provider,
+        user: other_user,
+      )
+    end
 
     subject { described_class.new(ssn: ssn, user: user) }
 
-    before do
-      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
-        .and_return([OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER])
-      create(:profile, :facial_match_proof, pii: { ssn: ssn }, user: user, active: true)
-    end
-
-    context 'when the other profile with the same SSN is at facial match IDV level' do
+    context 'when the other profile is active, has matching SSN and is at facial match IDV level' do
       it 'returns list with matching profile' do
-        dup_profile = create(:profile, :facial_match_proof, pii: { ssn: ssn }, active: true)
-        expect(subject.duplicate_facial_match_profiles.last.id).to eq(dup_profile.id)
+        expect(subject.duplicate_facial_match_profiles(service_provider:).last.id)
+          .to eq(other_profile.id)
       end
     end
 
-    context 'when the other profile with the same SSN is not at facial match IDV level' do
+    context 'when the other profile is not at facial match IDV level' do
+      let(:other_profile_idv_level) { :legacy_unsupervised }
+
       it 'is empty' do
-        create(:profile, idv_level: :legacy_unsupervised, pii: { ssn: ssn }, active: true)
-        expect(subject.duplicate_facial_match_profiles).to be_empty
+        expect(subject.duplicate_facial_match_profiles(service_provider:)).to be_empty
       end
     end
 
-    context 'when the other profile has a different SSN and is at facial match IDV level' do
+    context 'when the other profile has a different SSN' do
+      let(:other_profile_ssn) { '555-66-7788' }
+
       it 'is empty' do
-        create(:profile, :facial_match_proof, pii: { ssn: '222-45-6789' }, active: true)
-        expect(subject.duplicate_facial_match_profiles).to be_empty
+        expect(subject.duplicate_facial_match_profiles(service_provider:)).to be_empty
+      end
+    end
+
+    context 'when the other profile is not active' do
+      let(:other_profile_active) { false }
+
+      it 'is empty' do
+        expect(subject.duplicate_facial_match_profiles(service_provider:)).to be_empty
+      end
+    end
+
+    context 'when the other profile has not been active with the service_provider' do
+      let(:other_service_provider) { OidcAuthHelper::OIDC_ISSUER }
+
+      it 'is empty' do
+        expect(subject.duplicate_facial_match_profiles(service_provider:)).to be_empty
       end
     end
   end
