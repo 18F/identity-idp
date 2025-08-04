@@ -140,7 +140,11 @@ module AbTests
   ONE_ACCOUNT_USER_VERIFICATION_ENABLED = AbTest.new(
     experiment_name: 'One Account User Verification Enabled',
     should_log: [
-      :account_creation_tmx_result,
+      'Email and Password Authentication',
+      'SP redirect initiated',
+      :one_account_duplicate_profiles_detected,
+      :one_account_unknown_profile_detected,
+      :one_account_recognize_all_profiles,
     ].to_set,
     buckets: {
       one_account_user_verification_enabled_percentage: IdentityConfig.store.one_account_user_verification_enabled_percentage,
