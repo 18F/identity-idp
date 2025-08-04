@@ -165,14 +165,27 @@ module Reporting
     end
 
     def fetch_event_user_ids(event_name)
+      unless Events.all_events.include?(event_name)
+        Rails.logger.warn("Event name '#{event_name}' is not in the list of known events.")
+        return []
+      end
+
       Rails.logger.info("Fetching results for event: #{event_name}")
+
       results = cloudwatch_client.fetch(
         query: query_for_event(event_name),
         from: time_range.begin.beginning_of_day,
         to: time_range.end.end_of_day,
       )
-      Rails.logger.info("Fetched #{results.count} rows for #{event_name}")
-      results.map { |row| row['properties.user_id'] }.uniq
+
+      if results.nil? || results.empty?
+        Rails.logger.warn("No results returned for event: #{event_name}")
+        return []
+      end
+
+      user_ids = results.map { |row| row['properties.user_id'] }.compact.uniq
+      Rails.logger.info("Fetched #{user_ids.count} unique user IDs for #{event_name}")
+      user_ids
     rescue StandardError => e
       Rails.logger.error("Failed to fetch event #{event_name}: #{e.message}")
       []
