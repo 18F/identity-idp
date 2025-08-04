@@ -75,5 +75,7 @@ module AttemptsApi
     def service_provider
       @service_provider ||= ServiceProvider.find_by(issuer:)
     end
+
+    add_method_tracer :valid_request_token?, "Custom/#{name}/valid_request_token?"
   end
 end
