@@ -125,8 +125,9 @@ module Idv
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
           if wait_timed_out?
-            # create this event
-            # analytics.idv_socure_verification_webhooks_missing
+            analytics.idv_socure_verification_webhook_missing(
+              docv_transaction_token: document_capture_session.socure_docv_transaction_token,
+            )
 
             fetch_test_verification_data
 
