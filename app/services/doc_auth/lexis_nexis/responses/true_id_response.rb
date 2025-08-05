@@ -132,10 +132,11 @@ module DocAuth
         end
 
         def id_doc_type_expected?
-          expected_id_type = passport_requested ? ['passport'] :
-            ['drivers_license', 'state_id_card']
+          expected_id_types = passport_requested ?
+            Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
+            Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
 
-          expected_id_type.include?(id_type)
+          expected_id_types.include?(id_type)
         end
 
         def id_type
@@ -143,7 +144,8 @@ module DocAuth
         end
 
         def passport_pii?
-          @passport_pii ||= ['passport', 'passport_card'].include?(id_type)
+          @passport_pii ||=
+            Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_type)
         end
 
         def transaction_status

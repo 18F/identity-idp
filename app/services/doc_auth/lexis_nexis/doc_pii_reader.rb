@@ -33,9 +33,9 @@ module DocAuth
           doc_issue_type: id_doc_issue_type,
         )
 
-        if id_doc_type == 'drivers_license' || id_doc_type == 'state_id_card'
+        if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(id_doc_type)
           generate_state_id_pii
-        elsif id_doc_type == 'passport' || id_doc_type == 'passport_card'
+        elsif Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_doc_type)
           generate_passport_pii
         end
       end
@@ -185,9 +185,9 @@ module DocAuth
 
       def determine_id_doc_type(doc_class_name:, doc_issue_type:)
         val = if IdentityConfig.store.doc_auth_passports_enabled
-                DocAuth::Response::ID_TYPE_SLUGS[doc_class_name]
+                DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
               else
-                DocAuth::Response::STATE_ID_TYPE_SLUGS[doc_class_name]
+                DocumentClassifications::STATE_ID_CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
               end
 
         # If the DocIssueType is 'Passport Card',
