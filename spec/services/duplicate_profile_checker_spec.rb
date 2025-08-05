@@ -48,6 +48,13 @@ RSpec.describe DuplicateProfileChecker do
 
         context 'when user has accounts with matching profile' do
           let(:user2) { create(:user, :fully_registered) }
+          let!(:user2_identity) do
+            create(
+              :service_provider_identity,
+              user: user2,
+              service_provider: sp.issuer,
+            )
+          end
           let!(:profile2) do
             profile = create(
               :profile,
