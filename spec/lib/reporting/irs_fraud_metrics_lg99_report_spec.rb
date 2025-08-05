@@ -36,18 +36,17 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
   end
   let(:expected_credential_tenure_metric) do
     [
-      ['Metric','Values'],
-      ['Total Users','10'],
-      ['Credential Tenure','15']
+      ['Metric', 'Values'],
+      ['Total Users', '10'],
+      ['Credential Tenure', '15'],
     ]
   end
-
 
   subject(:report) { Reporting::IrsFraudMetricsLg99Report.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day
-    stub_cloudwatch_logs( 
+    stub_cloudwatch_logs(
       [
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
@@ -68,7 +67,6 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
     )
     user7.profiles.verified.last.update(created_at: 1.day.ago, activated_at: 1.day.ago) if user7
   end
-
 
   let!(:user6) do
     create(
@@ -165,7 +163,9 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
 
   describe '#as_emailable_reports' do
     before do
-      allow_any_instance_of(Reporting::IrsCredentialTenureReport).to receive(:irs_credential_tenure_report).and_return(expected_credential_tenure_metric)
+      allow_any_instance_of(Reporting::IrsCredentialTenureReport)
+        .to receive(:irs_credential_tenure_report)
+        .and_return(expected_credential_tenure_metric)
     end
 
     let(:expected_reports) do
@@ -186,7 +186,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
           table: expected_lg99_metrics_table,
         ),
         Reporting::EmailableReport.new(
-          title: "IRS Credential Tenure Metric Jan-2022",
+          title: 'IRS Credential Tenure Metric Jan-2022',
           table: expected_credential_tenure_metric,
           filename: 'Credential_Tenure_Metric',
         ),
