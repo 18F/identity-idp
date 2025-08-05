@@ -10,9 +10,7 @@ module Idv
     end
 
     def ssn_is_unique?
-      Profile.where(ssn_signature: ssn_signatures)
-        .where(initiating_service_provider_issuer: sp_eligible_for_one_account)
-        .where.not(user_id: user.id).empty?
+      Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
     end
 
     def associated_facial_match_profiles_with_ssn
