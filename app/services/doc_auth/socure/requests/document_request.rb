@@ -7,6 +7,9 @@ module DocAuth
         attr_reader :customer_user_id, :redirect_url, :language,
                     :liveness_checking_required, :passport_requested
 
+        PASSPORT_DOCUMENT_TYPE = 'passport'
+        DRIVERS_LICENSE_DOCUMENT_TYPE = 'license'
+
         def initialize(
           customer_user_id:,
           redirect_url:,
@@ -76,7 +79,7 @@ module DocAuth
         end
 
         def document_type
-          passport_requested ? 'passport' : 'license'
+          passport_requested ? PASSPORT_DOCUMENT_TYPE : DRIVERS_LICENSE_DOCUMENT_TYPE
         end
       end
     end

@@ -187,7 +187,8 @@ module Idv
       return nil if document_capture_session.nil?
 
       @document_type ||= passport_requested? \
-        ? 'Passport' : 'DriversLicense'
+        ? DocAuth::LexisNexis::DocumentTypes::PASSPORT :
+          DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE
     end
 
     def validate_pii_from_doc(client_response)

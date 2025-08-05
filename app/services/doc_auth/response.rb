@@ -8,17 +8,6 @@ module DocAuth
                 :selfie_live, :selfie_quality_good
     attr_accessor :vendor_errors
 
-    ID_TYPE_SLUGS = {
-      'Identification Card' => 'state_id_card',
-      'Drivers License' => 'drivers_license',
-      'Passport' => 'passport',
-    }.freeze
-
-    STATE_ID_TYPE_SLUGS = {
-      'Identification Card' => 'state_id_card',
-      'Drivers License' => 'drivers_license',
-    }.freeze
-
     def initialize(
       success:,
       errors: {},
