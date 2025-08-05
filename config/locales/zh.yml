@@ -83,15 +83,15 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
-account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
+account.index.verification.connect_idv_account.cta: 登录%{sp_name} 来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户与%{sp_name} 连接。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
 account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
-account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
+account.index.verification.learn_more_link: 了解更多验证你身份的信息。
 account.index.verification.legacy_verified_html: <strong>%{date}</strong>你使用身份证件在%{app_name}上验证了你的身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
@@ -105,7 +105,7 @@ account.index.verification.verified_badge_tooltip: 你的身份已经验证。
 account.index.verification.verified_facial_match_badge_tooltip: 你的身份和照片都已验证。
 account.index.verification.verify_with_facial_match_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
 account.index.verification.you_verified_your_facial_match_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
-account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
+account.index.verification.you_verified_your_identity_html: 你用以下信息为<strong>%{sp_name}</strong>验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
 account.index.webauthn_platform: 人脸或触摸解锁
