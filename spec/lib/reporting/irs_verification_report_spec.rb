@@ -21,7 +21,7 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      freeze_time do
+      freeze_time(Time.zone.local(2025, 8, 4)) do
         expected_generated_date = Time.current.utc.to_date.to_s
 
         table = report.overview_table
