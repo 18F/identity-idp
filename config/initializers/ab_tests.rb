@@ -147,9 +147,9 @@ module AbTests
       :one_account_recognize_all_profiles,
     ].to_set,
     buckets: {
-      one_account_user_verification_enabled_percentage: IdentityConfig.store.one_account_user_verification_enabled_percentage,
+      one_account_user_verification_enabled_percentage:
+        IdentityConfig.store.one_account_user_verification_enabled_percentage,
     },
-    persist: true,
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
