@@ -603,6 +603,45 @@ RSpec.feature 'document capture step', :js do
           end
         end
 
+        context 'with ipp enabled' do
+          let(:ipp_service_provider) do
+            create(:service_provider, :active, :in_person_proofing_enabled)
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(
+              :in_person_proofing_opt_in_enabled,
+            ).and_return(true)
+            allow_any_instance_of(ServiceProvider).to receive(
+              :in_person_proofing_enabled,
+            ).and_return(true)
+            perform_in_browser(:mobile) do
+              visit_idp_from_sp_with_ial2(
+                :oidc,
+                **{ client_id: ipp_service_provider.issuer,
+                    facial_match_required: true },
+              )
+              sign_in_and_2fa_user(@user)
+            end
+          end
+
+          it 'proceeds from how to verify step to document capture step after ipp canceled' do
+            perform_in_browser(:mobile) do
+              complete_doc_auth_steps_before_hybrid_handoff_step
+              expect(page).to have_current_path(idv_how_to_verify_url)
+              click_on t('forms.buttons.continue_ipp')
+              expect(page).to have_current_path(
+                idv_document_capture_path({ step: 'how_to_verify' }),
+              )
+              click_on t('forms.buttons.back')
+              expect(page).to have_current_path(idv_how_to_verify_url)
+              click_on t('forms.buttons.continue_online')
+              expect(page).to have_current_path(idv_document_capture_url)
+            end
+          end
+        end
+
         context 'documents or selfie with error is uploaded' do
           shared_examples 'it has correct error displays' do
             # when there are multiple doc auth errors on front and back
