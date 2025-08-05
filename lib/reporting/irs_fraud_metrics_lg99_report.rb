@@ -17,7 +17,7 @@ module Reporting
     attr_reader :issuers, :time_range
 
     module Events
-      IDV_FINAL_RESOLUTION = 'IdV: Final Resolution'
+      IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       SUSPENDED_USERS = 'User Suspension: Suspended'
       REINSTATED_USERS = 'User Suspension: Reinstated'
 
@@ -156,9 +156,9 @@ module Reporting
             name
           , properties.user_id as user_id
         | filter properties.service_provider IN %{issuers}
-        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
-                 or (name != %{idv_final_resolution})
         | filter name in %{event_names}
+        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
+                 or (name != %{idv_final_resolution})        
         | limit 10000
       QUERY
     end
