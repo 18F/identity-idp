@@ -109,7 +109,7 @@ module Reporting
           format_as_percent(numerator: users_failed_registration, denominator: email_confirmation),
         ],
         [
-          'Registration Successes Rate',
+          'Registration Successes',
           user_fully_registered,
           format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
         ],

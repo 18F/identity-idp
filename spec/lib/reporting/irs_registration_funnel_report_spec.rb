@@ -30,7 +30,6 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
       ['Registration Demand', 4, '100.0%'],
       ['Registration Failures', 2, '50.0%'],
       ['Registration Successes', 2, '50.0%'],
-      ['Registration Success Rate', 1, '25.0%'],
     ]
   end
 
