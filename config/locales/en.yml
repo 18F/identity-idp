@@ -740,7 +740,7 @@ duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: <
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign in and delete the account from the “Your account” page. %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate account(s)'
-duplicate_profiles_detected.delete_duplicates.link_html: How to delete your account.
+duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
 duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help

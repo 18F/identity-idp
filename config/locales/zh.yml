@@ -751,7 +751,7 @@ duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: <
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 登录后，从“你的帐户”页面删除该帐户。 %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: '删除重复帐户'
-duplicate_profiles_detected.delete_duplicates.link_html: 如何删除你的帐户。
+duplicate_profiles_detected.delete_duplicates.link: 如何删除你的帐户。
 duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个帐户
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: 获取帮助
@@ -762,7 +762,7 @@ duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong
 duplicate_profiles_detected.never_logged_in: Never logged in
 duplicate_profiles_detected.select_an_account.details: 保留你最常用的那个帐户。例如，与最多机构绑定的那个帐户。这样，你就无需再重新连接这些机构。
 duplicate_profiles_detected.select_an_account.heading: 选择要保留的帐户
-duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 Login.gov 帐户登录。
+duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 %{app_name} 帐户登录。
 duplicate_profiles_detected.sign_back_in.heading: 使用一个帐户重新登录 %{app_name}
 duplicate_profiles_detected.sign_out: 登出
 duplicate_profiles_detected.signed_in: Signed In

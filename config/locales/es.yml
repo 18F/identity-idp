@@ -751,7 +751,7 @@ duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: <
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Inicie sesión y, en la página de “Su cuenta”, elimine la cuenta. %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: 'Elimine las cuentas duplicadas.'
-duplicate_profiles_detected.delete_duplicates.link_html: Cómo eliminar su cuenta.
+duplicate_profiles_detected.delete_duplicates.link: Cómo eliminar su cuenta.
 duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtener ayuda
@@ -762,7 +762,7 @@ duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong
 duplicate_profiles_detected.never_logged_in: Never logged in
 duplicate_profiles_detected.select_an_account.details: Conserve la cuenta que más usa. Por ejemplo, la que está vinculada a más servicios. Así, no tendrá que volver a conectar los servicios.
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
-duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de Login.gov que conservó.
+duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
 duplicate_profiles_detected.sign_out: Cerrar sesión
 duplicate_profiles_detected.signed_in: Signed In
