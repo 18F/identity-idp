@@ -1138,7 +1138,7 @@ idv.failure.verify.fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_n
 idv.failure.verify.fail_text: pour accéder aux services.
 idv.failure.verify.heading: Nous n’avons pas pu confirmer votre identité
 idv.failure.warning.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
-idv.failure.warning.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
+idv.failure.warning.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
 idv.forgot_password.link_text: Mot de passe oublié?
 idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
 idv.forgot_password.reset_password: Réinitialiser le mot de passe
