@@ -751,7 +751,7 @@ duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: <
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 登录后，从“你的帐户”页面删除该帐户。 %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: '删除重复帐户'
-duplicate_profiles_detected.delete_duplicates.link: 如何删除你的帐户。
+duplicate_profiles_detected.delete_duplicates.link_html: 如何删除你的帐户。
 duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个帐户
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: 获取帮助

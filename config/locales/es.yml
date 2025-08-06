@@ -751,7 +751,7 @@ duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: <
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Inicie sesión y, en la página de “Su cuenta”, elimine la cuenta. %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: 'Elimine las cuentas duplicadas.'
-duplicate_profiles_detected.delete_duplicates.link: Cómo eliminar su cuenta.
+duplicate_profiles_detected.delete_duplicates.link_html: Cómo eliminar su cuenta.
 duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtener ayuda
