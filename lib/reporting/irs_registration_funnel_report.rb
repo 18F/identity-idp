@@ -17,11 +17,9 @@ module Reporting
     attr_reader :issuers, :time_range
 
     module Events
-      OIDC_AUTH_REQUEST = 'OpenID Connect: authorization request'
       EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
       TWO_FA_SETUP_VISITED = 'User Registration: 2FA Setup visited'
       USER_FULLY_REGISTERED = 'User Registration: User Fully Registered'
-      SP_REDIRECT = 'SP redirect initiated'
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -111,17 +109,9 @@ module Reporting
           format_as_percent(numerator: users_failed_registration, denominator: email_confirmation),
         ],
         [
-          'Registration Successes',
+          'Registration Successes Rate',
           user_fully_registered,
           format_as_percent(numerator: user_fully_registered, denominator: email_confirmation),
-        ],
-        [
-          'Registration Success Rate',
-          sp_redirect_initiated_new_users,
-          format_as_percent(
-            numerator: sp_redirect_initiated_new_users,
-            denominator: email_confirmation,
-          ),
         ],
       ]
     end
@@ -196,24 +186,6 @@ module Reporting
     def user_fully_registered
       @user_fully_registered ||=
         (data[Events::USER_FULLY_REGISTERED] & data[Events::EMAIL_CONFIRMATION]).count
-    end
-
-    def sp_redirect_initiated_new_users
-      @sp_redirect_initiated_new_users ||=
-        (data[Events::SP_REDIRECT] & data[Events::EMAIL_CONFIRMATION]).count
-    end
-
-    def sp_redirect_initiated_all
-      data[Events::SP_REDIRECT].count
-    end
-
-    def oidc_auth_request
-      data[Events::OIDC_AUTH_REQUEST].count
-    end
-
-    def sp_redirect_initiated_after_oidc
-      @sp_redirect_initiated_after_oidc ||=
-        (data[Events::SP_REDIRECT] & data[Events::OIDC_AUTH_REQUEST]).count
     end
   end
 end
