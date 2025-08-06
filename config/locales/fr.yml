@@ -734,26 +734,26 @@ doc_auth.tips.document_capture_selfie_text1: Enlevez tout ce qui cache votre vis
 doc_auth.tips.document_capture_selfie_text2: Prenez votre photo dans un endroit bien éclairé
 doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
-duplicate_profiles_detected.accounts_list.heading: Accounts with the same verified information
-duplicate_profiles_detected.cant_access: 'I can’t access an account'
+duplicate_profiles_detected.accounts_list.heading: Comptes ayant les mêmes informations vérifiées
+duplicate_profiles_detected.cant_access: 'Je ne peux pas accéder à un compte'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
-duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate accounts'
-duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
-duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
+duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au compte puis supprimez-le depuis la page « Votre compte ». %{link_html}
+duplicate_profiles_detected.delete_duplicates.heading: 'Supprimer le(s) compte(s) en double'
+duplicate_profiles_detected.delete_duplicates.link: 'Comment supprimer votre compte :'
+duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un des comptes ci-dessus
 duplicate_profiles_detected.duplicate: Duplicate
-duplicate_profiles_detected.get_help: Get Help
-duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro: The %{app_name} requires that you only have one identity verified %{app_name} account. Learn more about duplicate accounts
-duplicate_profiles_detected.intro2: 'You need to delete the duplicate accounts before signing into %{app_name}. Here’s what to do:'
+duplicate_profiles_detected.get_help: Obtenir de l’aide
+duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
+duplicate_profiles_detected.intro: Pour accéder à %{app_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. En savoir plus sur les comptes en double.
+duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in
-duplicate_profiles_detected.select_an_account.details: Keep the account that you’ve connected to the most agencies. That way you don’t have to reconnect to all the agencies you use.
-duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
-duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
-duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
-duplicate_profiles_detected.sign_out: Sign out
+duplicate_profiles_detected.select_an_account.details: Conservez le compte que vous utilisez le plus. Par exemple, celui qui est connecté au plus grand nombre de services. Ainsi, vous n’aurez pas à recommencer les démarches pour vous reconnecter à des services.
+duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
+duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte Login.gov que vous avez conservé.
+duplicate_profiles_detected.sign_back_in.heading: Reconnectez-vous à %{app_name} avec un seul compte
+duplicate_profiles_detected.sign_out: Se déconnecter
 duplicate_profiles_detected.signed_in: Signed In
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
