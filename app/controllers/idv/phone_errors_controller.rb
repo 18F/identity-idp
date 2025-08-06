@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
     include Idv::VerifyByMailConcern
+    include PhoneFormatter
 
     before_action :confirm_step_allowed, except: [:failure]
     before_action :set_gpo_letter_available
@@ -14,15 +15,13 @@ module Idv
 
     def warning
       @remaining_submit_attempts = rate_limiter.remaining_count
-      @after_phone_test = nil
-      if I18n.locale == :zh
-        @after_phone_test = I18n.t('idv.failure.phone.warning.you_entered_after_phone')
-      end
+
       if idv_session.previous_phone_step_params
         @phone = idv_session.previous_phone_step_params[:phone]
         @country_code = idv_session.previous_phone_step_params[:international_code]
       end
 
+      @formatted_phone = PhoneFormatter.format(@phone, country_code: @country_code)
       track_event(type: :warning)
     end
 
