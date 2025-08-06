@@ -1136,6 +1136,7 @@ idv.failure.phone.warning.learn_more_link: Obtenga más información sobre el n�
 idv.failure.phone.warning.next_steps_html: Intente con <strong>otro</strong> número que use a menudo y haya usado por mucho tiempo. Puede ser el número del trabajo o de casa.
 idv.failure.phone.warning.try_again_button: Intentar con otro número
 idv.failure.phone.warning.you_entered: 'No pudimos encontrar su registro con este número:'
+idv.failure.phone.warning.you_entered_after_phone: Unused
 idv.failure.sessions.exception: Hubo un error interno al procesar su solicitud.
 idv.failure.sessions.fail_html: Por su seguridad, limitamos el número de veces que puede intentar verificar la información personal en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
 idv.failure.sessions.heading: No encontramos registros que coincidan con sus datos personales
