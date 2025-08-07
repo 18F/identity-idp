@@ -756,7 +756,8 @@ duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cu
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro: '%{app_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. Obtenga más información acerca de las cuentas duplicadas.'
+duplicate_profiles_detected.intro_html: '%{app_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
+duplicate_profiles_detected.intro.link: Obtenga más información acerca de las cuentas duplicadas.
 duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in
