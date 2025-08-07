@@ -568,7 +568,7 @@ doc_auth.errors.general.network_error_passport_ending: （如果有的话）。
 doc_auth.errors.general.network_error_passport_link_text: 使用其他类型的身份证件
 doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
-doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
+doc_auth.errors.general.selfie_failure: 确保你整个面部都不受任何遮掩，而且在相机拍你照片时保持不动。避免强光或任何可能遮掩你面部的东西（比如帽子）。
 doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
