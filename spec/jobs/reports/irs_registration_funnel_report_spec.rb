@@ -53,7 +53,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:irs_authentication_emails)
+    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
       .and_return(mock_test_auth_emails)
 
     allow(report.irs_registration_funnel_report).to receive(:funnel_metrics_table)
@@ -73,7 +73,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:irs_authentication_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
