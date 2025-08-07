@@ -1,4 +1,4 @@
-import { useContext, useCallback } from 'react';
+import { useContext } from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
@@ -250,15 +250,14 @@ describe('FormSteps', () => {
           <>
             <button
               type="button"
-              onClick={useCallback(
+              onClick={() =>
                 sinon
                   .stub()
                   .onFirstCall()
                   .callsFake(() => onChange({ a: 1 }))
                   .onSecondCall()
-                  .callsFake(() => onChange({ b: 2 }, { patch: false })),
-                [],
-              )}
+                  .callsFake(() => onChange({ b: 2 }, { patch: false }))()
+              }
             >
               Change Value
             </button>

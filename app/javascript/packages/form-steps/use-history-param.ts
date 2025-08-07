@@ -31,19 +31,22 @@ function useHistoryParam(
   initialValue?: string,
   validValues?: string[],
 ): [string | undefined, (nextParamValue: ParamValue) => void] {
-  function getCurrentValue(currentValue?: string): ParamValue {
-    const path = window.location.hash.slice(1);
+  const getCurrentValue = useCallback(
+    (currentValue?: string): ParamValue => {
+      const path = window.location.hash.slice(1);
 
-    if (path) {
-      const value = getStepParam(path);
-      return !validValues || validValues.includes(value) ? value : currentValue;
-    }
+      if (path) {
+        const value = getStepParam(path);
+        return !validValues || validValues.includes(value) ? value : currentValue;
+      }
 
-    return initialValue;
-  }
+      return initialValue;
+    },
+    [validValues, initialValue],
+  );
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
-  const syncValue = useCallback(() => setValue(getCurrentValue), [setValue]);
+  const syncValue = useCallback(() => setValue(getCurrentValue), [setValue, getCurrentValue]);
 
   function setParamValue(nextValue: ParamValue) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
@@ -67,14 +70,14 @@ function useHistoryParam(
     return () => {
       window.removeEventListener('popstate', syncValue);
     };
-  }, []);
+  }, [initialValue, syncValue, getCurrentValue]);
 
   useEffect(() => {
     subscribers.push(syncValue);
     return () => {
       subscribers.splice(subscribers.indexOf(syncValue), 1);
     };
-  }, []);
+  }, [syncValue]);
 
   return [value, setParamValue];
 }
