@@ -745,7 +745,7 @@ duplicate_profiles_detected.dont_recognize_account: I don’t recognize an accou
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro_html: The %{app_name} requires that you only have one identity verified %{app_name} account. %{link_html}
+duplicate_profiles_detected.intro_html: '%{app_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
 duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
 duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
