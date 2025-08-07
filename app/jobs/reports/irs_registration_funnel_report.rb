@@ -71,11 +71,11 @@ module Reports
     end
 
     def issuers
-      [*IdentityConfig.store.irs_verification_funnel_issuers]
+      [*IdentityConfig.store.irs_registration_funnel_issuers]
     end
 
     def emails
-      [*IdentityConfig.store.irs_verification_funnel_emails]
+      [*IdentityConfig.store.irs_registration_funnel_emails]
     end
 
     def upload_to_s3(report_body, report_name: nil)
