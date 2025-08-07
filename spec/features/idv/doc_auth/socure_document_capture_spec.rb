@@ -13,7 +13,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:socure_docv_webhook_secret_key) { 'socure_docv_webhook_secret_key' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
-  let(:socure_docv_verification_data_test_mode) { false }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
@@ -36,8 +35,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request(user:)
-    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
-      .and_return(socure_docv_verification_data_test_mode)
     allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
   end
 
@@ -365,64 +362,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
         visit idv_socure_document_capture_update_path
         expect(DocAuthLog.find_by(user_id: user.id).state).not_to be_nil
-      end
-
-      context 'when socure_docv_verification_data_test_mode is enabled' do
-        let(:test_token) { 'valid-test-token' }
-        let(:socure_docv_verification_data_test_mode) { true }
-        before do
-          allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens)
-            .and_return([test_token])
-          DocAuth::Mock::DocAuthMockClient.reset!
-        end
-
-        context 'when a valid test token is used' do
-          it 'fetches verificationdata using override docvToken in request',
-             allow_browser_log: true do
-            remove_request_stub(@pass_stub)
-            stub_docv_verification_data_pass(docv_transaction_token: test_token, user:)
-
-            visit idv_socure_document_capture_update_path(docv_token: test_token)
-            expect(page).to have_current_path(idv_ssn_url)
-
-            expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-            )
-
-            fill_out_ssn_form_ok
-            click_idv_continue
-            complete_verify_step
-            expect(page).to have_current_path(idv_phone_url)
-          end
-        end
-
-        context 'when an invalid test token is used' do
-          let(:invalid_token) { 'invalid-token' }
-          it 'waits to fetch verificationdata using docv capture session token' do
-            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
-
-            expect(page).to have_current_path(
-              idv_socure_document_capture_update_path(docv_token: invalid_token),
-            )
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-            visit idv_socure_document_capture_update_path(docv_token: invalid_token)
-
-            expect(page).to have_current_path(idv_ssn_url)
-
-            expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-            )
-
-            fill_out_ssn_form_ok
-            click_idv_continue
-            complete_verify_step
-            expect(page).to have_current_path(idv_phone_url)
-          end
-        end
       end
 
       context 'not accepted id type' do
