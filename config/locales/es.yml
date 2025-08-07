@@ -568,7 +568,7 @@ doc_auth.errors.general.network_error_passport_ending: si la tiene.
 doc_auth.errors.general.network_error_passport_link_text: use otro tipo de identificación.
 doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
-doc_auth.errors.general.selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
+doc_auth.errors.general.selfie_failure: Revise que se vea su cara completa y no se mueva mientras la cámara toma la fotografía. Evite las luces brillantes o cualquier prenda que pueda cubrirle la cara, como un sombrero.
 doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
 doc_auth.errors.glare.failed_short: La imagen tiene reflejos; inténtelo de nuevo.
 doc_auth.errors.glare.top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar una nueva foto.
