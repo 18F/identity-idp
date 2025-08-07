@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { createFocusTrap } from 'focus-trap';
 import type { FocusTrap, Options } from 'focus-trap';
 
@@ -9,11 +9,11 @@ import type { FocusTrap, Options } from 'focus-trap';
  * changes to the options argument, thus new option values are not reflected and conversely
  * memoization is not necessary. Returns ref with trap instance assigned as current after mount.
  */
-function useFocusTrap(containerRef: MutableRefObject<HTMLElement | null>, options?: Options) {
+function useFocusTrap(containerRef: RefObject<HTMLElement | null>, options?: Options) {
   const [trap, setTrap] = useState(null as FocusTrap | null);
 
   useEffect(() => {
-    let focusTrap;
+    let focusTrap: FocusTrap | null = null;
     if (containerRef.current) {
       focusTrap = createFocusTrap(containerRef.current, options);
       focusTrap.activate();
@@ -23,7 +23,7 @@ function useFocusTrap(containerRef: MutableRefObject<HTMLElement | null>, option
     return () => {
       focusTrap?.deactivate();
     };
-  }, []);
+  }, [containerRef, options]);
 
   return trap;
 }

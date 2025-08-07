@@ -6,7 +6,10 @@
     "plugin:react-hooks/recommended",
     "plugin:react/jsx-runtime"
   ],
-  "plugins": ["@18f/eslint-plugin-identity", "testing-library"],
+  "plugins": [
+    "@18f/eslint-plugin-identity",
+    "testing-library"
+  ],
   "env": {
     "browser": true,
     "commonjs": true
@@ -17,7 +20,14 @@
   "rules": {
     // `no-unresolved` doesn't support package.json exports
     // See: https://github.com/import-js/eslint-plugin-import/issues/1810
-    "import/no-unresolved": ["error", { "ignore": ["intl-tel-input"] }],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "intl-tel-input"
+        ]
+      }
+    ],
     "no-restricted-syntax": [
       "error",
       {
@@ -33,7 +43,12 @@
   },
   "overrides": [
     {
-      "files": ["*.spec.*", "*-spec.*", "*_spec.*", "spec/**"],
+      "files": [
+        "*.spec.*",
+        "*-spec.*",
+        "*_spec.*",
+        "spec/**"
+      ],
       "globals": {
         "expect": true
       },
@@ -76,10 +91,7 @@
         "app/javascript/packages/react-hooks/use-did-update-effect.ts",
         "app/javascript/packages/react-hooks/use-immutable-callback.ts",
         "app/javascript/packages/react-hooks/use-object-memo.ts"
-      ],
-      "rules": {
-        "react-hooks/exhaustive-deps": "off"
-      }
+      ]
     },
     {
       "files": [
@@ -106,13 +118,12 @@
       "files": [
         "app/javascript/packages/components/status-page.spec.tsx",
         "app/javascript/packages/document-capture/components/warning.tsx"
-      ],
-      "rules": {
-        "react/jsx-key": "off"
-      }
+      ]
     },
     {
-      "files": ["app/javascript/packages/document-capture/higher-order/with-props.jsx"],
+      "files": [
+        "app/javascript/packages/document-capture/higher-order/with-props.jsx"
+      ],
       "rules": {
         "react/display-name": "off"
       }
@@ -121,10 +132,7 @@
       "files": [
         "app/javascript/packages/form-steps/form-steps.spec.tsx",
         "spec/javascript/spec_helper.js"
-      ],
-      "rules": {
-        "react-hooks/rules-of-hooks": "off"
-      }
+      ]
     }
   ]
 }
