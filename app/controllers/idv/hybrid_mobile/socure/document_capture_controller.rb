@@ -129,7 +129,7 @@ module Idv
               docv_transaction_token: document_capture_session.socure_docv_transaction_token,
             )
 
-            fetch_test_verification_data
+            fetch_synchronous_docv_result
 
             document_capture_session.reload
             return false if document_capture_session.load_result.present?

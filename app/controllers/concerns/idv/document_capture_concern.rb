@@ -98,7 +98,7 @@ module Idv
       end
     end
 
-    def fetch_test_verification_data
+    def fetch_synchronous_docv_result
       SocureDocvResultsJob.perform_now(
         document_capture_session_uuid:,
         async: false,
