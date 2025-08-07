@@ -25,7 +25,8 @@
         "message": "Avoid hard-coded string URLs, since they will not include the current locale"
       }
     ],
-    "react-hooks/exhaustive-deps": "error"
+    "react-hooks/exhaustive-deps": "error",
+    "react-hooks/rules-of-hooks": "error"
   },
   "settings": {
     "import/internal-regex": "^@18f/identity-"
@@ -56,7 +57,6 @@
     },
     {
       "files": [
-        "app/javascript/packages/address-search/components/full-address-search-input.tsx",
         "app/javascript/packages/components/hooks/use-focus-trap.ts",
         "app/javascript/packages/components/hooks/use-toggle-body-class-by-presence.ts",
         "app/javascript/packages/document-capture/components/acuant-camera.tsx",
@@ -67,17 +67,12 @@
         "app/javascript/packages/document-capture/components/document-capture-warning.tsx",
         "app/javascript/packages/document-capture/components/document-capture.tsx",
         "app/javascript/packages/document-capture/components/file-image.jsx",
-        "app/javascript/packages/document-capture/components/file-input.tsx",
         "app/javascript/packages/document-capture/components/in-person-location-full-address-entry-post-office-search-step.tsx",
         "app/javascript/packages/document-capture/components/in-person-location-post-office-search-step.tsx",
         "app/javascript/packages/document-capture/components/in-person-switch-back-step.tsx",
-        "app/javascript/packages/document-capture/components/review-issues-step.tsx",
         "app/javascript/packages/document-capture/components/submission-interstitial.jsx",
         "app/javascript/packages/document-capture/context/acuant.tsx",
         "app/javascript/packages/document-capture/hooks/use-cookie.js",
-        "app/javascript/packages/form-steps/form-steps.spec.tsx",
-        "app/javascript/packages/form-steps/form-steps.tsx",
-        "app/javascript/packages/form-steps/use-history-param.ts",
         "app/javascript/packages/react-hooks/use-did-update-effect.ts",
         "app/javascript/packages/react-hooks/use-immutable-callback.ts",
         "app/javascript/packages/react-hooks/use-object-memo.ts"
