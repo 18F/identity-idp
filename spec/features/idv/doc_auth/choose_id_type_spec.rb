@@ -6,12 +6,14 @@ RSpec.feature 'choose id type step error checking' do
   include IdvStepHelper
 
   context 'happy path' do
+    let(:fake_analytics) { FakeAnalytics.new }
     let(:ipp_service_provider) do
       create(:service_provider, :active, :in_person_proofing_enabled)
     end
     let(:doc_auth_passports_enabled) { true }
     let(:doc_auth_passports_percent) { 100 }
     before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
         .and_return(doc_auth_passports_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
@@ -41,6 +43,13 @@ RSpec.feature 'choose id type step error checking' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
+        expect(fake_analytics).to have_logged_event(
+          :passport_api_health_check,
+          step: 'choose_id_type',
+          success: true,
+          body: '{"status":"UP"}',
+          errors: {},
+        )
         choose(t('doc_auth.forms.id_type_preference.passport'))
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
@@ -69,6 +78,13 @@ RSpec.feature 'choose id type step error checking' do
           expect(page).to have_current_path(idv_how_to_verify_url)
           click_button t('forms.buttons.continue_online')
           expect(page).to have_current_path(idv_choose_id_type_url)
+          expect(fake_analytics).to have_logged_event(
+            :passport_api_health_check,
+            step: 'choose_id_type',
+            success: true,
+            body: '{"status":"UP"}',
+            errors: {},
+          )
           choose(t('doc_auth.forms.id_type_preference.drivers_license'))
           click_on t('forms.buttons.continue')
           expect(page).to have_current_path(idv_document_capture_url)

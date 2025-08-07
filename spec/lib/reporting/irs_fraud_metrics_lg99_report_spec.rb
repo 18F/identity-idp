@@ -15,6 +15,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
       ['Credentials Reinstated', 'Count',
        'The count of unique suspended accounts ' + '
          that are reinstated within the reporting month.'],
+      ['Credential Tenure', 'Count', 'The average age, in months, of all accounts'],
     ]
   end
   let(:expected_overview_table) do
@@ -33,6 +34,13 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
       ['Credentials Reinstated', '1', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
+  let(:expected_credential_tenure_metric) do
+    [
+      ['Metric', 'Values'],
+      ['Total Users', '10'],
+      ['Credential Tenure', '15'],
+    ]
+  end
 
   subject(:report) { Reporting::IrsFraudMetricsLg99Report.new(issuers: [issuer], time_range:) }
 
@@ -40,16 +48,16 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
     travel_to Time.zone.now.beginning_of_day
     stub_cloudwatch_logs(
       [
-        { 'user_id' => 'user1', 'name' => 'IdV: Final Resolution' },
-        { 'user_id' => 'user1', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
+        { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
 
-        { 'user_id' => 'user2', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user2', 'name' => 'IdV: final resolution' },
 
-        { 'user_id' => 'user3', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user3', 'name' => 'IdV: final resolution' },
 
-        { 'user_id' => 'user4', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user4', 'name' => 'IdV: final resolution' },
 
-        { 'user_id' => 'user5', 'name' => 'IdV: Final Resolution' },
+        { 'user_id' => 'user5', 'name' => 'IdV: final resolution' },
 
         { 'user_id' => 'user6', 'name' => 'User Suspension: Suspended' },
         { 'user_id' => 'user6', 'name' => 'User Suspension: Reinstated' },
@@ -154,6 +162,12 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
   end
 
   describe '#as_emailable_reports' do
+    before do
+      allow_any_instance_of(Reporting::IrsCredentialTenureReport)
+        .to receive(:irs_credential_tenure_report)
+        .and_return(expected_credential_tenure_metric)
+    end
+
     let(:expected_reports) do
       [
         Reporting::EmailableReport.new(
@@ -170,6 +184,11 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
           title: 'Monthly Fraud Metrics Jan-2022',
           filename: 'lg99_metrics',
           table: expected_lg99_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'IRS Credential Tenure Metric Jan-2022',
+          table: expected_credential_tenure_metric,
+          filename: 'Credential_Tenure_Metric',
         ),
       ]
     end

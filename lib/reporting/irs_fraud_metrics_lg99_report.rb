@@ -17,7 +17,7 @@ module Reporting
     attr_reader :issuers, :time_range
 
     module Events
-      IDV_FINAL_RESOLUTION = 'IdV: Final Resolution'
+      IDV_FINAL_RESOLUTION = 'IdV: final resolution'
       SUSPENDED_USERS = 'User Suspension: Suspended'
       REINSTATED_USERS = 'User Suspension: Reinstated'
 
@@ -69,6 +69,11 @@ module Reporting
           table: lg99_metrics_table,
           filename: 'lg99_metrics',
         ),
+        Reporting::EmailableReport.new(
+          title: "IRS Credential Tenure Metric #{stats_month}",
+          table: credential_tenure_report_metric,
+          filename: 'Credential_Tenure_Metric',
+        ),
       ]
     end
 
@@ -83,6 +88,7 @@ module Reporting
         ['Credentials Reinstated', 'Count',
          'The count of unique suspended accounts ' + '
          that are reinstated within the reporting month.'],
+        ['Credential Tenure', 'Count', 'The average age, in months, of all accounts'],
       ]
     end
 
@@ -118,6 +124,13 @@ module Reporting
         ['Error', 'Message'],
         [err.class.name, err.message],
       ]
+    end
+
+    def credential_tenure_report_metric
+      Reporting::IrsCredentialTenureReport.new(
+        time_range.end,
+        issuers: issuers,
+      ).irs_credential_tenure_report
     end
 
     def stats_month
@@ -156,9 +169,9 @@ module Reporting
             name
           , properties.user_id as user_id
         | filter properties.service_provider IN %{issuers}
-        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
-                 or (name != %{idv_final_resolution})
         | filter name in %{event_names}
+        | filter (name = %{idv_final_resolution} and properties.event_properties.fraud_review_pending = 1)
+                 or (name != %{idv_final_resolution})        
         | limit 10000
       QUERY
     end

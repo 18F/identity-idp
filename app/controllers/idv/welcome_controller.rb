@@ -102,7 +102,7 @@ module Idv
       end
 
       idv_session.passport_allowed ||= begin
-        if dos_passport_api_healthy?(analytics:)
+        if dos_passport_api_healthy?(analytics:, step: 'welcome')
           (ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed)
         end
       end

@@ -73,40 +73,32 @@ module Reporting
 
     def average_credential_tenure_months
       end_of_month = report_date.end_of_month
-
-      # Efficiently load only created_at timestamps for IRS users
-      created_ats = User
-        .joins(:identities)
-        .where('users.created_at <= ?', end_of_month)
-        .where(identities: { service_provider: issuers, deleted_at: nil })
-        .distinct
-        .pluck(:created_at)
-
-      return 0 if created_ats.empty?
-
-      total_months = created_ats.sum do |created_at|
-        precise_months_between(created_at.to_date, end_of_month)
+      Reports::BaseReport.transaction_with_timeout do
+        average_months = User
+          .where(
+            '(users.confirmed_at <= :end_of_month AND users.suspended_at IS NULL)
+          OR (users.suspended_at IS NOT NULL AND users.reinstated_at IS NOT NULL)',
+            end_of_month: end_of_month,
+          ).where(
+            'EXISTS (
+            SELECT 1 FROM identities
+            WHERE identities.user_id = users.id
+            AND identities.service_provider IN (:issuers)
+            AND identities.deleted_at IS NULL
+          )',
+            issuers: issuers,
+          ).pick(
+            Arel.sql(
+              'AVG(
+            EXTRACT(YEAR FROM age(?, users.confirmed_at)) * 12 +
+            EXTRACT(MONTH FROM age(?, users.confirmed_at)) +
+            EXTRACT(DAY FROM age(?, users.confirmed_at)) / 30.0
+          )',
+              end_of_month, end_of_month, end_of_month
+            ),
+          ).to_f.round(2)
+        return average_months
       end
-
-      (total_months.to_f / created_ats.size).round(2)
-    end
-
-      private
-
-    def precise_months_between(start_date, end_date)
-      return 0 if end_date < start_date
-
-      # Full months difference
-      months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
-
-      # Adjust for partial month
-      partial_start_day = [start_date.day, Date.new(end_date.year, end_date.month, -1).day].min
-      partial_start_date = Date.new(end_date.year, end_date.month, partial_start_day)
-
-      day_diff = (end_date - partial_start_date).to_f
-      days_in_month = Date.new(end_date.year, end_date.month, -1).day.to_f
-
-      months + (day_diff / days_in_month)
     end
     end
 end

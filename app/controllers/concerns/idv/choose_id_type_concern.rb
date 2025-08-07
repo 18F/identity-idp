@@ -29,17 +29,18 @@ module Idv
 
     def dos_passport_api_healthy?(
       analytics:,
+      step:,
       endpoint: IdentityConfig.store.dos_passport_composite_healthcheck_endpoint
     )
       return true if endpoint.blank?
 
       request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
-      response = request.fetch(analytics)
+      response = request.fetch(analytics, context_analytics: { step: })
       response.success?
     end
 
     def locals_attrs(analytics:, presenter:, form_submit_url: nil)
-      dos_passport_api_down = !dos_passport_api_healthy?(analytics:)
+      dos_passport_api_down = !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
       {
         presenter:,
         form_submit_url:,

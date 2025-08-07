@@ -6717,14 +6717,23 @@ module AnalyticsEvents
   # @param [Boolean] success Whether the passport api health check succeeded.
   # @param [Hash] body The health check body, if present.
   # @param [Hash] errors Any additional error information we have
+  # @param [String] step The step in the IdV flow that called the API health check
   # @param [String] exception The Faraday or other exception, if one happened
-  def passport_api_health_check(success:, body: nil, errors: nil, exception: nil, **extra)
+  def passport_api_health_check(
+    success:,
+    body: nil,
+    errors: nil,
+    exception: nil,
+    step: nil,
+    **extra
+  )
     track_event(
       :passport_api_health_check,
       success:,
       body:,
       errors:,
       exception:,
+      step:,
       **extra,
     )
   end
