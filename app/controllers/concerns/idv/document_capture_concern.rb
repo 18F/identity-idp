@@ -101,7 +101,6 @@ module Idv
     def fetch_test_verification_data
       SocureDocvResultsJob.perform_now(
         document_capture_session_uuid:,
-        docv_transaction_token_override:,
         async: false,
       )
     end

@@ -459,13 +459,55 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
 
       context 'when the wait times out' do
+        let(:socure_docv_transaction_token) { nil }
+        let(:socure_response_body) { nil }
         before do
+          ActiveJob::Base.queue_adapter = :test
           allow(subject).to receive(:wait_timed_out?).and_return(true)
+          stub_request(
+            :post,
+            "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
+          )
+            .with(body: {
+              modules: ['documentverification'],
+              docvTransactionToken: socure_docv_transaction_token,
+              customerUserId: user.uuid,
+              email: user.email,
+            }
+              .to_json)
+            .to_return(
+              headers: {
+                'Content-Type' => 'application/json',
+              },
+              body: socure_response_body,
+            )
+          allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_call_original
         end
 
-        it 'redirects to the hybrid mobile socure errors timeout page' do
+        it 'logs a socure webhook missing analytics event' do
           get(:update)
-          expect(response).to redirect_to(timeout_socure_route)
+          expect(@analytics).to have_logged_event(
+            :idv_socure_verification_webhook_missing,
+          )
+        end
+
+        context 'the synchronous socure call fetches docv results' do
+          let(:socure_response_body) { SocureDocvFixtures.pass_json }
+          it 'has a successful result' do
+            expect { get(:update) }.not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
+
+            expect(subject.document_capture_session.reload.load_result).not_to be_nil
+          end
+        end
+
+        context 'the synchronous socure call does not return anything' do
+          before do
+            allow(subject.document_capture_session).to receive(:load_result).and_return(nil)
+          end
+          it 'redirects to a Try again page' do
+            get(:update)
+            expect(response).to redirect_to(timeout_socure_route)
+          end
         end
       end
     end
@@ -473,49 +515,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     context 'when socure_docv_verification_data_test_mode is enabled' do
       let(:test_token) { '12345' }
       let(:socure_docv_verification_data_test_mode) { true }
-
-      before do
-        ActiveJob::Base.queue_adapter = :test
-        allow(IdentityConfig.store)
-          .to receive(:socure_docv_verification_data_test_mode_tokens)
-          .and_return([test_token])
-
-        stub_request(
-          :post,
-          "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
-        )
-          .with(body: {
-            modules: ['documentverification'],
-            docvTransactionToken: test_token,
-            customerUserId: user.uuid,
-            email: user.email,
-          }
-            .to_json)
-          .to_return(
-            headers: {
-              'Content-Type' => 'application/json',
-            },
-            body: SocureDocvFixtures.pass_json,
-          )
-      end
-
-      context 'when a token is provided from the allow list' do
-        it 'performs SocureDocvResultsJob' do
-          expect { get(:update, params: { docv_token: test_token }) }
-            .not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
-
-          expect(document_capture_session.reload.load_result).not_to be_nil
-        end
-      end
-
-      context 'when a token is provided not on the allow list' do
-        it 'performs SocureDocvResultsJob' do
-          expect { get(:update, params: { docv_token: 'rando-token' }) }
-            .not_to have_enqueued_job(SocureDocvResultsJob)
-
-          expect(document_capture_session.reload.load_result).to be_nil
-        end
-      end
     end
   end
 end
