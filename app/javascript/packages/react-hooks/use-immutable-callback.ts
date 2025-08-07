@@ -14,8 +14,10 @@ function useImmutableCallback<F extends (...args: any[]) => any>(fn: F, dependen
 
   useEffect(() => {
     ref.current = fn;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fn, ...dependencies]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(((...args) => ref.current(...args)) as F, [ref]);
 }
 

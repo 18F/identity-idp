@@ -19,8 +19,8 @@ function useIfStillMounted() {
     };
   });
 
-  const ifStillMounted = <T extends (...args) => any>(fn: T) =>
-    ((...args) => {
+  const ifStillMounted = <T extends (...args: any[]) => any>(fn: T) =>
+    ((...args: Parameters<T>) => {
       if (isMounted.current) {
         fn(...args);
       }

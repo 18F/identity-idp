@@ -40,73 +40,79 @@ describe('FormSteps', () => {
     {
       name: 'first',
       title: 'First Title',
-      form: ({ errors }) => (
-        <>
-          <PageHeading>First Title</PageHeading>
-          <span>First</span>
-          <FormStepsButton.Continue />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-          <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
-        </>
-      ),
+      form: function FirstForm({ errors }) {
+        return (
+          <>
+            <PageHeading>First Title</PageHeading>
+            <span>First</span>
+            <FormStepsButton.Continue />
+            <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+            <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
+          </>
+        );
+      },
     },
     {
       name: 'second',
-      form: ({
+      form: function SecondForm({
         value = {},
         errors = [],
         onChange,
         onError,
         registerField,
         toPreviousStep,
-      }: FormStepComponentProps<StepValues>) => (
-        <>
-          <PageHeading>Second Title</PageHeading>
-          <input
-            aria-label="Second Input One"
-            ref={registerField('secondInputOne', { isRequired: true })}
-            value={value.secondInputOne || ''}
-            data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
-            onChange={(event) => {
-              if (event.target.validationMessage) {
-                onError(new Error(event.target.validationMessage), { field: 'secondInputOne' });
-              } else {
+      }: FormStepComponentProps<StepValues>) {
+        return (
+          <>
+            <PageHeading>Second Title</PageHeading>
+            <input
+              aria-label="Second Input One"
+              ref={registerField('secondInputOne', { isRequired: true })}
+              value={value.secondInputOne || ''}
+              data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
+              onChange={(event) => {
+                if (event.target.validationMessage) {
+                  onError(new Error(event.target.validationMessage), { field: 'secondInputOne' });
+                } else {
+                  onChange({ changed: true });
+                  onChange({ secondInputOne: event.target.value });
+                }
+              }}
+            />
+            <input
+              aria-label="Second Input Two"
+              ref={registerField('secondInputTwo', { isRequired: true })}
+              value={value.secondInputTwo || ''}
+              data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
+              onChange={(event) => {
                 onChange({ changed: true });
-                onChange({ secondInputOne: event.target.value });
-              }
-            }}
-          />
-          <input
-            aria-label="Second Input Two"
-            ref={registerField('secondInputTwo', { isRequired: true })}
-            value={value.secondInputTwo || ''}
-            data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
-            onChange={(event) => {
-              onChange({ changed: true });
-              onChange({ secondInputTwo: event.target.value });
-            }}
-          />
-          <button type="button" onClick={toPreviousStep}>
-            Back
-          </button>
-          <button type="button" onClick={() => onError(new Error())}>
-            Create Step Error
-          </button>
-          <FormStepsButton.Continue />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-        </>
-      ),
+                onChange({ secondInputTwo: event.target.value });
+              }}
+            />
+            <button type="button" onClick={toPreviousStep}>
+              Back
+            </button>
+            <button type="button" onClick={() => onError(new Error())}>
+              Create Step Error
+            </button>
+            <FormStepsButton.Continue />
+            <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+          </>
+        );
+      },
     },
     {
       name: 'last',
-      form: () => (
-        <>
-          <PageHeading>Last Title</PageHeading>
-          <span>Last</span>
-          <FormStepsButton.Submit />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-        </>
-      ),
+      form: function LastForm() {
+        return (
+          <>
+            <PageHeading>Last Title</PageHeading>
+            <span>Last</span>
+            <FormStepsButton.Submit />
+            <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+          </>
+        );
+      },
     },
   ];
 
@@ -640,14 +646,16 @@ describe('FormSteps', () => {
         steps={[
           {
             name: 'content-reset',
-            form: () => (
-              <>
-                <h1>Content Title</h1>
-                <button type="button" onClick={useContext(FormStepsContext).onPageTransition}>
-                  Replace
-                </button>
-              </>
-            ),
+            form: function ContentResetForm() {
+              return (
+                <>
+                  <h1>Content Title</h1>
+                  <button type="button" onClick={useContext(FormStepsContext).onPageTransition}>
+                    Replace
+                  </button>
+                </>
+              );
+            },
           },
         ]}
       />,

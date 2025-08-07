@@ -23,7 +23,8 @@ function useFocusTrap(containerRef: RefObject<HTMLElement | null>, options?: Opt
     return () => {
       focusTrap?.deactivate();
     };
-  }, [containerRef, options]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerRef]);
 
   return trap;
 }

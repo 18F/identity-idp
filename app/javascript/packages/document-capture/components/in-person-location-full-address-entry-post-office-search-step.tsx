@@ -102,7 +102,17 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         }
       }
     },
-    [locationResults, inProgress],
+    [
+      locationResults,
+      inProgress,
+      autoSubmit,
+      flowPath,
+      inPersonURL,
+      locationsURL,
+      onChange,
+      setSubmitEventMetadata,
+      trackEvent,
+    ],
   );
 
   return (
