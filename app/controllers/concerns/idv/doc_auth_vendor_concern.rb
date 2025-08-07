@@ -11,7 +11,11 @@ module Idv
         if socure_user_set.maxed_users?
           bucket = choose_non_socure_bucket
         elsif resolved_authn_context_result.facial_match?
-          bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR)
+          if idv_session.passport_allowed
+            bucket = choose_non_socure_bucket
+          else
+            bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR)
+          end
         elsif idv_session.passport_allowed
           bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_VENDOR)
         else
