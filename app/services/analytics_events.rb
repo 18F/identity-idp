@@ -5706,7 +5706,7 @@ module AnalyticsEvents
   def idv_socure_verification_webhook_missing(docv_transaction_token: nil, **extra)
     track_event(
       :idv_socure_verification_webhook_missing,
-      docv_transaction_token: nil,
+      docv_transaction_token:,
       **extra,
     )
   end
