@@ -10,6 +10,7 @@ class MarketingSite
     manage-your-account/add-or-change-your-authentication-method
     manage-your-account/delete-your-account
     manage-your-account/personal-key
+    manage-your-account/resolve-duplicate-accounts
     trouble-signing-in/face-or-touch-unlock
     trouble-signing-in/forgot-your-password
     trouble-signing-in/forgot-your-personal-key
