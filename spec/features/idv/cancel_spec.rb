@@ -112,12 +112,14 @@ RSpec.describe 'cancel IdV' do
       complete_hybrid_handoff_step
       expect(page).to have_content(t('doc_auth.headings.document_capture'))
       complete_document_capture_step
+      expect(page).to have_current_path(idv_ssn_path)
     end
 
     it 'includes proofing components in events', :js do
       expect(page).to have_content(t('doc_auth.info.ssn'))
       click_link t('links.cancel')
 
+      expect(page).to have_current_path(idv_cancel_path(step: 'ssn'))
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
@@ -133,6 +135,7 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
       click_on t('idv.cancel.actions.keep_going')
+      expect(page).to have_current_path(idv_ssn_path)
       expect(page).to have_content(t('doc_auth.info.ssn'))
 
       expect(fake_analytics).to have_logged_event(
@@ -142,7 +145,9 @@ RSpec.describe 'cancel IdV' do
       )
 
       click_link t('links.cancel')
+      expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
       click_on t('idv.cancel.actions.start_over')
+      expect(page).to have_current_path(idv_welcome_path)
       expect(page).to have_content(t('doc_auth.instructions.getting_started'))
 
       expect(fake_analytics).to have_logged_event(
@@ -152,6 +157,7 @@ RSpec.describe 'cancel IdV' do
       )
 
       complete_doc_auth_steps_before_ssn_step
+      expect(page).to have_current_path(idv_ssn_path)
       click_link t('links.cancel')
 
       click_spinner_button_and_wait t('idv.cancel.actions.account_page')

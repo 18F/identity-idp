@@ -27,7 +27,9 @@ RSpec.describe 'clearing IdV and restarting' do
       before do
         visit account_path
         first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path(new_user_session_path)
         start_idv_from_sp
+        expect(page).to have_current_path(new_user_session_path)
         sign_in_live_with_2fa(user)
         expect(page).to have_current_path idv_verify_by_mail_enter_code_path
       end
