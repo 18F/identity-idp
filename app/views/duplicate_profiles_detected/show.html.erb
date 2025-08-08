@@ -8,7 +8,10 @@
           'duplicate_profiles_detected.intro_html',
           link_html: new_tab_link_to(
             t('duplicate_profiles_detected.intro.link'),
-            MarketingSite.help_url,
+            MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'resolve-duplicate-accounts',
+            ),
           ),
           app_name: APP_NAME,
         ) %>
