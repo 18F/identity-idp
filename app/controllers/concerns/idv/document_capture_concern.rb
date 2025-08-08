@@ -176,7 +176,7 @@ module Idv
 
     def id_type_requested
       document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
-      'state_id'
+        Idp::Constants::DocumentTypes::STATE_ID
     end
 
     def track_document_issuing_state(user, state)

@@ -29,6 +29,7 @@ module Idp
       DRIVERS_LICENSE = 'drivers_license'
       STATE_ID_CARD = 'state_id_card'
       IDENTIFICATION_CARD = 'identification_card'
+      STATE_ID = 'state_id'
 
       SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
       SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD].freeze
