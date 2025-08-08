@@ -1,14 +1,6 @@
 import { Button, FullScreen } from '@18f/identity-components';
 import type { MouseEvent, ReactNode, Ref } from 'react';
-import {
-  forwardRef,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import type { FocusTrap } from 'focus-trap';
 import type { FullScreenRefHandle } from '@18f/identity-components';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
@@ -339,7 +331,9 @@ function AcuantCapture(
   const isSuppressingClickLogging = useRef(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
-  useMemo(() => setOwnErrorMessage(null), [value]);
+  useEffect(() => {
+    setOwnErrorMessage(null);
+  }, [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);

@@ -15,6 +15,7 @@ import { useMemo } from 'react';
  * @return Memoized object.
  */
 const useObjectMemo = <T extends object>(object: T): T =>
-  useMemo(() => object, Object.values(object));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useMemo(() => object, [...Object.values(object)]);
 
 export default useObjectMemo;

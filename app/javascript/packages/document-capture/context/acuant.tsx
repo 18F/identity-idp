@@ -295,7 +295,17 @@ function AcuantContextProvider({
       document.body.removeChild(passiveLivenessScript);
       document.body.removeChild(passiveLivenessOpenCVScript);
     };
-  }, []);
+  }, [
+    cameraSrc,
+    credentials,
+    endpoint,
+    isReady,
+    isSelfieCaptureEnabled,
+    passiveLivenessOpenCVSrc,
+    passiveLivenessSrc,
+    sdkSrc,
+    trackEvent,
+  ]);
 
   return <AcuantContext.Provider value={value}>{children}</AcuantContext.Provider>;
 }

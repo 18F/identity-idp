@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "peerDependencies": {
-    "react": "*"
+    "react": ">=19"
   },
   "peerDependenciesMeta": {
     "react": {

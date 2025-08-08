@@ -25,7 +25,7 @@ module.exports = (api) => {
           targets,
         },
       ],
-      ['polyfill-regenerator', { method: 'usage-global', targets }],
+      ['polyfill-regenerator', { method: 'usage-global' }],
     ],
     sourceType: 'unambiguous',
   };

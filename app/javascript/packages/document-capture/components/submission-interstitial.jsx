@@ -19,7 +19,7 @@ function SubmissionInterstitial({ autoFocus = false }) {
     if (autoFocus) {
       headingRef.current?.focus();
     }
-  }, []);
+  }, [autoFocus]);
 
   return (
     <div>

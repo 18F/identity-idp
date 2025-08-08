@@ -84,7 +84,10 @@ function ReviewIssuesStep({
   const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(
     FailedCaptureAttemptsContext,
   );
-  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
+  useEffect(
+    () => onFailedSubmissionAttempt(failedImageFingerprints),
+    [onFailedSubmissionAttempt, failedImageFingerprints],
+  );
 
   useLayoutEffect(() => {
     let frontMetaData: { fingerprint: string | null } = { fingerprint: null };
@@ -120,7 +123,14 @@ function ReviewIssuesStep({
     if (frontHasFailed || backHasFailed || passportHasFailed) {
       setSkipWarning(true);
     }
-  }, []);
+  }, [
+    failedSubmissionImageFingerprints?.front,
+    failedSubmissionImageFingerprints?.back,
+    failedSubmissionImageFingerprints?.passport,
+    value.front_image_metadata,
+    value.back_image_metadata,
+    value.passport_image_metadata,
+  ]);
 
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed', {
@@ -135,7 +145,7 @@ function ReviewIssuesStep({
   // is ready to submit form values
   useEffect(() => {
     changeStepCanComplete(!!hasDismissed && !skipWarning);
-  }, [hasDismissed]);
+  }, [hasDismissed, skipWarning, changeStepCanComplete]);
 
   if (!hasDismissed && pii) {
     return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;

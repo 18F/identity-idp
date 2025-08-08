@@ -11,27 +11,27 @@ const activeInstancesByType = new WeakMap<any, number>();
  * @param Component React component definition
  */
 function useToggleBodyClassByPresence(className: string, Component: ComponentType<any>) {
-  /**
-   * Increments the number of active instances for the current component by the given amount, adding
-   * or removing the body class for the first and last instance respectively.
-   */
-  function incrementActiveInstances(amount: number) {
-    const activeInstances = activeInstancesByType.get(Component) || 0;
-    const nextActiveInstances = activeInstances + amount;
+  useEffect(() => {
+    /**
+     * Increments the number of active instances for the current component by the given amount, adding
+     * or removing the body class for the first and last instance respectively.
+     */
+    function incrementActiveInstances(amount: number) {
+      const activeInstances = activeInstancesByType.get(Component) || 0;
+      const nextActiveInstances = activeInstances + amount;
 
-    if (!activeInstances && nextActiveInstances) {
-      document.body.classList.add(className);
-    } else if (activeInstances && !nextActiveInstances) {
-      document.body.classList.remove(className);
+      if (!activeInstances && nextActiveInstances) {
+        document.body.classList.add(className);
+      } else if (activeInstances && !nextActiveInstances) {
+        document.body.classList.remove(className);
+      }
+
+      activeInstancesByType.set(Component, nextActiveInstances);
     }
 
-    activeInstancesByType.set(Component, nextActiveInstances);
-  }
-
-  useEffect(() => {
     incrementActiveInstances(1);
     return () => incrementActiveInstances(-1);
-  }, []);
+  }, [className, Component]);
 }
 
 export default useToggleBodyClassByPresence;

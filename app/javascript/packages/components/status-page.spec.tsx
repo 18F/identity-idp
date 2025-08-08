@@ -37,7 +37,11 @@ describe('StatusPage', () => {
   context('with action buttons', () => {
     it('renders buttons below content', () => {
       const { getByRole, getByText } = render(
-        <StatusPage status="warning" header="" actionButtons={[<Button>Button</Button>]}>
+        <StatusPage
+          status="warning"
+          header=""
+          actionButtons={[<Button key="button">Button</Button>]}
+        >
           <div>Content</div>
         </StatusPage>,
       );
@@ -55,7 +59,7 @@ describe('StatusPage', () => {
         <StatusPage
           status="warning"
           header=""
-          actionButtons={[<Button>Button</Button>]}
+          actionButtons={[<Button key="button">Button</Button>]}
           troubleshootingOptions={
             <TroubleshootingOptions options={[{ url: '/', text: 'Option' }]} />
           }

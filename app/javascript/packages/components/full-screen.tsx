@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
-import type { ReactNode, ForwardedRef, MutableRefObject } from 'react';
+import type { ReactNode, ForwardedRef, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { FocusTrap } from 'focus-trap';
 import { useI18n } from '@18f/identity-react-i18n';
@@ -51,7 +51,7 @@ export interface FullScreenRefHandle {
   focusTrap: FocusTrap | null;
 }
 
-export function useInertSiblingElements(containerRef: MutableRefObject<HTMLElement | null>) {
+export function useInertSiblingElements(containerRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const container = containerRef.current;
 
@@ -95,7 +95,6 @@ function FullScreen(
     onDeactivate: onFocusTrapDeactivate,
   });
   useImperativeHandle(ref, () => ({ focusTrap }), [focusTrap]);
-  useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
   useInertSiblingElements(containerRef);
 
   return createPortal(
@@ -127,4 +126,11 @@ function FullScreen(
   );
 }
 
-export default forwardRef(FullScreen);
+const FullScreenComponent = forwardRef(FullScreen);
+
+function FullScreenWithBodyClass(props: FullScreenProps, ref: ForwardedRef<FullScreenRefHandle>) {
+  useToggleBodyClassByPresence('has-full-screen-overlay', FullScreenComponent);
+  return <FullScreenComponent {...props} ref={ref} />;
+}
+
+export default forwardRef(FullScreenWithBodyClass);

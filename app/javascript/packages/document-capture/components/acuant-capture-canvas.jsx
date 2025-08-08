@@ -13,10 +13,11 @@ function AcuantCaptureCanvas() {
 
   useEffect(() => {
     const onAcuantCameraCreated = () => setCanvas(document.getElementById('acuant-ui-canvas'));
-    cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
+    const currentCameraRef = cameraRef.current;
+    currentCameraRef?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
     return () =>
-      cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
-  }, [cameraRef.current]);
+      currentCameraRef?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
+  }, []);
 
   const onCallback = useCallback(
     (callback) => {

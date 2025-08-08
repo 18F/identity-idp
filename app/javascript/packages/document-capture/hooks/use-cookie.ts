@@ -1,23 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
-/** @typedef {import('react').Dispatch<A>} Dispatch @template A */
-/** @typedef {import('react').SetStateAction<S>} SetStateAction @template S */
+type Subscribers = Dispatch<SetStateAction<string | null>>[];
 
-/**
- * @typedef {Dispatch<SetStateAction<string|null>>[]} Subscribers
- */
+const CookieSubscriberContext = createContext<Map<string, Subscribers>>(new Map());
 
-const CookieSubscriberContext = createContext(/** @type {Map<string, Subscribers>} */ (new Map()));
-
-/**
- * React hook to access and manage a cookie value by name.
- *
- * @param {string} name Cookie name.
- *
- * @return {[value: string|null, setValue: (nextValue: string?) => void, refreshValue: () => void]}
- */
-function useCookie(name) {
-  const getValue = () =>
+function useCookie(name: string): [string | null, (nextValue: string | null) => void, () => void] {
+  const getValue = (): string | null =>
     document.cookie
       .split(';')
       .map((part) => part.trim().split('='))
@@ -31,7 +20,7 @@ function useCookie(name) {
       subscriptions.set(name, []);
     }
 
-    const subscribers = /** @type {Subscribers} */ (subscriptions.get(name));
+    const subscribers = subscriptions.get(name)!;
     subscribers.push(setStateValue);
 
     return () => {
@@ -40,21 +29,15 @@ function useCookie(name) {
         subscriptions.delete(name);
       }
     };
-  }, [name]);
+  }, [name, subscriptions]);
 
-  /**
-   * Refresh cookie value for all current subscribers.
-   */
   function refreshValue() {
     const nextValue = getValue();
-    const subscribers = /** @type {Subscribers} */ (subscriptions.get(name));
+    const subscribers = subscriptions.get(name)!;
     subscribers.forEach((setSubscriberValue) => setSubscriberValue(nextValue));
   }
 
-  /**
-   * @param {string?} nextValue Value to set, or null to delete the value.
-   */
-  function setValue(nextValue) {
+  function setValue(nextValue: string | null) {
     const cookieValue = nextValue === null ? '; Max-Age=0' : nextValue;
     document.cookie = `${name}=${cookieValue}`;
     refreshValue();

@@ -14,6 +14,7 @@ const useDidUpdateEffect: typeof useEffect = (callback, deps) => {
     } else {
       callback();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 };
 

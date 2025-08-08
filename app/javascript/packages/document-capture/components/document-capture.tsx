@@ -46,7 +46,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     if (stepName) {
       trackVisitEvent(stepName);
     }
-  }, [stepName]);
+  }, [stepName, trackVisitEvent]);
   const appName = getConfigValue('appName');
   const inPersonLocationPostOfficeSearchForm = InPersonLocationFullAddressEntryPostOfficeSearchStep;
 
