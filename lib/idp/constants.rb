@@ -23,6 +23,20 @@ module Idp
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
     end
 
+    module DocumentTypes
+      PASSPORT = 'passport'
+      PASSPORT_CARD = 'passport_card'
+      DRIVERS_LICENSE = 'drivers_license'
+      STATE_ID_CARD = 'state_id_card'
+      IDENTIFICATION_CARD = 'identification_card'
+
+      SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
+      SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD].freeze
+      SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
+      PASSPORT_TYPES = [PASSPORT, PASSPORT_CARD].freeze
+      STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD].freeze
+    end
+
     # US State and Territory codes are
     # taken from the FIPS standard, which
     # can be found at:

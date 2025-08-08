@@ -29,8 +29,8 @@ module DocAuth
       !side_type.present? ||
         (
           IdentityConfig.store.doc_auth_passports_enabled ?
-            DocAuth::Response::ID_TYPE_SLUGS.key?(side_type) :
-            DocAuth::Response::STATE_ID_TYPE_SLUGS.key?(side_type)
+            DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(side_type) :
+            DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(side_type)
         ) ||
         side_type == 'Unknown'
     end
