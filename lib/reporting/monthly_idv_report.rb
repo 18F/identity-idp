@@ -85,11 +85,7 @@ module Reporting
     end
 
     def monthly_subreports
-      ranges = [
-        (end_date - 2.months).all_month,
-        (end_date - 1.month).all_month,
-        end_date.all_month,
-      ]
+      ranges = [end_date.all_month]
 
       ranges.map do |range|
         Reporting::IdentityVerificationReport.new(
