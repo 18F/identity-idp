@@ -325,43 +325,43 @@ module Features
     def sign_up_user_from_sp_without_confirming_email(email)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-      expect(current_url).to eq new_user_session_url
+      expect(page).to have_current_path(new_user_session_path)
       expect_branded_experience
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_invalid_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_but_wrong_email
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect_branded_experience
 
       click_link_to_use_a_different_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_email(email)
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
       expect_branded_experience
 
       click_link_to_resend_the_email
 
-      expect(current_url).to eq sign_up_verify_email_url(resend: true)
+      expect(page).to have_current_path sign_up_verify_email_path(resend: true)
       expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)

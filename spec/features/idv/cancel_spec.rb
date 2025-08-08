@@ -174,8 +174,8 @@ RSpec.describe 'cancel IdV' do
 
       click_link t('links.cancel')
 
-      expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
+      expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
         hash_including(step: 'agreement'),
@@ -194,7 +194,10 @@ RSpec.describe 'cancel IdV' do
         url: true,
         ignore_query: true,
       )
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+
+      params = UriService.params(current_url)
+      expect(params['error']).to eq('access_denied')
+
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
         step: 'agreement',

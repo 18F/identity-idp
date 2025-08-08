@@ -14,15 +14,15 @@ RSpec.describe Reporting::IrsVerificationReport do
 
   def previous_week_range
     one_week = 7.days
-    last_sunday = Time.current.utc.to_date.beginning_of_week(:sunday) - one_week
+    last_sunday = Time.zone.now.to_date.beginning_of_week(:sunday) - one_week
     last_saturday = last_sunday + 6.days
     last_sunday..last_saturday
   end
 
   describe '#overview_table' do
     it 'generates the overview table with the correct data' do
-      travel_to Time.zone.local(2025, 8, 4) do
-        expected_generated_date = Time.current.utc.to_date.to_s
+      freeze_time do
+        expected_generated_date = Time.zone.now.to_date.to_s
 
         table = report.overview_table
 

@@ -64,7 +64,7 @@ RSpec.feature 'Sign in' do
     click_on t('account.login.piv_cac')
     fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
 
-    expect(current_url).to eq rules_of_use_url
+    expect(page).to have_current_path rules_of_use_path
     accept_rules_of_use_and_continue_if_displayed
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
@@ -93,12 +93,12 @@ RSpec.feature 'Sign in' do
     click_on t('account.login.piv_cac')
     fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
 
-    expect(current_url).to eq capture_password_url
+    expect(page).to have_current_path(capture_password_path)
 
     fill_in 'Password', with: user.password
     click_submit_default
 
-    expect(current_url).to eq rules_of_use_url
+    expect(page).to have_current_path rules_of_use_path
     accept_rules_of_use_and_continue_if_displayed
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
@@ -538,7 +538,7 @@ RSpec.feature 'Sign in' do
 
       fill_in_credentials_and_submit(user.email, user.password)
 
-      expect(current_url).to eq new_user_session_url(request_id: '123')
+      expect(page).to have_current_path(new_user_session_path(request_id: '123'))
       expect(page).to have_content t('errors.general')
     end
   end
@@ -754,7 +754,7 @@ RSpec.feature 'Sign in' do
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user, 'foo')
 
-      expect(current_url).to eq account_url
+      expect(page).to have_current_path(account_path)
 
       Capybara.reset_session!
 
@@ -762,7 +762,7 @@ RSpec.feature 'Sign in' do
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user, 'bar')
 
-      expect(current_url).to eq account_url
+      expect(page).to have_current_path(account_path)
     end
   end
 
@@ -846,7 +846,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
       end
 
       it 'returns ial2 info for a verified user' do
@@ -875,7 +875,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
       end
     end
 
