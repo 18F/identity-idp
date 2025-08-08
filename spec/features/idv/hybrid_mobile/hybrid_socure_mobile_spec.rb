@@ -275,6 +275,7 @@ RSpec.describe 'Hybrid Flow' do
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
           .and_return(0)
+        allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(nil)
       end
 
       it 'presents options to try again or try in person', js: true do
@@ -311,8 +312,6 @@ RSpec.describe 'Hybrid Flow' do
 
           # Timeout
           visit idv_hybrid_mobile_socure_document_capture_update_url
-          document_capture_session = DocumentCaptureSession.find_by(user_id: user.id)
-          document_capture_session.load_result = nil
           expect(page).to have_current_path(timeout_socure_route)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
