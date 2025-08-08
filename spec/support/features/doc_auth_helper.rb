@@ -101,7 +101,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-    return if page.current_path == idv_hybrid_handoff_path && remote
+    return if page.mode == :headless_chrome_mobile && remote
     if remote
       click_on t('forms.buttons.continue_online')
     else
