@@ -231,7 +231,7 @@ module SamlAuthHelper
     fill_in_code_with_last_phone_otp
     protocol == :saml ? click_submit_default_twice : click_submit_default
 
-    expect(current_url).to match new_user_session_path
+    expect(page).to have_current_path(sign_up_completed_path)
     expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', sp: 'Test SP'))
 
     click_agree_and_continue

@@ -529,9 +529,9 @@ RSpec.describe 'OpenID Connect' do
         state: state,
       )
 
-      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-      expect(current_url_no_port).to include(
-        "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
+      expect(page).to have_current_path(
+        "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}&post_logout_redirect_uri=gov.gsa.openidconnect.test://result/signout&state=#{state}",
+        url: true,
       )
       expect(page).to have_content(t('openid_connect.logout.errors.id_token_hint_present'))
     end
@@ -933,12 +933,12 @@ RSpec.describe 'OpenID Connect' do
     it 'displays the branded page' do
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_url).to eq(root_url)
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
 
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_url).to eq(root_url)
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
     end
   end
@@ -951,7 +951,7 @@ RSpec.describe 'OpenID Connect' do
       sign_in_live_with_2fa(user)
       sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
 
-      expect(current_url).to eq(sign_up_completed_url)
+      expect(page).to have_current_path(sign_up_completed_path)
       expect(page).to have_content(
         t(
           'titles.sign_up.completion_first_sign_in',
@@ -1100,7 +1100,7 @@ RSpec.describe 'OpenID Connect' do
       sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id))
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end
@@ -1118,7 +1118,7 @@ RSpec.describe 'OpenID Connect' do
         confirm_email_in_a_different_browser(email)
         click_agree_and_continue
 
-        expect(current_url).to eq new_user_session_url
+        expect(page).to have_current_path(new_user_session_path)
         expect(page)
           .to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end

@@ -152,7 +152,7 @@ RSpec.feature 'IdV Outage Spec' do
 
           click_on t('links.exit_login', app_name: APP_NAME)
 
-          expect(current_url).to eq 'https://example.com/'
+          expect(page).to have_current_path('https://example.com/', url: true)
         end
 
         it 'skips the hybrid handoff screen and proceeds to doc capture' do
