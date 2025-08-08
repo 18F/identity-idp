@@ -17,6 +17,7 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     assign(:remaining_submit_attempts, remaining_submit_attempts)
     assign(:country_code, country_code)
     assign(:phone, phone)
+    assign(:formatted_phone, formatted_phone)
 
     render
   end
@@ -26,7 +27,9 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   end
 
   it 'shows number entered' do
-    expect(rendered).to have_text(t('idv.failure.phone.warning.you_entered'))
+    expect(rendered).to have_content(
+      strip_tags(t('idv.failure.phone.warning.you_entered_html', formatted_phone: formatted_phone)),
+    )
     expect(rendered).to have_text(formatted_phone)
   end
 
@@ -104,7 +107,11 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
   context 'no phone' do
     let(:phone) { nil }
     it 'does not render "You entered:"' do
-      expect(rendered).not_to have_text(t('idv.failure.phone.warning.you_entered'))
+      expect(rendered).not_to have_content(
+        strip_tags(
+          t('idv.failure.phone.warning.you_entered_html', formatted_phone: formatted_phone),
+        ),
+      )
     end
   end
 end
