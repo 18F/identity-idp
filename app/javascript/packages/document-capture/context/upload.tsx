@@ -10,7 +10,7 @@ const UploadContext = createContext({
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
   flowPath: 'standard' as FlowPath,
-  idType: 'state_id',
+  idType: 'state_id_card',
   formData: {} as Record<string, any>,
   submitAttempts: 0,
 });
@@ -175,7 +175,7 @@ interface UploadContextProviderProps {
   flowPath: FlowPath;
 
   /**
-   * The ID type, one of "state_id" or "passport".
+   * The ID type, one of "state_id_card" or "passport".
    */
   idType: string;
 
