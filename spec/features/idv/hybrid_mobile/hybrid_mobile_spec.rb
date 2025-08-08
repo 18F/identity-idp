@@ -4,6 +4,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
+  include DocCaptureHelper
   include AbTestsHelper
   include PassportApiHelpers
 
