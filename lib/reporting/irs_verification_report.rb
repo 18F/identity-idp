@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'csv'
+
 begin
   require 'reporting/cloudwatch_client'
   require 'reporting/cloudwatch_query_quoting'
   require 'reporting/command_line_options'
 rescue LoadError => e
-  warn 'could not load paths, try running with "bundle exec rails runner"'
+  warn 'Could not load paths, try running with "bundle exec rails runner"'
   raise e
 end
 
@@ -46,8 +47,7 @@ module Reporting
     end
 
     def as_tables
-      [overview_table,
-       funnel_table]
+      [overview_table, funnel_table]
     end
 
     def as_emailable_reports
@@ -69,28 +69,26 @@ module Reporting
           filename: 'Overview Report',
         ),
         Reporting::EmailableReport.new(
-          title: 'Funnel Metrics',
+          title: 'Verification Funnel Metrics',
           subtitle: '',
           float_as_percent: true,
           precision: 2,
           table: funnel_table,
-          filename: 'Funnel Metrics',
+          filename: 'Verification Funnel Metrics',
         ),
       ]
     end
 
     def to_csvs
       as_emailable_reports.map do |report|
-        CSV.generate do |csv|
-          report.table.each { |row| csv << row }
-        end
+        CSV.generate { |csv| report.table.each { |row| csv << row } }
       end
     end
 
     def overview_table
       [
         ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
-        ['Report Generated', Date.today.to_s], # rubocop:disable Rails/Date
+        ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.join(', ')],
       ]
     end
@@ -112,8 +110,7 @@ module Reporting
          to_percent(info_validation_success, verification_demand)],
         ['Phone Verification Success', phone_verification_success,
          to_percent(phone_verification_success, verification_demand)],
-        ['Verification Successes', total_verified,
-         to_percent(total_verified, verification_demand)],
+        ['Verification Successes', total_verified, to_percent(total_verified, verification_demand)],
         ['Verification Failures', verification_demand - total_verified,
          to_percent(verification_demand - total_verified, verification_demand)],
       ]
@@ -152,85 +149,71 @@ module Reporting
       )
     end
 
-    # def quote(array)
-    #   '[' + array.map { |e| %("#{e}") }.join(', ') + ']'
-    # end
-
-    def query
+    def query_for_event(event_name)
       params = {
+        event_name: quote(event_name),
         issuers: quote(issuers),
-        event_names: quote(Events.all_events),
       }
 
       format(<<~QUERY, params)
-        filter properties.sp_request.facial_match
-          and name in %{event_names}
-        | fields
-            (name = '#{Events::VERIFICATION_DEMAND}') as @IdV_IAL2_start,
-            (name = '#{Events::DOCUMENT_AUTHENTICATION_SUCCESS}') as @Doc_auth_success,
-            (name = '#{Events::INFORMATION_VALIDATION_SUCCESS}') as @Verify_info_success,
-            (name = '#{Events::PHONE_VERIFICATION_SUCCESS}') as @Verify_phone_success,
-            (name = '#{Events::TOTAL_VERIFIED}' and properties.event_properties.ial2) as @Verified_1,
-            coalesce(@Verified_1, 0) as @Verified,
-            properties.user_id
-        | stats
-            max(@IdV_IAL2_start) as max_idv_ial2_start,
-            max(@Doc_auth_success) as max_doc_auth_success,
-            max(@Verify_info_success) as max_verify_info_success,
-            max(@Verify_phone_success) as max_verify_phone_success,
-            max(@Verified) as max_verified
-            by properties.user_id, bin(1y)
-        | stats
-            sum(max_idv_ial2_start) as IdV_IAL2_Start_User_count,
-            sum(max_doc_auth_success) as Doc_auth_success_User_count,
-            sum(max_verify_info_success) as Verify_info_success_User_count,
-            sum(max_verify_phone_success) as Verify_phone_success_User_count,
-            sum(max_verified) as Verified_User_count
-          | limit 10000
+        filter properties.sp_request.facial_match 
+        and name = %{event_name}
+        and properties.service_provider in %{issuers}
+        | fields properties.user_id
+        | limit 10000
       QUERY
     end
 
-    def fetch_results
-      Rails.logger.info('Executing unified query')
+    def fetch_event_user_ids(event_name)
+      unless Events.all_events.include?(event_name)
+        Rails.logger.warn("Event name '#{event_name}' is not in the list of known events.")
+        return []
+      end
+
+      Rails.logger.info("Fetching results for event: #{event_name}")
+
       results = cloudwatch_client.fetch(
-        query: query,
+        query: query_for_event(event_name),
         from: time_range.begin.beginning_of_day,
         to: time_range.end.end_of_day,
       )
-      Rails.logger.info("Results: #{results.inspect}")
-      results
+
+      if results.nil? || results.empty?
+        Rails.logger.warn("No results returned for event: #{event_name}")
+        return []
+      end
+
+      user_ids = results.map { |row| row['properties.user_id'] }.compact.uniq
+      Rails.logger.info("Fetched #{user_ids.count} unique user IDs for #{event_name}")
+      user_ids
     rescue StandardError => e
-      Rails.logger.error("Failed to fetch results for unified query: #{e.message}")
+      Rails.logger.error("Failed to fetch event #{event_name}: #{e.message}")
       []
     end
 
-    def data
-      @data ||= fetch_results.first || {}
-    end
-
     def verification_demand_results
-      data['IdV_IAL2_Start_User_count'].to_i || 0
+      fetch_event_user_ids(Events::VERIFICATION_DEMAND).count
     end
 
     def document_authentication_success_results
-      data['Doc_auth_success_User_count'].to_i || 0
+      fetch_event_user_ids(Events::DOCUMENT_AUTHENTICATION_SUCCESS).count
     end
 
     def information_validation_success_results
-      data['Verify_info_success_User_count'].to_i || 0
+      fetch_event_user_ids(Events::INFORMATION_VALIDATION_SUCCESS).count
     end
 
     def phone_verification_success_results
-      data['Verify_phone_success_User_count'].to_i || 0
+      fetch_event_user_ids(Events::PHONE_VERIFICATION_SUCCESS).count
     end
 
     def total_verified_results
-      data['Verified_User_count'].to_i || 0
+      fetch_event_user_ids(Events::TOTAL_VERIFIED).count
     end
 
     def to_percent(numerator, denominator)
       return 0.0 if denominator.nil? || denominator.zero?
-      ((numerator.to_f / denominator)).round(2)
+      (numerator.to_f / denominator).round(2)
     end
   end
 end
