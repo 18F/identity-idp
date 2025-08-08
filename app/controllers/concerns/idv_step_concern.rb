@@ -81,6 +81,15 @@ module IdvStepConcern
     end
   end
 
+  def in_person_proofing_route_enabled?
+    IdentityConfig.store.in_person_proofing_enabled &&
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+      IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(
+        decorated_sp_session.sp_issuer,
+      )
+  end
+
   def vendor_document_capture_url
     case document_capture_session.doc_auth_vendor
     when Idp::Constants::Vendors::SOCURE,
