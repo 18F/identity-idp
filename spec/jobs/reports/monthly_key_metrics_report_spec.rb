@@ -36,12 +36,12 @@ RSpec.describe Reports::MonthlyKeyMetricsReport do
 
   let(:mock_proofing_rate_data) do
     [
-      ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
+      ['Metric', 'Trailing 30d'],
     ]
   end
   let(:mock_monthly_idv_data) do
     [
-      ['Metric', 'June 2024', 'July 2024', 'August 2024'],
+      ['Metric', 'Aug 2024'],
     ]
   end
 
