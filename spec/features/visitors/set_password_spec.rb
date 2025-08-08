@@ -7,8 +7,8 @@ RSpec.feature 'Visitor sets password during signup' do
     fill_in t('forms.password'), with: ''
     click_button t('forms.buttons.continue')
 
+    expect(page).to have_current_path sign_up_create_password_path
     expect(page).to have_content t('errors.messages.blank')
-    expect(current_url).to eq sign_up_create_password_url
   end
 
   context 'password field is blank when JS is on', js: true do
@@ -78,8 +78,8 @@ RSpec.feature 'Visitor sets password during signup' do
 
       click_button t('forms.buttons.continue')
 
+      expect(page).to have_current_path sign_up_create_password_path
       expect(page).to have_content('characters')
-      expect(current_url).to eq sign_up_create_password_url
     end
 
     scenario 'visitor gets password help message' do

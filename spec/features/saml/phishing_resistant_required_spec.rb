@@ -75,7 +75,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -94,7 +94,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -113,7 +113,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -171,7 +171,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -189,7 +189,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -207,7 +207,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -265,7 +265,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -283,7 +283,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -301,7 +301,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
               issuer: aal3_issuer, authn_context: nil
             },
           )
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -316,7 +316,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
           },
         )
 
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        expect(page).to have_current_path(login_two_factor_webauthn_path)
       end
 
       context 'adding an ineligible method after authenticating with phishing-resistant' do

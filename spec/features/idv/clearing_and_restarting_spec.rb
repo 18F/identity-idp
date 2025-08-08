@@ -8,12 +8,16 @@ RSpec.describe 'clearing IdV and restarting' do
   context 'during verification code entry', js: true do
     before do
       start_idv_from_sp
+      expect(page).to have_current_path(new_user_session_path)
+      expect_branded_experience
       complete_idv_steps_with_gpo_before_confirmation_step(user)
+      expect(page).to have_current_path(idv_letter_enqueued_path)
     end
 
     context 'before signing out' do
       before do
         visit idv_verify_by_mail_enter_code_path
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
       end
 
       it_behaves_like 'clearing and restarting idv'
@@ -23,8 +27,11 @@ RSpec.describe 'clearing IdV and restarting' do
       before do
         visit account_path
         first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path(new_user_session_path)
         start_idv_from_sp
+        expect(page).to have_current_path(new_user_session_path)
         sign_in_live_with_2fa(user)
+        expect(page).to have_current_path idv_verify_by_mail_enter_code_path
       end
 
       it_behaves_like 'clearing and restarting idv'

@@ -41,16 +41,16 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     start_idv_from_sp(:oidc)
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_please_call_path)
+    expect(page).to have_content(t('idv.failure.setup.heading'))
 
     # User unable to sign into SAML with IdV
     set_new_browser_session
     start_idv_from_sp(:saml)
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_please_call_path)
+    expect(page).to have_content(t('idv.failure.setup.heading'))
 
     # User able to sign for IAL1
     set_new_browser_session
@@ -68,14 +68,14 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     sign_in_live_with_2fa(user)
 
     # User is redirected on IdV sign in
-    expect(page).to have_content(t('idv.failure.verify.heading'))
     expect(page).to have_current_path(idv_not_verified_path)
+    expect(page).to have_content(t('idv.failure.verify.heading'))
 
     visit idv_url
 
     # User cannot enter IdV flow
-    expect(page).to have_content(t('idv.failure.verify.heading'))
     expect(page).to have_current_path(idv_not_verified_path)
+    expect(page).to have_content(t('idv.failure.verify.heading'))
 
     # User able to sign for IAL1
     set_new_browser_session

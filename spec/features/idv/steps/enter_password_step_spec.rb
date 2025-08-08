@@ -38,6 +38,7 @@ RSpec.feature 'idv enter password step', :js do
       it 'sends a letter with a reference the sp' do
         fill_in 'Password', with: user_password
         click_continue
+        expect(page).to have_current_path idv_letter_enqueued_path
 
         gpo_confirmation_entry = GpoConfirmation.last.entry
 
@@ -57,6 +58,7 @@ RSpec.feature 'idv enter password step', :js do
       it 'sends a letter without a reference to the sp' do
         fill_in 'Password', with: user_password
         click_continue
+        expect(page).to have_current_path idv_letter_enqueued_path
 
         gpo_confirmation_entry = GpoConfirmation.last.entry
 
@@ -69,8 +71,10 @@ RSpec.feature 'idv enter password step', :js do
 
       email_count_before_continue = ActionMailer::Base.deliveries.count
 
-      expect { click_continue }
-        .to change { GpoConfirmation.count }.by(1)
+      expect do
+        click_continue
+        expect(page).to have_current_path idv_letter_enqueued_path
+      end.to change { GpoConfirmation.count }.by(1)
 
       expect_delivered_email_count(email_count_before_continue + 1)
       expect(last_email.subject).to eq(t('user_mailer.verify_by_mail_letter_requested.subject'))
@@ -90,6 +94,7 @@ RSpec.feature 'idv enter password step', :js do
     before do
       start_idv_from_sp
       complete_idv_steps_with_phone_before_enter_password_step(user)
+      expect(page).to have_current_path idv_enter_password_path
     end
 
     it 'allows the user to submit password and proceed to obtain a personal key' do

@@ -73,12 +73,12 @@ RSpec.describe 'redirect_uri validation' do
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
       click_on t('links.back_to_sp', sp: 'Test SP')
-      expect(current_url).to eq(sp_redirect_uri)
+      expect(page).to have_current_path(sp_redirect_uri, url: true)
 
       visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
 
       click_on t('links.back_to_sp', sp: 'Test SP')
-      expect(current_url).to eq(sp_redirect_uri)
+      expect(page).to have_current_path(sp_redirect_uri, url: true)
     end
   end
 

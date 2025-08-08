@@ -851,7 +851,9 @@ RSpec.feature 'Analytics Regression', :js do
       complete_verify_step
       complete_phone_step(user)
       complete_enter_password_step(user)
+      expect(page).to have_current_path idv_personal_key_path
       acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(sign_up_completed_path)
     end
 
     it 'records all of the events' do
@@ -915,6 +917,7 @@ RSpec.feature 'Analytics Regression', :js do
         complete_welcome_step
         complete_agreement_step
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       perform_in_browser(:mobile) do
@@ -931,7 +934,9 @@ RSpec.feature 'Analytics Regression', :js do
         fill_out_phone_form_ok('202-555-1212')
         verify_phone_otp
         complete_enter_password_step(user)
+        expect(page).to have_current_path idv_personal_key_path
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
     end
 
@@ -997,6 +1002,7 @@ RSpec.feature 'Analytics Regression', :js do
       enter_gpo_flow
       complete_request_letter
       complete_enter_password_step(user)
+      expect(page).to have_current_path(idv_letter_enqueued_path)
     end
 
     it 'records all of the events' do
@@ -1049,7 +1055,9 @@ RSpec.feature 'Analytics Regression', :js do
         complete_verify_step
         complete_phone_step(user)
         complete_enter_password_step(user)
+        expect(page).to have_current_path idv_personal_key_path
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
 
       it 'records all of the events' do
@@ -1123,7 +1131,9 @@ RSpec.feature 'Analytics Regression', :js do
           fill_out_phone_form_ok('202-555-1212')
           verify_phone_otp
           complete_enter_password_step(user)
+          expect(page).to have_current_path idv_personal_key_path
           acknowledge_and_confirm_personal_key
+          expect(page).to have_current_path(sign_up_completed_path)
         end
       end
 
@@ -1176,6 +1186,7 @@ RSpec.feature 'Analytics Regression', :js do
         complete_welcome_step
         complete_agreement_step
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       perform_in_browser(:mobile) do
@@ -1192,7 +1203,9 @@ RSpec.feature 'Analytics Regression', :js do
         fill_out_phone_form_ok('202-555-1212')
         verify_phone_otp
         complete_enter_password_step(user)
+        expect(page).to have_current_path idv_personal_key_path
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
     end
 
@@ -1265,9 +1278,12 @@ RSpec.feature 'Analytics Regression', :js do
       complete_all_in_person_proofing_steps(user, same_address_as_id: false)
       complete_phone_step(user)
       complete_enter_password_step(user)
+      expect(page).to have_current_path idv_personal_key_path
       acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       visit_help_center
       visit_sp_from_in_person_ready_to_verify
+      expect(page).to have_current_path('https://example.com/some/idv/ipp/url')
     end
 
     it 'records all of the events', allow_browser_log: true do

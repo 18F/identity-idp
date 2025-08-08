@@ -10,6 +10,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
     it 'requires the user to verify the attributes submitted to the SP', js: true do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       fill_in_code_with_last_phone_otp
       click_submit_default
 
@@ -52,26 +53,21 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       click_continue
       acknowledge_and_confirm_personal_key
       click_agree_and_continue
+      expect_to_be_at_sp_redirect_url(page, sp)
       visit account_path
       first(:button, t('links.sign_out')).click
+      expect(page).to have_current_path(new_user_session_path, ignore_query: true)
     end
 
     it 'does not require the user to verify attributes' do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
+      expect(page).to have_current_path(login_two_factor_authenticator_path)
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_totp(user)
       click_submit_default
 
-      if sp == :oidc
-        expect(current_url).to include('http://localhost:7654/auth/result')
-      elsif sp == :saml
-        if javascript_enabled?
-          expect(page).to have_current_path(test_saml_decode_assertion_path)
-        else
-          expect(current_url).to include(api_saml_auth_url(path_year: PATH_YEAR))
-        end
-      end
+      expect_to_be_at_sp_redirect_url(page, sp)
     end
   end
 
@@ -96,6 +92,24 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       expect(page).to have_content '+1 202-555-1212'
       expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       expect(page).to have_content DocAuthHelper::GOOD_SSN_FORMATTED
+    end
+  end
+
+  def expect_to_be_at_sp_redirect_url(page, sp)
+    if sp == :oidc
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
+    elsif sp == :saml
+      if javascript_enabled?
+        expect(page).to have_current_path(test_saml_decode_assertion_path)
+      else
+        expect(page).to have_current_path(
+          api_saml_auth_url(path_year: PATH_YEAR),
+        )
+      end
     end
   end
 end

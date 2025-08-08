@@ -10,7 +10,7 @@ RSpec.describe 'signing in with remember device and closing browser' do
     expire_cookies
     sign_in_user(user)
 
-    expect(current_url).to match(%r{/account})
+    expect(page).to have_current_path(account_path)
   end
 
   def sign_in_user_with_remember_device

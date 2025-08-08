@@ -193,6 +193,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
+      expect(page).to have_current_path(idv_link_sent_path)
 
       document_capture_session = DocumentCaptureSession.find_by(uuid: doc_capture_session_uuid)
       expect(document_capture_session).to be
@@ -201,17 +202,16 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
   end
 
   context 'on a desktop device and selfie is allowed' do
-    before do
-      complete_doc_auth_steps_before_hybrid_handoff_step
-    end
-
     describe 'when selfie is required by sp' do
       let(:facial_match_required) { true }
       it 'has expected UI elements' do
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
         mobile_form = find('#form-to-submit-photos-through-mobile')
         expect(mobile_form).to have_name(t('forms.buttons.send_link'))
         expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       end
+
       context 'on a desktop choose ipp', js: true do
         let(:in_person_doc_auth_button_enabled) { true }
         let(:sp_ipp_enabled) { true }
@@ -225,6 +225,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
           allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
             .and_return(sp_ipp_enabled)
           complete_doc_auth_steps_before_hybrid_handoff_step
+          expect(page).to have_current_path(idv_hybrid_handoff_path)
         end
 
         context 'when ipp is enabled' do
@@ -253,6 +254,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
     describe 'when selfie is not required by sp' do
       let(:facial_match_required) { false }
       it 'has expected UI elements' do
+        complete_doc_auth_steps_before_hybrid_handoff_step
         mobile_form = find('#form-to-submit-photos-through-mobile')
         desktop_form = find('#form-to-submit-photos-through-desktop')
 

@@ -55,6 +55,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -84,7 +85,10 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.current_path == idv_document_capture_path
+
+    if page.mode == :headless_chrome_mobile || page.current_path == idv_document_capture_path
+      return
+    end
     if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
        page.current_path == idv_how_to_verify_path
       click_on t('forms.buttons.continue_online')
@@ -97,7 +101,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-    return if page.current_path == idv_hybrid_handoff_path && remote
+    return if page.mode == :headless_chrome_mobile && remote
     if remote
       click_on t('forms.buttons.continue_online')
     else
@@ -130,6 +134,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    expect(page).to have_current_path idv_document_capture_path
     expect(page).to have_content(t('doc_auth.headings.document_capture'))
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible

@@ -29,7 +29,9 @@ module Features
     def select_2fa_option(option, **find_options)
       find("label[for='two_factor_options_form_selection_#{option}']", **find_options).click
       click_on t('forms.buttons.continue')
-      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
+      if option == 'backup_code'
+        click_button t('forms.buttons.continue')
+      end
     end
 
     def select_phone_delivery_option(delivery_option)
@@ -38,18 +40,25 @@ module Features
 
     def sign_up_and_2fa_ial1_user
       user = sign_up_and_set_password
+      expect(page).to have_current_path(authentication_methods_setup_path)
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: IAL1_USER_PHONE
       click_send_one_time_code
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: 'sms'),
+        ignore_query: true,
+      )
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(page).to have_current_path(auth_method_confirmation_path)
       skip_second_mfa_prompt
       user
     end
 
     def signin(email, password)
       visit new_user_session_path
+      expect(page).to have_current_path(new_user_session_path, ignore_query: true)
       set_hidden_field('platform_authenticator_available', 'true')
       fill_in_credentials_and_submit(email, password)
       continue_as(email, password)
@@ -124,6 +133,7 @@ module Features
     def sign_up
       email = Faker::Internet.email
       sign_up_with(email)
+      expect(page).to have_current_path(sign_up_verify_email_path)
       confirm_last_user
     end
 
@@ -233,6 +243,7 @@ module Features
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token,
       )
+      expect(page).to have_current_path(sign_up_enter_password_path, ignore_query: true)
 
       user
     end
@@ -243,9 +254,11 @@ module Features
 
     def sign_in_live_with_2fa(user = user_with_2fa)
       sign_in_user(user)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(page).to_not have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       user
     end
 
@@ -325,43 +338,43 @@ module Features
     def sign_up_user_from_sp_without_confirming_email(email)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-      expect(current_url).to eq new_user_session_url
+      expect(page).to have_current_path(new_user_session_path)
       expect_branded_experience
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_invalid_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_but_wrong_email
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect_branded_experience
 
       click_link_to_use_a_different_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_email(email)
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
       expect_branded_experience
 
       click_link_to_resend_the_email
 
-      expect(current_url).to eq sign_up_verify_email_url(resend: true)
+      expect(page).to have_current_path sign_up_verify_email_path(resend: true)
       expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
@@ -456,6 +469,19 @@ module Features
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_one_time_code
+
+      if I18n.locale != I18n.default_locale
+        expect(page).to have_current_path(
+          login_two_factor_path(locale: I18n.locale, otp_delivery_preference: 'sms'),
+          ignore_query: true,
+        )
+      else
+        expect(page).to have_current_path(
+          login_two_factor_path(otp_delivery_preference: 'sms'),
+          ignore_query: true,
+        )
+      end
+
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
@@ -463,6 +489,10 @@ module Features
     def set_up_mfa_with_valid_phone
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_one_time_code
+      expect(page).to have_current_path(
+        login_two_factor_path(otp_delivery_preference: 'sms'),
+        ignore_query: true,
+      )
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
@@ -474,8 +504,21 @@ module Features
 
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
+      if I18n.locale != I18n.default_locale
+        expect(page).to have_current_path(authentication_methods_setup_path(locale: I18n.locale))
+      else
+        expect(page).to have_current_path(authentication_methods_setup_path)
+      end
       set_up_2fa_with_valid_phone
+
+      if I18n.locale != I18n.default_locale
+        expect(page).to have_current_path(auth_method_confirmation_path(locale: I18n.locale))
+      else
+        expect(page).to have_current_path(auth_method_confirmation_path)
+      end
+
       skip_second_mfa_prompt
+
       User.find_with_email(email)
     end
 
@@ -488,6 +531,11 @@ module Features
     def confirm_email_and_password(email)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
+      if I18n.locale != I18n.default_locale
+        expect(page).to have_current_path(sign_up_verify_email_path(locale: I18n.locale))
+      else
+        expect(page).to have_current_path(sign_up_verify_email_path)
+      end
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
     end

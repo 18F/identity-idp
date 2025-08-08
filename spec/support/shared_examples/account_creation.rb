@@ -5,8 +5,8 @@ RSpec.shared_examples 'creating an account with the site in Spanish' do |sp|
     register_user
 
     click_agree_and_continue
-    if :sp == :saml
-      expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es)
+    if sp == :saml
+      expect(page).to have_current_path complete_saml_path(locale: :es)
     elsif sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
 
@@ -21,7 +21,7 @@ RSpec.shared_examples 'creating an account using authenticator app for 2FA' do |
     register_user_with_authenticator_app
 
     click_agree_and_continue
-    expect(current_url).to eq complete_saml_url if sp == :saml
+    expect(page).to have_current_path complete_saml_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
@@ -44,6 +44,7 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
+    expect(page).to have_current_path(sign_up_completed_path)
 
     click_agree_and_continue
     if sp == :saml
@@ -51,9 +52,11 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
     end
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
     end
   end
 end
@@ -64,7 +67,7 @@ RSpec.shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
     register_user_with_piv_cac
 
     click_agree_and_continue
-    expect(current_url).to eq complete_saml_url if sp == :saml
+    expect(page).to have_current_path complete_saml_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
@@ -92,6 +95,7 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
+    expect(page).to have_current_path(sign_up_completed_path)
 
     click_agree_and_continue
     if sp == :saml
@@ -99,9 +103,11 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     end
 
     if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      expect(page).to have_current_path(
+        'http://localhost:7654/auth/result',
+        url: true,
+        ignore_query: true,
+      )
     end
   end
 end
@@ -122,7 +128,7 @@ RSpec.shared_examples 'creating two accounts during the same session' do |sp|
 
       continue_as(first_email)
 
-      expect(current_url).to eq complete_saml_url if sp == :saml
+      expect(page).to have_current_path complete_saml_path if sp == :saml
       if sp == :oidc
         redirect_uri = URI(oidc_redirect_url)
 
@@ -143,7 +149,7 @@ RSpec.shared_examples 'creating two accounts during the same session' do |sp|
 
       continue_as(second_email)
 
-      expect(current_url).to eq complete_saml_url if sp == :saml
+      expect(page).to have_current_path complete_saml_path if sp == :saml
       if sp == :oidc
         redirect_uri = URI(oidc_redirect_url)
 

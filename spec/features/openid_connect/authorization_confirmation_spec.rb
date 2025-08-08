@@ -37,7 +37,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
         visit_idp_from_ial1_oidc_sp
-        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_current_path(user_authorization_confirmation_path)
         expect(page).to have_content shared_email
 
         continue_as(second_email.email)
@@ -50,7 +50,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
         visit_idp_from_ial1_oidc_sp
-        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_current_path(user_authorization_confirmation_path)
         expect(page).to have_content second_email.email
 
         continue_as(second_email.email)
@@ -108,7 +108,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
     it 'it allows the user to switch accounts prior to continuing to the SP' do
       sign_in_user(user1)
       visit_idp_from_ial1_oidc_sp
-      expect(current_url).to match(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
 
       continue_as(user2.email, user2.password)
 

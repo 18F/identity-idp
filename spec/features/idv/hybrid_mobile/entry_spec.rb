@@ -15,6 +15,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_hybrid_handoff_step
     click_send_link
+    expect(page).to have_current_path(idv_link_sent_path)
 
     link
   end
@@ -32,12 +33,12 @@ RSpec.feature 'mobile hybrid flow entry', :js do
       Capybara.using_session('mobile') do
         visit link_to_visit
         # Should have redirected to the actual doc capture url
-        expect(current_url).to eql(idv_hybrid_mobile_document_capture_url)
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_path)
 
         # Confirm that we end up on the LN / Mock page even if we try to
         # go to the Socure one.
         visit idv_hybrid_mobile_socure_document_capture_url
-        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_path)
       end
     end
 
@@ -54,12 +55,12 @@ RSpec.feature 'mobile hybrid flow entry', :js do
         Capybara.using_session('mobile') do
           visit link_to_visit
           # Should have redirected to the actual doc capture url
-          expect(current_url).to eql(idv_hybrid_mobile_socure_document_capture_url)
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
 
           # Confirm that we end up on the LN / Mock page even if we try to
           # go to the Socure one.
-          visit idv_hybrid_mobile_document_capture_url
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+          visit idv_hybrid_mobile_document_capture_path
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
         end
       end
     end
@@ -79,7 +80,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
       Capybara.using_session('mobile') do
         visit link_to_visit
         # Should have redirected to the actual doc capture url
-        expect(current_url).to eql(idv_hybrid_mobile_document_capture_url)
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_path)
       end
     end
   end
@@ -99,7 +100,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
       Capybara.using_session('mobile') do
         visit link_to_visit
-        expect(current_url).to eql(root_url)
+        expect(page).to have_current_path(new_user_session_path)
       end
     end
   end

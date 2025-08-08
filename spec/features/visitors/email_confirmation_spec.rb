@@ -13,7 +13,7 @@ RSpec.feature 'Email confirmation during sign up' do
     check t('sign_up.terms', app_name: APP_NAME)
     click_submit_default
 
-    expect(page).to have_current_path(sign_up_verify_email_url)
+    expect(page).to have_current_path(sign_up_verify_email_path)
     expect(page).not_to have_content(t('errors.registration.terms'))
   end
 
@@ -47,7 +47,7 @@ RSpec.feature 'Email confirmation during sign up' do
 
     click_button t('forms.buttons.continue')
 
-    expect(current_url).to eq authentication_methods_setup_url
+    expect(page).to have_current_path(authentication_methods_setup_path)
     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
 
@@ -91,7 +91,7 @@ RSpec.feature 'Email confirmation during sign up' do
 
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(current_url).to eq account_url
+      expect(page).to have_current_path(account_path)
     end
   end
 
@@ -102,9 +102,9 @@ RSpec.feature 'Email confirmation during sign up' do
 
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
+      expect(page).to have_current_path(new_user_session_path)
       action = t('devise.confirmations.sign_in')
       expect(page).to have_content t('devise.confirmations.already_confirmed', action:)
-      expect(current_url).to eq new_user_session_url
     end
   end
 

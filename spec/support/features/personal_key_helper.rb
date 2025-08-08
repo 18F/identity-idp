@@ -25,6 +25,7 @@ module PersonalKeyHelper
     visit new_user_password_path
     fill_in t('account.index.email'), with: email
     click_button t('forms.buttons.continue')
+    expect(page).to have_current_path(forgot_password_path)
     open_last_email
     click_email_link_matching(/reset_password_token/)
   end
