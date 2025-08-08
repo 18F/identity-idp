@@ -511,10 +511,5 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         end
       end
     end
-
-    context 'when socure_docv_verification_data_test_mode is enabled' do
-      let(:test_token) { '12345' }
-      let(:socure_docv_verification_data_test_mode) { true }
-    end
   end
 end
