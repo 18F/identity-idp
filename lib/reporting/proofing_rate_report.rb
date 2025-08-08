@@ -6,7 +6,7 @@ require 'reporting/unknown_progress_bar'
 
 module Reporting
   class ProofingRateReport
-    DATE_INTERVALS = [30, 60, 90].freeze
+    DATE_INTERVALS = [30].freeze
 
     attr_reader :end_date, :wait_duration
 
