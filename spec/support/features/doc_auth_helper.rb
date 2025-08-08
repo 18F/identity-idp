@@ -43,8 +43,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
-    visit idv_welcome_url unless current_path == idv_welcome_url
-    click_idv_continue if current_path == idv_mail_only_warning_path
+    visit idv_welcome_path unless current_path == idv_welcome_path
 
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -60,11 +59,7 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    find(
-      'label',
-      text: t('doc_auth.instructions.consent', app_name: APP_NAME),
-      wait: 5,
-    ).click
+    check t('doc_auth.instructions.consent', app_name: APP_NAME)
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -84,9 +79,9 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.current_path == idv_document_capture_path
-    if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-       page.current_path == idv_how_to_verify_path
+    return if page.mode == :headless_chrome_mobile
+
+    if IdentityConfig.store.in_person_proofing_opt_in_enabled
       click_on t('forms.buttons.continue_online')
     end
     complete_hybrid_handoff_step
@@ -97,7 +92,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
-    return if page.current_path == idv_hybrid_handoff_path && remote
+    return if page.mode != :headless_chrome_mobile && remote
     if remote
       click_on t('forms.buttons.continue_online')
     else

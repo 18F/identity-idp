@@ -10,12 +10,12 @@ RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
     fill_in_code_with_last_phone_otp
     sp == :saml ? click_submit_default_twice : click_submit_default
 
-    expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
+    expect(page).to have_current_path(sign_up_completed_path(locale: 'es'))
 
     click_agree_and_continue
 
     if sp == :saml
-      expect(current_url).to eq UriService.add_params(complete_saml_url, locale: 'es')
+      expect(page).to have_current_path(complete_saml_url(locale: 'es'))
     elsif sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
 
@@ -47,9 +47,9 @@ RSpec.shared_examples 'signing in from service provider' do |sp|
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_submit_default if current_path == complete_saml_path
+      click_submit_default if sp == :saml
       click_agree_and_continue
-      click_submit_default if current_path == complete_saml_path
+      click_submit_default if sp == :saml
 
       expect(analytics).to have_logged_event(
         'SP redirect initiated',
@@ -85,7 +85,7 @@ RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
 
     click_continue
     continue_as
-    expect(current_url).to eq complete_saml_url if sp == :saml
+    expect(page).to have_current_path complete_saml_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
@@ -146,7 +146,7 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
     click_submit_default
     click_agree_and_continue
 
-    expect(current_url).to eq complete_saml_url if sp == :saml
+    expect(page).to have_current_path complete_saml_path if sp == :saml
     if sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
 
@@ -167,7 +167,6 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
     fill_in_credentials_and_submit(user.email, new_password)
     fill_in_code_with_last_phone_otp
     click_submit_default
-    click_submit_default if current_path == complete_saml_path
 
     expect(page).to have_current_path reactivate_account_path
 
@@ -181,7 +180,7 @@ RSpec.shared_examples 'signing in as IAL2 after resetting password' do |sp|
 
     click_agree_and_continue
 
-    expect(current_url).to eq complete_saml_url if sp == :saml
+    expect(page).to have_current_path complete_saml_path if sp == :saml
     if sp == :oidc
       redirect_uri = URI(oidc_redirect_url)
 
@@ -403,7 +402,7 @@ def ial1_sign_in_with_personal_key_goes_to_sp(sp)
   click_submit_default
   click_agree_and_continue
 
-  expect(current_url).to eq complete_saml_url if sp == :saml
+  expect(page).to have_current_path complete_saml_path if sp == :saml
 
   return unless sp == :oidc
 
@@ -436,7 +435,7 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_piv_cac_credentials_and_submit(user)
 
   # capture password before redirecting to SP
-  expect(current_url).to eq capture_password_url
+  expect(page).to have_current_path(capture_password_path)
   fill_in_password_and_submit(user.password)
 
   # With JavaScript disabled, user needs to manually click button to proceed
@@ -475,7 +474,7 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_piv_cac_credentials_and_submit(user)
 
   # capture password before redirecting to SP
-  expect(current_url).to eq capture_password_url
+  expect(page).to have_current_path(capture_password_path)
   fill_in_password_and_submit(user.password)
 
   # With JavaScript disabled, user needs to manually click button to proceed
@@ -500,7 +499,7 @@ def ial2_sign_in_with_piv_cac_gets_sign_in_failure_error(sp)
   click_on t('account.login.piv_cac')
   fill_in_piv_cac_credentials_and_submit(user)
 
-  expect(current_url).to eq capture_password_url
+  expect(page).to have_current_path(capture_password_path)
 
   max_allowed_attempts = IdentityConfig.store.password_max_attempts
   (max_allowed_attempts - 1).times do

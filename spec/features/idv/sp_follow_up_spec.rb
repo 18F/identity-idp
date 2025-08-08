@@ -25,7 +25,7 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
     open_last_email
     click_email_link_matching(/return_to_sp\/account_verified_cta/)
 
-    expect(current_url).to eq(post_idv_follow_up_url)
+    expect(page).to have_current_path(post_idv_follow_up_url, url: true)
   end
 
   scenario 'receiving an email after passing fraud review' do
@@ -43,7 +43,7 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
     open_last_email
     click_email_link_matching(/return_to_sp\/account_verified_cta/)
 
-    expect(current_url).to eq(post_idv_follow_up_url)
+    expect(page).to have_current_path(post_idv_follow_up_url, url: true)
   end
 
   context 'after entering a verify-by-mail code' do
@@ -69,10 +69,10 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
       click_button t('idv.gpo.form.submit')
       acknowledge_and_confirm_personal_key
 
-      expect(page).to have_current_path(idv_sp_follow_up_path)
+      expect(page).to have_current_path(idv_sp_follow_up_url, url: true)
       click_on t('idv.by_mail.sp_follow_up.connect_account')
 
-      expect(current_url).to eq(post_idv_follow_up_url)
+      expect(page).to have_current_path(post_idv_follow_up_url, url: true)
     end
 
     scenario 'canceling on the CTA and visiting from the account page' do
@@ -97,10 +97,10 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
       click_button t('idv.gpo.form.submit')
       acknowledge_and_confirm_personal_key
 
-      expect(page).to have_current_path(idv_sp_follow_up_path)
+      expect(page).to have_current_path(idv_sp_follow_up_url, url: true)
       click_on t('idv.by_mail.sp_follow_up.go_to_account')
 
-      expect(current_url).to eq(account_url)
+      expect(page).to have_current_path(account_path)
 
       expect(page).to have_content(
         t(
@@ -115,7 +115,7 @@ RSpec.feature 'returning to an SP after out-of-band proofing' do
         ),
       )
 
-      expect(current_url).to eq(post_idv_follow_up_url)
+      expect(page).to have_current_path(post_idv_follow_up_url, url: true)
     end
   end
 end

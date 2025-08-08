@@ -23,7 +23,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('/login/two_factor/authenticator')
+        expect(page).to have_current_path login_two_factor_authenticator_path
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -50,7 +50,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('/login/two_factor/webauthn')
+        expect(page).to have_current_path login_two_factor_webauthn_path
         expect(page).to have_unchecked_field('remember_device')
       end
 
@@ -78,7 +78,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('login/two_factor/sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('/login/two_factor/authenticator')
+        expect(page).to have_current_path login_two_factor_authenticator_path
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('login/two_factor/webauthn')
+        expect(page).to have_current_path login_two_factor_webauthn_path
         expect(page).to have_unchecked_field('remember_device')
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe 'Unchecking remember device' do
       end
 
       it 'requires the user to 2fa again and has an unchecked remember device checkbox upon sign in' do
-        expect(current_url).to include('login/two_factor/sms')
+        expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to have_unchecked_field('remember_device')
       end
     end

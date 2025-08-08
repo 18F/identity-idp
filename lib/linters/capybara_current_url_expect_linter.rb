@@ -14,8 +14,8 @@ module RuboCop
       #   expect(current_url).to eq 'http://localhost:3001/auth/result'
       #
       #   #good
-      #   expect(current_path).to have_current_path(authentication_methods_setup_path)
-      #   expect(current_path).to have_current_path('http://localhost:3001/auth/result', url: true)
+      #   expect(page).to have_current_path(authentication_methods_setup_path)
+      #   expect(page).to have_current_path('http://localhost:3001/auth/result', url: true)
       #
       class CapybaraCurrentUrlExpectLinter < RuboCop::Cop::Base
         include RangeHelp

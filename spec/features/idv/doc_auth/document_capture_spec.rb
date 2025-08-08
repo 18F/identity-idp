@@ -164,7 +164,7 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    it 'user can go through verification uploading ID and selfie on seprerate pages' do
+    it 'user can go through verification uploading ID and selfie on separate pages' do
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
@@ -553,22 +553,13 @@ RSpec.feature 'document capture step', :js do
           fill_out_ssn_form_ok
           click_idv_continue
           complete_verify_step
-          # expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
           expect(page).to have_current_path(idv_phone_url)
         end
       end
     end
 
     context 'when a selfie is required by the SP' do
-      context 'on mobile platform', allow_browser_log: true do
-        before do
-          # mock mobile device as cameraCapable, this allows us to process
-          allow_any_instance_of(ActionController::Parameters)
-            .to receive(:[]).and_wrap_original do |impl, param_name|
-            param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
-          end
-        end
-
+      context 'on mobile platform', driver: :headless_chrome_mobile, allow_browser_log: true do
         context 'with a passing selfie' do
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
@@ -647,11 +638,6 @@ RSpec.feature 'document capture step', :js do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
-                if page.current_path == idv_how_to_verify_path
-                  click_button t('forms.buttons.continue_online')
-                else
-                  click_continue
-                end
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
                 click_button 'Take photo'

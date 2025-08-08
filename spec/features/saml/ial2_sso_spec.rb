@@ -96,7 +96,7 @@ RSpec.feature 'IAL2 Single Sign On' do
 
           perform_id_verification_with_gpo_without_confirming_code(user)
 
-          expect(current_url).to eq expected_gpo_return_to_sp_url
+          expect(page).to have_current_path(expected_gpo_return_to_sp_url, url: true)
 
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))

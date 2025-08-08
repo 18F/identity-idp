@@ -173,7 +173,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
     if javascript_enabled?
       expect(page).to have_current_path test_saml_decode_assertion_path
     else
-      expect(current_url).to eq @saml_authn_request
+      expect(page).to have_current_path(@saml_authn_request, url: true)
     end
     expect(xmldoc.phone_number.children.children.to_s).to eq(Phonelib.parse(profile_phone).e164)
   end
