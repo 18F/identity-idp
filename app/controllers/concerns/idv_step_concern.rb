@@ -71,10 +71,10 @@ module IdvStepConcern
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
 
-      if idv_session.passport_allowed
-        redirect_to idv_choose_id_type_url
-      elsif in_person_proofing_route_enabled?
+      if in_person_proofing_route_enabled?
         redirect_to idv_how_to_verify_url
+      elsif idv_session.passport_allowed
+        redirect_to idv_choose_id_type_url
       else
         redirect_to vendor_document_capture_url
       end
