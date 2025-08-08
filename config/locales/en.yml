@@ -738,18 +738,19 @@ duplicate_profiles_detected.accounts_list.heading: Accounts with the same verifi
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
-duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate accounts'
+duplicate_profiles_detected.delete_duplicates.details_html: Sign in and delete the account from the “Your account” page. %{link_html}
+duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate account(s)'
 duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
 duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro: The %{app_name} requires that you only have one identity verified %{app_name} account. Learn more about duplicate accounts
-duplicate_profiles_detected.intro2: 'You need to delete the duplicate accounts before signing into %{app_name}. Here’s what to do:'
+duplicate_profiles_detected.intro_html: '%{app_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
+duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
+duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in
-duplicate_profiles_detected.select_an_account.details: Keep the account that you’ve connected to the most agencies. That way you don’t have to reconnect to all the agencies you use.
+duplicate_profiles_detected.select_an_account.details: Keep the account you use the most. For example, the one tied to the most services. That way, you won’t have to reconnect services.
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
 duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
