@@ -319,6 +319,7 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:one_account_user_verification_enabled_percentage, type: :integer)
     config.add(
       :openid_connect_redirect,
       type: :string,

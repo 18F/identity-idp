@@ -137,6 +137,23 @@ module AbTests
     user&.uuid
   end.freeze
 
+  ONE_ACCOUNT_USER_VERIFICATION_ENABLED = AbTest.new(
+    experiment_name: 'One Account User Verification Enabled',
+    should_log: [
+      'Email and Password Authentication',
+      'SP redirect initiated',
+      :one_account_duplicate_profiles_detected,
+      :one_account_unknown_profile_detected,
+      :one_account_recognize_all_profiles,
+    ].to_set,
+    buckets: {
+      one_account_user_verification_enabled_percentage:
+        IdentityConfig.store.one_account_user_verification_enabled_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
   SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
     experiment_name: 'Socure shadow mode',
     should_log: ['IdV: doc auth verify proofing results'].to_set,

@@ -307,6 +307,7 @@ minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 newrelic_license_key: ''
+one_account_user_verification_enabled_percentage: 0
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
