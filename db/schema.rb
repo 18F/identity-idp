@@ -249,7 +249,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_221924) do
     t.datetime "confirmed_at", precision: nil, comment: "sensitive=false"
     t.datetime "confirmation_sent_at", precision: nil, comment: "sensitive=false"
     t.string "email_fingerprint", default: "", null: false, comment: "sensitive=false"
-    t.string "encrypted_email", default: "", null: false, comment: "sensitive=true"
+    t.string "encrypted_email", default: "", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "last_sign_in_at", precision: nil, comment: "sensitive=false"
