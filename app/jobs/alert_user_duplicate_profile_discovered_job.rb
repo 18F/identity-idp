@@ -11,7 +11,7 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
       case type
       when ACCOUNT_CREATED
         mailer.dupe_profile_created(agency_name: agency).deliver_now_or_later
-        return unless phone
+        next unless phone
         @telephony_response = Telephony.send_dupe_profile_created_notice(
           to: phone,
           country_code: Phonelib.parse(phone).country,
@@ -19,7 +19,7 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
         )
       when SIGN_IN_ATTEMPTED
         mailer.dupe_profile_sign_in_attempted(agency_name: agency).deliver_now_or_later
-        return unless phone
+        next unless phone
         @telephony_response = Telephony.send_dupe_profile_sign_in_attempted_notice(
           to: phone,
           country_code: Phonelib.parse(phone).country,
