@@ -4,6 +4,7 @@ postgresql: &postgresql
   database: identity_idp_<%= Rails.env %>
   port: 5432
   username: <%= ENV['DOCKER_DB_USER'] %>
+  password: <%= ENV['DOCKER_DB_PASSWORD'] %>
 
 defaults: &defaults
   host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>

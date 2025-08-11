@@ -250,8 +250,6 @@ It's likely that you'll be prompted with a screen with warnings about an unsafe 
 
 There was an initial attempt to dockerize the IDP but it is currently deprecated, mostly non-functional, and not maintained. There is ongoing work to make the IDP more [12 Factor](https://12factor.net/) compliant which will eventually lead to better support for containerization.
 
-If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container.
-
 ## Linting
 
 Run `make lint` to look for errors; `make lintfix` can repair some linting errors.

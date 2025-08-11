@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import type { ReactNode } from 'react';
 import { I18n } from '@18f/identity-i18n';
 import useI18n from './use-i18n';
 import I18nContext from './i18n-context';
@@ -7,7 +8,7 @@ describe('useI18n', () => {
   describe('t', () => {
     it('returns localized key value', () => {
       const { result } = renderHook(() => useI18n(), {
-        wrapper: ({ children }) => (
+        wrapper: ({ children }: { children: ReactNode }) => (
           <I18nContext.Provider value={new I18n({ strings: { sample: 'translation' } })}>
             {children}
           </I18nContext.Provider>

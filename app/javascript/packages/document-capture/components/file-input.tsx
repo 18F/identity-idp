@@ -2,6 +2,7 @@ import {
   useContext,
   useState,
   useMemo,
+  useEffect,
   forwardRef,
   useRef,
   useImperativeHandle,
@@ -220,7 +221,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const previousIsValuePending = usePrevious(isValuePending);
   const isUpdated = useMemo(
     () => Boolean(previousValue && value && previousValue !== value),
-    [value],
+    [value, previousValue],
   );
   const isPendingValueReceived = useMemo(
     () => previousIsValuePending && !isValuePending && !!value,
@@ -228,7 +229,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     [value, isValuePending, previousIsValuePending],
   );
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
-  useMemo(() => setOwnErrorMessage(null), [value]);
+  useEffect(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;

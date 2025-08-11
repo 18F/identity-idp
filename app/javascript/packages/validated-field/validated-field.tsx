@@ -8,7 +8,7 @@ import {
   forwardRef,
 } from 'react';
 import type {
-  MutableRefObject,
+  RefObject,
   ReactNode,
   HTMLAttributes,
   InputHTMLAttributes,
@@ -45,7 +45,7 @@ declare global {
     interface IntrinsicElements {
       'lg-validated-field': HTMLAttributes<ValidatedFieldElement> & {
         class?: string;
-        ref?: MutableRefObject<ValidatedFieldElement | undefined>;
+        ref?: RefObject<ValidatedFieldElement | undefined>;
       };
     }
   }

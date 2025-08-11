@@ -68,6 +68,7 @@ function Warning({
   if (actionText && actionOnClick) {
     actionButtons = [
       <Button
+        key="warning-action"
         isBig
         isWide
         onClick={() => {

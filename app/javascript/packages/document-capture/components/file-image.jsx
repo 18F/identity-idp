@@ -26,7 +26,7 @@ function FileImage({ file, alt, className }) {
       ifStillMounted(forceRender)((prevState = 0) => 1 - prevState);
     };
     reader.readAsDataURL(file);
-  }, [file]);
+  }, [file, cache, ifStillMounted]);
 
   const classes = [
     'document-capture-file-image',

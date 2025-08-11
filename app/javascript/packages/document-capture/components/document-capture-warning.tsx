@@ -113,7 +113,7 @@ function DocumentCaptureWarning({
       error_message_displayed: errorMessageDisplayed,
       liveness_checking_required: isSelfieCaptureEnabled,
     });
-  }, []);
+  }, [heading, isSelfieCaptureEnabled, remainingSubmitAttempts, trackEvent]);
 
   return (
     <>

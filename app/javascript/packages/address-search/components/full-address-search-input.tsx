@@ -38,7 +38,7 @@ export default function FullAddressSearchInput({
   } = useValidatedUspsLocations(locationsURL);
 
   const inputChangeHandler =
-    <T extends HTMLElement & { value: string }>(input) =>
+    <T extends HTMLElement & { value: string }>(input: (value: string) => void) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
       input(target.value);
@@ -54,11 +54,11 @@ export default function FullAddressSearchInput({
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
     onLoadingLocations(isLoading);
-  }, [isLoading]);
+  }, [isLoading, onLoadingLocations]);
 
   useEffect(() => {
     uspsError && onError(uspsError);
-  }, [uspsError]);
+  }, [uspsError, onError]);
 
   useDidUpdateEffect(() => {
     onFoundLocations(locationQuery, locationResults);
@@ -69,7 +69,7 @@ export default function FullAddressSearchInput({
       onError(null);
       onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
-    [addressValue, cityValue, stateValue, zipCodeValue],
+    [addressValue, cityValue, stateValue, zipCodeValue, onError, onSearch],
   );
 
   const handleContinue = useCallback(
@@ -77,7 +77,7 @@ export default function FullAddressSearchInput({
       // Run LocationSelect with null as the location
       onContinue!(event, null);
     },
-    [uspsApiError],
+    [onContinue],
   );
 
   const getErroneousAddressChars = () => {

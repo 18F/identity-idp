@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import type { FC, FormEventHandler, RefCallback } from 'react';
 import { Alert } from '@18f/identity-components';
 import { replaceVariables } from '@18f/identity-i18n';
@@ -187,7 +187,7 @@ function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
     if (titleFormat && step?.title) {
       document.title = replaceVariables(titleFormat, { step: step.title });
     }
-  }, [step]);
+  }, [step, titleFormat]);
 }
 
 /**
@@ -275,7 +275,7 @@ function FormSteps({
     if (stepName && !stepsCheck.includes(stepName)) {
       setStepName(undefined);
     }
-  }, [stepName, steps]);
+  }, [stepName, steps, setStepName]);
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
@@ -294,7 +294,7 @@ function FormSteps({
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
    */
-  function onPageTransition() {
+  const onPageTransition = useCallback(() => {
     const firstElementChild = formRef.current?.firstElementChild;
     if (firstElementChild instanceof window.HTMLElement) {
       firstElementChild.classList.add('form-steps__focus-anchor');
@@ -303,7 +303,7 @@ function FormSteps({
     }
 
     setStepName(stepName);
-  }
+  }, [stepName, setStepName]);
 
   useStepTitle(step, titleFormat);
   useDidUpdateEffect(() => onStepChange(stepName!), [step]);
@@ -315,13 +315,13 @@ function FormSteps({
     if (autoFocus) {
       onPageTransition();
     }
-  }, []);
+  }, [autoFocus, onPageTransition]);
 
   useEffect(() => {
     if (stepErrors.length) {
       onPageTransition();
     }
-  }, [stepErrors]);
+  }, [stepErrors, onPageTransition]);
 
   /**
    * Returns array of form errors for the current set of values.

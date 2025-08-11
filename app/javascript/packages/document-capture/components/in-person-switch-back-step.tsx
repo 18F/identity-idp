@@ -9,7 +9,7 @@ function InPersonSwitchBackStep({ onChange }: FormStepComponentProps<any>) {
   // the tab. `useLayoutEffect` is used to avoid race conditions where the callback could occur at
   // the same time as the change handler's `ifStillMounted` wrapping `useEffect`, which would treat
   // it as unmounted and not update the value.
-  useLayoutEffect(() => onChange({}, { patch: false }), []);
+  useLayoutEffect(() => onChange({}, { patch: false }), [onChange]);
 
   return (
     <>

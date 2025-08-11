@@ -171,7 +171,18 @@ function AcuantSelfieCamera({
     }
     // Cleanup when the AcuantSelfieCamera component is unmounted
     return () => (isReady ? cleanupSelfieCamera() : undefined);
-  }, [isReady]);
+  }, [
+    isReady,
+    onImageCaptureClose,
+    onImageCaptureFailure,
+    onImageCaptureFeedback,
+    onImageCaptureInitialized,
+    onImageCaptureOpen,
+    onImageCaptureSuccess,
+    onSelfieRetaken,
+    onSelfieTaken,
+    setIsActive,
+  ]);
 
   return <>{children}</>;
 }

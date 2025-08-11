@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 function CallbackOnMount({ onMount, children = null }) {
   useEffect(() => {
     onMount();
-  }, []);
+  }, [onMount]);
 
   return children;
 }
