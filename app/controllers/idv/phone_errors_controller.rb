@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
     include Idv::VerifyByMailConcern
+    include PhoneFormatter
 
     before_action :confirm_step_allowed, except: [:failure]
     before_action :set_gpo_letter_available
@@ -20,6 +21,7 @@ module Idv
         @country_code = idv_session.previous_phone_step_params[:international_code]
       end
 
+      @formatted_phone = PhoneFormatter.format(@phone, country_code: @country_code)
       track_event(type: :warning)
     end
 
