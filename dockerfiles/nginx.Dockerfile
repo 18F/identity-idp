@@ -8,6 +8,15 @@ COPY ./dockerfiles/nginx-prod.conf /etc/nginx/nginx.conf
 COPY ./dockerfiles/status-map.conf /etc/nginx/
 RUN /update-ips.sh
 
+RUN mkdir -p /var/lib/nginx/tmp/client_body \
+             /var/lib/nginx/tmp/proxy_temp \
+             /var/lib/nginx/tmp/fastcgi_temp \
+             /var/lib/nginx/tmp/uwsgi_temp \
+             /var/lib/nginx/tmp/scgi_temp \
+             /var/lib/nginx/logs && \
+    chown -R 100:1000 /var/lib/nginx && \
+    chmod -R 755 /var/lib/nginx
+
 # Generate and place SSL certificates for nginx (used only by ALB)
 RUN mkdir /keys
 RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
