@@ -374,6 +374,7 @@ recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1
 redis_attempts_api_url: redis://localhost:6379/2
+redis_fcms_url: redis://localhost:6379/3
 redis_pool_size: 10
 redis_throttle_pool_size: 5
 redis_throttle_url: redis://localhost:6379/1
