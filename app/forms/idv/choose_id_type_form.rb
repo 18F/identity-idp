@@ -18,13 +18,13 @@ module Idv
     end
 
     def chosen_id_type_valid?
-      return true if DocAuth::Response::ID_TYPE_SLUGS.value? @chosen_id_type
+      return true if Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES.include?(@chosen_id_type)
       errors.add(
         :chosen_id_type,
         :invalid,
         message: "
-          `choose_id_type` #{@chosen_id_type} is invalid,
-          expected one of #{DocAuth::Response::ID_TYPE_SLUGS.values}
+          `chosen_id_type` #{@chosen_id_type} is invalid,
+          expected one of #{Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES}
         ",
       )
       false

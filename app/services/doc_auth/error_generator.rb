@@ -9,7 +9,6 @@ module DocAuth
   end
 
   class IdTypeErrorHandler < ErrorHandler
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
                              DocAuth::LexisNexis::IssuerTypes::COUNTRY.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
@@ -24,7 +23,7 @@ module DocAuth
       error_result = ErrorResult.new
       both_side_ok = true
       document_type = classification_info.with_indifferent_access.dig('Front', 'ClassName')
-      is_passport = document_type == 'Passport'
+      is_passport = document_type == DocAuth::DocumentClassifications::PASSPORT
       sides = is_passport ? ['Front'] : ['Front', 'Back']
       sides.each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
@@ -32,7 +31,7 @@ module DocAuth
         side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
 
         side_ok = !side_class.present? ||
-                  SUPPORTED_ID_CLASSNAME.include?(side_class) ||
+                  DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(side_class) ||
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         issuer_type_ok = !side_issuer_type.present? ||
@@ -293,8 +292,6 @@ module DocAuth
       'Visible Pattern': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
-
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License', 'Passport'].freeze
 
     def initialize(config)
       @config = config

@@ -7,7 +7,7 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
-  let(:id_type) { 'state_id' }
+  let(:id_type) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   let(:choose_id_type_path) { 'choose_id_type' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }

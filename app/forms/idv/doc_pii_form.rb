@@ -42,7 +42,7 @@ module Idv
 
     def self.pii_like_keypaths(document_type:)
       keypaths = [[:pii]]
-      document_attrs = document_type&.downcase&.include?('passport') ?
+      document_attrs = document_type&.downcase&.include?(Idp::Constants::DocumentTypes::PASSPORT) ?
         DocPiiPassport.pii_like_keypaths :
         DocPiiStateId.pii_like_keypaths
 
@@ -76,7 +76,6 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
-    STATE_ID_TYPES = ['drivers_license', 'state_id_card', 'identification_card'].freeze
 
     attr_reader :pii_from_doc
 
@@ -103,10 +102,10 @@ module Idv
 
     def id_doc_type_valid?
       case id_doc_type
-      when *STATE_ID_TYPES
+      when *Idp::Constants::DocumentTypes::STATE_ID_TYPES
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
-      when 'passport', 'passport_card'
+      when *Idp::Constants::DocumentTypes::PASSPORT_TYPES
         passport_validation = DocPiiPassport.new(pii: pii_from_doc)
         passport_validation.valid? || errors.merge!(passport_validation.errors)
       else
