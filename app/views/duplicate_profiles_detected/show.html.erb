@@ -3,7 +3,19 @@
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { @dupe_profiles_detected_presenter.heading } %>
 
-  <p><%= t('duplicate_profiles_detected.intro', app_name: APP_NAME) %></p>
+  <p>
+    <%= t(
+          'duplicate_profiles_detected.intro_html',
+          link_html: new_tab_link_to(
+            t('duplicate_profiles_detected.intro.link'),
+            MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'resolve-duplicate-accounts',
+            ),
+          ),
+          app_name: APP_NAME,
+        ) %>
+  </p>
 
   <p><%= t('duplicate_profiles_detected.intro2', app_name: APP_NAME) %></p>
 

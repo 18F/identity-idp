@@ -83,15 +83,15 @@ account.index.reactivation.instructions: 你的用户资料因为重设密码最
 account.index.reactivation.link: 现在重新激活你的用户资料。
 account.index.sign_in_location_and_ip: 从 %{ip}（IP 地址可能位于 %{location}）。
 account.index.unknown_location: 未知地点
-account.index.verification.connect_idv_account.cta: 登录%{sp_name}来获得服务。
-account.index.verification.connect_idv_account.intro: 把你的账户连接到%{sp_name}。
+account.index.verification.connect_idv_account.cta: 登录%{sp_name} 来获得服务。
+account.index.verification.connect_idv_account.intro: 把你的账户与%{sp_name} 连接。
 account.index.verification.continue_idv: 继续身份验证
 account.index.verification.finish_verifying_html: 完成身份验证流程来获得访问 <strong>%{sp_name}</strong> 的权限。
 account.index.verification.finish_verifying_no_sp: 完成身份验证流程来获得访问%{app_name} 合作伙伴机构的权限。
 account.index.verification.identity_verification: 身份验证
 account.index.verification.in_person_instructions_html: 你必须在 <strong>%{deadline}</strong> 之前去邮局完成验证你的身份。
 account.index.verification.instructions: 输入你的验证码来完成身份验证。
-account.index.verification.learn_more_link: 了解更多有关验证你身份的信息。
+account.index.verification.learn_more_link: 了解更多验证你身份的信息。
 account.index.verification.legacy_verified_html: <strong>%{date}</strong>你使用身份证件在%{app_name}上验证了你的身份。
 account.index.verification.pending_badge: 待验证
 account.index.verification.pending_badge_tooltip: 你的身份有待验证。
@@ -105,7 +105,7 @@ account.index.verification.verified_badge_tooltip: 你的身份已经验证。
 account.index.verification.verified_facial_match_badge_tooltip: 你的身份和照片都已验证。
 account.index.verification.verify_with_facial_match_html: 要访问 <strong>%{sp_name}</strong>，请使用你本人照片再次验证身份。
 account.index.verification.you_verified_your_facial_match_identity: 你使用以下信息验证了身份并验证了一张你本人的照片，从而获得了访问%{app_name}所有合作伙伴机构的权限。
-account.index.verification.you_verified_your_identity_html: 你使用以下信息向 <strong>%{sp_name}</strong> 验证了身份。
+account.index.verification.you_verified_your_identity_html: 你用以下信息为<strong>%{sp_name}</strong>验证了身份。
 account.index.webauthn: 安全密钥
 account.index.webauthn_add: 添加安全密钥
 account.index.webauthn_platform: 人脸或触摸解锁
@@ -745,26 +745,27 @@ doc_auth.tips.document_capture_selfie_text1: 摘掉任何遮盖您面孔的东�
 doc_auth.tips.document_capture_selfie_text2: 在光线明亮的地方拍照
 doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
-duplicate_profiles_detected.accounts_list.heading: Accounts with the same verified information
-duplicate_profiles_detected.cant_access: 'I can’t access an account'
+duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
+duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
-duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate accounts'
-duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
-duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
+duplicate_profiles_detected.delete_duplicates.details_html: 登录后，从“你的帐户”页面删除该帐户。 %{link_html}
+duplicate_profiles_detected.delete_duplicates.heading: '删除重复帐户'
+duplicate_profiles_detected.delete_duplicates.link: 如何删除你的帐户。
+duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个帐户
 duplicate_profiles_detected.duplicate: Duplicate
-duplicate_profiles_detected.get_help: Get Help
-duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro: The %{app_name} requires that you only have one identity verified %{app_name} account. Learn more about duplicate accounts
-duplicate_profiles_detected.intro2: 'You need to delete the duplicate accounts before signing into %{app_name}. Here’s what to do:'
+duplicate_profiles_detected.get_help: 获取帮助
+duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
+duplicate_profiles_detected.intro_html: '%{app_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
+duplicate_profiles_detected.intro.link: 了解更多关于重复帐户的信息。
+duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in
-duplicate_profiles_detected.select_an_account.details: Keep the account that you’ve connected to the most agencies. That way you don’t have to reconnect to all the agencies you use.
-duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
-duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
-duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
-duplicate_profiles_detected.sign_out: Sign out
+duplicate_profiles_detected.select_an_account.details: 保留你最常用的那个帐户。例如，与最多机构绑定的那个帐户。这样，你就无需再重新连接这些机构。
+duplicate_profiles_detected.select_an_account.heading: 选择要保留的帐户
+duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 %{app_name} 帐户登录。
+duplicate_profiles_detected.sign_back_in.heading: 使用一个帐户重新登录 %{app_name}
+duplicate_profiles_detected.sign_out: 登出
 duplicate_profiles_detected.signed_in: Signed In
 email_address.not_found: 未找到电子邮件
 email_addresses.add.duplicate: 该电邮地址已注册到你的账户。
@@ -1137,7 +1138,7 @@ idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
 idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
-idv.failure.phone.warning.you_entered: 我们找不到你使用此号码的记录：
+idv.failure.phone.warning.you_entered_html: "我们找不到你使用: <strong class='text-no-wrap'>%{formatted_phone}</strong> 电话号码的记录"
 idv.failure.sessions.exception: 处理你的请求时内部出错。
 idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
@@ -1150,8 +1151,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
-idv.failure.warning.attempts_html.one: 您可以再试<strong>1次。</strong>然后您必须等6个小时才能再试。
-idv.failure.warning.attempts_html.other: 您可以再试<strong>%{count}次。</strong>然后您必须等6个小时才能再试。
+idv.failure.warning.attempts_html.one: 你可以再试<strong>1次。</strong>你后您必须等6个小时才能再试。
+idv.failure.warning.attempts_html.other: 你可以再试<strong>%{count}次。</strong>你后您必须等6个小时才能再试。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
@@ -1664,7 +1665,7 @@ step_indicator.flows.idv.go_to_the_post_office: 去邮局
 step_indicator.flows.idv.re_enter_password: 重新输入你的密码
 step_indicator.flows.idv.secure_account: 保护你账户的安全
 step_indicator.flows.idv.verify_address: 验证你的地址
-step_indicator.flows.idv.verify_id: 验证你的身份证件
+step_indicator.flows.idv.verify_id: 验证你的ID
 step_indicator.flows.idv.verify_info: 验证你的信息
 step_indicator.flows.idv.verify_phone: 验证你的电话号码
 step_indicator.status.complete: 完成了

@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsAuthenticationReport do
+RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  subject(:report) { Reports::IrsAuthenticationReport.new(report_date) }
+  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date) }
 
-  let(:name) { 'irs-authentication-report' }
+  let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/irs-authentication-report/2021/2021-03-02.irs-authentication-report'
+    'int/irs-registration-funnel-report/2021/2021-03-02.irs-registration-funnel-report'
   end
 
   let(:expected_s3_paths) do
@@ -53,17 +53,17 @@ RSpec.describe Reports::IrsAuthenticationReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:irs_authentication_emails)
+    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
       .and_return(mock_test_auth_emails)
 
-    allow(report.irs_authentication_report).to receive(:funnel_metrics_table)
+    allow(report.irs_registration_funnel_report).to receive(:funnel_metrics_table)
       .and_return(mock_funnel_metrics_data)
   end
 
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'IRS Authentication Report - 2021-03-02',
+      subject: 'IRS Registration Funnel Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
@@ -73,7 +73,7 @@ RSpec.describe Reports::IrsAuthenticationReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:irs_authentication_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 

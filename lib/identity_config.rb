@@ -180,8 +180,8 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
-    config.add(:irs_authentication_issuers, type: :json)
-    config.add(:irs_authentication_emails, type: :json)
+    config.add(:irs_registration_funnel_issuers, type: :json)
+    config.add(:irs_registration_funnel_emails, type: :json)
     config.add(:irs_fraud_metrics_issuers, type: :json)
     config.add(:irs_fraud_metrics_emails, type: :json)
     config.add(:geo_data_file_path, type: :string)
@@ -319,6 +319,7 @@ module IdentityConfig
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:one_account_user_verification_enabled_percentage, type: :integer)
     config.add(
       :openid_connect_redirect,
       type: :string,

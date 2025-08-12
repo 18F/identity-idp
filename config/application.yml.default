@@ -235,13 +235,13 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
-irs_authentication_emails: '[]'
-irs_authentication_issuers: '[]'
 irs_credential_tenure_report_config: '[]'
 irs_credential_tenure_report_issuers: '[]'
 irs_credentials_emails: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
+irs_registration_funnel_emails: '[]'
+irs_registration_funnel_issuers: '[]'
 irs_verification_report_config: '[]'
 irs_verification_report_issuers: '[]'
 
@@ -307,6 +307,7 @@ minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 newrelic_license_key: ''
+one_account_user_verification_enabled_percentage: 0
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
@@ -609,10 +610,10 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
-  irs_authentication_emails: '["g@example.com", "h@example.com"]'
-  irs_authentication_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
+  irs_registration_funnel_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

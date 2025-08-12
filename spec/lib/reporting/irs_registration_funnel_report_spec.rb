@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/irs_authentication_report'
+require 'reporting/irs_registration_funnel_report'
 
-RSpec.describe Reporting::IrsAuthenticationReport do
+RSpec.describe Reporting::IrsRegistrationFunnelReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
   let(:expected_definitions_table) do
@@ -30,11 +30,10 @@ RSpec.describe Reporting::IrsAuthenticationReport do
       ['Registration Demand', 4, '100.0%'],
       ['Registration Failures', 2, '50.0%'],
       ['Registration Successes', 2, '50.0%'],
-      ['Registration Success Rate', 1, '25.0%'],
     ]
   end
 
-  subject(:report) { Reporting::IrsAuthenticationReport.new(issuers: [issuer], time_range:) }
+  subject(:report) { Reporting::IrsRegistrationFunnelReport.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day
@@ -113,7 +112,7 @@ RSpec.describe Reporting::IrsAuthenticationReport do
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'Authentication Funnel Metrics',
+          title: 'Registration Funnel Metrics',
           filename: 'funnel_metrics',
           table: expected_funnel_metrics_table,
         ),

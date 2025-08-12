@@ -738,18 +738,19 @@ duplicate_profiles_detected.accounts_list.heading: Accounts with the same verifi
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign in, authenticate, and delete the account from the ‘Your account’ page. %{link_html}
-duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate accounts'
+duplicate_profiles_detected.delete_duplicates.details_html: Sign in and delete the account from the “Your account” page. %{link_html}
+duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate account(s)'
 duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
 duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro: The %{app_name} requires that you only have one identity verified %{app_name} account. Learn more about duplicate accounts
-duplicate_profiles_detected.intro2: 'You need to delete the duplicate accounts before signing into %{app_name}. Here’s what to do:'
+duplicate_profiles_detected.intro_html: '%{app_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
+duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
+duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in
-duplicate_profiles_detected.select_an_account.details: Keep the account that you’ve connected to the most agencies. That way you don’t have to reconnect to all the agencies you use.
+duplicate_profiles_detected.select_an_account.details: Keep the account you use the most. For example, the one tied to the most services. That way, you won’t have to reconnect services.
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
 duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
@@ -1124,7 +1125,7 @@ idv.failure.phone.warning.heading: We couldn’t match you to this number
 idv.failure.phone.warning.learn_more_link: Learn more about what phone number to use
 idv.failure.phone.warning.next_steps_html: Try <strong>another</strong> number that you use often and have used for a long time. This can be a work or home number.
 idv.failure.phone.warning.try_again_button: Try another number
-idv.failure.phone.warning.you_entered: 'We couldn’t find a record of you using this number:'
+idv.failure.phone.warning.you_entered_html: "We couldn’t find a record of you using this number: <strong class='text-no-wrap'>%{formatted_phone}</strong>"
 idv.failure.sessions.exception: There was an internal error processing your request.
 idv.failure.sessions.fail_html: For your security, we limit the number of times you can attempt to verify personal information online. <strong>Try again in %{timeout}.</strong>
 idv.failure.sessions.heading: We couldn’t find records matching your personal information
@@ -1946,7 +1947,7 @@ user_mailer.dupe_profile.review_complete.success_info: We completed a review of 
 user_mailer.dupe_profile.review_complete.unable_heading: We are not able to sign you in
 user_mailer.dupe_profile.review_complete.unable_info: We completed a review of your accounts and are not able to sign you in. Please contact %{sp_or_app_name} for further assistance.
 user_mailer.dupe_profile.sign_in.description: Someone just signed into a %{app_name} that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
-user_mailer.dupe_profile.sign_in.description2_html: If this was you, you should delete the duplicate account by following the %{steps_link_html} and use only one account for. If this wasn’t you contact the %{help_center_link_html}.
+user_mailer.dupe_profile.sign_in.description2_html: If this was you, you should delete the duplicate account by following the %{steps_link_html} and use only one account for your security. If this wasn’t you, contact the %{help_center_link_html}.
 user_mailer.dupe_profile.sign_in.heading: Another account using your personal information has signed in
 user_mailer.dupe_profile.sign_in.help_center_link: '%{app_name} Help Center'
 user_mailer.dupe_profile.sign_in.steps_link: steps outlined here
