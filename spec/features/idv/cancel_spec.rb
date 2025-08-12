@@ -20,13 +20,13 @@ RSpec.describe 'cancel IdV' do
   end
 
   it 'shows the user a cancellation message with the option to go back to the step' do
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_content(t('doc_auth.headings.verify_identity'))
-    original_path = current_path
 
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -35,12 +35,13 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_unique_form_landmark_labels
 
     expect(page).to have_button(t('idv.cancel.actions.start_over'))
+    expect(page).to have_no_button(t('idv.cancel.actions.exit', app_name: APP_NAME))
     expect(page).to have_button(t('idv.cancel.actions.account_page'))
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
     click_on(t('idv.cancel.actions.keep_going'))
+    expect(page).to have_current_path(idv_agreement_path)
     expect(page).to have_content(t('doc_auth.headings.lets_go'))
-    expect(page).to have_current_path(original_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
       step: 'agreement',
@@ -51,8 +52,8 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_content(t('doc_auth.headings.verify_identity'))
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -66,8 +67,8 @@ RSpec.describe 'cancel IdV' do
 
     click_on t('idv.cancel.actions.start_over')
 
-    expect(page).to have_content(t('doc_auth.instructions.getting_started'))
     expect(page).to have_current_path(idv_welcome_path)
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'))
     expect(fake_analytics).to have_logged_event(
       'IdV: start over',
       step: 'agreement',
@@ -78,8 +79,8 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_content(t('doc_auth.headings.verify_identity'))
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -118,6 +119,7 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_content(t('doc_auth.info.ssn'))
       click_link t('links.cancel')
 
+      expect(page).to have_current_path(idv_cancel_path(step: 'ssn'))
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
@@ -174,8 +176,8 @@ RSpec.describe 'cancel IdV' do
 
       click_link t('links.cancel')
 
+      expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-      expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
         hash_including(step: 'agreement'),
@@ -194,7 +196,10 @@ RSpec.describe 'cancel IdV' do
         url: true,
         ignore_query: true,
       )
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+
+      params = UriService.params(current_url)
+      expect(params['error']).to eq('access_denied')
+
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
         step: 'agreement',

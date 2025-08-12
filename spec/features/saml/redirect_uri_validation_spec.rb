@@ -23,7 +23,7 @@ RSpec.describe 'redirect_uri validation' do
       click_agree_and_continue
       click_submit_default_twice
 
-      expect(current_url).to eq sp.acs_url
+      expect(page).to have_current_path(sp.acs_url, url: true)
     end
   end
 end

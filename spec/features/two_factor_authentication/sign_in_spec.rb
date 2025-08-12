@@ -529,17 +529,26 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       click_link t('links.help'), match: :first
 
-      expect(current_url).to eq MarketingSite.help_url
+      expect(page).to have_current_path(
+        MarketingSite.help_url,
+        url: true,
+      )
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link t('links.contact'), match: :first
 
-      expect(current_url).to eq MarketingSite.contact_url
+      expect(page).to have_current_path(
+        MarketingSite.contact_url,
+        url: true,
+      )
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link t('links.privacy_policy'), match: :first
 
-      expect(current_url).to eq MarketingSite.security_and_privacy_practices_url
+      expect(page).to have_current_path(
+        MarketingSite.security_and_privacy_practices_url,
+        url: true,
+      )
     end
   end
 

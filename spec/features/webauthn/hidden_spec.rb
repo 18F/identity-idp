@@ -106,7 +106,7 @@ RSpec.describe 'webauthn hide' do
             expect(webauthn_option_hidden?).to eq(false)
             choose t('two_factor_authentication.login_options.webauthn_platform')
             click_continue
-            expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+            expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           end
 
           context 'if the webauthn credential is not their default mfa method when signing in' do
@@ -126,7 +126,7 @@ RSpec.describe 'webauthn hide' do
               click_on t('two_factor_authentication.login_options_link_text')
               choose t('two_factor_authentication.login_options.webauthn_platform')
               click_continue
-              expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+              expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
             end
           end
         end

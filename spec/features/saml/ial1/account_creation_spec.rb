@@ -10,7 +10,7 @@ RSpec.feature 'Canceling Account Creation' do
       click_link t('links.create_account')
       click_link t('links.cancel')
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id))
     end
   end
 
@@ -22,13 +22,14 @@ RSpec.feature 'Canceling Account Creation' do
       click_confirmation_link_in_email('test@test.com')
       click_link t('links.cancel_account_creation')
 
-      expect(current_url).to eq sign_up_cancel_url
+      expect(page).to have_current_path(sign_up_cancel_path)
 
       expect do
         click_button t('forms.buttons.cancel')
       end.to change(User, :count).by(-1)
-      expect(current_url).to eq \
-        new_user_session_url(request_id: ServiceProviderRequestProxy.last.uuid)
+      expect(page).to have_current_path(
+        new_user_session_path(request_id: ServiceProviderRequestProxy.last.uuid),
+      )
     end
 
     it 'redirects to the password page after cancelling the cancellation' do
@@ -39,12 +40,12 @@ RSpec.feature 'Canceling Account Creation' do
       previous_url = current_url
       click_link t('links.cancel_account_creation')
 
-      expect(current_url).to eq sign_up_cancel_url
+      expect(page).to have_current_path(sign_up_cancel_path)
       expect do
         click_link t('links.go_back')
       end.to change(User, :count).by(0)
 
-      expect(current_url).to eq previous_url
+      expect(page).to have_current_path(previous_url, url: true)
     end
   end
 end
