@@ -393,6 +393,7 @@ module IdentityConfig
     config.add(:recovery_code_length, type: :integer)
     config.add(:redis_attempts_api_pool_size, type: :integer)
     config.add(:redis_attempts_api_url, type: :string)
+    config.add(:redis_fcms_url, type: :string)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_throttle_pool_size, type: :integer)
     config.add(:redis_throttle_url, type: :string)
