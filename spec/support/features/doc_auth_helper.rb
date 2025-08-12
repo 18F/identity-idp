@@ -43,7 +43,10 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
+    # rubocop:disable IdentityIdp/CapybaraCurrentPathEqualityLinter
+    # This should be refactored at some point to not require the path conditional
     visit idv_welcome_path unless current_path == idv_welcome_path
+    # rubocop:enable IdentityIdp/CapybaraCurrentPathEqualityLinter
 
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
