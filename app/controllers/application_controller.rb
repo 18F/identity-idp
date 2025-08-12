@@ -547,7 +547,7 @@ class ApplicationController < ActionController::Base
     profile = current_user&.active_profile
     return false unless profile
     return false unless user_in_one_account_verification_bucket?
-    user_session[:duplicate_profile_ids].present?
+    DuplicateProfile.exists?(profile_ids: [profile.id], service_provider: current_sp&.issuer)
   end
 
   def sp_eligible_for_one_account?

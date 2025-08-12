@@ -21,7 +21,7 @@ class DuplicateProfileChecker
     )
     if associated_profiles
       ids = associated_profiles.map(&:id)
-      user_session[:duplicate_profile_ids] = ids
+      DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
     end
   end
 
