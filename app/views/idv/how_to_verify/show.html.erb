@@ -21,7 +21,7 @@
   <% end %>
 <% end %>
 
-<div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row">
+<div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
     <%= image_tag(
           asset_url(@presenter.online_asset_url),
@@ -72,13 +72,13 @@
   </div>
 </div>
 
-<div role="group" aria-labelledby="how-to-verify-info" class="grid-row">
+<div role="group" aria-labelledby="how-to-verify-info" class="grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto">
     <%= image_tag(
           asset_url(@presenter.post_office_asset_url),
           width: 88,
           height: 88,
-          class: 'margin-right-1 margin-top-3',
+          class: 'margin-top-3',
           alt: @presenter.post_office_asset_alt_text,
         ) %>
   </div>

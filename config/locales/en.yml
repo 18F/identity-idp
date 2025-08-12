@@ -711,7 +711,7 @@ doc_auth.instructions.bullet4: Re-enter your %{app_name} password
 doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information. We will use it to verify your identity.
 doc_auth.instructions.getting_started: 'You’ll need to:'
 doc_auth.instructions.learn_more: Learn more about our privacy and security measures
-doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity.
+doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity
 doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer
 doc_auth.instructions.test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are considered valid. Do not enter real PII in this field.
 doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check that you are the person on your ID.
