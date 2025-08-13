@@ -9,7 +9,7 @@ RSpec.describe Idv::DocPiiPassport do
   let(:issuing_country_code) { 'USA' }
   let(:nationality_code) { 'USA' }
   let(:mrz) { 'MRZ123456789' }
-  let(:id_doc_type) { 'passport' }
+  let(:document_type_received) { 'passport' }
   let(:pii) do
     {
       birth_place:,
@@ -18,7 +18,7 @@ RSpec.describe Idv::DocPiiPassport do
       issuing_country_code:,
       nationality_code:,
       mrz:,
-      id_doc_type:,
+      document_type_received:,
     }
   end
   subject(:doc_pii_passport) { described_class.new(pii:) }
@@ -62,12 +62,12 @@ RSpec.describe Idv::DocPiiPassport do
     end
   end
 
-  context 'when id_doc_type is passport_card' do
-    let(:id_doc_type) { 'passport_card' }
+  context 'when document_type_received is passport_card' do
+    let(:document_type_received) { 'passport_card' }
 
     it 'is not valid' do
       expect(subject).not_to be_valid
-      expect(subject.errors[:id_doc_type]).to include(
+      expect(subject.errors[:document_type_received]).to include(
         I18n.t('doc_auth.errors.general.no_liveness'),
       )
     end

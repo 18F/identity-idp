@@ -50,10 +50,10 @@ module DocAuth
 
         # all checks from document perspectives, without considering selfie:
         #  vendor (document only)
-        #  document_type
+        #  document_type_requested
         def doc_auth_success?
           # really it's everything else excluding selfie
-          transaction_status_passed? && id_type_supported? && id_doc_type_expected?
+          transaction_status_passed? && id_type_supported? && document_type_received_expected?
         end
 
         def error_messages
@@ -63,7 +63,7 @@ module DocAuth
             { passport: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif passport_card_detected?
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
-          elsif id_type.present? && !id_doc_type_expected?
+          elsif id_type.present? && !document_type_received_expected?
             { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
@@ -131,7 +131,7 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
-        def id_doc_type_expected?
+        def document_type_received_expected?
           expected_id_types = passport_requested ?
             Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
             Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
@@ -140,7 +140,7 @@ module DocAuth
         end
 
         def id_type
-          pii_from_doc&.id_doc_type
+          pii_from_doc&.document_type_received
         end
 
         def passport_pii?

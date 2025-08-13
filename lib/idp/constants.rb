@@ -131,7 +131,7 @@ module Idp
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      id_doc_type: 'drivers_license',
+      document_type_received: 'drivers_license',
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
@@ -154,7 +154,7 @@ module Idp
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      id_doc_type: 'state_id',
+      document_type_received: 'state_id',
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
@@ -192,7 +192,7 @@ module Idp
       passport_issued: '2015-03-15',
       nationality_code: 'USA',
       document_number: '000000',
-      id_doc_type: 'passport',
+      document_type_received: 'passport',
       ssn: '666111111',
       consent_given_at: '2025-06-12 20:16:23 UTC',
       state: 'VA',
@@ -205,7 +205,7 @@ module Idp
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
-      id_doc_type: 'passport',
+      document_type_received: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
       birth_place: 'Birthplace',

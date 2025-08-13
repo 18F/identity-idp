@@ -191,7 +191,7 @@ module Proofing
       end
 
       def passport_applicant?(applicant_pii)
-        applicant_pii[:id_doc_type] == Idp::Constants::DocumentTypes::PASSPORT
+        applicant_pii[:document_type_received] == Idp::Constants::DocumentTypes::PASSPORT
       end
     end
   end

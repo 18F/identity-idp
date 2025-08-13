@@ -37,7 +37,7 @@ class InPersonEnrollment < ApplicationRecord
   DOCUMENT_TYPE_PASSPORT_BOOK = 'passport_book'
 
   # This will always be nil in the Verify-by-Mail (GPO) flow.
-  enum :document_type, {
+  enum :document_type_requested, {
     DOCUMENT_TYPE_STATE_ID.to_sym => 0,
     DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
   }
@@ -177,7 +177,7 @@ class InPersonEnrollment < ApplicationRecord
 
   # @return [Boolean] Whether the enrollment is type passport book.
   def passport_book?
-    document_type == DOCUMENT_TYPE_PASSPORT_BOOK
+    document_type_requested == DOCUMENT_TYPE_PASSPORT_BOOK
   end
 
   private
