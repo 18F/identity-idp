@@ -249,6 +249,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
+    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
@@ -259,7 +260,6 @@ class ApplicationController < ActionController::Base
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
-    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
@@ -547,7 +547,10 @@ class ApplicationController < ActionController::Base
     profile = current_user&.active_profile
     return false unless profile
     return false unless user_in_one_account_verification_bucket?
-    DuplicateProfile.exists?(profile_ids: [profile.id], service_provider: current_sp&.issuer)
+    DuplicateProfile.involving_profile(
+      profile_id: profile.id,
+      service_provider: current_sp&.issuer,
+    ).present?
   end
 
   def sp_eligible_for_one_account?
@@ -559,5 +562,10 @@ class ApplicationController < ActionController::Base
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
+  end
+
+  def handle_duplicate_profile_user
+    return unless user_duplicate_profiles_detected?
+    redirect_to duplicate_profiles_detected_url
   end
 end

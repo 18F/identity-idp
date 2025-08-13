@@ -6,7 +6,8 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   def show
     @dupe_profiles_detected_presenter = DuplicateProfilesDetectedPresenter.new(
-      user: current_user, user_session: user_session,
+      user: current_user,
+      duplicate_profile: dupe_profile,
     )
     notify_users_of_duplicate_profile_sign_in
     analytics.one_account_duplicate_profiles_detected
@@ -16,19 +17,27 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   def redirect_unless_user_has_active_duplicate_profile_confirmation
     if current_user&.active_profile.present?
-      if user_session[:duplicate_profile_ids].present?
+      if dupe_profile.present?
         return
       end
     end
     redirect_to root_url
   end
 
+  def dupe_profile
+    @dupe_profile ||= DuplicateProfile.involving_profile(
+      profile_id: current_user.active_profile.id,
+      service_provider: current_sp&.issuer,
+    )
+  end
+
   def notify_users_of_duplicate_profile_sign_in
-    return unless user_session[:duplicate_profile_ids].present?
+    return unless dupe_profile.present?
     return if user_session[:dupe_profiles_notified]
     agency_name = current_sp.friendly_name || current_sp.agency&.name
 
-    user_session[:duplicate_profile_ids].each do |profile_id|
+    dupe_profile.profile_ids.each do |profile_id|
+      next if current_user.active_profile.id == profile.id
       profile = Profile.find(profile_id)
       AlertUserDuplicateProfileDiscoveredJob.perform_later(
         user: profile.user,
