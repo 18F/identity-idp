@@ -160,6 +160,7 @@ enable_usps_verification: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
+fcms_config: '[]'
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'

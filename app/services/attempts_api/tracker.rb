@@ -59,9 +59,23 @@ module AttemptsApi
         public_key: sp.attempts_public_key,
       )
 
+      fcms_jwe = event.to_jwe(
+        issuer: sp.issuer,
+        public_key: fcms_public_key, # use a new key here (or not encrypt at all)
+      )
+
+      # fcms_payload = event.to_fcms_payload(issuer: sp.issuer)
+
       redis_client.write_event(
         event_key: event.jti,
         jwe: jwe,
+        timestamp: event.occurred_at,
+        issuer: sp.issuer,
+      )
+
+      redis_client.write_fcms_event(
+        event_key: event.jti,
+        jwe: fcms_jwe,
         timestamp: event.occurred_at,
         issuer: sp.issuer,
       )
@@ -115,5 +129,22 @@ module AttemptsApi
     def redis_client
       @redis_client ||= AttemptsApi::RedisClient.new
     end
+  end
+
+  def fcms_public_key
+    fcms_config = IdentityConfig.store.fcms_config
+    if fcms_config.present? && fcms_config['keys'].present?
+      OpenSSL::PKey::RSA.new(fcms_config['keys'].first)
+    else
+      # not sure if we need this (lifted from service providers, see below)
+      ssl_certs.first.public_key
+    end
+  end
+
+  def ssl_certs
+    @ssl_certs ||= Array(certs).select(&:present?).map do |cert|
+      cert_content = load_cert(cert)
+      OpenSSL::X509::Certificate.new(cert_content) if cert_content
+    end.compact
   end
 end

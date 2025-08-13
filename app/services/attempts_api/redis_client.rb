@@ -10,6 +10,16 @@ module AttemptsApi
       end
     end
 
+    # def write_fcms_event(event_key:, fcms_payload:, timestamp:, issuer:)
+    def write_fcms_event(event_key:, jwe:, timestamp:, issuer:)
+      key = key(timestamp, issuer)
+
+      REDIS_FCMS_POOL.with do |client|
+        client.hset(key, event_key, jwe)
+        client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
+      end
+    end
+
     def read_events(issuer:, batch_size: 1000)
       events = {}
       hourly_keys(issuer).each do |hourly_key|
