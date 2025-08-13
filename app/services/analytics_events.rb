@@ -859,7 +859,7 @@ module AnalyticsEvents
   # @param campaign_id [String] the email campaign ID
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1128,7 +1128,7 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1157,7 +1157,7 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1197,7 +1197,7 @@ module AnalyticsEvents
   #   source such as "users/sessions#new"
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1548,7 +1548,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
-  # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param ["Passport","DriversLicense"] document_type_requested Document user requested
   def idv_doc_auth_failed_image_resubmitted(
     side:,
     remaining_submit_attempts:,
@@ -1559,7 +1559,7 @@ module AnalyticsEvents
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
     passport_image_fingerprint: nil,
-    document_type: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
@@ -1573,7 +1573,7 @@ module AnalyticsEvents
       back_image_fingerprint:,
       passport_image_fingerprint:,
       selfie_image_fingerprint:,
-      document_type:,
+      document_type_requested:,
       **extra,
     )
   end
@@ -1922,7 +1922,7 @@ module AnalyticsEvents
   # @param [String] passport_image_fingerprint Fingerprint of passport image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
-  # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   #   SDK upgrades
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
@@ -1938,7 +1938,7 @@ module AnalyticsEvents
     passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
-    document_type: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
@@ -1955,7 +1955,7 @@ module AnalyticsEvents
       liveness_checking_required:,
       selfie_image_fingerprint:,
       acuant_sdk_upgrade_ab_test_bucket:,
-      document_type:,
+      document_type_requested:,
       **extra,
     )
   end
@@ -1967,7 +1967,7 @@ module AnalyticsEvents
   # @param [String] doc_auth_result
   # @param [String] state
   # @param [String] country for passport doc types
-  # @param [String] id_doc_type
+  # @param [String] document_type_received
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -2024,14 +2024,14 @@ module AnalyticsEvents
   # @option extra [String] 'ClassificationMode'
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
-  # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
     exception:,
-    id_doc_type:,
+    document_type_received:,
     async:,
     submit_attempts:,
     remaining_submit_attempts:,
@@ -2075,7 +2075,7 @@ module AnalyticsEvents
     selfie_attempts: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
-    document_type: nil,
+    document_type_requested: nil,
     passport_check_result: nil,
     **extra
   )
@@ -2088,7 +2088,7 @@ module AnalyticsEvents
       doc_auth_result:,
       state:,
       country:,
-      id_doc_type:,
+      document_type_received:,
       async:,
       submit_attempts: submit_attempts,
       remaining_submit_attempts: remaining_submit_attempts,
@@ -2128,7 +2128,7 @@ module AnalyticsEvents
       selfie_attempts:,
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
-      document_type:,
+      document_type_requested:,
       passport_check_result:,
       **extra,
     )
@@ -2141,7 +2141,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
-  # @param [String] id_doc_type Document type detected by the vendor
+  # @param [String] document_type_received Document type detected by the vendor
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
   # @param ["present","missing"] id_expiration_status Status of state_id_expiration field presence
   # @param ["present","missing"] passport_issued_status Status of passport_issued field presence
@@ -2152,7 +2152,7 @@ module AnalyticsEvents
   # @param [String] back_image_fingerprint Fingerprint of back image data
   # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
-  # @param ["Passport","DriversLicense"] document_type Document capture user flow
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
@@ -2161,7 +2161,7 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     attention_with_barcode:,
-    id_doc_type:,
+    document_type_received:,
     id_issued_status:,
     id_expiration_status:,
     passport_issued_status:,
@@ -2175,7 +2175,7 @@ module AnalyticsEvents
     passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     classification_info: nil,
-    document_type: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
@@ -2185,7 +2185,7 @@ module AnalyticsEvents
       error_details:,
       user_id:,
       attention_with_barcode:,
-      id_doc_type:,
+      document_type_received:,
       id_issued_status:,
       id_expiration_status:,
       passport_issued_status:,
@@ -2199,7 +2199,7 @@ module AnalyticsEvents
       selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
-      document_type:,
+      document_type_requested:,
       **extra,
     )
   end
@@ -2463,7 +2463,7 @@ module AnalyticsEvents
     success:,
     submit_attempts:,
     remaining_submit_attempts:,
-    document_type:,
+    document_type_requested:,
     response: nil,
     correlation_id_received: nil,
     correlation_id_sent: nil,
@@ -2480,7 +2480,7 @@ module AnalyticsEvents
       response:,
       submit_attempts:,
       remaining_submit_attempts:,
-      document_type:,
+      document_type_requested:,
       correlation_id_sent:,
       correlation_id_received:,
       error_code:,
@@ -2503,7 +2503,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2556,7 +2556,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2603,7 +2603,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2658,7 +2658,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2684,7 +2684,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2837,7 +2837,7 @@ module AnalyticsEvents
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2884,7 +2884,7 @@ module AnalyticsEvents
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -3472,7 +3472,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4277,7 +4277,7 @@ module AnalyticsEvents
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4492,7 +4492,7 @@ module AnalyticsEvents
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4523,7 +4523,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: download personal key
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4548,7 +4548,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4589,7 +4589,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4637,7 +4637,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4686,7 +4686,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4712,7 +4712,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4738,7 +4738,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4772,7 +4772,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4825,7 +4825,7 @@ module AnalyticsEvents
   # @param [Hash] telephony_response Response from Telephony gem
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4879,7 +4879,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4926,7 +4926,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4962,7 +4962,7 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5013,7 +5013,7 @@ module AnalyticsEvents
   #                  (previously called "remaining_attempts")
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5053,7 +5053,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5086,7 +5086,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5106,7 +5106,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5135,7 +5135,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5492,7 +5492,7 @@ module AnalyticsEvents
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] document_type_requested type of socument submitted (Drivers Licenese, etc.)
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
@@ -5516,7 +5516,7 @@ module AnalyticsEvents
     reference_id: nil,
     customer_user_id: nil,
     liveness_enabled: nil,
-    document_type: nil,
+    document_type_requested: nil,
     docv_transaction_token: nil,
     flow_path: nil,
     socure_status: nil,
@@ -5544,7 +5544,7 @@ module AnalyticsEvents
       customer_user_id:,
       response_body:,
       liveness_enabled:,
-      document_type:,
+      document_type_requested:,
       docv_transaction_token:,
       flow_path:,
       socure_status:,
@@ -5616,10 +5616,10 @@ module AnalyticsEvents
   # @param [Hash] decision accept or reject of given ID
   # @param [Boolean] doc_auth_success
   # @param [Boolean] doc_type_supported
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] document_type_requested type of socument submitted (Drivers Licenese, etc.)
   # @param [String] docv_transaction_token socure transaction token
   # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [String] id_doc_type type of state issued ID or passport
+  # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
@@ -5652,10 +5652,10 @@ module AnalyticsEvents
     customer_profile: nil,
     customer_user_id: nil,
     decision: nil,
-    document_type: nil,
+    document_type_requested: nil,
     docv_transaction_token: nil,
     flow_path: nil,
-    id_doc_type: nil,
+    document_type_received: nil,
     issue_year: nil,
     liveness_enabled: nil,
     reference_id: nil,
@@ -5681,10 +5681,10 @@ module AnalyticsEvents
       decision:,
       doc_auth_success:,
       doc_type_supported:,
-      document_type:,
+      document_type_requested:,
       docv_transaction_token:,
       flow_path:,
-      id_doc_type:,
+      document_type_received:,
       issue_year:,
       liveness_enabled:,
       reason_codes:,
@@ -5715,7 +5715,7 @@ module AnalyticsEvents
   # @param [String] location
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address

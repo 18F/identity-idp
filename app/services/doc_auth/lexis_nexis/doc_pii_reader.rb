@@ -25,17 +25,17 @@ module DocAuth
         @authentication_result_field_data = true_id_product&.dig(:AUTHENTICATION_RESULT)
         return nil unless id_auth_field_data.present?
 
-        id_doc_type_slug = id_auth_field_data['Fields_DocumentClassName']
+        document_type_received_slug = id_auth_field_data['Fields_DocumentClassName']
         id_doc_issue_type = authentication_result_field_data['DocIssueType']
 
-        @id_doc_type = determine_id_doc_type(
-          doc_class_name: id_doc_type_slug,
+        @document_type_received = determine_document_type_received(
+          doc_class_name: document_type_received_slug,
           doc_issue_type: id_doc_issue_type,
         )
 
-        if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(id_doc_type)
+        if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(document_type_received)
           generate_state_id_pii
-        elsif Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_doc_type)
+        elsif Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(document_type_received)
           generate_passport_pii
         end
       end
@@ -44,8 +44,8 @@ module DocAuth
         @id_auth_field_data
       end
 
-      def id_doc_type
-        @id_doc_type
+      def document_type_received
+        @document_type_received
       end
 
       def authentication_result_field_data
@@ -160,7 +160,7 @@ module DocAuth
           state_id_issued: issue_date,
           state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
           state_id_number: document_number,
-          id_doc_type:,
+          document_type_received:,
           issuing_country_code:,
         )
       end
@@ -174,7 +174,7 @@ module DocAuth
           sex:,
           passport_expiration: expiration_date,
           passport_issued: issue_date,
-          id_doc_type:,
+          document_type_received:,
           issuing_country_code:,
           document_number:,
           birth_place: id_auth_field_data['Fields_BirthPlace'],
@@ -183,7 +183,7 @@ module DocAuth
         )
       end
 
-      def determine_id_doc_type(doc_class_name:, doc_issue_type:)
+      def determine_document_type_received(doc_class_name:, doc_issue_type:)
         val = if IdentityConfig.store.doc_auth_passports_enabled
                 DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
               else

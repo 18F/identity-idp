@@ -77,7 +77,7 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:state_id_resolution_with_id_type) do
-    state_id_resolution.merge(id_doc_type: 'drivers_license')
+    state_id_resolution.merge(document_type_received: 'drivers_license')
   end
 
   let(:resolution_block) do
@@ -239,26 +239,26 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth image upload form submitted' => {
         success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type: an_instance_of(String), id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type: an_instance_of(String), document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), document_type_received: an_instance_of(String)
       },
-      'IdV: doc auth document_capture submitted' => hash_including(success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, proofing_components: { document_check: 'mock', document_type: 'drivers_license' }),
+      'IdV: doc auth document_capture submitted' => hash_including(success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }),
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -362,28 +362,28 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth image upload form submitted' => {
         success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -484,29 +484,29 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth image upload form submitted' => {
         success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -586,7 +586,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth image upload form submitted' => {
         success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: verify in person troubleshooting option clicked' => {
         flow_path: 'standard', opted_in_to_in_person_proofing: false, submit_attempts: 1
       },
@@ -728,32 +728,32 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth image upload form submitted' => {
         success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true,
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       :idv_selfie_image_added => {
         acuant_version: kind_of(String), captureAttempts: 1, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?

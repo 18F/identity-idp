@@ -42,7 +42,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         issuing_country_code: 'USA',
         nationality_code: 'USA',
         dob: '1970-06-10',
-        id_doc_type: 'passport',
+        document_type_received: 'passport',
       )
     end
 
@@ -101,7 +101,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           issuing_country_code: 'USA',
           nationality_code: 'USA',
           dob: '1970-06-10',
-          id_doc_type: 'passport',
+          document_type_received: 'passport',
         }
       end
 
@@ -224,7 +224,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         issuing_country_code: 'USA',
         nationality_code: 'USA',
         dob: '1970-06-10',
-        id_doc_type: 'passport',
+        document_type_received: 'passport',
       }
     end
     let(:partial_passport_pii_data) do
@@ -232,7 +232,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         passport_expiration: '2030-01-01',
         issuing_country_code: 'USA',
         dob: '1970-06-10',
-        id_doc_type: 'passport',
+        document_type_received: 'passport',
       }
     end
 

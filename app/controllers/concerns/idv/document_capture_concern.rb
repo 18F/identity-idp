@@ -164,7 +164,7 @@ module Idv
     end
 
     def submitted_id_type
-      stored_result.pii_from_doc&.dig(:id_doc_type)
+      stored_result.pii_from_doc&.dig(:document_type_received)
     end
 
     def id_type_requested
