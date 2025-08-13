@@ -140,8 +140,29 @@ class SocureDocvResultsJob < ApplicationJob
       zip: pii_from_doc[:zipcode],
       failure_reason: failure_reason(docv_result_response:, doc_pii_response:, image_errors:),
     )
+
+    fcms_tracker.idv_document_upload_submitted(
+      **front,
+      **back,
+      **selfie,
+      success: docv_result_response.success? && doc_pii_response.success?,
+      document_state: pii_from_doc[:state],
+      document_number: pii_from_doc[:state_id_number],
+      document_issued: pii_from_doc[:state_id_issued],
+      document_expiration: pii_from_doc[:state_id_expiration],
+      first_name: pii_from_doc[:first_name],
+      last_name: pii_from_doc[:last_name],
+      date_of_birth: pii_from_doc[:dob],
+      address1: pii_from_doc[:address1],
+      address2: pii_from_doc[:address2],
+      city: pii_from_doc[:city],
+      state: pii_from_doc[:state],
+      zip: pii_from_doc[:zipcode],
+      failure_reason: failure_reason(docv_result_response:, doc_pii_response:, image_errors:),
+    )
   end
 
+  # TODO: figure out how to use fcms_tracker here
   def failure_reason(docv_result_response:, image_errors:, doc_pii_response: nil)
     if doc_pii_response.present?
       failures = attempts_api_tracker.parse_failure_reason(doc_pii_response) || {}
@@ -171,6 +192,18 @@ class SocureDocvResultsJob < ApplicationJob
       cookie_device_uuid: nil,
       sp_request_uri: nil,
       enabled_for_session: sp&.attempts_api_enabled?,
+    )
+  end
+
+  def fcms_tracker
+    @fcms_tracker ||= AttemptsApi::Tracker.new(
+      session_id: nil,
+      request: nil,
+      user: document_capture_session.user,
+      sp:,
+      cookie_device_uuid: nil,
+      sp_request_uri: nil,
+      enabled_for_session: true,
     )
   end
 
