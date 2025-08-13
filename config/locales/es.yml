@@ -722,7 +722,7 @@ doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
 doc_auth.instructions.consent: Al marcar esta casilla, usted permite que %{app_name} solicite, utilice, conserve y comparta su información personal. La utilizaremos para verificar su identidad.
 doc_auth.instructions.getting_started: 'Necesitará:'
 doc_auth.instructions.learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
-doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad.
+doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad
 doc_auth.instructions.switch_back_image: Flecha que apunta del teléfono a la computadora
 doc_auth.instructions.test_ssn: En el entorno de prueba, solo se consideran válidos los números de Seguro Social que comienzan con “900-” o “666-”. No ingrese IIP real en este campo.
 doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revisaremos que usted sea la persona que figura en su identificación.

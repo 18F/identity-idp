@@ -17,18 +17,16 @@
     <%= t('doc_auth.info.link_sent_complete_no_polling') %>
   <% end %>
 <% end %>
+<div class="text-center margin-bottom-2 margin-top-2">
+  <%= image_tag asset_url('idv/computer-to-phone.svg'), width: 207, height: 88, alt: t('image_description.camera_mobile_phone') %>
+</div>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.text_message')) %>
 <div class="grid-row">
-  <div class="grid-col-12 tablet:grid-col-3">
-    <%= image_tag asset_url('idv/phone-icon.svg'), width: 88, height: 88, alt: t('image_description.camera_mobile_phone') %>
-  </div>
-  <div class="grid-col-12 tablet:grid-col-9">
-    <p>
-      <%= t('doc_auth.info.you_entered') %>
-      <strong><%= local_assigns[:phone] %></strong>
-    </p>
-    <p><%= t('doc_auth.info.link_sent') %></p>
-  </div>
+  <p>
+    <%= t('doc_auth.info.you_entered') %>
+    <strong><%= local_assigns[:phone] %></strong>
+  </p>
+  <p><%= t('doc_auth.info.link_sent') %></p>
 </div>
 
 <div class="margin-top-4 margin-bottom-0">

@@ -711,7 +711,7 @@ doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
 doc_auth.instructions.consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour confirmer votre identité.
 doc_auth.instructions.getting_started: 'Vous devrez :'
 doc_auth.instructions.learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité.
+doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité
 doc_auth.instructions.switch_back_image: Flèche pointant du téléphone vers l’ordinateur
 doc_auth.instructions.test_ssn: Dans l’environnement de test, seuls les numéros de sécurité sociale commençant par “900-” ou “666-” sont considérés comme valides. Ne saisissez pas de vraies IPI dans ce champ.
 doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas acceptées. Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
