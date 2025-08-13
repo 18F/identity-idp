@@ -163,7 +163,7 @@ module DocAuth
       def parsed_pii_from_doc
         return if !parsed_data_from_uploaded_file.has_key?('document')
 
-        if parsed_data_from_uploaded_file['document']['id_doc_type'] == 'passport'
+        if parsed_data_from_uploaded_file['document']['document_type_received'] == 'passport'
           Pii::Passport.new(
             **Idp::Constants::MOCK_IDV_APPLICANT.merge(
               parsed_data_from_uploaded_file['document'].symbolize_keys,
