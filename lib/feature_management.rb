@@ -168,6 +168,11 @@ class FeatureManagement
     true
   end
 
+  def self.fcms_enabled?
+    return false unless IdentityConfig.store.feature_fcms_enabled
+    true
+  end
+
   def self.idv_by_mail_only?
     outage_status = OutageStatus.new
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
