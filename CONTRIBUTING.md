@@ -81,7 +81,7 @@ Please follow our [Code Review][review] guidelines.
 [Glen Sanford's thoughts on code reviews][thoughts] are also well worth
 reading.
 
-[review]: https://engineering.18f.gov/code-review/
+[review]: https://guides.18f.org/engineering/our-approach/code-review/
 [thoughts]: http://glen.nu/ramblings/oncodereview.php
 
 - Keep pull requests as small as possible, and focused on a single topic
