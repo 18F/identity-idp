@@ -745,7 +745,7 @@ duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un d
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
-duplicate_profiles_detected.intro_html: Pour accéder à %{app_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
+duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
 duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
@@ -1125,7 +1125,7 @@ idv.failure.phone.warning.heading: Nous n’avons pas pu vous associer à ce num
 idv.failure.phone.warning.learn_more_link: En savoir plus sur quel numéro de téléphone utiliser
 idv.failure.phone.warning.next_steps_html: Essayez <strong>un autre</strong> numéro que vous utilisez souvent et depuis longtemps. Il peut s’agir d’un numéro professionnel ou personnel.
 idv.failure.phone.warning.try_again_button: Essayez un autre numéro
-idv.failure.phone.warning.you_entered_html: "Nous n’avons pas trouvé de données vous associant au numéro suivant: <strong class='text-no-wrap'>%{formatted_phone}</strong>"
+idv.failure.phone.warning.you_entered: 'Nous n’avons pas trouvé de données vous associant au numéro suivant :'
 idv.failure.sessions.exception: Une erreur interne s’est produite lors du traitement de votre demande.
 idv.failure.sessions.fail_html: Pour votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier des renseignements personnels en ligne. <strong>Réessayez dans %{timeout}.</strong>
 idv.failure.sessions.heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
@@ -1139,7 +1139,7 @@ idv.failure.verify.fail_link_html: Obtenez de l’aide auprès de <strong>%{sp_n
 idv.failure.verify.fail_text: pour accéder aux services.
 idv.failure.verify.heading: Nous n’avons pas pu confirmer votre identité
 idv.failure.warning.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous devrez ensuite attendre 6 heures avant de réessayer.
-idv.failure.warning.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite, vous devrez attendre 6 heures avant de réessayer.
+idv.failure.warning.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.forgot_password.link_text: Mot de passe oublié?
 idv.forgot_password.modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
 idv.forgot_password.reset_password: Réinitialiser le mot de passe

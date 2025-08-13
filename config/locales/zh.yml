@@ -756,7 +756,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{app_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
+duplicate_profiles_detected.intro_html: '%{sp_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
 duplicate_profiles_detected.intro.link: 了解更多关于重复帐户的信息。
 duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
@@ -1138,7 +1138,7 @@ idv.failure.phone.warning.heading: 我们无法将你与该号码匹配。
 idv.failure.phone.warning.learn_more_link: 了解有关使用什么号码的更多信息。
 idv.failure.phone.warning.next_steps_html: 尝试 <strong>另一个</strong> 你经常使用并用了很久的号码。 工作或住宅号码都行。
 idv.failure.phone.warning.try_again_button: 尝试另一个号码
-idv.failure.phone.warning.you_entered_html: "我们找不到你使用: <strong class='text-no-wrap'>%{formatted_phone}</strong> 电话号码的记录"
+idv.failure.phone.warning.you_entered: 我们找不到你使用此号码的记录：
 idv.failure.sessions.exception: 处理你的请求时内部出错。
 idv.failure.sessions.fail_html: 出于安全考虑，我们限制你在网上尝试验证个人信息的次数。<strong> %{timeout}后再试。</strong>
 idv.failure.sessions.heading: 我们找不到与你个人信息匹配的记录
@@ -1151,8 +1151,8 @@ idv.failure.verify.exit: 退出 %{app_name}
 idv.failure.verify.fail_link_html: 在<strong>%{sp_name}</strong> 得到
 idv.failure.verify.fail_text: 帮助以获得服务。
 idv.failure.verify.heading: 我们无法验证你的身份证件。
-idv.failure.warning.attempts_html.one: 你可以再试<strong>1次。</strong>你后您必须等6个小时才能再试。
-idv.failure.warning.attempts_html.other: 你可以再试<strong>%{count}次。</strong>你后您必须等6个小时才能再试。
+idv.failure.warning.attempts_html.one: 您可以再试<strong>1次。</strong>然后您必须等6个小时才能再试。
+idv.failure.warning.attempts_html.other: 您可以再试<strong>%{count}次。</strong>然后您必须等6个小时才能再试。
 idv.forgot_password.link_text: 忘了密码?
 idv.forgot_password.modal_header: 你确定不记得密码吗？
 idv.forgot_password.reset_password: 重设密码
@@ -1665,7 +1665,7 @@ step_indicator.flows.idv.go_to_the_post_office: 去邮局
 step_indicator.flows.idv.re_enter_password: 重新输入你的密码
 step_indicator.flows.idv.secure_account: 保护你账户的安全
 step_indicator.flows.idv.verify_address: 验证你的地址
-step_indicator.flows.idv.verify_id: 验证你的ID
+step_indicator.flows.idv.verify_id: 验证你的身份证件
 step_indicator.flows.idv.verify_info: 验证你的信息
 step_indicator.flows.idv.verify_phone: 验证你的电话号码
 step_indicator.status.complete: 完成了
