@@ -232,13 +232,15 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'the user fails remote docauth and starts IPP', allow_browser_log: true do
+  context 'the user fails remote doc auth and starts IPP', allow_browser_log: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
-      complete_doc_auth_steps_before_document_capture_step
+      complete_welcome_step
+      complete_agreement_step
+      complete_hybrid_handoff_step
 
       # Fail docauth
       complete_document_capture_step_with_yml(

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
 
-class DuplicateProfile< ApplicationRecord
-    
+class DuplicateProfile < ApplicationRecord
 end

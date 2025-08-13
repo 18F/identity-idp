@@ -157,15 +157,15 @@ module Idv
     def document_type_mismatch?
       # Reject passports when feature is disabled but user submitted a passport
       return true if !IdentityConfig.store.doc_auth_passports_enabled &&
-                     submitted_id_type == 'passport'
+                     submitted_id_type == Idp::Constants::DocumentTypes::PASSPORT
 
       # Reject when user requested passport flow but submitted a different document type
       return true if document_capture_session.passport_requested? &&
-                     submitted_id_type != 'passport'
+                     submitted_id_type != Idp::Constants::DocumentTypes::PASSPORT
 
       # Reject when user didn't request passport flow but submitted a passport
       return true if !document_capture_session.passport_requested? &&
-                     submitted_id_type == 'passport'
+                     submitted_id_type == Idp::Constants::DocumentTypes::PASSPORT
 
       false
     end
@@ -175,7 +175,8 @@ module Idv
     end
 
     def id_type_requested
-      document_capture_session.passport_requested? ? 'passport' : 'state_id'
+      document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
+        Idp::Constants::DocumentTypes::STATE_ID_CARD
     end
 
     def track_document_issuing_state(user, state)

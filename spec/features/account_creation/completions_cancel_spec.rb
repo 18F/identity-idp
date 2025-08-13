@@ -27,6 +27,7 @@ RSpec.feature 'canceling at the completions screen' do
       url: true,
       ignore_query: true,
     )
-    expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+    params = UriService.params(current_url)
+    expect(params['error']).to eq('access_denied')
   end
 end

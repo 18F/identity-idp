@@ -40,11 +40,11 @@ RSpec.feature 'SAML Authorization Confirmation' do
         sign_in_user(user1, second_email.email)
 
         visit request_url
-        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_current_path(user_authorization_confirmation_path)
         expect(page).to have_content shared_email
 
         continue_as(shared_email)
-        expect(current_url).to eq(complete_saml_url)
+        expect(page).to have_current_path complete_saml_path
       end
 
       context 'with requested attributes contains only email' do
@@ -92,14 +92,14 @@ RSpec.feature 'SAML Authorization Confirmation' do
       sign_in_user(user1)
 
       visit request_url
-      expect(current_url).to match(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
       continue_as(user2.email, user2.password)
 
       # Can't remember both users' devices?
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to eq(complete_saml_url)
+      expect(page).to have_current_path complete_saml_path
     end
 
     it 'does not render an error if a user goes back after opting to switch accounts' do
@@ -163,7 +163,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
       # second visit
       visit request_url
-      expect(current_url).to eq(request_url)
+      expect(page).to have_current_path(request_url, url: true)
     end
 
     it 'redirects to the account page with no sp in session' do
@@ -193,7 +193,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
         expect(page.get_rack_session.keys).to include('sp')
       end
     end

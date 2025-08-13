@@ -234,7 +234,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_221924) do
   create_table "duplicate_profiles", force: :cascade do |t|
     t.string "service_provider", limit: 255, null: false, comment: "sensitive=false"
     t.bigint "profile_ids", null: false, comment: "sensitive=false", array: true
-    t.datetime "closed_at", null: false, comment: "sensitive=false"
+    t.datetime "closed_at", comment: "sensitive=false"
     t.boolean "self_serviced", comment: "sensitive=false"
     t.boolean "fraud_investigation_conclusive", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
