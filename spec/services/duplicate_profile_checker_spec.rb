@@ -41,8 +41,11 @@ RSpec.describe DuplicateProfileChecker do
               sp: sp,
             )
             dupe_profile_checker.check_for_duplicate_profiles
-
-            expect(session[:duplicate_profile_ids]).to be(nil)
+            dupe_profile_object = DuplicateProfile.involving_profile(
+              profile_id: profile.id,
+              service_provider: sp.issuer,
+            )
+            expect(dupe_profile_object).to be_empty
           end
         end
 
@@ -56,27 +59,28 @@ RSpec.describe DuplicateProfileChecker do
             )
           end
           let!(:profile2) do
-            profile = create(
+            create(
               :profile,
               :active,
               :facial_match_proof,
               user: user2,
               initiating_service_provider_issuer: sp.issuer,
             )
-            profile.encrypt_pii(active_pii, user2.password)
-            profile.save
           end
 
           before do
             session[:encrypted_profiles] = {
               profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
             }
+
+            allow_any_instance_of(Idv::DuplicateSsnFinder).to
+            receive(:duplicate_facial_match_profiles)
+              .and_return([profile2])
           end
 
           it 'creates a new duplicate profile confirmation entry' do
             allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
               .and_return([sp.issuer])
-            expect(session[:duplicate_profile_ids]).to be(nil)
 
             dupe_profile_checker = DuplicateProfileChecker.new(
               user: user,
@@ -84,7 +88,12 @@ RSpec.describe DuplicateProfileChecker do
               sp: sp,
             )
             dupe_profile_checker.check_for_duplicate_profiles
-            expect(session[:duplicate_profile_ids]).to eq([user2.profiles.last.id])
+
+            dupe_profile_objects = DuplicateProfile.involving_profile(
+              profile_id: profile.id,
+              service_provider: sp.issuer,
+            )
+            expect(dupe_profile_objects.first.profile_ids).to eq([profile2.id, profile.id])
           end
         end
       end
@@ -108,7 +117,11 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(session[:duplicate_profile_ids]).to be(nil)
+        dupe_profile_objects = DuplicateProfile.involving_profile(
+          profile_id: profile.id,
+          service_provider: sp.issuer,
+        )
+        expect(dupe_profile_objects).to be_empty
       end
     end
 
@@ -122,7 +135,12 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        expect(session[:duplicate_profile_ids]).to be(nil)
+        dupe_profile_objects = DuplicateProfile.involving_profile(
+          profile_id: profile.id,
+          service_provider: sp.issuer,
+        )
+
+        expect(dupe_profile_objects).to be_empty
       end
     end
   end

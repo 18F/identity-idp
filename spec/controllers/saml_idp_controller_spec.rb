@@ -941,15 +941,20 @@ RSpec.describe SamlIdpController do
           ).user
         end
         let(:duplicate_profile) do
-            create(:duplicate_profile, profile_ids: 
-                  [user.active_profile.id, user2.active_profile.id], service_provider: service_provider.issuer)
+          create(
+            :duplicate_profile,
+            profile_ids: [user.active_profile.id, user2.active_profile.id],
+            service_provider: service_provider.issuer,
+          )
         end
 
-         let(:service_provider) { build(:service_provider, issuer: ial2_settings.issuer) }
+        let(:service_provider) { build(:service_provider, issuer: ial2_settings.issuer) }
 
         before do
-          allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([service_provider.issuer])
-          allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage).and_return(100)
+          allow(IdentityConfig.store).to
+          receive(:eligible_one_account_providers).and_return([service_provider.issuer])
+          allow(IdentityConfig.store).to
+          receive(:one_account_user_verification_enabled_percentage).and_return(100)
           duplicate_profile
           allow(controller).to receive(:current_user).and_return(user)
         end

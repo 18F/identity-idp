@@ -638,8 +638,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   ).user
                 end
                 let(:duplicate_profile) do
-                   create(:duplicate_profile, profile_ids: 
-                          [user.active_profile.id, user2.active_profile.id], service_provider: service_provider.issuer)
+                  create(
+                    :duplicate_profile, profile_ids:
+                         [user.active_profile.id, user2.active_profile.id], service_provider: service_provider.issuer
+                  )
                 end
 
                 before do
