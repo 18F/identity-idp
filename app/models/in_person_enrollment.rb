@@ -37,10 +37,32 @@ class InPersonEnrollment < ApplicationRecord
   DOCUMENT_TYPE_PASSPORT_BOOK = 'passport_book'
 
   # This will always be nil in the Verify-by-Mail (GPO) flow.
+  # TODO: LG-16380 - Remove document_type enum and sync logic in follow-up ticket
+  # after full migration to document_type_requested per 50/50 deployment process
+  enum :document_type, {
+    DOCUMENT_TYPE_STATE_ID.to_sym => 0,
+    DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
+  }, prefix: :old
+
   enum :document_type_requested, {
     DOCUMENT_TYPE_STATE_ID.to_sym => 0,
     DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
   }
+
+  # Ensure both columns stay in sync during transition period
+  before_save :sync_document_type_columns
+
+  private
+
+  def sync_document_type_columns
+    if document_type_changed? && !document_type_requested_changed?
+      self.document_type_requested = document_type
+    elsif document_type_requested_changed? && !document_type_changed?
+      self.document_type = document_type_requested
+    end
+  end
+
+  public
 
   validate :profile_belongs_to_user
 
