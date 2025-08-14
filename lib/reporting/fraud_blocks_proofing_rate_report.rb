@@ -17,27 +17,27 @@ module Reporting
     attr_reader :time_range
 
     module Events
-       # this for successful ipp
-       SUCCESSFUL_IPP = 'GetUspsProofingResultsJob: Enrollment status updated'
-       # THESE FOR SUSPECTED FRAUD BLOCKS --------------------------------
-       # note: events in the key friction points are also used in the suspected fraud blocks queries as well.
-       IDV_PHONE_CONF_VENDOR = 'IdV: phone confirmation vendor'
-       # THESE FOR KEY FRICTION POINTS -----------------------------------
-       # these two for api connection fails
-       IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS = 'IdV: doc auth verify proofing results'
-       IDV_PHONE_RECORD_VISITED = 'IdV: phone of record visited'
-       # these for verification code not received
-       IDV_PHONE_CONF_OTP_VISITED = 'IdV: phone confirmation otp visited'
-       IDV_PHONE_CONF_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted' 
-       IDV_ENTER_PASSWORD_VISITED = 'IdV: enter password visited'
-       # these for doc/selfie ux challenges - Lexis
-       IDV_FRONT_IMAGE_ADDED = "Frontend: IdV: front image added" 
-       IDV_BACK_IMAGE_ADDED = "Frontend: IdV: back image added" 
-       IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED = "IdV: doc auth image upload vendor submitted"
-       IDV_DOC_AUTH_SSN_VISITED = "IdV: doc auth ssn visited" 
-       # doc/selfie ux challenges - Socure
-       IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested' 
-       # -------------------------------------------------------------------
+      # this for successful ipp
+      SUCCESSFUL_IPP = 'GetUspsProofingResultsJob: Enrollment status updated'
+      # THESE FOR SUSPECTED FRAUD BLOCKS --------------------------------
+      # note: events in the key friction points are also used in the suspected fraud blocks queries as well.
+      IDV_PHONE_CONF_VENDOR = 'IdV: phone confirmation vendor'
+      # THESE FOR KEY FRICTION POINTS -----------------------------------
+      # these two for api connection fails
+      IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS = 'IdV: doc auth verify proofing results'
+      IDV_PHONE_RECORD_VISITED = 'IdV: phone of record visited'
+      # these for verification code not received
+      IDV_PHONE_CONF_OTP_VISITED = 'IdV: phone confirmation otp visited'
+      IDV_PHONE_CONF_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'
+      IDV_ENTER_PASSWORD_VISITED = 'IdV: enter password visited'
+      # these for doc/selfie ux challenges - Lexis
+      IDV_FRONT_IMAGE_ADDED = 'Frontend: IdV: front image added'
+      IDV_BACK_IMAGE_ADDED = 'Frontend: IdV: back image added'
+      IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED = 'IdV: doc auth image upload vendor submitted'
+      IDV_DOC_AUTH_SSN_VISITED = 'IdV: doc auth ssn visited'
+      # doc/selfie ux challenges - Socure
+      IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
+      # -------------------------------------------------------------------
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -69,24 +69,24 @@ module Reporting
 
     def as_emailable_reports
       [
-      # [
-      #   Reporting::EmailableReport.new(
-      #     title: "Proofing Success Metrics #{stats_month}", #Proofing Success comes from IdP
-      #     table: proofing_success_metrics_table,
-      #     filename: 'proofing_success_metrics',
-      #   ),
+        # [
+        #   Reporting::EmailableReport.new(
+        #     title: "Proofing Success Metrics #{stats_month}", #Proofing Success comes from IdP
+        #     table: proofing_success_metrics_table,
+        #     filename: 'proofing_success_metrics',
+        #   ),
         Reporting::EmailableReport.new(
-          title: "Suspected Fraud Blocks Metrics #{stats_month}", #Suspected Fraud Related Blocks
+          title: "Suspected Fraud Blocks Metrics #{stats_month}", # Suspected Fraud Related Blocks
           table: suspected_fraud_blocks_metrics_table,
           filename: 'suspected_fraud_blocks_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "Key Points of User Friction Metrics #{stats_month}", #Key Points of User Friction
+          title: "Key Points of User Friction Metrics #{stats_month}", # Key Points of User Friction
           table: key_points_user_friction_metrics_table,
           filename: 'key_points_user_friction_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "Successful IPP User Metrics #{stats_month}", #Successful IPP
+          title: "Successful IPP User Metrics #{stats_month}", # Successful IPP
           table: successful_ipp_table,
           filename: 'successful_ipp',
         ),
@@ -109,8 +109,8 @@ module Reporting
     #   ]
     # end
 
-    def suspected_fraud_blocks_metrics_table #table Suspected Fraud Related Blocks
-      #TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
+    def suspected_fraud_blocks_metrics_table # table Suspected Fraud Related Blocks
+      # TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
@@ -173,12 +173,12 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-      # TODO: END ----------------------------------------------------------------------
+        # TODO: END ----------------------------------------------------------------------
       ]
     end
 
-    def reinstated_metrics_table #table Key Points of User Friction
-      #TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
+    def reinstated_metrics_table # table Key Points of User Friction
+      # TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
@@ -199,11 +199,11 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-      # TODO: END ----------------------------------------------------------------------
+        # TODO: END ----------------------------------------------------------------------
       ]
     end
 
-    def successful_ipp_table #table for successful ipp
+    def successful_ipp_table # table for successful ipp
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
@@ -213,7 +213,7 @@ module Reporting
           time_range.end.to_s,
         ],
       ]
-
+    end
 
     def stats_month
       time_range.begin.strftime('%b-%Y')
@@ -235,11 +235,17 @@ module Reporting
     # end
     # TODO: END --------------------------------------------------------------------------
     def verification_code_not_received_results
-      cloudwatch_client.fetch(verification_code_not_received_query:, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        verification_code_not_received_query:, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     def fetch_api_connection_fails_results
-      cloudwatch_client.fetch(api_connection_fails_query:, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        api_connection_fails_query:, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     def fetch_successful_ipp_results
@@ -341,8 +347,7 @@ module Reporting
 
       QUERY
     end
-  # ---------------------------------------------------------------------------------------
-
+    # ---------------------------------------------------------------------------------------
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
@@ -357,13 +362,14 @@ module Reporting
     # HELP WITH THESE (DO I EVEN NEED THEM?)---------------------------------------
     # api_connection_fails # help here
     def api_connection_fails
-      @api_connection_fails ||= data[Events:: IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS, IDV_PHONE_RECORD_VISITED]
+      @api_connection_fails ||= data[Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS,
+                                     IDV_PHONE_RECORD_VISITED]
     end
+
     # successful ipp users
     def successful_ipp_users_count
       @successful_ipp_users_count ||= data[Events::SUCCESSFUL_IPP]
     end
     # TODO: END ---------------------------------------------------------------------
-
   end
 end
