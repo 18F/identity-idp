@@ -630,6 +630,31 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
                 )
               end
+
+              context 'when duplicate profiles are detected for user' do
+                let(:user2) do
+                  create(
+                    :profile, :active, :verified, proofing_components: { liveness_check: true }
+                  ).user
+                end
+                let(:duplicate_profile) do
+                   create(:duplicate_profile, profile_ids: 
+                          [user.active_profile.id, user2.active_profile.id], service_provider: service_provider.issuer)
+                end
+
+                before do
+                  allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([service_provider.issuer])
+                  allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage).and_return(100)
+                  duplicate_profile
+                  allow(controller).to receive(:user_signed_in?).and_return(true)
+                  allow(controller).to receive(:current_user).and_return(user)
+                end
+
+                it 'redirects user to duplicate profiles detected page' do
+                  action
+                  expect(response).to redirect_to(duplicate_profiles_detected_url)
+                end
+              end
             end
 
             context 'account is not already verified' do

@@ -933,6 +933,32 @@ RSpec.describe SamlIdpController do
           expect(response).to redirect_to capture_password_url
         end
       end
+
+      context 'user has a duplicate profile in another account' do
+        let(:user2) do
+          create(
+            :profile, :active, :verified, proofing_components: { liveness_check: true }
+          ).user
+        end
+        let(:duplicate_profile) do
+            create(:duplicate_profile, profile_ids: 
+                  [user.active_profile.id, user2.active_profile.id], service_provider: service_provider.issuer)
+        end
+
+         let(:service_provider) { build(:service_provider, issuer: ial2_settings.issuer) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([service_provider.issuer])
+          allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage).and_return(100)
+          duplicate_profile
+          allow(controller).to receive(:current_user).and_return(user)
+        end
+
+        it 'redirects user to duplicate profiles detected page' do
+          saml_get_auth(ial2_settings)
+          expect(response).to redirect_to(duplicate_profiles_detected_url)
+        end
+      end
     end
 
     context 'with IAL2 and the profile is reset' do
