@@ -12,7 +12,7 @@ There are three primary ways to help:
 - Submitting code
 
 ### License
-All contributions to this project will be released under the CC0 dedication. By submitting a pull request, or filing a bug, issue, or feature-request you are agreeing to comply with this waiver of copyright interest. Details can be found in our [LICENSE](LICENSE.md).
+All contributions to this project will be released under the [CC0 dedication](https://creativecommons.org/public-domain/cc0/). By submitting a pull request, or filing a bug, issue, or feature-request you are agreeing to comply with this waiver of copyright interest. Details can be found in our [LICENSE](LICENSE.md).
 
 ### Reporting
 
