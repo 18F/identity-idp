@@ -100,6 +100,8 @@ class ApplicationController < ActionController::Base
       # this only works for oidc
       sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
       enabled_for_session: true,
+      fcms: true,
+      redis_pool: REDIS_FCMS_POOL,
     )
   end
 

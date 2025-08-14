@@ -7,10 +7,11 @@ module AttemptsApi
       'forgot-password-email-sent',
     ].freeze
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri
+                :sp_request_uri, :fcms, :redis_pool
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
-                   sp_request_uri:, enabled_for_session:)
+                   sp_request_uri:, enabled_for_session:,
+                   fcms: false, redis_pool: REDIS_ATTEMPTS_API_POOL)
       @session_id = session_id
       @request = request
       @user = user
@@ -18,12 +19,13 @@ module AttemptsApi
       @cookie_device_uuid = cookie_device_uuid
       @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
+      @fcms = fcms
+      @redis_pool = redis_pool
     end
     include TrackerEvents
 
     def track_event(event_type, metadata = {})
       return unless enabled?
-
       extra_metadata =
         if metadata.has_key?(:failure_reason) &&
            (metadata[:failure_reason].blank? || metadata[:success].present?)
@@ -54,28 +56,19 @@ module AttemptsApi
         event_metadata: event_metadata,
       )
 
-      jwe = event.to_jwe(
-        issuer: sp.issuer,
-        public_key: sp.attempts_public_key,
-      )
-
-      fcms_jwe = event.to_jwe(
-        issuer: sp.issuer,
-        public_key: fcms_public_key, # use a new key here (or not encrypt at all)
-      )
-
-      # fcms_payload = event.to_fcms_payload(issuer: sp.issuer)
+      if @fcms
+        jwe = event.payload_json(issuer: sp.issuer)
+        # TODO: set up encryption and refactor conditional
+      else
+        jwe = event.to_jwe(
+          issuer: sp.issuer,
+          public_key: sp.attempts_public_key,
+        )
+      end
 
       redis_client.write_event(
         event_key: event.jti,
         jwe: jwe,
-        timestamp: event.occurred_at,
-        issuer: sp.issuer,
-      )
-
-      redis_client.write_fcms_event(
-        event_key: event.jti,
-        jwe: fcms_jwe,
         timestamp: event.occurred_at,
         issuer: sp.issuer,
       )
@@ -123,28 +116,15 @@ module AttemptsApi
     end
 
     def enabled?
-      IdentityConfig.store.attempts_api_enabled && @enabled_for_session
+      if @fcms
+        true
+      else
+        IdentityConfig.store.attempts_api_enabled && @enabled_for_session
+      end
     end
 
     def redis_client
-      @redis_client ||= AttemptsApi::RedisClient.new
+      @redis_client ||= AttemptsApi::RedisClient.new(@redis_pool)
     end
-  end
-
-  def fcms_public_key
-    fcms_config = IdentityConfig.store.fcms_config
-    if fcms_config.present? && fcms_config['keys'].present?
-      OpenSSL::PKey::RSA.new(fcms_config['keys'].first)
-    else
-      # not sure if we need this (lifted from service providers, see below)
-      ssl_certs.first.public_key
-    end
-  end
-
-  def ssl_certs
-    @ssl_certs ||= Array(certs).select(&:present?).map do |cert|
-      cert_content = load_cert(cert)
-      OpenSSL::X509::Certificate.new(cert_content) if cert_content
-    end.compact
   end
 end
