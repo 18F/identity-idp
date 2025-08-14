@@ -2451,7 +2451,7 @@ module AnalyticsEvents
   # @param [Integer] submit_attempts Times that user has tried submitting document capture
   # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
   #                  we rate limit them.
-  # @param [String] document_type The document type (should always be 'Passport' here)
+  # @param [String] document_type_requested The document type requested by user
   # @param [String] correlation_id_received The correlation ID received in the response
   # @param [String] correlation_id_sent The correlation ID sent in the request
   # @param [String] exception The exception message if an exception occurred
