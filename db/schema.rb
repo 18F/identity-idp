@@ -372,6 +372,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_170258) do
     t.datetime "last_batch_claimed_at", comment: "sensitive=false"
     t.string "sponsor_id", null: false, comment: "sensitive=false"
     t.string "doc_auth_result", comment: "sensitive=false"
+    t.integer "document_type", comment: "sensitive=false"
     t.integer "document_type_requested", comment: "sensitive=false"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
