@@ -52,6 +52,8 @@ class InPersonEnrollment < ApplicationRecord
   # Ensure both columns stay in sync during transition period
   before_save :sync_document_type_columns
 
+  validate :profile_belongs_to_user
+
   private
 
   def sync_document_type_columns
@@ -63,8 +65,6 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   public
-
-  validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_save(:on_notification_sent_at_updated, if: :will_save_change_to_notification_sent_at?)
