@@ -98,7 +98,8 @@ module Proofing
         self::StateIdData.new(
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
-          document_type_received: applicant[:document_type_received],
+          # Check both new and old field names for backwards compatibility
+          document_type_received: applicant[:document_type_received] || applicant[:id_doc_type],
           state_id_issued: applicant[:state_id_issued],
           state_id_expiration: applicant[:state_id_expiration],
         )
