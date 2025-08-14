@@ -48,18 +48,28 @@ module AttemptsApi
     private
 
     def hourly_keys(issuer)
-      @redis_pool.with do |client|
-        client.keys("attempts-api-events:#{issuer}:*")
-      end.sort
+      if @fcms
+        @redis_pool.with do |client|
+          client.keys("fcms-events:#{sanitize(issuer)}:*")
+        end.sort
+      else
+        @redis_pool.with do |client|
+          client.keys("attempts-api-events:#{issuer}:*")
+        end.sort
+      end
     end
 
     def key(timestamp, issuer)
       formatted_time = timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
       if @fcms
-        "fcms-events:#{issuer}:#{formatted_time}"
+        "fcms-events:#{sanitize(issuer)}:#{sanitize(formatted_time)}"
       else
         "attempts-api-events:#{issuer}:#{formatted_time}"
       end
+    end
+
+    def sanitize(key_string)
+      key_string.tr(':', '-')
     end
   end
 end
