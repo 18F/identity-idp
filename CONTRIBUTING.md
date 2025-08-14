@@ -4,7 +4,7 @@ Thanks for thinking about contributing to a Technology Transformation Services (
 
 TTS is committed to building a safe, welcoming, harassment-free culture for everyone. We expect everyone on the TTS team and everyone within TTS spaces, including contributors to our projects, to follow the [TTS Code of Conduct](https://github.com/18F/code-of-conduct/blob/master/code-of-conduct.md).
 
-If you are an external contributor, please check out our [External Contributor Guidelines](EXTERNAL_CONTRIBUTORS.md) before beginning any work on a code change.
+**If you are an external contributor**, please check out our [External Contributor Guidelines](EXTERNAL_CONTRIBUTORS.md) before beginning any work on a code change.
 
 All contributors, internal or external, must read this project’s CONTRIBUTING policy (you are here), its [LICENSE](LICENSE.md), and its [README](README.md). When you are ready to make a pull request, read our [pull request process](https://handbook.login.gov/articles/pull-request-review.html), which is a part of [the Login.gov Handbook](https://handbook.login.gov/).
 
