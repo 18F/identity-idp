@@ -1050,6 +1050,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         DocAuth::Mock::ResultResponse.new(
           passport_image.read,
           image_config,
+          passport_submittal: true,
         )
       end
       let(:response) { form.submit }
