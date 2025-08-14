@@ -163,17 +163,22 @@ module DocAuth
       def parsed_pii_from_doc
         return if !parsed_data_from_uploaded_file.has_key?('document')
 
-        if parsed_data_from_uploaded_file['document']['document_type_received'] == 'passport'
+        document = parsed_data_from_uploaded_file['document']
+        # Check both new field name and old field name for backwards compatibility during deploy
+        doc_type = document['document_type_received'] || document['id_doc_type']
+        document_data = parsed_data_from_uploaded_file['document'].symbolize_keys
+        # Ensure document_type_received is set for backwards compatibility
+        if doc_type && !document_data[:document_type_received]
+          document_data[:document_type_received] = doc_type
+        end
+
+        if doc_type == 'passport'
           Pii::Passport.new(
-            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
-              parsed_data_from_uploaded_file['document'].symbolize_keys,
-            ).slice(*Pii::Passport.members),
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(document_data).slice(*Pii::Passport.members),
           )
         else
           Pii::StateId.new(
-            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
-              parsed_data_from_uploaded_file['document'].symbolize_keys,
-            ).slice(*Pii::StateId.members),
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(document_data).slice(*Pii::StateId.members),
           )
         end
       end
