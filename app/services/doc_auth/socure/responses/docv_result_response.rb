@@ -127,7 +127,7 @@ module DocAuth
         end
 
         def read_pii
-          if id_doc_type == 'passport'
+          if id_doc_type == Idp::Constants::DocumentTypes::PASSPORT
             return Pii::Passport.new(
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
@@ -235,14 +235,14 @@ module DocAuth
 
         def id_type_supported?
           if passports_enabled?
-            DocAuth::Response::ID_TYPE_SLUGS.key?(document_id_type)
+            DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
           else
-            DocAuth::Response::STATE_ID_TYPE_SLUGS.key?(document_id_type)
+            DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(document_id_type)
           end
         end
 
         def id_type_expected?
-          if id_doc_type == 'passport'
+          if id_doc_type == Idp::Constants::DocumentTypes::PASSPORT
             passport_requested
           else
             !passport_requested

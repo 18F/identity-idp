@@ -70,7 +70,7 @@ module DocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         instance_id = SecureRandom.uuid
-        if document_type == 'Passport'
+        if document_type == DocAuth::LexisNexis::DocumentTypes::PASSPORT
           passport_image_response = post_passport_image(
             image: passport_image,
             instance_id: instance_id,

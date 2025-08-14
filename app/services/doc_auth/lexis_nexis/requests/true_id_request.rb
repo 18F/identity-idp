@@ -59,7 +59,7 @@ module DocAuth
         def id_front_image
           # TrueID front_image required whether driver's license or passport
           case document_type
-          when 'Passport'
+          when DocumentTypes::PASSPORT
             passport_image
           else
             front_image
@@ -109,7 +109,7 @@ module DocAuth
         end
 
         def back_image_required?
-          document_type == 'DriversLicense'
+          document_type == DocumentTypes::DRIVERS_LICENSE
         end
 
         def encode(image)

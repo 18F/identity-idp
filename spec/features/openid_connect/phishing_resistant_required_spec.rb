@@ -64,7 +64,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -78,7 +78,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -92,7 +92,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -103,7 +103,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
         sign_in_and_2fa_user(user_with_phishing_resistant_2fa)
         visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
 
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        expect(page).to have_current_path(login_two_factor_webauthn_path)
       end
 
       context 'adding an ineligible method after authenticating with phishing-resistant' do
@@ -142,7 +142,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -156,7 +156,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -170,7 +170,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -181,7 +181,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
         sign_in_and_2fa_user(user_with_phishing_resistant_2fa)
         visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
 
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        expect(page).to have_current_path(login_two_factor_webauthn_path)
       end
 
       context 'adding an ineligible method after authenticating with phishing-resistant' do
@@ -220,7 +220,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_piv_cac_url)
+          expect(page).to have_current_path(login_two_factor_piv_cac_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:piv_cac)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -234,7 +234,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url)
+          expect(page).to have_current_path(login_two_factor_webauthn_path)
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -248,7 +248,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
           sign_in_before_2fa(user)
 
           visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+          expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
           click_on t('two_factor_authentication.login_options_link_text')
           expect(has_2fa_option?(:webauthn_platform)).to eq(true)
           expect(has_2fa_option?(:sms)).to eq(false)
@@ -259,7 +259,7 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
         sign_in_and_2fa_user(user_with_phishing_resistant_2fa)
         visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
 
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        expect(page).to have_current_path(login_two_factor_webauthn_path)
       end
 
       context 'adding an ineligible method after authenticating with phishing-resistant' do

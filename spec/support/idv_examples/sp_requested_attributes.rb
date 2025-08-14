@@ -64,12 +64,16 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       click_submit_default
 
       if sp == :oidc
-        expect(current_url).to include('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
       elsif sp == :saml
         if javascript_enabled?
           expect(page).to have_current_path(test_saml_decode_assertion_path)
         else
-          expect(current_url).to include(api_saml_auth_url(path_year: PATH_YEAR))
+          expect(page).to have_current_path(api_saml_auth_url(path_year: PATH_YEAR))
         end
       end
     end

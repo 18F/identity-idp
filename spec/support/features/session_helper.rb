@@ -17,8 +17,6 @@ module Features
     end
 
     def choose_another_security_option(option)
-      accept_rules_of_use_and_continue_if_displayed
-
       click_link t('two_factor_authentication.login_options_link_text')
 
       expect(page).to have_current_path login_two_factor_options_path
@@ -243,24 +241,23 @@ module Features
 
     def sign_in_live_with_2fa(user = user_with_2fa)
       sign_in_user(user)
+      expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      expect(page).to_not have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       user
     end
 
     def fill_in_code_with_last_phone_otp
-      accept_rules_of_use_and_continue_if_displayed
       fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
-      accept_rules_of_use_and_continue_if_displayed
       fill_in 'code', with: last_totp(user)
     end
 
-    def accept_rules_of_use_and_continue_if_displayed
-      return unless current_path == rules_of_use_path
+    def accept_rules_of_use_and_continue
       check 'rules_of_use_form[terms_accepted]'
       click_button t('forms.buttons.continue')
     end
@@ -325,43 +322,43 @@ module Features
     def sign_up_user_from_sp_without_confirming_email(email)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-      expect(current_url).to eq new_user_session_url
+      expect(page).to have_current_path(new_user_session_path)
       expect_branded_experience
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_invalid_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_but_wrong_email
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect_branded_experience
 
       click_link_to_use_a_different_email
 
-      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_current_path sign_up_email_path
       expect_branded_experience
 
       submit_form_with_valid_email(email)
 
-      expect(current_url).to eq sign_up_verify_email_url
+      expect(page).to have_current_path sign_up_verify_email_path
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
       expect_branded_experience
 
       click_link_to_resend_the_email
 
-      expect(current_url).to eq sign_up_verify_email_url(resend: true)
+      expect(page).to have_current_path sign_up_verify_email_path(resend: true)
       expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
@@ -488,6 +485,13 @@ module Features
     def confirm_email_and_password(email)
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
+
+      if I18n.locale != I18n.default_locale
+        expect(page).to have_current_path(sign_up_verify_email_path(locale: I18n.locale))
+      else
+        expect(page).to have_current_path(sign_up_verify_email_path)
+      end
+
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
     end

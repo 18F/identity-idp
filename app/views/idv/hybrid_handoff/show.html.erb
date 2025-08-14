@@ -16,7 +16,7 @@
 <div class="grid-row grid-gap grid-gap-2">
   <div class="grid-col-12 tablet:grid-col-auto">
     <%= image_tag(
-          asset_url('idv/phone-icon.svg'),
+          asset_url('idv/mobile-phone-icon.svg'),
           alt: t('image_description.camera_mobile_phone'),
           width: 88,
           height: 88,
@@ -61,18 +61,18 @@
 </div>
 <% if @post_office_enabled %>
   <hr class="margin-top-4" />
-  <div role="group" class="grid-row">
+  <div role="group" class="grid-row grid-gap grid-gap-2">
 
     <div class="grid-col-12 tablet:grid-col-auto">
       <%= image_tag(
             asset_url(@presenter.post_office_asset_url),
             width: 88,
             height: 88,
-            class: 'margin-right-1 margin-top-3',
+            class: 'margin-top-3',
             alt: @presenter.post_office_asset_alt_text,
           ) %>
     </div>
-    
+
     <div class="grid-col-12 tablet:grid-col-fill">
       <%= simple_form_for(
             @idv_how_to_verify_form,

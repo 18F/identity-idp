@@ -711,7 +711,7 @@ doc_auth.instructions.bullet4: Re-enter your %{app_name} password
 doc_auth.instructions.consent: By checking this box, you are letting %{app_name} ask for, use, keep, and share your personal information. We will use it to verify your identity.
 doc_auth.instructions.getting_started: 'You’ll need to:'
 doc_auth.instructions.learn_more: Learn more about our privacy and security measures
-doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity.
+doc_auth.instructions.switch_back: Switch back to your computer to finish verifying your identity
 doc_auth.instructions.switch_back_image: Arrow pointing from phone to computer
 doc_auth.instructions.test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are considered valid. Do not enter real PII in this field.
 doc_auth.instructions.text1: Other forms of ID are not accepted. We’ll check that you are the person on your ID.
@@ -745,7 +745,7 @@ duplicate_profiles_detected.dont_recognize_account: I don’t recognize an accou
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro_html: '%{app_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
+duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
 duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
 duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'

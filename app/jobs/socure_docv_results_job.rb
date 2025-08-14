@@ -270,7 +270,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def document_type
     @document_type ||= document_capture_session.passport_requested? \
-      ? 'Passport' : 'DriversLicense'
+      ? DocAuth::Socure::DocumentTypes::PASSPORT : DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
   end
 
   def user_uuid
