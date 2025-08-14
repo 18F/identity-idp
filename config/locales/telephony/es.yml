@@ -22,6 +22,16 @@ es:
         @%{domain} #%{code}
       voice: 'Hola: Los %{format_length} %{format_type} de su código de un solo uso de %{app_name} son %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
     doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
+    dupe_profile_created_notice: |-
+      Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
+
+      Si fue usted, debe eliminar la cuenta duplicada siguiendo los pasos que se describen aquí: %{steps_link}
+      Si esta no fue usted, contacte con el centro de ayuda de %{app_name} aquí: %{help_center_link}
+    dupe_profile_sign_in_attempted_notice: |-
+      Alguien acaba de iniciar sesión en una cuenta de %{app_name} que ya había sido verificada antes con la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
+
+      Si fue usted, debe eliminar la cuenta duplicada siguiendo los pasos que se describen aquí: %{steps_link}
+      Si esta no fue usted, contacte con el centro de ayuda de %{app_name} aquí: %{help_center_link}
     error:
       friendly_message:
         daily_voice_limit_reached: No se pudo enviar su código de un solo uso porque superó el número máximo de llamadas en 24 horas a este número de teléfono. Puede solicitar un código por mensaje de texto o usar un número diferente para recibir una llamada telefónica.
