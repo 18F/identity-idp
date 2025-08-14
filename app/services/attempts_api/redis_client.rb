@@ -2,13 +2,18 @@
 
 module AttemptsApi
   class RedisClient
-    attr_reader :redis_pool
-    def initialize(redis_pool = REDIS_ATTEMPTS_API_POOL)
-      @redis_pool = redis_pool
+    attr_reader :redis_pool, :fcms
+    def initialize(fcms = false)
+      @fcms = fcms && FeatureManagement.fcms_enabled?
+      if @fcms
+        @redis_pool = REDIS_FCMS_POOL
+      else
+        @redis_pool = REDIS_ATTEMPTS_API_POOL
+      end
     end
 
     def write_event(event_key:, jwe:, timestamp:, issuer:)
-      key = key(timestamp, issuer)
+      key = key(timestamp, issuer, @fcms)
       @redis_pool.with do |client|
         client.hset(key, event_key, jwe)
         client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
@@ -50,7 +55,11 @@ module AttemptsApi
 
     def key(timestamp, issuer)
       formatted_time = timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
-      "attempts-api-events:#{issuer}:#{formatted_time}"
+      if @fcms
+        "fcms-events:#{issuer}:#{formatted_time}"
+      else
+        "attempts-api-events:#{issuer}:#{formatted_time}"
+      end
     end
   end
 end

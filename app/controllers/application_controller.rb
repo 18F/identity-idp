@@ -91,18 +91,21 @@ class ApplicationController < ActionController::Base
   end
 
   def fcms_tracker
-    @fcms_tracker ||= AttemptsApi::Tracker.new(
-      session_id: attempts_api_session_id,
-      request:,
-      user: analytics_user,
-      sp: current_sp,
-      cookie_device_uuid: cookies[:device],
-      # this only works for oidc
-      sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
-      enabled_for_session: true,
-      fcms: true,
-      redis_pool: REDIS_FCMS_POOL,
-    )
+    @fcms_tracker ||= if FeatureManagement.fcms_enabled?
+                        AttemptsApi::Tracker.new(
+                          session_id: attempts_api_session_id,
+                          request:,
+                          user: analytics_user,
+                          sp: current_sp,
+                          cookie_device_uuid: cookies[:device],
+                          # this only works for oidc
+                          sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
+                          enabled_for_session: true,
+                          fcms: true,
+                        )
+    else
+      NullTracker.new # Create a null object that responds to all tracker methods
+    end
   end
 
   def user_event_creator

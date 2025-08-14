@@ -7,11 +7,11 @@ module AttemptsApi
       'forgot-password-email-sent',
     ].freeze
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri, :fcms, :redis_pool
+                :sp_request_uri, :fcms
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
                    sp_request_uri:, enabled_for_session:,
-                   fcms: false, redis_pool: REDIS_ATTEMPTS_API_POOL)
+                   fcms: false)
       @session_id = session_id
       @request = request
       @user = user
@@ -19,8 +19,7 @@ module AttemptsApi
       @cookie_device_uuid = cookie_device_uuid
       @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
-      @fcms = fcms
-      @redis_pool = redis_pool
+      @fcms = fcms && FeatureManagement.fcms_enabled?
     end
     include TrackerEvents
 
@@ -124,7 +123,7 @@ module AttemptsApi
     end
 
     def redis_client
-      @redis_client ||= AttemptsApi::RedisClient.new(@redis_pool)
+      @redis_client ||= AttemptsApi::RedisClient.new(@fcms)
     end
   end
 end
