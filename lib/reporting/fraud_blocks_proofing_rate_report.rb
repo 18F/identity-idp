@@ -234,7 +234,63 @@ module Reporting
     #   end
     # end
     # TODO: END --------------------------------------------------------------------------
-    def verification_code_not_received_results
+    def fetch_authentic_drivers_license_facial_match_socure_results
+      cloudwatch_client.fetch(
+        authentic_drivers_license_facial_match_socure_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_authentic_drivers_license_facial_match_lexis_results
+      cloudwatch_client.fetch(
+        authentic_drivers_license_facial_match_lexis_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_valid_drivers_license_number_results
+      cloudwatch_client.fetch(
+        valid_drivers_license_number_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_address_dob_dead_ssn_identity_notfound_results
+      cloudwatch_client.fetch(
+        address_dob_dead_ssn_identity_notfound_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_phone_account_ownership_results
+      cloudwatch_client.fetch(
+        phone_account_ownership_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_device_behavior_fraud_signals_results
+      cloudwatch_client.fetch(
+        device_behavior_fraud_signals_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_doc_selfie_ux_challenge_socure_results
+      cloudwatch_client.fetch(
+        doc_selfie_ux_challenge_socure_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_doc_selfie_ux_challenge_lexis_results
+      cloudwatch_client.fetch(
+        doc_selfie_ux_challenge_lexis_query:, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+
+    def fetch_verification_code_not_received_results
       cloudwatch_client.fetch(
         verification_code_not_received_query:, from: time_range.begin,
         to: time_range.end
@@ -253,6 +309,240 @@ module Reporting
     end
 
     # ---------------------------------------------------------------------------------------
+    def authentic_drivers_license_facial_match_socure_query
+      params = {
+        issuers: quote(issuers),
+        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
+      }
+      format(<<~QUERY, params)
+        filter name = %{idv_socure_verification_data_requested}
+        | filter properties.service_provider in [%{issuers}]
+        | parse @message '"reason_codes":[*]' as @reason_codes
+        | fields properties.event_properties.success as @document_authentication_success,
+                !properties.event_properties.doc_auth_success as @document_fail,
+                @reason_codes like 'R836' as @selfie_fail
+        | stats max(@document_authentication_success) as document_authentication_success,
+                max(@document_fail) as document_fail,
+                max(@selfie_fail) as selfie_fail
+                by properties.user_id
+        | filter !document_authentication_success
+        | stats sum(document_fail) as document_fail_count,
+                sum(selfie_fail) as selfie_fail_count
+      QUERY
+    end
+
+    def authentic_drivers_license_facial_match_lexis_query
+      params = {
+        issuers: quote(issuers),
+        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
+      }
+      format(<<~QUERY, params)
+        filter name = %{idv_doc_auth_image_upload_vendor_submitted}
+        | filter properties.service_provider in [%{issuers}]
+        | fields properties.event_properties.success as @document_authentication_success,
+                !properties.event_properties.doc_auth_success as @document_fail,
+                properties.event_properties.selfie_status = 'fail' as @selfie_fail
+        | stats max(@document_authentication_success) as document_authentication_success,
+                max(@document_fail) as document_fail,
+                max(@selfie_fail) as selfie_fail
+                by properties.user_id
+        | filter !document_authentication_success
+        | stats sum(document_fail) as document_fail_count,
+                sum(selfie_fail) as selfie_fail_count
+
+      QUERY
+    end
+
+    def valid_drivers_license_number_query
+      params = {
+        issuers: quote(issuers),
+        idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
+      }
+      format(<<~QUERY, params)
+        filter name = %{idv_doc_auth_verify_proofing_results}
+        | filter properties.service_provider in [%{issuers}]
+        | fields jsonParse(@message) as message
+        | unnest message.properties.event_properties.proofing_results.context.stages.state_id into state_id
+        | fields state_id.success as @aamva_passed
+
+        | fields properties.event_properties.success as @verify_info_success
+        | filter ispresent(@verify_info_success) and ispresent(@aamva_passed)
+        | stats max(@verify_info_success) as verify_info_success,
+                max(!@aamva_passed) as aamva_failed
+                by properties.user_id
+        | filter !verify_info_success
+        | stats sum(aamva_failed) as aamva_failed_count
+
+      QUERY
+    end
+
+    def address_dob_dead_ssn_identity_notfound_query
+      params = {
+        issuers: quote(issuers),
+        idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
+      }
+      format(<<~QUERY, params)
+        filter name = %{idv_doc_auth_verify_proofing_results}
+        | filter properties.service_provider in [%{issuers}]
+        | fields properties.event_properties.success as @verify_info_success
+        | fields jsonParse(@message) as message
+
+        | unnest message.properties.event_properties.proofing_results into proofing_results
+        | unnest proofing_results.context into context
+        | unnest context.stages into stages
+        | unnest stages.residential_address into residential_address
+        | unnest residential_address.success into residential_address_success
+        | unnest stages.resolution into resolution
+        | unnest resolution.success into resolution_success
+        | unnest residential_address.attributes_requiring_additional_verification into residential_address_need_addtl_verify
+        | unnest resolution.attributes_requiring_additional_verification into resolution_need_addtl_verify
+
+        | fields coalesce(residential_address_need_addtl_verify, 'none') as resudential_address_need_addtl_verify_fill_na
+        | fields coalesce(resolution_need_addtl_verify, 'none') as resolution_need_addtl_verify_fill_na
+
+        | fields if(resudential_address_need_addtl_verify_fill_na like 'address' or resolution_need_addtl_verify_fill_na like 'address', 1, 0) as address
+        | fields if(resudential_address_need_addtl_verify_fill_na like 'dob' or resolution_need_addtl_verify_fill_na like 'dob', 1, 0) as dob
+        | fields if(resudential_address_need_addtl_verify_fill_na like 'ssn' or resolution_need_addtl_verify_fill_na like 'ssn', 1, 0) as ssn
+        | fields if(resudential_address_need_addtl_verify_fill_na like 'dead' or resolution_need_addtl_verify_fill_na like 'dead', 1, 0) as dead
+
+        | fields if(residential_address_success=1 and resolution_success=1, 1, 0) as @iv_passed
+
+        | stats max(@verify_info_success) as verify_info_success,
+                max(@iv_passed) as iv_passed,
+                max(address) as address_failed,
+                max(dob) as dob_failed,
+                max(dead) as death_failed,
+                max(ssn) as ssn_failed
+                by properties.user_id
+
+        | filter !verify_info_success
+        | stats sum(address_failed) as address_failed_count,
+                sum(dob_failed) as dob_failed_count,
+                sum(death_failed) as death_failed_count,
+                sum(ssn_failed) as ssn_failed_count,
+                sum(iv_passed=0 and address_failed=0 and dob_failed=0 and death_failed=0 and ssn_failed=0) as identity_not_found_count
+      QUERY
+    end
+
+    def phone_account_ownership_query
+      params = {
+        issuers: quote(issuers),
+        idv_phone_conf_vendor: quote(Events::IDV_PHONE_CONF_VENDOR),
+      }
+      format(<<~QUERY, params)
+        filter name = %{idv_phone_conf_vendor}
+        | filter properties.service_provider in [%{issuers}]
+        | fields properties.event_properties.success as @phone_finder_success
+        | stats max(@phone_finder_success) as phone_finder_success by properties.user_id
+        | stats sum(!phone_finder_success) as phone_finder_fail_count 
+
+      QUERY
+    end
+
+    def device_behavior_fraud_signals_query
+      params = {
+        issuers: quote(issuers),
+        idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
+      }
+      format(<<~QUERY, params)
+        fields name, @timestamp, 
+          properties.event_properties.proofing_results.threatmetrix_review_status as tmx_result, 
+          properties.user_id as user_id, properties.new_event as new_event
+          | filter name in [%{idv_doc_auth_verify_proofing_results}]
+          | filter tmx_result = 'reject'
+          | filter properties.service_provider in [%{issuers}]
+          | filter new_event=1
+          | stats
+              max(new_event) as user_count_new_event by properties.user_id
+          | stats
+              sum(user_count_new_event) as DeviceBehavoirFraudSig
+
+      QUERY
+    end
+
+    def doc_selfie_ux_challenge_socure_query
+      params = {
+        issuers: quote(issuers),
+        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
+        idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
+      }
+      format(<<~QUERY, params)
+        filter name in [%{idv_socure_verification_data_requested}, %{idv_doc_auth_ssn_visited}]
+        | filter properties.service_provider in [%{issuers}]
+        | parse @message '"reason_codes":[*]' as @reason_codes
+        | fields 
+            (name = %{idv_socure_verification_data_requested}) as @the_socure_event,
+            (name = %{idv_doc_auth_ssn_visited}) as @ssn_visited,
+            (@the_socure_event and (@reason_codes like 'R836')) as @selfie_match_fail,
+            (@the_socure_event and (@reason_codes like 'R834')) as @liveness_fail,
+            (@the_socure_event and ((@reason_codes like 'R850') or (@reason_codes like 'R857') or (@reason_codes like 'R856'))) as @selfie_quality_fail,
+            (@the_socure_event and (@reason_codes like 'R804')) as @color_req,
+            (@the_socure_event and (@reason_codes like 'R845')) as @minimum_age_error,
+            ((@the_socure_event and (@reason_codes like 'R838'))) as @front_illegible,    
+            (@the_socure_event and (((@reason_codes like 'R831') or (@reason_codes like 'R833')))) as @barcode_illegible
+        | stats 
+            max(@ssn_visited) as ssn_visited,
+            max(@selfie_quality_fail) as selfie_quality_fail,
+            max(@color_req) as color_fail,
+            max(@selfie_match_fail) as selfie_match_fail,
+            max(@liveness_fail) as liveness_fail,
+            max(@front_illegible) as front_illegible_fail,
+            max(@barcode_illegible) as barcode_illegible_fail    
+            by properties.user_id
+        | filter (ssn_visited=0) 
+        | fields 
+            barcode_illegible_fail=1 or color_fail=1 or front_illegible_fail=1 as doc_quality_fail,
+            selfie_quality_fail=1 or doc_quality_fail=1 as capture_quality_fail
+        | stats 
+            sum(doc_quality_fail),
+            sum(selfie_quality_fail),
+            sum(capture_quality_fail)
+      QUERY
+    end
+
+    def doc_selfie_ux_challenge_lexis_query
+      params = {
+        issuers: quote(issuers),
+        idv_front_image_added: quote(Events::IDV_FRONT_IMAGE_ADDED),
+        idv_back_image_added: quote(Events::IDV_BACK_IMAGE_ADDED),
+        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
+        idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
+      }
+      format(<<~QUERY, params)
+        filter name in [%{idv_front_image_added}, %{idv_back_image_added}, %{idv_doc_auth_image_upload_vendor_submitted}, %{idv_doc_auth_ssn_visited}]
+        | filter properties.service_provider = %{issuers}
+        | fields 
+            properties.user_id,
+            properties.event_properties.isAssessedAsBlurry as isAssessedAsBlurry,
+            properties.event_properties.isAssessedAsGlare as isAssessedAsGlare,
+            properties.event_properties.isAssessedAsUnsupported as isAssessedAsUnsupported
+        | fields 
+            (name in [%{idv_front_image_added}, %{idv_back_image_added}] and isAssessedAsBlurry) as blur_error_1,
+            coalesce(blur_error_1,0) as blur_error,
+            (name in [%{idv_front_image_added},  %{idv_back_image_added}] and isAssessedAsGlare) as glare_error_1,
+            coalesce(glare_error_1,0) as glare_error,
+            # (name in [%{idv_front_image_added}, %{idv_back_image_added}] and isAssessedAsUnsupported) as doctype_error,   
+            (name = %{idv_doc_auth_image_upload_vendor_submitted} and !properties.event_properties.selfie_quality_good) as selfie_fail_1,
+            coalesce(selfie_fail_1,0) as selfie_fail,
+            (name = %{idv_doc_auth_ssn_visited}) as ssn_visited
+        | stats 
+            max(blur_error) as @blur_error,
+            max(glare_error) as @glare_error,
+            max(selfie_fail) as @selfie_fail,
+            max(ssn_visited) as @ssn_visited
+            by properties.user_id
+        | filter (@ssn_visited=0)
+        | fields 
+            @blur_error=1 or @glare_error=1 as @doc_fail,
+            (@doc_fail=1 or @selfie_fail=1) as @any_capture_error
+        | filter (@any_capture_error=1)
+        | stats 
+            sum(@any_capture_error),
+            sum(@selfie_fail),
+            sum(@doc_fail)
+      QUERY
+    end
+
     def verification_code_not_received_query
       params = {
         issuers: quote(issuers),
@@ -324,7 +614,6 @@ module Reporting
             sum(ln_fail) as LN_timeout_fail_count,
             sum(state_timeout_fail) as state_timeout_fail_count,
             count(*) as api_user_fail    
-
       QUERY
     end
 
@@ -360,6 +649,8 @@ module Reporting
     end
 
     # HELP WITH THESE (DO I EVEN NEED THEM?)---------------------------------------
+    # TODO: add for the rest of the queries
+    # Question: do we do this same thing for the ones that calculate things from multiple queries
     # api_connection_fails # help here
     def api_connection_fails
       @api_connection_fails ||= data[Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS,
