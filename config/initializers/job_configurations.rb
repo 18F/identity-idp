@@ -230,12 +230,6 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Monthly report checking in on key metrics
-      monthly_key_metrics_report: {
-        class: 'Reports::MonthlyKeyMetricsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.yesterday.end_of_day] },
-      },
       # Send previous week's authentication reports to partners
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
