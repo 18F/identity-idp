@@ -343,6 +343,7 @@ RSpec.describe 'Identity verification', :js do
       'threatmetrix' => true,
       'address_check' => 'lexis_nexis_address',
       'document_type_received' => 'drivers_license',
+      'document_type_requested' => 'drivers_license',
       'document_check' => 'mock',
       'residential_resolution_check' => 'ResidentialAddressNotRequired',
       'resolution_check' => 'ResolutionMock',
