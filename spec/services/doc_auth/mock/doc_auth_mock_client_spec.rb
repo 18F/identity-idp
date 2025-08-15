@@ -570,7 +570,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     let(:post_images_response) do
       client.post_images(
         passport_image: DocAuthImageFixtures.document_front_image_data_uri,
-        document_type: 'Passport',
+        document_type_requested: 'Passport',
       )
     end
 

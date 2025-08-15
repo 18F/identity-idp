@@ -43,7 +43,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:base_proofing_components) do
     {
       document_check: 'mock',
-      document_type: 'drivers_license',
+      document_type_received: 'drivers_license',
       source_check: 'StateIdMock',
       resolution_check: 'ResolutionMock',
       residential_resolution_check: 'ResidentialAddressNotRequired',
