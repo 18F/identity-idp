@@ -14,6 +14,16 @@ module Idv
       idv_session.pii_from_doc&.document_type_received
     end
 
+    def document_type_requested
+      # For now, we assume requested type matches received type
+      # This could be enhanced to track user's actual selection in the future
+      document_type_received
+    end
+
+    def document_type
+      document_type_received
+    end
+
     def source_check
       idv_session.source_check_vendor.presence ||
         (idv_session.verify_info_step_complete? && Idp::Constants::Vendors::AAMVA)
@@ -49,6 +59,7 @@ module Idv
       {
         document_check:,
         document_type_received:,
+        document_type_requested:,
         source_check:,
         residential_resolution_check:,
         resolution_check:,

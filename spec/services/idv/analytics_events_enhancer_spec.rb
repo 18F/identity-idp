@@ -101,6 +101,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
           extra: true,
           proofing_components: {
             document_type_received: 'drivers_license',
+            document_type_requested: 'drivers_license',
           },
         )
       end
