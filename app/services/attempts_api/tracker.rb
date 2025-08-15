@@ -81,6 +81,85 @@ module AttemptsApi
       parsed_errors || result.errors.presence
     end
 
+    def self.infinite_loop(sleep_time: 0.1, num_events: 10, total_events: 100)
+      # redis_client = AttemptsApi::RedisClient.new
+      sleep_time = 0.1
+      num_events = 10_000
+      total_events = 500_000
+      user = EmailAddress.confirmed.first.user
+      request = ActionDispatch::Request.new(
+        'HTTP_HOST' => 'www.login.gov',
+        'PATH_INFO' => '/foo/bar',
+        'rack.url_scheme' => 'https',
+      )
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:sinatra')
+      cookie_uuid = SecureRandom.hex(UserEventCreator::COOKIE_BYTES)
+
+      tracker = AttemptsApi::Tracker.new(
+        session_id: 'abc123',
+        request: request,
+        user: user,
+        sp: service_provider,
+        cookie_device_uuid: cookie_uuid,
+        sp_request_uri: 'www.example.com',
+        enabled_for_session: true,
+      )
+
+      total_saved_events = 0
+      while total_saved_events < total_events do
+        puts "#{Time.zone.now}: creating #{num_events} events"
+        num_events.times do
+          tracker.forgot_password_email_confirmed(success: true)
+          total_saved_events += 1
+        end
+        sleep sleep_time
+      end
+    end
+
+    def self.infinite_loop_poll
+      client_id = 'urn:gov:gsa:openidconnect:sp:sinatra'
+      # shared_secret = ''
+      # attempts_url = 'https://idp.dev.identitysandbox.gov/api/attempts/poll'
+      shared_secret = ''
+      attempts_url = 'https://idp.mhenke.identitysandbox.gov/api/attempts/poll'
+      # attempts_url = 'http://localhost:3000/api/attempts/poll'
+      sp_private_key = OpenSSL::PKey::RSA.new(File.read('/Users/mitchellehenke/projects/identity-oidc-sinatra/config/demo_sp.key'))
+      auth = "Bearer #{client_id} #{shared_secret}"
+
+      acks = []
+      while true do
+        params = {
+          maxEvents: 1_000,
+          acks: acks,
+        }
+
+        connection = Faraday.new(
+          url: attempts_url,
+          headers: { 'Authorization' => auth, 'Content-Type' => 'application/json' },
+        )
+
+        response = connection.post do |conn|
+          conn.body = params.to_json
+        end;1
+        if response.status != 200
+          # rubocop:disable Layout/LineLength
+          Rails.logger.info("got #{response.status} trying to query #{attempts_url}")
+          # rubocop:enable Layout/LineLength
+          # raise RuntimeError.new(response.body) if response.status != 200
+        end
+
+        sets = JSON.parse(response.body)['sets']
+
+        keys = sets.keys
+        acks = keys
+        values = sets.values.map do |jwe|
+          JSON.parse(JWE.decrypt(jwe, sp_private_key))
+        end
+
+        puts values.count
+      end
+    end
+
     private
 
     def google_analytics_cookies(request)
