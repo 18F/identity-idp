@@ -60,31 +60,6 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
     end
   end
 
-  describe '#do_not_recognize_profiles' do
-    before do
-      allow(controller).to receive(:user_session).and_return(session)
-    end
-
-    it 'logs an event' do
-      post :do_not_recognize_profiles
-
-      expect(@analytics).to have_logged_event(
-        :one_account_unknown_profile_detected,
-      )
-    end
-  end
-
-  describe '#recognize_all_profiles' do
-    before do
-      allow(controller).to receive(:user_session).and_return(session)
-    end
-
-    it 'logs an analytics event' do
-      post :recognize_all_profiles
-      expect(@analytics).to have_logged_event
-    end
-  end
-
   describe '#redirect_unless_user_has_active_duplicate_profile_confirmation' do
     context 'when user does not have an active profile' do
       before do

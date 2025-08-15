@@ -73,8 +73,8 @@ RSpec.describe DuplicateProfileChecker do
               profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
             }
 
-            allow_any_instance_of(Idv::DuplicateSsnFinder).to
-            receive(:duplicate_facial_match_profiles)
+            allow_any_instance_of(Idv::DuplicateSsnFinder)
+              .to receive(:duplicate_facial_match_profiles)
               .and_return([profile2])
           end
 
