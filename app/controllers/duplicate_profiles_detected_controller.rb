@@ -7,7 +7,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   def show
     @dupe_profiles_detected_presenter = DuplicateProfilesDetectedPresenter.new(
       user: current_user,
-      duplicate_profile: dupe_profile,
+      dupe_profile: dupe_profile,
     )
     notify_users_of_duplicate_profile_sign_in
     analytics.one_account_duplicate_profiles_detected
@@ -28,7 +28,7 @@ class DuplicateProfilesDetectedController < ApplicationController
     @dupe_profile ||= DuplicateProfile.involving_profile(
       profile_id: current_user.active_profile.id,
       service_provider: current_sp&.issuer,
-    )
+    ).first
   end
 
   def notify_users_of_duplicate_profile_sign_in
@@ -37,7 +37,7 @@ class DuplicateProfilesDetectedController < ApplicationController
     agency_name = current_sp.friendly_name || current_sp.agency&.name
 
     dupe_profile.profile_ids.each do |profile_id|
-      next if current_user.active_profile.id == profile.id
+      next if current_user.active_profile.id == profile_id
       profile = Profile.find(profile_id)
       AlertUserDuplicateProfileDiscoveredJob.perform_later(
         user: profile.user,

@@ -6,17 +6,24 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   let(:current_sp) do
     create(:service_provider, issuer: 'test-sp', friendly_name: 'Test Service Provider')
   end
+  let(:dupe_profile) do
+    create(
+      :duplicate_profile, profile_ids: [user.active_profile.id, profile2.id],
+                          service_provider: current_sp.issuer
+    )
+  end
 
   before do
     stub_sign_in(user)
     stub_analytics
-    session[:duplicate_profile_ids] = [profile2.id]
+    dupe_profile
     allow(controller).to receive(:current_sp).and_return(current_sp)
   end
 
   describe '#show' do
     context 'when user is not authenticated with 2FA' do
       let(:user) { nil }
+      let(:dupe_profile) { nil }
 
       it 'redirects to sign in page' do
         get :show
@@ -36,7 +43,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
 
       it 'initializes the DuplicateProfilesDetectedPresenter' do
         expect(DuplicateProfilesDetectedPresenter).to receive(:new)
-          .with(user: user, user_session: session)
+          .with(user: user, dupe_profile: dupe_profile)
         get :show
       end
 
