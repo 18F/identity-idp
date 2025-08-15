@@ -954,9 +954,8 @@ RSpec.describe SamlIdpController do
           allow(IdentityConfig.store)
             .to receive(:eligible_one_account_providers)
             .and_return([service_provider.issuer])
-          allow(IdentityConfig.store)
-            .to receive(:one_account_user_verification_enabled_percentage)
-            .and_return(100)
+          allow(controller).to receive(:user_in_one_account_verification_bucket?)
+            .and_return(true)
           duplicate_profile
           allow(controller).to receive(:current_user).and_return(user)
         end
