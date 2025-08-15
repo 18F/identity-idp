@@ -46,6 +46,7 @@ RSpec.describe Idv::ProofingComponents do
           {
             document_check: 'feedabee',
             document_type_received: 'drivers_license',
+            document_type_requested: 'drivers_license',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
@@ -64,6 +65,7 @@ RSpec.describe Idv::ProofingComponents do
           {
             document_check: 'feedabee',
             document_type_received: 'state_id',
+            document_type_requested: 'state_id',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
@@ -82,6 +84,7 @@ RSpec.describe Idv::ProofingComponents do
           {
             document_check: 'feedabee',
             document_type_received: 'passport',
+            document_type_requested: 'passport',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
