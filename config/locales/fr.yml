@@ -557,7 +557,7 @@ doc_auth.errors.general.network_error_passport_ending: si vous en avez une.
 doc_auth.errors.general.network_error_passport_link_text: utiliser un autre type de pièce d’identité
 doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
-doc_auth.errors.general.selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une nouvelle photo.
+doc_auth.errors.general.selfie_failure: Assurez-vous que l’ensemble de votre visage est visible et ne bougez pas lorsque la caméra se déclenche. Évitez la lumière vive ou quoi que ce soit qui puisse cacher votre visage, comme un chapeau.
 doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
 doc_auth.errors.glare.failed_short: L’image a des reflets, veuillez réessayer.
 doc_auth.errors.glare.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
