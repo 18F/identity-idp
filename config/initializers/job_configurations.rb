@@ -247,18 +247,6 @@ else
         class: 'GpoExpirationJob',
         cron: cron_24h,
       },
-      # Disabled via email configs being empty. Redshift/S3 version replacing it, will delete soon
-      monthly_key_metrics_report: {
-        class: 'Reports::MonthlyKeyMetricsReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.yesterday.end_of_day] },
-      },
-      monthly_key_metrics_s3_report: {
-        class: 'Reports::MonthlyKeyMetricsS3Report',
-        cron: cron_24h_6am, # reporting rails scheduled a little after midnight
-        # 6am seems like more than enough time for a ~midnight report to finish in reporting-rails
-        args: -> { [Time.zone.yesterday.end_of_day] },
-      },
       # Send previous week's authentication reports to partners
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
