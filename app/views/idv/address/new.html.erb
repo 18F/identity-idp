@@ -85,7 +85,7 @@
 
 <% if @presenter.address_update_request %>
   <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_verify_info_path %>
-<% elsif @presenter.gpo_letter_requested %>
+<% elsif @presenter.gpo_request_letter_visited %>
   <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_request_letter_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'verify' %>
