@@ -4,6 +4,7 @@ module Idv
   class AddressController < ApplicationController
     include Idv::AvailabilityConcern
     include IdvStepConcern
+    include Idv::StepIndicatorConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
@@ -113,6 +114,14 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
+    end
+
+    def step_indicator_steps
+      if idv_session.gpo_request_letter_visited
+        return StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+      end
+
+      StepIndicatorConcern::STEP_INDICATOR_STEPS
     end
   end
 end

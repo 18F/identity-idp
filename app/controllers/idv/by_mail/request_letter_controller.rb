@@ -39,8 +39,6 @@ module Idv
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.address_verification_mechanism = nil
-            # Can we do this?:
-            idv_session.gpo_request_letter_visited = nil
           end,
         )
       end

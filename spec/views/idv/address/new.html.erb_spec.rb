@@ -5,10 +5,12 @@ RSpec.describe 'idv/address/new' do
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
   let(:gpo_request_letter_visited) { nil }
   let(:address_update_request) { nil }
+  let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
 
   shared_examples 'valid address page and form' do
     before do
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
       assign(
         :presenter, Idv::AddressPresenter.new(
           gpo_request_letter_visited: gpo_request_letter_visited,
