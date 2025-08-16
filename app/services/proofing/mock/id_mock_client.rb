@@ -19,8 +19,10 @@ module Proofing
           errors[:state_id_jurisdiction] = ['The jurisdiction could not be verified']
         elsif invalid_state_id_number?(applicant[:state_id_number])
           errors[:state_id_number] = ['The state ID number could not be verified']
-        elsif invalid_id_doc_type?(applicant[:id_doc_type])
-          errors[:id_doc_type] = ['The state ID type could not be verified']
+        elsif invalid_document_type_received?(
+          applicant[:document_type_received] || applicant[:id_doc_type],
+        )
+          errors[:document_type_received] = ['The state ID type could not be verified']
         end
 
         return unverifiable_result(errors) if errors.any?
@@ -64,7 +66,9 @@ module Proofing
       end
 
       def jurisdiction_not_supported?(applicant)
-        return false if applicant[:id_doc_type] == 'passport'
+        # Check both new and old field names for backwards compatibility
+        doc_type = applicant[:document_type_received] || applicant[:id_doc_type]
+        return false if doc_type == 'passport'
 
         state_id_jurisdiction = applicant[:state_id_jurisdiction]
         !IdentityConfig.store.aamva_supported_jurisdictions.include? state_id_jurisdiction
@@ -74,9 +78,9 @@ module Proofing
         state_id_number =~ /\A0*\z/
       end
 
-      def invalid_id_doc_type?(id_doc_type)
-        !SUPPORTED_ID_DOC_TYPES.include?(id_doc_type) &&
-          !id_doc_type.nil?
+      def invalid_document_type_received?(document_type_received)
+        !SUPPORTED_ID_DOC_TYPES.include?(document_type_received) &&
+          !document_type_received.nil?
       end
     end
   end

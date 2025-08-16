@@ -163,7 +163,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        id_doc_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: 'USA',
       )
@@ -368,8 +368,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.successful_result?).to eq(false)
       end
 
-      it 'records the id_doc_type as passport_card' do
-        expect(response.pii_from_doc.id_doc_type).to eq('passport_card')
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
       end
 
       it 'has error messages' do
@@ -440,7 +440,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         nationality_code: 'USA',
         issuing_country_code: 'USA',
         mrz: mrz,
-        id_doc_type: 'passport',
+        document_type_received: 'passport',
         document_number: 'Z12345678',
       )
 
@@ -649,7 +649,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        id_doc_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: nil,
       )
