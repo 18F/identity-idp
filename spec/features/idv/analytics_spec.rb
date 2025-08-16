@@ -247,19 +247,19 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth document_capture submitted' => hash_including(success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }),
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -372,19 +372,19 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -491,23 +491,23 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -735,26 +735,26 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true,
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       :idv_selfie_image_added => {
         acuant_version: kind_of(String), captureAttempts: 1, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', document_type_requested: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
