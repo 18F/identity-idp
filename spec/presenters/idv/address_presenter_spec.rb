@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Idv::AddressPresenter do
-  let(:gpo_letter_requested) { nil }
+  let(:gpo_request_letter_visited) { nil }
   let(:address_update_request) { nil }
-  subject(:presenter) { described_class.new(gpo_letter_requested:, address_update_request:) }
+  subject(:presenter) { described_class.new(gpo_request_letter_visited:, address_update_request:) }
 
   context 'address update request is true' do
     let(:address_update_request) { true }
@@ -29,8 +29,8 @@ RSpec.describe Idv::AddressPresenter do
     end
   end
 
-  context 'gpo_letter_requested is true' do
-    let(:gpo_letter_requested) { true }
+  context 'gpo_request_letter_visited is true' do
+    let(:gpo_request_letter_visited) { true }
     let(:address_update_request) { false }
 
     it 'gives us the correct page heading' do
@@ -42,8 +42,8 @@ RSpec.describe Idv::AddressPresenter do
     end
   end
 
-  context 'gpo_letter_requested and address_update_request are true' do
-    let(:gpo_letter_requested) { true }
+  context 'gpo_request_letter_visited and address_update_request are true' do
+    let(:gpo_request_letter_visited) { true }
     let(:address_update_request) { true }
 
     it 'gives us the correct page heading' do
