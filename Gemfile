@@ -117,6 +117,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'rubocop-capybara', require: false
+  gem 'prism'
   gem 'sqlite3', require: false
 end
 
