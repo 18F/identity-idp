@@ -29,7 +29,6 @@ A detailed report of the bug, including:
 - Current behavior, and; 
 - Any other relevant information, such as browser type, or mobile vs desktop. 
 
-
 #### Feature requests
 
 Please include:
@@ -58,7 +57,7 @@ We do not accept PRs for new features (or that extend current features) from ext
 
 We have a specific internal process for researching, designing and developing features. As we are a shared service that operates government-wide, we need to evaluate whether a feature is a good fit for all our partners before we can consider building it out. 
 
-If you'd like to submit a feature request for consideration, please follow the steps outlined above.
+If you'd like to submit a feature request for consideration, please follow the [steps outlined above](#reporting).
 
 ### PR Requirements
 
