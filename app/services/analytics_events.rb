@@ -5702,6 +5702,15 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
+  def idv_socure_verification_webhook_missing(docv_transaction_token: nil, **extra)
+    track_event(
+      :idv_socure_verification_webhook_missing,
+      docv_transaction_token:,
+      **extra,
+    )
+  end
+
   # @param [String] step
   # @param [String] location
   # @param [Hash,nil] proofing_components User's current proofing components
