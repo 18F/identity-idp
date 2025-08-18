@@ -34,8 +34,14 @@ RSpec.describe AttemptsApi::AttemptEvent do
       expect(headers['kid']).to eq(JWT::JWK.new(attempts_api_public_key).kid)
 
       decrypted_jwe_payload = JWE.decrypt(jwe, attempts_api_private_key)
+      decoded_jwe_payload = JWT.decode(
+        decrypted_jwe_payload,
+        AppArtifacts.store.oidc_primary_public_key,
+        true,
+        { algorithm: 'RS256' },
+      )
 
-      token = JSON.parse(decrypted_jwe_payload)
+      token = JSON.parse(decoded_jwe_payload.first)
 
       expect(token['iss']).to eq(Rails.application.routes.url_helpers.root_url)
       expect(token['jti']).to eq(jti)
@@ -57,14 +63,14 @@ RSpec.describe AttemptsApi::AttemptEvent do
     it 'returns an event decrypted from the JWE' do
       jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
-      decrypted_event = described_class.from_jwe(jwe, attempts_api_private_key)
+      decoded_event = described_class.from_jwe(jwe, attempts_api_private_key)
 
-      expect(decrypted_event.jti).to eq(subject.jti)
-      expect(decrypted_event.iat).to eq(subject.iat)
-      expect(decrypted_event.event_type).to eq(subject.event_type)
-      expect(decrypted_event.session_id).to eq(subject.session_id)
-      expect(decrypted_event.occurred_at).to eq(subject.occurred_at)
-      expect(decrypted_event.event_metadata).to eq(subject.event_metadata.symbolize_keys)
+      expect(decoded_event.jti).to eq(subject.jti)
+      expect(decoded_event.iat).to eq(subject.iat)
+      expect(decoded_event.event_type).to eq(subject.event_type)
+      expect(decoded_event.session_id).to eq(subject.session_id)
+      expect(decoded_event.occurred_at).to eq(subject.occurred_at)
+      expect(decoded_event.event_metadata).to eq(subject.event_metadata.symbolize_keys)
     end
   end
 end
