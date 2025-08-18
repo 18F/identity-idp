@@ -16,8 +16,8 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
 ENV YARN_VERSION 1.22.22
-ENV NODE_VERSION 22.11.0
-ENV BUNDLER_VERSION 2.6.3
+ENV NODE_VERSION 22.18.0
+ENV BUNDLER_VERSION 2.6.9
 
 # Install dependencies
 RUN apt-get update -qq && \
@@ -27,6 +27,7 @@ RUN apt-get update -qq && \
     build-essential \
     git-lfs \
     curl \
+    gnupg \
     zlib1g-dev \
     libssl-dev \
     libreadline-dev \
@@ -36,7 +37,6 @@ RUN apt-get update -qq && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     xz-utils \
