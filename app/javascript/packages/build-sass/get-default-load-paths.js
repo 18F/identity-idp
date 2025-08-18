@@ -1,5 +1,3 @@
-import { isDependency } from '@aduth/is-dependency';
-
 /** @type {Record<string, string[]>} */
 const DEPENDENCY_LOAD_PATHS_MAPPING = {
   '@18f/identity-design-system': ['node_modules/@18f/identity-design-system/packages'],
@@ -11,7 +9,7 @@ const DEPENDENCY_LOAD_PATHS_MAPPING = {
  *
  * @return {string[]} Array of load paths.
  */
-const getDefaultLoadPaths = () =>
+const getDefaultLoadPaths = (isDependency) =>
   Object.entries(DEPENDENCY_LOAD_PATHS_MAPPING)
     .filter(([dependency]) => isDependency(dependency))
     .flatMap(([, loadPaths]) => loadPaths);
