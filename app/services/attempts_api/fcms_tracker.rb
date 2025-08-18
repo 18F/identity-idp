@@ -5,9 +5,9 @@ module AttemptsApi
     include TrackerEvents
     attr_reader :current_user
 
-    def track_event(event_type, metadata = {})
-      puts 'FCMS tracking tracker file'
-      return unless enabled?
+    private
+
+    def build_event_metadata(event_type, metadata)
       extra_metadata =
         if metadata.has_key?(:failure_reason) &&
            (metadata[:failure_reason].blank? || metadata[:success].present?)
@@ -16,6 +16,7 @@ module AttemptsApi
           metadata
         end
 
+      # Custom Metadata for FCMS
       event_metadata = {
         user_uuid: user&.uuid,
         user_id: user&.id,
@@ -32,28 +33,11 @@ module AttemptsApi
       }
 
       event_metadata.merge!(extra_metadata)
-
-      event = AttemptEvent.new(
-        event_type: event_type,
-        session_id: session_id,
-        occurred_at: Time.zone.now,
-        event_metadata: event_metadata,
-      )
-
-      jwe = event.payload_json(issuer: sp.issuer)
-      # TODO: set up encryption and refactor conditional
-
-      redis_client.write_event(
-        event_key: event.jti,
-        jwe: jwe,
-        timestamp: event.occurred_at,
-        issuer: sp.issuer,
-      )
-
-      event
     end
 
-    private
+    def build_jwe(event)
+      event.payload_json(issuer: sp.issuer)
+    end
 
     def enabled?
       FeatureManagement.fcms_enabled?
