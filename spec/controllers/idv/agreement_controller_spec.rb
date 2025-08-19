@@ -197,7 +197,7 @@ RSpec.describe Idv::AgreementController do
         it 'redirects to how to verify' do
           put :update, params: params
 
-          expect(response).to redirect_to(idv_how_to_verify_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
 
         it 'sets an idv_consent_given_at timestamp' do
