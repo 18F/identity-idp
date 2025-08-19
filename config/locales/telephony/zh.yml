@@ -24,6 +24,16 @@ zh:
       voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
       %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+    dupe_profile_created_notice: |-
+      有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
+      如果另一个账户是你本人验证的，请按照这里列出的 步骤删除那个重复账户: %{steps_link}
+
+      如果不是你本人，请联系 %{app_name} 帮助中心: %{help_center_link}
+    dupe_profile_sign_in_attempted_notice: |-
+      有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
+
+      如果另一个账户是你本人验证的，请按照这里列出的 步骤删除那个重复账户: %{steps_link}
+      如果不是你本人，请联系 %{app_name} 帮助中心: %{help_center_link}
     error:
       friendly_message:
         daily_voice_limit_reached: 你的一次性代码未能发出，因为已超出 24 小时内拨打这个电话号码的最多次数。你可以请求通过短信发送代码，或使用另外一个号码来接听电话。

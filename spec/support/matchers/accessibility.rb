@@ -93,6 +93,8 @@ RSpec::Matchers.define :have_valid_markup do
         allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
         allow(Rails.application.routes).to receive(:default_url_options)
           .and_return(default_url_options)
+        # To prevent the cookie from persisting across tests, we have to delete it
+        page.driver.browser.set_cookie '_identity_idp_session=' if session_value
         page.html
       end
     else
