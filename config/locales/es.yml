@@ -568,7 +568,7 @@ doc_auth.errors.general.network_error_passport_ending: si la tiene.
 doc_auth.errors.general.network_error_passport_link_text: use otro tipo de identificación.
 doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
-doc_auth.errors.general.selfie_failure: No pudimos verificar su foto. Intente tomar una nueva foto.
+doc_auth.errors.general.selfie_failure: Revise que se vea su cara completa y no se mueva mientras la cámara toma la fotografía. Evite las luces brillantes o cualquier prenda que pueda cubrirle la cara, como un sombrero.
 doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
 doc_auth.errors.glare.failed_short: La imagen tiene reflejos; inténtelo de nuevo.
 doc_auth.errors.glare.top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar una nueva foto.
@@ -722,7 +722,7 @@ doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
 doc_auth.instructions.consent: Al marcar esta casilla, usted permite que %{app_name} solicite, utilice, conserve y comparta su información personal. La utilizaremos para verificar su identidad.
 doc_auth.instructions.getting_started: 'Necesitará:'
 doc_auth.instructions.learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
-doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad.
+doc_auth.instructions.switch_back: Vuelva a su computadora para finalizar la verificación de su identidad
 doc_auth.instructions.switch_back_image: Flecha que apunta del teléfono a la computadora
 doc_auth.instructions.test_ssn: En el entorno de prueba, solo se consideran válidos los números de Seguro Social que comienzan con “900-” o “666-”. No ingrese IIP real en este campo.
 doc_auth.instructions.text1: No se aceptan otras formas de identificación. Revisaremos que usted sea la persona que figura en su identificación.
@@ -756,7 +756,7 @@ duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cu
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro_html: '%{app_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
+duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
 duplicate_profiles_detected.intro.link: Obtenga más información acerca de las cuentas duplicadas.
 duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'

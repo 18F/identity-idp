@@ -557,7 +557,7 @@ doc_auth.errors.general.network_error_passport_ending: si vous en avez une.
 doc_auth.errors.general.network_error_passport_link_text: utiliser un autre type de pièce d’identité
 doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
-doc_auth.errors.general.selfie_failure: Nous n’avons pas pu vérifier votre photo. Essayez de prendre une nouvelle photo.
+doc_auth.errors.general.selfie_failure: Assurez-vous que l’ensemble de votre visage est visible et ne bougez pas lorsque la caméra se déclenche. Évitez la lumière vive ou quoi que ce soit qui puisse cacher votre visage, comme un chapeau.
 doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
 doc_auth.errors.glare.failed_short: L’image a des reflets, veuillez réessayer.
 doc_auth.errors.glare.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
@@ -711,7 +711,7 @@ doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
 doc_auth.instructions.consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser, conserver et partager vos renseignements personnels. Nous les utiliserons pour confirmer votre identité.
 doc_auth.instructions.getting_started: 'Vous devrez :'
 doc_auth.instructions.learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité.
+doc_auth.instructions.switch_back: Revenir à votre ordinateur pour continuer à confirmer votre identité
 doc_auth.instructions.switch_back_image: Flèche pointant du téléphone vers l’ordinateur
 doc_auth.instructions.test_ssn: Dans l’environnement de test, seuls les numéros de sécurité sociale commençant par “900-” ou “666-” sont considérés comme valides. Ne saisissez pas de vraies IPI dans ce champ.
 doc_auth.instructions.text1: Les autres pièces d’identité ne sont pas acceptées. Nous vérifierons que vous êtes la personne figurant sur la pièce d’identité.
@@ -745,7 +745,7 @@ duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un d
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
-duplicate_profiles_detected.intro_html: Pour accéder à %{app_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
+duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
 duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'

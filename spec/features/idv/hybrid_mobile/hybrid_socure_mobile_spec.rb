@@ -9,7 +9,6 @@ RSpec.describe 'Hybrid Flow' do
   let(:phone_number) { Features::SessionHelper::IAL1_USER_PHONE }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
-  let(:socure_docv_verification_data_test_mode) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:timeout_socure_route) do
@@ -32,8 +31,6 @@ RSpec.describe 'Hybrid Flow' do
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
-    allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode)
-      .and_return(socure_docv_verification_data_test_mode)
     @docv_transaction_token = stub_docv_document_request(user:)
     stub_analytics
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(@analytics)
@@ -278,6 +275,7 @@ RSpec.describe 'Hybrid Flow' do
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
           .and_return(0)
+        allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(nil)
       end
 
       it 'presents options to try again or try in person', js: true do
@@ -462,95 +460,6 @@ RSpec.describe 'Hybrid Flow' do
           ).to eq(
             PhoneFormatter.format(phone_number),
           )
-        end
-      end
-    end
-
-    context 'when socure_docv_verification_data_test_mode is enabled' do
-      let(:test_token) { 'valid-test-token' }
-      let(:socure_docv_verification_data_test_mode) { true }
-      before do
-        allow(IdentityConfig.store).to receive(:socure_docv_verification_data_test_mode_tokens)
-          .and_return([test_token])
-        DocAuth::Mock::DocAuthMockClient.reset!
-      end
-
-      context 'when a valid test token is used' do
-        it 'fetches verification data using override docvToken in request',
-           js: true, allow_browser_log: true do
-          perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2
-            sign_in_and_2fa_user(user)
-
-            complete_doc_auth_steps_before_hybrid_handoff_step
-            click_send_link
-          end
-
-          expect(@sms_link).to be_present
-
-          perform_in_browser(:mobile) do
-            remove_request_stub(@pass_stub)
-            stub_docv_verification_data_pass(docv_transaction_token: test_token, user:)
-
-            visit @sms_link
-
-            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
-
-            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: test_token)
-
-            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-          end
-
-          perform_in_browser(:desktop) do
-            expect(page).to have_current_path(idv_ssn_path, wait: 10)
-          end
-        end
-      end
-
-      context 'when an invalid test token is used' do
-        let(:invalid_token) { 'invalid-token' }
-        let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
-          ['https://1.example.test/thepath', 'https://2.example.test/thepath']
-        end
-
-        before do
-          # recovers when fails to repeat webhook
-          allow_any_instance_of(DocAuth::Socure::WebhookRepeater)
-            .to receive(:send_http_post_request).and_raise('doh')
-        end
-
-        it 'waits to fetch verification data using docv capture session token', js: true do
-          expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
-            .exactly(6 * socure_docv_webhook_repeat_endpoints.length).times.and_call_original
-
-          perform_in_browser(:desktop) do
-            visit_idp_from_oidc_sp_with_ial2
-            sign_in_and_2fa_user(user)
-
-            complete_doc_auth_steps_before_hybrid_handoff_step
-            click_send_link
-          end
-
-          expect(@sms_link).to be_present
-
-          perform_in_browser(:mobile) do
-            visit @sms_link
-
-            click_idv_continue
-
-            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
-            expect(page).to have_current_path(
-              idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token),
-            )
-            socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
-            visit idv_hybrid_mobile_socure_document_capture_update_path(docv_token: invalid_token)
-
-            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_path)
-          end
-
-          perform_in_browser(:desktop) do
-            expect(page).to have_current_path(idv_ssn_path, wait: 10)
-          end
         end
       end
     end

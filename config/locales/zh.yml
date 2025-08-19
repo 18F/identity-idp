@@ -568,7 +568,7 @@ doc_auth.errors.general.network_error_passport_ending: （如果有的话）。
 doc_auth.errors.general.network_error_passport_link_text: 使用其他类型的身份证件
 doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
-doc_auth.errors.general.selfie_failure: 我们无法验证你自己的照片。请重拍一张。
+doc_auth.errors.general.selfie_failure: 确保你整个面部都不受任何遮掩，而且在相机拍你照片时保持不动。避免强光或任何可能遮掩你面部的东西（比如帽子）。
 doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
@@ -722,7 +722,7 @@ doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
 doc_auth.instructions.consent: 在此框打勾，意味着你允许 %{app_name} 索要、使用、保留并分享你的个人信息。我们会使用这些信息来验证你的身份。
 doc_auth.instructions.getting_started: '你需要：'
 doc_auth.instructions.learn_more: 了解有关我们隐私和安全措施的更多信息。
-doc_auth.instructions.switch_back: 然后再返回你的电脑完成验证身份。
+doc_auth.instructions.switch_back: 然后再返回你的电脑完成验证身份
 doc_auth.instructions.switch_back_image: 从手机指向电脑的箭头
 doc_auth.instructions.test_ssn: 在测试环境中只有以 900- 或者 666- 打头的社保号才被视为是对的。请勿在该字段中输入你真实的显示个人身份的信息。
 doc_auth.instructions.text1: 其他形式的身份证件不被接受。我们要查看你是身份证件上的人。
@@ -756,7 +756,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{app_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
+duplicate_profiles_detected.intro_html: '%{sp_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
 duplicate_profiles_detected.intro.link: 了解更多关于重复帐户的信息。
 duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'

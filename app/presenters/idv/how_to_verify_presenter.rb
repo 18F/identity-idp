@@ -63,7 +63,7 @@ class Idv::HowToVerifyPresenter
   end
 
   def post_office_asset_url
-    'idv/in-person.svg'
+    'idv/post-office.svg'
   end
 
   def post_office_asset_alt_text

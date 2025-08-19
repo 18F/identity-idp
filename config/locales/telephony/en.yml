@@ -27,6 +27,16 @@ en:
       voice: Hello! Your %{format_length}-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
     doc_auth_link: |-
       %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
+    dupe_profile_created_notice: |-
+      Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+
+      If this was you verifying another account, delete the duplicate account here: %{steps_link}
+      If this wasn’t you, contact the help center here: %{help_center_link}
+    dupe_profile_sign_in_attempted_notice: |-
+      Someone just signed into a %{app_name} that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+
+      If this was you verifying another account, delete the duplicate account here: %{steps_link}
+      If this wasn’t you, contact the help center here: %{help_center_link}
     error:
       friendly_message:
         daily_voice_limit_reached: Your one-time code failed to send because you exceeded the maximum number of phone calls in 24 hours to this phone number. You can either request a code by text message or use a different number to receive a phone call.

@@ -35,7 +35,6 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_unique_form_landmark_labels
 
     expect(page).to have_button(t('idv.cancel.actions.start_over'))
-    expect(page).to have_no_button(t('idv.cancel.actions.exit', app_name: APP_NAME))
     expect(page).to have_button(t('idv.cancel.actions.account_page'))
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 

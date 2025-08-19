@@ -116,7 +116,7 @@ module DocAuthImageFixtures
 
     zip_filename = "#{temp_dir}/document.zip"
 
-    Zip::File.open(zip_filename, Zip::File::CREATE) do |zipfile|
+    Zip::File.open(zip_filename, create: true) do |zipfile|
       Dir.glob(File.join(temp_dir, '*')).each do |file|
         next if File.directory?(file)
         zipfile.add(File.basename(file), file)

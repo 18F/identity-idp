@@ -19,6 +19,18 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
 
         subject.perform(user: user, agency: agency, type: :account_created)
       end
+
+      context 'when phone is present' do
+        let(:user) { create(:user, :with_phone) }
+
+        it 'sends a dupe profile created SMS' do
+          user_phone = user.phone_configurations.first.phone
+          expect(Telephony).to receive(:send_dupe_profile_created_notice)
+            .with(to: user_phone, country_code: 'US', agency_name: agency)
+
+          subject.perform(user: user, agency: agency, type: :account_created)
+        end
+      end
     end
 
     context 'when type is :sign_in_attempted' do
@@ -28,6 +40,18 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           .and_call_original
 
         subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+      end
+
+      context 'when phone is present' do
+        let(:user) { create(:user, :with_phone) }
+
+        it 'sends a dupe profile sign in attempted SMS' do
+          user_phone = user.phone_configurations.first.phone
+          expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
+            .with(to: user_phone, country_code: 'US', agency_name: agency)
+
+          subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+        end
       end
     end
 
