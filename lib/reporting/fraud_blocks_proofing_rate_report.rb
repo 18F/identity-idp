@@ -109,13 +109,13 @@ module Reporting
     #   ]
     # end
 
-    def suspected_fraud_blocks_metrics_table # table Suspected Fraud Related Blocks
-      # TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
+    # table Suspected Fraud Related Blocks ----------------------------------------------
+    def suspected_fraud_blocks_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
           'Authentic Drivers License',
-          authentic_drivers_license.to_s, # will need to be a calculation because we add lexis and socure together
+          authentic_drivers_doc_auth.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
@@ -127,37 +127,36 @@ module Reporting
         ],
         [
           'Facial Matching Check',
-          facial_matching_check.to_s, # will need to be a calculation because we add lexis and socure together
+          facial_matching_check.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
-          'Identity Not Found',
-          identity_not_found.to_s,
+          attributes.identity_not_found_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Address / Occupancy Match',
-          address_occupancy_match.to_s,
+          attributes.address_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Social Security Number Match',
-          social_security_number_match.to_s,
+          attributes.ssn_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Date of Birth Match',
-          dob_match.to_s,
+          attributes.dob_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Deceased Check',
-          dead_check.to_s,
+          attributes.death_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
@@ -173,17 +172,17 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-        # TODO: END ----------------------------------------------------------------------
+        # ---------------------------------------------------------------------------------
       ]
     end
 
-    def reinstated_metrics_table # table Key Points of User Friction
-      # TODO: NEED TO UPDATE THE TOTAL FOR ALL THESE ENTRIES-----------------------------
+    # table Key Points of User Friction ---------------------------------------------------
+    def key_points_user_friction_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Document / selfie upload UX challenge', # will need to be a calculation because we add lexis and socure together
-          doc_selfie_ux_challenge_count.to_s,
+          'Document / selfie upload UX challenge',
+          doc_selfie_ux_challenge_socure_and_lexis.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
@@ -199,7 +198,7 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-        # TODO: END ----------------------------------------------------------------------
+        # -------------------------------------------------------------------------------
       ]
     end
 
@@ -219,20 +218,164 @@ module Reporting
       time_range.begin.strftime('%b-%Y')
     end
 
-    # QUESTION: I NEED TO MODIFY THIS PART AND NEED HELP DOING SO ? ----------------------
-    # def data
-    #   @data ||= begin
-    #     event_users = Hash.new do |h, uuid|
-    #       h[uuid] = Set.new
-    #     end
+    # Create Data Dictionary that will store results from each cloudwatch query ------------
+    def data_authentic_drivers_license_facial_match_socure
+      @data_authentic_drivers_license_facial_match_socure ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
 
-    #     fetch_results.each do |row|
-    #       event_users[row['name']] << row['user_id']
-    #     end
+        fetch_authentic_drivers_license_facial_match_socure_results.each do |row|
+          event_users[row['document_fail_count_socure']] << row['document_fail_count']
+          event_users[row['selfie_fail_count_socure']] << row['selfie_fail_count']
+        end
 
-    #     event_users
-    #   end
-    # end
+        event_users
+      end
+    end
+
+    def data_authentic_drivers_license_facial_match_lexis
+      @data_authentic_drivers_license_facial_match_lexis ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_authentic_drivers_license_facial_match_lexis_results.each do |row|
+          event_users[row['document_fail_count_lexis']] << row['document_fail_count']
+          event_users[row['selfie_fail_count_lexis']] << row['selfie_fail_count']
+        end
+
+        event_users
+      end
+    end
+
+    def data_valid_drivers_license_number
+      @data_valid_drivers_license_number ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_valid_drivers_license_number_results.each do |row|
+          event_users[row['aamva_failed_count']] << row['aamva_failed_count']
+        end
+
+        event_users
+      end
+    end
+
+    def data_fetch_address_dob_dead_ssn_identity_notfound_results
+      @data_fetch_address_dob_dead_ssn_identity_notfound_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_address_dob_dead_ssn_identity_notfound_results.each do |row|
+          event_users[row['address_failed_count']] << row['address_failed_count']
+          event_users[row['dob_failed_count']] << row['dob_failed_count']
+          event_users[row['death_failed_count']] << row['death_failed_count']
+          event_users[row['ssn_failed_count']] << row['ssn_failed_count']
+          event_users[row['identity_not_found_count']] << row['identity_not_found_count']
+        end
+
+        event_users
+      end
+    end
+
+    def data_fetch_phone_account_ownership_results
+      @data_fetch_phone_account_ownership_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_phone_account_ownership_results.each do |row|
+          event_users[row['phone_finder_fail_count']] << row['phone_finder_fail_count']
+        end
+
+        event_users
+      end
+    end
+
+    def data_fetch_device_behavior_fraud_signals_results
+      @data_fetch_device_behavior_fraud_signals_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_device_behavior_fraud_signals_results.each do |row|
+          event_users[row['DeviceBehavoirFraudSig']] << row['DeviceBehavoirFraudSig']
+        end
+        event_users
+      end
+    end
+
+    def data_fetch_doc_selfie_ux_challenge_socure_results
+      @data_fetch_doc_selfie_ux_challenge_socure_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_doc_selfie_ux_challenge_socure_results.each do |row|
+          event_users[row['sum_capture_quality_fail']] << row['sum_capture_quality_fail']
+        end
+        event_users
+      end
+    end
+
+    def data_fetch_doc_selfie_ux_challenge_lexis_results
+      @data_fetch_doc_selfie_ux_challenge_lexis_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_doc_selfie_ux_challenge_lexis_results.each do |row|
+          event_users[row['sum_any_capture']] << row['sum_any_capture']
+        end
+        event_users
+      end
+    end
+
+    def data_fetch_verification_code_not_received_results
+      @data_fetch_verification_code_not_received_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_verification_code_not_received_results.each do |row|
+          event_users[row['sum_verification_code_not_received']] << row['sum_verification_code_not_received']
+        end
+        event_users
+      end
+    end
+
+    def data_fetch_api_connection_fails_results
+      @data_fetch_api_connection_fails_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_api_connection_fails_results.each do |row|
+          event_users[row['api_user_fail']] << row['api_user_fail']
+          event_users[row['AAMVA_fail_count']] << row['AAMVA_fail_count']
+          event_users[row['LN_timeout_fail_count']] << row['LN_timeout_fail_count']
+          event_users[row['state_timeout_fail_count']] << row['state_timeout_fail_count']
+        end
+        event_users
+      end
+    end
+
+    def data_fetch_successful_ipp_results
+      @data_fetch_successful_ipp_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_successful_ipp_results.each do |row|
+          event_users[row['IPP_successfully_proofed_user_counts']] << row['IPP_successfully_proofed_user_counts']
+        end
+        event_users
+      end
+    end
+
     # TODO: END --------------------------------------------------------------------------
     def fetch_authentic_drivers_license_facial_match_socure_results
       cloudwatch_client.fetch(
@@ -494,9 +637,9 @@ module Reporting
             barcode_illegible_fail=1 or color_fail=1 or front_illegible_fail=1 as doc_quality_fail,
             selfie_quality_fail=1 or doc_quality_fail=1 as capture_quality_fail
         | stats 
-            sum(doc_quality_fail),
-            sum(selfie_quality_fail),
-            sum(capture_quality_fail)
+            sum(doc_quality_fail) as sum_doc_quality_fail,
+            sum(selfie_quality_fail) as sum_selfie_quality_fail,
+            sum(capture_quality_fail as sum_capture_quality_fail)
       QUERY
     end
 
@@ -537,9 +680,9 @@ module Reporting
             (@doc_fail=1 or @selfie_fail=1) as @any_capture_error
         | filter (@any_capture_error=1)
         | stats 
-            sum(@any_capture_error),
-            sum(@selfie_fail),
-            sum(@doc_fail)
+            sum(@any_capture_error) as sum_any_capture,
+            sum(@selfie_fail) as sum_selfie_fail,
+            sum(@doc_fail) as sum_doc_fail
       QUERY
     end
 
@@ -563,7 +706,7 @@ module Reporting
                 by properties.user_id
         | filter code_successfully_submitted=0
         | fields code_sent and code_submitted=0 as code_error 
-        | stats sum(code_error)
+        | stats sum(code_error) as sum_verification_code_not_received
       QUERY
     end
 
@@ -648,19 +791,69 @@ module Reporting
       )
     end
 
-    # HELP WITH THESE (DO I EVEN NEED THEM?)---------------------------------------
-    # TODO: add for the rest of the queries
-    # Question: do we do this same thing for the ones that calculate things from multiple queries
-    # api_connection_fails # help here
+    # Extracting data that was gathered from queries and placed in dictionaries -------------
+    def authentic_drivers_license_facial_check
+      @authentic_drivers_license_facial_check || data_authentic_drivers_license_facial_match_lexis[
+        Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED] & data_authentic_drivers_license_facial_match_socure[
+          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED]
+    end
+
+    def authentic_drivers_doc_auth
+      @authentic_drivers_doc_auth ||=
+        authentic_drivers_license_facial_check.document_fail_count_socure + authentic_drivers_license_facial_check.document_fail_count_lexis
+    end
+
+    def valid_drivers_license_number
+      @valid_drivers_license_number || data_valid_drivers_license_number[
+        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+    end
+
+    def facial_matching_check
+      @facial_matching_check ||=
+        authentic_drivers_license_facial_check.selfie_fail_count_socure + authentic_drivers_license_facial_check.selfie_fail_count_lexis
+    end
+
+    def attributes
+      @attributes || data_fetch_address_dob_dead_ssn_identity_notfound_results[
+        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+    end
+
+    def phone_account_ownership
+      @phone_account_ownership || data_fetch_phone_account_ownership_results[
+        Events::IDV_PHONE_CONF_VENDOR]
+    end
+
+    def device_behavior_fraud_signals
+      @device_behavior_fraud_signals || data_fetch_device_behavior_fraud_signals_results[
+        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+    end
+
+    def doc_selfie_ux_challenge
+      @doc_selfie_ux_challenge || data_fetch_doc_selfie_ux_challenge_lexis_results[
+        Events::IDV_FRONT_IMAGE_ADDED, IDV_BACK_IMAGE_ADDED, IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
+        IDV_DOC_AUTH_SSN_VISITED] & data_fetch_doc_selfie_ux_challenge_socure_results[
+          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED, IDV_DOC_AUTH_SSN_VISITED]
+    end
+
+    def doc_selfie_ux_challenge_socure_and_lexis
+      @doc_selfie_ux_challenge_socure_and_lexis = doc_selfie_ux_challenge.sum_any_capture + doc_selfie_ux_challenge.sum_capture_quality_fail
+    end
+
+    def verification_code_not_received_count
+      @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
+        Events::IDV_PHONE_CONF_OTP_VISITED, IDV_PHONE_CONF_OTP_SUBMITTED, IDV_ENTER_PASSWORD_VISITED
+      ]
+    end
+
     def api_connection_fails
-      @api_connection_fails ||= data[Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS,
-                                     IDV_PHONE_RECORD_VISITED]
+      @api_connection_fails ||= data_fetch_api_connection_fails_results[
+        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS, IDV_PHONE_RECORD_VISITED]
     end
 
     # successful ipp users
     def successful_ipp_users_count
-      @successful_ipp_users_count ||= data[Events::SUCCESSFUL_IPP]
+      @successful_ipp_users_count ||= data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP]
     end
-    # TODO: END ---------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------
   end
 end

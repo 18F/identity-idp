@@ -323,6 +323,12 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Fraud Blocks Proofing Rate Report
+      fraud_blocks_proofing_rate_report: {
+        class: 'Reports::FraudBlocksProofingRateReport', # should this be Reports:: or Reporting::
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
