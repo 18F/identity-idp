@@ -28,6 +28,15 @@ AppArtifacts.setup do |store|
   ) do |k|
     OpenSSL::PKey::RSA.new(k)
   end
+
+  if FeatureManagement.fcms_enabled
+    store.add_artifact(:fcms_primary_private_key, '/%<env>s/fcms.key') do |k|
+      OpenSSL::PKey::RSA.new(k)
+    end
+    store.add_artifact(:fcms_primary_public_key, '/%<env>s/fcms.pub') do |k|
+      OpenSSL::PKey::RSA.new(k)
+    end
+  end
 end
 
 primary_valid = OpenidConnectKeyValidation.valid?(
