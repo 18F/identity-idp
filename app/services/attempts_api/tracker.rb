@@ -58,8 +58,12 @@ module AttemptsApi
     def jwe(event)
       event.to_jwe(
         issuer: sp.issuer,
-        public_key: sp.attempts_public_key,
+        public_key:,
       )
+    end
+
+    def public_key
+      sp.attempts_public_key
     end
 
     def extra_attributes(event_type:)
