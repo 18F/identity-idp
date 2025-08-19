@@ -3,7 +3,7 @@
 namespace :device_profiling do
   desc 'Approve rejected device profiling results to pass for list of UUIDs'
   task :approve_rejected_users, [:user_uuids] => :environment do |_task, _args|
-    user_uuids = ARGV[1]
+    user_uuids = args[:user_uuids] || ARGV[1..-1].join(' ')
 
     if user_uuids.blank?
       puts 'Error: user_uuids is required'
@@ -11,7 +11,7 @@ namespace :device_profiling do
     end
 
     # Parse UUIDs
-    uuid_list = user_uuids.split(',').map(&:strip).reject(&:blank?)
+    uuid_list = user_uuids.split(/[,\s\n]+/).map(&:strip).reject(&:blank?)
 
     puts "Processing #{uuid_list.count} user UUID(s)"
     puts "Action: Change 'reject' to 'pass' (skip if already 'pass')"
