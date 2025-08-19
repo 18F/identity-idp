@@ -14,7 +14,8 @@ module Idv
 
       @address_form = build_address_form
       @presenter = AddressPresenter.new(
-        gpo_request_letter_visited: idv_session.gpo_request_letter_visited,
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited ||
+          idv_session.gpo_letter_requested,
         address_update_request: address_update_request?,
       )
     end
@@ -80,7 +81,8 @@ module Idv
 
     def failure
       @presenter = AddressPresenter.new(
-        gpo_request_letter_visited: idv_session.gpo_request_letter_visited,
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited ||
+          idv_session.gpo_letter_requested,
         address_update_request: address_update_request?,
       )
       render :new
@@ -117,7 +119,7 @@ module Idv
     end
 
     def step_indicator_steps
-      if idv_session.gpo_request_letter_visited
+      if idv_session.gpo_request_letter_visited || idv_session.gpo_letter_requested
         return StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       end
 
