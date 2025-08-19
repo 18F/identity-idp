@@ -24,20 +24,16 @@ module AttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
-      event_metadata = build_event_metadata(event_type, metadata)
-
       event = AttemptEvent.new(
         event_type: event_type,
         session_id: session_id,
         occurred_at: Time.zone.now,
-        event_metadata: event_metadata,
+        event_metadata: event_metadata(event_type:, metadata:),
       )
-
-      jwe = build_jwe(event)
 
       redis_client.write_event(
         event_key: event.jti,
-        jwe: jwe,
+        jwe: jwe(event),
         timestamp: event.occurred_at,
         issuer: sp.issuer,
       )
@@ -59,23 +55,32 @@ module AttemptsApi
 
     private
 
-    def build_jwe(event)
+    def jwe(event)
       event.to_jwe(
         issuer: sp.issuer,
         public_key: sp.attempts_public_key,
       )
     end
 
-    def build_event_metadata(event_type, metadata)
-      extra_metadata =
-        if metadata.has_key?(:failure_reason) &&
+    def extra_attributes(event_type:)
+      {}
+    end
+
+    def extra_metadata(event_type:, metadata:)
+      failure_metadata(metadata:).merge(extra_attributes(event_type:))
+    end
+
+    def failure_metadata(metadata:)
+      if metadata.has_key?(:failure_reason) &&
            (metadata[:failure_reason].blank? || metadata[:success].present?)
           metadata.except(:failure_reason)
-        else
-          metadata
-        end
+      else
+        metadata
+      end      
+    end
 
-      event_metadata = {
+    def event_metadata(event_type:, metadata:)
+      {
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
         user_uuid: agency_uuid(event_type: event_type),
@@ -87,6 +92,7 @@ module AttemptsApi
         aws_region: IdentityConfig.store.aws_region,
         google_analytics_cookies: google_analytics_cookies(request),
       }
+      }.merge!(extra_metadata(event_type:, metadata:))
     end
 
     def google_analytics_cookies(request)
