@@ -27,5 +27,9 @@ module AttemptsApi
     def redis_client
       @redis_client ||= AttemptsApi::FcmsRedisClient.new
     end
+
+    def public_key
+      AppArtifacts.store.fcms_primary_public_key
+    end
   end
 end
