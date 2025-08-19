@@ -35,6 +35,7 @@ AllCops:
     - 'public/**/*'
   TargetRubyVersion: 3.4
   TargetRailsVersion: 8.0
+  ParserEngine: parser_prism
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
