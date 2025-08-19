@@ -21,7 +21,15 @@ class DuplicateProfileChecker
     )
     if associated_profiles.present?
       ids = associated_profiles.map(&:id)
-      DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
+      existing_profile = DuplicateProfile.involving_profile(
+        profile_id: profile.id,
+        service_provider: sp.issuer,
+      )
+      if existing_profile
+        existing_profile.update(profile_ids: ids + [profile.id])
+      else
+        DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
+      end
     end
   end
 

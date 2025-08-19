@@ -45,7 +45,7 @@ RSpec.describe DuplicateProfileChecker do
               profile_id: profile.id,
               service_provider: sp.issuer,
             )
-            expect(dupe_profile_object).to be_empty
+            expect(dupe_profile_object).to eq(nil)
           end
         end
 
@@ -93,7 +93,7 @@ RSpec.describe DuplicateProfileChecker do
               profile_id: profile.id,
               service_provider: sp.issuer,
             )
-            expect(dupe_profile_objects.first.profile_ids).to eq([profile2.id, profile.id])
+            expect(dupe_profile_objects.profile_ids).to eq([profile2.id, profile.id])
           end
         end
       end
@@ -121,7 +121,7 @@ RSpec.describe DuplicateProfileChecker do
           profile_id: profile.id,
           service_provider: sp.issuer,
         )
-        expect(dupe_profile_objects).to be_empty
+        expect(dupe_profile_objects).to eq(nil)
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe DuplicateProfileChecker do
           service_provider: sp.issuer,
         )
 
-        expect(dupe_profile_objects).to be_empty
+        expect(dupe_profile_objects).to eq(nil)
       end
     end
   end

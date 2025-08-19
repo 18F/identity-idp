@@ -28,11 +28,11 @@ class DuplicateProfilesDetectedController < ApplicationController
     @dupe_profile ||= DuplicateProfile.involving_profile(
       profile_id: current_user.active_profile.id,
       service_provider: current_sp&.issuer,
-    ).first
+    )
   end
 
   def notify_users_of_duplicate_profile_sign_in
-    return unless dupe_profile.present?
+    return unless dupe_profile
     return if user_session[:dupe_profiles_notified]
     agency_name = current_sp.friendly_name || current_sp.agency&.name
 
