@@ -8,32 +8,32 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   let(:suspected_fraud_blocks_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Authentic Drivers License', 10, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Valid Drivers License #', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Facial Matching Check', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Identity Not Found', 10, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Address / Occupancy Match', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Social Security Number Match', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Date of Birth Match', 10, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Deceased Check', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Phone Account Ownership', 4, `#{time_range.begin}`, `#{time_range.end}`],
-      ['Device and Behavior Fraud Signals', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Authentic Drivers License', 10, time_range.begin.to_s, time_range.end.to_s],
+      ['Valid Drivers License #', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Facial Matching Check', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Identity Not Found', 10, time_range.begin.to_s, time_range.end.to_s],
+      ['Address / Occupancy Match', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Social Security Number Match', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Date of Birth Match', 10, time_range.begin.to_s, time_range.end.to_s],
+      ['Deceased Check', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Phone Account Ownership', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Device and Behavior Fraud Signals', 4, time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
   let(:key_points_user_friction_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Document / selfie upload UX challenge', "#{time_range.begin} to #{time_range.end}"],
-      ['Verification code not received', "#{time_range.begin} to #{time_range.end}"],
-      ['API connection fails', "#{time_range.begin} to #{time_range.end}"],
+      ['Document / selfie upload UX challenge', time_range.begin.to_s, time_range.end.to_s],
+      ['Verification code not received', time_range.begin.to_s, time_range.end.to_s],
+      ['API connection fails', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
   let(:successful_ipp_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Successful IPP', 12000,  "#{time_range.begin} to #{time_range.end}"],
+      ['Successful IPP', 12000,  time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
