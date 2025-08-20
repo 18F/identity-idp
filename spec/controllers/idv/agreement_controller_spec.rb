@@ -194,7 +194,7 @@ RSpec.describe Idv::AgreementController do
           }.from(nil).to(true)
         end
 
-        it 'redirects to how to verify' do
+        it 'redirects to hybrid handoff' do
           put :update, params: params
 
           expect(response).to redirect_to(idv_hybrid_handoff_url)
