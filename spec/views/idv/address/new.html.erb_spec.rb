@@ -3,15 +3,17 @@ require 'rails_helper'
 RSpec.describe 'idv/address/new' do
   let(:user) { build(:user) }
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
-  let(:gpo_letter_requested) { nil }
+  let(:gpo_request_letter_visited) { nil }
   let(:address_update_request) { nil }
+  let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
 
   shared_examples 'valid address page and form' do
     before do
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
       assign(
         :presenter, Idv::AddressPresenter.new(
-          gpo_letter_requested: gpo_letter_requested,
+          gpo_request_letter_visited: gpo_request_letter_visited,
           address_update_request: address_update_request,
         )
       )
@@ -20,7 +22,7 @@ RSpec.describe 'idv/address/new' do
     end
 
     it 'has correct address content' do
-      if gpo_letter_requested
+      if gpo_request_letter_visited
         expect(parsed_page).to have_content(t('doc_auth.headings.mailing_address'))
         expect(parsed_page).to have_content(t('doc_auth.info.mailing_address'))
         expect(parsed_page).to have_content(t('forms.buttons.continue'))
@@ -120,7 +122,7 @@ RSpec.describe 'idv/address/new' do
     it_behaves_like 'valid address page and form'
   end
   context 'when the user is requesting a GPO letter' do
-    let(:gpo_letter_requested) { true }
+    let(:gpo_request_letter_visited) { true }
 
     it_behaves_like 'valid address page and form'
   end
