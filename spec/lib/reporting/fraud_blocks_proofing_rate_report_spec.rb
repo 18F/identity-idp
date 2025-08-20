@@ -2,44 +2,46 @@ require 'rails_helper'
 require 'reporting/fraud_blocks_proofing_rate_report'
 
 RSpec.describe Reporting::FraudBlocksProofingRateReport do
-  # let(:issuer) { 'my:example:issuer' }
+  let(:issuer) { 'my:example:issuer' }
   # TODO UPDATE THIS FOR OUR TABLES-----------------------------------------
-  # let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
-  # let(:expected_definitions_table) do
-  #   [
-  #     ['Metric', 'Unit', 'Definition'],
-  #     ['Registration Demand', 'Count',
-  #      'The count of new users that started the registration process with Login.gov.'],
-  #     ['Registration Failures', 'Count',
-  #      'The count of new users who did not complete the registration process'],
-  #     ['Registration Successes', 'Count',
-  #      'The count of new users who completed the registration process sucessfully'],
-  #     ['Registration Success Rate', 'Percentage',
-  #      'The percentage of new users who completed registration process successfully'],
-  #   ]
-  # end
-  # # TODO UPDATE THIS FOR OUR TABLES
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
+  let(:suspected_fraud_blocks_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Authentic Drivers License', 10, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Valid Drivers License #', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Facial Matching Check', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Identity Not Found', 10, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Address / Occupancy Match', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Social Security Number Match', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Date of Birth Match', 10, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Deceased Check', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Phone Account Ownership', 4, `#{time_range.begin}`, `#{time_range.end}`],
+      ['Device and Behavior Fraud Signals', 4, `#{time_range.begin}`, `#{time_range.end}`],
+    ]
+  end
 
-  # let(:expected_overview_table) do
-  #   [
-  #     ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
-  #     ['Report Generated', Time.zone.today.to_s],
-  #     ['Issuer', issuer],
-  #   ]
-  # end
-  # let(:expected_funnel_metrics_table) do
-  #   [
-  #     ['Metric', 'Number of accounts', '% of total from start'],
-  #     ['Registration Demand', 4, '100.0%'],
-  #     ['Registration Failures', 2, '50.0%'],
-  #     ['Registration Successes', 2, '50.0%'],
-  #   ]
-  # end
+  let(:key_points_user_friction_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Document / selfie upload UX challenge', "#{time_range.begin} to #{time_range.end}"],
+      ['Verification code not received', "#{time_range.begin} to #{time_range.end}"],
+      ['API connection fails', "#{time_range.begin} to #{time_range.end}"],
+    ]
+  end
 
-  # subject(:report) { Reporting::IrsRegistrationFunnelReport.new(issuers: [issuer], time_range:) }
+  let(:successful_ipp_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Successful IPP', 12000,  "#{time_range.begin} to #{time_range.end}"],
+    ]
+  end
+
+  subject(:report) { Reporting::FraudBlocksProofingRateReport.new(issuers: [issuer], time_range:) }
 
   # before do
   #   travel_to Time.zone.now.beginning_of_day
+  #   TODO: HELP HERE
   #   stub_cloudwatch_logs(
   #     [
   #       # finishes funnel
@@ -71,130 +73,130 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   #   )
   # end
 
-  # describe '#definitions_table' do
-  #   it 'renders a definitions table' do
-  #     aggregate_failures do
-  #       report.definitions_table.zip(expected_definitions_table).each do |actual, expected|
-  #         expect(actual).to eq(expected)
-  #       end
-  #     end
-  #   end
-  # end
+  describe '#suspected_fraud_blocks_metrics_table' do
+    it 'renders a suspected fraud blocks metrics_table' do
+      aggregate_failures do
+        report.suspected_fraud_blocks_metrics_table.zip(expected_suspected_fraud_blocks_metrics_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
 
-  # describe '#overview_table' do
-  #   it 'renders an overview table' do
-  #     aggregate_failures do
-  #       report.overview_table.zip(expected_overview_table).each do |actual, expected|
-  #         expect(actual).to eq(expected)
-  #       end
-  #     end
-  #   end
-  # end
+  describe '#key_points_user_friction_metrics_table' do
+    it 'renders a key points user friction metrics table' do
+      aggregate_failures do
+        report.key_points_user_friction_metrics_table.zip(expected_key_points_user_friction_metrics_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
 
-  # describe '#funnel_metrics_table' do
-  #   it 'renders a funnel metrics table' do
-  #     aggregate_failures do
-  #       report.funnel_metrics_table.zip(expected_funnel_metrics_table).each do |actual, expected|
-  #         expect(actual).to eq(expected)
-  #       end
-  #     end
-  #   end
-  # end
+  describe '#successful_ipp_table' do
+    it 'renders a successful ipp table' do
+      aggregate_failures do
+        report.successful_ipp_table.zip(expected_successful_ipp_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
 
-  # describe '#as_emailable_reports' do
-  #   let(:expected_reports) do
-  #     [
-  #       Reporting::EmailableReport.new(
-  #         title: 'Definitions',
-  #         filename: 'definitions',
-  #         table: expected_definitions_table,
-  #       ),
-  #       Reporting::EmailableReport.new(
-  #         title: 'Overview',
-  #         filename: 'overview',
-  #         table: expected_overview_table,
-  #       ),
-  #       Reporting::EmailableReport.new(
-  #         title: 'Registration Funnel Metrics',
-  #         filename: 'funnel_metrics',
-  #         table: expected_funnel_metrics_table,
-  #       ),
-  #     ]
-  # end
-  # TODO: END ---------------------------------------------
-  it 'return expected table for email' do
-    expect(report.as_emailable_reports).to eq expected_reports
+  describe '#as_emailable_reports' do
+    let(:expected_reports) do
+      [
+        Reporting::EmailableReport.new(
+          title: 'Suspected_Fraud_Blocks_Metircs',
+          filename: 'suspected_fraud_blocks_metrics',
+          table: expected_suspected_fraud_blocks_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Key_Points_User_Friction_Metrics',
+          filename: 'key_points_user_friction_metrics',
+          table: expected_key_points_user_friction_metrics_table,
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Successful_IPP',
+          filename: 'successful_ipp',
+          table: expected_successful_ipp_table,
+        ),
+      ]
+    end
+    # TODO: END ---------------------------------------------
+    it 'return expected table for email' do
+      expect(report.as_emailable_reports).to eq expected_reports
+    end
+  end
+
+  describe '#cloudwatch_client' do
+    let(:opts) { {} }
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
+    let(:default_args) do
+      {
+        num_threads: 1,
+        ensure_complete_logs: true,
+        slice_interval: 6.hours,
+        progress: false,
+        logger: nil,
+      }
+    end
+
+    describe 'when all args are default' do
+      it 'creates a client with the default options' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when verbose is passed in' do
+      let(:opts) { { verbose: true } }
+      let(:logger) { double Logger }
+
+      before do
+        expect(Logger).to receive(:new).with(STDERR).and_return logger
+        default_args[:logger] = logger
+      end
+
+      it 'creates a client with the expected logger' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when progress is passed in as true' do
+      let(:opts) { { progress: true } }
+      before { default_args[:progress] = true }
+
+      it 'creates a client with progress as true' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when threads is passed in' do
+      let(:opts) { { threads: 17 } }
+      before { default_args[:num_threads] = 17 }
+
+      it 'creates a client with the expected thread count' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when slice is passed in' do
+      let(:opts) { { slice: 2.weeks } }
+      before { default_args[:slice_interval] = 2.weeks }
+
+      it 'creates a client with expected time slice' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
   end
 end
-
-describe '#cloudwatch_client' do
-  let(:opts) { {} }
-  let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
-  let(:default_args) do
-    {
-      num_threads: 1,
-      ensure_complete_logs: true,
-      slice_interval: 6.hours,
-      progress: false,
-      logger: nil,
-    }
-  end
-
-  describe 'when all args are default' do
-    it 'creates a client with the default options' do
-      expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-      subject.cloudwatch_client
-    end
-  end
-
-  describe 'when verbose is passed in' do
-    let(:opts) { { verbose: true } }
-    let(:logger) { double Logger }
-
-    before do
-      expect(Logger).to receive(:new).with(STDERR).and_return logger
-      default_args[:logger] = logger
-    end
-
-    it 'creates a client with the expected logger' do
-      expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-      subject.cloudwatch_client
-    end
-  end
-
-  describe 'when progress is passed in as true' do
-    let(:opts) { { progress: true } }
-    before { default_args[:progress] = true }
-
-    it 'creates a client with progress as true' do
-      expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-      subject.cloudwatch_client
-    end
-  end
-
-  describe 'when threads is passed in' do
-    let(:opts) { { threads: 17 } }
-    before { default_args[:num_threads] = 17 }
-
-    it 'creates a client with the expected thread count' do
-      expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-      subject.cloudwatch_client
-    end
-  end
-
-  describe 'when slice is passed in' do
-    let(:opts) { { slice: 2.weeks } }
-    before { default_args[:slice_interval] = 2.weeks }
-
-    it 'creates a client with expected time slice' do
-      expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
-
-      subject.cloudwatch_client
-    end
-  end
-end
-# end

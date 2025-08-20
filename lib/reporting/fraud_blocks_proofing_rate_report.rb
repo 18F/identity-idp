@@ -132,6 +132,7 @@ module Reporting
           time_range.end.to_s,
         ],
         [
+          'Identity Not Found',
           attributes.identity_not_found_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
