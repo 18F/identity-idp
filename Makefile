@@ -35,7 +35,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_new_typescript_files \
 	lint_optimized_assets \
 	lint_yaml \
-	lint_yarn_workspaces \
+	lint_js_workspaces \
 	lint_asset_bundle_size \
 	lint_readme \
 	lint_spec_file_name \
@@ -84,16 +84,16 @@ endif
 	make brakeman
 	# JavaScript
 	@echo "--- eslint ---"
-	yarn run lint
+	npm run lint
 	@echo "--- typescript ---"
-	yarn run typecheck
+	npm run typecheck
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
 	@echo "--- lint font glyphs ---"
 	make lint_font_glyphs
-	@echo "--- lint Yarn workspaces ---"
-	make lint_yarn_workspaces
+	@echo "--- lint JS workspaces ---"
+	make lint_js_workspaces
 	@echo "--- lint new TypeScript files ---"
 	make lint_new_typescript_files
 	@echo "--- lint lockfiles ---"
@@ -101,7 +101,7 @@ endif
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
-	yarn lint:css
+	npm run lint:css
 	@echo "--- README.md ---"
 	make lint_readme
 	@echo "--- lint spec file names ---"
@@ -114,8 +114,8 @@ endif
 audit: ## Checks packages for vulnerabilities
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
-	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 7
+	@echo "--- npm audit ---"
+	npm audit --audit-level=high
 
 lint_erb: ## Lints ERB files
 	bundle exec erb_lint app/views app/components
@@ -134,7 +134,7 @@ lint_font_glyphs: ## Lints to validate content glyphs match expectations from fo
 		> app/assets/fonts/glyphs.txt
 	(! git diff --name-only | grep "glyphs\.txt$$") || (echo "Error: New character data found. Follow 'Fonts' instructions in 'docs/frontend.md' to regenerate fonts."; exit 1)
 
-lint_yarn_workspaces: ## Lints Yarn workspace packages
+lint_js_workspaces: ## Lints JS workspace packages
 	scripts/validate-workspaces.mjs
 
 lint_asset_bundle_size: ## Lints JavaScript and CSS compiled bundle size
@@ -154,13 +154,11 @@ lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
 	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
 
-lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfile
-	@yarn install --ignore-scripts
-	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
-	@yarn yarn-deduplicate
-	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are duplicate JS dependencies that were removed after running 'yarn yarn-deduplicate'"; exit 1)
+lint_package_lock: package.json package-lock.json ## Lints the package.json and its lockfile
+	@npm install --ignore-scripts
+	@(! git diff --name-only | grep package-lock.json) || (echo "Error: There are uncommitted changes after running 'npm install'"; exit 1)
 
-lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
+lint_lockfiles: lint_gemfile_lock lint_package_lock ## Lints to ensure lockfiles are in sync
 
 lint_new_typescript_files:
 	scripts/enforce-typescript-files.mjs
@@ -185,7 +183,7 @@ lint_spec_file_name:
 		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
 
 lint_openapi:
-	@yarn lint:openapi	
+	@npm run lint:openapi	
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
@@ -193,28 +191,28 @@ lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lin
 	@echo "--- erb_lint fix ---"
 	bundle exec erb_lint app/views app/components -a
 	@echo "--- eslint fix ---"
-	yarn lint --fix
+	npm run lint --fix
 	@echo "--- stylelint fix ---"
-	yarn lint:css --fix
+	npm run lint:css --fix
 	@echo "--- normalize yaml ---"
 	make normalize_yaml
 
 brakeman: ## Runs brakeman code security check
 	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
-public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
-	yarn build:js
+public/packs/manifest.json: package-lock.json $(shell find app/javascript -type f) ## Builds JavaScript assets
+	npm run build:js
 
-browsers.json: yarn.lock .browserslistrc ## Generates browsers.json browser support file
-	yarn generate-browsers-json
+browsers.json: package-lock.json .browserslistrc ## Generates browsers.json browser support file
+	npm run generate-browsers-json
 
 test: export RAILS_ENV := test
-test: $(CONFIG) ## Runs RSpec and yarn tests
-	bundle exec rspec && yarn test
+test: $(CONFIG) ## Runs RSpec and JS tests
+	bundle exec rspec && npm run test
 
 test_serial: export RAILS_ENV := test
-test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
-	bundle exec rake spec && yarn test
+test_serial: $(CONFIG) ## Runs RSpec and JS tests serially
+	bundle exec rake spec && npm run test
 
 tmp/$(HOST).key tmp/$(HOST).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
@@ -240,16 +238,16 @@ run-https: tmp/$(HOST).key tmp/$(HOST).crt ## Runs the development server with H
 	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST).key&cert=tmp/$(HOST).crt" foreman start -p $(PORT)
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
-	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
-	find ./config/locales/transliterate -type f -name '*.yml' -exec yarn normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
-	yarn normalize-yaml --disable-smart-punctuation --ignore-key-sort development,production,test config/application.yml.default
-	find ./config/locales/telephony -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation
+	npm run normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
+	find ./config/locales/transliterate -type f -name '*.yml' -exec npm run normalize-yaml --disable-sort-keys --disable-smart-punctuation {} \;
+	npm run normalize-yaml --disable-smart-punctuation --ignore-key-sort development,production,test config/application.yml.default
+	find ./config/locales/telephony -type f -name '*.yml' | xargs npm run normalize-yaml --disable-smart-punctuation
 	find ./config/locales -not \( -path "./config/locales/telephony*" -o -path "./config/locales/transliterate/*" \) -type f -name '*.yml' | \
-	xargs yarn normalize-yaml \
+	xargs npm run normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
-	find ./docs/attempts-api -type f -name '*.yml' | xargs yarn normalize-yaml --disable-smart-punctuation --disable-sort-keys
+	find ./docs/attempts-api -type f -name '*.yml' | xargs npm run normalize-yaml --disable-smart-punctuation --disable-sort-keys
 
 optimize_svg: ## Optimizes SVG images
 	# Exclusions:
@@ -270,7 +268,7 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		> config/country_dialing_codes.yml
-	yarn normalize-yaml config/country_dialing_codes.yml config/pinpoint_supported_countries.yml
+	npm run normalize-yaml config/country_dialing_codes.yml config/pinpoint_supported_countries.yml
 
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
@@ -332,7 +330,7 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 
 update: ## Update dependencies, useful after a git pull
 	bundle install
-	yarn install
+	npm install
 	bundle exec rails db:migrate
 
 README.md: docs/ ## Generates README.md based on the contents of the docs directory
