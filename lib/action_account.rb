@@ -45,7 +45,7 @@ class ActionAccount
 
           * #{basename} confirm-suspend-user uuid1 uuid2
 
-          * #{basename} approve-rejected-account-creation-profiling uuid1 uuid2
+          * #{basename} clear-device-profiling-failure uuid1 uuid2
         Options:
     EOS
   end
@@ -61,7 +61,7 @@ class ActionAccount
       'suspend-user' => SuspendUser,
       'reinstate-user' => ReinstateUser,
       'confirm-suspend-user' => ConfirmSuspendUser,
-      'approve-rejected-account-creation-profiling' => ApproveRejectedAccountCreationProfiling,
+      'clear-device-profiling-failure' => ClearDeviceProfilingFailure,
     }[name]
   end
 
@@ -86,10 +86,9 @@ class ActionAccount
         user_already_suspended: 'User has already been suspended',
         user_is_not_suspended: 'User is not suspended',
         user_already_reinstated: 'User has already been reinstated',
-        approve_device_profiling: 'Device profiling result has been updated to pass',
-        user_already_passed: 'Device profiling result already passed',
-        approve_device_profiling_error: 'Error updating device profiling result to pass',
-        no_device_profiling_results: 'No device profiling results found for this user',
+        device_profiling_approved: 'Device profiling result has been updated to pass',
+        device_profiling_already_passed: 'Device profiling result already passed',
+        device_profiling_no_results_found: 'No device profiling results found for this user',
       }
     end
   end
@@ -131,18 +130,18 @@ class ActionAccount
           else
             log_texts << log_text[:user_is_not_suspended]
           end
-        when :approve_rejected_account_creation_profiling
+        when :clear_device_profiling_failure
           result = DeviceProfilingResult.where(
             user_id: user.id,
             profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
           ).first
           if result.nil?
-            log_texts << "#{log_text[:no_device_profiling_results]} (#{user.email})"
+            log_texts << log_text[:device_profiling_no_results_found]
           elsif result.review_status == 'pass'
-            log_texts << log_text[:user_already_passed]
+            log_texts << log_text[:device_profiling_already_passed]
           else
             result.update!(review_status: 'pass', notes: 'Manually overridden')
-            log_texts << log_text[:approve_device_profiling]
+            log_texts << log_text[:device_profiling_approved]
           end
         else
           raise "unknown subtask=#{action}"
@@ -428,13 +427,13 @@ class ActionAccount
     end
   end
 
-  class ApproveRejectedAccountCreationProfiling
+  class ClearDeviceProfilingFailure
     include UserActions
     def run(args:, config:)
       perform_user_action(
         args:,
         config:,
-        action: :approve_rejected_account_creation_profiling,
+        action: :clear_device_profiling_failure,
       )
     end
   end
