@@ -4,6 +4,7 @@ module Idv
   class AddressController < ApplicationController
     include Idv::AvailabilityConcern
     include IdvStepConcern
+    include Idv::StepIndicatorConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
@@ -13,7 +14,8 @@ module Idv
 
       @address_form = build_address_form
       @presenter = AddressPresenter.new(
-        gpo_letter_requested: idv_session.gpo_letter_requested,
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited ||
+          idv_session.gpo_letter_requested,
         address_update_request: address_update_request?,
       )
     end
@@ -79,7 +81,8 @@ module Idv
 
     def failure
       @presenter = AddressPresenter.new(
-        gpo_letter_requested: idv_session.gpo_letter_requested,
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited ||
+          idv_session.gpo_letter_requested,
         address_update_request: address_update_request?,
       )
       render :new
@@ -113,6 +116,14 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
+    end
+
+    def step_indicator_steps
+      if idv_session.gpo_request_letter_visited || idv_session.gpo_letter_requested
+        return StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+      end
+
+      StepIndicatorConcern::STEP_INDICATOR_STEPS
     end
   end
 end

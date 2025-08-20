@@ -429,7 +429,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    matrix (0.4.2)
+    matrix (0.4.3)
     maxminddb (0.1.22)
     memory_profiler (1.0.1)
     method_source (1.1.0)
@@ -468,7 +468,7 @@ GEM
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     parallel (1.27.0)
-    parser (3.3.8.0)
+    parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
@@ -512,7 +512,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.0.16)
+    rack (3.0.18)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -669,8 +669,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    shoulda-matchers (4.5.1)
-      activesupport (>= 4.2.0)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     simple_form (5.3.0)
       actionpack (>= 5.2)
       activemodel (>= 5.2)
@@ -829,6 +829,7 @@ DEPENDENCIES
   pg_query
   phonelib
   premailer-rails (>= 1.12.0)
+  prism
   profanity_filter
   prometheus_exporter
   propshaft
@@ -866,7 +867,7 @@ DEPENDENCIES
   safe_target_blank (>= 1.0.2)
   saml_idp!
   scrypt
-  shoulda-matchers (~> 4.0)
+  shoulda-matchers (~> 6.0)
   simple_form (>= 5.0.2)
   simple_xlsx_reader
   simplecov (~> 0.22.0)
@@ -889,7 +890,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.12)
 
 RUBY VERSION
-   ruby 3.4.1p0
+   ruby 3.4.5p51
 
 BUNDLED WITH
    2.6.9

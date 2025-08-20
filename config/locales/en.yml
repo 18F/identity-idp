@@ -557,7 +557,7 @@ doc_auth.errors.general.network_error_passport_ending: if you have one.
 doc_auth.errors.general.network_error_passport_link_text: use another type of ID
 doc_auth.errors.general.new_network_error: Try again later.
 doc_auth.errors.general.no_liveness: Try taking new pictures.
-doc_auth.errors.general.selfie_failure: We couldn’t verify the photo of yourself. Try taking a new picture.
+doc_auth.errors.general.selfie_failure: Make sure your entire face is visible and keep still as the camera takes your photo. Avoid bright light or anything that might cover your face, like a hat.
 doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
 doc_auth.errors.glare.failed_short: Image has glare, please try again.
 doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
