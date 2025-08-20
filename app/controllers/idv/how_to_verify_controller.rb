@@ -63,7 +63,7 @@ module Idv
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,
-        next_steps: [:choose_id_type, :hybrid_handoff, :document_capture], # should hybrid handoff be removed? how does it get there?
+        next_steps: [:choose_id_type, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
