@@ -192,6 +192,7 @@ module IdentityConfig
     config.add(:fraud_ops_event_ttl_seconds, type: :integer)
     config.add(:irs_issuers, type: :json)
     config.add(:irs_partner_strings, type: :json)
+    config.add(:fraud_blocks_proofing_rate_report_emails, type: :json)
     config.add(:irs_registration_funnel_issuers, type: :json)
     config.add(:irs_registration_funnel_emails, type: :json)
     config.add(:irs_fraud_metrics_issuers, type: :json)

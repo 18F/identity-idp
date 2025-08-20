@@ -77,7 +77,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:fraud_blockes_proofing_rate_report_emails)
+    allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails)
       .and_return(mock_test_auth_emails)
 
     allow(report.fraud_blocks_proofing_rate_report).to receive(:suspected_fraud_blocks_metrics_table)
@@ -93,7 +93,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'IRS Registration Funnel Report - 2021-03-02',
+      subject: 'Fraud Blocks and Proofing Rate Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
@@ -103,7 +103,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:fraud_blockes_proofing_rate_report_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
