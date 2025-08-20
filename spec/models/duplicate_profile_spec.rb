@@ -20,32 +20,23 @@ RSpec.describe DuplicateProfile, type: :model do
     create(:duplicate_profile, service_provider: service_provider.issuer, profile_ids: [999, 888])
   end
 
-  it 'returns records matching both service_provider and profile_id' do
+  it 'returns record matching both service_provider and profile_id' do
     result = described_class.involving_profile(
       profile_id: profile_id,
       service_provider: service_provider.issuer,
     )
 
-    expect(result).to include(matching_profile)
-    expect(result).not_to include(non_matching_service)
-    expect(result).not_to include(non_matching_profile)
+    expect(result).to eq(matching_profile)
+    expect(result).not_to eq(non_matching_service)
+    expect(result).not_to eq(non_matching_profile)
   end
 
-  it 'returns records when profile_id is anywhere in the profile_ids array' do
-    result = described_class.involving_profile(
-      profile_id: other_profile_id,
-      service_provider: service_provider.issuer,
-    )
-
-    expect(result).to include(matching_profile)
-  end
-
-  it 'returns empty result when profile_id is not in any profile_ids array' do
+  it 'returns nil result when profile_id is not duplicate profile' do
     result = described_class.involving_profile(
       profile_id: 777,
       service_provider: service_provider.issuer,
     )
 
-    expect(result).to be_empty
+    expect(result).to eq(nil)
   end
 end
