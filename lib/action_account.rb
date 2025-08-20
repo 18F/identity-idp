@@ -44,6 +44,8 @@ class ActionAccount
           * #{basename} reinstate-user uuid1 uuid2
 
           * #{basename} confirm-suspend-user uuid1 uuid2
+
+          * #{basename} approve-rejected-account-creation-profiling uuid1 uuid2
         Options:
     EOS
   end
@@ -59,6 +61,7 @@ class ActionAccount
       'suspend-user' => SuspendUser,
       'reinstate-user' => ReinstateUser,
       'confirm-suspend-user' => ConfirmSuspendUser,
+      'approve-rejected-account-creation-profiling' => ApproveRejectedAccountCreationProfiling,
     }[name]
   end
 
@@ -83,6 +86,10 @@ class ActionAccount
         user_already_suspended: 'User has already been suspended',
         user_is_not_suspended: 'User is not suspended',
         user_already_reinstated: 'User has already been reinstated',
+        approve_device_profiling: 'Device profiling result has been updated to pass',
+        user_already_passed: 'Device profiling result already passed',
+        approve_device_profiling_error: 'Error updating device profiling result to pass',
+        no_device_profiling_results: 'No device profiling results found for this user',
       }
     end
   end
@@ -123,6 +130,19 @@ class ActionAccount
             log_texts << log_text[:user_emailed]
           else
             log_texts << log_text[:user_is_not_suspended]
+          end
+        when :approve_rejected_account_creation_profiling
+          result = DeviceProfilingResult.where(
+            user_id: user.id,
+            profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+          ).first
+          if result.nil?
+            log_texts << "#{log_text[:no_device_profiling_results]} (#{user.email})"
+          elsif result.review_status == 'pass'
+            log_texts << log_text[:user_already_passed]
+          else
+            result.update!(review_status: 'pass', notes: 'Manually overridden')
+            log_texts << log_text[:approve_device_profiling]
           end
         else
           raise "unknown subtask=#{action}"
@@ -404,6 +424,17 @@ class ActionAccount
         args:,
         config:,
         action: :confirm_suspend,
+      )
+    end
+  end
+
+  class ApproveRejectedAccountCreationProfiling
+    include UserActions
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :approve_rejected_account_creation_profiling,
       )
     end
   end

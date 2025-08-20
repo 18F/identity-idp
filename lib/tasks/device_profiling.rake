@@ -7,6 +7,8 @@ namespace :device_profiling do
 
     if user_uuids.blank?
       puts 'Error: user_uuids is required'
+      puts 'Usage: rake device_profiling:approve_rejected_users[uuid1,uuid2] OR'
+      puts '       rake device_profiling:approve_rejected_users uuid1 uuid2 uuid3'
       exit 1
     end
 
