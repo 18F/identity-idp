@@ -19,9 +19,21 @@ class DuplicateProfileChecker
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
       service_provider: sp.issuer,
     )
-    if associated_profiles
+    if associated_profiles.present?
       ids = associated_profiles.map(&:id)
-      user_session[:duplicate_profile_ids] = ids
+      existing_profile = DuplicateProfile.involving_profile(
+        profile_id: profile.id,
+        service_provider: sp.issuer,
+      )
+      if existing_profile
+        if ids.empty?
+          existing_profile.update(closed_at: Time.zone.now)
+        else
+          existing_profile.update(profile_ids: ids + [profile.id])
+        end
+      else
+        DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
+      end
     end
   end
 
