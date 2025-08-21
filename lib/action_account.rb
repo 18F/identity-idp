@@ -44,6 +44,8 @@ class ActionAccount
           * #{basename} reinstate-user uuid1 uuid2
 
           * #{basename} confirm-suspend-user uuid1 uuid2
+
+          * #{basename} clear-device-profiling-failure uuid1 uuid2
         Options:
     EOS
   end
@@ -59,6 +61,7 @@ class ActionAccount
       'suspend-user' => SuspendUser,
       'reinstate-user' => ReinstateUser,
       'confirm-suspend-user' => ConfirmSuspendUser,
+      'clear-device-profiling-failure' => ClearDeviceProfilingFailure,
     }[name]
   end
 
@@ -83,6 +86,9 @@ class ActionAccount
         user_already_suspended: 'User has already been suspended',
         user_is_not_suspended: 'User is not suspended',
         user_already_reinstated: 'User has already been reinstated',
+        device_profiling_approved: 'Device profiling result has been updated to pass',
+        device_profiling_already_passed: 'Device profiling result already passed',
+        device_profiling_no_results_found: 'No device profiling results found for this user',
       }
     end
   end
@@ -123,6 +129,19 @@ class ActionAccount
             log_texts << log_text[:user_emailed]
           else
             log_texts << log_text[:user_is_not_suspended]
+          end
+        when :clear_device_profiling_failure
+          result = DeviceProfilingResult.where(
+            user_id: user.id,
+            profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+          ).first
+          if result.nil?
+            log_texts << log_text[:device_profiling_no_results_found]
+          elsif result.review_status == 'pass'
+            log_texts << log_text[:device_profiling_already_passed]
+          else
+            result.update!(review_status: 'pass', notes: 'Manually overridden')
+            log_texts << log_text[:device_profiling_approved]
           end
         else
           raise "unknown subtask=#{action}"
@@ -404,6 +423,17 @@ class ActionAccount
         args:,
         config:,
         action: :confirm_suspend,
+      )
+    end
+  end
+
+  class ClearDeviceProfilingFailure
+    include UserActions
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :clear_device_profiling_failure,
       )
     end
   end

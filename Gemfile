@@ -117,6 +117,7 @@ group :development, :test do
   gem 'rubocop-rails', '~> 2.27.0', require: false
   gem 'rubocop-rspec', '~> 3.2.0', require: false
   gem 'rubocop-capybara', require: false
+  gem 'prism'
   gem 'sqlite3', require: false
 end
 
@@ -133,7 +134,7 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec_junit_formatter'
-  gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'shoulda-matchers', '~> 6.0', require: false
   gem 'simple_xlsx_reader', require: false
   gem 'tableparser', require: false
   gem 'webmock'

@@ -1,48 +1,28 @@
-import quibble from 'quibble';
-import sinon from 'sinon';
+import getDefaultLoadPaths from './get-default-load-paths.js';
 
 describe('getDefaultLoadPaths', () => {
-  const isDependency = sinon.stub();
-
-  /** @type {import('./get-default-load-paths').default} */
-  let getDefaultLoadPaths;
-
-  beforeEach(async () => {
-    isDependency.reset();
-    isDependency.returns(false);
-    await quibble.esm('@aduth/is-dependency', { isDependency });
-    getDefaultLoadPaths = (await import('./get-default-load-paths.js')).default;
-  });
-
-  afterEach(() => {
-    quibble.reset();
-  });
-
-  it('returns an empty array', () => {
-    const result = getDefaultLoadPaths();
+  it('returns an empty array if no dependencies are in load paths', () => {
+    const alwaysFalse = () => {
+      false;
+    };
+    const result = getDefaultLoadPaths(alwaysFalse);
 
     expect(result).to.deep.equal([]);
   });
 
   context('with the Login.gov Design System as a dependency', () => {
-    beforeEach(() => {
-      isDependency.withArgs('@18f/identity-design-system').returns(true);
-    });
-
     it('returns load paths for the Login.gov Design System', () => {
-      const result = getDefaultLoadPaths();
+      const trueForLgds = (dependency) => dependency === '@18f/identity-design-system';
+      const result = getDefaultLoadPaths(trueForLgds);
 
       expect(result).to.deep.equal(['node_modules/@18f/identity-design-system/packages']);
     });
   });
 
   context('with the U.S. Web Design System as a dependency', () => {
-    beforeEach(() => {
-      isDependency.withArgs('@uswds/uswds').returns(true);
-    });
-
     it('returns load paths for the U.S. Web Design System', () => {
-      const result = getDefaultLoadPaths();
+      const trueForUswds = (dependency) => dependency === '@uswds/uswds';
+      const result = getDefaultLoadPaths(trueForUswds);
 
       expect(result).to.deep.equal(['node_modules/@uswds/uswds/packages']);
     });

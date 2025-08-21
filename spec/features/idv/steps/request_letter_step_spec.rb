@@ -37,15 +37,16 @@ RSpec.feature 'idv request letter step' do
     it 'sends user to address page and back to verify page if requested' do
       start_idv_from_sp
       complete_idv_steps_before_gpo_step
-      expect(page).to have_content(t('idv.titles.mail.verify'))
+      expect(page).to have_content(t('idv.messages.gpo.address_on_file'))
       click_on t('idv.messages.gpo.verify_address_again_link_text')
       expect(page).to have_content(t('doc_auth.headings.mailing_address'))
       expect(page).to have_current_path(idv_address_path)
+      expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone'))
       click_continue
       expect(page).to have_current_path(idv_verify_info_path)
       expect(page).to have_content(t('headings.verify'))
       click_submit_default
-      expect(page).to have_content(t('idv.titles.mail.verify'))
+      expect(page).to have_content(t('idv.messages.gpo.address_on_file'))
     end
   end
 
