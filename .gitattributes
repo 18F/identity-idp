@@ -125,12 +125,12 @@ tsconfig.json       jsonc
 # --------------------------------------------------------------------#
 
 ## Lock files
-package-lock.json               lockfile
 pnpm-lock.yaml                  lockfile
 
 ### Force text diff for specific lockfiles
 Gemfile.lock                    diff
 yarn.lock                       diff
+package-lock.json               diff
 knapsack_rspec_report.json      jsonc
 
 ## Executables and runtimes

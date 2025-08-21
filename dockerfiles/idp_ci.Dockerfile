@@ -14,9 +14,6 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_${CHROME_VERSION}_amd64.deb
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     nodejs \
@@ -25,8 +22,7 @@ RUN apt-get update -qq && \
     python3-venv \
     nodejs \
     locales \
-    ./google-chrome-stable_${CHROME_VERSION}_amd64.deb \
-    yarn
+    ./google-chrome-stable_${CHROME_VERSION}_amd64.deb
 
 RUN curl -Ss "https://storage.googleapis.com/chrome-for-testing-public/$(google-chrome --version | grep -Po '\d+\.\d+\.\d+\.\d+' | tr -d '\n')/linux64/chromedriver-linux64.zip" > /tmp/chromedriver.zip && \
     unzip /tmp/chromedriver.zip -d /tmp/chromedriver && \
