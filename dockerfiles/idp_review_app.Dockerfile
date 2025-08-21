@@ -9,7 +9,6 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
-ENV YARN_VERSION 1.22.22
 ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.6.3
 ENV POSTGRES_SSLMODE prefer
@@ -55,11 +54,6 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=$YARN_VERSION-1
-
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \
   && curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem \
@@ -95,12 +89,12 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# Yarn install
+# NPM install
 COPY --chown=app:app ./package.json ./package.json
-COPY --chown=app:app ./yarn.lock ./yarn.lock
-# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY --chown=app:app ./package-lock.json ./package-lock.json
+# Workspace packages are installed by NPM via symlink to the original source, and need to be present
 COPY --chown=app:app ./app/javascript/packages ./app/javascript/packages
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+RUN npm ci --omit=dev --cache .npm-cache
 
 # Add the application code
 COPY --chown=app:app ./lib ./lib
@@ -144,7 +138,7 @@ COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"

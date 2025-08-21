@@ -19,11 +19,11 @@ default:
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
-.yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_install: &npm_install
+  - npm ci --cache=.npm-cache
 
-.yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_production_install: &npm_production_install
+  - npm ci --omit=dev --cache=.npm-cache
 
 .build_cache:
   - &ruby_cache
@@ -34,20 +34,20 @@ default:
       - vendor/ruby
     policy: pull
 
-  - &yarn_cache
+  - &npm_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
-  - &yarn_production_cache
+  - &npm_production_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
   - &assets_cache
@@ -77,18 +77,17 @@ install:
   stage: build
   variables:
     RAILS_ENV: test
-    SKIP_YARN_INSTALL: 'true'
   cache:
     - <<: *ruby_cache
       policy: pull-push
-    - <<: *yarn_cache
+    - <<: *npm_cache
       policy: pull-push
     - <<: *assets_cache
       policy: push
 
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
@@ -247,7 +246,7 @@ specs:
   parallel: 22
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   variables:
     AWS_ACCESS_KEY_ID: test
@@ -279,7 +278,7 @@ specs:
       junit: rspec.xml
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - cp config/application.yml.default config/application.yml
     - cp config/service_providers.localdev.yml config/service_providers.yml
     - cp config/agencies.localdev.yml config/agencies.yml
@@ -304,11 +303,11 @@ lint:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make lint
   artifacts:
     expire_in: 31d
@@ -324,13 +323,12 @@ js_build:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_production_cache
+    - <<: *npm_production_cache
   variables:
     NODE_ENV: 'production'
-    SKIP_YARN_INSTALL: 'true'
   script:
     - *bundle_install
-    - *yarn_production_install
+    - *npm_production_install
     - bundle exec rake assets:precompile
     - make lint_asset_bundle_size
 
@@ -339,10 +337,10 @@ js_tests:
   needs:
     - job: install
   cache:
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
-    - *yarn_install
-    - yarn test
+    - *npm_install
+    - npm run test
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
@@ -692,10 +690,10 @@ pinpoint_check_scheduled:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make lint_country_dialing_codes
   after_script:
     - |-
@@ -716,10 +714,10 @@ audit_packages_scheduled:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make audit
   after_script:
     - |-
