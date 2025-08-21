@@ -5,13 +5,13 @@ module DocAuth
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
         attr_reader :front_image, :back_image, :passport_image, :selfie_image,
-                    :liveness_checking_required, :document_type, :passport_requested
+                    :liveness_checking_required, :document_type_requested, :passport_requested
 
         def initialize(
           config:,
           user_uuid:,
           uuid_prefix:,
-          document_type:,
+          document_type_requested:,
           front_image: nil,
           back_image: nil,
           passport_image: nil,
@@ -30,14 +30,14 @@ module DocAuth
           @images_cropped = images_cropped
           # when set to required, be sure to pass in selfie_imaged
           @liveness_checking_required = liveness_checking_required
-          @document_type = document_type
+          @document_type_requested = document_type_requested
           @passport_requested = passport_requested
         end
 
         def request_context
           {
             workflow: workflow,
-            document_type: document_type,
+            document_type_requested: document_type_requested,
           }
         end
 
@@ -49,7 +49,7 @@ module DocAuth
               Front: encode(id_front_image),
               Back: (encode(back_image) if back_image_required?),
               Selfie: (encode(selfie_image) if liveness_checking_required),
-              DocumentType: document_type,
+              DocumentType: document_type_requested,
             }.compact,
           }
 
@@ -58,7 +58,7 @@ module DocAuth
 
         def id_front_image
           # TrueID front_image required whether driver's license or passport
-          case document_type
+          case document_type_requested
           when DocumentTypes::PASSPORT
             passport_image
           else
@@ -109,7 +109,7 @@ module DocAuth
         end
 
         def back_image_required?
-          document_type == DocumentTypes::DRIVERS_LICENSE
+          document_type_requested == DocumentTypes::DRIVERS_LICENSE
         end
 
         def encode(image)

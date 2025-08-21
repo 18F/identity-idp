@@ -242,7 +242,8 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_mrz(doc_pii_response)
-    id_type = doc_pii_response.extra[:document_type_received]
+    id_type = doc_pii_response.extra[:document_type_received] ||
+              doc_pii_response.extra[:id_doc_type]
     unless id_type == 'passport'
       return unless document_capture_session.passport_requested?
     end

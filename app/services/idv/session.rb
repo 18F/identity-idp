@@ -232,7 +232,11 @@ module Idv
       if new_pii_from_doc.blank?
         session[:pii_from_doc] = nil
       else
-        session[:pii_from_doc] = new_pii_from_doc.to_h
+        pii_hash = new_pii_from_doc.to_h
+        # Normalize document type keys until past the 50/50 state
+        pii_hash[:document_type_received] ||= pii_hash[:id_doc_type]
+        pii_hash[:id_doc_type] ||= pii_hash[:document_type_received]
+        session[:pii_from_doc] = pii_hash # new_pii_from_doc.to_h
       end
     end
 

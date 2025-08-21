@@ -40,7 +40,6 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
-
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
@@ -173,7 +172,8 @@ module Idv
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
-      response.extra[:document_type_received] = pii_hash[:document_type_received]
+      response.extra[:document_type_received] = pii_hash[:document_type_received] ||
+                                                pii_hash[:id_doc_type]
       response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
@@ -200,7 +200,8 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
-          .merge(document_type_received: client_response.pii_from_doc.document_type_received)
+          .merge(document_type_received: client_response.pii_from_doc.document_type_received ||
+                 client_response.pii_from_doc.id_doc_type)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
@@ -208,7 +209,8 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      id_type = client_response.pii_from_doc.document_type_received
+      id_type = client_response.pii_from_doc.document_type_received ||
+                client_response.pii_from_doc.id_doc_type
       unless id_type == 'passport'
         return DocAuth::Response.new(
           success: false,
@@ -252,9 +254,7 @@ module Idv
         submit_attempts: submit_attempts,
         remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: DocPiiForm.pii_like_keypaths(
-          document_type_requested: document_type_requested,
-        ),
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type_requested),
         flow_path: params[:flow_path],
       }
 

@@ -45,6 +45,7 @@ module Idv
 
     def passport_book?
       return true if pii_from_doc[:document_type_received] == 'passport'
+      return true if pii_from_doc[:id_doc_type] == 'passport'
 
       errors.add(:document_type_received, generic_error, type: :document_type_received)
       false

@@ -187,7 +187,7 @@ module Idv
         state: pii[:state],
         state_id_jurisdiction: pii[:state_id_jurisdiction],
         state_id_number: pii[:state_id_number],
-        document_type_received: pii[:document_type_received],
+        document_type_received: pii[:document_type_received] || pii[:id_doc_type],
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
@@ -319,6 +319,7 @@ module Idv
         state_id[:state] = state if state
         state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
         state_id[:document_type_received] = document_type_received if document_type_received
+        state_id[:id_doc_type] = document_type_received if document_type_received
         if state_id_number
           state_id[:state_id_number] =
             StringRedacter.redact_alphanumeric(state_id_number)

@@ -30,7 +30,11 @@ module Proofing
         :state_id_issued,
         :state_id_expiration,
         keyword_init: true,
-      ).freeze
+      ) do
+        def id_doc_type
+          document_type_received
+        end
+      end.freeze
 
       # @param applicant [Hash, Struct]
       # @option applicant [String, nil] :uuid

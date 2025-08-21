@@ -11,17 +11,7 @@ module Idv
     end
 
     def document_type_received
-      idv_session.pii_from_doc&.document_type_received
-    end
-
-    def document_type_requested
-      # For now, we assume requested type matches received type
-      # This could be enhanced to track user's actual selection in the future
-      document_type_received
-    end
-
-    def document_type
-      document_type_received
+      idv_session.pii_from_doc&.document_type_received || idv_session.pii_from_doc&.id_doc_type
     end
 
     def source_check
@@ -59,7 +49,6 @@ module Idv
       {
         document_check:,
         document_type_received:,
-        document_type_requested:,
         source_check:,
         residential_resolution_check:,
         resolution_check:,

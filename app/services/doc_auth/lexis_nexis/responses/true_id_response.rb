@@ -18,7 +18,7 @@ module DocAuth
           @passport_requested = passport_requested
           @request_context = request_context
           @liveness_checking_enabled = liveness_checking_enabled
-          @pii_from_doc = read_pii(true_id_product)
+          @pii_from_doc = read_pii
           super(
             success: successful_result?,
             errors: error_messages,
@@ -53,7 +53,7 @@ module DocAuth
         #  document_type_requested
         def doc_auth_success?
           # really it's everything else excluding selfie
-          transaction_status_passed? && id_type_supported? && document_type_received_expected?
+          transaction_status_passed? && id_type_supported? && expected_document_type_received?
         end
 
         def error_messages
@@ -63,7 +63,7 @@ module DocAuth
             { passport: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif passport_card_detected?
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
-          elsif id_type.present? && !document_type_received_expected?
+          elsif id_type.present? && !expected_document_type_received?
             { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
@@ -131,7 +131,7 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
-        def document_type_received_expected?
+        def expected_document_type_received?
           expected_id_types = passport_requested ?
             Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
             Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
@@ -140,7 +140,7 @@ module DocAuth
         end
 
         def id_type
-          pii_from_doc&.document_type_received
+          pii_from_doc&.document_type_received || pii_from_doc&.id_doc_type
         end
 
         def passport_pii?
@@ -302,11 +302,11 @@ module DocAuth
         end
 
         def true_id_product
-          products[:TrueID] if products.present?
+          products&.dig(:TrueID)
         end
 
         def true_id_product_decision
-          products[:TrueID_Decision] if products.present?
+          products&.dig(:TrueID_Decision)
         end
 
         def parsed_alerts

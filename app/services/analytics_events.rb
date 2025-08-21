@@ -1982,8 +1982,8 @@ module AnalyticsEvents
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [Boolean] liveness_checking_required Whether the selfie is required
+  # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
@@ -5602,7 +5602,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
-  # @param [Boolean] async whether or not this worker is running asynchronously
+  # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
   # @param [Hash] customer_profile socure customer profile
@@ -5610,12 +5610,15 @@ module AnalyticsEvents
   # @param [Hash] decision accept or reject of given ID
   # @param [Boolean] doc_auth_success
   # @param [Boolean] doc_type_supported
-  # @param [Hash] document_type_requested type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] document_metadata Data about the document that was submitted
+  # @option document_metadata [String] 'country' Country that issued the document
+  # @option document_metadata [String] 'state' State that issued the document
+  # @option document_metadata [String] 'type' Type of document submitted (Drivers License, etc.)
   # @param [String] docv_transaction_token socure transaction token
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [String] reference_id socure internal id for transaction
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
@@ -5646,7 +5649,7 @@ module AnalyticsEvents
     customer_profile: nil,
     customer_user_id: nil,
     decision: nil,
-    document_type_requested: nil,
+    document_metadata: nil,
     docv_transaction_token: nil,
     flow_path: nil,
     document_type_received: nil,
@@ -5675,7 +5678,7 @@ module AnalyticsEvents
       decision:,
       doc_auth_success:,
       doc_type_supported:,
-      document_type_requested:,
+      document_metadata:,
       docv_transaction_token:,
       flow_path:,
       document_type_received:,
