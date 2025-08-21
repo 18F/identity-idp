@@ -116,6 +116,17 @@ class DocumentCaptureSession < ApplicationRecord
     passport_status == 'requested'
   end
 
+  def choose_document_type_changed?
+    return false if passport_status.nil?
+
+    old_document_type_requested, new_document_type_requested = saved_change_to_passport_status
+
+    return false if old_document_type_requested.nil?
+    return false if old_document_type_requested == 'allowed' && new_document_type_requested.present?
+
+    old_document_type_requested != new_document_type_requested
+  end
+
   private
 
   def generate_result_id
