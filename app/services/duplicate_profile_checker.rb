@@ -20,23 +20,19 @@ class DuplicateProfileChecker
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
       service_provider: sp.issuer,
     )
+    existing_profile = DuplicateProfile.involving_profile(
+      profile_id: profile.id,
+      service_provider: sp.issuer,
+    )
     if associated_profiles.present?
       ids = associated_profiles.map(&:id)
-      existing_profile = DuplicateProfile.involving_profile(
-        profile_id: profile.id,
-        service_provider: sp.issuer,
-      )
       if existing_profile
-        if ids.empty?
-          existing_profile.update(closed_at: Time.zone.now)
-          analytics.one_account_duplicate_profile_closed(
-            service_provider: sp.issuer,
-          )
-        elsif existing_profile.profile_ids != ids + [profile.id]
+        if existing_profile.profile_ids.sort != (ids + [profile.id]).sort
           # Update existing profile with new ids if they differ
           existing_profile.update(profile_ids: ids + [profile.id])
           analytics.one_account_duplicate_profile_updated(
             service_provider: sp.issuer,
+            user_uuid: user.uuid,
           )
         end
       else
@@ -46,6 +42,12 @@ class DuplicateProfileChecker
           user_uuid: user.uuid,
         )
       end
+    elsif existing_profile
+      existing_profile.update(closed_at: Time.zone.now)
+      analytics.one_account_duplicate_profile_closed(
+        service_provider: sp.issuer,
+        user_uuid: user.uuid,
+      )
     end
   end
 

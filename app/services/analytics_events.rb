@@ -6529,21 +6529,33 @@ module AnalyticsEvents
   end
 
   # Tracks when a user that had duplicate profiles is closed
-  # @param [String] service_provider the service provider issuer that dupe profile was created for 
-  def one_account_duplicate_profile_closed(service_provider:, **extra)
-    track_event(:one_account_duplicate_profile_closed, service_provider: service_provider, **extra)
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_closed(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_closed, service_provider: service_provider,
+                                             user_uuid: user_uuid, **extra
+    )
   end
 
   # Tracks when a duplicate profile object is updated
-  # @param [String] service_provider the service provider issuer that dupe profile was created for 
-  def one_account_duplicate_profile_updated(service_provider:, **extra)
-    track_event(:one_account_duplicate_profile_updated, service_provider: service_provider, **extra)
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_updated(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_updated, service_provider: service_provider,
+                                              user_uuid: user_uuid, **extra
+    )
   end
 
   # Tracks when a duplicate profile is created for a user
-  # @param [String] service_provider the service provider issuer that dupe profile was created for 
-  def one_account_duplicate_profile_created(service_provider:, **extra)
-    track_event(:one_account_duplicate_profile_created, service_provider: service_provider, **extra)
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_created(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_created, service_provider: service_provider,
+                                              user_uuid: user_uuid, **extra
+    )
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
