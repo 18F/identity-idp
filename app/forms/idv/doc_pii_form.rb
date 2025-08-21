@@ -17,7 +17,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @document_type_received = pii[:document_type_received]
+      @document_type_received = pii[:document_type_received] || pii[:id_doc_type]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -26,9 +26,7 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: self.class.pii_like_keypaths(
-            document_type_requested: document_type_received,
-          ),
+          pii_like_keypaths: self.class.pii_like_keypaths(document_type: document_type_received),
           attention_with_barcode: attention_with_barcode?,
           document_type_received:,
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
@@ -42,9 +40,9 @@ module Idv
       response
     end
 
-    def self.pii_like_keypaths(document_type_requested:)
+    def self.pii_like_keypaths(document_type:)
       keypaths = [[:pii]]
-      is_passport = document_type_requested&.downcase
+      is_passport = document_type&.downcase
         &.include?(Idp::Constants::DocumentTypes::PASSPORT)
       document_attrs = is_passport ?
         DocPiiPassport.pii_like_keypaths :
@@ -74,6 +72,10 @@ module Idv
         existing_errors.slice!(:front, :back)
         existing_errors[:pii] = [I18n.t('doc_auth.errors.general.no_liveness')]
       end
+    end
+
+    def id_doc_type
+      document_type_received
     end
 
     private

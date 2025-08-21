@@ -135,7 +135,7 @@ module Idp
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
-    }.freeze
+    } # .freeze # Why freeze this? Live data doesn't appear to be frozen
 
     MOCK_IDV_APPLICANT_STATE_ID = {
       address1: '1 FAKE RD',
@@ -158,7 +158,7 @@ module Idp
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
-    }.freeze
+    } # .freeze # Why freeze this? Live data doesn't appear to be frozen
 
     MOCK_IPP_APPLICANT = {
       first_name: 'FAKEY',
@@ -200,7 +200,7 @@ module Idp
       city: 'Best City',
       address1: '123 Way St',
       address2: '2nd Address Line',
-    }.freeze
+    } # .freeze # Why freeze this? Live data doesn't appear to be frozen
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
@@ -220,7 +220,9 @@ module Idp
       same_address_as_id: 'false',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900661234').freeze
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
+      ssn: '900661234'
+    ) # .freeze # Why freeze this? Live data doesn't appear to be frozen
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
@@ -230,7 +232,7 @@ module Idp
       identity_doc_zipcode: '12345-4321',
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
-    ).freeze
+    ) # .freeze # Why freeze this? Live data doesn't appear to be frozen
 
     # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(

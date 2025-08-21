@@ -79,7 +79,9 @@ module EventSummarizer
           attributes[key] = values.first
         end
 
-        id_type = ID_TYPES[result['document_type_received']] || 'id card'
+        id_type = ID_TYPES[result['document_type_received']] ||
+                  ID_TYPES[result['id_doc_type']] ||
+                  'id card'
         state = result['state_id_jurisdiction']
 
         if mva_says_invalid_id_number?(attributes)

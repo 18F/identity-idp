@@ -16,6 +16,10 @@ module Pii
     :nationality_code,
     :document_number,
     :document_type_received,
-  )
+  ) do
+    def id_doc_type
+      document_type_received
+    end
+  end
 end
 # rubocop:enable Style/MutableConstant

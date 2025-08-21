@@ -46,7 +46,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       uuid_prefix: applicant[:uuid_prefix],
       selfie_image: selfie_image,
       liveness_checking_required: liveness_checking_required,
-      document_type: document_type,
+      document_type_requested: document_type,
       passport_requested:,
     )
   end

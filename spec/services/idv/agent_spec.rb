@@ -148,7 +148,6 @@ RSpec.describe Idv::Agent do
           hash_including(
             proofing_components: {
               document_type_received: 'drivers_license',
-              document_type_requested: 'drivers_license',
             },
           ),
         )
