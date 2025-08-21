@@ -113,7 +113,7 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
 doc_auth_passport_selfie_vendor_default: 'mock'
-doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
 doc_auth_passport_selfie_vendor_socure_percent: 0
 doc_auth_passport_selfie_vendor_switching_enabled: false
 doc_auth_passport_vendor_default: 'mock'
@@ -253,8 +253,6 @@ irs_registration_funnel_emails: '[]'
 irs_registration_funnel_issuers: '[]'
 irs_verification_report_config: '[]'
 irs_verification_report_issuers: '[]'
-fraud_blocks_proofing_rate_issuers: '[]'
-fraud_blocks_proofing_rate_emails: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -535,6 +533,7 @@ development:
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false
+  fraud_blocks_proofing_rate_emails: '[at@example.com]'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
