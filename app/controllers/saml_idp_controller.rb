@@ -25,6 +25,7 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :require_path_year
   before_action :handle_banned_user
+  before_action :handle_duplicate_profile_user, only: :auth
   before_action :bump_auth_count, only: :auth
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
   before_action :confirm_two_factor_authenticated, only: :auth
