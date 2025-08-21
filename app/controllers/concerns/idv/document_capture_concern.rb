@@ -131,7 +131,6 @@ module Idv
     end
 
     def choose_id_type_path
-      # unneccessary method - delete pls
       idv_choose_id_type_path
     end
 
