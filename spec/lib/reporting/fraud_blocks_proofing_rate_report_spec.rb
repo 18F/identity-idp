@@ -3,78 +3,67 @@ require 'reporting/fraud_blocks_proofing_rate_report'
 
 RSpec.describe Reporting::FraudBlocksProofingRateReport do
   let(:issuer) { 'my:example:issuer' }
-  # TODO UPDATE THIS FOR OUR TABLES-----------------------------------------
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:suspected_fraud_blocks_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Authentic Drivers License', 10, time_range.begin.to_s, time_range.end.to_s],
-      ['Valid Drivers License #', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Facial Matching Check', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Identity Not Found', 10, time_range.begin.to_s, time_range.end.to_s],
-      ['Address / Occupancy Match', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Social Security Number Match', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Date of Birth Match', 10, time_range.begin.to_s, time_range.end.to_s],
-      ['Deceased Check', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Phone Account Ownership', 4, time_range.begin.to_s, time_range.end.to_s],
-      ['Device and Behavior Fraud Signals', 4, time_range.begin.to_s, time_range.end.to_s],
+      ['Authentic Drivers License', '10', time_range.begin.to_s, time_range.end.to_s],
+      ['Valid Drivers License #', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Facial Matching Check', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Identity Not Found', '10', time_range.begin.to_s, time_range.end.to_s],
+      ['Address / Occupancy Match', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Social Security Number Match', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Date of Birth Match', '10', time_range.begin.to_s, time_range.end.to_s],
+      ['Deceased Check', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Phone Account Ownership', '4', time_range.begin.to_s, time_range.end.to_s],
+      ['Device and Behavior Fraud Signals', '4', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
   let(:key_points_user_friction_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Document / selfie upload UX challenge', time_range.begin.to_s, time_range.end.to_s],
-      ['Verification code not received', time_range.begin.to_s, time_range.end.to_s],
-      ['API connection fails', time_range.begin.to_s, time_range.end.to_s],
+      ['Document / selfie upload UX challenge', '30', time_range.begin.to_s, time_range.end.to_s],
+      ['Verification code not received', '10', time_range.begin.to_s, time_range.end.to_s],
+      ['API connection fails', '4', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
   let(:successful_ipp_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Successful IPP', 12000,  time_range.begin.to_s, time_range.end.to_s],
+      ['Successful IPP', '12000', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
   subject(:report) { Reporting::FraudBlocksProofingRateReport.new(issuers: [issuer], time_range:) }
 
-  # before do
-  #   travel_to Time.zone.now.beginning_of_day
-  #   TODO: HELP HERE
-  #   stub_cloudwatch_logs(
-  #     [
-  #       # finishes funnel
-  #       { 'user_id' => 'user1', 'name' => 'OpenID Connect: authorization request' },
-  #       { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
-  #       { 'user_id' => 'user1', 'name' => 'User Registration: 2FA Setup visited' },
-  #       { 'user_id' => 'user1', 'name' => 'User Registration: User Fully Registered' },
-  #       { 'user_id' => 'user1', 'name' => 'SP redirect initiated' },
-
-  #       # first 3 steps
-  #       { 'user_id' => 'user2', 'name' => 'OpenID Connect: authorization request' },
-  #       { 'user_id' => 'user2', 'name' => 'User Registration: Email Confirmation' },
-  #       { 'user_id' => 'user2', 'name' => 'User Registration: 2FA Setup visited' },
-  #       { 'user_id' => 'user2', 'name' => 'User Registration: User Fully Registered' },
-
-  #       # first 2 steps
-  #       { 'user_id' => 'user3', 'name' => 'OpenID Connect: authorization request' },
-  #       { 'user_id' => 'user3', 'name' => 'User Registration: Email Confirmation' },
-  #       { 'user_id' => 'user3', 'name' => 'User Registration: 2FA Setup visited' },
-
-  #       # first step only
-  #       { 'user_id' => 'user4', 'name' => 'OpenID Connect: authorization request' },
-  #       { 'user_id' => 'user4', 'name' => 'User Registration: Email Confirmation' },
-
-  #       # already existing user, just signing in
-  #       { 'user_id' => 'user5', 'name' => 'OpenID Connect: authorization request' },
-  #       { 'user_id' => 'user5', 'name' => 'SP redirect initiated' },
-  #     ],
-  #   )
-  # end
+  before do
+    travel_to Time.zone.now.beginning_of_day
+    stub_cloudwatch_logs(
+      [{ 'document_fail_count_socure' => '5', 'facial_match_fail_count_socure' => '2' },
+       { 'document_fail_count_lexis' => '5', 'facial_match_fail_count_lexis' => '2' },
+       { 'aamva_failed_count' => '4' },
+       { 'address_failed_count' => '4',
+         'dob_failed_count' => '10',
+         'death_failed_count' => '4',
+         'ssn_failed_count' => '4',
+         'identity_not_found_count' => '10' },
+       { 'phone_finder_fail_count' => '4' },
+       { 'DeviceBehavoirFraudSig' => '4' },
+       { 'sum_capture_quality_fail' => '15' },
+       { 'sum_any_capture' => '15' },
+       { 'sum_verification_code_not_received' => '10' },
+       { 'api_user_fail' => '4',
+         'AAMVA_fail_count' => '1',
+         'LN_timeout_fail_count' => '1',
+         'state_timeout_fail_count' => '2' },
+       { 'IPP_successfully_proofed_user_counts' => '12000' }],
+    )
+  end
 
   describe '#suspected_fraud_blocks_metrics_table' do
-    it 'renders a suspected fraud blocks metrics_table' do
+    it 'renders a suspected fraud blocks metrics table' do
       aggregate_failures do
         report.suspected_fraud_blocks_metrics_table.zip(expected_suspected_fraud_blocks_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)

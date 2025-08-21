@@ -14,7 +14,7 @@ module Reporting
   class FraudBlocksProofingRateReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :time_range
+    attr_reader :issuers, :time_range
 
     module Events
       # this for successful ipp
@@ -46,12 +46,14 @@ module Reporting
 
     # @param [Range<Time>] time_range
     def initialize(
+      issuers:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 6.hours,
       threads: 1
     )
+      @issuers = issuers
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -380,76 +382,78 @@ module Reporting
     # TODO: END --------------------------------------------------------------------------
     def fetch_authentic_drivers_license_facial_match_socure_results
       cloudwatch_client.fetch(
-        authentic_drivers_license_facial_match_socure_query:, from: time_range.begin,
+        query: authentic_drivers_license_facial_match_socure_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_authentic_drivers_license_facial_match_lexis_results
       cloudwatch_client.fetch(
-        authentic_drivers_license_facial_match_lexis_query:, from: time_range.begin,
+        query: authentic_drivers_license_facial_match_lexis_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_valid_drivers_license_number_results
       cloudwatch_client.fetch(
-        valid_drivers_license_number_query:, from: time_range.begin,
+        query: valid_drivers_license_number_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_address_dob_dead_ssn_identity_notfound_results
       cloudwatch_client.fetch(
-        address_dob_dead_ssn_identity_notfound_query:, from: time_range.begin,
+        query: address_dob_dead_ssn_identity_notfound_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_phone_account_ownership_results
       cloudwatch_client.fetch(
-        phone_account_ownership_query:, from: time_range.begin,
+        query: phone_account_ownership_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_device_behavior_fraud_signals_results
       cloudwatch_client.fetch(
-        device_behavior_fraud_signals_query:, from: time_range.begin,
+        query: device_behavior_fraud_signals_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_doc_selfie_ux_challenge_socure_results
       cloudwatch_client.fetch(
-        doc_selfie_ux_challenge_socure_query:, from: time_range.begin,
+        query: doc_selfie_ux_challenge_socure_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_doc_selfie_ux_challenge_lexis_results
       cloudwatch_client.fetch(
-        doc_selfie_ux_challenge_lexis_query:, from: time_range.begin,
+        query: doc_selfie_ux_challenge_lexis_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_verification_code_not_received_results
       cloudwatch_client.fetch(
-        verification_code_not_received_query:, from: time_range.begin,
+        query: verification_code_not_received_query, from: time_range.begin,
         to: time_range.end
       )
     end
 
     def fetch_api_connection_fails_results
       cloudwatch_client.fetch(
-        api_connection_fails_query:, from: time_range.begin,
-        to: time_range.end
+        query: api_connection_fails_query, from: time_range.begin, to: time_range.end,
       )
     end
 
     def fetch_successful_ipp_results
-      cloudwatch_client.fetch(successful_ipp_query:, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(
+        query: successful_ipp_query, from: time_range.begin,
+        to: time_range.end
+      )
     end
 
     # ---------------------------------------------------------------------------------------
@@ -472,6 +476,7 @@ module Reporting
         | filter !document_authentication_success
         | stats sum(document_fail) as document_fail_count,
                 sum(selfie_fail) as selfie_fail_count
+        | limit 10000
       QUERY
     end
 
@@ -493,6 +498,7 @@ module Reporting
         | filter !document_authentication_success
         | stats sum(document_fail) as document_fail_count,
                 sum(selfie_fail) as selfie_fail_count
+        | limit 10000
 
       QUERY
     end
@@ -516,6 +522,7 @@ module Reporting
                 by properties.user_id
         | filter !verify_info_success
         | stats sum(aamva_failed) as aamva_failed_count
+        | limit 10000
 
       QUERY
     end
@@ -565,6 +572,7 @@ module Reporting
                 sum(death_failed) as death_failed_count,
                 sum(ssn_failed) as ssn_failed_count,
                 sum(iv_passed=0 and address_failed=0 and dob_failed=0 and death_failed=0 and ssn_failed=0) as identity_not_found_count
+        | limit 10000
       QUERY
     end
 
@@ -579,6 +587,7 @@ module Reporting
         | fields properties.event_properties.success as @phone_finder_success
         | stats max(@phone_finder_success) as phone_finder_success by properties.user_id
         | stats sum(!phone_finder_success) as phone_finder_fail_count 
+        | limit 10000
 
       QUERY
     end
@@ -600,6 +609,7 @@ module Reporting
               max(new_event) as user_count_new_event by properties.user_id
           | stats
               sum(user_count_new_event) as DeviceBehavoirFraudSig
+          | limit 10000
 
       QUERY
     end
@@ -641,6 +651,7 @@ module Reporting
             sum(doc_quality_fail) as sum_doc_quality_fail,
             sum(selfie_quality_fail) as sum_selfie_quality_fail,
             sum(capture_quality_fail as sum_capture_quality_fail)
+        | limit 10000
       QUERY
     end
 
@@ -684,6 +695,7 @@ module Reporting
             sum(@any_capture_error) as sum_any_capture,
             sum(@selfie_fail) as sum_selfie_fail,
             sum(@doc_fail) as sum_doc_fail
+        | limit 10000
       QUERY
     end
 
@@ -708,6 +720,7 @@ module Reporting
         | filter code_successfully_submitted=0
         | fields code_sent and code_submitted=0 as code_error 
         | stats sum(code_error) as sum_verification_code_not_received
+        | limit 10000
       QUERY
     end
 
@@ -757,7 +770,8 @@ module Reporting
             sum(aamva_fail) as AAMVA_fail_count,
             sum(ln_fail) as LN_timeout_fail_count,
             sum(state_timeout_fail) as state_timeout_fail_count,
-            count(*) as api_user_fail    
+            count(*) as api_user_fail  
+        | limit 10000  
       QUERY
     end
 
@@ -777,7 +791,7 @@ module Reporting
 
         |stats
             sum(@ipp_verified) as IPP_successfully_proofed_user_counts
-
+        | limit 10000
       QUERY
     end
     # ---------------------------------------------------------------------------------------
