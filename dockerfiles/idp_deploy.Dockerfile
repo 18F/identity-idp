@@ -2,7 +2,7 @@
 # This is a "production-ready" image build for the IDP that is suitable
 # for deployment.
 # This is a multi-stage build.  This stage just builds and downloads
-# gems and yarn stuff and large files.  We have it so that we can
+# gems and NPM stuff and large files.  We have it so that we can
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
@@ -15,7 +15,6 @@ ENV NODE_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV YARN_VERSION 1.22.22
 ENV NODE_VERSION 22.18.0
 ENV BUNDLER_VERSION 2.6.9
 
@@ -58,11 +57,6 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=$YARN_VERSION-1
-
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
@@ -74,12 +68,12 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# Yarn install
+# NPM install
 COPY ./package.json ./package.json
-COPY ./yarn.lock ./yarn.lock
-# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY ./package-lock.json ./package-lock.json
+# Workspace packages are installed by NPM via symlink to the original source, and need to be present
 COPY ./app/javascript/packages ./app/javascript/packages
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+RUN npm ci --omit=dev --cache .npm-cache
 
 # Add the application code
 COPY ./lib ./lib
@@ -108,7 +102,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.k8s_deploy $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
+RUN bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .npm-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
