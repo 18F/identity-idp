@@ -457,4 +457,38 @@ RSpec.describe ActionAccount do
       end
     end
   end
+
+  describe ActionAccount::ClearDeviceProfilingFailure do
+    subject(:subtask) { ActionAccount::ClearDeviceProfilingFailure.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:user2) { create(:user) }
+      let!(:device_profiling_result) do
+        create(
+          :device_profiling_result,
+          user:,
+          review_status: 'reject',
+          profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+        )
+      end
+      let(:args) { [user.uuid, user2.uuid] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'clears device profiling failure for the user', aggregate_failures: true do
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'status', 'reason'],
+            [user.uuid, 'Device profiling result has been updated to pass', nil],
+            [user2.uuid, 'No device profiling results found for this user', nil],
+          ],
+        )
+
+        expect(result.subtask).to eq('clear-device-profiling-failure-user')
+        expect(result.uuids).to match_array([user.uuid, user2.uuid])
+      end
+    end
+  end
 end
