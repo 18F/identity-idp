@@ -1940,6 +1940,8 @@ user_mailer.dupe_profile.created.description2_html: Si c’est vous qui avez con
 user_mailer.dupe_profile.created.heading: Vos renseignements personnels ont été confirmés pour un autre compte %{app_name}
 user_mailer.dupe_profile.created.help_center_link: 'service d’assistance de %{app_name}'
 user_mailer.dupe_profile.created.steps_link: les étapes présentées ici
+user_mailer.dupe_profile.information_verified.heading: Your personal information was verified on another %{app_name} account
+user_mailer.dupe_profile.information_verified.instructions: 'Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{agency_name}.'
 user_mailer.dupe_profile.review_complete.locked_heading: Ce compte est désormais verrouillé
 user_mailer.dupe_profile.review_complete.locked_info: Nous avons passé vos comptes en revue et ce compte a été verrouillé. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Vous pouvez vous connecter à nouveau avec ce compte
