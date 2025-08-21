@@ -171,7 +171,7 @@ RSpec.feature 'document capture step', :js do
       click_continue
       expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      click_button 'Take photo'
+      click_button t('doc_auth.buttons.take_picture')
       attach_selfie
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
@@ -185,7 +185,7 @@ RSpec.feature 'document capture step', :js do
         ),
       )
       click_continue
-      click_button 'Take photo'
+      click_button t('doc_auth.buttons.take_picture')
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
@@ -578,7 +578,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
-              click_button 'Take photo'
+              click_button t('doc_auth.buttons.take_picture')
               attach_selfie
               submit_images
 
@@ -635,14 +635,14 @@ RSpec.feature 'document capture step', :js do
 
                 expect(page).to have_current_path(idv_document_capture_url, wait: 10)
 
-                click_button 'Take photo'
+                click_button t('doc_auth.buttons.take_picture')
                 expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
 
                 expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
                 attach_passport_image(passport_image)
                 click_continue
                 expect_doc_capture_selfie_subheader
-                click_button 'Take photo'
+                click_button t('doc_auth.buttons.take_picture')
                 attach_selfie
                 submit_images
 
@@ -713,7 +713,7 @@ RSpec.feature 'document capture step', :js do
               perform_in_browser(:mobile) do
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
-                click_button 'Take photo'
+                click_button t('doc_auth.buttons.take_picture')
                 click_idv_submit_default
                 expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
                 expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
@@ -947,7 +947,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
-              click_button 'Take photo'
+              click_button t('doc_auth.buttons.take_picture')
               attach_selfie
               submit_images
 

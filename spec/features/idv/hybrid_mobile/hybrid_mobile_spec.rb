@@ -342,7 +342,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
             attach_passport_image(passport_image)
             click_continue
             expect_doc_capture_selfie_subheader
-            click_button 'Take photo'
+            click_button t('doc_auth.buttons.take_picture')
             attach_selfie
             submit_images
             expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
