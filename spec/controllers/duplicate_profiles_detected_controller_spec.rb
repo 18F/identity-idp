@@ -61,7 +61,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
         get :show
 
         expect(@analytics).to have_logged_event(
-          :one_account_duplicate_profiles_detected,
+          :one_account_duplicate_profiles_detected_visited,
         )
       end
     end

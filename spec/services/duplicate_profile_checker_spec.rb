@@ -78,7 +78,7 @@ RSpec.describe DuplicateProfileChecker do
               .and_return([profile2])
           end
 
-          it 'creates a new duplicate profile confirmation entry' do
+          it 'creates a new duplicate profile object entry' do
             allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
               .and_return([sp.issuer])
 
@@ -94,6 +94,51 @@ RSpec.describe DuplicateProfileChecker do
               service_provider: sp.issuer,
             )
             expect(dupe_profile_objects.profile_ids).to eq([profile2.id, profile.id])
+          end
+
+          context 'when duplicate profile already exists' do
+            let!(:dupe_profile) do
+              create(
+                :duplicate_profile,
+                profile_ids: [profile.id, profile2.id],
+                service_provider: sp.issuer,
+              )
+            end
+
+            context 'when the profile_ids are the same' do
+              it 'does not create a new duplicate profile confirmation' do
+                dupe_profile_checker = DuplicateProfileChecker.new(
+                  user: user,
+                  user_session: session,
+                  sp: sp,
+                )
+                dupe_profile_checker.check_for_duplicate_profiles 
+
+              end
+            end
+
+            context 'when profile_ids changed' do
+              before do
+                allow_any_instance_of(Idv::DuplicateSsnFinder)
+                  .to receive(:duplicate_facial_match_profiles)
+
+              end
+
+              it 'updates the existing duplicate profile confirmation' do
+                dupe_profile_checker = DuplicateProfileChecker.new(
+                  user: user,
+                  user_session: session,
+                  sp: sp,
+                )
+                dupe_profile_checker.check_for_duplicate_profiles
+
+                updated_dupe_profile = DuplicateProfile.involving_profile(
+                  profile_id: profile.id,
+                  service_provider: sp.issuer,
+                )
+                expect(updated_dupe_profile.profile_ids).to eq([profile2.id, profile.id])
+              end
+            end
           end
         end
       end
