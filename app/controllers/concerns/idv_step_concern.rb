@@ -64,15 +64,30 @@ module IdvStepConcern
     if params[:redo]
       idv_session.redo_document_capture = true
     end
-
     # If we previously skipped hybrid handoff, keep doing that.
     # If hybrid flow is unavailable, skip it.
     # But don't store that we skipped it in idv_session, in case it is back to
     # available when the user tries to redo document capture.
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
-      redirect_to vendor_document_capture_url
+
+      if in_person_proofing_route_enabled?
+        redirect_to idv_how_to_verify_url
+      elsif idv_session.passport_allowed
+        redirect_to idv_choose_id_type_url
+      else
+        redirect_to vendor_document_capture_url
+      end
     end
+  end
+
+  def in_person_proofing_route_enabled?
+    IdentityConfig.store.in_person_proofing_enabled &&
+      IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+      IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(
+        decorated_sp_session.sp_issuer,
+      )
   end
 
   def vendor_document_capture_url
