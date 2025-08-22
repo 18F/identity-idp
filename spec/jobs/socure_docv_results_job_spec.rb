@@ -117,7 +117,7 @@ RSpec.describe SocureDocvResultsJob do
           state: 'NY',
           zip_code: '10001',
           doc_auth_success: true,
-          document_type: {
+          document_type_requested: {
             type: document_type_type,
             country: 'USA',
             state: 'NY',
