@@ -36,15 +36,11 @@ module AttemptsApi
 
     def self.from_jwe(jwe, private_key)
       decrypted_event = JWE.decrypt(jwe, private_key)
-      signing_key = IdentityConfig.store.attempts_api_signing_private_key
 
-      if signing_key.present?
-
-        public_key = OpenSSL::PKey::EC.new(signing_key).public_to_pem
-
+      if SigningKey.public_key.present?
         decrypted_event = JWT.decode(
           decrypted_event,
-          OpenSSL::PKey::EC.new(public_key),
+          SigningKey.public_key,
           true,
           { algorithm: 'ES256' },
         ).first
@@ -93,8 +89,8 @@ module AttemptsApi
     end
 
     def jwe_payload(payload_json:)
-      if signing_key.present?
-        JWT.encode(payload_json, signing_key, 'ES256')
+      if SigningKey.private_key.present?
+        JWT.encode(payload_json, SigningKey.private_key, 'ES256')
       else
         payload_json
       end
@@ -105,9 +101,20 @@ module AttemptsApi
       "https://schemas.login.gov/secevent/attempts-api/event-type/#{dasherized_name}"
     end
 
-    def signing_key
-      OpenSSL::PKey::EC.new(IdentityConfig.store.attempts_api_signing_private_key) if
-        IdentityConfig.store.attempts_api_signing_private_key.present?
+    module SigningKey
+      def self.private_key
+        OpenSSL::PKey::EC.new(signing_key.private_to_pem) if
+         IdentityConfig.store.attempts_api_signing_key.present?
+      end
+
+      def self.public_key
+        OpenSSL::PKey::EC.new(signing_key.public_to_pem) if
+         IdentityConfig.store.attempts_api_signing_key.present?
+      end
+
+      def self.signing_key
+        OpenSSL::PKey::EC.new(IdentityConfig.store.attempts_api_signing_key)
+      end
     end
   end
 end

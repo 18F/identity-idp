@@ -30,8 +30,8 @@ RSpec.describe AttemptsApi::AttemptEvent do
   describe '#to_jwe' do
     describe 'when the attempts signing key is present' do
       before do
-        allow(IdentityConfig.store).to receive(:attempts_api_signing_private_key).and_return(
-          singing_private_key,
+        allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
+          signing_key.to_pem,
         )
       end
       it 'returns a JWE for the event' do
@@ -121,8 +121,8 @@ RSpec.describe AttemptsApi::AttemptEvent do
 
     describe 'when the attempts signing key is present' do
       before do
-        allow(IdentityConfig.store).to receive(:attempts_api_signing_private_key).and_return(
-          singing_private_key,
+        allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
+          signing_key.to_pem,
         )
       end
       it 'returns an event decrypted from the JWE' do
