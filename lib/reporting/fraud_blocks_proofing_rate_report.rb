@@ -89,6 +89,11 @@ module Reporting
 
     def as_emailable_reports
       [
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+          filename: 'overview',
+        ),
         # [
         #   Reporting::EmailableReport.new(
         #     title: "Proofing Success Metrics #{stats_month}", #Proofing Success comes from IdP
@@ -128,6 +133,16 @@ module Reporting
     #     [err.class.name, err.message],
     #   ]
     # end
+
+    # overview table
+    def overview_table
+      [
+        ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+        # This needs to be Date.today so it works when run on the command line
+        ['Report Generated', Time.zone.today.to_s],
+        ['Issuer', issuers.present? ? issuers.join(', ') : 'All Issuers'],
+      ]
+    end
 
     # table Suspected Fraud Related Blocks ----------------------------------------------
     def suspected_fraud_blocks_metrics_table
