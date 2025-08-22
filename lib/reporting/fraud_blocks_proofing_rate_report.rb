@@ -55,6 +55,7 @@ module Reporting
       VAILD_DRIVERS_LICENSE_NUMBER = 'valid_drivers_license_number'
       PHONE_ACCOUNT_OWNERSHIP = 'phone_account_ownership'
       DEVICE_BEHAVIOR_FRAUD_SIGNALS = 'device_behavior_fraud_signals'
+      SUCCESSFUL_IPP_OUTPUT = 'successful_ipp_output'
       # -------------------------------------------------------------------
 
       def self.all_events
@@ -399,7 +400,7 @@ module Reporting
         end
 
         fetch_successful_ipp_results.each do |row|
-          event_users[Events::SUCCESSFUL_IPP] = row['IPP_successfully_proofed_user_counts']
+          event_users[Events::SUCCESSFUL_IPP_OUTPUT] << row['IPP_successfully_proofed_user_counts']
         end
         event_users
       end
@@ -816,6 +817,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         successful_ipp: quote(Events::SUCCESSFUL_IPP),
+        successful_ipp_output: quote(Events::SUCCESSFUL_IPP_OUTPUT),
       }
 
       format(<<~QUERY, params)
@@ -968,7 +970,8 @@ module Reporting
 
     # successful ipp users
     def successful_ipp_users_count
-      @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP]
+      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT] || Set[]
+      set.find { |v| v.present? }&.to_s || '0'
     end
     # ---------------------------------------------------------------------------------
   end

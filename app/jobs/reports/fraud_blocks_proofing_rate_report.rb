@@ -67,17 +67,17 @@ module Reports
     def fraud_blocks_proofing_rate_report
       @fraud_blocks_proofing_rate_report ||= Reporting::FraudBlocksProofingRateReport.new(
         issuers: issuers,
-        time_range: report_date.all_week,
+        time_range: report_date.all_month,
       )
     end
 
     # these two need to be saved in the config file application.yml.default as empty '[]'
     def issuers
-      [*IdentityConfig.store.fraud_blocks_proofing_rate_issuers]
+      [*IdentityConfig.store.fraud_blocks_proofing_rate_report_issuers]
     end
 
     def emails
-      [*IdentityConfig.store.fraud_blocks_proofing_rate_emails]
+      [*IdentityConfig.store.fraud_blocks_proofing_rate_report_emails]
     end
     # -------------------------------------------------------------------
 
