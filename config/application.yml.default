@@ -45,6 +45,7 @@ async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
 attempts_api_enabled: false
 attempts_api_event_ttl_seconds: 3_600
+attempts_api_signing_private_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'

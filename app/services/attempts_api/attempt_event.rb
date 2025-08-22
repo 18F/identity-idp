@@ -23,14 +23,8 @@ module AttemptsApi
     def to_jwe(public_key:, issuer:)
       jwk = JWT::JWK.new(public_key)
 
-      jwe_payload = JWT.encode(
-        payload_json(issuer: issuer),
-        AppArtifacts.store.oidc_primary_private_key,
-        'RS256',
-      )
-
       JWE.encrypt(
-        jwe_payload,
+        jwe_payload(payload_json: payload_json(issuer:)),
         public_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
@@ -42,14 +36,18 @@ module AttemptsApi
 
     def self.from_jwe(jwe, private_key)
       decrypted_event = JWE.decrypt(jwe, private_key)
-      decoded_event = JWT.decode(
-        decrypted_event,
-        AppArtifacts.store.oidc_primary_public_key,
-        true,
-        { algorithm: 'RS256' },
-      ).first
+      signing_key = IdentityConfig.store.attempts_api_signing_private_key
 
-      parsed_event = JSON.parse(decoded_event)
+      if signing_key.present?
+        decrypted_event = JWT.decode(
+          decrypted_event,
+          OpenSSL::PKey::RSA.new(signing_key).public_key,
+          true,
+          { algorithm: 'RS256' },
+        ).first
+      end
+
+      parsed_event = JSON.parse(decrypted_event)
       event_type = parsed_event['events'].keys.first.split('/').last
       event_data = parsed_event['events'].values.first
       jti = parsed_event['jti'].split(':').last
@@ -81,10 +79,6 @@ module AttemptsApi
 
     private
 
-    def private_key
-      Rails.application.config.oidc_private_key
-    end
-
     def event_data
       {
         'subject' => {
@@ -95,9 +89,22 @@ module AttemptsApi
       }.merge(event_metadata || {})
     end
 
+    def jwe_payload(payload_json:)
+      if signing_key.present?
+        JWT.encode(payload_json, signing_key, 'RS256')
+      else
+        payload_json
+      end
+    end
+
     def long_event_type
       dasherized_name = event_type.to_s.dasherize
       "https://schemas.login.gov/secevent/attempts-api/event-type/#{dasherized_name}"
+    end
+
+    def signing_key
+      OpenSSL::PKey::RSA.new(IdentityConfig.store.attempts_api_signing_private_key) if
+        IdentityConfig.store.attempts_api_signing_private_key.present?
     end
   end
 end
