@@ -39,11 +39,14 @@ module AttemptsApi
       signing_key = IdentityConfig.store.attempts_api_signing_private_key
 
       if signing_key.present?
+
+        public_key = OpenSSL::PKey::EC.new(signing_key).public_to_pem
+
         decrypted_event = JWT.decode(
           decrypted_event,
-          OpenSSL::PKey::RSA.new(signing_key).public_key,
+          OpenSSL::PKey::EC.new(public_key),
           true,
-          { algorithm: 'RS256' },
+          { algorithm: 'ES256' },
         ).first
       end
 
@@ -91,7 +94,7 @@ module AttemptsApi
 
     def jwe_payload(payload_json:)
       if signing_key.present?
-        JWT.encode(payload_json, signing_key, 'RS256')
+        JWT.encode(payload_json, signing_key, 'ES256')
       else
         payload_json
       end
@@ -103,7 +106,7 @@ module AttemptsApi
     end
 
     def signing_key
-      OpenSSL::PKey::RSA.new(IdentityConfig.store.attempts_api_signing_private_key) if
+      OpenSSL::PKey::EC.new(IdentityConfig.store.attempts_api_signing_private_key) if
         IdentityConfig.store.attempts_api_signing_private_key.present?
     end
   end
