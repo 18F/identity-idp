@@ -37,6 +37,24 @@ module Reporting
       IDV_DOC_AUTH_SSN_VISITED = 'IdV: doc auth ssn visited'
       # doc/selfie ux challenges - Socure
       IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
+
+      # these are for retriving values for the tables
+      API_CONNECTION_FAILS = 'api_connection_fails'
+      DOC_SELFIE_UX_CHALLENGE_LEXIS = 'doc_selfie_ux_challenge_lexis'
+      DOC_SELFIE_UX_CHALLENGE_SOCURE = 'doc_selfie_ux_challenge_socure'
+      VERF_CODE_NOT_RECIEVED = 'verification_code_not_received'
+      DOC_AUTH_FACIAL_LEXIS = 'doc_auth_facial_lexis'
+      DOC_AUTH_FACIAL_SOCURE = 'doc_auth_facial_socure'
+      SELFIE_FAIL_LEXIS = 'selfie_fail_lexis'
+      SELFIE_FAIL_SOCURE = 'selfie_fail_socure'
+      ADDRESS_OCCUPANCY = 'address_occupancy'
+      SSN = 'ssn'
+      DOB = 'dob'
+      DEAD = 'dead'
+      IDENTITY_NOT_FOUND = 'identity_not_found'
+      VAILD_DRIVERS_LICENSE_NUMBER = 'valid_drivers_license_number'
+      PHONE_ACCOUNT_OWNERSHIP = 'phone_account_ownership'
+      DEVICE_BEHAVIOR_FRAUD_SIGNALS = 'device_behavior_fraud_signals'
       # -------------------------------------------------------------------
 
       def self.all_events
@@ -117,7 +135,7 @@ module Reporting
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
           'Authentic Drivers License',
-          authentic_drivers_doc_auth.to_s,
+          total_doc_auth_fail.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
@@ -129,37 +147,37 @@ module Reporting
         ],
         [
           'Facial Matching Check',
-          facial_matching_check.to_s,
+          total_selfie_fail.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Identity Not Found',
-          attributes.identity_not_found_count.to_s,
+          identity_not_found_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Address / Occupancy Match',
-          attributes.address_failed_count.to_s,
+          address_occupancy_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Social Security Number Match',
-          attributes.ssn_failed_count.to_s,
+          ssn_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Date of Birth Match',
-          attributes.dob_failed_count.to_s,
+          dob_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
         [
           'Deceased Check',
-          attributes.death_failed_count.to_s,
+          dead_failed_count.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
@@ -184,7 +202,7 @@ module Reporting
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
-          'Document / selfie upload UX challenge',
+          'Document selfie upload UX challenge',
           doc_selfie_ux_challenge_socure_and_lexis.to_s,
           time_range.begin.to_s,
           time_range.end.to_s,
@@ -224,30 +242,22 @@ module Reporting
     # Create Data Dictionary that will store results from each cloudwatch query ------------
     def data_authentic_drivers_license_facial_match_socure
       @data_authentic_drivers_license_facial_match_socure ||= begin
-        event_users = Hash.new do |h, uuid|
-          h[uuid] = Set.new
-        end
-
+        event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_socure_results.each do |row|
-          event_users[row['document_fail_count_socure']] << row['document_fail_count']
-          event_users[row['selfie_fail_count_socure']] << row['selfie_fail_count']
+          event_users[Events::DOC_AUTH_FACIAL_SOCURE] << row['document_fail_count_socure']
+          event_users[Events::SELFIE_FAIL_SOCURE] << row['selfie_fail_count_socure']
         end
-
         event_users
       end
     end
 
     def data_authentic_drivers_license_facial_match_lexis
       @data_authentic_drivers_license_facial_match_lexis ||= begin
-        event_users = Hash.new do |h, uuid|
-          h[uuid] = Set.new
-        end
-
+        event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_lexis_results.each do |row|
-          event_users[row['document_fail_count_lexis']] << row['document_fail_count']
-          event_users[row['selfie_fail_count_lexis']] << row['selfie_fail_count']
+          event_users[Events::DOC_AUTH_FACIAL_LEXIS] << row['document_fail_count_lexis']
+          event_users[Events::SELFIE_FAIL_LEXIS] << row['selfie_fail_count_lexis']
         end
-
         event_users
       end
     end
@@ -259,7 +269,7 @@ module Reporting
         end
 
         fetch_valid_drivers_license_number_results.each do |row|
-          event_users[row['aamva_failed_count']] << row['aamva_failed_count']
+          event_users[Events::VAILD_DRIVERS_LICENSE_NUMBER] << row['aamva_failed_count']
         end
 
         event_users
@@ -273,11 +283,11 @@ module Reporting
         end
 
         fetch_address_dob_dead_ssn_identity_notfound_results.each do |row|
-          event_users[row['address_failed_count']] << row['address_failed_count']
-          event_users[row['dob_failed_count']] << row['dob_failed_count']
-          event_users[row['death_failed_count']] << row['death_failed_count']
-          event_users[row['ssn_failed_count']] << row['ssn_failed_count']
-          event_users[row['identity_not_found_count']] << row['identity_not_found_count']
+          event_users[Events::ADDRESS_OCCUPANCY] << row['address_failed_count']
+          event_users[Events::DOB] << row['dob_failed_count']
+          event_users[Events::DEAD] << row['death_failed_count']
+          event_users[Events::SSN] << row['ssn_failed_count']
+          event_users[Events::IDENTITY_NOT_FOUND] << row['identity_not_found_count']
         end
 
         event_users
@@ -291,7 +301,7 @@ module Reporting
         end
 
         fetch_phone_account_ownership_results.each do |row|
-          event_users[row['phone_finder_fail_count']] << row['phone_finder_fail_count']
+          event_users[Events::PHONE_ACCOUNT_OWNERSHIP] << row['phone_finder_fail_count']
         end
 
         event_users
@@ -305,7 +315,7 @@ module Reporting
         end
 
         fetch_device_behavior_fraud_signals_results.each do |row|
-          event_users[row['DeviceBehavoirFraudSig']] << row['DeviceBehavoirFraudSig']
+          event_users[Events::DEVICE_BEHAVIOR_FRAUD_SIGNALS] << row['DeviceBehavoirFraudSig']
         end
         event_users
       end
@@ -318,7 +328,7 @@ module Reporting
         end
 
         fetch_doc_selfie_ux_challenge_socure_results.each do |row|
-          event_users[row['sum_capture_quality_fail']] << row['sum_capture_quality_fail']
+          event_users[Events::DOC_SELFIE_UX_CHALLENGE_SOCURE] << row['sum_capture_quality_fail']
         end
         event_users
       end
@@ -331,7 +341,7 @@ module Reporting
         end
 
         fetch_doc_selfie_ux_challenge_lexis_results.each do |row|
-          event_users[row['sum_any_capture']] << row['sum_any_capture']
+          event_users[Events::DOC_SELFIE_UX_CHALLENGE_LEXIS] << row['sum_any_capture']
         end
         event_users
       end
@@ -344,7 +354,7 @@ module Reporting
         end
 
         fetch_verification_code_not_received_results.each do |row|
-          event_users[row['sum_verification_code_not_received']] << row['sum_verification_code_not_received']
+          event_users[Events::VERF_CODE_NOT_RECIEVED] << row['sum_verification_code_not_received']
         end
         event_users
       end
@@ -357,10 +367,11 @@ module Reporting
         end
 
         fetch_api_connection_fails_results.each do |row|
-          event_users[row['api_user_fail']] << row['api_user_fail']
-          event_users[row['AAMVA_fail_count']] << row['AAMVA_fail_count']
-          event_users[row['LN_timeout_fail_count']] << row['LN_timeout_fail_count']
-          event_users[row['state_timeout_fail_count']] << row['state_timeout_fail_count']
+          event_users[Events::API_CONNECTION_FAILS] << row['api_user_fail']
+          # event_users[row['api_user_fail']] << row['api_user_fail']
+          # event_users[row['AAMVA_fail_count']] << row['AAMVA_fail_count']
+          # event_users[row['LN_timeout_fail_count']] << row['LN_timeout_fail_count']
+          # event_users[row['state_timeout_fail_count']] << row['state_timeout_fail_count']
         end
         event_users
       end
@@ -373,7 +384,7 @@ module Reporting
         end
 
         fetch_successful_ipp_results.each do |row|
-          event_users[row['IPP_successfully_proofed_user_counts']] << row['IPP_successfully_proofed_user_counts']
+          event_users[Events::SUCCESSFUL_IPP] = row['IPP_successfully_proofed_user_counts']
         end
         event_users
       end
@@ -461,6 +472,8 @@ module Reporting
       params = {
         issuers: quote(issuers),
         idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
+        doc_auth_facial_socure: quote(Events::DOC_AUTH_FACIAL_SOCURE),
+        selfie_fail_socure: quote(Events::SELFIE_FAIL_SOCURE),
       }
       format(<<~QUERY, params)
         filter name = %{idv_socure_verification_data_requested}
@@ -474,8 +487,8 @@ module Reporting
                 max(@selfie_fail) as selfie_fail
                 by properties.user_id
         | filter !document_authentication_success
-        | stats sum(document_fail) as document_fail_count,
-                sum(selfie_fail) as selfie_fail_count
+        | stats sum(document_fail) as document_fail_count_socure,
+                sum(selfie_fail) as selfie_fail_count_socure
         | limit 10000
       QUERY
     end
@@ -484,6 +497,8 @@ module Reporting
       params = {
         issuers: quote(issuers),
         idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
+        doc_auth_facial_lexis: quote(Events::DOC_AUTH_FACIAL_LEXIS),
+        selfie_fail_lexis: quote(Events::SELFIE_FAIL_LEXIS),
       }
       format(<<~QUERY, params)
         filter name = %{idv_doc_auth_image_upload_vendor_submitted}
@@ -496,8 +511,8 @@ module Reporting
                 max(@selfie_fail) as selfie_fail
                 by properties.user_id
         | filter !document_authentication_success
-        | stats sum(document_fail) as document_fail_count,
-                sum(selfie_fail) as selfie_fail_count
+        | stats sum(document_fail) as document_fail_count_lexis,
+                sum(selfie_fail) as selfie_fail_count_lexis
         | limit 10000
 
       QUERY
@@ -507,6 +522,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
+        valid_drivers_license_number: quote(Events::VAILD_DRIVERS_LICENSE_NUMBER),
       }
       format(<<~QUERY, params)
         filter name = %{idv_doc_auth_verify_proofing_results}
@@ -580,6 +596,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         idv_phone_conf_vendor: quote(Events::IDV_PHONE_CONF_VENDOR),
+        phone_account_ownership: quote(Events::PHONE_ACCOUNT_OWNERSHIP),
       }
       format(<<~QUERY, params)
         filter name = %{idv_phone_conf_vendor}
@@ -596,6 +613,7 @@ module Reporting
       params = {
         issuers: quote(issuers),
         idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
+        device_behavior_fraud_signals: quote(Events::DEVICE_BEHAVIOR_FRAUD_SIGNALS),
       }
       format(<<~QUERY, params)
         fields name, @timestamp, 
@@ -619,6 +637,7 @@ module Reporting
         issuers: quote(issuers),
         idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
+        doc_selfie_ux_challenges_socure: quote(Events::DOC_SELFIE_UX_CHALLENGE_SOCURE),
       }
       format(<<~QUERY, params)
         filter name in [%{idv_socure_verification_data_requested}, %{idv_doc_auth_ssn_visited}]
@@ -648,20 +667,21 @@ module Reporting
             barcode_illegible_fail=1 or color_fail=1 or front_illegible_fail=1 as doc_quality_fail,
             selfie_quality_fail=1 or doc_quality_fail=1 as capture_quality_fail
         | stats 
-            sum(doc_quality_fail) as sum_doc_quality_fail,
-            sum(selfie_quality_fail) as sum_selfie_quality_fail,
-            sum(capture_quality_fail as sum_capture_quality_fail)
+            # sum(doc_quality_fail) as sum_doc_quality_fail,
+            # sum(selfie_quality_fail) as sum_selfie_quality_fail,
+            sum(capture_quality_fail) as sum_capture_quality_fail
         | limit 10000
       QUERY
     end
 
-    def doc_selfie_ux_challenge_lexis_query
+    def doc_selfie_ux_challenge_lexis_query # issue happening in this method
       params = {
         issuers: quote(issuers),
         idv_front_image_added: quote(Events::IDV_FRONT_IMAGE_ADDED),
         idv_back_image_added: quote(Events::IDV_BACK_IMAGE_ADDED),
         idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
+        doc_selfie_ux_challenge_lexis: quote(Events::DOC_SELFIE_UX_CHALLENGE_LEXIS),
       }
       format(<<~QUERY, params)
         filter name in [%{idv_front_image_added}, %{idv_back_image_added}, %{idv_doc_auth_image_upload_vendor_submitted}, %{idv_doc_auth_ssn_visited}]
@@ -693,8 +713,8 @@ module Reporting
         | filter (@any_capture_error=1)
         | stats 
             sum(@any_capture_error) as sum_any_capture,
-            sum(@selfie_fail) as sum_selfie_fail,
-            sum(@doc_fail) as sum_doc_fail
+            # sum(@selfie_fail) as sum_selfie_fail,
+            # sum(@doc_fail) as sum_doc_fail
         | limit 10000
       QUERY
     end
@@ -705,6 +725,7 @@ module Reporting
         idv_phone_conf_otp_visited: quote(Events::IDV_PHONE_CONF_OTP_VISITED),
         idv_phone_conf_otp_submitted: quote(Events::IDV_PHONE_CONF_OTP_SUBMITTED),
         idv_enter_password_visited: quote(Events::IDV_ENTER_PASSWORD_VISITED),
+        verification_code_not_received: quote(Events::VERF_CODE_NOT_RECIEVED),
       }
       format(<<~QUERY, params)
         # Verification code not received
@@ -729,6 +750,7 @@ module Reporting
         issuers: quote(issuers),
         idv_doc_auth_verify_proofing_results: quote(Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS),
         idv_phone_record_visited: quote(Events::IDV_PHONE_RECORD_VISITED),
+        api_connection_fails: quote(Events::API_CONNECTION_FAILS),
       }
 
       format(<<~QUERY, params)
@@ -767,9 +789,9 @@ module Reporting
         | filter ID_resolution_success_num=0 and (ln_fail=1 or aamva_fail=1 or state_timeout_fail=1) 
 
         | stats
-            sum(aamva_fail) as AAMVA_fail_count,
-            sum(ln_fail) as LN_timeout_fail_count,
-            sum(state_timeout_fail) as state_timeout_fail_count,
+            # sum(aamva_fail) as AAMVA_fail_count,
+            # sum(ln_fail) as LN_timeout_fail_count,
+            # sum(state_timeout_fail) as state_timeout_fail_count,
             count(*) as api_user_fail  
         | limit 10000  
       QUERY
@@ -807,67 +829,131 @@ module Reporting
     end
 
     # Extracting data that was gathered from queries and placed in dictionaries -------------
-    def authentic_drivers_license_facial_check
-      @authentic_drivers_license_facial_check || data_authentic_drivers_license_facial_match_lexis[
-        Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED] & data_authentic_drivers_license_facial_match_socure[
-          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED]
+    # issues here-----------------
+    def authentic_drivers_license_facial_check_lexis
+      @authentic_drivers_license_facial_check_lexis || data_authentic_drivers_license_facial_match_lexis[
+        Events::DOC_AUTH_FACIAL_LEXIS]
     end
 
-    def authentic_drivers_doc_auth
-      @authentic_drivers_doc_auth ||=
-        authentic_drivers_license_facial_check.document_fail_count_socure + authentic_drivers_license_facial_check.document_fail_count_lexis
+    def authentic_drivers_license_facial_check_socure
+      @authentic_drivers_license_facial_check_socure || data_authentic_drivers_license_facial_match_socure[
+        Events::DOC_AUTH_FACIAL_SOCURE]
     end
+
+    def selfie_fail_lexis
+      @selfie_fail_lexis || data_authentic_drivers_license_facial_match_lexis[
+        Events::SELFIE_FAIL_LEXIS]
+    end
+
+    def selfie_fail_socure
+      @selfie_fail_socure || data_authentic_drivers_license_facial_match_socure[
+        Events::SELFIE_FAIL_SOCURE]
+    end
+
+    def total_doc_auth_fail
+      lexis_set = authentic_drivers_license_facial_check_lexis || Set[]
+      socure_set = authentic_drivers_license_facial_check_socure || Set[]
+
+      lexis_value = lexis_set.find { |v| v }&.to_i || 0
+      socure_value = socure_set.find { |v| v }&.to_i || 0
+
+      @total_doc_auth_fail ||= lexis_value + socure_value
+    end
+
+    def total_selfie_fail
+      lexis_set = selfie_fail_lexis || Set[]
+      socure_set = selfie_fail_socure || Set[]
+
+      lexis_value = lexis_set.find { |v| v }&.to_i || 0
+      socure_value = socure_set.find { |v| v }&.to_i || 0
+      @total_selfie_fail ||= lexis_value + socure_value
+    end
+    # issues --------------
 
     def valid_drivers_license_number
-      @valid_drivers_license_number || data_valid_drivers_license_number[
-        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+      set = @valid_drivers_license_number || data_valid_drivers_license_number[
+        Events::VAILD_DRIVERS_LICENSE_NUMBER]
+      set ||= Set[] # Ensure it's never nil
+      # Find the first non-nil value, convert to integer, or default to 0
+      set.find { |v| v }&.to_i || 0
     end
 
-    def facial_matching_check
-      @facial_matching_check ||=
-        authentic_drivers_license_facial_check.selfie_fail_count_socure + authentic_drivers_license_facial_check.selfie_fail_count_lexis
+    def address_occupancy_failed_count
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::ADDRESS_OCCUPANCY] || Set[]
+      set.find { |v| v }&.to_i || 0
     end
 
-    def attributes
-      @attributes || data_fetch_address_dob_dead_ssn_identity_notfound_results[
-        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+    def dob_failed_count
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DOB] || Set[]
+      set.find { |v| v }&.to_i || 0
+    end
+
+    def dead_failed_count
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DEAD] || Set[]
+      set.find { |v| v }&.to_i || 0
+    end
+
+    def ssn_failed_count
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::SSN] || Set[]
+      set.find { |v| v }&.to_i || 0
+    end
+
+    def identity_not_found_failed_count
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::IDENTITY_NOT_FOUND] || Set[]
+      set.find { |v| v }&.to_i || 0
     end
 
     def phone_account_ownership
-      @phone_account_ownership || data_fetch_phone_account_ownership_results[
-        Events::IDV_PHONE_CONF_VENDOR]
+      set = @phone_account_ownership || data_fetch_phone_account_ownership_results[
+        Events::PHONE_ACCOUNT_OWNERSHIP]
+      set ||= Set[]
+      set.find { |v| v }&.to_i || 0
     end
 
     def device_behavior_fraud_signals
-      @device_behavior_fraud_signals || data_fetch_device_behavior_fraud_signals_results[
-        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS]
+      set = @device_behavior_fraud_signals || data_fetch_device_behavior_fraud_signals_results[
+        Events::DEVICE_BEHAVIOR_FRAUD_SIGNALS]
+      set ||= Set[]
+      set.find { |v| v }&.to_i || 0
     end
 
-    def doc_selfie_ux_challenge
-      @doc_selfie_ux_challenge || data_fetch_doc_selfie_ux_challenge_lexis_results[
-        Events::IDV_FRONT_IMAGE_ADDED, IDV_BACK_IMAGE_ADDED, IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
-        IDV_DOC_AUTH_SSN_VISITED] & data_fetch_doc_selfie_ux_challenge_socure_results[
-          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED, IDV_DOC_AUTH_SSN_VISITED]
+    def doc_selfie_ux_challenge_lexis
+      @doc_selfie_ux_challenge_lexis || data_fetch_doc_selfie_ux_challenge_lexis_results[
+        Events::DOC_SELFIE_UX_CHALLENGE_LEXIS]
+    end
+
+    def doc_selfie_ux_challenges_socure
+      @doc_selfie_ux_challenge_socure || data_fetch_doc_selfie_ux_challenge_socure_results[
+        Events::DOC_SELFIE_UX_CHALLENGE_SOCURE]
     end
 
     def doc_selfie_ux_challenge_socure_and_lexis
-      @doc_selfie_ux_challenge_socure_and_lexis = doc_selfie_ux_challenge.sum_any_capture + doc_selfie_ux_challenge.sum_capture_quality_fail
+      lexis_set = doc_selfie_ux_challenge_lexis || Set[]
+      socure_set = doc_selfie_ux_challenges_socure || Set[]
+
+      lexis_value = lexis_set.find { |v| v }&.to_i || 0
+      socure_value = socure_set.find { |v| v }&.to_i || 0
+
+      @doc_selfie_ux_challenge_socure_and_lexis ||= lexis_value + socure_value
     end
 
     def verification_code_not_received_count
-      @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
-        Events::IDV_PHONE_CONF_OTP_VISITED, IDV_PHONE_CONF_OTP_SUBMITTED, IDV_ENTER_PASSWORD_VISITED
-      ]
+      set = @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
+        Events::VERF_CODE_NOT_RECIEVED]
+      set ||= Set[] # Ensure it's never nil
+      # Find the first non-nil value, convert to integer, or default to 0
+      set.find { |v| v }&.to_i || 0
     end
 
     def api_connection_fails
-      @api_connection_fails ||= data_fetch_api_connection_fails_results[
-        Events::IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS, IDV_PHONE_RECORD_VISITED]
+      set = @api_connection_fails || data_fetch_api_connection_fails_results[Events::API_CONNECTION_FAILS]
+      set ||= Set[]
+      set.find { |v| v }&.to_i || 0 # finds first non-nil value, e.g. "4"
     end
 
     # successful ipp users
     def successful_ipp_users_count
-      @successful_ipp_users_count ||= data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP]
+      @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP]
     end
     # ---------------------------------------------------------------------------------
   end

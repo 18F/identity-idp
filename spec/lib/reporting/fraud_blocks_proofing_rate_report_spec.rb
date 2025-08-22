@@ -4,7 +4,7 @@ require 'reporting/fraud_blocks_proofing_rate_report'
 RSpec.describe Reporting::FraudBlocksProofingRateReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
-  let(:suspected_fraud_blocks_metrics_table) do
+  let(:expected_suspected_fraud_blocks_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
       ['Authentic Drivers License', '10', time_range.begin.to_s, time_range.end.to_s],
@@ -20,16 +20,16 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
     ]
   end
 
-  let(:key_points_user_friction_metrics_table) do
+  let(:expected_key_points_user_friction_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
-      ['Document / selfie upload UX challenge', '30', time_range.begin.to_s, time_range.end.to_s],
+      ['Document selfie upload UX challenge', '30', time_range.begin.to_s, time_range.end.to_s],
       ['Verification code not received', '10', time_range.begin.to_s, time_range.end.to_s],
       ['API connection fails', '4', time_range.begin.to_s, time_range.end.to_s],
     ]
   end
 
-  let(:successful_ipp_table) do
+  let(:expected_successful_ipp_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
       ['Successful IPP', '12000', time_range.begin.to_s, time_range.end.to_s],
@@ -41,8 +41,8 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   before do
     travel_to Time.zone.now.beginning_of_day
     stub_cloudwatch_logs(
-      [{ 'document_fail_count_socure' => '5', 'facial_match_fail_count_socure' => '2' },
-       { 'document_fail_count_lexis' => '5', 'facial_match_fail_count_lexis' => '2' },
+      [{ 'document_fail_count_lexis' => '5', 'selfie_fail_count_lexis' => '2' },
+       { 'document_fail_count_socure' => '5', 'selfie_fail_count_socure' => '2' },
        { 'aamva_failed_count' => '4' },
        { 'address_failed_count' => '4',
          'dob_failed_count' => '10',
@@ -51,8 +51,8 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
          'identity_not_found_count' => '10' },
        { 'phone_finder_fail_count' => '4' },
        { 'DeviceBehavoirFraudSig' => '4' },
-       { 'sum_capture_quality_fail' => '15' },
-       { 'sum_any_capture' => '15' },
+       { 'sum_capture_quality_fail' => '10' },
+       { 'sum_any_capture' => '20' },
        { 'sum_verification_code_not_received' => '10' },
        { 'api_user_fail' => '4',
          'AAMVA_fail_count' => '1',
@@ -93,20 +93,33 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   end
 
   describe '#as_emailable_reports' do
+    before do
+      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
+        .to receive(:fraud_blocks_proofing_rate_report)
+        .and_return(expected_suspected_fraud_blocks_metrics_table)
+
+      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
+        .to receive(:key_points_user_friction_metrics_table)
+        .and_return(expected_key_points_user_friction_metrics_table)
+
+      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
+        .to receive(:successful_ipp_table)
+        .and_return(expected_successful_ipp_table)
+    end
     let(:expected_reports) do
       [
         Reporting::EmailableReport.new(
-          title: 'Suspected_Fraud_Blocks_Metircs',
+          title: 'Suspected Fraud Blocks Metrics Jan-2022',
           filename: 'suspected_fraud_blocks_metrics',
           table: expected_suspected_fraud_blocks_metrics_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'Key_Points_User_Friction_Metrics',
+          title: 'Key Points of User Friction Metrics Jan-2022',
           filename: 'key_points_user_friction_metrics',
           table: expected_key_points_user_friction_metrics_table,
         ),
         Reporting::EmailableReport.new(
-          title: 'Successful_IPP',
+          title: 'Successful IPP User Metrics Jan-2022',
           filename: 'successful_ipp',
           table: expected_successful_ipp_table,
         ),
