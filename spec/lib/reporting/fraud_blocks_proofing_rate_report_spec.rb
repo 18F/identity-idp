@@ -4,6 +4,13 @@ require 'reporting/fraud_blocks_proofing_rate_report'
 RSpec.describe Reporting::FraudBlocksProofingRateReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
+  let(:expected_overview_table) do
+    [
+      ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+      ['Report Generated', Time.zone.today.to_s],
+      ['Issuer', issuer],
+    ]
+  end
   let(:expected_suspected_fraud_blocks_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -62,6 +69,16 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
     )
   end
 
+  describe '#overview_table' do
+    it 'renders an overview table' do
+      aggregate_failures do
+        report.overview_table.zip(expected_overview_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
+
   describe '#suspected_fraud_blocks_metrics_table' do
     it 'renders a suspected fraud blocks metrics table' do
       aggregate_failures do
@@ -108,6 +125,11 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
     end
     let(:expected_reports) do
       [
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          filename: 'overview',
+          table: expected_overview_table,
+        ),
         Reporting::EmailableReport.new(
           title: 'Suspected Fraud Blocks Metrics Jan-2022',
           filename: 'suspected_fraud_blocks_metrics',
