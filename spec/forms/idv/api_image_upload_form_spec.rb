@@ -150,6 +150,19 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
 
         expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          remaining_submit_attempts: 0,
+          submit_attempts: 4,
+          user_id: document_capture_session.user.uuid,
+          error_details: { limit: { rate_limited: true } },
+          success: false,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: liveness_checking_required,
+          document_type: document_type,
+        )
+
+        expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
           user_id: document_capture_session.user.uuid,
@@ -749,6 +762,25 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
+    context 'when document_capture_session_uuid param is missing' do
+      let(:document_capture_session_uuid) { nil }
+
+      before do
+        form.submit
+      end
+
+      it 'logs analytics' do
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload form submitted',
+          error_details: { document_capture_session: { blank: true } },
+          success: false,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          liveness_checking_required: liveness_checking_required,
+        )
+      end
+    end
+
     context 'posting images to client fails' do
       let(:errors) do
         { front: 'glare' }
@@ -999,8 +1031,8 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         expect(fake_analytics).to have_logged_event(
           'IdV: failed doc image resubmitted',
-          submit_attempts: 1,
-          remaining_submit_attempts: 3,
+          submit_attempts: 2,
+          remaining_submit_attempts: 2,
           user_id: document_capture_session.user.uuid,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
@@ -1028,8 +1060,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             .to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
           expect(fake_analytics).to have_logged_event(
             'IdV: failed doc image resubmitted',
-            submit_attempts: 1,
-            remaining_submit_attempts: 3,
+            submit_attempts: 2,
+            remaining_submit_attempts: 2,
             user_id: document_capture_session.user.uuid,
             front_image_fingerprint: an_instance_of(String),
             back_image_fingerprint: an_instance_of(String),
