@@ -92,6 +92,12 @@ module Idv
         )
       end
 
+      increment_rate_limiter!
+
+      if rate_limited? && !response.success?
+        track_rate_limited
+      end
+
       abandon_any_ipp_progress
       response
     end
@@ -127,7 +133,6 @@ module Idv
 
     def validate_form
       success = valid?
-      increment_rate_limiter!
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -136,7 +141,6 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response)
-      track_rate_limited if rate_limited?
       track_upload_attempt(response)
 
       response
@@ -222,8 +226,8 @@ module Idv
 
       analytics.idv_dos_passport_verification(
         document_type:,
-        remaining_submit_attempts:,
-        submit_attempts:,
+        remaining_submit_attempts: current_remaining_submit_attempts,
+        submit_attempts: current_submit_attempts,
         user_id: user_uuid,
         success: response.success?,
         errors: response.errors.to_h,
@@ -247,10 +251,11 @@ module Idv
 
     def extra_attributes
       return @extra_attributes if defined?(@extra_attributes) &&
-                                  @extra_attributes&.dig('submit_attempts') == submit_attempts
+                                  @extra_attributes&.dig('submit_attempts') ==
+                                  current_submit_attempts
       @extra_attributes = {
-        submit_attempts: submit_attempts,
-        remaining_submit_attempts: remaining_submit_attempts,
+        submit_attempts: current_submit_attempts,
+        remaining_submit_attempts: current_remaining_submit_attempts,
         user_id: user_uuid,
         pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type),
         flow_path: params[:flow_path],
@@ -271,12 +276,16 @@ module Idv
       images_metadata.selfie&.fingerprint
     end
 
-    def remaining_submit_attempts
-      rate_limiter.remaining_count if document_capture_session
+    def current_remaining_submit_attempts
+      return if document_capture_session.nil?
+
+      rate_limited? ? rate_limiter.remaining_count : rate_limiter.remaining_count - 1
     end
 
-    def submit_attempts
-      rate_limiter.attempts if document_capture_session
+    def current_submit_attempts
+      return if document_capture_session.nil?
+
+      rate_limited? ? rate_limiter.attempts : rate_limiter.attempts + 1
     end
 
     def processed_selfie_attempts_data
