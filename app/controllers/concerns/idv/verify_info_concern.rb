@@ -197,6 +197,7 @@ module Idv
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
