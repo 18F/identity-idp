@@ -55,7 +55,7 @@ Dir.chdir APP_ROOT do
   run "gem install bundler --conservative"
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
-  run "yarn install"
+  run "npm install"
 
   puts "\n== Stopping running services to ensure clean start =="
   run "brew services stop --all" if brew_installed
