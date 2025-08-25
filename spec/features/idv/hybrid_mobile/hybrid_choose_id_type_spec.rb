@@ -52,7 +52,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
       expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
       choose(t('doc_auth.forms.id_type_preference.drivers_license'))
       click_on t('forms.buttons.continue')
-      expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
     end
   end
 
