@@ -95,8 +95,10 @@ module Idv
     end
 
     def update_passport_allowed
-      if !IdentityConfig.store.doc_auth_passports_enabled ||
-         resolved_authn_context_result.facial_match?
+      if !IdentityConfig.store.doc_auth_passports_enabled || (
+        resolved_authn_context_result.facial_match? &&
+        !IdentityConfig.store.doc_auth_passport_selfie_enabled
+      )
         idv_session.passport_allowed = nil
         return
       end
@@ -109,7 +111,8 @@ module Idv
     end
 
     def passport_status
-      if resolved_authn_context_result.facial_match?
+      if resolved_authn_context_result.facial_match? &&
+         !IdentityConfig.store.doc_auth_passport_selfie_enabled
         idv_session.passport_allowed = nil
       end
 

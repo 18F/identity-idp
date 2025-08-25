@@ -9,7 +9,6 @@ module Idv
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
   # @attr gpo_code_verified [Boolean, nil]
-  # @attr gpo_letter_requested [Boolean, nil]
   # @attr gpo_request_letter_visited [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
@@ -58,7 +57,6 @@ module Idv
       flow_path
       go_back_path
       gpo_code_verified
-      gpo_letter_requested
       gpo_request_letter_visited
       had_barcode_attention_error
       had_barcode_read_failure
