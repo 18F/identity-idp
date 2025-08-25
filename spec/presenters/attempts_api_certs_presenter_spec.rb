@@ -39,7 +39,7 @@ RSpec.describe AttemptsApiCertsPresenter do
       it 'renders an empty JWK set' do
         json = presenter.certs
 
-        expect(json[:keys]).to eq [{}]
+        expect(json[:keys]).to eq []
       end
     end
   end

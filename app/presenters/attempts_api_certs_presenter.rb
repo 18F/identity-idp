@@ -3,7 +3,7 @@
 class AttemptsApiCertsPresenter
   def certs
     {
-      keys: [key],
+      keys: [key].compact,
     }
   end
 
@@ -16,8 +16,6 @@ class AttemptsApiCertsPresenter
         alg: 'ES256',
         use: 'sig',
       }.merge(JWT::JWK::EC.new(OpenSSL::PKey::EC.new(cert.public_to_pem)).export)
-    else
-      {}
     end
   end
 
