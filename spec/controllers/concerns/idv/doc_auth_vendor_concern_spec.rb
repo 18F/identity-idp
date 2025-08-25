@@ -71,7 +71,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
 
         it 'adds a user to the socure redis set' do
-
           expect { controller.update_doc_auth_vendor }
             .to change { socure_user_set.count }.by(1)
         end
@@ -86,7 +85,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
 
         it 'adds a user to the socure redis set' do
-
           expect { controller.update_doc_auth_vendor }
             .to change { socure_user_set.count }.by(1)
         end
@@ -190,7 +188,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
         context 'Socure user set is full after user bucketed' do
           before do
-
             allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
             expect(controller).to receive(:ab_test_bucket).and_call_original
           end
