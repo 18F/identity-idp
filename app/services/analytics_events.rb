@@ -6523,9 +6523,39 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user lands on page notifying them multiple profiles contain same information
-  def one_account_duplicate_profiles_detected
-    track_event(:one_account_duplicate_profiles_detected)
+  # Tracks when a user that had duplicate profiles is closed
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_closed(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_closed, service_provider: service_provider,
+                                             user_uuid: user_uuid, **extra
+    )
+  end
+
+  # Tracks when a duplicate profile is created for a user
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_created(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_created, service_provider: service_provider,
+                                              user_uuid: user_uuid, **extra
+    )
+  end
+
+  # Tracks when a duplicate profile object is updated
+  # @param [String] service_provider the service provider issuer that dupe profile was created for
+  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
+  def one_account_duplicate_profile_updated(service_provider:, user_uuid:, **extra)
+    track_event(
+      :one_account_duplicate_profile_updated, service_provider: service_provider,
+                                              user_uuid: user_uuid, **extra
+    )
+  end
+
+  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
+  def one_account_duplicate_profiles_detected_visited
+    track_event(:one_account_duplicate_profiles_detected_visited)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
@@ -6539,6 +6569,7 @@ module AnalyticsEvents
     track_event(:one_account_recognize_all_profiles)
   end
 
+  # Tracks when user says they do not recognize all accounts that has same profile information.
   def one_account_unknown_profile_detected
     track_event(:one_account_unknown_profile_detected)
   end
