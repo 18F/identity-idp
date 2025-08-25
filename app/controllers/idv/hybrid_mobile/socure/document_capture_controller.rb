@@ -17,7 +17,6 @@ module Idv
         before_action -> do
           update_doc_auth_vendor(user: document_capture_user)
         end, only: :show
-        before_action :
         before_action -> do
           redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
         end, only: :show
