@@ -63,6 +63,20 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       it 'updates the document_capture_session passport status to "not_requested"' do
         expect(document_capture_session.passport_status).to eq('not_requested')
       end
+
+      context 'when the document_capture_session doc_auth_vendor is already defined' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            passport_status:,
+            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+          )
+        end
+
+        it 'sets the doc_auth_vendor to nil' do
+          expect(document_capture_session.doc_auth_vendor).to be_nil
+        end
+      end
     end
   end
 
