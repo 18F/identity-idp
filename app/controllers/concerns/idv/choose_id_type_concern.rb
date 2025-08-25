@@ -20,7 +20,6 @@ module Idv
           doc_auth_vendor: nil,
         )
       end
-      # alternative to unsetting doca_auth_vendor, we could redefine the A/B percentages in hash and check keys to see what's supported
     end
 
     def choose_id_type_form_params

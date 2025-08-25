@@ -184,7 +184,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the dos passport api is healthy' do
-      let(:passport_status){ 'requested' }
+      let(:passport_status) { 'requested' }
 
       before do
         allow(response).to receive(:success?).and_return(true)
