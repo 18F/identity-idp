@@ -56,7 +56,6 @@ module Idv
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-        doc_auth_vendor: nil, # attr to be removed
         passport_allowed: idv_session.passport_allowed,
       }.merge(ab_test_analytics_buckets)
     end
