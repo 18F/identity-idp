@@ -8,10 +8,19 @@ module Idv
 
     def set_passport_requested
       if chosen_id_type == 'passport'
-        document_capture_session.update!(passport_status: 'requested')
-      else
-        document_capture_session.update!(passport_status: 'not_requested')
+        unless document_capture_session.passport_requested?
+          document_capture_session.update!(
+            passport_status: 'requested',
+            doc_auth_vendor: nil,
+          )
+        end
+      elsif document_capture_session.passport_requested?
+        document_capture_session.update!(
+          passport_status: 'not_requested',
+          doc_auth_vendor: nil,
+        )
       end
+      # alternative to unsetting doca_auth_vendor, we could redefine the A/B percentages in hash and check keys to see what's supported
     end
 
     def choose_id_type_form_params
