@@ -92,10 +92,18 @@ class ServiceProviderSeeder
 
   def write_service_provider(issuer:, config:)
     return unless write_service_provider?(config)
+    secondary_logger = Logger.new(STDOUT)
 
     cert_pems = Array(config['certs']).map do |cert|
       cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
-      cert_path.read if cert_path.exist?
+      if cert_path.exist?
+        cert_path.read
+        secondary_logger.info "WRITE_PROVIDER: Added cert #{cert}"
+        Rails.logger.info "Added cert #{cert}"
+      else
+        secondary_logger.info("WRITE_PROVIDER: Cert #{cert} not found")
+        Rails.logger.info "Cert #{cert} was not found"
+      end
     end.compact
 
     ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
