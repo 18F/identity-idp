@@ -909,7 +909,8 @@ module Reporting
     end
 
     def denominator
-      @denominator = ial2 + sum_key_friction_points
+      # to do need to calculate ipp_barcode and then subtract it from the following line
+      @denominator = (ial2 + sum_key_friction_points)
     end
 
     def idv_rate
