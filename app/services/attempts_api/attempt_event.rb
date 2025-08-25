@@ -37,7 +37,7 @@ module AttemptsApi
     def self.from_jwe(jwe, private_key)
       decrypted_event = JWE.decrypt(jwe, private_key)
 
-      if SigningKey.public_key.present?
+      if IdentityConfig.store.attempts_api_signing_enabled
         decrypted_event = JWT.decode(
           decrypted_event,
           SigningKey.public_key,
@@ -89,7 +89,7 @@ module AttemptsApi
     end
 
     def jwe_payload(payload_json:)
-      if SigningKey.private_key.present?
+      if IdentityConfig.store.attempts_api_signing_enabled
         JWT.encode(payload_json, SigningKey.private_key, 'ES256')
       else
         payload_json
@@ -102,17 +102,20 @@ module AttemptsApi
     end
 
     module SigningKey
+      class SigningKeyError < StandardError; end
+
       def self.private_key
-        OpenSSL::PKey::EC.new(signing_key.private_to_pem) if
-         IdentityConfig.store.attempts_api_signing_key.present?
+        OpenSSL::PKey::EC.new(signing_key.private_to_pem)
       end
 
       def self.public_key
-        OpenSSL::PKey::EC.new(signing_key.public_to_pem) if
-         IdentityConfig.store.attempts_api_signing_key.present?
+        OpenSSL::PKey::EC.new(signing_key.public_to_pem)
       end
 
       def self.signing_key
+        raise SigningKeyError, 'Attempts API signing key is not configured' if
+          IdentityConfig.store.attempts_api_signing_key.blank?
+
         OpenSSL::PKey::EC.new(IdentityConfig.store.attempts_api_signing_key)
       end
     end

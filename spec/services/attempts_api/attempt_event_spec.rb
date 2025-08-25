@@ -28,51 +28,73 @@ RSpec.describe AttemptsApi::AttemptEvent do
   end
 
   describe '#to_jwe' do
-    describe 'when the attempts signing key is present' do
+    describe 'attempts event singing is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
-          signing_key.to_pem,
-        )
+        allow(IdentityConfig.store).to receive(:attempts_api_signing_enabled).and_return(true)
       end
-      it 'returns a JWE for the event' do
-        jwe = subject.to_jwe(
-          issuer: service_provider.issuer,
-          public_key: attempts_api_public_key,
-        )
+      describe 'when the attempts signing key is present' do
+        before do
+          allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
+            signing_key.to_pem,
+          )
+        end
+        it 'returns a JWE for the event' do
+          jwe = subject.to_jwe(
+            issuer: service_provider.issuer,
+            public_key: attempts_api_public_key,
+          )
 
-        header_str, *_rest = JWE::Serialization::Compact.decode(jwe)
-        headers = JSON.parse(header_str)
+          header_str, *_rest = JWE::Serialization::Compact.decode(jwe)
+          headers = JSON.parse(header_str)
 
-        expect(headers['alg']).to eq('RSA-OAEP')
-        expect(headers['kid']).to eq(JWT::JWK.new(attempts_api_public_key).kid)
+          expect(headers['alg']).to eq('RSA-OAEP')
+          expect(headers['kid']).to eq(JWT::JWK.new(attempts_api_public_key).kid)
 
-        decrypted_jwe_payload = JWE.decrypt(jwe, attempts_api_private_key)
-        decoded_jwe_payload = JWT.decode(
-          decrypted_jwe_payload,
-          signing_public_key,
-          true,
-          { algorithm: 'ES256' },
-        )
+          decrypted_jwe_payload = JWE.decrypt(jwe, attempts_api_private_key)
+          decoded_jwe_payload = JWT.decode(
+            decrypted_jwe_payload,
+            signing_public_key,
+            true,
+            { algorithm: 'ES256' },
+          )
 
-        token = JSON.parse(decoded_jwe_payload.first)
+          token = JSON.parse(decoded_jwe_payload.first)
 
-        expect(token['iss']).to eq(Rails.application.routes.url_helpers.root_url)
-        expect(token['jti']).to eq(jti)
-        expect(token['iat']).to eq(iat)
-        expect(token['aud']).to eq(service_provider.issuer)
+          expect(token['iss']).to eq(Rails.application.routes.url_helpers.root_url)
+          expect(token['jti']).to eq(jti)
+          expect(token['iat']).to eq(iat)
+          expect(token['aud']).to eq(service_provider.issuer)
 
-        event_key = 'https://schemas.login.gov/secevent/attempts-api/event-type/test-event'
-        event_data = token['events'][event_key]
+          event_key = 'https://schemas.login.gov/secevent/attempts-api/event-type/test-event'
+          event_data = token['events'][event_key]
 
-        expect(event_data['subject']).to eq(
-          'subject_type' => 'session', 'session_id' => 'test-session-id',
-        )
-        expect(event_data['foo']).to eq('bar')
-        expect(event_data['occurred_at']).to eq(occurred_at.to_f)
+          expect(event_data['subject']).to eq(
+            'subject_type' => 'session', 'session_id' => 'test-session-id',
+          )
+          expect(event_data['foo']).to eq('bar')
+          expect(event_data['occurred_at']).to eq(occurred_at.to_f)
+        end
+      end
+
+      describe 'when the attempts signing key is not present' do
+        before do
+          allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return('')
+        end
+        it 'raises an error' do
+          expect do
+            subject.to_jwe(
+              issuer: service_provider.issuer,
+              public_key: attempts_api_public_key,
+            )
+          end.to raise_error(
+            AttemptsApi::AttemptEvent::SigningKey::SigningKeyError,
+            'Attempts API signing key is not configured',
+          )
+        end
       end
     end
 
-    describe 'when the attempts signing key is not present' do
+    describe 'attempts event signing is not enabled' do
       it 'returns a JWE for the event' do
         jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
@@ -104,7 +126,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
   end
 
   describe '.from_jwe' do
-    describe 'when the attempts signing key is not present' do
+    describe 'when attempts signing is not enabled' do
       it 'returns an event decrypted from the JWE' do
         jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
@@ -119,23 +141,43 @@ RSpec.describe AttemptsApi::AttemptEvent do
       end
     end
 
-    describe 'when the attempts signing key is present' do
+    describe 'when attempts signing is enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
-          signing_key.to_pem,
-        )
+        allow(IdentityConfig.store).to receive(:attempts_api_signing_enabled).and_return(true)
       end
-      it 'returns an event decrypted from the JWE' do
-        jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
-        decoded_event = described_class.from_jwe(jwe, attempts_api_private_key)
+      describe 'when the attempts signing key is present' do
+        before do
+          allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return(
+            signing_key.to_pem,
+          )
+        end
+        it 'returns an event decrypted from the JWE' do
+          jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
-        expect(decoded_event.jti).to eq(subject.jti)
-        expect(decoded_event.iat).to eq(subject.iat)
-        expect(decoded_event.event_type).to eq(subject.event_type)
-        expect(decoded_event.session_id).to eq(subject.session_id)
-        expect(decoded_event.occurred_at).to eq(subject.occurred_at)
-        expect(decoded_event.event_metadata).to eq(subject.event_metadata.symbolize_keys)
+          decoded_event = described_class.from_jwe(jwe, attempts_api_private_key)
+
+          expect(decoded_event.jti).to eq(subject.jti)
+          expect(decoded_event.iat).to eq(subject.iat)
+          expect(decoded_event.event_type).to eq(subject.event_type)
+          expect(decoded_event.session_id).to eq(subject.session_id)
+          expect(decoded_event.occurred_at).to eq(subject.occurred_at)
+          expect(decoded_event.event_metadata).to eq(subject.event_metadata.symbolize_keys)
+        end
+      end
+
+      describe 'when the attempts signing key is not present' do
+        before do
+          allow(IdentityConfig.store).to receive(:attempts_api_signing_key).and_return('')
+        end
+        it 'raises an error' do
+          expect do
+            subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
+          end.to raise_error(
+            AttemptsApi::AttemptEvent::SigningKey::SigningKeyError,
+            'Attempts API signing key is not configured',
+          )
+        end
       end
     end
   end

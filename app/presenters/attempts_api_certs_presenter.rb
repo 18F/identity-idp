@@ -10,7 +10,7 @@ class AttemptsApiCertsPresenter
   private
 
   def key
-    if signing_key.present?
+    if IdentityConfig.store.attempts_api_signing_enabled
       cert = OpenSSL::PKey::EC.new(signing_key)
       {
         alg: 'ES256',
@@ -22,6 +22,11 @@ class AttemptsApiCertsPresenter
   end
 
   def signing_key
+    if IdentityConfig.store.attempts_api_signing_key.blank?
+      raise AttemptsApi::AttemptEvent::SigningKey::SigningKeyError,
+            'Attempts API signing key is not configured'
+    end
+
     IdentityConfig.store.attempts_api_signing_key
   end
 end

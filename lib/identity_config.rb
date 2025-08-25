@@ -64,6 +64,7 @@ module IdentityConfig
     config.add(:attempts_api_event_ttl_seconds, type: :integer)
     config.add(:attempts_api_enabled, type: :boolean)
     config.add(:attempts_api_signing_key, type: :string)
+    config.add(:attempts_api_signing_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:available_locales, type: :comma_separated_string_list)
