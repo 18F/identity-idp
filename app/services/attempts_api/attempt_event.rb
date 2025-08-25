@@ -24,7 +24,7 @@ module AttemptsApi
       jwk = JWT::JWK.new(public_key)
 
       JWE.encrypt(
-        payload_json(issuer: issuer),
+        jwe_payload(payload_json: payload_json(issuer:)),
         public_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
@@ -36,6 +36,16 @@ module AttemptsApi
 
     def self.from_jwe(jwe, private_key)
       decrypted_event = JWE.decrypt(jwe, private_key)
+
+      if IdentityConfig.store.attempts_api_signing_enabled
+        decrypted_event = JWT.decode(
+          decrypted_event,
+          SigningKey.public_key,
+          true,
+          { algorithm: 'ES256' },
+        ).first
+      end
+
       parsed_event = JSON.parse(decrypted_event)
       event_type = parsed_event['events'].keys.first.split('/').last
       event_data = parsed_event['events'].values.first
@@ -78,9 +88,36 @@ module AttemptsApi
       }.merge(event_metadata || {})
     end
 
+    def jwe_payload(payload_json:)
+      if IdentityConfig.store.attempts_api_signing_enabled
+        JWT.encode(payload_json, SigningKey.private_key, 'ES256')
+      else
+        payload_json
+      end
+    end
+
     def long_event_type
       dasherized_name = event_type.to_s.dasherize
       "https://schemas.login.gov/secevent/attempts-api/event-type/#{dasherized_name}"
+    end
+
+    module SigningKey
+      class SigningKeyError < StandardError; end
+
+      def self.private_key
+        OpenSSL::PKey::EC.new(signing_key.private_to_pem)
+      end
+
+      def self.public_key
+        OpenSSL::PKey::EC.new(signing_key.public_to_pem)
+      end
+
+      def self.signing_key
+        raise SigningKeyError, 'Attempts API signing key is not configured' if
+          IdentityConfig.store.attempts_api_signing_key.blank?
+
+        OpenSSL::PKey::EC.new(IdentityConfig.store.attempts_api_signing_key)
+      end
     end
   end
 end
