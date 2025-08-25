@@ -29,7 +29,7 @@ AppArtifacts.setup do |store|
     OpenSSL::PKey::RSA.new(k)
   end
 
-  if FeatureManagement.fcms_enabled
+  if FeatureManagement.fcms_enabled?
     store.add_artifact(:fcms_primary_private_key, '/%<env>s/fcms.key') do |k|
       OpenSSL::PKey::RSA.new(k)
     end
