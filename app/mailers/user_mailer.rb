@@ -502,16 +502,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def dupe_profile_personal_information_verified(agency_name: nil)
-    @service_provider_or_app_name = agency_name || APP_NAME
-    with_user_locale(user) do
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
   private
 
   attr_reader :user, :email_address

@@ -1952,8 +1952,6 @@ user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó
 user_mailer.dupe_profile.created.heading: Su información personal fue verificada en otra cuenta de %{app_name}
 user_mailer.dupe_profile.created.help_center_link: 'el centro de ayuda de %{app_name}'
 user_mailer.dupe_profile.created.steps_link: los pasos que se describen aquí
-user_mailer.dupe_profile.information_verified.heading: Your personal information was verified on another %{app_name} account
-user_mailer.dupe_profile.information_verified.instructions: 'Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{agency_name}.'
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con esta cuenta

@@ -1953,8 +1953,6 @@ user_mailer.dupe_profile.created.description2_html: 如果另一个账户是你�
 user_mailer.dupe_profile.created.heading: 你的个人信息在另一个 %{app_name} 账户上得到了验证
 user_mailer.dupe_profile.created.help_center_link: '%{app_name} 帮助中心。'
 user_mailer.dupe_profile.created.steps_link: 步骤删除那个重复账户
-user_mailer.dupe_profile.information_verified.heading: Your personal information was verified on another %{app_name} account
-user_mailer.dupe_profile.information_verified.instructions: 'Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{agency_name}.'
 user_mailer.dupe_profile.review_complete.locked_heading: 这个帐户现已被锁
 user_mailer.dupe_profile.review_complete.locked_info: 我们完成了对你帐户的审核，这个帐户已被锁住。请联系 %{sp_or_app_name} 获取进一步帮助。
 user_mailer.dupe_profile.review_complete.success_heading: 你可以使用这个帐户重新登录

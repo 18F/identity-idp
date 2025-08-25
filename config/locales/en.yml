@@ -1940,8 +1940,6 @@ user_mailer.dupe_profile.created.description2_html: If this was you verifying an
 user_mailer.dupe_profile.created.heading: Your personal information was verified on another %{app_name} account
 user_mailer.dupe_profile.created.help_center_link: '%{app_name} Help Center'
 user_mailer.dupe_profile.created.steps_link: steps outlined here
-user_mailer.dupe_profile.information_verified.heading: 'Your personal information was verified on another %{agency_name} account'
-user_mailer.dupe_profile.information_verified.instructions: 'Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{app_name}.'
 user_mailer.dupe_profile.review_complete.locked_heading: This account is now locked
 user_mailer.dupe_profile.review_complete.locked_info: We completed a review of your accounts and this account has been locked. Please contact %{sp_or_app_name} for further assistance.
 user_mailer.dupe_profile.review_complete.success_heading: You can sign back in with this account
