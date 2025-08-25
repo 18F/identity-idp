@@ -10,7 +10,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:analytics) { FakeAnalytics.new }
   let(:step) { 'choose_id_type' }
   let(:context_analytics) { { step: step } }
-  let(:document_capture_session) { double(DocumentCaptureSession) }
+  let(:passport_status) { nil }
+  let(:document_capture_session) { create(:document_capture_session, passport_status:) }
   let(:parameters) do
     ActionController::Parameters.new(
       {
@@ -38,10 +39,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#set_passport_requested' do
-    before do
-      allow(document_capture_session).to receive(:update!)
-    end
-
     context 'when chosen_id_type is "passport"' do
       let(:id_type) { 'passport' }
 
@@ -51,9 +48,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
-        expect(document_capture_session).to have_received(:update!).with(
-          passport_status: 'requested',
-        )
+        expect(document_capture_session.passport_requested?).to be true
       end
     end
 
@@ -66,9 +61,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
-        expect(document_capture_session).to have_received(:update!).with(
-          passport_status: 'not_requested',
-        )
+        expect(document_capture_session.passport_status).to eq('not_requested')
       end
     end
   end
@@ -108,10 +101,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#selected_id_type' do
-    before do
-      allow(document_capture_session).to receive(:passport_status).and_return(passport_status)
-    end
-
     context 'when the document capture session passport status is "requested"' do
       let(:passport_status) { 'requested' }
 
@@ -195,9 +184,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the dos passport api is healthy' do
+      let(:passport_status){ 'requested' }
+
       before do
         allow(response).to receive(:success?).and_return(true)
-        allow(document_capture_session).to receive(:passport_status).and_return('requested')
       end
 
       it 'returns expected local attributes' do

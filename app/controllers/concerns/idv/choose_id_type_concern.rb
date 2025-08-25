@@ -14,7 +14,7 @@ module Idv
             doc_auth_vendor: nil,
           )
         end
-      elsif document_capture_session.passport_requested?
+      else
         document_capture_session.update!(
           passport_status: 'not_requested',
           doc_auth_vendor: nil,

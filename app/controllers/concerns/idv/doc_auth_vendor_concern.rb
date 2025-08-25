@@ -72,7 +72,7 @@ module Idv
           else
             bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR, user:)
           end
-        elsif document_capture_session.passport_allowed?
+        elsif document_capture_session.passport_requested?
           bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_VENDOR, user:)
         else
           bucket = ab_test_bucket(:DOC_AUTH_VENDOR, user:)
