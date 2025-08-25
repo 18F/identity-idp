@@ -13,7 +13,7 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
     allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('mock')
     allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
-      .and_return('socure')
+      .and_return(Idp::Constants::Vendors::SOCURE)
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
       .to_return({ status: 200, body: { status: 'UP' }.to_json })
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
