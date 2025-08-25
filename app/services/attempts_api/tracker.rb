@@ -31,12 +31,7 @@ module AttemptsApi
         event_metadata: event_metadata(event_type:, metadata:),
       )
 
-      redis_client.write_event(
-        event_key: event.jti,
-        jwe: jwe(event),
-        timestamp: event.occurred_at,
-        issuer: sp.issuer,
-      )
+      write_event(event)
 
       event
     end
@@ -76,11 +71,11 @@ module AttemptsApi
 
     def failure_metadata(metadata:)
       if metadata.has_key?(:failure_reason) &&
-           (metadata[:failure_reason].blank? || metadata[:success].present?)
-          metadata.except(:failure_reason)
+         (metadata[:failure_reason].blank? || metadata[:success].present?)
+        metadata.except(:failure_reason)
       else
         metadata
-      end      
+      end
     end
 
     def event_metadata(event_type:, metadata:)
@@ -126,6 +121,15 @@ module AttemptsApi
 
     def enabled?
       IdentityConfig.store.attempts_api_enabled && @enabled_for_session
+    end
+
+    def write_event(event)
+      redis_client.write_event(
+        event_key: event.jti,
+        jwe: jwe(event),
+        timestamp: event.occurred_at,
+        issuer: sp.issuer,
+      )
     end
 
     def redis_client
