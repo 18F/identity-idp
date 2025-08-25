@@ -95,6 +95,7 @@ class ServiceProviderSeeder
 
     cert_pems = Array(config['certs']).map do |cert|
       cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
+      Logger.new(STDOUT).info("Cert #{cert} not found") unless cert_path.exist?
       cert_path.read if cert_path.exist?
     end.compact
 
