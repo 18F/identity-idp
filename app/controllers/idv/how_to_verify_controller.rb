@@ -107,9 +107,8 @@ module Idv
     end
 
     def mobile_required?
-      # idv_session.selfie_check_required ||
-      #   document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-      true
+      idv_session.selfie_check_required ||
+        document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
 end
