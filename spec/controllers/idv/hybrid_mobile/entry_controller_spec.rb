@@ -80,7 +80,7 @@ RSpec.describe Idv::HybridMobile::EntryController do
         let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
         it 'redirects to the first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
 

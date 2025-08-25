@@ -19,10 +19,7 @@ module Idv
           return
         end
 
-        redirect_to correct_vendor_path(
-          document_capture_session.doc_auth_vendor,
-          in_hybrid_mobile: true,
-        )
+        redirect_to idv_hybrid_mobile_document_capture_url
       end
 
       private
