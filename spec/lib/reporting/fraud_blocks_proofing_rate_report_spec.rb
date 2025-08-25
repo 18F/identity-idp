@@ -11,6 +11,15 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
       ['Issuer', issuer],
     ]
   end
+  let(:expected_proofing_success_metrics_table) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Identity Verified Users', '1980382', time_range.begin.to_s,
+       time_range.end.to_s],
+      ['Idv Rate w/Preverified Users', '100.0%', time_range.begin.to_s,
+       time_range.end.to_s],
+    ]
+  end
   let(:expected_suspected_fraud_blocks_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -68,11 +77,28 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
        { 'IPP_successfully_proofed_user_counts' => '12000' }],
     )
   end
+  before do
+    travel_to Time.zone.now.beginning_of_day
+    # Stub the ActiveRecord connection to return mock data
+    mock_result = [{ 'ial_2' => '1980382', 'idv_rate' => '100.0%' }]
+    allow(ActiveRecord::Base.connection).to receive(:execute).and_return(mock_result)
+  end
+  # todo help: how do we add the ial2 and the idv_rate to the test above?
 
   describe '#overview_table' do
     it 'renders an overview table' do
       aggregate_failures do
         report.overview_table.zip(expected_overview_table).each do |actual, expected|
+          expect(actual).to eq(expected)
+        end
+      end
+    end
+  end
+
+  describe '#proofing_success_metrics_table' do
+    it 'renders an overview table' do
+      aggregate_failures do
+        report.proofing_success_metrics_table.zip(expected_proofing_success_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -130,6 +156,13 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
           filename: 'overview',
           table: expected_overview_table,
         ),
+
+        Reporting::EmailableReport.new(
+          title: 'Proofing Success Metrics Jan-2022',
+          filename: 'proofing_success_metrics',
+          table: expected_proofing_success_metrics_table,
+        ),
+
         Reporting::EmailableReport.new(
           title: 'Suspected Fraud Blocks Metrics Jan-2022',
           filename: 'suspected_fraud_blocks_metrics',

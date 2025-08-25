@@ -56,6 +56,8 @@ module Reporting
       PHONE_ACCOUNT_OWNERSHIP = 'phone_account_ownership'
       DEVICE_BEHAVIOR_FRAUD_SIGNALS = 'device_behavior_fraud_signals'
       SUCCESSFUL_IPP_OUTPUT = 'successful_ipp_output'
+
+      IAL2 = 'ial2'
       # -------------------------------------------------------------------
 
       def self.all_events
@@ -95,12 +97,11 @@ module Reporting
           table: overview_table,
           filename: 'overview',
         ),
-        # [
-        #   Reporting::EmailableReport.new(
-        #     title: "Proofing Success Metrics #{stats_month}", #Proofing Success comes from IdP
-        #     table: proofing_success_metrics_table,
-        #     filename: 'proofing_success_metrics',
-        #   ),
+        Reporting::EmailableReport.new(
+          title: "Proofing Success Metrics #{stats_month}", # Proofing Success comes from IdP
+          table: proofing_success_metrics_table,
+          filename: 'proofing_success_metrics',
+        ),
         Reporting::EmailableReport.new(
           title: "Suspected Fraud Blocks Metrics #{stats_month}", # Suspected Fraud Related Blocks
           table: suspected_fraud_blocks_metrics_table,
@@ -119,22 +120,6 @@ module Reporting
       ]
     end
 
-    # this will come from IdP and thus needs to be modified
-    # def proofing_success_metrics_table #table for Proofing Success
-    #   [
-    #     ['Metric', 'Total', 'Range Start', 'Range End'],
-    #     ['Identity Verified Users', lg99_unique_users_count.to_s, time_range.begin.to_s,
-    #      time_range.end.to_s],
-    #     ['Idv Rate w/Preverified Users', lg99_unique_users_count.to_s, time_range.begin.to_s,
-    #     time_range.end.to_s],
-    #   ]
-    # rescue Aws::CloudWatchLogs::Errors::ThrottlingException => err
-    #   [
-    #     ['Error', 'Message'],
-    #     [err.class.name, err.message],
-    #   ]
-    # end
-
     # overview table
     def overview_table
       [
@@ -142,6 +127,17 @@ module Reporting
         # This needs to be Date.today so it works when run on the command line
         ['Report Generated', Time.zone.today.to_s],
         ['Issuer', issuers.present? ? issuers.join(', ') : 'All Issuers'],
+      ]
+    end
+
+    # this will come from IdP and thus needs to be modified
+    def proofing_success_metrics_table # table for Proofing Success
+      [
+        ['Metric', 'Total', 'Range Start', 'Range End'],
+        ['Identity Verified Users', ial2.to_s, time_range.begin.to_s,
+         time_range.end.to_s],
+        ['Idv Rate w/Preverified Users', idv_rate.to_s, time_range.begin.to_s,
+         time_range.end.to_s],
       ]
     end
 
@@ -254,6 +250,22 @@ module Reporting
     def stats_month
       time_range.begin.strftime('%b-%Y')
     end
+
+    # Create Data Dictionary that will store results from idp sql query --------------------
+    def data_get_proofing_ial2
+      @data_get_proofing_ial2 ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_proofing_ial2_data.each do |row|
+          event_users[Events::IAL2] << row['ial_2']
+        end
+
+        event_users
+      end
+    end
+    #---------------------------------------------------------------------------------------
 
     # Create Data Dictionary that will store results from each cloudwatch query ------------
     def data_authentic_drivers_license_facial_match_socure
@@ -407,6 +419,44 @@ module Reporting
     end
 
     # TODO: END --------------------------------------------------------------------------
+
+    # TODO: SQL QUERY FOR IDP---------------------------------------------------------------
+    # DOES THIS NEED TO BE FURTHER DOWN? DO I NEED A SIMILAR PARAMS FOR THIS LIKE IN CW?
+    # fetch command for idp sql query ------------------------------------------------------
+    def fetch_proofing_ial2_data
+      # Use Arel to safely quote values
+      conn = ActiveRecord::Base.connection
+      params = {
+        start_date: conn.quote(time_range.begin),
+        end_date: conn.quote(time_range.end),
+        issuer: conn.quote(issuers.first), # only one issuer supported for now
+      }
+      sql = format(<<~SQL, params)
+        WITH base_data AS (
+          SELECT 
+            user_id,
+            ial,
+            profile_requested_issuer,
+            profile_verified_at,
+            DATE_TRUNC('day', returned_at) as return_day,
+            CASE WHEN profile_verified_at >= %{start_date} AND profile_verified_at <= %{end_date} THEN 1 ELSE 0 END as verified_in_period,
+            CASE WHEN profile_verified_at < %{start_date} THEN 1 ELSE 0 END as verified_before_period
+          FROM sp_return_logs
+          WHERE 
+            billable = TRUE
+            AND issuer = %{issuer}
+            AND returned_at >= %{start_date}
+            AND returned_at <= %{end_date}
+        )
+        SELECT
+          COUNT(DISTINCT CASE WHEN ial = 2 THEN user_id END) AS ial_2
+        FROM base_data;
+      SQL
+      conn.execute(sql)
+    end
+    # TODO: END --------------------------------------------------------------------------
+
+    # fetch commands for cloudwatch queries ------------------------------------------------
     def fetch_authentic_drivers_license_facial_match_socure_results
       cloudwatch_client.fetch(
         query: authentic_drivers_license_facial_match_socure_query, from: time_range.begin,
@@ -845,8 +895,31 @@ module Reporting
       )
     end
 
+    # Extracting data that was gathered from idp sql query and placed in dictionaries -------------
+    def ial2
+      set = @ial2 || data_get_proofing_ial2[
+        Events::IAL2]
+      set ||= Set[]
+      set.find { |v| v }&.to_i || 0
+    end
+
+    def sum_key_friction_points
+      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
+                                 verification_code_not_received_count + api_connection_fails
+    end
+
+    def denominator
+      @denominator = ial2 + sum_key_friction_points
+    end
+
+    def idv_rate
+      # @idv_rate = '86.34%' # just testing
+      @idv_rate || (ial2 / denominator.to_f * 100).round(2).to_s + '%'
+    end
+
+    # ---------------------------------------------------------------------------------------------
+
     # Extracting data that was gathered from queries and placed in dictionaries -------------
-    # issues here-----------------
     def authentic_drivers_license_facial_check_lexis
       @authentic_drivers_license_facial_check_lexis || data_authentic_drivers_license_facial_match_lexis[
         Events::DOC_AUTH_FACIAL_LEXIS]
@@ -885,7 +958,6 @@ module Reporting
       socure_value = socure_set.find { |v| v }&.to_i || 0
       @total_selfie_fail ||= lexis_value + socure_value
     end
-    # issues --------------
 
     def valid_drivers_license_number
       set = @valid_drivers_license_number || data_valid_drivers_license_number[
@@ -973,6 +1045,5 @@ module Reporting
       set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT] || Set[]
       set.find { |v| v.present? }&.to_s || '0'
     end
-    # ---------------------------------------------------------------------------------
   end
 end
