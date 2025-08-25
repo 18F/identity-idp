@@ -74,9 +74,9 @@ module Idv
       end
     end
 
-    def id_doc_type
-      document_type_received
-    end
+    # def id_doc_type
+    #   document_type_received
+    # end
 
     private
 
