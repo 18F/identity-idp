@@ -45,10 +45,10 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
   describe '#show' do
     context 'passport not available' do
       let(:passport_status) { nil }
-      let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
+
       it 'redirects to the vendor document capture' do
         get :show
-        expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
     end
     context 'passport is available' do
