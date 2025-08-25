@@ -87,7 +87,7 @@ module Idv
         DocAuthRouter.doc_auth_vendor_for_bucket(
           bucket,
           selfie: resolved_authn_context_result.facial_match?,
-          passport_allowed: document_capture_session.passport_allowed?,
+          passport_requested: document_capture_session.passport_requested?,
         )
       end
     end
