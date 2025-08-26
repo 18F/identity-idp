@@ -101,8 +101,6 @@ RSpec.describe DuplicateProfileChecker do
             expect(dupe_profile_objects.profile_ids).to match_array([profile2.id, profile.id])
             expect(@analytics).to have_logged_event(
               :one_account_duplicate_profile_created,
-              service_provider: sp.issuer,
-              user_uuid: user.uuid,
             )
           end
 
@@ -166,8 +164,6 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 expect(@analytics).to have_logged_event(
                   :one_account_duplicate_profile_updated,
-                  service_provider: sp.issuer,
-                  user_uuid: user.uuid,
                 )
               end
             end
@@ -193,8 +189,6 @@ RSpec.describe DuplicateProfileChecker do
                   expect(dupe_profile.closed_at).to eq(Time.zone.now)
                   expect(@analytics).to have_logged_event(
                     :one_account_duplicate_profile_closed,
-                    service_provider: sp.issuer,
-                    user_uuid: user.uuid,
                   )
                 end
               end
