@@ -17,7 +17,11 @@ module AttemptsApi
     end
 
     def jwe(event)
-      event.payload_json(issuer: sp.issuer)
+      if fcms_key_exists?
+        super
+      else
+        event.payload_json(issuer: sp.issuer)
+      end
     end
 
     def enabled?
@@ -29,7 +33,15 @@ module AttemptsApi
     end
 
     def public_key
-      AppArtifacts.store.fcms_primary_public_key
+      OpenSSL::PKey::RSA.new(fcms_config['keys'].first)
+    end
+
+    def fcms_key_exists?
+      fcms_config.present? && fcms_config['keys'].present?
+    end
+
+    def fcms_config
+      IdentityConfig.store.fcms_config
     end
 
     def write_event(event)
