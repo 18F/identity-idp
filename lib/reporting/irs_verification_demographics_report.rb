@@ -118,6 +118,10 @@ module Reporting
       rows
     end
 
+    # TODO:-----------------------------------------------------------------------
+    # FIGURE OUT HOW TO DO THE JOIN ON MULTIPLE QUERIES
+    # TODO: END -----------------------------------------------------------------------    
+
     # event name => set(user ids)
     # @return Hash<String,Set<String>>
     def data
@@ -135,6 +139,9 @@ module Reporting
         event_users
       end
     end
+    # TODO:-----------------------------------------------------------------------
+    # modify the above data function and split into two related to the two new queries
+    # TODO: END -----------------------------------------------------------------------
 
     def user_metadata
       @user_metadata ||= begin
@@ -197,6 +204,10 @@ module Reporting
     def fetch_results
       cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
     end
+    # TODO:-----------------------------------------------------------------------
+    # modify and and additional fetch for the new queries
+    # TODO: END -----------------------------------------------------------------------
+
 
     def query
       params = {
@@ -218,6 +229,10 @@ module Reporting
         | limit 10000
       QUERY
     end
+    # TODO: -----------------------------------------------------------------------
+    # split the above query into two
+    # TODO: END -----------------------------------------------------------------------
+
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
