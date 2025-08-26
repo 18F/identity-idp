@@ -410,7 +410,6 @@ ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
-s3_fcms_bucket_prefix: '' 
 s3_idp_dw_tasks: 'login-gov-idp-dw-tasks'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
