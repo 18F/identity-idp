@@ -45,6 +45,8 @@ async_stale_job_timeout_seconds: 300
 async_wait_timeout_seconds: 60
 attempts_api_enabled: false
 attempts_api_event_ttl_seconds: 3_600
+attempts_api_signing_enabled: false
+attempts_api_signing_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
 available_locales: 'en,es,fr,zh'
@@ -110,6 +112,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
+doc_auth_passport_selfie_enabled: false
 doc_auth_passport_vendor_default: 'mock'
 doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_passport_vendor_socure_percent: 0

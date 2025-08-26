@@ -7,9 +7,11 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
+    before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
     before_action -> do
@@ -87,7 +89,7 @@ module Idv
     def extra_view_variables
       {
         id_type: id_type_requested,
-        document_capture_session_uuid: document_capture_session_uuid,
+        document_capture_session_uuid:,
         mock_client: document_capture_session.doc_auth_vendor == 'mock',
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
@@ -96,7 +98,7 @@ module Idv
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
         skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
-        choose_id_type_path: choose_id_type_path,
+        choose_id_type_path: idv_choose_id_type_path,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
         doc_auth_upload_enabled: doc_auth_upload_enabled?,
         socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),

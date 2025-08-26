@@ -6,10 +6,14 @@ module Idv
       include Idv::AvailabilityConcern
       include DocumentCaptureConcern
       include HybridMobileConcern
+      include DocAuthVendorConcern
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
       before_action :confirm_document_capture_needed, only: :show
+      before_action -> do
+        update_doc_auth_vendor(user: document_capture_user)
+      end, only: :show
       before_action :set_usps_form_presenter
       before_action -> do
         redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: true)
@@ -61,10 +65,10 @@ module Idv
           id_type: id_type_requested,
           flow_path: 'hybrid',
           mock_client: document_capture_session.doc_auth_vendor == 'mock',
-          document_capture_session_uuid: document_capture_session_uuid,
+          document_capture_session_uuid:,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
-          choose_id_type_path: choose_id_type_path,
+          choose_id_type_path: idv_hybrid_mobile_choose_id_type_path,
           doc_auth_upload_enabled: doc_auth_upload_enabled?,
           skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
           socure_errors_timeout_url: idv_hybrid_mobile_socure_document_capture_errors_url(

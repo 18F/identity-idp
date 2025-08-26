@@ -9,6 +9,8 @@ properties:
     $ref: './identity-proofing/IdvEnrollmentComplete.yml'
   idv-ipp-ready-to-verify-visit:
     $ref: './identity-proofing/IdvIppReadyToVerifyVisit.yml'
+  idv-image-retrieval-failed:
+    $ref: './identity-proofing/IdvImageRetrievalFailed.yml'
   idv-phone-otp-sent:
     $ref: './identity-proofing/IdvPhoneOtpSent.yml'
   idv-phone-otp-submitted:

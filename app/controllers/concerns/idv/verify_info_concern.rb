@@ -197,6 +197,7 @@ module Idv
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
@@ -234,8 +235,7 @@ module Idv
 
     def next_step_url
       return idv_request_letter_url if FeatureManagement.idv_by_mail_only? ||
-                                       idv_session.gpo_request_letter_visited ||
-                                       idv_session.gpo_letter_requested
+                                       idv_session.gpo_request_letter_visited
       idv_phone_url
     end
 

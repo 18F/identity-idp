@@ -20,6 +20,8 @@ RSpec.feature 'choose id type step error checking' do
         .and_return(doc_auth_passports_percent)
       allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
         .and_return(ipp_service_provider)
+      allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+        .and_return(Idp::Constants::Vendors::SOCURE)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'UP' }.to_json })
       reload_ab_tests
@@ -34,7 +36,7 @@ RSpec.feature 'choose id type step error checking' do
       reload_ab_tests
     end
 
-    context 'desktop flow', :js do
+    context 'desktop flow', :js, :allow_browser_log do
       before do
         complete_doc_auth_steps_before_hybrid_handoff_step
       end
@@ -52,12 +54,39 @@ RSpec.feature 'choose id type step error checking' do
         )
         choose(t('doc_auth.forms.id_type_preference.passport'))
         click_on t('forms.buttons.continue')
-        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).to have_current_path(idv_socure_document_capture_url)
         visit idv_choose_id_type_url
         expect(page).to have_checked_field(
           'doc_auth_choose_id_type_preference_passport',
           visible: :all,
         )
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+      end
+
+      it 'shows choose id type screen and continues after license option' do
+        expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+        click_on t('forms.buttons.upload_photos')
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        expect(fake_analytics).to have_logged_event(
+          :passport_api_health_check,
+          step: 'choose_id_type',
+          success: true,
+          body: '{"status":"UP"}',
+          errors: {},
+        )
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        visit idv_choose_id_type_url
+        expect(page).to have_checked_field(
+          'doc_auth_choose_id_type_preference_drivers_license',
+          visible: :all,
+        )
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_socure_document_capture_url)
       end
     end
 
