@@ -52,9 +52,13 @@ module AttemptsApi
 
     def jwe(event)
       event.to_jwe(
-        issuer: sp.issuer,
+        issuer:,
         public_key:,
       )
+    end
+
+    def issuer
+      sp.issuer
     end
 
     def public_key
@@ -127,7 +131,7 @@ module AttemptsApi
         event_key: event.jti,
         jwe: jwe(event),
         timestamp: event.occurred_at,
-        issuer: sp.issuer,
+        issuer:,
       )
     end
 
