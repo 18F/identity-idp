@@ -8,9 +8,17 @@ module Idv
 
     def set_passport_requested
       if chosen_id_type == 'passport'
-        document_capture_session.update!(passport_status: 'requested')
+        unless document_capture_session.passport_requested?
+          document_capture_session.update!(
+            passport_status: 'requested',
+            doc_auth_vendor: nil,
+          )
+        end
       else
-        document_capture_session.update!(passport_status: 'not_requested')
+        document_capture_session.update!(
+          passport_status: 'not_requested',
+          doc_auth_vendor: nil,
+        )
       end
     end
 
