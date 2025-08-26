@@ -36,6 +36,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
     allow(controller).to receive(:document_capture_session)
       .and_return(document_capture_session)
   end
+
   describe '#udpate_doc_auth_vendor' do
     context 'bucket is LexisNexis' do
       let(:bucket) { :lexis_nexis }
