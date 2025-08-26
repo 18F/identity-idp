@@ -16,11 +16,16 @@ module AttemptsApi
       }
     end
 
+    # TODO: Come up with something for when issuer is nil
+    def issuer
+      sp&.issuer
+    end
+
     def jwe(event)
       if fcms_key_exists?
         super
       else
-        event.payload_json(issuer: sp.issuer)
+        event.payload_json(issuer:)
       end
     end
 
@@ -37,43 +42,11 @@ module AttemptsApi
     end
 
     def fcms_key_exists?
-      fcms_config.present? && fcms_config['keys'].present?
+      fcms_config.present? && fcms_config.key?('keys')
     end
 
     def fcms_config
       IdentityConfig.store.fcms_config
-    end
-
-    def write_event(event)
-      if FeatureManagement.fcms_s3_store?
-        upload_file_to_s3_bucket(
-          path: "#{key(event.occurred_at, sp.issuer)}/#{event.jti}",
-          body: jwe(event),
-          content_type:,
-          bucket: IdentityConfig.store.s3_fcms_bucket_prefix,
-        )
-      else
-        super
-      end
-    end
-
-    def s3_client
-      require 'aws-sdk-s3'
-
-      @s3_client ||= Aws::S3::Client.new(
-        http_open_timeout: 5,
-        http_read_timeout: 5,
-        compute_checksums: false,
-      )
-    end
-
-    def upload_file_to_s3_bucket(path:, body:, content_type:, bucket: bucket_name)
-      url = "s3://#{bucket}/#{path}"
-      logger.info("#{class_name}: uploading to #{url}")
-      obj = Aws::S3::Resource.new(client: s3_client).bucket(bucket).object(path)
-      obj.put(body: body, acl: 'private', content_type: content_type)
-      logger.debug("#{class_name}: upload completed to #{url}")
-      url
     end
 
     def key(timestamp, issuer)
