@@ -61,10 +61,10 @@ module Idv
           id_type: id_type_requested,
           flow_path: 'hybrid',
           mock_client: document_capture_session.doc_auth_vendor == 'mock',
-          document_capture_session_uuid: document_capture_session_uuid,
+          document_capture_session_uuid:,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
           doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
-          choose_id_type_path: choose_id_type_path,
+          choose_id_type_path: idv_hybrid_mobile_choose_id_type_path,
           doc_auth_upload_enabled: doc_auth_upload_enabled?,
           skip_doc_auth_from_socure: @skip_doc_auth_from_socure,
           socure_errors_timeout_url: idv_hybrid_mobile_socure_document_capture_errors_url(

@@ -87,6 +87,7 @@ RSpec.feature 'Analytics Regression', :js do
       timed_out: false,
       transaction_id: 'resolution-mock-transaction-id-123',
       reference: 'aaa-bbb-ccc',
+      reason_codes: {},
       can_pass_with_additional_verification: false,
       attributes_requiring_additional_verification: [],
       vendor_name: 'ResolutionMock',
@@ -112,6 +113,7 @@ RSpec.feature 'Analytics Regression', :js do
                                  errors: {},
                                  exception: nil,
                                  reference: '',
+                                 reason_codes: {},
                                  success: true,
                                  timed_out: false,
                                  transaction_id: '',
@@ -125,6 +127,7 @@ RSpec.feature 'Analytics Regression', :js do
                             errors: {},
                             exception: nil,
                             reference: '',
+                            reason_codes: {},
                             success: false,
                             timed_out: false,
                             transaction_id: '',
@@ -165,6 +168,7 @@ RSpec.feature 'Analytics Regression', :js do
           residential_address: { errors: {},
                                  exception: nil,
                                  reference: 'aaa-bbb-ccc',
+                                 reason_codes: {},
                                  success: true,
                                  timed_out: false,
                                  transaction_id: 'resolution-mock-transaction-id-123',
@@ -180,6 +184,7 @@ RSpec.feature 'Analytics Regression', :js do
                             errors: {},
                             exception: nil,
                             reference: '',
+                            reason_codes: {},
                             success: false,
                             timed_out: false,
                             transaction_id: '',
@@ -1112,7 +1117,7 @@ RSpec.feature 'Analytics Regression', :js do
           complete_doc_auth_steps_before_document_capture_step
           attach_images
           click_continue
-          click_button 'Take photo'
+          click_button t('doc_auth.buttons.take_picture')
           attach_selfie
           submit_images
 

@@ -6543,6 +6543,42 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profiles_detected_visited)
   end
 
+  # Tracks when fraud clears duplicate profile
+  # @param [Boolean] success Whether the profile was successfully cleared
+  # @param [Hash] errors Errors resulting from clearing
+  def one_account_clear_duplicate_profile(success:, errors:, **extra)
+    track_event(
+      :one_account_clear_duplicate_profile,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when fraud clears duplicate profile
+  # @param [Boolean] success Whether the profile was successfully cleared
+  # @param [Hash] errors Errors resulting from clearing
+  def one_account_close_inconclusive_duplicate(success:, errors:, **extra)
+    track_event(
+      :one_account_close_inconclusive_duplicate,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when fraud deactivates duplicate profile
+  # @param [Boolean] success Whether the profile was successfully deactivated
+  # @param [Hash] errors Errors resulting from deactivation
+  def one_account_deactivate_duplicate_profile(success:, errors:, **extra)
+    track_event(
+      :one_account_deactivate_duplicate_profile,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
   # @param [String] source The link that the user followed to visit the page
   def one_account_duplicate_profiles_please_call_visited(source:, **extra)
