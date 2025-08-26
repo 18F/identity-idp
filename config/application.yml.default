@@ -167,6 +167,7 @@ encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 fcms_config: '[]'
+fcms_event_ttl_seconds: 604800
 feature_fcms_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true

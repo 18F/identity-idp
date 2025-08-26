@@ -17,11 +17,15 @@ module AttemptsApi
 
     def key(timestamp, issuer)
       formatted_time = timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
-      "fcms-events:#{sanitize(issuer)}:#{sanitize(formatted_time)}"
+      "fcms-events:#{sanitize(formatted_time)}"
     end
 
     def sanitize(key_string)
       key_string.tr(':', '-')
+    end
+
+    def event_ttl_seconds
+      IdentityConfig.store.fcms_event_ttl_seconds
     end
   end
 end
