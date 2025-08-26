@@ -39,7 +39,7 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with drivers_license' do
-      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
@@ -57,7 +57,7 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with state_id' do
-      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID }
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant_state_id }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
@@ -75,7 +75,7 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with passport' do
-      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+      let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
@@ -128,7 +128,7 @@ RSpec.describe Idv::ProofingComponents do
       end
 
       context 'after doc auth completed successfully' do
-        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+        let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
 
         it 'returns doc auth vendor' do
           expect(subject.document_type_received).to eql('drivers_license')
@@ -136,7 +136,7 @@ RSpec.describe Idv::ProofingComponents do
       end
 
       context 'after doc auth completed successfully with passport' do
-        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+        let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
 
         it 'returns doc auth vendor' do
           expect(subject.document_type_received).to eql('passport')

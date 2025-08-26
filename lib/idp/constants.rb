@@ -163,6 +163,9 @@ module Idp
       weight: nil,
       zipcode: '59010-1234',
     }.freeze
+    def self.mock_idv_applicant_state_id
+      MOCK_IDV_APPLICANT_STATE_ID.dup
+    end
 
     MOCK_IPP_APPLICANT = {
       first_name: 'FAKEY',
@@ -205,6 +208,9 @@ module Idp
       address1: '123 Way St',
       address2: '2nd Address Line',
     }.freeze
+    def self.mock_idv_proofing_passport_applicant
+      MOCK_IDV_PROOFING_PASSPORT_APPLICANT.dup
+    end
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
@@ -230,6 +236,9 @@ module Idp
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
       ssn: '900661234',
     ).freeze
+    def self.mock_idv_applicant_with_ssn
+      MOCK_IDV_APPLICANT_WITH_SSN.dup
+    end
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
@@ -240,6 +249,9 @@ module Idp
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
     ).freeze
+    def self.mock_idv_applicant_state_id_address
+      MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
+    end
 
     # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(

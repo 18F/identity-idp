@@ -91,7 +91,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
           current_user: user,
           service_provider: sp,
         )
-        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        idv_session.pii_from_doc = Idp::Constants.mock_idv_applicant
       end
 
       it 'calls analytics method with original attributes and proofing_components' do
