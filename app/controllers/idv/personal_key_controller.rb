@@ -70,6 +70,8 @@ module Idv
         idv_in_person_ready_to_verify_url
       elsif fraud_check_failed?
         idv_please_call_url
+      elsif user_duplicate_profiles_detected?
+        duplicate_profiles_detected_url(source: 'identity_verification')
       elsif session[:sp]
         sign_up_completed_url
       elsif idv_session.address_verification_mechanism == 'gpo'

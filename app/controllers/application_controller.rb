@@ -249,7 +249,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
-    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
+    return duplicate_profiles_detected_url(source: 'sign_in') if user_duplicate_profiles_detected?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
@@ -547,10 +547,11 @@ class ApplicationController < ActionController::Base
     profile = current_user&.active_profile
     return false unless profile
     return false unless user_in_one_account_verification_bucket?
-    DuplicateProfile.involving_profile(
-      profile_id: profile.id,
-      service_provider: current_sp&.issuer,
-    ).present?
+    DuplicateProfileChecker.new(
+      user: current_user,
+      user_session: user_session,
+      sp: sp_from_sp_session,
+    ).check_for_duplicate_profiles.present?
   end
 
   def sp_eligible_for_one_account?
