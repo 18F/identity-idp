@@ -36,10 +36,7 @@ module Idv
           @hybrid_flow = true
           @passport_requested = document_capture_session.passport_requested?
 
-          if document_capture_session.socure_docv_capture_app_url.present?
-            @url = document_capture_session.socure_docv_capture_app_url
-            return
-          end
+          return use_existing_docv_capture_url if should_use_existing_docv_capture_url?
 
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
@@ -120,6 +117,15 @@ module Idv
             issuer: decorated_sp_session&.sp_issuer,
             flow_path: :hybrid,
           )
+        end
+
+        def should_use_existing_docv_capture_url?
+          document_capture_session.socure_docv_capture_app_url.present? &&
+            !document_capture_session.choose_document_type_changed?
+        end
+
+        def use_existing_docv_capture_url
+          @url = document_capture_session.socure_docv_capture_app_url
         end
 
         def wait_for_result?

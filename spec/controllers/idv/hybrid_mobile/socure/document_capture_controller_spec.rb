@@ -387,15 +387,22 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
 
       it 'does not create a DocumentRequest when valid capture app exists' do
-        dcs = create(
-          :document_capture_session,
-          uuid: user.id,
-          socure_docv_capture_app_url: fake_capture_app_url,
-        )
-        allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
+        document_capture_session.update!(socure_docv_capture_app_url: fake_capture_app_url)
         get(:show)
         expect(request_class).not_to have_received(:new)
-        expect(dcs.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+        expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
+      end
+
+      context 'user changes document type on choose id screen' do
+        it 'creates a new DocumentRequest even though a valid capture app url exists' do
+          document_capture_session.update!(socure_docv_capture_app_url: fake_capture_app_url)
+          allow(subject.document_capture_session).to receive(:choose_document_type_changed?)
+            .and_return(true)
+          get(:show)
+          expect(request_class).to have_received(:new)
+          expect(document_capture_session.reload.socure_docv_capture_app_url)
+            .to_not eq(fake_capture_app_url)
+        end
       end
     end
   end
