@@ -6524,33 +6524,18 @@ module AnalyticsEvents
   end
 
   # Tracks when a user that had duplicate profiles is closed
-  # @param [String] service_provider the service provider issuer that dupe profile was created for
-  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
-  def one_account_duplicate_profile_closed(service_provider:, user_uuid:, **extra)
-    track_event(
-      :one_account_duplicate_profile_closed, service_provider: service_provider,
-                                             user_uuid: user_uuid, **extra
-    )
+  def one_account_duplicate_profile_closed
+    track_event(:one_account_duplicate_profile_closed)
   end
 
   # Tracks when a duplicate profile is created for a user
-  # @param [String] service_provider the service provider issuer that dupe profile was created for
-  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
-  def one_account_duplicate_profile_created(service_provider:, user_uuid:, **extra)
-    track_event(
-      :one_account_duplicate_profile_created, service_provider: service_provider,
-                                              user_uuid: user_uuid, **extra
-    )
+  def one_account_duplicate_profile_created
+    track_event(:one_account_duplicate_profile_created)
   end
 
   # Tracks when a duplicate profile object is updated
-  # @param [String] service_provider the service provider issuer that dupe profile was created for
-  # @param [String] user_uuid the UUID of the user that was checked for duplicate profiles
-  def one_account_duplicate_profile_updated(service_provider:, user_uuid:, **extra)
-    track_event(
-      :one_account_duplicate_profile_updated, service_provider: service_provider,
-                                              user_uuid: user_uuid, **extra
-    )
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
   end
 
   # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
@@ -6562,16 +6547,6 @@ module AnalyticsEvents
   # @param [String] source The link that the user followed to visit the page
   def one_account_duplicate_profiles_please_call_visited(source:, **extra)
     track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
-  end
-
-  # Tracks when user says they recognize all accounts that has same profile information.
-  def one_account_recognize_all_profiles
-    track_event(:one_account_recognize_all_profiles)
-  end
-
-  # Tracks when user says they do not recognize all accounts that has same profile information.
-  def one_account_unknown_profile_detected
-    track_event(:one_account_unknown_profile_detected)
   end
 
   # Tracks when a sucessful openid authorization request is returned

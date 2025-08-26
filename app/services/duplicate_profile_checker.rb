@@ -29,25 +29,16 @@ class DuplicateProfileChecker
       if existing_profile
         if existing_profile.profile_ids.sort != (ids + [profile.id]).sort
           # Update existing profile with new ids if they differ
-          existing_profile.update(profile_ids: ids + [profile.id])
-          analytics.one_account_duplicate_profile_updated(
-            service_provider: sp.issuer,
-            user_uuid: user.uuid,
-          )
+          existing_profile.update(profile_ids: (ids + [profile.id]).sort)
+          analytics.one_account_duplicate_profile_updated
         end
       else
         DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
-        analytics.one_account_duplicate_profile_created(
-          service_provider: sp.issuer,
-          user_uuid: user.uuid,
-        )
+        analytics.one_account_duplicate_profile_created
       end
     elsif existing_profile
       existing_profile.update(closed_at: Time.zone.now)
-      analytics.one_account_duplicate_profile_closed(
-        service_provider: sp.issuer,
-        user_uuid: user.uuid,
-      )
+      analytics.one_account_duplicate_profile_closed
     end
   end
 
