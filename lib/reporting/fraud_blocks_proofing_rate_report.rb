@@ -58,6 +58,9 @@ module Reporting
       SUCCESSFUL_IPP_OUTPUT = 'successful_ipp_output'
 
       IAL2 = 'ial2'
+      TROUBLESHOOTING_OPTION = 'IdV: verify in person troubleshooting option clicked'
+      IPP_BARCODE_OUTPUT = 'ipp_barcode_output'
+      IPP_READY = 'IdV: in person ready to verify visited'
       # -------------------------------------------------------------------
 
       def self.all_events
@@ -418,6 +421,20 @@ module Reporting
       end
     end
 
+    #ipp_barcode_count
+    def data_fetch_ipp_barcode_results
+      @data_fetch_ipp_barcode_results ||= begin
+        event_users = Hash.new do |h, uuid|
+          h[uuid] = Set.new
+        end
+
+        fetch_ipp_barcode_results.each do |row|
+          event_users[Events::IPP_BARCODE_OUTPUT] << row['ipp_barcode_count']
+        end
+        event_users
+      end
+    end
+
     # TODO: END --------------------------------------------------------------------------
 
     # TODO: SQL QUERY FOR IDP---------------------------------------------------------------
@@ -533,6 +550,12 @@ module Reporting
       )
     end
 
+    def fetch_ipp_barcode_results
+      cloudwatch_client.fetch(
+        query: ipp_barcode_query, from: time_range.begin,
+        to: time_range.end
+      )
+    end
     # ---------------------------------------------------------------------------------------
     def authentic_drivers_license_facial_match_socure_query
       params = {
@@ -883,6 +906,36 @@ module Reporting
         | limit 10000
       QUERY
     end
+
+    def ipp_barcode_query
+      params = {
+        issuers: quote(issuers),
+        troubleshooting_option: quote(Events::TROUBLESHOOTING_OPTION),
+        ipp_ready_to_verify: quote(Events::IPP_READY),
+        ipp_barcode_output: quote(Events::IPP_BARCODE_OUTPUT),
+        
+      }
+
+      format(<<~QUERY, params)
+        filter name in [%{troubleshooting_option}, 
+            %{ipp_barcode_output}]
+        -- Update service provider as needed
+        | filter properties.service_provider= %{issuers} or properties.event_properties.issuer=%{issuers}
+        | fields 
+            (name = %{troubleshooting_option}) as @ipp_clicked_troubleshooting,
+            (name = %{ipp_barcode_output}) as @ipp_barcode
+        | stats 
+            max(@ipp_clicked_troubleshooting) as ipp_clicked_troubleshooting,
+            max(@ipp_barcode) as ipp_barcode
+
+            by properties.user_id
+        | filter (ipp_clicked_troubleshooting=1)
+        | stats
+            sum(ipp_barcode) as ipp_barcode_count
+        | limit 10000
+      QUERY
+    end
+
     # ---------------------------------------------------------------------------------------
 
     def cloudwatch_client
@@ -910,13 +963,18 @@ module Reporting
 
     def denominator
       # to do need to calculate ipp_barcode and then subtract it from the following line
-      @denominator = (ial2 + sum_key_friction_points)
+      @denominator = (ial2 + sum_key_friction_points) - ipp_barcode_count
     end
 
     def idv_rate
       # @idv_rate = '86.34%' # just testing
       @idv_rate || (ial2 / denominator.to_f * 100).round(2).to_s + '%'
     end
+
+    def ipp_barcode_count
+      set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT] || Set[]
+      set.find{ |v| v }&.to_i || 0
+    end 
 
     # ---------------------------------------------------------------------------------------------
 
