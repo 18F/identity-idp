@@ -11,7 +11,8 @@ module AttemptsApi
       key = key(timestamp, issuer)
       @redis_pool.with do |client|
         client.hset(key, event_key, jwe)
-        client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
+        client.expire(key, event_ttl_seconds)
+        puts event_ttl_seconds
       end
     end
 
@@ -41,6 +42,10 @@ module AttemptsApi
     end
 
     private
+
+    def event_ttl_seconds
+      IdentityConfig.store.attempts_api_event_ttl_seconds
+    end
 
     def hourly_keys(issuer)
       @redis_pool.with do |client|
