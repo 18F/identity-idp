@@ -113,7 +113,8 @@ RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modu
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
 RUN echo "$SERVICE_PROVIDERS_KEY" > private_key_file ; chmod 600 private_key_file
-RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' git clone --depth 1 git@github.com:18F/identity-idp-config.git
+RUN GIT_SSH_COMMAND='ssh -i private_key_file -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new' \
+    git clone --depth 1 git@github.com:18F/identity-idp-config.git --branch hmm/portal-229/add-reviewapp-cert-only
 RUN mkdir -p $RAILS_ROOT/config/ $RAILS_ROOT/public/assets/images
 RUN cp identity-idp-config/*.yml $RAILS_ROOT/config/
 RUN cp -rp identity-idp-config/certs $RAILS_ROOT/
