@@ -3,7 +3,7 @@ title: Polling Request
 description: |
   Acceptable body to poll the Attempts API
 properties:
-  acks:
+  ack:
     type: array
     items:
       type: string
