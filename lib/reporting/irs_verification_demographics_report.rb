@@ -193,7 +193,7 @@ module Reporting
       current_year = Time.zone.today.year
       bins = Hash.new(0)
 
-      user_metadata.each do |user_id, metadata|
+      user_metadata.each do |_user_id, metadata|
         birth_year = metadata[:birth_year]
         next unless birth_year
 
@@ -210,7 +210,7 @@ module Reporting
 
     def state_counts
       counts = Hash.new(0)
-      user_metadata.each do |user_id, metadata|
+      user_metadata.each do |_user_id, metadata|
         state = metadata[:state]
         next unless state.present?
         counts[state] += 1
