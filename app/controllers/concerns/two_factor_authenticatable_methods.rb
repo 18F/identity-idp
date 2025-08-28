@@ -35,7 +35,7 @@ module TwoFactorAuthenticatableMethods
     )
 
     # Event for testing FCMS Tracker in local builds
-    fcms_tracker.mfa_login_auth_submitted(
+    fraudops_tracker.mfa_login_auth_submitted(
       mfa_device_type: mfa_device_type(auth_method:),
       success: result.success?,
       failure_reason: attempts_api_tracker.parse_failure_reason(result),
