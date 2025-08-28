@@ -96,7 +96,9 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def fraud_blocks_proofing_rate_report
-    fraud_blocks_proofing_rate_report = Reports::FraudBlocksProofingRateReport.new(Time.zone.yesterday)
+    fraud_blocks_proofing_rate_report = Reports::FraudBlocksProofingRateReport.new(
+      Time.zone.yesterday,
+    )
 
     stub_cloudwatch_client(fraud_blocks_proofing_rate_report.fraud_blocks_proofing_rate_report)
 

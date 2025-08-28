@@ -80,10 +80,14 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
     allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails)
       .and_return(mock_test_auth_emails)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(:suspected_fraud_blocks_metrics_table)
+    allow(report.fraud_blocks_proofing_rate_report).to receive(
+      :suspected_fraud_blocks_metrics_table,
+    )
       .and_return(mock_suspected_fraud_blocks_metrics_data)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(:key_points_user_friction_metrics_table)
+    allow(report.fraud_blocks_proofing_rate_report).to receive(
+      :key_points_user_friction_metrics_table,
+    )
       .and_return(mock_key_points_user_friction_metrics_data)
 
     allow(report.fraud_blocks_proofing_rate_report).to receive(:successful_ipp_table)
