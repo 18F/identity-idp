@@ -74,10 +74,6 @@ module Idv
       end
     end
 
-    # def id_doc_type
-    #   document_type_received
-    # end
-
     private
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
