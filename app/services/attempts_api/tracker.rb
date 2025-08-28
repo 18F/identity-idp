@@ -69,6 +69,43 @@ module AttemptsApi
       event
     end
 
+    def build_jwe(event_type, metadata = {})
+      extra_metadata =
+        if metadata.has_key?(:failure_reason) &&
+           (metadata[:failure_reason].blank? || metadata[:success].present?)
+          metadata.except(:failure_reason)
+        else
+          metadata
+        end
+
+      event_metadata = {
+        user_agent: request&.user_agent,
+        unique_session_id: hashed_session_id,
+        user_uuid: agency_uuid(event_type: event_type),
+        device_id: cookie_device_uuid,
+        user_ip_address: request&.remote_ip,
+        application_url: sp_request_uri,
+        language: user&.email_language || I18n.locale.to_s,
+        client_port: CloudFrontHeaderParser.new(request).client_port,
+        aws_region: IdentityConfig.store.aws_region,
+        google_analytics_cookies: google_analytics_cookies(request),
+      }
+
+      event_metadata.merge!(extra_metadata)
+
+      event = AttemptEvent.new(
+        event_type: event_type,
+        session_id: session_id,
+        occurred_at: Time.zone.now,
+        event_metadata: event_metadata,
+      )
+
+      event.to_jwe(
+        issuer: sp.issuer,
+        public_key: sp.attempts_public_key,
+      )
+    end
+
     def parse_failure_reason(result)
       errors = result.to_h[:error_details]
 
@@ -83,9 +120,9 @@ module AttemptsApi
 
     def self.infinite_loop(sleep_time: 0.1, num_events: 10, total_events: 100)
       # redis_client = AttemptsApi::RedisClient.new
-      sleep_time = 0.1
+      sleep_time = 0.01
       num_events = 10_000
-      total_events = 500_000
+      total_events = 100_000
       user = EmailAddress.confirmed.first.user
       request = ActionDispatch::Request.new(
         'HTTP_HOST' => 'www.login.gov',
@@ -119,18 +156,19 @@ module AttemptsApi
     def self.infinite_loop_poll
       client_id = 'urn:gov:gsa:openidconnect:sp:sinatra'
       # shared_secret = ''
-      # attempts_url = 'https://idp.dev.identitysandbox.gov/api/attempts/poll'
+      attempts_url = 'https://idp.dev.identitysandbox.gov/api/attempts/poll'
       shared_secret = ''
-      attempts_url = 'https://idp.mhenke.identitysandbox.gov/api/attempts/poll'
+      # attempts_url = 'https://idp.mhenke.identitysandbox.gov/api/attempts/poll'
       # attempts_url = 'http://localhost:3000/api/attempts/poll'
       sp_private_key = OpenSSL::PKey::RSA.new(File.read('/Users/mitchellehenke/projects/identity-oidc-sinatra/config/demo_sp.key'))
+      jwk = JWT::JWK.import(JSON.parse('{"alg":"ES256","use":"sig","kty":"EC","crv":"P-256","x":"1WlgjcfO2IUiABZii772I5WSJhryWHLxdRwq2s8F82M","y":"68GFCl6sNEcaVi0l3UkVAXOF5CLtgTg4zCancPKLgb4","kid":"da42d392c1742c9dad0a354ddffe931a2498b4617e70268fe968da14a471e84d"}'))
       auth = "Bearer #{client_id} #{shared_secret}"
 
       acks = []
       while true do
         params = {
-          maxEvents: 1_000,
-          acks: acks,
+          maxEvents: 600,
+          ack: acks,
         }
 
         connection = Faraday.new(
@@ -143,7 +181,7 @@ module AttemptsApi
         end;1
         if response.status != 200
           # rubocop:disable Layout/LineLength
-          Rails.logger.info("got #{response.status} trying to query #{attempts_url}")
+          Rails.logger.info("got #{response.status} - #{response.body} trying to query #{attempts_url}")
           # rubocop:enable Layout/LineLength
           # raise RuntimeError.new(response.body) if response.status != 200
         end
@@ -151,9 +189,16 @@ module AttemptsApi
         sets = JSON.parse(response.body)['sets']
 
         keys = sets.keys
-        acks = keys
+        acks = keys;1
         values = sets.values.map do |jwe|
-          JSON.parse(JWE.decrypt(jwe, sp_private_key))
+          JSON.parse(
+            JWT.decode(
+              JWE.decrypt(jwe, sp_private_key),
+              jwk.public_key,
+              true,
+              { algorithm: 'ES256' },
+            ).first
+          )
         end
 
         puts values.count
