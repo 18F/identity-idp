@@ -6523,26 +6523,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user that had duplicate profiles is closed
-  def one_account_duplicate_profile_closed
-    track_event(:one_account_duplicate_profile_closed)
-  end
-
-  # Tracks when a duplicate profile is created for a user
-  def one_account_duplicate_profile_created
-    track_event(:one_account_duplicate_profile_created)
-  end
-
-  # Tracks when a duplicate profile object is updated
-  def one_account_duplicate_profile_updated
-    track_event(:one_account_duplicate_profile_updated)
-  end
-
-  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
-  def one_account_duplicate_profiles_detected_visited
-    track_event(:one_account_duplicate_profiles_detected_visited)
-  end
-
   # Tracks when fraud clears duplicate profile
   # @param [Boolean] success Whether the profile was successfully cleared
   # @param [Hash] errors Errors resulting from clearing
@@ -6577,6 +6557,26 @@ module AnalyticsEvents
       errors: errors,
       **extra,
     )
+  end
+
+  # Tracks when a user that had duplicate profiles is closed
+  def one_account_duplicate_profile_closed
+    track_event(:one_account_duplicate_profile_closed)
+  end
+
+  # Tracks when a duplicate profile is created for a user
+  def one_account_duplicate_profile_created
+    track_event(:one_account_duplicate_profile_created)
+  end
+
+  # Tracks when a duplicate profile object is updated
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
+  end
+
+  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
+  def one_account_duplicate_profiles_detected_visited
+    track_event(:one_account_duplicate_profiles_detected_visited)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
