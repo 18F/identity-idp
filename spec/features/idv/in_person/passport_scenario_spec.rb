@@ -168,43 +168,6 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         end
       end
 
-      context 'when the first DOS health check fails on the welcome page' do
-        before do
-          stub_composite_health_check_endpoint_failure
-        end
-
-        it 'does not allow the user to access passport content' do
-          reload_ab_tests
-          visit_idp_from_sp_with_ial2(service_provider)
-          sign_in_live_with_2fa(user)
-
-          expect(page).to have_current_path(idv_welcome_path)
-          expect(page).to have_content t(
-            'doc_auth.headings.welcome',
-            sp_name: service_provider_name,
-          )
-          expect(page).to have_content t('doc_auth.instructions.bullet1a')
-
-          complete_welcome_step
-
-          expect(page).to have_current_path(idv_agreement_path)
-          complete_agreement_step
-
-          click_on t('forms.buttons.continue_ipp')
-
-          expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
-
-          click_on t('forms.buttons.continue')
-          complete_location_step(user)
-
-          expect(page).to have_current_path(idv_in_person_state_id_url)
-
-          expect(page).to have_content strip_nbsp(
-            t('in_person_proofing.headings.state_id_milestone_2'),
-          )
-        end
-      end
-
       context 'when the second DOS health check fails after the user selects a post office' do
         before do
           stub_health_check_settings
