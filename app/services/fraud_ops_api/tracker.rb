@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-module AttemptsApi
-  class FcmsTracker < Tracker
-    include TrackerEvents
+module FraudOpsApi
+  class Tracker < AttemptsApi::Tracker
     attr_reader :current_user
 
     private
@@ -22,7 +21,7 @@ module AttemptsApi
     end
 
     def jwe(event)
-      if fcms_key_exists?
+      if fraudops_key_exists?
         super
       else
         event.payload_json(issuer:)
@@ -30,28 +29,28 @@ module AttemptsApi
     end
 
     def enabled?
-      FeatureManagement.fcms_enabled?
+      FeatureManagement.fraudops_enabled?
     end
 
     def redis_client
-      @redis_client ||= AttemptsApi::FcmsRedisClient.new
+      @redis_client ||= RedisClient.new
     end
 
     def public_key
-      OpenSSL::PKey::RSA.new(fcms_config['keys'].first)
+      OpenSSL::PKey::RSA.new(fraudops_config['keys'].first)
     end
 
-    def fcms_key_exists?
-      fcms_config.present? && fcms_config.key?('keys')
+    def fraudops_key_exists?
+      fraudops_config.present? && fraudops_config.key?('keys')
     end
 
-    def fcms_config
-      IdentityConfig.store.fcms_config
+    def fraudops_config
+      IdentityConfig.store.fraudops_config
     end
 
     def key(timestamp, issuer)
       formatted_time = timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
-      "fcms-events:#{sanitize(issuer)}:#{sanitize(formatted_time)}"
+      "fraudops-events:#{sanitize(issuer)}:#{sanitize(formatted_time)}"
     end
 
     def sanitize(key_string)
