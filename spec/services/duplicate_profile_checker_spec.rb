@@ -30,7 +30,7 @@ RSpec.describe DuplicateProfileChecker do
     end
 
     context 'when user has active IAL2 profile' do
-      context 'when user does not have other accounts with matching profile' do
+      context 'when there are no other matching profile' do
         let(:user2) { create(:user, :proofed_with_selfie) }
 
         it 'does not create a new duplicate profile' do
@@ -52,7 +52,7 @@ RSpec.describe DuplicateProfileChecker do
         end
       end
 
-      context 'when user has accounts with matching profile' do
+      context 'when there are matching profiles' do
         let(:user2) { create(:user, :fully_registered) }
         let!(:user2_identity) do
           create(
@@ -111,7 +111,7 @@ RSpec.describe DuplicateProfileChecker do
           end
 
           context 'when the profile_ids are the same' do
-            it 'does not create a new duplicate profile confirmation' do
+            it 'does not create a new duplicate profile objects' do
               dupe_profile_checker = DuplicateProfileChecker.new(
                 user: user,
                 user_session: session,
@@ -126,7 +126,7 @@ RSpec.describe DuplicateProfileChecker do
             end
           end
 
-          context 'when profile_ids changed' do
+          context 'when a new profile is found' do
             let!(:profile3) do
               create(
                 :profile,
@@ -141,26 +141,60 @@ RSpec.describe DuplicateProfileChecker do
                 .and_return([profile2, profile3])
             end
 
-            it 'updates the existing duplicate profile confirmation' do
-              dupe_profile_checker = DuplicateProfileChecker.new(
-                user: user,
-                user_session: session,
-                sp: sp,
-                analytics: @analytics,
-              )
-              dupe_profile_checker.check_for_duplicate_profiles
+            context 'using the same profile already in dupe profile' do
+              it 'updates the existing duplicate profile object' do
+                dupe_profile_checker = DuplicateProfileChecker.new(
+                  user: user,
+                  user_session: session,
+                  sp: sp,
+                  analytics: @analytics,
+                )
+                dupe_profile_checker.check_for_duplicate_profiles
 
-              updated_dupe_profile = DuplicateProfile.involving_profile(
-                profile_id: profile.id,
-                service_provider: sp.issuer,
-              )
-              expect(updated_dupe_profile.profile_ids).to match_array(
-                [profile2.id, profile.id,
-                 profile3.id],
-              )
-              expect(@analytics).to have_logged_event(
-                :one_account_duplicate_profile_updated,
-              )
+                updated_dupe_profile = DuplicateProfile.involving_profile(
+                  profile_id: profile.id,
+                  service_provider: sp.issuer,
+                )
+                expect(updated_dupe_profile.profile_ids).to match_array(
+                  [profile2.id, profile.id,
+                  profile3.id],
+                )
+                expect(@analytics).to have_logged_event(
+                  :one_account_duplicate_profile_updated,
+                )
+              end
+            end
+
+            context 'using the new profile not in dupe profile' do 
+              let!(:dupe_profile) do
+                create(
+                  :duplicate_profile,
+                  profile_ids: [profile3.id, profile2.id],
+                  service_provider: sp.issuer,
+                )
+              end
+
+              it 'updates the existing duplicate profile object' do
+                dupe_profile_checker = DuplicateProfileChecker.new(
+                  user: user,
+                  user_session: session,
+                  sp: sp,
+                  analytics: @analytics,
+                )
+                dupe_profile_checker.check_for_duplicate_profiles
+
+                updated_dupe_profile = DuplicateProfile.involving_profile(
+                  profile_id: profile.id,
+                  service_provider: sp.issuer,
+                )
+                expect(updated_dupe_profile.profile_ids).to match_array(
+                  [profile2.id, profile.id,
+                  profile3.id],
+                )
+                expect(@analytics).to have_logged_event(
+                  :one_account_duplicate_profile_updated,
+                )
+              end
             end
           end
 
@@ -203,7 +237,8 @@ RSpec.describe DuplicateProfileChecker do
           idv_level: 'legacy_unsupervised',
         )
       end
-      it 'does not create a new duplicate profile confirmation' do
+
+      it 'does not create a new duplicate profile objects' do
         dupe_profile_checker = DuplicateProfileChecker.new(
           user: user,
           user_session: session,
