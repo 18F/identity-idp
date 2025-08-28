@@ -967,23 +967,23 @@ module Reporting
     def ial2
       set = @ial2 || data_get_proofing_ial2[
         Events::IAL2]
-      set ||= Set[]
-      set.find { |v| v }&.to_i || 0
+      set.find { |v| v } || 0
     end
 
     def sum_key_friction_points
-      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
-                                 verification_code_not_received_count + api_connection_fails
+      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis.to_i +
+                                 verification_code_not_received_count.to_i +
+                                 api_connection_fails.to_i
     end
 
     def denominator
       # to do need to calculate ipp_barcode and then subtract it from the following line
-      @denominator = (ial2 + sum_key_friction_points) - ipp_barcode_count
+      @denominator = (ial2.to_i + sum_key_friction_points.to_i) - ipp_barcode_count.to_i
     end
 
     def idv_rate
       # @idv_rate = '86.34%' # just testing
-      @idv_rate || (ial2 / denominator.to_f * 100).round(2).to_s + '%'
+      @idv_rate || (ial2.to_i / denominator.to_f * 100).round(2).to_s + '%'
     end
 
     def ipp_barcode_count
@@ -992,7 +992,7 @@ module Reporting
       set.find { |v| v }&.to_i || 0
     end
 
-    # ---------------------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------
 
     # Extracting data that was gathered from queries and placed in dictionaries -------------
     def authentic_drivers_license_facial_check_lexis
@@ -1111,14 +1111,14 @@ module Reporting
       [Events::VERF_CODE_NOT_RECIEVED]
       set ||= Set[]
       # Find the first non-nil value, convert to integer, or default to 0
-      set.find { |v| v }&.to_i || 0
+      set.values.first.find { |v| v }&.to_i || 0
     end
 
     def api_connection_fails
       set = @api_connection_fails || data_fetch_api_connection_fails_results[
         Events::API_CONNECTION_FAILS]
       set ||= Set[]
-      set.find { |v| v }&.to_i || 0
+      set.find { |v| v } || 0
     end
 
     # successful ipp users

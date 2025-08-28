@@ -95,7 +95,7 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   end
 
   describe '#proofing_success_metrics_table' do
-    it 'renders an overview table' do
+    it 'renders an proofing success table' do
       aggregate_failures do
         report.proofing_success_metrics_table.zip(
           expected_proofing_success_metrics_table,
