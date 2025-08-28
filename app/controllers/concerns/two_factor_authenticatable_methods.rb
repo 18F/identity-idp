@@ -34,7 +34,7 @@ module TwoFactorAuthenticatableMethods
       reauthentication: generic_data[:reauthn],
     )
 
-    # Event for testing FCMS Tracker in local builds
+    # Event for testing FraudOps Tracker in local builds
     fraudops_tracker.mfa_login_auth_submitted(
       mfa_device_type: mfa_device_type(auth_method:),
       success: result.success?,
