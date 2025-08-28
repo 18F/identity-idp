@@ -9,7 +9,7 @@ class DuplicateProfilesDetectedController < ApplicationController
       user: current_user,
       dupe_profile: dupe_profile,
     )
-    notify_users_of_duplicate_profile_sign_in
+    notify_users_of_duplicate_profile(source: params[:source].to_sym)
     analytics.one_account_duplicate_profiles_warning_page_visited(source: params[:source])
   end
 
@@ -31,7 +31,7 @@ class DuplicateProfilesDetectedController < ApplicationController
     )
   end
 
-  def notify_users_of_duplicate_profile_sign_in
+  def notify_users_of_duplicate_profile(source:)
     return unless dupe_profile
     return if user_session[:dupe_profiles_notified]
     agency_name = current_sp.friendly_name || current_sp.agency&.name
@@ -42,7 +42,7 @@ class DuplicateProfilesDetectedController < ApplicationController
       AlertUserDuplicateProfileDiscoveredJob.perform_now(
         user: profile.user,
         agency: agency_name,
-        type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
+        type: AlertUserDuplicateProfileDiscoveredJob::DUPE_PROFILE_DETECTED[source],
       )
     end
 

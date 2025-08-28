@@ -6560,8 +6560,8 @@ module AnalyticsEvents
   end
 
   # Tracks when user lands on page notifying them multiple profiles contain same information
-  def one_account_duplicate_profiles_detected
-    track_event(:one_account_duplicate_profiles_detected)
+  def one_account_duplicate_profiles_warning_page_visited(source: , **extra)
+    track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
