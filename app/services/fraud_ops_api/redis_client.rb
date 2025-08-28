@@ -11,7 +11,7 @@ module FraudOpsApi
 
     def hourly_keys(issuer)
       @redis_pool.with do |client|
-        client.keys("fraudops-events:#{sanitize(issuer)}:*")
+        client.keys('fraudops-events:*')
       end.sort
     end
 
