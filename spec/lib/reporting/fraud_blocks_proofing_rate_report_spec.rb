@@ -83,7 +83,6 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
     mock_result = [{ 'ial_2' => '1980382', 'idv_rate' => '100.0%' }]
     allow(ActiveRecord::Base.connection).to receive(:execute).and_return(mock_result)
   end
-  # todo help: how do we add the ial2 and the idv_rate to the test above?
 
   describe '#overview_table' do
     it 'renders an overview table' do
@@ -98,7 +97,9 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   describe '#proofing_success_metrics_table' do
     it 'renders an overview table' do
       aggregate_failures do
-        report.proofing_success_metrics_table.zip(expected_proofing_success_metrics_table).each do |actual, expected|
+        report.proofing_success_metrics_table.zip(
+          expected_proofing_success_metrics_table,
+        ).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -108,7 +109,9 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   describe '#suspected_fraud_blocks_metrics_table' do
     it 'renders a suspected fraud blocks metrics table' do
       aggregate_failures do
-        report.suspected_fraud_blocks_metrics_table.zip(expected_suspected_fraud_blocks_metrics_table).each do |actual, expected|
+        report.suspected_fraud_blocks_metrics_table.zip(
+          expected_suspected_fraud_blocks_metrics_table,
+        ).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end
@@ -118,7 +121,9 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
   describe '#key_points_user_friction_metrics_table' do
     it 'renders a key points user friction metrics table' do
       aggregate_failures do
-        report.key_points_user_friction_metrics_table.zip(expected_key_points_user_friction_metrics_table).each do |actual, expected|
+        report.key_points_user_friction_metrics_table.zip(
+          expected_key_points_user_friction_metrics_table,
+        ).each do |actual, expected|
           expect(actual).to eq(expected)
         end
       end

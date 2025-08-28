@@ -20,7 +20,8 @@ module Reporting
       # this for successful ipp
       SUCCESSFUL_IPP = 'GetUspsProofingResultsJob: Enrollment status updated'
       # THESE FOR SUSPECTED FRAUD BLOCKS --------------------------------
-      # note: events in the key friction points are also used in the suspected fraud blocks queries as well.
+      # note: events in the key friction points are also used in the suspected fraud blocks queries
+      # as well.
       IDV_PHONE_CONF_VENDOR = 'IdV: phone confirmation vendor'
       # THESE FOR KEY FRICTION POINTS -----------------------------------
       # these two for api connection fails
@@ -277,8 +278,8 @@ module Reporting
     #---------------------------------------------------------------------------------------
 
     # Create Data Dictionary that will store results from each cloudwatch query ------------
-    def data_authentic_drivers_license_facial_match_socure
-      @data_authentic_drivers_license_facial_match_socure ||= begin
+    def data_authentic_license_facial_match_socure
+      @data_authentic_license_facial_match_socure ||= begin
         event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_socure_results.each do |row|
           event_users[Events::DOC_AUTH_FACIAL_SOCURE] << row['document_fail_count_socure']
@@ -288,8 +289,8 @@ module Reporting
       end
     end
 
-    def data_authentic_drivers_license_facial_match_lexis
-      @data_authentic_drivers_license_facial_match_lexis ||= begin
+    def data_authentic_license_facial_match_lexis
+      @data_authentic_license_facial_match_lexis ||= begin
         event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_lexis_results.each do |row|
           event_users[Events::DOC_AUTH_FACIAL_LEXIS] << row['document_fail_count_lexis']
@@ -384,8 +385,8 @@ module Reporting
       end
     end
 
-    def data_fetch_verification_code_not_received_results
-      @data_fetch_verification_code_not_received_results ||= begin
+    def data_fetch_verif_code_not_received_results
+      @data_fetch_verif_code_not_received_results ||= begin
         event_users = Hash.new do |h, uuid|
           h[uuid] = Set.new
         end
@@ -567,7 +568,9 @@ module Reporting
     def authentic_drivers_license_facial_match_socure_query
       params = {
         issuers: quote(issuers),
-        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
+        idv_socure_verification_data_requested: quote(
+          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED,
+        ),
         doc_auth_facial_socure: quote(Events::DOC_AUTH_FACIAL_SOCURE),
         selfie_fail_socure: quote(Events::SELFIE_FAIL_SOCURE),
       }
@@ -592,7 +595,9 @@ module Reporting
     def authentic_drivers_license_facial_match_lexis_query
       params = {
         issuers: quote(issuers),
-        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
+        idv_doc_auth_image_upload_vendor_submitted: quote(
+          Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
+        ),
         doc_auth_facial_lexis: quote(Events::DOC_AUTH_FACIAL_LEXIS),
         selfie_fail_lexis: quote(Events::SELFIE_FAIL_LEXIS),
       }
@@ -731,7 +736,9 @@ module Reporting
     def doc_selfie_ux_challenge_socure_query
       params = {
         issuers: quote(issuers),
-        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
+        idv_socure_verification_data_requested: quote(
+          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED,
+        ),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
         doc_selfie_ux_challenges_socure: quote(Events::DOC_SELFIE_UX_CHALLENGE_SOCURE),
       }
@@ -775,7 +782,9 @@ module Reporting
         issuers: quote(issuers),
         idv_front_image_added: quote(Events::IDV_FRONT_IMAGE_ADDED),
         idv_back_image_added: quote(Events::IDV_BACK_IMAGE_ADDED),
-        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
+        idv_doc_auth_image_upload_vendor_submitted: quote(
+          Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
+        ),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
         doc_selfie_ux_challenge_lexis: quote(Events::DOC_SELFIE_UX_CHALLENGE_LEXIS),
       }
@@ -978,7 +987,8 @@ module Reporting
     end
 
     def ipp_barcode_count
-      set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT] || Set[]
+      set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
@@ -986,22 +996,22 @@ module Reporting
 
     # Extracting data that was gathered from queries and placed in dictionaries -------------
     def authentic_drivers_license_facial_check_lexis
-      @authentic_drivers_license_facial_check_lexis || data_authentic_drivers_license_facial_match_lexis[
+      @authentic_drivers_license_facial_check_lexis || data_authentic_license_facial_match_lexis[
         Events::DOC_AUTH_FACIAL_LEXIS]
     end
 
     def authentic_drivers_license_facial_check_socure
-      @authentic_drivers_license_facial_check_socure || data_authentic_drivers_license_facial_match_socure[
+      @authentic_drivers_license_facial_check_socure || data_authentic_license_facial_match_socure[
         Events::DOC_AUTH_FACIAL_SOCURE]
     end
 
     def selfie_fail_lexis
-      @selfie_fail_lexis || data_authentic_drivers_license_facial_match_lexis[
+      @selfie_fail_lexis || data_authentic_license_facial_match_lexis[
         Events::SELFIE_FAIL_LEXIS]
     end
 
     def selfie_fail_socure
-      @selfie_fail_socure || data_authentic_drivers_license_facial_match_socure[
+      @selfie_fail_socure || data_authentic_license_facial_match_socure[
         Events::SELFIE_FAIL_SOCURE]
     end
 
@@ -1097,22 +1107,24 @@ module Reporting
     end
 
     def verification_code_not_received_count
-      set = @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
-        Events::VERF_CODE_NOT_RECIEVED]
+      set = @verification_code_not_received_count || data_fetch_verif_code_not_received_results
+      [Events::VERF_CODE_NOT_RECIEVED]
       set ||= Set[]
       # Find the first non-nil value, convert to integer, or default to 0
       set.find { |v| v }&.to_i || 0
     end
 
     def api_connection_fails
-      set = @api_connection_fails || data_fetch_api_connection_fails_results[Events::API_CONNECTION_FAILS]
+      set = @api_connection_fails || data_fetch_api_connection_fails_results[
+        Events::API_CONNECTION_FAILS]
       set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     # successful ipp users
     def successful_ipp_users_count
-      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT]
+      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[
+        Events::SUCCESSFUL_IPP_OUTPUT]
       set ||= Set[]
       set.find { |v| v.present? }&.to_s || '0'
     end
