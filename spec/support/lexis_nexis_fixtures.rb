@@ -66,7 +66,7 @@ module LexisNexisFixtures
     def ddp_unexpected_review_status_response_json
       raw = read_fixture_file_at_path('ddp/successful_response.json')
       JSON.parse(raw).merge(
-        review_status: ddp_unexpected_review_status,
+        'review_status' => ddp_unexpected_review_status,
       ).to_json
     end
 

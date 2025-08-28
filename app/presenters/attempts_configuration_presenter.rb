@@ -9,7 +9,7 @@ class AttemptsConfigurationPresenter
   def configuration
     {
       issuer: root_url,
-      jwks_uri: api_openid_connect_certs_url,
+      jwks_uri: api_attempts_certs_url,
       delivery_methods_supported: [
         DELIVERY_METHOD_POLL,
       ],

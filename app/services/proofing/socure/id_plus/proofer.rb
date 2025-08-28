@@ -68,12 +68,12 @@ module Proofing
         def build_result_from_response(response)
           Proofing::Resolution::Result.new(
             success: all_required_attributes_verified?(response),
-            errors: reason_codes_as_errors(response),
             exception: nil,
             vendor_name: VENDOR_NAME,
             verified_attributes: verified_attributes(response),
             transaction_id: response.reference_id,
             customer_user_id: response.customer_user_id,
+            reason_codes: reason_codes_as_errors(response),
           )
         end
 

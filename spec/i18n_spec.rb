@@ -470,13 +470,13 @@ RSpec.describe 'I18n' do
   end
 
   def likely_html_interpolation?(str)
-    str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
+    str.scan(i18n_interpolation_pattern).flatten.compact.any? do |key|
       key.include?('html')
     end
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(I18n::INTERPOLATION_PATTERN)
+    translation.scan(i18n_interpolation_pattern)
       .map(&:compact).map(&:first).to_set
   end
 
@@ -496,5 +496,11 @@ RSpec.describe 'I18n' do
     end
 
     out_hash
+  end
+
+  def i18n_interpolation_pattern
+    Regexp.union(
+      I18n.config.interpolation_patterns,
+    )
   end
 end

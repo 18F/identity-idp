@@ -20,6 +20,7 @@ module OpenidConnect
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
+    before_action :handle_duplicate_profile_user, only: :index
     before_action :bump_auth_count, only: :index
     before_action :redirect_to_sign_in, only: :index, unless: :user_signed_in?
     before_action :confirm_two_factor_authenticated, only: :index

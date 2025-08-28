@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       post '/poll' => 'events#poll', as: :poll
       get '/status' => 'events#status', as: :status
     end
+    get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
 
     namespace :internal do
       get '/sessions' => 'sessions#show'

@@ -6,6 +6,8 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
+Warning[:deprecated] = true
+
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 

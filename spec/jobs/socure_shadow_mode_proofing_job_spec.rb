@@ -269,7 +269,8 @@ RSpec.describe SocureShadowModeProofingJob do
           socure_result: {
             attributes_requiring_additional_verification: [],
             can_pass_with_additional_verification: false,
-            errors: {
+            errors: {},
+            reason_codes: {
               'I123' => 'Person is over seven feet tall.',
               'R890' => 'Help! I am trapped in a reason code factory!',
             },
@@ -403,8 +404,8 @@ RSpec.describe SocureShadowModeProofingJob do
         expect(analytics).to have_logged_event(
           :idv_socure_shadow_mode_proofing_result,
           satisfy do |attributes|
-            errors = attributes.dig(:socure_result, :errors)
-            expect(errors).to include(
+            reason_codes = attributes.dig(:socure_result, :reason_codes)
+            expect(reason_codes).to include(
               'I000' => '[unknown]',
             )
           end,

@@ -7,6 +7,7 @@ import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { watch } from 'chokidar';
 import { initAsyncCompiler as initAsyncSassCompiler } from 'sass-embedded';
+import { isDependency } from '@aduth/is-dependency';
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
@@ -31,7 +32,7 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 });
 
 const { watch: isWatching, 'out-dir': outDir, 'load-path': loadPaths = [], verbose } = flags;
-loadPaths.push(...getDefaultLoadPaths());
+loadPaths.push(...getDefaultLoadPaths(isDependency));
 
 const sassCompiler = await initAsyncSassCompiler();
 

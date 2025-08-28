@@ -40,6 +40,9 @@ allOf:
       document_back_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
+      document_passport_image_file_id:
+        type: string
+        description: The ID used to retrieve this image if needed
       document_selfie_image_file_id:
         type: string
         description: The ID used to retrieve this image if needed
@@ -49,6 +52,9 @@ allOf:
       document_back_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the back image file.
+      document_passport_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the passport image file if it exists.
       document_selfie_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.

@@ -7,6 +7,7 @@ module Idv
       include IdvStepConcern
       include DocumentCaptureConcern
       include RenderConditionConcern
+      include DocAuthVendorConcern
 
       check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
 
@@ -16,6 +17,7 @@ module Idv
       end, only: :update
 
       before_action :confirm_step_allowed
+      before_action :update_doc_auth_vendor, only: :show
       before_action -> do
         redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: false)
       end, only: :show

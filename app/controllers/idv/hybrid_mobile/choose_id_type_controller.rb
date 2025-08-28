@@ -44,10 +44,7 @@ module Idv
 
       def redirect_if_passport_not_available
         unless document_capture_session.passport_allowed?
-          redirect_to correct_vendor_path(
-            document_capture_session.doc_auth_vendor,
-            in_hybrid_mobile: true,
-          )
+          redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
 

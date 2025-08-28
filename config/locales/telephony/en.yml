@@ -33,7 +33,7 @@ en:
       If this was you verifying another account, delete the duplicate account here: %{steps_link}
       If this wasn’t you, contact the help center here: %{help_center_link}
     dupe_profile_sign_in_attempted_notice: |-
-      Someone just signed into a %{app_name} that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
+      Someone just signed into a %{app_name} account that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
 
       If this was you verifying another account, delete the duplicate account here: %{steps_link}
       If this wasn’t you, contact the help center here: %{help_center_link}

@@ -1,4 +1,4 @@
-FROM ruby:3.4.1-slim
+FROM ruby:3.4.5-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -9,7 +9,7 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
-ENV YARN_VERSION 1.22.5
+ENV YARN_VERSION 1.22.22
 ENV NODE_VERSION 22.11.0
 ENV BUNDLER_VERSION 2.6.3
 ENV POSTGRES_SSLMODE prefer
@@ -45,7 +45,6 @@ RUN apt-get update && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     unzip && \
@@ -59,7 +58,7 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
 # Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=1.22.5-1
+RUN apt-get update && apt-get install -y yarn=$YARN_VERSION-1
 
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \

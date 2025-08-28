@@ -457,4 +457,320 @@ RSpec.describe ActionAccount do
       end
     end
   end
+
+  describe ActionAccount::ClearDeviceProfilingFailure do
+    subject(:subtask) { ActionAccount::ClearDeviceProfilingFailure.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:user2) { create(:user) }
+      let!(:device_profiling_result) do
+        create(
+          :device_profiling_result,
+          user:,
+          review_status: 'reject',
+          profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+        )
+      end
+      let(:args) { [user.uuid, user2.uuid] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'clears device profiling failure for the user', aggregate_failures: true do
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'status', 'reason'],
+            [user.uuid, 'Device profiling result has been updated to pass', nil],
+            [user2.uuid, 'No device profiling results found for this user', nil],
+          ],
+        )
+
+        expect(result.subtask).to eq('clear-device-profiling-failure-user')
+        expect(result.uuids).to match_array([user.uuid, user2.uuid])
+      end
+    end
+  end
+
+  describe ActionAccount::DeactivateDuplicate do
+    subject(:subtask) { ActionAccount::DeactivateDuplicate.new }
+
+    describe '#run' do
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics)
+      end
+
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
+      let(:args) { [user.uuid] }
+      subject(:result) { subtask.run(args:, config:) }
+
+      context 'when the user has no active profile' do
+        let(:user) do
+          create(
+            :profile,
+            :deactivated,
+          ).user
+        end
+
+        it 'reports that the profile is not active' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, "Error: User's profile is not active", 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_deactivate_duplicate_profile,
+            success: false,
+            errors: { message: "Error: User's profile is not active" },
+          )
+        end
+      end
+
+      context 'when the profile has not been flagged as a duplicate' do
+        let(:user) do
+          create(
+            :profile,
+            :active,
+          ).user
+        end
+
+        it 'reports that the profile has not been flagged as a duplicate' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'Error: Profile not a duplicate', 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_deactivate_duplicate_profile,
+            success: false,
+            errors: { message: 'Error: Profile not a duplicate' },
+          )
+        end
+      end
+
+      context 'when the profile has been flagged as a duplicate' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+          )
+        end
+        let(:user) { profile.user }
+        let!(:duplicate_profile) do
+          create(
+            :duplicate_profile,
+            profile_ids: [user.profiles.active.sole.id],
+          )
+        end
+
+        it 'deactivates the profile for duplicate' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, "User's profile has been deactivated and the user has been notified",
+               'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_deactivate_duplicate_profile,
+            success: true,
+          )
+          expect(profile.reload).not_to be_active
+        end
+      end
+    end
+  end
+
+  describe ActionAccount::ClearDuplicate do
+    subject(:subtask) { ActionAccount::ClearDuplicate.new }
+
+    describe '#run' do
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics)
+      end
+
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
+      let(:args) { [user.uuid] }
+      subject(:result) { subtask.run(args:, config:) }
+
+      context 'when the user has no active profile' do
+        let(:user) do
+          create(
+            :profile,
+            :deactivated,
+          ).user
+        end
+
+        it 'reports that the profile is not active' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, "Error: User's profile is not active", 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_clear_duplicate_profile,
+            success: false,
+            errors: { message: "Error: User's profile is not active" },
+          )
+        end
+      end
+
+      context 'when the profile has not been flagged as a duplicate' do
+        let(:user) do
+          create(
+            :profile,
+            :active,
+          ).user
+        end
+
+        it 'reports that the profile has not been flagged as a duplicate' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'Error: Profile not a duplicate', 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_clear_duplicate_profile,
+            success: false,
+            errors: { message: 'Error: Profile not a duplicate' },
+          )
+        end
+      end
+
+      context 'when the profile has been flagged as a duplicate' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+          )
+        end
+        let(:user) { profile.user }
+        let!(:duplicate_profile) do
+          create(
+            :duplicate_profile,
+            profile_ids: [user.profiles.active.sole.id],
+          )
+        end
+
+        it 'clears the profile for duplicate' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, "User's profile has been cleared and the user has been notified",
+               'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_clear_duplicate_profile,
+            success: true,
+          )
+          expect(profile.reload).to be_active
+        end
+      end
+    end
+  end
+
+  describe ActionAccount::CloseInconclusiveDuplicate do
+    subject(:subtask) { ActionAccount::CloseInconclusiveDuplicate.new }
+
+    describe '#run' do
+      let(:analytics) { FakeAnalytics.new }
+
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics)
+      end
+
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
+      let(:args) { [user.uuid] }
+      subject(:result) { subtask.run(args:, config:) }
+
+      context 'when the user has no active profile' do
+        let(:user) do
+          create(
+            :profile,
+            :deactivated,
+          ).user
+        end
+
+        it 'reports that the profile is not active' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, "Error: User's profile is not active", 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_close_inconclusive_duplicate,
+            success: false,
+            errors: { message: "Error: User's profile is not active" },
+          )
+        end
+      end
+
+      context 'when the profile has not been flagged as a duplicate' do
+        let(:user) do
+          create(
+            :profile,
+            :active,
+          ).user
+        end
+
+        it 'reports that the profile has not been flagged as a duplicate' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'Error: Profile not a duplicate', 'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_close_inconclusive_duplicate,
+            success: false,
+            errors: { message: 'Error: Profile not a duplicate' },
+          )
+        end
+      end
+
+      context 'when the profile has been flagged as a duplicate' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+          )
+        end
+        let(:user) { profile.user }
+        let!(:duplicate_profile) do
+          create(
+            :duplicate_profile,
+            profile_ids: [user.profiles.active.sole.id],
+          )
+        end
+
+        it 'logs an event and leaves the profile active' do
+          expect(result.table).to match_array(
+            [
+              ['uuid', 'status', 'reason'],
+              [user.uuid, 'User has been notified that the fraud investigation is inconclusive',
+               'INV1234'],
+            ],
+          )
+          expect(analytics).to have_logged_event(
+            :one_account_close_inconclusive_duplicate,
+            success: true,
+          )
+          expect(profile.reload).to be_active
+        end
+      end
+    end
+  end
 end

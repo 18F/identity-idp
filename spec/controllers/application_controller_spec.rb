@@ -620,7 +620,9 @@ RSpec.describe ApplicationController do
     context 'when SP is not eligible for one account' do
       let(:issuer2) { 'wrong.com' }
       let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
-      before do
+      let(:profile2) { create(:profile, :facial_match_proof) }
+      let(:profile) do
+        create(:profile, :active, user: user, initiating_service_provider_issuer: sp.issuer)
       end
 
       it 'returns false' do
@@ -629,8 +631,7 @@ RSpec.describe ApplicationController do
       end
 
       it 'returns false even with duplicate profile confirmations' do
-        profile = create(:profile, :active, user: user)
-        create(:duplicate_profile_confirmation, profile: profile, confirmed_all: nil)
+        create(:duplicate_profile, profile_ids: [profile.id], service_provider: 'wrong-sp')
 
         get :index
         expect(response.body).to eq('false')
@@ -656,7 +657,10 @@ RSpec.describe ApplicationController do
         end
         context 'when duplicate profile ids found in session' do
           before do
-            controller.user_session[:duplicate_profile_ids] = [active_profile.id]
+            create(
+              :duplicate_profile, profile_ids: [active_profile.id],
+                                  service_provider: sp.issuer
+            )
           end
 
           it 'returns true' do

@@ -13,6 +13,7 @@ module Proofing
                   :failed_result_can_pass_with_additional_verification,
                   :attributes_requiring_additional_verification,
                   :reference,
+                  :reason_codes,
                   :vendor_workflow
       def initialize(
         success: nil,
@@ -22,6 +23,7 @@ module Proofing
         transaction_id: '',
         customer_user_id: '',
         reference: '',
+        reason_codes: {},
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
@@ -34,6 +36,7 @@ module Proofing
         @transaction_id = transaction_id
         @customer_user_id = customer_user_id
         @reference = reference
+        @reason_codes = reason_codes
         @failed_result_can_pass_with_additional_verification =
           failed_result_can_pass_with_additional_verification
         @attributes_requiring_additional_verification =
@@ -60,6 +63,7 @@ module Proofing
           timed_out: timed_out?,
           transaction_id: transaction_id,
           reference: reference,
+          reason_codes: reason_codes,
           can_pass_with_additional_verification:
             failed_result_can_pass_with_additional_verification,
           attributes_requiring_additional_verification:

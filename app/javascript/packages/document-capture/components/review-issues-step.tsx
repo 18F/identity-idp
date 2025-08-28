@@ -92,7 +92,7 @@ function ReviewIssuesStep({
       frontMetaData = JSON.parse(
         typeof value.front_image_metadata === 'undefined' ? '{}' : value.front_image_metadata,
       );
-    } catch (e) {}
+    } catch {}
     const frontHasFailed = !!failedSubmissionImageFingerprints?.front?.includes(
       frontMetaData?.fingerprint ?? '',
     );
@@ -102,7 +102,7 @@ function ReviewIssuesStep({
       backMetaData = JSON.parse(
         typeof value.back_image_metadata === 'undefined' ? '{}' : value.back_image_metadata,
       );
-    } catch (e) {}
+    } catch {}
     const backHasFailed = !!failedSubmissionImageFingerprints?.back?.includes(
       backMetaData?.fingerprint ?? '',
     );
@@ -112,7 +112,7 @@ function ReviewIssuesStep({
       passportMetaData = JSON.parse(
         typeof value.passport_image_metadata === 'undefined' ? '{}' : value.passport_image_metadata,
       );
-    } catch (e) {}
+    } catch {}
     const passportHasFailed = !!failedSubmissionImageFingerprints?.passport?.includes(
       passportMetaData?.fingerprint ?? '',
     );

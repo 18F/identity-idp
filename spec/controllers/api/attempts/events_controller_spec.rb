@@ -12,7 +12,7 @@ RSpec.describe Api::Attempts::EventsController do
   describe '#poll' do
     let(:sp) { create(:service_provider) }
     let(:issuer) { sp.issuer }
-    let(:acks) do
+    let(:ack) do
       [
         'acknowleded-jti-id-1',
         'acknowleded-jti-id-2',
@@ -22,7 +22,7 @@ RSpec.describe Api::Attempts::EventsController do
     let(:payload) do
       {
         maxEvents: '1000',
-        acks:,
+        ack:,
       }
     end
 
@@ -96,14 +96,14 @@ RSpec.describe Api::Attempts::EventsController do
           it 'returns a json blob including that set' do
             expect(redis_client).to receive(:delete_events).with(
               issuer:,
-              keys: [*acks],
+              keys: [*ack],
             ).and_call_original
             expect(action.body).to eq({ sets: { "#{event_key}": jwe } }.to_json)
             expect(@analytics).to have_logged_event(
               :attempts_api_poll_events_request,
               issuer: issuer,
               requested_events_count: 1000,
-              requested_acknowledged_events_count: acks.count,
+              requested_acknowledged_events_count: ack.count,
               returned_events_count: 1,
               acknowledged_events_count: 0,
               success: true,
@@ -111,7 +111,7 @@ RSpec.describe Api::Attempts::EventsController do
           end
 
           context 'when an event is acknowledged' do
-            let(:acks) { [event_key] }
+            let(:ack) { [event_key] }
 
             it 'does not return any acknowledged events' do
               expect(redis_client).to receive(:delete_events).with(
@@ -193,7 +193,7 @@ RSpec.describe Api::Attempts::EventsController do
               let(:payload) do
                 {
                   maxEvents: 3,
-                  acks:,
+                  ack:,
                 }
               end
 
@@ -218,7 +218,7 @@ RSpec.describe Api::Attempts::EventsController do
                 let(:payload) do
                   {
                     maxEvents: 5000,
-                    acks:,
+                    ack:,
                   }
                 end
 
@@ -235,7 +235,7 @@ RSpec.describe Api::Attempts::EventsController do
             end
 
             context 'when there is no maxEvents parameter' do
-              let(:payload) { { acks: } }
+              let(:payload) { { ack: } }
               it 'uses 1000 as the batch size' do
                 expect(redis_client).to receive(:read_events).with(
                   issuer:,

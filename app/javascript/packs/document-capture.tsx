@@ -134,7 +134,7 @@ const {
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch (e) {}
+} catch {}
 
 render(
   <MarketingSiteContextProvider

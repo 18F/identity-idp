@@ -30,7 +30,9 @@ module DocumentCaptureStepHelper
   )
     attach_images(file)
     click_continue
-    click_button 'Take photo' if page.has_button? 'Take photo'
+    if page.has_button? t('doc_auth.buttons.take_picture')
+      click_button t('doc_auth.buttons.take_picture')
+    end
     attach_selfie
   end
 

@@ -256,6 +256,93 @@ class Profile < ApplicationRecord
     )
   end
 
+  def deactivate_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfile.exists?(['? = ANY(profile_ids)', id])
+
+    transaction do
+      update!(
+        active: false,
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: Time.zone.now,
+      )
+      DuplicateProfile.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        if duplicate_profile.profile_ids.length > 1
+          duplicate_profile.profile_ids.delete(id)
+          duplicate_profile.save
+        else
+          duplicate_profile.update!(
+            closed_at: Time.zone.now,
+            self_serviced: false,
+            fraud_investigation_conclusive: true,
+          )
+        end
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_locked(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
+  def clear_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfile.exists?(['? = ANY(profile_ids)', id])
+    raise 'Profile has other duplicates' if DuplicateProfile.exists?(
+      ['? = ANY(profile_ids) AND cardinality(profile_ids) > 1', id],
+    )
+
+    transaction do
+      DuplicateProfile.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        duplicate_profile.update!(
+          closed_at: Time.zone.now,
+          self_serviced: false,
+          fraud_investigation_conclusive: true,
+        )
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_success(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
+  def close_inconclusive_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfile.exists?(['? = ANY(profile_ids)', id])
+
+    transaction do
+      DuplicateProfile.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        if duplicate_profile.profile_ids.length > 1
+          duplicate_profile.profile_ids.delete(id)
+          duplicate_profile.save
+        else
+          duplicate_profile.update!(
+            closed_at: Time.zone.now,
+            self_serviced: false,
+            fraud_investigation_conclusive: false,
+          )
+        end
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_unable(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
   def reject_for_fraud(notify_user:)
     update!(
       active: false,

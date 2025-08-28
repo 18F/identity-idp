@@ -11,7 +11,7 @@ RSpec.describe AttemptsConfigurationPresenter do
     it 'includes information about the RISC integration' do
       aggregate_failures do
         expect(configuration[:issuer]).to eq(root_url)
-        expect(configuration[:jwks_uri]).to eq(api_openid_connect_certs_url)
+        expect(configuration[:jwks_uri]).to eq(api_attempts_certs_url)
         expect(configuration[:delivery_methods_supported])
           .to eq([AttemptsConfigurationPresenter::DELIVERY_METHOD_POLL])
 
