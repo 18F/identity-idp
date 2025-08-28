@@ -15,7 +15,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:dos_passport_mrz_endpoint) { 'https://mrz.example.com' }
   let(:decision_value) { 'accept' }
   let(:expiration_date) { "#{1.year.from_now.year}-01-01" }
-  let(:document_type_type) { 'Drivers License' }
+  let(:document_metadata_type) { 'Drivers License' }
   let(:reason_codes) { %w[I831 R810] }
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:socure_doc_escrow_enabled) { false }
@@ -73,7 +73,7 @@ RSpec.describe SocureDocvResultsJob do
           documentVerification: {
             reasonCodes: reason_codes,
             documentType: {
-              type: document_type_type,
+              type: document_metadata_type,
               country: 'USA',
               state: 'NY',
             },
@@ -118,7 +118,7 @@ RSpec.describe SocureDocvResultsJob do
           zip_code: '10001',
           doc_auth_success: true,
           document_metadata: {
-            type: document_type_type,
+            type: document_metadata_type,
             country: 'USA',
             state: 'NY',
           },
@@ -416,7 +416,7 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'Identification Card is submitted' do
-        let(:document_type_type) { 'Identification Card' }
+        let(:document_metadata_type) { 'Identification Card' }
         it 'doc auth succeeds' do
           perform
 
@@ -490,7 +490,7 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'Passport is submitted' do
-        let(:document_type_type) { 'Passport' }
+        let(:document_metadata_type) { 'Passport' }
         let(:mrz) { 'P<USADWAYNE<<DENVER<<<<<<<<<<<<<<<<<<<<<<<<<' }
         let(:socure_response_body) do
           # ID+ v3.0 API Predictive Document Verification response
@@ -500,7 +500,7 @@ RSpec.describe SocureDocvResultsJob do
             documentVerification: {
               reasonCodes: reason_codes,
               documentType: {
-                type: document_type_type,
+                type: document_metadata_type,
                 country: 'USA',
               },
               decision: {
@@ -546,7 +546,7 @@ RSpec.describe SocureDocvResultsJob do
           end
 
           context 'when passport card is submitted' do
-            let(:document_type_type) { 'Passport Card' }
+            let(:document_metadata_type) { 'Passport Card' }
 
             it 'doc auth fails' do
               perform
@@ -692,7 +692,7 @@ RSpec.describe SocureDocvResultsJob do
                 end
 
                 context 'when passport card is submitted' do
-                  let(:document_type_type) { 'Passport Card' }
+                  let(:document_metadata_type) { 'Passport Card' }
 
                   it 'doc auth fails' do
                     perform
@@ -722,7 +722,7 @@ RSpec.describe SocureDocvResultsJob do
       end
 
       context 'not accepted document type' do
-        let(:document_type_type) { 'Non-Document-Type' }
+        let(:document_metadata_type) { 'Non-Document-Type' }
         it 'doc auth fails' do
           perform
 
