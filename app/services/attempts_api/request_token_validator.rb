@@ -49,10 +49,7 @@ module AttemptsApi
 
     def valid_request_token?
       return if config_data['tokens'].any? do |valid_token|
-        scrypt_salt = valid_token['cost'] + OpenSSL::Digest::SHA256.hexdigest(valid_token['salt'])
-        scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
-        hashed_req_token = SCrypt::Password.new(scrypted).digest
-        ActiveSupport::SecurityUtils.secure_compare(valid_token['value'], hashed_req_token)
+        check_token(valid_token)
       end
 
       errors.add(
@@ -60,6 +57,14 @@ module AttemptsApi
         :not_valid,
         message: 'Request token is not valid',
       )
+    end
+
+    def check_token(valid_token)
+      return false unless %w[value salt cost].all? { |k| valid_token[k] }
+      scrypt_salt = valid_token['cost'] + OpenSSL::Digest::SHA256.hexdigest(valid_token['salt'])
+      scrypted = SCrypt::Engine.hash_secret token, scrypt_salt, 32
+      hashed_req_token = SCrypt::Password.new(scrypted).digest
+      ActiveSupport::SecurityUtils.secure_compare(valid_token['value'], hashed_req_token)
     end
 
     def config_data
