@@ -438,7 +438,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
@@ -596,7 +596,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
               selfie_image: an_instance_of(String),
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
@@ -619,7 +619,7 @@ RSpec.describe Idv::ImageUploadsController do
           .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
-            document_type: an_instance_of(String),
+            document_type_requested: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
@@ -711,7 +711,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -724,7 +724,7 @@ RSpec.describe Idv::ImageUploadsController do
           doc_auth_result: 'Passed',
           state: 'MT',
           country: 'US',
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -748,7 +748,7 @@ RSpec.describe Idv::ImageUploadsController do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -763,12 +763,12 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
+          document_type_requested: an_instance_of(String),
           id_issued_status: 'present',
           id_expiration_status: 'present',
           passport_issued_status: 'missing',
           passport_expiration_status: 'missing',
-          document_type: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -779,7 +779,7 @@ RSpec.describe Idv::ImageUploadsController do
         let(:last_name) { 'MCFAKERSON' }
         let(:address1) { '123 Houston Ave' }
         let(:state) { 'ND' }
-        let(:id_doc_type) { 'drivers_license' }
+        let(:document_type_received) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
         let(:state_id_expiration) { Time.zone.today.to_s }
         let(:jurisdiction) { 'ND' }
@@ -814,7 +814,7 @@ RSpec.describe Idv::ImageUploadsController do
                 name_suffix: nil,
                 address1: address1,
                 state: state,
-                id_doc_type: id_doc_type,
+                document_type_received: document_type_received,
                 dob: dob,
                 sex: nil,
                 height: nil,
@@ -851,7 +851,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -863,7 +863,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -883,7 +883,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -904,12 +904,12 @@ RSpec.describe Idv::ImageUploadsController do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
               passport_issued_status: 'missing',
               passport_expiration_status: 'missing',
-              document_type: an_instance_of(String),
             )
           end
 
@@ -987,7 +987,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -999,7 +999,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'Maryland',
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1019,7 +1019,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1040,12 +1040,12 @@ RSpec.describe Idv::ImageUploadsController do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
               passport_issued_status: 'missing',
               passport_expiration_status: 'missing',
-              document_type: an_instance_of(String),
             )
           end
 
@@ -1127,7 +1127,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1139,7 +1139,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1159,7 +1159,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1177,12 +1177,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
               passport_issued_status: 'missing',
               passport_expiration_status: 'missing',
-              document_type: an_instance_of(String),
             )
           end
         end
@@ -1205,7 +1205,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1217,7 +1217,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1236,7 +1236,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_live: true,
               selfie_quality_good: true,
               zip_code: '12345',
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1254,12 +1254,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
               passport_issued_status: 'missing',
               passport_expiration_status: 'missing',
-              document_type: an_instance_of(String),
             )
           end
         end
@@ -1282,7 +1282,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1294,7 +1294,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -1314,7 +1314,7 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
-              document_type: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -1332,12 +1332,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
               passport_issued_status: 'missing',
               passport_expiration_status: 'missing',
-              document_type: an_instance_of(String),
             )
           end
         end
@@ -1384,7 +1384,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -1412,7 +1412,7 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: true,
           selfie_quality_good: true,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1452,7 +1452,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
-          document_type: an_instance_of(String),
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -1478,7 +1478,6 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
-          document_type: an_instance_of(String),
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
@@ -1508,6 +1507,7 @@ RSpec.describe Idv::ImageUploadsController do
               'VerticalResolution' => 600,
             },
           },
+          document_type_requested: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1565,7 +1565,7 @@ RSpec.describe Idv::ImageUploadsController do
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: an_instance_of(String),
-            document_type: an_instance_of(String),
+            document_type_requested: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
@@ -1591,12 +1591,12 @@ RSpec.describe Idv::ImageUploadsController do
           .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
+            document_type_requested: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
-            document_type: an_instance_of(String),
             passport_requested: false,
           ).and_call_original
 
