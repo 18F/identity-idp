@@ -157,7 +157,7 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 expect(updated_dupe_profile.profile_ids).to match_array(
                   [profile2.id, profile.id,
-                  profile3.id],
+                   profile3.id],
                 )
                 expect(@analytics).to have_logged_event(
                   :one_account_duplicate_profile_updated,
@@ -165,7 +165,7 @@ RSpec.describe DuplicateProfileChecker do
               end
             end
 
-            context 'using the new profile not in dupe profile' do 
+            context 'using the new profile not in dupe profile' do
               let!(:dupe_profile) do
                 create(
                   :duplicate_profile,
@@ -189,7 +189,7 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 expect(updated_dupe_profile.profile_ids).to match_array(
                   [profile2.id, profile.id,
-                  profile3.id],
+                   profile3.id],
                 )
                 expect(@analytics).to have_logged_event(
                   :one_account_duplicate_profile_updated,
