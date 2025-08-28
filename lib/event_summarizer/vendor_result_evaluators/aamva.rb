@@ -79,14 +79,14 @@ module EventSummarizer
           attributes[key] = values.first
         end
 
-        id_type = ID_TYPES[result['document_type_received']] ||
-                  ID_TYPES[result['id_doc_type']] ||
-                  'id card'
+        document_type = ID_TYPES[result['document_type_received']] ||
+                        ID_TYPES[result['id_doc_type']] ||
+                        'id card'
         state = result['state_id_jurisdiction']
 
         if mva_says_invalid_id_number?(attributes)
           # rubocop:disable Layout/LineLength
-          return "The ID # from the user's #{id_type} was invalid according to the state of #{state}"
+          return "The ID # from the user's #{document_type} was invalid according to the state of #{state}"
           # rubocop:enable Layout/LineLength
         end
 
