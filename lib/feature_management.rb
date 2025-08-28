@@ -168,8 +168,8 @@ class FeatureManagement
     true
   end
 
-  def self.fcms_enabled?
-    return false unless IdentityConfig.store.feature_fcms_enabled
+  def self.fraudops_enabled?
+    return false unless IdentityConfig.store.feature_fraudops_enabled
     true
   end
 

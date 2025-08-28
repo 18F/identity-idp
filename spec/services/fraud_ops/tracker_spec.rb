@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe AttemptsApi::FcmsTracker do
+RSpec.describe FraudOps::Tracker do
   before do
-    allow(FeatureManagement).to receive(:fcms_enabled?)
-      .and_return(fcms_enabled)
+    allow(FeatureManagement).to receive(:fraudops_enabled?)
+      .and_return(fraudops_enabled)
     allow(request).to receive(:user_agent).and_return('example/1.0')
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
     allow(request).to receive(:cookies).and_return(nil)
@@ -12,7 +12,7 @@ RSpec.describe AttemptsApi::FcmsTracker do
     )
   end
 
-  let(:fcms_enabled) { true }
+  let(:fraudops_enabled) { true }
   let(:session_id) { 'test-session-id' }
   let(:enabled_for_session) { true }
   let(:request) { instance_double(ActionDispatch::Request) }
@@ -83,7 +83,7 @@ RSpec.describe AttemptsApi::FcmsTracker do
       freeze_time do
         subject.track_event(:test_event, foo: :bar)
 
-        events = AttemptsApi::FcmsRedisClient.new.read_events(
+        events = FraudOps::RedisClient.new.read_events(
           issuer: service_provider.issuer,
         )
 
@@ -95,7 +95,7 @@ RSpec.describe AttemptsApi::FcmsTracker do
       freeze_time do
         subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
 
-        events = AttemptsApi::FcmsRedisClient.new.read_events(
+        events = FraudOps::RedisClient.new.read_events(
           issuer: service_provider.issuer,
         )
 
@@ -207,7 +207,7 @@ RSpec.describe AttemptsApi::FcmsTracker do
             agency_id: service_provider.agency.id,
           )
           expect(identity).to_not be_nil
-           expect(event.event_metadata[:agency_uuid]).to eq(identity.uuid)
+          expect(event.event_metadata[:agency_uuid]).to eq(identity.uuid)
           expect(event.event_metadata[:user_uuid]).to eq(user.uuid)
           expect(event.event_metadata[:user_id]).to eq(user.id)
         end
@@ -231,7 +231,7 @@ RSpec.describe AttemptsApi::FcmsTracker do
     end
 
     context 'the attempts API is not enabled' do
-      let(:fcms_enabled) { false }
+      let(:fraudops_enabled) { false }
 
       it 'does not record any events in redis' do
         freeze_time do
