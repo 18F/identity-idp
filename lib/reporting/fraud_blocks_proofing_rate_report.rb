@@ -20,8 +20,7 @@ module Reporting
       # this for successful ipp
       SUCCESSFUL_IPP = 'GetUspsProofingResultsJob: Enrollment status updated'
       # THESE FOR SUSPECTED FRAUD BLOCKS --------------------------------
-      # note: events in the key friction points are also used in the suspected fraud blocks queries
-      # as well.
+      # note: events in the key friction points are also used in the suspected fraud blocks queries as well.
       IDV_PHONE_CONF_VENDOR = 'IdV: phone confirmation vendor'
       # THESE FOR KEY FRICTION POINTS -----------------------------------
       # these two for api connection fails
@@ -101,27 +100,23 @@ module Reporting
           table: overview_table,
           filename: 'overview',
         ),
-        # Proofing Success comes from IdP
         Reporting::EmailableReport.new(
-          title: "Proofing Success Metrics #{stats_month}",
+          title: "Proofing Success Metrics #{stats_month}", # Proofing Success comes from IdP
           table: proofing_success_metrics_table,
           filename: 'proofing_success_metrics',
         ),
-        # Suspected Fraud Related Blocks
         Reporting::EmailableReport.new(
-          title: "Suspected Fraud Blocks Metrics #{stats_month}",
+          title: "Suspected Fraud Blocks Metrics #{stats_month}", # Suspected Fraud Related Blocks
           table: suspected_fraud_blocks_metrics_table,
           filename: 'suspected_fraud_blocks_metrics',
         ),
-        # Key Points of User Friction
         Reporting::EmailableReport.new(
-          title: "Key Points of User Friction Metrics #{stats_month}",
+          title: "Key Points of User Friction Metrics #{stats_month}", # Key Points of User Friction
           table: key_points_user_friction_metrics_table,
           filename: 'key_points_user_friction_metrics',
         ),
-        # Successful IPP
         Reporting::EmailableReport.new(
-          title: "Successful IPP User Metrics #{stats_month}",
+          title: "Successful IPP User Metrics #{stats_month}", # Successful IPP
           table: successful_ipp_table,
           filename: 'successful_ipp',
         ),
@@ -139,8 +134,7 @@ module Reporting
     end
 
     # this will come from IdP and thus needs to be modified
-    # table Proofing Success Metrics ---------------------------------------------------
-    def proofing_success_metrics_table
+    def proofing_success_metrics_table # table for Proofing Success
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         ['Identity Verified Users', ial2.to_s, time_range.begin.to_s,
@@ -244,8 +238,7 @@ module Reporting
       ]
     end
 
-    # table for successful ipp
-    def successful_ipp_table
+    def successful_ipp_table # table for successful ipp
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
@@ -278,8 +271,8 @@ module Reporting
     #---------------------------------------------------------------------------------------
 
     # Create Data Dictionary that will store results from each cloudwatch query ------------
-    def data_authentic_license_facial_match_socure
-      @data_authentic_license_facial_match_socure ||= begin
+    def data_authentic_drivers_license_facial_match_socure
+      @data_authentic_drivers_license_facial_match_socure ||= begin
         event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_socure_results.each do |row|
           event_users[Events::DOC_AUTH_FACIAL_SOCURE] << row['document_fail_count_socure']
@@ -289,8 +282,8 @@ module Reporting
       end
     end
 
-    def data_authentic_license_facial_match_lexis
-      @data_authentic_license_facial_match_lexis ||= begin
+    def data_authentic_drivers_license_facial_match_lexis
+      @data_authentic_drivers_license_facial_match_lexis ||= begin
         event_users = Hash.new { |h, event| h[event] = Set.new }
         fetch_authentic_drivers_license_facial_match_lexis_results.each do |row|
           event_users[Events::DOC_AUTH_FACIAL_LEXIS] << row['document_fail_count_lexis']
@@ -385,8 +378,8 @@ module Reporting
       end
     end
 
-    def data_fetch_verif_code_not_received_results
-      @data_fetch_verif_code_not_received_results ||= begin
+    def data_fetch_verification_code_not_received_results
+      @data_fetch_verification_code_not_received_results ||= begin
         event_users = Hash.new do |h, uuid|
           h[uuid] = Set.new
         end
@@ -568,9 +561,7 @@ module Reporting
     def authentic_drivers_license_facial_match_socure_query
       params = {
         issuers: quote(issuers),
-        idv_socure_verification_data_requested: quote(
-          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED,
-        ),
+        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
         doc_auth_facial_socure: quote(Events::DOC_AUTH_FACIAL_SOCURE),
         selfie_fail_socure: quote(Events::SELFIE_FAIL_SOCURE),
       }
@@ -595,9 +586,7 @@ module Reporting
     def authentic_drivers_license_facial_match_lexis_query
       params = {
         issuers: quote(issuers),
-        idv_doc_auth_image_upload_vendor_submitted: quote(
-          Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
-        ),
+        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
         doc_auth_facial_lexis: quote(Events::DOC_AUTH_FACIAL_LEXIS),
         selfie_fail_lexis: quote(Events::SELFIE_FAIL_LEXIS),
       }
@@ -736,9 +725,7 @@ module Reporting
     def doc_selfie_ux_challenge_socure_query
       params = {
         issuers: quote(issuers),
-        idv_socure_verification_data_requested: quote(
-          Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED,
-        ),
+        idv_socure_verification_data_requested: quote(Events::IDV_SOCURE_VERIFICATION_DATA_REQUESTED),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
         doc_selfie_ux_challenges_socure: quote(Events::DOC_SELFIE_UX_CHALLENGE_SOCURE),
       }
@@ -777,14 +764,12 @@ module Reporting
       QUERY
     end
 
-    def doc_selfie_ux_challenge_lexis_query
+    def doc_selfie_ux_challenge_lexis_query # issue happening in this method
       params = {
         issuers: quote(issuers),
         idv_front_image_added: quote(Events::IDV_FRONT_IMAGE_ADDED),
         idv_back_image_added: quote(Events::IDV_BACK_IMAGE_ADDED),
-        idv_doc_auth_image_upload_vendor_submitted: quote(
-          Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED,
-        ),
+        idv_doc_auth_image_upload_vendor_submitted: quote(Events::IDV_DOC_AUTH_IMAGE_UPLOAD_VENDOR_SUBMITTED),
         idv_doc_auth_ssn_visited: quote(Events::IDV_DOC_AUTH_SSN_VISITED),
         doc_selfie_ux_challenge_lexis: quote(Events::DOC_SELFIE_UX_CHALLENGE_LEXIS),
       }
@@ -929,6 +914,7 @@ module Reporting
         troubleshooting_option: quote(Events::TROUBLESHOOTING_OPTION),
         ipp_ready_to_verify: quote(Events::IPP_READY),
         ipp_barcode_output: quote(Events::IPP_BARCODE_OUTPUT),
+
       }
 
       format(<<~QUERY, params)
@@ -967,51 +953,50 @@ module Reporting
     def ial2
       set = @ial2 || data_get_proofing_ial2[
         Events::IAL2]
-      set.find { |v| v } || 0
-    end
-
-    def sum_key_friction_points
-      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis.to_i +
-                                 verification_code_not_received_count.to_i +
-                                 api_connection_fails.to_i
-    end
-
-    def denominator
-      # to do need to calculate ipp_barcode and then subtract it from the following line
-      @denominator = (ial2.to_i + sum_key_friction_points.to_i) - ipp_barcode_count.to_i
-    end
-
-    def idv_rate
-      # @idv_rate = '86.34%' # just testing
-      @idv_rate || (ial2.to_i / denominator.to_f * 100).round(2).to_s + '%'
-    end
-
-    def ipp_barcode_count
-      set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT]
       set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
-    # ---------------------------------------------------------------------------------------
+    def sum_key_friction_points
+      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
+                                 verification_code_not_received_count + api_connection_fails
+    end
+
+    def denominator
+      # to do need to calculate ipp_barcode and then subtract it from the following line
+      @denominator = (ial2 + sum_key_friction_points) - ipp_barcode_count
+    end
+
+    def idv_rate
+      # @idv_rate = '86.34%' # just testing
+      @idv_rate || (ial2 / denominator.to_f * 100).round(2).to_s + '%'
+    end
+
+    def ipp_barcode_count
+      set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT] || Set[]
+      set.find { |v| v }&.to_i || 0
+    end
+
+    # ---------------------------------------------------------------------------------------------
 
     # Extracting data that was gathered from queries and placed in dictionaries -------------
     def authentic_drivers_license_facial_check_lexis
-      @authentic_drivers_license_facial_check_lexis || data_authentic_license_facial_match_lexis[
+      @authentic_drivers_license_facial_check_lexis || data_authentic_drivers_license_facial_match_lexis[
         Events::DOC_AUTH_FACIAL_LEXIS]
     end
 
     def authentic_drivers_license_facial_check_socure
-      @authentic_drivers_license_facial_check_socure || data_authentic_license_facial_match_socure[
+      @authentic_drivers_license_facial_check_socure || data_authentic_drivers_license_facial_match_socure[
         Events::DOC_AUTH_FACIAL_SOCURE]
     end
 
     def selfie_fail_lexis
-      @selfie_fail_lexis || data_authentic_license_facial_match_lexis[
+      @selfie_fail_lexis || data_authentic_drivers_license_facial_match_lexis[
         Events::SELFIE_FAIL_LEXIS]
     end
 
     def selfie_fail_socure
-      @selfie_fail_socure || data_authentic_license_facial_match_socure[
+      @selfie_fail_socure || data_authentic_drivers_license_facial_match_socure[
         Events::SELFIE_FAIL_SOCURE]
     end
 
@@ -1037,38 +1022,33 @@ module Reporting
     def valid_drivers_license_number
       set = @valid_drivers_license_number || data_valid_drivers_license_number[
         Events::VAILD_DRIVERS_LICENSE_NUMBER]
-      set ||= Set[]
+      set ||= Set[] # Ensure it's never nil
       # Find the first non-nil value, convert to integer, or default to 0
       set.find { |v| v }&.to_i || 0
     end
 
     def address_occupancy_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::ADDRESS_OCCUPANCY]
-      set ||= Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::ADDRESS_OCCUPANCY] || Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def dob_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DOB]
-      set ||= Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DOB] || Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def dead_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DEAD]
-      set ||= Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DEAD] || Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def ssn_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::SSN]
-      set ||= Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::SSN] || Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def identity_not_found_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::IDENTITY_NOT_FOUND]
-      set ||= Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::IDENTITY_NOT_FOUND] || Set[]
       set.find { |v| v }&.to_i || 0
     end
 
@@ -1107,25 +1087,22 @@ module Reporting
     end
 
     def verification_code_not_received_count
-      set = @verification_code_not_received_count || data_fetch_verif_code_not_received_results
-      [Events::VERF_CODE_NOT_RECIEVED]
-      set ||= Set[]
+      set = @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
+        Events::VERF_CODE_NOT_RECIEVED]
+      set ||= Set[] # Ensure it's never nil
       # Find the first non-nil value, convert to integer, or default to 0
-      set.values.first.find { |v| v }&.to_i || 0
+      set.find { |v| v }&.to_i || 0
     end
 
     def api_connection_fails
-      set = @api_connection_fails || data_fetch_api_connection_fails_results[
-        Events::API_CONNECTION_FAILS]
+      set = @api_connection_fails || data_fetch_api_connection_fails_results[Events::API_CONNECTION_FAILS]
       set ||= Set[]
-      set.find { |v| v } || 0
+      set.find { |v| v }&.to_i || 0 # finds first non-nil value, e.g. "4"
     end
 
     # successful ipp users
     def successful_ipp_users_count
-      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[
-        Events::SUCCESSFUL_IPP_OUTPUT]
-      set ||= Set[]
+      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT] || Set[]
       set.find { |v| v.present? }&.to_s || '0'
     end
   end
