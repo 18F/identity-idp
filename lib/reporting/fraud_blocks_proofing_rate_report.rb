@@ -100,23 +100,27 @@ module Reporting
           table: overview_table,
           filename: 'overview',
         ),
+        # Proofing Success comes from IdP
         Reporting::EmailableReport.new(
-          title: "Proofing Success Metrics #{stats_month}", # Proofing Success comes from IdP
+          title: "Proofing Success Metrics #{stats_month}",
           table: proofing_success_metrics_table,
           filename: 'proofing_success_metrics',
         ),
+        # Suspected Fraud Related Blocks
         Reporting::EmailableReport.new(
-          title: "Suspected Fraud Blocks Metrics #{stats_month}", # Suspected Fraud Related Blocks
+          title: "Suspected Fraud Blocks Metrics #{stats_month}",
           table: suspected_fraud_blocks_metrics_table,
           filename: 'suspected_fraud_blocks_metrics',
         ),
+        # Key Points of User Friction
         Reporting::EmailableReport.new(
-          title: "Key Points of User Friction Metrics #{stats_month}", # Key Points of User Friction
+          title: "Key Points of User Friction Metrics #{stats_month}",
           table: key_points_user_friction_metrics_table,
           filename: 'key_points_user_friction_metrics',
         ),
+        # Successful IPP
         Reporting::EmailableReport.new(
-          title: "Successful IPP User Metrics #{stats_month}", # Successful IPP
+          title: "Successful IPP User Metrics #{stats_month}",
           table: successful_ipp_table,
           filename: 'successful_ipp',
         ),
@@ -134,7 +138,8 @@ module Reporting
     end
 
     # this will come from IdP and thus needs to be modified
-    def proofing_success_metrics_table # table for Proofing Success
+    # table Proofing Success Metrics ---------------------------------------------------
+    def proofing_success_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         ['Identity Verified Users', ial2.to_s, time_range.begin.to_s,
@@ -238,7 +243,8 @@ module Reporting
       ]
     end
 
-    def successful_ipp_table # table for successful ipp
+    # table for successful ipp
+    def successful_ipp_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
         [
@@ -421,7 +427,7 @@ module Reporting
       end
     end
 
-    #ipp_barcode_count
+    # ipp_barcode_count
     def data_fetch_ipp_barcode_results
       @data_fetch_ipp_barcode_results ||= begin
         event_users = Hash.new do |h, uuid|
@@ -556,6 +562,7 @@ module Reporting
         to: time_range.end
       )
     end
+
     # ---------------------------------------------------------------------------------------
     def authentic_drivers_license_facial_match_socure_query
       params = {
@@ -763,7 +770,7 @@ module Reporting
       QUERY
     end
 
-    def doc_selfie_ux_challenge_lexis_query # issue happening in this method
+    def doc_selfie_ux_challenge_lexis_query
       params = {
         issuers: quote(issuers),
         idv_front_image_added: quote(Events::IDV_FRONT_IMAGE_ADDED),
@@ -913,7 +920,6 @@ module Reporting
         troubleshooting_option: quote(Events::TROUBLESHOOTING_OPTION),
         ipp_ready_to_verify: quote(Events::IPP_READY),
         ipp_barcode_output: quote(Events::IPP_BARCODE_OUTPUT),
-        
       }
 
       format(<<~QUERY, params)
@@ -973,8 +979,8 @@ module Reporting
 
     def ipp_barcode_count
       set = @ipp_barcode_count || data_fetch_ipp_barcode_results[Events::IPP_BARCODE_OUTPUT] || Set[]
-      set.find{ |v| v }&.to_i || 0
-    end 
+      set.find { |v| v }&.to_i || 0
+    end
 
     # ---------------------------------------------------------------------------------------------
 
@@ -1021,33 +1027,38 @@ module Reporting
     def valid_drivers_license_number
       set = @valid_drivers_license_number || data_valid_drivers_license_number[
         Events::VAILD_DRIVERS_LICENSE_NUMBER]
-      set ||= Set[] # Ensure it's never nil
+      set ||= Set[]
       # Find the first non-nil value, convert to integer, or default to 0
       set.find { |v| v }&.to_i || 0
     end
 
     def address_occupancy_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::ADDRESS_OCCUPANCY] || Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::ADDRESS_OCCUPANCY]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def dob_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DOB] || Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DOB]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def dead_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DEAD] || Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::DEAD]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def ssn_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::SSN] || Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::SSN]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
     def identity_not_found_failed_count
-      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::IDENTITY_NOT_FOUND] || Set[]
+      set = data_fetch_address_dob_dead_ssn_identity_notfound_results[Events::IDENTITY_NOT_FOUND]
+      set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
 
@@ -1088,7 +1099,7 @@ module Reporting
     def verification_code_not_received_count
       set = @verification_code_not_received_count || data_fetch_verification_code_not_received_results[
         Events::VERF_CODE_NOT_RECIEVED]
-      set ||= Set[] # Ensure it's never nil
+      set ||= Set[]
       # Find the first non-nil value, convert to integer, or default to 0
       set.find { |v| v }&.to_i || 0
     end
@@ -1096,12 +1107,13 @@ module Reporting
     def api_connection_fails
       set = @api_connection_fails || data_fetch_api_connection_fails_results[Events::API_CONNECTION_FAILS]
       set ||= Set[]
-      set.find { |v| v }&.to_i || 0 # finds first non-nil value, e.g. "4"
+      set.find { |v| v }&.to_i || 0
     end
 
     # successful ipp users
     def successful_ipp_users_count
-      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT] || Set[]
+      set = @successful_ipp_users_count || data_fetch_successful_ipp_results[Events::SUCCESSFUL_IPP_OUTPUT]
+      set ||= Set[]
       set.find { |v| v.present? }&.to_s || '0'
     end
   end
