@@ -19,6 +19,12 @@ class ServiceProviderSeeder
   end
 
   def run_review_app(dashboard_url:)
+    # If a valid, matching service provider config was patched in, use that instead of the default
+    if service_provider_config_path.exist? &&
+       service_provider_config_path.read.include?(dashboard_url)
+      return run
+    end
+
     issuer = 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard'
     config = {
       'friendly_name' => 'Dashboard',
@@ -42,7 +48,7 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
+    file = service_provider_config_path.read
     file.gsub!('%{env}', deploy_env) if deploy_env
     YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
@@ -51,6 +57,10 @@ class ServiceProviderSeeder
   rescue KeyError => key_error
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
+  end
+
+  def service_provider_config_path
+    Rails.root.join(@yaml_path, 'service_providers.yml')
   end
 
   def write_service_provider?(config)
@@ -92,10 +102,19 @@ class ServiceProviderSeeder
 
   def write_service_provider(issuer:, config:)
     return unless write_service_provider?(config)
+    secondary_logger = Logger.new(STDOUT)
 
     cert_pems = Array(config['certs']).map do |cert|
       cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
-      cert_path.read if cert_path.exist?
+      if cert_path.exist?
+        secondary_logger.info "WRITE_PROVIDER: adding cert #{cert}"
+        Rails.logger.info "Added cert #{cert}"
+        cert_path.read
+      else
+        secondary_logger.info("WRITE_PROVIDER: Cert #{cert} not found")
+        Rails.logger.info "Cert #{cert} was not found"
+        nil
+      end
     end.compact
 
     ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
