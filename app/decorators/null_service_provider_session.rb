@@ -45,6 +45,8 @@ class NullServiceProviderSession
 
   def attempts_api_session_id; end
 
+  def attempts_api_redirect_uri; end
+
   private
 
   attr_reader :view_context
