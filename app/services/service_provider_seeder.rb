@@ -107,12 +107,13 @@ class ServiceProviderSeeder
     cert_pems = Array(config['certs']).map do |cert|
       cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
       if cert_path.exist?
-        cert_path.read
-        secondary_logger.info "WRITE_PROVIDER: Added cert #{cert}"
+        secondary_logger.info "WRITE_PROVIDER: adding cert #{cert}"
         Rails.logger.info "Added cert #{cert}"
+        cert_path.read
       else
         secondary_logger.info("WRITE_PROVIDER: Cert #{cert} not found")
         Rails.logger.info "Cert #{cert} was not found"
+        nil
       end
     end.compact
 
