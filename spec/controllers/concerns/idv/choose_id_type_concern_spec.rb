@@ -211,7 +211,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         ).to include(
           presenter:,
           form_submit_url:,
-          dos_passport_api_down: false,
+          disable_passports: false,
           auto_check_value: :passport,
         )
       end
@@ -229,7 +229,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         ).to include(
           presenter:,
           form_submit_url:,
-          dos_passport_api_down: true,
+          disable_passports: true,
           auto_check_value: :drivers_license,
         )
       end
