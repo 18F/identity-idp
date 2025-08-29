@@ -98,7 +98,7 @@ class ApplicationController < ActionController::Base
       sp: current_sp,
       cookie_device_uuid: cookies[:device],
       # this only works for oidc
-      sp_request_uri: decorated_sp_session.request_url_params[:redirect_uri],
+      sp_redirect_uri: attempts_api_redirect_uri,
       enabled_for_session: true,
     )
   end
