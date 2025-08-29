@@ -20,80 +20,81 @@ module DocAuth
       private
 
       # @return [Pii::StateId, Pii::Passport, nil]
-      def read_pii(true_id_product)
-        @id_auth_field_data = true_id_product&.dig(:IDAUTH_FIELD_DATA)
-        @authentication_result_field_data = true_id_product&.dig(:AUTHENTICATION_RESULT)
+      def read_pii
         return nil unless id_auth_field_data.present?
 
-        id_doc_type_slug = id_auth_field_data['Fields_DocumentClassName']
-        id_doc_issue_type = authentication_result_field_data['DocIssueType']
-
-        @id_doc_type = determine_id_doc_type(
-          doc_class_name: id_doc_type_slug,
-          doc_issue_type: id_doc_issue_type,
-        )
-
-        if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(id_doc_type)
+        if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(document_type_received)
           generate_state_id_pii
-        elsif Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_doc_type)
+        elsif Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(document_type_received)
           generate_passport_pii
         end
       end
 
       def id_auth_field_data
-        @id_auth_field_data
+        true_id_product&.dig(:IDAUTH_FIELD_DATA)
       end
 
-      def id_doc_type
-        @id_doc_type
+      def document_type_received
+        @document_type_received ||= determine_document_type_received(
+          doc_class_name: document_type_received_slug,
+          doc_issue_type: id_doc_issue_type,
+        )
+      end
+
+      def document_type_received_slug
+        id_auth_field_data&.dig('Fields_DocumentClassName')
+      end
+
+      def id_doc_issue_type
+        authentication_result_field_data&.dig('DocIssueType')
       end
 
       def authentication_result_field_data
-        @authentication_result_field_data
+        true_id_product&.dig(:AUTHENTICATION_RESULT)
       end
 
       def first_name
-        id_auth_field_data['Fields_FirstName']
+        id_auth_field_data&.dig('Fields_FirstName')
       end
 
       def last_name
-        id_auth_field_data['Fields_Surname']
+        id_auth_field_data&.dig('Fields_Surname')
       end
 
       def middle_name
-        id_auth_field_data['Fields_MiddleName']
+        id_auth_field_data&.dig('Fields_MiddleName')
       end
 
       def dob
         parse_date(
-          year: id_auth_field_data['Fields_DOB_Year'],
-          month: id_auth_field_data['Fields_DOB_Month'],
-          day: id_auth_field_data['Fields_DOB_Day'],
+          year: id_auth_field_data&.dig('Fields_DOB_Year'),
+          month: id_auth_field_data&.dig('Fields_DOB_Month'),
+          day: id_auth_field_data&.dig('Fields_DOB_Day'),
         )
       end
 
       def expiration_date
         parse_date(
-          year: id_auth_field_data['Fields_ExpirationDate_Year'],
-          month: id_auth_field_data['Fields_ExpirationDate_Month'],
-          day: id_auth_field_data['Fields_xpirationDate_Day'], # this is NOT a typo
+          year: id_auth_field_data&.dig('Fields_ExpirationDate_Year'),
+          month: id_auth_field_data&.dig('Fields_ExpirationDate_Month'),
+          day: id_auth_field_data&.dig('Fields_xpirationDate_Day'), # this is NOT a typo
         )
       end
 
       def issue_date
         parse_date(
-          year: id_auth_field_data['Fields_IssueDate_Year'],
-          month: id_auth_field_data['Fields_IssueDate_Month'],
-          day: id_auth_field_data['Fields_IssueDate_Day'],
+          year: id_auth_field_data&.dig('Fields_IssueDate_Year'),
+          month: id_auth_field_data&.dig('Fields_IssueDate_Month'),
+          day: id_auth_field_data&.dig('Fields_IssueDate_Day'),
         )
       end
 
       def issuing_country_code
-        id_auth_field_data['Fields_CountryCode']
+        id_auth_field_data&.dig('Fields_CountryCode')
       end
 
       def document_number
-        id_auth_field_data['Fields_DocumentNumber']
+        id_auth_field_data&.dig('Fields_DocumentNumber')
       end
 
       def parse_date(year:, month:, day:)
@@ -145,22 +146,22 @@ module DocAuth
           first_name:,
           last_name:,
           middle_name:,
-          name_suffix: id_auth_field_data['Fields_NameSuffix'],
-          address1: id_auth_field_data['Fields_AddressLine1'],
-          address2: id_auth_field_data['Fields_AddressLine2'],
-          city: id_auth_field_data['Fields_City'],
-          state: id_auth_field_data['Fields_State'],
-          zipcode: id_auth_field_data['Fields_PostalCode'],
+          name_suffix: id_auth_field_data&.dig('Fields_NameSuffix'),
+          address1: id_auth_field_data&.dig('Fields_AddressLine1'),
+          address2: id_auth_field_data&.dig('Fields_AddressLine2'),
+          city: id_auth_field_data&.dig('Fields_City'),
+          state: id_auth_field_data&.dig('Fields_State'),
+          zipcode: id_auth_field_data&.dig('Fields_PostalCode'),
           dob:,
           sex:,
-          height: parse_height_value(id_auth_field_data['Fields_Height']),
+          height: parse_height_value(id_auth_field_data&.dig('Fields_Height')),
           weight: nil,
           eye_color: nil,
           state_id_expiration: expiration_date,
           state_id_issued: issue_date,
-          state_id_jurisdiction: id_auth_field_data['Fields_IssuingStateCode'],
+          state_id_jurisdiction: id_auth_field_data&.dig('Fields_IssuingStateCode'),
           state_id_number: document_number,
-          id_doc_type:,
+          document_type_received:,
           issuing_country_code:,
         )
       end
@@ -174,16 +175,16 @@ module DocAuth
           sex:,
           passport_expiration: expiration_date,
           passport_issued: issue_date,
-          id_doc_type:,
+          document_type_received:,
           issuing_country_code:,
           document_number:,
-          birth_place: id_auth_field_data['Fields_BirthPlace'],
-          nationality_code: id_auth_field_data['Fields_NationalityCode'],
-          mrz: id_auth_field_data['Fields_MRZ'],
+          birth_place: id_auth_field_data&.dig('Fields_BirthPlace'),
+          nationality_code: id_auth_field_data&.dig('Fields_NationalityCode'),
+          mrz: id_auth_field_data&.dig('Fields_MRZ'),
         )
       end
 
-      def determine_id_doc_type(doc_class_name:, doc_issue_type:)
+      def determine_document_type_received(doc_class_name:, doc_issue_type:)
         val = if IdentityConfig.store.doc_auth_passports_enabled
                 DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
               else

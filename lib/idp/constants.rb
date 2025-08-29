@@ -131,11 +131,15 @@ module Idp
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      id_doc_type: 'drivers_license',
+      document_type_received: 'drivers_license',
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
     }.freeze
+
+    def self.mock_idv_applicant
+      MOCK_IDV_APPLICANT.dup
+    end
 
     MOCK_IDV_APPLICANT_STATE_ID = {
       address1: '1 FAKE RD',
@@ -154,11 +158,14 @@ module Idp
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      id_doc_type: 'state_id',
+      document_type_received: 'state_id',
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
     }.freeze
+    def self.mock_idv_applicant_state_id
+      MOCK_IDV_APPLICANT_STATE_ID.dup
+    end
 
     MOCK_IPP_APPLICANT = {
       first_name: 'FAKEY',
@@ -192,7 +199,7 @@ module Idp
       passport_issued: '2015-03-15',
       nationality_code: 'USA',
       document_number: '000000',
-      id_doc_type: 'passport',
+      document_type_received: 'passport',
       ssn: '666111111',
       consent_given_at: '2025-06-12 20:16:23 UTC',
       state: 'VA',
@@ -201,11 +208,14 @@ module Idp
       address1: '123 Way St',
       address2: '2nd Address Line',
     }.freeze
+    def self.mock_idv_proofing_passport_applicant
+      MOCK_IDV_PROOFING_PASSPORT_APPLICANT.dup
+    end
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
-      id_doc_type: 'passport',
+      document_type_received: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
       birth_place: 'Birthplace',
@@ -215,12 +225,20 @@ module Idp
       nationality_code: 'USA',
       document_number: nil,
     ).freeze
+    def self.mock_idv_applicant_with_passport
+      MOCK_IDV_APPLICANT_WITH_PASSPORT.dup
+    end
 
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
       same_address_as_id: 'false',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900661234').freeze
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
+      ssn: '900661234',
+    ).freeze
+    def self.mock_idv_applicant_with_ssn
+      MOCK_IDV_APPLICANT_WITH_SSN.dup
+    end
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
@@ -231,6 +249,9 @@ module Idp
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
     ).freeze
+    def self.mock_idv_applicant_state_id_address
+      MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
+    end
 
     # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(

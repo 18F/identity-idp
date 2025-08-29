@@ -7,7 +7,7 @@ module DocAuth
       include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
-      attr_reader :uploaded_file, :config
+      attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal
 
       def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false)
         @uploaded_file = uploaded_file.to_s
@@ -94,7 +94,7 @@ module DocAuth
       def pii_from_doc
         return parsed_pii_from_doc if parsed_data_from_uploaded_file.present?
 
-        if @passport_submittal
+        if passport_submittal
           Pii::Passport.new(**Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT)
         else
           Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
@@ -102,7 +102,7 @@ module DocAuth
       end
 
       def success?
-        doc_auth_success? && (@selfie_required ? selfie_passed? : true)
+        doc_auth_success? && (selfie_required ? selfie_passed? : true)
       end
 
       def attention_with_barcode?
@@ -134,7 +134,7 @@ module DocAuth
       end
 
       def selfie_status
-        if @selfie_required
+        if selfie_required
           return :success if portrait_match_results&.dig(:FaceMatchResult).nil?
           portrait_match_results[:FaceMatchResult] == 'Pass' ? :success : :fail
         else
@@ -163,17 +163,17 @@ module DocAuth
       def parsed_pii_from_doc
         return if !parsed_data_from_uploaded_file.has_key?('document')
 
-        if parsed_data_from_uploaded_file['document']['id_doc_type'] == 'passport'
+        document = parsed_data_from_uploaded_file['document'].symbolize_keys
+        # Check both new field name and old field name for backwards compatibility during deploy
+        doc_type = document[:document_type_received] || document[:id_doc_type]
+
+        if doc_type == 'passport'
           Pii::Passport.new(
-            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
-              parsed_data_from_uploaded_file['document'].symbolize_keys,
-            ).slice(*Pii::Passport.members),
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(document).slice(*Pii::Passport.members),
           )
         else
           Pii::StateId.new(
-            **Idp::Constants::MOCK_IDV_APPLICANT.merge(
-              parsed_data_from_uploaded_file['document'].symbolize_keys,
-            ).slice(*Pii::StateId.members),
+            **Idp::Constants::MOCK_IDV_APPLICANT.merge(document).slice(*Pii::StateId.members),
           )
         end
       end
