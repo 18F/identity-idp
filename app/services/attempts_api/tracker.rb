@@ -94,7 +94,6 @@ module AttemptsApi
         client_port: CloudFrontHeaderParser.new(request).client_port,
         aws_region: IdentityConfig.store.aws_region,
         google_analytics_cookies: google_analytics_cookies(request),
-      }
       }.merge!(extra_metadata(event_type:, metadata:))
     end
 
