@@ -583,6 +583,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          final_submit_attempt: rate_limited?,
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
@@ -592,6 +593,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          final_submit_attempt: rate_limited?,
         )
       elsif mrz_response && !mrz_response.success?
         document_capture_session.store_failed_auth_data(
@@ -603,6 +605,7 @@ module Idv
           selfie_status: client_response.selfie_status,
           errors: mrz_response.errors,
           mrz_status: :failed,
+          final_submit_attempt: rate_limited?,
         )
       end
       # retrieve updated data from session
