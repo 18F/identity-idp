@@ -2,13 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Idv::WelcomeController do
   let(:user) { create(:user) }
-  let(:dos_api_status) { nil }
 
   before do
     stub_sign_in(user)
     stub_analytics
-    stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-      .to_return({ status: 200, body: { status: dos_api_status }.to_json })
   end
 
   describe '#step_info' do
@@ -165,42 +162,46 @@ RSpec.describe Idv::WelcomeController do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       end
 
-      context 'passport api is down' do
-        let(:dos_api_status) { 'NOT UP' }
-        it 'passport allowed is not bucketed' do
-          get :show
+      context 'when facial match is required' do
+        before do
+          subject.idv_session.passport_allowed = true
+          vot = 'Pb'
+          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+          allow(subject).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context)
+          put :show
+        end
 
+        it 'sets passport_allowed to nil on idv session' do
           expect(subject.idv_session.passport_allowed).to be_nil
-          expect(@analytics).to have_logged_event(
-            :passport_api_health_check,
-          )
         end
       end
 
-      context 'passport api is up and running' do
-        let(:dos_api_status) { 'UP' }
+      context 'when the user is not bucketed for passports' do
         let(:passport_bucket) { :default }
 
         before do
-          allow(subject).to receive(:ab_test_bucket).and_call_original
           allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
             .and_return(passport_bucket)
+          get :show
         end
 
-        it 'passport allowed is false in idv session' do
-          get :show
-
+        it 'does not allow passports in idv session' do
           expect(subject.idv_session.passport_allowed).to eq(false)
         end
+      end
 
-        context 'user is AB bucketed to allow passports' do
-          let(:passport_bucket) { :passport_allowed }
+      context 'when the user is bucketed for passports' do
+        let(:passport_bucket) { :passport_allowed }
 
-          it 'passport allowed is true in idv session' do
-            get :show
+        before do
+          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
+            .and_return(passport_bucket)
+          get :show
+        end
 
-            expect(subject.idv_session.passport_allowed).to eq(true)
-          end
+        it 'allows passports in idv session' do
+          expect(subject.idv_session.passport_allowed).to eq(true)
         end
       end
     end
@@ -237,35 +238,6 @@ RSpec.describe Idv::WelcomeController do
       put :update
 
       expect(subject.document_capture_session.passport_status).to be_nil
-    end
-
-    context 'when passport is allowed' do
-      before do
-        subject.idv_session.passport_allowed = true
-      end
-
-      it 'create document capture session without passport allowed' do
-        put :update
-
-        expect(subject.document_capture_session.passport_allowed?).to eq(true)
-      end
-
-      context 'when facial match is required' do
-        before do
-          subject.idv_session.passport_allowed = true
-          vot = 'Pb'
-          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
-          allow(subject).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-        end
-
-        it 'create document capture session without passport allowed' do
-          put :update
-
-          expect(subject.idv_session.passport_allowed).to be_nil
-          expect(subject.document_capture_session.passport_status).to be_nil
-        end
-      end
     end
   end
 end
