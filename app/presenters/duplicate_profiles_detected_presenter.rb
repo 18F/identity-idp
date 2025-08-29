@@ -3,11 +3,11 @@
 class DuplicateProfilesDetectedPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user, :dupe_profile
+  attr_reader :user, :duplicate_profile_set
 
-  def initialize(user:, dupe_profile:)
+  def initialize(user:, duplicate_profile_set:)
     @user = user
-    @dupe_profile = dupe_profile
+    @duplicate_profile_set = duplicate_profile_set
   end
 
   def heading
@@ -15,7 +15,7 @@ class DuplicateProfilesDetectedPresenter
   end
 
   def associated_profiles
-    profiles = Profile.where(id: dupe_profile.profile_ids)
+    profiles = Profile.where(id: duplicate_profile_set.profile_ids)
     profiles.map do |profile|
       dupe_user = profile.user
       email = dupe_user.last_sign_in_email_address.email
