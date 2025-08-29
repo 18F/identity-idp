@@ -6553,24 +6553,30 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user lands on page notifying them multiple profiles contain same information
-  def one_account_duplicate_profiles_detected
-    track_event(:one_account_duplicate_profiles_detected)
+  # Tracks when a user that had duplicate profiles is closed
+  def one_account_duplicate_profile_closed
+    track_event(:one_account_duplicate_profile_closed)
+  end
+
+  # Tracks when a duplicate profile is created for a user
+  def one_account_duplicate_profile_created
+    track_event(:one_account_duplicate_profile_created)
+  end
+
+  # Tracks when a duplicate profile object is updated
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
+  end
+
+  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
+  def one_account_duplicate_profiles_detected_visited
+    track_event(:one_account_duplicate_profiles_detected_visited)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
   # @param [String] source The link that the user followed to visit the page
   def one_account_duplicate_profiles_please_call_visited(source:, **extra)
     track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
-  end
-
-  # Tracks when user says they recognize all accounts that has same profile information.
-  def one_account_recognize_all_profiles
-    track_event(:one_account_recognize_all_profiles)
-  end
-
-  def one_account_unknown_profile_detected
-    track_event(:one_account_unknown_profile_detected)
   end
 
   # Tracks when a sucessful openid authorization request is returned

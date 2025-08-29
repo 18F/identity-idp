@@ -143,8 +143,11 @@ module AbTests
       'Email and Password Authentication',
       'SP redirect initiated',
       :one_account_duplicate_profiles_detected,
-      :one_account_unknown_profile_detected,
-      :one_account_recognize_all_profiles,
+      :one_account_duplicate_profiles_please_call_visited,
+      :one_account_duplicate_profiles_detected_visited,
+      :one_account_duplicate_profile_updated,
+      :one_account_duplicate_profile_created,
+      :one_account_duplicate_profile_closed,
     ].to_set,
     buckets: {
       one_account_user_verification_enabled:
