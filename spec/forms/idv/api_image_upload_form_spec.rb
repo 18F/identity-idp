@@ -948,6 +948,31 @@ RSpec.describe Idv::ApiImageUploadForm do
             .to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
         end
       end
+
+      context 'when on the final submit attempt' do
+        let(:liveness_checking_required) { true }
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:errors) do
+          { selfie: 'glare' }
+        end
+        let(:back_image) { DocAuthImageFixtures.portrait_match_fail_yaml }
+
+        before do
+          allow(failed_response).to receive(:doc_auth_success?).and_return(true)
+          allow(failed_response).to receive(:selfie_status).and_return(:fail)
+          r = RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+          r.increment!
+          r.increment!
+          r.increment!
+        end
+
+        it 'sets the final submit attempt to true in the document_capture_session' do
+          form.submit
+          session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+          capture_result = session.load_result
+          expect(capture_result.final_submit_attempt).to be(true)
+        end
+      end
     end
 
     context 'PII validation from client response fails' do
@@ -994,6 +1019,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         capture_result = session.load_result
         expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
         expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
+        expect(capture_result.final_submit_attempt).to be(false)
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
@@ -1014,6 +1040,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
           form.submit
           session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
@@ -1021,6 +1048,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_selfie_image_fingerprints).to be_nil
+          expect(capture_result.final_submit_attempt).to be(false)
           response = form.submit
           expect(response.errors).to have_key(:front)
           expect(response.errors).to have_key(:back)
@@ -1038,6 +1066,26 @@ RSpec.describe Idv::ApiImageUploadForm do
             side: 'both',
             document_type_requested: document_type,
           )
+        end
+      end
+
+      context 'when on the final submit attempt' do
+        let(:liveness_checking_required) { true }
+        let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
+        let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+
+        before do
+          r = RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+          r.increment!
+          r.increment!
+          r.increment!
+        end
+
+        it 'sets final submit attempt to true in the document_capture_session' do
+          form.submit
+          session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+          capture_result = session.load_result
+          expect(capture_result.final_submit_attempt).to be(true)
         end
       end
     end
@@ -1156,6 +1204,43 @@ RSpec.describe Idv::ApiImageUploadForm do
               error_reason: 'just because',
               exception: 'Exception message',
               errors: { network: 'true' },
+            )
+          end
+        end
+
+        context 'when on the final submit attempt' do
+          let(:failed_passport_mrz_response) do
+            DocAuth::Response.new(
+              success: false,
+              errors: { passport: 'invalid MRZ' },
+              extra: {
+                vendor: 'DoS',
+                correlation_id_sent: 'something',
+                correlation_id_received: 'something else',
+                response: 'NO',
+              },
+            )
+          end
+          let(:document_type) { 'Passport' }
+
+          before do
+            allow_any_instance_of(DocAuth::Mock::DosPassportApiClient)
+              .to receive(:fetch)
+              .and_return(failed_passport_mrz_response)
+            r = RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+            r.increment!
+            r.increment!
+            r.increment!
+          end
+
+          it 'stores the final submit attempt true in the document_capture_session' do
+            response
+
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              success: false,
+              pii: nil,
+              failed_passport_image_fingerprints: a_kind_of(Array),
+              final_submit_attempt: true,
             )
           end
         end

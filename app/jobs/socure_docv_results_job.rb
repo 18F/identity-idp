@@ -37,6 +37,7 @@ class SocureDocvResultsJob < ApplicationJob
         back_image_fingerprint: nil,
         passport_image_fingerprint: nil,
         selfie_image_fingerprint: nil,
+        final_submit_attempt: rate_limiter.limited?,
       )
 
       record_attempt(docv_result_response:)
@@ -55,6 +56,7 @@ class SocureDocvResultsJob < ApplicationJob
         back_image_fingerprint: nil,
         passport_image_fingerprint: nil,
         selfie_image_fingerprint: nil,
+        final_submit_attempt: rate_limiter.limited?,
       )
       record_attempt(docv_result_response:, doc_pii_response:)
       return
@@ -71,6 +73,7 @@ class SocureDocvResultsJob < ApplicationJob
         passport_image_fingerprint: nil,
         selfie_image_fingerprint: nil,
         mrz_status: :failed,
+        final_submit_attempt: rate_limiter.limited?,
       )
       record_attempt(docv_result_response:, doc_pii_response:)
       return
