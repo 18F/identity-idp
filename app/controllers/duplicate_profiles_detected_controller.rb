@@ -39,7 +39,7 @@ class DuplicateProfilesDetectedController < ApplicationController
     dupe_profile.profile_ids.each do |profile_id|
       next if current_user.active_profile.id == profile_id
       profile = Profile.find(profile_id)
-      AlertUserDuplicateProfileDiscoveredJob.perform_now(
+      AlertUserDuplicateProfileDiscoveredJob.perform_later(
         user: profile.user,
         agency: agency_name,
         type: AlertUserDuplicateProfileDiscoveredJob::DUPE_PROFILE_DETECTED[source],
