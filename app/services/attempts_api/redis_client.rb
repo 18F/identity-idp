@@ -4,9 +4,23 @@ module AttemptsApi
   class RedisClient
     def write_event(event_key:, jwe:, timestamp:, issuer:)
       key = key(timestamp, issuer)
+
       REDIS_ATTEMPTS_API_POOL.with do |client|
         client.hset(key, event_key, jwe)
         client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
+      end
+    end
+
+    def write_many_events(event_key:, jwe:, timestamp:, issuer:, count: 100)
+      key = key(timestamp, issuer)
+
+      REDIS_ATTEMPTS_API_POOL.with do |client|
+        client.pipelined do |pipeline|
+          count.times do
+            client.hset(key, SecureRandom.uuid, jwe)
+          end
+          client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
+        end
       end
     end
 

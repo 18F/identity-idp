@@ -59,7 +59,7 @@ module AttemptsApi
         public_key: sp.attempts_public_key,
       )
 
-      redis_client.write_event(
+      redis_client.write_many_events(
         event_key: event.jti,
         jwe: jwe,
         timestamp: event.occurred_at,
@@ -120,9 +120,9 @@ module AttemptsApi
 
     def self.infinite_loop(sleep_time: 0.1, num_events: 10, total_events: 100)
       # redis_client = AttemptsApi::RedisClient.new
-      sleep_time = 0.01
-      num_events = 10_000
-      total_events = 100_000
+      sleep_time = 0.00
+      num_events = 100
+      total_events = 10_000
       user = EmailAddress.confirmed.first.user
       request = ActionDispatch::Request.new(
         'HTTP_HOST' => 'www.login.gov',
@@ -138,13 +138,13 @@ module AttemptsApi
         user: user,
         sp: service_provider,
         cookie_device_uuid: cookie_uuid,
-        sp_request_uri: 'www.example.com',
+        sp_redirect_uri: 'www.example.com',
         enabled_for_session: true,
       )
 
       total_saved_events = 0
       while total_saved_events < total_events do
-        puts "#{Time.zone.now}: creating #{num_events} events"
+        puts "#{Time.zone.now}: creating #{num_events * 100} events"
         num_events.times do
           tracker.forgot_password_email_confirmed(success: true)
           total_saved_events += 1
@@ -167,7 +167,7 @@ module AttemptsApi
       acks = []
       while true do
         params = {
-          maxEvents: 600,
+          maxEvents: 1000,
           ack: acks,
         }
 
