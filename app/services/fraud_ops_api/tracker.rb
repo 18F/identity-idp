@@ -23,6 +23,7 @@ module FraudOpsApi
     def jwe(event)
       if fraudops_key_exists?
         super
+      # TODO: Remove this and add handling for missing key once encryption testing is finalized
       else
         event.payload_json(issuer:)
       end
