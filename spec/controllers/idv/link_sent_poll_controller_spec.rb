@@ -74,9 +74,36 @@ RSpec.describe Idv::LinkSentPollController do
       end
     end
 
-    context 'when the user is rate limited' do
+    context 'when document_capture_session is a failure' do
       before do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+        )
+      end
+
+      it 'returns unauthorized' do
+        get :show
+
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when document_capture_session has final_submit_attempt as true' do
+      before do
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+          final_submit_attempt: true,
+        )
       end
 
       it 'returns rate_limited with redirect' do

@@ -28,7 +28,7 @@ module Idv
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
-        elsif rate_limiter.limited? && !session_result_passed?
+        elsif final_attempt_submitted?
           :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
@@ -46,7 +46,7 @@ module Idv
     def redirect_url
       return unless document_capture_session
 
-      if rate_limiter.limited? && !session_result_passed?
+      if final_attempt_submitted?
         idv_session_errors_rate_limited_url
       elsif user_has_establishing_in_person_enrollment?
         idv_in_person_url
@@ -76,11 +76,8 @@ module Idv
       idv_session.document_capture_session_uuid
     end
 
-    def rate_limiter
-      @rate_limiter ||= RateLimiter.new(
-        user: document_capture_session.user,
-        rate_limit_type: :idv_doc_auth,
-      )
+    def final_attempt_submitted?
+      session_result&.final_submit_attempt == true
     end
 
     def user_has_establishing_in_person_enrollment?
