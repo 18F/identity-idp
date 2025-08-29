@@ -19,6 +19,12 @@ class ServiceProviderSeeder
   end
 
   def run_review_app(dashboard_url:)
+    # If a valid, matching service provider config was patched in, use that instead of the default
+    if service_provider_config_path.exist? &&
+       service_provider_config_path.read.include?(dashboard_url)
+      return run
+    end
+
     issuer = 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard'
     config = {
       'friendly_name' => 'Dashboard',
@@ -42,7 +48,7 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
+    file = service_provider_config_path.read
     file.gsub!('%{env}', deploy_env) if deploy_env
     YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
@@ -51,6 +57,10 @@ class ServiceProviderSeeder
   rescue KeyError => key_error
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
+  end
+
+  def service_provider_config_path
+    Rails.root.join(@yaml_path, 'service_providers.yml')
   end
 
   def write_service_provider?(config)
