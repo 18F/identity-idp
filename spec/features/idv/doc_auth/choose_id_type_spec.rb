@@ -215,7 +215,6 @@ RSpec.feature 'choose id type step error checking' do
           visible: :all,
           disabled: true,
         )
-        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
       end
