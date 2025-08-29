@@ -12,6 +12,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:context_analytics) { { step: step } }
   let(:passport_status) { nil }
   let(:document_capture_session) { create(:document_capture_session, passport_status:) }
+  let(:id_type) { 'drivers_license' }
   let(:parameters) do
     ActionController::Parameters.new(
       {
@@ -206,7 +207,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       it 'returns expected local attributes' do
         expect(
-          subject.locals_attrs(analytics:, presenter:, form_submit_url:),
+          subject.locals_attrs(presenter:, form_submit_url:),
         ).to include(
           presenter:,
           form_submit_url:,
@@ -218,12 +219,13 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
     context 'when the dos passport api is not healthy' do
       before do
-        allow(response).to receive(:success?).and_return(false)
+        parameters[:passports] = 'false'
+        allow(controller).to receive(:params).and_return(parameters)
       end
 
       it 'returns expected local attributes' do
         expect(
-          subject.locals_attrs(analytics:, presenter:, form_submit_url:),
+          subject.locals_attrs(presenter:, form_submit_url:),
         ).to include(
           presenter:,
           form_submit_url:,
