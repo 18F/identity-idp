@@ -37,6 +37,9 @@ RSpec.describe Idv::LinkSentPollController do
 
   describe '#show' do
     let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
+    let(:rate_limiter) do
+      RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+    end
 
     before do
       subject.idv_session.document_capture_session_uuid = document_capture_session.uuid if user
@@ -49,6 +52,20 @@ RSpec.describe Idv::LinkSentPollController do
         get :show
 
         expect(response).to redirect_to root_url
+      end
+    end
+
+    context 'when document_captures_session has no results' do
+      context 'when the user is rate limited' do
+        before do
+          rate_limiter.increment_to_limited!
+        end
+
+        it 'returns pending results' do
+          get :show
+
+          expect(response.status).to eq(202)
+        end
       end
     end
 
@@ -74,9 +91,37 @@ RSpec.describe Idv::LinkSentPollController do
       end
     end
 
-    context 'when the user is rate limited' do
+    context 'when document_capture_session is a failure' do
       before do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+          attempt: 1,
+        )
+      end
+
+      it 'returns unauthorized' do
+        get :show
+
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'when attempt is equal to doc_auth_max_attempts in document_capture_session' do
+      before do
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+          attempt: IdentityConfig.store.doc_auth_max_attempts,
+        )
       end
 
       it 'returns rate_limited with redirect' do
@@ -84,6 +129,63 @@ RSpec.describe Idv::LinkSentPollController do
 
         expect(response.status).to eq(429)
         expect(JSON.parse(response.body)).to include('redirect')
+      end
+    end
+
+    context 'when attempt is not stored in document_capture_session' do
+      before do
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+          attempt: nil,
+        )
+      end
+
+      context 'when the rate_limit is reached' do
+        before do
+          rate_limiter.increment_to_limited!
+        end
+
+        it 'returns rate_limited with redirect' do
+          get :show
+
+          expect(response.status).to eq(429)
+          expect(JSON.parse(response.body)).to include('redirect')
+        end
+      end
+
+      context 'when the rate limit is not reached' do
+        it 'returns unauthorized' do
+          get :show
+
+          expect(response.status).to eq(401)
+        end
+      end
+    end
+
+    context 'when document_capture_session does not have results' do
+      context 'when the rate_limit is reached' do
+        before do
+          rate_limiter.increment_to_limited!
+        end
+
+        it 'returns pending results' do
+          get :show
+
+          expect(response.status).to eq(202)
+        end
+      end
+
+      context 'when the rate limit is not reached' do
+        it 'returns pending results' do
+          get :show
+
+          expect(response.status).to eq(202)
+        end
       end
     end
 
@@ -97,7 +199,7 @@ RSpec.describe Idv::LinkSentPollController do
 
     context 'when capture succeeded' do
       before do
-        document_capture_session.store_result_from_response(doc_auth_response)
+        document_capture_session.store_result_from_response(doc_auth_response, attempt: 1)
       end
 
       it 'returns success' do
@@ -109,7 +211,10 @@ RSpec.describe Idv::LinkSentPollController do
 
     context 'when capture succeeded with barcode attention' do
       before do
-        document_capture_session.store_result_from_response(barcode_attention_auth_response)
+        document_capture_session.store_result_from_response(
+          barcode_attention_auth_response,
+          attempt: 1,
+        )
       end
 
       context 'when barcode attention result is pending confirmation' do
@@ -153,7 +258,7 @@ RSpec.describe Idv::LinkSentPollController do
           subject.idv_session.had_barcode_attention_error = true
           document_capture_session.update(ocr_confirmation_pending: false)
 
-          document_capture_session.store_result_from_response(doc_auth_response)
+          document_capture_session.store_result_from_response(doc_auth_response, attempt: 1)
         end
 
         it 'assigns idv session values as not having received attention result' do

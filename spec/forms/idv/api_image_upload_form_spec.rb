@@ -389,6 +389,19 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
+      it 'stores data in the document_capture_session' do
+        form.submit
+
+        expect(document_capture_session.reload.load_result).to have_attributes(
+          success: true,
+          doc_auth_success: true,
+          attention_with_barcode: false,
+          selfie_status: :not_processed,
+          errors: {},
+          attempt: 1,
+        )
+      end
+
       it 'returns the expected response' do
         response = form.submit
 
@@ -942,10 +955,69 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result.failed_front_image_fingerprints).to match_array([])
           expect(capture_result.failed_back_image_fingerprints).to match_array([])
           expect(capture_result.failed_selfie_image_fingerprints.length).to eq(1)
+          expect(capture_result.attempt).to eq(1)
           response = form.submit
           expect(response.errors).to have_key(:selfie)
           expect(response.errors)
             .to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
+        end
+      end
+
+      context 'when the error is a network error' do
+        let(:errors) { {} }
+
+        before do
+          allow(failed_response).to receive(:success?).and_return(false)
+          allow(failed_response).to receive(:network_error?).and_return(true)
+          allow(failed_response).to receive(:errors).and_return(errors)
+          allow(failed_response).to receive(:selfie_status).and_return(:fail)
+          form.submit
+        end
+
+        it 'stores the failed doc auth data in the document_capture_session' do
+          expect(document_capture_session.reload.load_result).to have_attributes(
+            failed_front_image_fingerprints: [],
+            failed_back_image_fingerprints: [],
+            failed_passport_image_fingerprints: [],
+            failed_selfie_image_fingerprints: [],
+            doc_auth_success: false,
+            selfie_status: :fail,
+            attempt: 1,
+            errors:,
+          )
+        end
+
+        context 'when failed images exist in document_capture_session' do
+          let(:front_image_fingerprint) { 'front-1' }
+          let(:back_image_fingerprint) { 'back-1' }
+          let(:passport_image_fingerprint) { 'passport-1' }
+          let(:selfie_image_fingerprint) { 'selfie-1' }
+
+          before do
+            document_capture_session.store_failed_auth_data(
+              front_image_fingerprint:,
+              back_image_fingerprint:,
+              passport_image_fingerprint:,
+              selfie_image_fingerprint:,
+              doc_auth_success: false,
+              selfie_status: :fail,
+              attempt: 1,
+            )
+            form.submit
+          end
+
+          it 'does not add or remove failed images in the document_capture_session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              success: false,
+              failed_front_image_fingerprints: [front_image_fingerprint],
+              failed_back_image_fingerprints: [back_image_fingerprint],
+              failed_passport_image_fingerprints: [passport_image_fingerprint],
+              failed_selfie_image_fingerprints: [selfie_image_fingerprint],
+              doc_auth_success: false,
+              selfie_status: :fail,
+              attempt: 1,
+            )
+          end
         end
       end
     end
@@ -994,6 +1066,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         capture_result = session.load_result
         expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
         expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
+        expect(capture_result.attempt).to eq(1)
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
@@ -1014,6 +1087,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
+
         it 'keeps fingerprints of failed image and triggers error when submit same image' do
           form.submit
           session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
@@ -1021,6 +1095,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_selfie_image_fingerprints).to be_nil
+          expect(capture_result.success).to be(false)
+          expect(capture_result.attempt).to eq(1)
           response = form.submit
           expect(response.errors).to have_key(:front)
           expect(response.errors).to have_key(:back)
@@ -1102,6 +1178,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             pii: nil,
             failed_passport_image_fingerprints: a_kind_of(Array),
+            attempt: 1,
           )
         end
 
@@ -1484,6 +1561,24 @@ RSpec.describe Idv::ApiImageUploadForm do
         allow(client_response).to receive(:success?).and_return(false)
         allow(client_response).to receive(:network_error?).and_return(true)
         allow(client_response).to receive(:errors).and_return(errors)
+        allow(client_response).to receive(:doc_auth_success?).and_return(false)
+        allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+      end
+
+      it 'does not store failed images' do
+        form.send(:validate_form)
+        capture_result = form.send(:store_failed_images, client_response, nil, nil)
+        expect(capture_result[:front]).to be_empty
+        expect(capture_result[:back]).to be_empty
+        expect(capture_result[:passport]).to be_empty
+      end
+    end
+
+    context 'when client_response is successful' do
+      before do
+        allow(client_response).to receive(:success?).and_return(true)
+        allow(client_response).to receive(:network_error?).and_return(false)
+        allow(client_response).to receive(:doc_auth_success?).and_return(true)
         allow(client_response).to receive(:selfie_status).and_return(:not_processed)
       end
 
@@ -1520,7 +1615,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
           end
 
-          it 'stores the failed passport image' do
+          it 'stores failed passport image' do
             form.send(:validate_form)
             capture_result = form.send(
               :store_failed_images,
@@ -1530,7 +1625,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
             expect(capture_result[:front]).to be_empty
             expect(capture_result[:back]).to be_empty
-            expect(capture_result[:passport]).to_not be_empty
+            expect(capture_result[:passport]).not_to be_empty
           end
         end
 
