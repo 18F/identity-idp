@@ -15,7 +15,6 @@ module Idv
 
       render 'idv/shared/choose_id_type',
              locals: locals_attrs(
-               analytics:,
                presenter: Idv::ChooseIdTypePresenter.new,
                form_submit_url: idv_choose_id_type_path,
              ),
@@ -33,7 +32,10 @@ module Idv
           .merge({ chosen_id_type: }),
       )
 
-      if result.success?
+      if passport_chosen? &&
+         !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+        redirect_to idv_choose_id_type_url(passports: false)
+      elsif result.success?
         set_passport_requested
         redirect_to next_step
       else

@@ -100,11 +100,16 @@ RSpec.feature 'mobile hybrid flow choose id type', :js do
     perform_in_browser(:mobile) do
       visit @sms_link
       expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+      click_on t('forms.buttons.continue')
+      expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url(passports: false))
       expect(page).to have_field(
         'doc_auth_choose_id_type_preference_passport',
         visible: :all,
         disabled: true,
       )
+      click_on t('forms.buttons.continue')
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
     end
   end
 end
