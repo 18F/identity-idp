@@ -66,18 +66,4 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
     end
   end
-
-  describe '#redirect_unless_user_has_active_duplicate_profile_confirmation' do
-    context 'when user does not have an active profile' do
-      before do
-        allow(controller).to receive(:current_user).and_return(user)
-        allow(user).to receive(:active_profile).and_return(nil)
-        allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
-      end
-
-      it 'updates dupe profile confirmation' do
-        get :show
-      end
-    end
-  end
 end

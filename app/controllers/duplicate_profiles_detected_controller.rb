@@ -2,7 +2,7 @@
 
 class DuplicateProfilesDetectedController < ApplicationController
   before_action :confirm_two_factor_authenticated
-  before_action :redirect_unless_user_has_active_duplicate_profile_confirmation
+  before_action :redirect_unless_user_has_active_duplicate_profile
 
   def show
     @dupe_profiles_detected_presenter = DuplicateProfilesDetectedPresenter.new(
@@ -15,7 +15,7 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   private
 
-  def redirect_unless_user_has_active_duplicate_profile_confirmation
+  def redirect_unless_user_has_active_duplicate_profile
     if current_user&.active_profile.present?
       if dupe_profile.present?
         return
