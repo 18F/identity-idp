@@ -561,9 +561,9 @@ RSpec.describe ActionAccount do
           )
         end
         let(:user) { profile.user }
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: [user.profiles.active.sole.id],
           )
         end
@@ -655,9 +655,9 @@ RSpec.describe ActionAccount do
           )
         end
         let(:user) { profile.user }
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: [user.profiles.active.sole.id],
           )
         end
@@ -749,9 +749,9 @@ RSpec.describe ActionAccount do
           )
         end
         let(:user) { profile.user }
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: [user.profiles.active.sole.id],
           )
         end

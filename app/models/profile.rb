@@ -258,7 +258,7 @@ class Profile < ApplicationRecord
 
   def deactivate_duplicate
     raise 'Profile not active' unless active
-    raise 'Profile not a duplicate' unless DuplicateProfile.open.exists?(
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids)', id],
     )
 
@@ -268,7 +268,7 @@ class Profile < ApplicationRecord
         fraud_review_pending_at: nil,
         fraud_rejection_at: Time.zone.now,
       )
-      DuplicateProfile.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
         if duplicate_profile.profile_ids.length > 1
           duplicate_profile.profile_ids.delete(id)
           duplicate_profile.save
@@ -293,15 +293,15 @@ class Profile < ApplicationRecord
 
   def clear_duplicate
     raise 'Profile not active' unless active
-    raise 'Profile not a duplicate' unless DuplicateProfile.open.exists?(
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids)', id],
     )
-    raise 'Profile has other duplicates' if DuplicateProfile.open.exists?(
+    raise 'Profile has other duplicates' if DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids) AND cardinality(profile_ids) > 1', id],
     )
 
     transaction do
-      DuplicateProfile.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
         duplicate_profile.update!(
           closed_at: Time.zone.now,
           self_serviced: false,
@@ -321,12 +321,12 @@ class Profile < ApplicationRecord
 
   def close_inconclusive_duplicate
     raise 'Profile not active' unless active
-    raise 'Profile not a duplicate' unless DuplicateProfile.open.exists?(
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids)', id],
     )
 
     transaction do
-      DuplicateProfile.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
         if duplicate_profile.profile_ids.length > 1
           duplicate_profile.profile_ids.delete(id)
           duplicate_profile.save

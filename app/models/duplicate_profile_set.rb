@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DuplicateProfile < ApplicationRecord
+class DuplicateProfileSet < ApplicationRecord
   scope :open, -> { where(closed_at: nil) }
 
   def self.involving_profiles(profile_ids:, service_provider:)

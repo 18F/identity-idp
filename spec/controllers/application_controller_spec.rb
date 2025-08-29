@@ -630,8 +630,8 @@ RSpec.describe ApplicationController do
         expect(response.body).to eq('false')
       end
 
-      it 'returns false even with duplicate profile confirmations' do
-        create(:duplicate_profile, profile_ids: [profile.id], service_provider: 'wrong-sp')
+      it 'returns false even with duplicate profiles' do
+        create(:duplicate_profile_set, profile_ids: [profile.id], service_provider: 'wrong-sp')
 
         get :index
         expect(response.body).to eq('false')
@@ -655,11 +655,11 @@ RSpec.describe ApplicationController do
             expect(response.body).to eq('false')
           end
         end
-        context 'when duplicate profile ids found in session' do
+        context 'when duplicate profile ids found' do
           before do
             create(
-              :duplicate_profile, profile_ids: [active_profile.id],
-                                  service_provider: sp.issuer
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: sp.issuer
             )
           end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_18_192257) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_182800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -221,7 +221,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_192257) do
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
 
-  create_table "duplicate_profiles", force: :cascade do |t|
+  create_table "duplicate_profile_sets", force: :cascade do |t|
     t.string "service_provider", limit: 255, null: false, comment: "sensitive=false"
     t.bigint "profile_ids", null: false, comment: "sensitive=false", array: true
     t.datetime "closed_at", comment: "sensitive=false"
@@ -229,8 +229,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_192257) do
     t.boolean "fraud_investigation_conclusive", comment: "sensitive=false"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
-    t.index ["profile_ids"], name: "index_duplicate_profiles_on_profile_ids", using: :gin
-    t.index ["service_provider", "profile_ids"], name: "index_duplicate_profiles_on_service_provider_and_profile_ids", unique: true
+    t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids", using: :gin
+    t.index ["service_provider", "profile_ids"], name: "idx_on_service_provider_profile_ids_7f75d24ae3", unique: true
   end
 
   create_table "email_addresses", force: :cascade do |t|
