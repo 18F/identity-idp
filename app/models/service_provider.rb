@@ -48,6 +48,8 @@ class ServiceProvider < ApplicationRecord
 
   DEFAULT_LOGO = 'generic.svg'
 
+  before_update -> { Rails.logger.warn "Certs are currently #{certs}" }
+
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
   end
