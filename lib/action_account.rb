@@ -398,7 +398,7 @@ class ActionAccount
         user: profile.user,
         sp: profile.initiating_service_provider,
         cookie_device_uuid: nil,
-        sp_request_uri: nil,
+        sp_redirect_uri: nil,
       )
     end
   end
