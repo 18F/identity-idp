@@ -15,10 +15,10 @@ module Api
 
       def poll
         deleted_events_count = 0
-        if poll_params[:acks].present?
+        if poll_params[:ack].present?
           deleted_events_count = redis_client.delete_events(
             issuer: request_token.issuer,
-            keys: poll_params[:acks],
+            keys: poll_params[:ack],
           )
         end
 
@@ -30,7 +30,7 @@ module Api
         analytics.attempts_api_poll_events_request(
           issuer: request_token.issuer,
           requested_events_count: batch_size,
-          requested_acknowledged_events_count: poll_params[:acks]&.length,
+          requested_acknowledged_events_count: poll_params[:ack]&.length,
           returned_events_count: sets.count,
           acknowledged_events_count: deleted_events_count,
           success: true,
@@ -56,7 +56,7 @@ module Api
       end
 
       def poll_params
-        params.permit(:maxEvents, acks: [])
+        params.permit(:maxEvents, ack: [])
       end
 
       def batch_size
