@@ -3,7 +3,7 @@ properties:
   application_url:
     type: string
     description: |
-      Indicates the SP URL (redirect_uri) from which the action was triggered.
+      Indicates the SP URL (redirect_uri) where the user will be redirected after authentication.
   aws_region:
     type: string
     description: AWS Region in which the event occurred.

@@ -254,7 +254,7 @@ RSpec.describe ServiceProviderSession do
       let(:url) { "https://example.com/auth?param0=p0&redirect_uri=#{redirect_uri}&param2=p2" }
 
       it 'returns the redirect_uri' do
-        expect(subject.attempts_api_request_uri).to eq redirect_uri
+        expect(subject.attempts_api_redirect_uri).to eq redirect_uri
       end
     end
 
@@ -265,7 +265,7 @@ RSpec.describe ServiceProviderSession do
         let(:url) { 'https://example.com/auth?param0=p0' }
 
         it 'returns the redirect_uri' do
-          expect(subject.attempts_api_request_uri).to eq redirect_uri
+          expect(subject.attempts_api_redirect_uri).to eq redirect_uri
         end
       end
     end

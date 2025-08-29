@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
       sp: current_sp,
       cookie_device_uuid: cookies[:device],
       # this only works for oidc
-      sp_request_uri: attempts_api_request_uri,
+      sp_redirect_uri: attempts_api_redirect_uri,
       enabled_for_session: attempts_api_enabled_for_session?,
     )
   end
@@ -148,8 +148,8 @@ class ApplicationController < ActionController::Base
     @attempts_api_session_id ||= decorated_sp_session.attempts_api_session_id
   end
 
-  def attempts_api_request_uri
-    @attempts_api_request_uri ||= decorated_sp_session.attempts_api_request_uri
+  def attempts_api_redirect_uri
+    @attempts_api_redirect_uri ||= decorated_sp_session.attempts_api_redirect_uri
   end
 
   # These attributes show up in New Relic traces for all requests.

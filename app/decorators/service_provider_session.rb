@@ -15,7 +15,7 @@ class ServiceProviderSession
     request_url_params['attempts_api_session_id'] || request_url_params['tid']
   end
 
-  def attempts_api_request_uri
+  def attempts_api_redirect_uri
     request_url_params[:redirect_uri] || sp&.acs_url
   end
 
