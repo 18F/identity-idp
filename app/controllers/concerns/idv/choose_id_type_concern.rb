@@ -6,8 +6,12 @@ module Idv
       choose_id_type_form_params[:choose_id_type_preference]
     end
 
+    def passport_chosen?
+      chosen_id_type == 'passport'
+    end
+
     def set_passport_requested
-      if chosen_id_type == 'passport'
+      if passport_chosen?
         unless document_capture_session.passport_requested?
           document_capture_session.update!(
             passport_status: 'requested',
@@ -47,8 +51,8 @@ module Idv
       response.success?
     end
 
-    def locals_attrs(analytics:, presenter:, form_submit_url: nil)
-      dos_passport_api_down = !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+    def locals_attrs(presenter:, form_submit_url: nil)
+      dos_passport_api_down = params.permit(:passports)[:passports].present?
       {
         presenter:,
         form_submit_url:,
