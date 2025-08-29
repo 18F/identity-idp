@@ -8,6 +8,7 @@ module Idv
     include Idv::ChooseIdTypeConcern
 
     before_action :redirect_if_passport_not_available
+    before_action :confirm_step_allowed
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
@@ -45,10 +46,10 @@ module Idv
         key: :choose_id_type,
         controller: self,
         next_steps: [:document_capture],
-        preconditions: ->(idv_session:, user:) {
+        preconditions: ->(idv_session:, user:) do
           idv_session.flow_path == 'standard' &&
-            idv_session.passport_allowed == true
-        },
+          idv_session.passport_allowed == true
+        end,
         undo_step: ->(idv_session:, user:) do
           if idv_session.document_capture_session_uuid
             DocumentCaptureSession.find_by(
