@@ -8,12 +8,13 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
   let(:name) { 'fraud-blocks-proofing-rate-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    # help with this line to better understand it -------------------------------------------------
     'int/fraud-blocks-proofing-rate-report/2021/2021-03-02.fraud-blocks-proofing-rate-report'
   end
 
   let(:expected_s3_paths) do
     [
+      "#{report_folder}/overview.csv",
+      "#{report_folder}/proofing_success_metrics.csv",
       "#{report_folder}/suspected_fraud_blocks_metrics.csv",
       "#{report_folder}/key_points_user_friction_metrics.csv",
       "#{report_folder}/successful_ipp.csv",
@@ -27,7 +28,23 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
       bucket: 'reports-bucket.1234-us-west-1',
     }
   end
-  # help on these ----------------------------------------------------------------
+
+  let(:mock_overview_data) do
+    [
+      ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
+      ['Report Generated', Time.zone.today.to_s],
+      ['Issuer', 'All Issuers'],
+    ]
+  end
+
+  let(:mock_proofing_success_data) do
+    [
+      ['Metric', 'Total', 'Range Start', 'Range End'],
+      ['Identity Verified Users', 100, time_range.begin.to_s, time_range.end.to_s],
+      ['Idv Rate w/Preverified Users', 85, time_range.begin.to_s, time_range.end.to_s],
+    ]
+  end
+
   let(:mock_suspected_fraud_blocks_metrics_data) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -59,9 +76,8 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
       ['Successful IPP', 12000,  time_range.begin.to_s, time_range.end.to_s],
     ]
   end
-  # help end --------------------------------------------------------------------
 
-  let(:mock_test_auth_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:mock_test_fraud_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
   let(:mock_test_auth_issuers) { ['issuer1'] }
 
   before do
@@ -78,7 +94,13 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
     }
 
     allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails)
-      .and_return(mock_test_auth_emails)
+      .and_return(mock_test_fraud_emails)
+
+    allow(report.fraud_blocks_proofing_rate_report).to receive(:overview_table)
+      .and_return(mock_overview_data)
+
+    allow(report.fraud_blocks_proofing_rate_report).to receive(:proofing_success_metrics_table)
+      .and_return(mock_proofing_success_data)
 
     allow(report.fraud_blocks_proofing_rate_report).to receive(
       :suspected_fraud_blocks_metrics_table,
@@ -97,7 +119,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'Fraud Blocks and Proofing Rate Report - 2021-03-02',
+      subject: 'Fraud Blocks Proofing Rate Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
@@ -132,7 +154,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
       let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
       it 'emails the whole fraud team' do
-        expected_array = mock_test_auth_emails
+        expected_array = mock_test_fraud_emails
 
         expect(report.emails).to match_array(expected_array)
       end
