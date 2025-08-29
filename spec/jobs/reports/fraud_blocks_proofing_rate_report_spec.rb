@@ -127,6 +127,27 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
     report.perform(report_date)
   end
 
+  describe '#emails' do
+    context 'on the first of the month' do
+      let(:report_date) { Date.new(2021, 3, 1).prev_day }
+
+      it 'emails the whole fraud team' do
+        expected_array = mock_test_auth_emails
+
+        expect(report.emails).to match_array(expected_array)
+      end
+    end
+
+    context 'during the rest of the month' do
+      let(:report_date) { Date.new(2021, 3, 2).prev_day }
+      it 'only emails test_fraud_reports' do
+        expect(report.emails).to match_array(
+          mock_test_fraud_emails,
+        )
+      end
+    end
+  end
+
   describe '#preamble' do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
