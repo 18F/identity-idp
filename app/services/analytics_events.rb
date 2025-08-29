@@ -6783,6 +6783,63 @@ module AnalyticsEvents
     )
   end
 
+  # Passport validation succeeded
+  # @param [String] vendor Vendor used for passport validation ('TrueID' or 'Socure')
+  def passport_success(
+    vendor:,
+    **extra
+  )
+    track_event(
+      :passport_success,
+      vendor: vendor,
+      **extra,
+    )
+  end
+
+  # Passport document tampering was detected by vendor
+  # @param [String] vendor Vendor that detected tampering ('TrueID' or 'Socure')
+  # @param [String] document_type Type of document that had tampering detected
+  # @param [Array<String>] alert_names Names of alerts that fired for tampering
+  def passport_tampering_detected(
+    vendor:,
+    document_type:,
+    alert_names: nil,
+    **extra
+  )
+    track_event(
+      :passport_tampering_detected,
+      vendor: vendor,
+      document_type: document_type,
+      alert_names: alert_names,
+      **extra,
+    )
+  end
+
+  # Passport validation event with vendor-specific success tracking
+  # @param [String] vendor Vendor used for passport validation ('TrueID' or 'Socure')
+  # @param [Boolean] success Whether the validation was successful
+  # @param [Boolean] is_passport Whether this was a passport document
+  # @param [Boolean] tampering_detected Whether document tampering was detected
+  # @param [Array<String>] reason_codes Error/reason codes returned by vendor
+  def passport_validation(
+    vendor:,
+    success:,
+    is_passport:,
+    tampering_detected: false,
+    reason_codes: nil,
+    **extra
+  )
+    track_event(
+      :passport_validation,
+      vendor: vendor,
+      success: success,
+      is_passport: is_passport,
+      tampering_detected: tampering_detected,
+      reason_codes: reason_codes,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] active_profile_present Whether active profile existed at time of change
@@ -7195,6 +7252,22 @@ module AnalyticsEvents
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
+  end
+
+  # User successfully proofed with passport
+  # @param [String] vendor Vendor used for passport validation ('TrueID' or 'Socure')
+  # @param [String] address_verification_method Method used to verify address
+  def proofed_with_passport(
+    vendor:,
+    address_verification_method:,
+    **extra
+  )
+    track_event(
+      :proofed_with_passport,
+      vendor: vendor,
+      address_verification_method: address_verification_method,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name Proofing Address Timeout

@@ -1238,4 +1238,107 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
   end
+
+  describe 'passport analytics events' do
+    let(:analytics) { instance_double(Analytics) }
+
+    before do
+      allow(Analytics).to receive(:new).and_return(analytics)
+      allow(analytics).to receive(:passport_validation)
+      allow(analytics).to receive(:passport_success)
+      allow(analytics).to receive(:passport_tampering_detected)
+    end
+
+    context 'with successful passport validation' do
+      let(:response) do
+        described_class.new(
+          http_response: success_with_passport_response,
+          config:,
+          passport_requested: true,
+        )
+      end
+
+      it 'logs passport_validation event with correct parameters' do
+        response.extra_attributes
+
+        expect(analytics).to have_received(:passport_validation).at_least(:once).with(
+          vendor: 'TrueID',
+          success: true,
+          is_passport: true,
+          tampering_detected: false,
+          reason_codes: [],
+        )
+      end
+
+      it 'logs passport_success event' do
+        response.extra_attributes
+
+        expect(analytics).to have_received(:passport_success).at_least(:once).with(
+          vendor: 'TrueID',
+        )
+      end
+
+      it 'does not log tampering event' do
+        response.extra_attributes
+
+        expect(analytics).not_to have_received(:passport_tampering_detected)
+      end
+    end
+
+    context 'with passport tampering failure' do
+      let(:response) do
+        described_class.new(
+          http_response: failure_response_passport_tampering,
+          config:,
+          passport_requested: true,
+        )
+      end
+
+      it 'logs passport_validation event with tampering detected' do
+        response.extra_attributes
+
+        expect(analytics).to have_received(:passport_validation).at_least(:once).with(
+          vendor: 'TrueID',
+          success: false,
+          is_passport: true,
+          tampering_detected: true,
+          reason_codes: [],
+        )
+      end
+
+      it 'logs passport_tampering_detected event' do
+        response.extra_attributes
+
+        expect(analytics).to have_received(:passport_tampering_detected).at_least(:once).with(
+          vendor: 'TrueID',
+          document_type: 'Passport',
+          alert_names: anything,
+        )
+      end
+
+      it 'does not log passport_success event' do
+        response.extra_attributes
+
+        expect(analytics).not_to have_received(:passport_success)
+      end
+    end
+
+    context 'with non-passport document' do
+      let(:response) do
+        described_class.new(
+          http_response: success_response,
+          config:,
+          passport_requested: false,
+        )
+      end
+
+      it 'does not log any passport events' do
+        response.extra_attributes
+
+        expect(analytics).not_to have_received(:passport_validation)
+        expect(analytics).not_to have_received(:passport_success)
+        expect(analytics).not_to have_received(:passport_tampering_detected)
+      end
+    end
+  end
 end

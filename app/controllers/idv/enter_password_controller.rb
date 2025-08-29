@@ -70,6 +70,8 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
+      track_passport_proofing_success
+
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end
@@ -202,6 +204,19 @@ module Idv
       flash[:error] = t('idv.failure.exceptions.internal_error')
       idv_session.invalidate_personal_key!
       redirect_to idv_enter_password_url
+    end
+
+    def track_passport_proofing_success
+      proofing_components = ProofingComponents.new(idv_session:).to_h
+      document_type = proofing_components[:document_type]
+      vendor = proofing_components[:document_check]
+
+      if document_type == Idp::Constants::DocumentTypes::PASSPORT && vendor.present?
+        analytics.proofed_with_passport(
+          vendor: vendor,
+          address_verification_method: idv_session.address_verification_mechanism,
+        )
+      end
     end
   end
 end

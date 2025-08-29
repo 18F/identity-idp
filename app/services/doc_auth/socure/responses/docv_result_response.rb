@@ -44,7 +44,7 @@ module DocAuth
           @passport_requested = passport_requested
 
           super(
-            success: doc_auth_success?,
+            success: successful_result?,
             errors: error_messages,
             pii_from_doc:,
             extra: extra_attributes,
@@ -84,6 +84,8 @@ module DocAuth
         end
 
         def extra_attributes
+          log_passport_analytics_events
+
           {
             address_line2_present: address2.present?,
             birth_year: dob&.year,
@@ -273,6 +275,48 @@ module DocAuth
             ) ||
             IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
           )
+        end
+
+        def log_passport_analytics_events
+          is_passport = id_doc_type == Idp::Constants::DocumentTypes::PASSPORT
+          return unless is_passport
+
+          tampering_detected = check_tampering_detected
+
+          Analytics.new.passport_validation(
+            vendor: 'Socure',
+            success: successful_result?,
+            is_passport: true,
+            tampering_detected: tampering_detected,
+            reason_codes: reason_codes,
+          )
+
+          if tampering_detected
+            Analytics.new.passport_tampering_detected(
+              vendor: 'Socure',
+              document_type: document_id_type || 'Passport',
+              alert_names: tampering_reason_codes,
+            )
+          end
+
+          if successful_result?
+            Analytics.new.passport_success(vendor: 'Socure')
+          end
+        end
+
+        def check_tampering_detected
+          return false unless reason_codes.present?
+
+          tampering_codes = ['R810', 'R820', 'R830']
+
+          (reason_codes & tampering_codes).any?
+        end
+
+        def tampering_reason_codes
+          return [] unless reason_codes.present?
+
+          tampering_codes = ['R810', 'R820', 'R830']
+          reason_codes & tampering_codes
         end
       end
     end
