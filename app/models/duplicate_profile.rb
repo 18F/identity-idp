@@ -9,7 +9,6 @@ class DuplicateProfile < ApplicationRecord
       .where('profile_ids && ?', "{#{profile_ids.join(',')}}")
       .first
   end
-  
 
   def self.involving_profile(profile_id:, service_provider:)
     open
