@@ -26,7 +26,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       let(:dupe_profile) { nil }
 
       it 'redirects to sign in page' do
-        get :show
+        get :show, params: { source: :sign_in }
         expect(response).to redirect_to(root_path)
       end
     end
@@ -37,14 +37,14 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
 
       it 'renders the show template' do
-        get :show
+        get :show, params: { source: :sign_in }
         expect(response).to render_template(:show)
       end
 
       it 'initializes the DuplicateProfilesDetectedPresenter' do
         expect(DuplicateProfilesDetectedPresenter).to receive(:new)
           .with(user: user, dupe_profile: dupe_profile)
-        get :show
+        get :show, params: { source: :sign_in }
       end
 
       it 'enqueues an alert job for each duplicate profile' do
@@ -58,7 +58,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
 
       it 'logs an event' do
-        get :show
+        get :show, params: { source: :sign_in }
 
         expect(@analytics).to have_logged_event(
           :one_account_duplicate_profiles_detected_visited,

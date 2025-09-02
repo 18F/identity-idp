@@ -9,8 +9,8 @@ class DuplicateProfilesDetectedController < ApplicationController
       user: current_user,
       dupe_profile: dupe_profile,
     )
-    notify_users_of_duplicate_profile(source: params[:source].to_sym)
-    analytics.one_account_duplicate_profiles_warning_page_visited(source: params[:source])
+    notify_users_of_duplicate_profile(source: params[:source]&.to_sym)
+    analytics.one_account_duplicate_profiles_warning_page_visited(source: params[:source]&.to_sym)
   end
 
   private

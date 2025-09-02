@@ -142,12 +142,14 @@ module AbTests
     should_log: [
       'Email and Password Authentication',
       'SP redirect initiated',
-      :one_account_duplicate_profiles_detected,
       :one_account_duplicate_profiles_please_call_visited,
-      :one_account_duplicate_profiles_detected_visited,
+      :one_account_duplicate_profiles_warning_page_visited,
       :one_account_duplicate_profile_updated,
       :one_account_duplicate_profile_created,
       :one_account_duplicate_profile_closed,
+      :one_account_clear_duplicate_profile,
+      :one_account_close_inconclusive_duplicate,
+      :one_account_deactivate_duplicate_profile,
     ].to_set,
     buckets: {
       one_account_user_verification_enabled:

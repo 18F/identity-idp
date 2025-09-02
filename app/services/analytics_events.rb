@@ -6568,11 +6568,6 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profile_updated)
   end
 
-  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
-  def one_account_duplicate_profiles_detected_visited
-    track_event(:one_account_duplicate_profiles_detected_visited)
-  end
-
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
   # @param [String] source The link that the user followed to visit the page
   def one_account_duplicate_profiles_please_call_visited(source:, **extra)
@@ -6580,6 +6575,7 @@ module AnalyticsEvents
   end
 
   # Tracks when user lands on page notifying them multiple profiles contain same information
+  # @param [String] source how the user came through to the page
   def one_account_duplicate_profiles_warning_page_visited(source:, **extra)
     track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
