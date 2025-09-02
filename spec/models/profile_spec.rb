@@ -1198,55 +1198,69 @@ RSpec.describe Profile do
           create(
             :duplicate_profile,
             profile_ids: profile_ids,
+            closed_at: closed_at,
           )
         end
 
-        context 'when the profile is the only one in its duplicate set' do
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
           let(:profile_ids) { [profile.id] }
 
-          it 'deactivates the profile', :freeze_time do
-            profile.deactivate_duplicate
-            expect(profile).to_not be_active
-            expect(profile.fraud_rejection_at).to eq(Time.zone.now)
-          end
-
-          it 'closes the case as resolved by fraud', :freeze_time do
-            profile.deactivate_duplicate
-            duplicate_profile.reload
-            expect(duplicate_profile.profile_ids).to include(profile.id)
-            expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-            expect(duplicate_profile.self_serviced).to be(false)
-            expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
-          end
-
-          it 'notifies the user' do
-            expect { profile.deactivate_duplicate }
-              .to(change { ActionMailer::Base.deliveries.count }.by(1))
+          it 'raises an exception' do
+            expect { profile.deactivate_duplicate }.to raise_error('Profile not a duplicate')
           end
         end
 
-        context 'when there are other profiles in the duplicate set' do
-          let(:second_profile) { create(:profile, :active) }
-          let(:profile_ids) { [profile.id, second_profile.id] }
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
 
-          it 'deactivates the profile', :freeze_time do
-            profile.deactivate_duplicate
-            expect(profile).to_not be_active
-            expect(profile.fraud_rejection_at).to eq(Time.zone.now)
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'deactivates the profile', :freeze_time do
+              profile.deactivate_duplicate
+              expect(profile).to_not be_active
+              expect(profile.fraud_rejection_at).to eq(Time.zone.now)
+            end
+
+            it 'closes the case as resolved by fraud', :freeze_time do
+              profile.deactivate_duplicate
+              duplicate_profile.reload
+              expect(duplicate_profile.profile_ids).to include(profile.id)
+              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile.self_serviced).to be(false)
+              expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
+            end
+
+            it 'notifies the user' do
+              expect { profile.deactivate_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
           end
 
-          it 'does not close the case', :freeze_time do
-            profile.deactivate_duplicate
-            duplicate_profile.reload
-            expect(duplicate_profile.profile_ids).not_to include(profile.id)
-            expect(duplicate_profile.closed_at).to be(nil)
-            expect(duplicate_profile.self_serviced).to be(nil)
-            expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
-          end
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
 
-          it 'notifies the user' do
-            expect { profile.deactivate_duplicate }
-              .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            it 'deactivates the profile', :freeze_time do
+              profile.deactivate_duplicate
+              expect(profile).to_not be_active
+              expect(profile.fraud_rejection_at).to eq(Time.zone.now)
+            end
+
+            it 'does not close the case', :freeze_time do
+              profile.deactivate_duplicate
+              duplicate_profile.reload
+              expect(duplicate_profile.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile.closed_at).to be(nil)
+              expect(duplicate_profile.self_serviced).to be(nil)
+              expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
+            end
+
+            it 'notifies the user' do
+              expect { profile.deactivate_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
           end
         end
       end
@@ -1274,38 +1288,52 @@ RSpec.describe Profile do
           create(
             :duplicate_profile,
             profile_ids: profile_ids,
+            closed_at: closed_at,
           )
         end
 
-        context 'when the profile is the only one in its duplicate set' do
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
           let(:profile_ids) { [profile.id] }
 
-          it 'leaves the profile as active', :freeze_time do
-            profile.clear_duplicate
-            expect(profile).to be_active
-          end
-
-          it 'closes the case as resolved by fraud', :freeze_time do
-            profile.clear_duplicate
-            duplicate_profile.reload
-            expect(duplicate_profile.profile_ids).to include(profile.id)
-            expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-            expect(duplicate_profile.self_serviced).to be(false)
-            expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
-          end
-
-          it 'notifies the user' do
-            expect { profile.clear_duplicate }
-              .to(change { ActionMailer::Base.deliveries.count }.by(1))
+          it 'raises an exception' do
+            expect { profile.clear_duplicate }.to raise_error('Profile not a duplicate')
           end
         end
 
-        context 'when there are other profiles in the duplicate set' do
-          let(:second_profile) { create(:profile, :active) }
-          let(:profile_ids) { [profile.id, second_profile.id] }
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
 
-          it 'raises an exception' do
-            expect { profile.clear_duplicate }.to raise_error('Profile has other duplicates')
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'leaves the profile as active', :freeze_time do
+              profile.clear_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'closes the case as resolved by fraud', :freeze_time do
+              profile.clear_duplicate
+              duplicate_profile.reload
+              expect(duplicate_profile.profile_ids).to include(profile.id)
+              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile.self_serviced).to be(false)
+              expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
+            end
+
+            it 'notifies the user' do
+              expect { profile.clear_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+          end
+
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
+
+            it 'raises an exception' do
+              expect { profile.clear_duplicate }.to raise_error('Profile has other duplicates')
+            end
           end
         end
       end
@@ -1334,47 +1362,62 @@ RSpec.describe Profile do
           create(
             :duplicate_profile,
             profile_ids: profile_ids,
+            closed_at: closed_at,
           )
         end
 
-        context 'when the profile is the only one in its duplicate set' do
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
           let(:profile_ids) { [profile.id] }
 
-          it 'leaves the profile as active', :freeze_time do
-            profile.close_inconclusive_duplicate
-            expect(profile).to be_active
-          end
-
-          it 'closes the case as inconclusive', :freeze_time do
-            profile.close_inconclusive_duplicate
-            duplicate_profile.reload
-            expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-            expect(duplicate_profile.self_serviced).to be(false)
-            expect(duplicate_profile.fraud_investigation_conclusive).to be(false)
+          it 'raises an exception' do
+            expect { profile.close_inconclusive_duplicate }
+              .to raise_error('Profile not a duplicate')
           end
         end
 
-        context 'when there are other profiles in the duplicate set' do
-          let(:second_profile) { create(:profile, :active) }
-          let(:profile_ids) { [profile.id, second_profile.id] }
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
 
-          it 'leaves the profile as active', :freeze_time do
-            profile.close_inconclusive_duplicate
-            expect(profile).to be_active
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'leaves the profile as active', :freeze_time do
+              profile.close_inconclusive_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'closes the case as inconclusive', :freeze_time do
+              profile.close_inconclusive_duplicate
+              duplicate_profile.reload
+              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile.self_serviced).to be(false)
+              expect(duplicate_profile.fraud_investigation_conclusive).to be(false)
+            end
           end
 
-          it 'does not close the case', :freeze_time do
-            profile.close_inconclusive_duplicate
-            duplicate_profile.reload
-            expect(duplicate_profile.profile_ids).not_to include(profile.id)
-            expect(duplicate_profile.closed_at).to be(nil)
-            expect(duplicate_profile.self_serviced).to be(nil)
-            expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
-          end
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
 
-          it 'notifies the user' do
-            expect { profile.close_inconclusive_duplicate }
-              .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            it 'leaves the profile as active', :freeze_time do
+              profile.close_inconclusive_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'does not close the case', :freeze_time do
+              profile.close_inconclusive_duplicate
+              duplicate_profile.reload
+              expect(duplicate_profile.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile.closed_at).to be(nil)
+              expect(duplicate_profile.self_serviced).to be(nil)
+              expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
+            end
+
+            it 'notifies the user' do
+              expect { profile.close_inconclusive_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
           end
         end
       end

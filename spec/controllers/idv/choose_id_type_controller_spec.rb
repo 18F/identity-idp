@@ -30,20 +30,17 @@ RSpec.describe Idv::ChooseIdTypeController do
         :redirect_if_passport_not_available,
       )
     end
+
+    it 'includes confirm_steps_allowed' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_step_allowed,
+      )
+    end
   end
 
   describe '#show' do
-    context 'passport is not available' do
-      it 'redirects to how to verify' do
-        subject.idv_session.passport_allowed = false
-
-        get :show
-
-        expect(response).to redirect_to(idv_how_to_verify_url)
-      end
-    end
-
-    context 'passport is available' do
+    context 'when the user passes all preconditions' do
       let(:analytics_name) { :idv_doc_auth_choose_id_type_visited }
       let(:analytics_args) do
         {
@@ -53,20 +50,51 @@ RSpec.describe Idv::ChooseIdTypeController do
         }
       end
 
-      it 'renders the shared choose_id_type template' do
+      before do
+        subject.idv_session.flow_path = 'standard'
         subject.idv_session.passport_allowed = true
-
+        subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
         get :show
+      end
 
+      it 'renders the shared choose_id_type template' do
         expect(response).to render_template 'idv/shared/choose_id_type'
       end
 
       it 'sends analytics_visited event' do
-        subject.idv_session.passport_allowed = true
-
-        get :show
-
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+    end
+
+    context 'passport is not available' do
+      before do
+        subject.idv_session.flow_path = 'standard'
+        subject.idv_session.passport_allowed = false
+        get :show
+      end
+
+      it 'does not render the shared choose_id_type template' do
+        expect(response).not_to render_template 'idv/shared/choose_id_type'
+      end
+
+      it 'redirects to how to verify' do
+        expect(response).to redirect_to(idv_how_to_verify_url)
+      end
+    end
+
+    context 'when the user does not have a flow path' do
+      before do
+        subject.idv_session.flow_path = nil
+        subject.idv_session.passport_allowed = true
+        get :show
+      end
+
+      it 'does not render the shared choose_id_type template' do
+        expect(response).not_to render_template 'idv/shared/choose_id_type'
+      end
+
+      it 'responds with a redirect' do
+        expect(response.status).to be(302)
       end
     end
   end
@@ -159,12 +187,47 @@ RSpec.describe Idv::ChooseIdTypeController do
         subject.document_capture_session.update!(passport_status: 'requested')
       end
 
-      it 'resets relevant fields on idv_session to nil' do
-        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+      context 'when idv_session has a document_capture_session_uuid' do
+        before do
+          subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
+        end
 
-        subject.document_capture_session.reload
-        expect(subject.document_capture_session.passport_requested?).to eq(false)
-        expect(subject.document_capture_session.passport_allowed?).to eq(false)
+        context 'when idv_session allows passports' do
+          before do
+            subject.idv_session.passport_allowed = true
+            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+          end
+
+          it 'resets relevant fields on idv_session to "allowed"' do
+            subject.document_capture_session.reload
+            expect(subject.document_capture_session.passport_requested?).to eq(false)
+            expect(subject.document_capture_session.passport_allowed?).to eq(true)
+          end
+        end
+
+        context 'when idv_session does not allow passports' do
+          before do
+            subject.idv_session.passport_allowed = false
+            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+          end
+
+          it 'resets relevant fields on idv_session to nil' do
+            subject.document_capture_session.reload
+            expect(subject.document_capture_session.passport_requested?).to eq(false)
+            expect(subject.document_capture_session.passport_allowed?).to eq(false)
+          end
+        end
+      end
+
+      context 'when idv_session does not have a document_capture_session_uuid' do
+        before do
+          subject.idv_session.document_capture_session_uuid = nil
+          described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+        end
+
+        it 'does not update the passport status in the document capture session' do
+          expect(subject.document_capture_session.reload.passport_status).to eq('requested')
+        end
       end
     end
   end

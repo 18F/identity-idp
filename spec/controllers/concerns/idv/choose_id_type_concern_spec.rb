@@ -10,7 +10,9 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:analytics) { FakeAnalytics.new }
   let(:step) { 'choose_id_type' }
   let(:context_analytics) { { step: step } }
-  let(:document_capture_session) { double(DocumentCaptureSession) }
+  let(:passport_status) { nil }
+  let(:document_capture_session) { create(:document_capture_session, passport_status:) }
+  let(:id_type) { 'drivers_license' }
   let(:parameters) do
     ActionController::Parameters.new(
       {
@@ -38,10 +40,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#set_passport_requested' do
-    before do
-      allow(document_capture_session).to receive(:update!)
-    end
-
     context 'when chosen_id_type is "passport"' do
       let(:id_type) { 'passport' }
 
@@ -51,9 +49,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
-        expect(document_capture_session).to have_received(:update!).with(
-          passport_status: 'requested',
-        )
+        expect(document_capture_session.passport_requested?).to be true
       end
     end
 
@@ -66,9 +62,21 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
-        expect(document_capture_session).to have_received(:update!).with(
-          passport_status: 'not_requested',
-        )
+        expect(document_capture_session.passport_status).to eq('not_requested')
+      end
+
+      context 'when the document_capture_session doc_auth_vendor is already defined' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            passport_status:,
+            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+          )
+        end
+
+        it 'sets the doc_auth_vendor to nil' do
+          expect(document_capture_session.doc_auth_vendor).to be_nil
+        end
       end
     end
   end
@@ -108,10 +116,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#selected_id_type' do
-    before do
-      allow(document_capture_session).to receive(:passport_status).and_return(passport_status)
-    end
-
     context 'when the document capture session passport status is "requested"' do
       let(:passport_status) { 'requested' }
 
@@ -195,18 +199,19 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the dos passport api is healthy' do
+      let(:passport_status) { 'requested' }
+
       before do
         allow(response).to receive(:success?).and_return(true)
-        allow(document_capture_session).to receive(:passport_status).and_return('requested')
       end
 
       it 'returns expected local attributes' do
         expect(
-          subject.locals_attrs(analytics:, presenter:, form_submit_url:),
+          subject.locals_attrs(presenter:, form_submit_url:),
         ).to include(
           presenter:,
           form_submit_url:,
-          dos_passport_api_down: false,
+          disable_passports: false,
           auto_check_value: :passport,
         )
       end
@@ -214,16 +219,17 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
     context 'when the dos passport api is not healthy' do
       before do
-        allow(response).to receive(:success?).and_return(false)
+        parameters[:passports] = 'false'
+        allow(controller).to receive(:params).and_return(parameters)
       end
 
       it 'returns expected local attributes' do
         expect(
-          subject.locals_attrs(analytics:, presenter:, form_submit_url:),
+          subject.locals_attrs(presenter:, form_submit_url:),
         ).to include(
           presenter:,
           form_submit_url:,
-          dos_passport_api_down: true,
+          disable_passports: true,
           auto_check_value: :drivers_license,
         )
       end

@@ -38,7 +38,7 @@ class SocureImageRetrievalJob < ApplicationJob
       user: document_capture_session.user,
       sp:,
       cookie_device_uuid: nil,
-      sp_request_uri: nil,
+      sp_redirect_uri: nil,
       enabled_for_session: sp&.attempts_api_enabled?,
     )
   end

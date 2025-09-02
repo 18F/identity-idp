@@ -2392,14 +2392,12 @@ module AnalyticsEvents
   # User submits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] doc_auth_vendor Vendor used for document capture
   # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_submitted(
     step:,
     analytics_id:,
-    doc_auth_vendor:,
     passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
@@ -2409,7 +2407,6 @@ module AnalyticsEvents
       'IdV: doc auth welcome submitted',
       step:,
       analytics_id:,
-      doc_auth_vendor:,
       passport_allowed:,
       opted_in_to_in_person_proofing:,
       skip_hybrid_handoff:,
@@ -2420,14 +2417,12 @@ module AnalyticsEvents
   # User visits IdV welcome screen
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
-  # @param [String] doc_auth_vendor Vendor used for document capture
   # @param [Boolean] passport_allowed Whether passport is allowed for document capture
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_welcome_visited(
     step:,
     analytics_id:,
-    doc_auth_vendor:,
     passport_allowed:,
     opted_in_to_in_person_proofing: nil,
     skip_hybrid_handoff: nil,
@@ -2437,7 +2432,6 @@ module AnalyticsEvents
       'IdV: doc auth welcome visited',
       step:,
       analytics_id:,
-      doc_auth_vendor:,
       passport_allowed:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
@@ -6559,9 +6553,24 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user lands on page notifying them multiple profiles contain same information
-  def one_account_duplicate_profiles_warning_page_visited(source: , **extra)
-    track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
+  # Tracks when a user that had duplicate profiles is closed
+  def one_account_duplicate_profile_closed
+    track_event(:one_account_duplicate_profile_closed)
+  end
+
+  # Tracks when a duplicate profile is created for a user
+  def one_account_duplicate_profile_created
+    track_event(:one_account_duplicate_profile_created)
+  end
+
+  # Tracks when a duplicate profile object is updated
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
+  end
+
+  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
+  def one_account_duplicate_profiles_detected_visited
+    track_event(:one_account_duplicate_profiles_detected_visited)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
@@ -6570,13 +6579,9 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
   end
 
-  # Tracks when user says they recognize all accounts that has same profile information.
-  def one_account_recognize_all_profiles
-    track_event(:one_account_recognize_all_profiles)
-  end
-
-  def one_account_unknown_profile_detected
-    track_event(:one_account_unknown_profile_detected)
+  # Tracks when user lands on page notifying them multiple profiles contain same information
+  def one_account_duplicate_profiles_warning_page_visited(source:, **extra)
+    track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
 
   # Tracks when a sucessful openid authorization request is returned

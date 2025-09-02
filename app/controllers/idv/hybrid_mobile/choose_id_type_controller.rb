@@ -16,7 +16,6 @@ module Idv
 
         render 'idv/shared/choose_id_type',
                locals: locals_attrs(
-                 analytics:,
                  presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
                  form_submit_url: idv_hybrid_mobile_choose_id_type_path,
                )
@@ -32,7 +31,10 @@ module Idv
               .merge({ chosen_id_type: }),
         )
 
-        if result.success?
+        if passport_chosen? &&
+           !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+          redirect_to idv_hybrid_mobile_choose_id_type_url(passports: false)
+        elsif result.success?
           set_passport_requested
           redirect_to next_step
         else
@@ -44,10 +46,7 @@ module Idv
 
       def redirect_if_passport_not_available
         unless document_capture_session.passport_allowed?
-          redirect_to correct_vendor_path(
-            document_capture_session.doc_auth_vendor,
-            in_hybrid_mobile: true,
-          )
+          redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
 

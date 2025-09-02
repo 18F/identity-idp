@@ -739,7 +739,7 @@ RSpec.describe ApplicationController do
       it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
         expect(AttemptsApi::Tracker).to receive(:new).with(
           user:, request:, sp:, session_id: nil,
-          cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+          cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
         )
 
         controller.attempts_api_tracker
@@ -755,7 +755,7 @@ RSpec.describe ApplicationController do
         it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
           expect(AttemptsApi::Tracker).to receive(:new).with(
             user:, request:, sp:, session_id: nil,
-            cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+            cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
           )
 
           controller.attempts_api_tracker
@@ -777,7 +777,7 @@ RSpec.describe ApplicationController do
           it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
             expect(AttemptsApi::Tracker).to receive(:new).with(
               user:, request:, sp:, session_id: nil,
-              cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: false
+              cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
             )
 
             controller.attempts_api_tracker
@@ -792,7 +792,7 @@ RSpec.describe ApplicationController do
           it 'calls the AttemptsApi::Tracker class with enabled_for_session set to true' do
             expect(AttemptsApi::Tracker).to receive(:new).with(
               user:, request:, sp:, session_id: 'abc123',
-              cookie_device_uuid: nil, sp_request_uri: nil, enabled_for_session: true
+              cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: true
             )
 
             controller.attempts_api_tracker

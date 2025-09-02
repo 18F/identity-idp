@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class DuplicateProfileChecker
-  attr_reader :user, :user_session, :sp, :profile
+  attr_reader :user, :user_session, :sp, :profile, :analytics
 
-  def initialize(user:, user_session:, sp:)
+  def initialize(user:, user_session:, sp:, analytics:)
     @user = user
     @user_session = user_session
     @sp = sp
+    @analytics = analytics
     @profile = user&.active_profile
   end
 
@@ -19,18 +20,30 @@ class DuplicateProfileChecker
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
       service_provider: sp.issuer,
     )
+    ids = associated_profiles.map(&:id)
+    dupe_profile_ids = (ids + [profile.id]).sort
+    existing_profile = DuplicateProfile.involving_profiles(
+      profile_ids: dupe_profile_ids,
+      service_provider: sp.issuer,
+    )
     if associated_profiles.present?
-      ids = associated_profiles.map(&:id)
-      dupe_profile = DuplicateProfile.involving_profile(
-        profile_id: profile.id,
-        service_provider: sp.issuer,
-      )
-      if dupe_profile.present?
-        dupe_profile.update(profile_ids: ids + [profile.id])
+      if existing_profile
+        if existing_profile.profile_ids.sort != dupe_profile_ids
+          # Update existing profile with new ids if they differ
+          existing_profile.update(profile_ids: dupe_profile_ids)
+          analytics.one_account_duplicate_profile_updated
+        end
       else
-        dupe_profile = DuplicateProfile.create(profile_ids: ids + [profile.id], service_provider: sp.issuer)
+        existing_profile = DuplicateProfile.create(
+          profile_ids: dupe_profile_ids,
+          service_provider: sp.issuer,
+        )
+        analytics.one_account_duplicate_profile_created
       end
-      dupe_profile 
+      existing_profile
+    elsif existing_profile
+      existing_profile.update(closed_at: Time.zone.now)
+      analytics.one_account_duplicate_profile_closed
     end
   end
 

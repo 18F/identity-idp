@@ -12,7 +12,6 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
 
     render 'idv/shared/choose_id_type',
            locals: locals_attrs(
-             analytics:,
              presenter: Idv::InPerson::ChooseIdTypePresenter.new,
              form_submit_url: idv_in_person_choose_id_type_url,
            ),
@@ -23,7 +22,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
     clear_future_steps!
 
     form = Idv::ChooseIdTypeForm.new
-    result = form.submit(allowed_params)
+    result = form.submit(choose_id_type_form_params)
 
     analytics.idv_in_person_proofing_choose_id_type_submitted(
       **analytics_arguments
@@ -31,9 +30,12 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
         .merge(chosen_id_type: form.chosen_id_type),
     )
 
-    if result.success?
-      set_chosen_id_type
-      redirect_to chosen_id_type_url(form.chosen_id_type)
+    if passport_chosen? &&
+       !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+      redirect_to idv_in_person_choose_id_type_url(passports: false)
+    elsif result.success?
+      set_passport_requested
+      redirect_to id_type_to_route_url[form.chosen_id_type]
     else
       redirect_to idv_in_person_choose_id_type_url
     end
@@ -68,22 +70,10 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
       .merge(extra_analytics_properties)
   end
 
-  def allowed_params
-    choose_id_type_form_params
-  end
-
-  def chosen_id_type_url(type)
-    id_type_to_route_url[type]
-  end
-
   def id_type_to_route_url
     {
       'passport' => idv_in_person_passport_url,
       'drivers_license' => idv_in_person_state_id_url,
     }
-  end
-
-  def set_chosen_id_type
-    set_passport_requested
   end
 end

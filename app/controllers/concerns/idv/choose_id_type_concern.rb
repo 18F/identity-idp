@@ -6,11 +6,23 @@ module Idv
       choose_id_type_form_params[:choose_id_type_preference]
     end
 
+    def passport_chosen?
+      chosen_id_type == 'passport'
+    end
+
     def set_passport_requested
-      if chosen_id_type == 'passport'
-        document_capture_session.update!(passport_status: 'requested')
+      if passport_chosen?
+        unless document_capture_session.passport_requested?
+          document_capture_session.update!(
+            passport_status: 'requested',
+            doc_auth_vendor: nil,
+          )
+        end
       else
-        document_capture_session.update!(passport_status: 'not_requested')
+        document_capture_session.update!(
+          passport_status: 'not_requested',
+          doc_auth_vendor: nil,
+        )
       end
     end
 
@@ -39,13 +51,13 @@ module Idv
       response.success?
     end
 
-    def locals_attrs(analytics:, presenter:, form_submit_url: nil)
-      dos_passport_api_down = !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+    def locals_attrs(presenter:, form_submit_url: nil)
+      disable_passports = params.permit(:passports)[:passports].present?
       {
         presenter:,
         form_submit_url:,
-        dos_passport_api_down:,
-        auto_check_value: dos_passport_api_down ? :drivers_license : selected_id_type,
+        disable_passports:,
+        auto_check_value: disable_passports ? :drivers_license : selected_id_type,
       }
     end
   end

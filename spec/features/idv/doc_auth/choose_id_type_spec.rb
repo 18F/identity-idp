@@ -5,21 +5,27 @@ RSpec.feature 'choose id type step error checking' do
   include AbTestsHelper
   include IdvStepHelper
 
+  let(:fake_analytics) { FakeAnalytics.new }
+
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+  end
+
   context 'happy path' do
-    let(:fake_analytics) { FakeAnalytics.new }
     let(:ipp_service_provider) do
       create(:service_provider, :active, :in_person_proofing_enabled)
     end
     let(:doc_auth_passports_enabled) { true }
     let(:doc_auth_passports_percent) { 100 }
     before do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
         .and_return(doc_auth_passports_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
         .and_return(doc_auth_passports_percent)
       allow_any_instance_of(ServiceProviderSession).to receive(:sp_name)
         .and_return(ipp_service_provider)
+      allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+        .and_return(Idp::Constants::Vendors::SOCURE)
       stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
         .to_return({ status: 200, body: { status: 'UP' }.to_json })
       reload_ab_tests
@@ -34,7 +40,7 @@ RSpec.feature 'choose id type step error checking' do
       reload_ab_tests
     end
 
-    context 'desktop flow', :js do
+    context 'desktop flow', :js, :allow_browser_log do
       before do
         complete_doc_auth_steps_before_hybrid_handoff_step
       end
@@ -43,6 +49,9 @@ RSpec.feature 'choose id type step error checking' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_socure_document_capture_url)
         expect(fake_analytics).to have_logged_event(
           :passport_api_health_check,
           step: 'choose_id_type',
@@ -50,13 +59,40 @@ RSpec.feature 'choose id type step error checking' do
           body: '{"status":"UP"}',
           errors: {},
         )
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
-        expect(page).to have_current_path(idv_document_capture_url)
         visit idv_choose_id_type_url
         expect(page).to have_checked_field(
           'doc_auth_choose_id_type_preference_passport',
           visible: :all,
+        )
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+      end
+
+      it 'shows choose id type screen and continues after license option' do
+        expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+        click_on t('forms.buttons.upload_photos')
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(fake_analytics).not_to have_logged_event(
+          :passport_api_health_check,
+        )
+        visit idv_choose_id_type_url
+        expect(page).to have_checked_field(
+          'doc_auth_choose_id_type_preference_drivers_license',
+          visible: :all,
+        )
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_socure_document_capture_url)
+        expect(fake_analytics).to have_logged_event(
+          :passport_api_health_check,
+          step: 'choose_id_type',
+          success: true,
+          body: '{"status":"UP"}',
+          errors: {},
         )
       end
     end
@@ -78,16 +114,16 @@ RSpec.feature 'choose id type step error checking' do
           expect(page).to have_current_path(idv_how_to_verify_url)
           click_button t('forms.buttons.continue_online')
           expect(page).to have_current_path(idv_choose_id_type_url)
-          expect(fake_analytics).to have_logged_event(
+          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+          click_on t('forms.buttons.continue')
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect(fake_analytics).not_to have_logged_event(
             :passport_api_health_check,
             step: 'choose_id_type',
             success: true,
             body: '{"status":"UP"}',
             errors: {},
           )
-          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-          click_on t('forms.buttons.continue')
-          expect(page).to have_current_path(idv_document_capture_url)
           visit idv_choose_id_type_url
           expect(page).to have_checked_field(
             'doc_auth_choose_id_type_preference_drivers_license',
@@ -163,12 +199,24 @@ RSpec.feature 'choose id type step error checking' do
           .to_return({ status: 200, body: { status: 'DOWN' }.to_json })
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_choose_id_type_url(passports: false))
+        expect(fake_analytics).to have_logged_event(
+          :passport_api_health_check,
+          step: 'choose_id_type',
+          success: false,
+          body: '{"status":"DOWN"}',
+          errors: {},
+        )
         # expect radio button field 'doc_auth_choose_id_type_preference_passport' to be disabled
         expect(page).to have_field(
           'doc_auth_choose_id_type_preference_passport',
           visible: :all,
           disabled: true,
         )
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
       end
     end
   end
