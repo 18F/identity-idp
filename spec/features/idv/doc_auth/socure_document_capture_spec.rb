@@ -40,7 +40,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
   context 'happy path', allow_browser_log: true do
     before do
-      @pass_stub = stub_docv_verification_data_pass(
+      @docv_stub = stub_docv_verification_data_pass(
         docv_transaction_token: @docv_transaction_token,
         user:,
       )
@@ -370,7 +370,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           body = JSON.parse(SocureDocvFixtures.pass_json)
           body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
 
-          remove_request_stub(@pass_stub)
+          remove_request_stub(@docv_stub)
           stub_docv_verification_data(
             docv_transaction_token: @docv_transaction_token,
             body: body.to_json,
