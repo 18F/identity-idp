@@ -17,7 +17,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           .with(agency_name: agency)
           .and_call_original
 
-        subject.perform(user: user, agency: agency, type: :account_created)
+        subject.perform(user: user, agency: agency, type: :account_verified)
       end
 
       context 'when phone is present' do
@@ -28,7 +28,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           expect(Telephony).to receive(:send_dupe_profile_created_notice)
             .with(to: user_phone, country_code: 'US', agency_name: agency)
 
-          subject.perform(user: user, agency: agency, type: :account_created)
+          subject.perform(user: user, agency: agency, type: :account_verified)
         end
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           .with(agency_name: agency)
           .and_call_original
 
-        subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+        subject.perform(user: user, agency: agency, type: :sign_in)
       end
 
       context 'when phone is present' do
@@ -50,7 +50,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
             .with(to: user_phone, country_code: 'US', agency_name: agency)
 
-          subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+          subject.perform(user: user, agency: agency, type: :sign_in)
         end
       end
     end
@@ -58,10 +58,10 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
     context 'when type is invalid' do
       let(:invalid_type) { :invalid_type }
 
-      it 'calls analytics duplicate_profile_email_type_not_found' do
+      it 'calls analytics one_account_dupe_profile_email_type_not_found' do
         allow(subject).to receive(:analytics).with(user: user).and_return(job_analytics)
         expect(job_analytics)
-          .to receive(:duplicate_profile_email_type_not_found)
+          .to receive(:one_account_dupe_profile_email_type_not_found)
           .with(type: invalid_type)
 
         subject.perform(user: user, agency: agency, type: invalid_type)

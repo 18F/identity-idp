@@ -31,7 +31,7 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
           agency_name: agency,
         )
       else
-        analytics(user: user).duplicate_profile_email_type_not_found(type: type)
+        analytics(user: user).one_account_dupe_profile_email_type_not_found(type: type)
       end
     end
   end

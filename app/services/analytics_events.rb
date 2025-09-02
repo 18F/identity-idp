@@ -6541,6 +6541,14 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a emailt ype was not used properly
+  def one_account_dupe_profile_email_type_not_found(type:)
+    track_event(
+      :one_account_dupe_profile_email_type_not_found,
+      type: type,
+    )
+  end
+
   # Tracks when fraud deactivates duplicate profile
   # @param [Boolean] success Whether the profile was successfully deactivated
   # @param [Hash] errors Errors resulting from deactivation
