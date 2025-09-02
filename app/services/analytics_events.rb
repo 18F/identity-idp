@@ -6553,6 +6553,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when we attempt to recreate dupe profile when already processed
+  def one_account_dupe_profile_already_created
+    track_event(:one_account_dupe_profile_already_created)
+  end
+
   # Tracks when a email type was not used properly
   # @param [String] type The type of email that was not found
   def one_account_dupe_profile_email_type_not_found(type:, **extra)

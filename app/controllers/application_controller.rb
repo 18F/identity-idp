@@ -551,12 +551,13 @@ class ApplicationController < ActionController::Base
     profile = current_user&.active_profile
     return false unless profile
     return false unless user_in_one_account_verification_bucket?
-    DuplicateProfileChecker.new(
+    dupe_profile = DuplicateProfileChecker.new(
       user: current_user,
       user_session: user_session,
       sp: sp_from_sp_session,
       analytics: analytics,
-    ).check_for_duplicate_profiles.present?
+    ).check_for_duplicate_profiles
+    dupe_profile.present? && dupe_profile.closed_at.nil?
   end
 
   def sp_eligible_for_one_account?

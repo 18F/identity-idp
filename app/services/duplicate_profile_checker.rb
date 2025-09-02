@@ -34,11 +34,15 @@ class DuplicateProfileChecker
           analytics.one_account_duplicate_profile_updated
         end
       else
-        existing_profile = DuplicateProfileSet.create(
+        existing_profile = DuplicateProfileSet.find_or_create_by(
           profile_ids: dupe_profile_ids,
           service_provider: sp.issuer,
         )
-        analytics.one_account_duplicate_profile_created
+        if existing_profile.closed_at.present?
+          analytics.one_account_dupe_profile_already_created
+        else
+          analytics.one_account_duplicate_profile_created
+        end
       end
       existing_profile
     elsif existing_profile
