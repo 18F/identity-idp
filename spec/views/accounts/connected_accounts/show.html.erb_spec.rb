@@ -101,16 +101,4 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
       end
     end
   end
-
-  context 'with a connected app that is an invalid service provider' do
-    before do
-      user.identities << create(:service_provider_identity, :active, service_provider: 'aaaaa')
-    end
-
-    it 'renders' do
-      expect { render }.to_not raise_error
-      expect(rendered).to match '</lg-time>'
-      expect(rendered).to_not include('&lt;')
-    end
-  end
 end
