@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FraudOpsApi
+module FraudOpsTracker
   class Tracker < AttemptsApi::Tracker
     attr_reader :current_user
 

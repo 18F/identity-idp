@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
   end
 
   def fraudops_tracker
-    @fraudops_tracker ||= FraudOpsApi::Tracker.new(
+    @fraudops_tracker ||= FraudOpsTracker::Tracker.new(
       session_id: attempts_api_session_id,
       request:,
       user: analytics_user,
