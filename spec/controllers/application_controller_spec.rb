@@ -652,7 +652,7 @@ RSpec.describe ApplicationController do
         context 'when no duplicate profile ids found in session' do
           before do
             allow_any_instance_of(DuplicateProfileChecker)
-              .to receive(:check_for_duplicate_profiles).and_return(nil)
+              .to receive(:dupe_profile_set_for_user).and_return(nil)
           end
           it 'returns false' do
             get :index
@@ -668,7 +668,7 @@ RSpec.describe ApplicationController do
           end
           before do
             allow_any_instance_of(DuplicateProfileChecker)
-              .to receive(:check_for_duplicate_profiles).and_return(dupe_profile)
+              .to receive(:dupe_profile_set_for_user).and_return(dupe_profile)
           end
 
           it 'returns true' do

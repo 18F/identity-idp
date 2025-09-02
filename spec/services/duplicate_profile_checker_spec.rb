@@ -19,7 +19,7 @@ RSpec.describe DuplicateProfileChecker do
   end
   let(:issuer) { sp.issuer }
 
-  describe '#check_for_duplicate_profiles' do
+  describe '#dupe_profile_set_for_user' do
     before do
       profile.encrypt_pii(active_pii, user.password)
       profile.save
@@ -40,7 +40,7 @@ RSpec.describe DuplicateProfileChecker do
             sp: sp,
             analytics: @analytics,
           )
-          dupe_profile_checker.check_for_duplicate_profiles
+          dupe_profile_checker.dupe_profile_set_for_user
           dupe_profile_set = DuplicateProfileSet.involving_profile(
             profile_id: profile.id,
             service_provider: sp.issuer,
@@ -89,7 +89,7 @@ RSpec.describe DuplicateProfileChecker do
             sp: sp,
             analytics: @analytics,
           )
-          dupe_profile_checker.check_for_duplicate_profiles
+          dupe_profile_checker.dupe_profile_set_for_user
 
           dupe_profile_set = DuplicateProfileSet.involving_profile(
             profile_id: profile.id,
@@ -118,7 +118,7 @@ RSpec.describe DuplicateProfileChecker do
                 sp: sp,
                 analytics: @analytics,
               )
-              dupe_profile_checker.check_for_duplicate_profiles
+              dupe_profile_checker.dupe_profile_set_for_user
 
               expect(@analytics).not_to have_logged_event(:one_account_duplicate_profile_created)
               expect(@analytics).not_to have_logged_event(:one_account_duplicate_profile_updated)
@@ -149,7 +149,7 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.check_for_duplicate_profiles
+                dupe_profile_checker.dupe_profile_set_for_user
 
                 updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
                   profile_id: profile.id,
@@ -181,7 +181,7 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.check_for_duplicate_profiles
+                dupe_profile_checker.dupe_profile_set_for_user
 
                 updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
                   profile_id: profile.id,
@@ -213,7 +213,7 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.check_for_duplicate_profiles
+                dupe_profile_checker.dupe_profile_set_for_user
 
                 dupe_profile_set.reload
                 expect(dupe_profile_set.closed_at).to eq(Time.zone.now)
@@ -245,7 +245,7 @@ RSpec.describe DuplicateProfileChecker do
           sp: sp,
           analytics: @analytics,
         )
-        dupe_profile_checker.check_for_duplicate_profiles
+        dupe_profile_checker.dupe_profile_set_for_user
 
         dupe_profile_set = DuplicateProfileSet.involving_profile(
           profile_id: profile.id,

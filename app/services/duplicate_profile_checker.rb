@@ -11,7 +11,7 @@ class DuplicateProfileChecker
     @profile = user&.active_profile
   end
 
-  def check_for_duplicate_profiles
+  def dupe_profile_set_for_user
     return unless user_has_ial2_profile? && user_sp_eligible_for_one_account?
     cacher = Pii::Cacher.new(user, user_session)
 

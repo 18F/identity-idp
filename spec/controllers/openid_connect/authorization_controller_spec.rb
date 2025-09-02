@@ -649,7 +649,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   allow(controller).to receive(:user_in_one_account_verification_bucket?)
                     .and_return(true)
                   allow_any_instance_of(DuplicateProfileChecker)
-                    .to receive(:check_for_duplicate_profiles).and_return(duplicate_profile_set)
+                    .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
                   allow(controller).to receive(:user_signed_in?).and_return(true)
                   allow(controller).to receive(:current_user).and_return(user)
                 end
