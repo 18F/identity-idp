@@ -1194,9 +1194,9 @@ RSpec.describe Profile do
       end
 
       context 'when the profile is identified as a duplicate' do
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: profile_ids,
             closed_at: closed_at,
           )
@@ -1225,11 +1225,11 @@ RSpec.describe Profile do
 
             it 'closes the case as resolved by fraud', :freeze_time do
               profile.deactivate_duplicate
-              duplicate_profile.reload
-              expect(duplicate_profile.profile_ids).to include(profile.id)
-              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-              expect(duplicate_profile.self_serviced).to be(false)
-              expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(true)
             end
 
             it 'notifies the user' do
@@ -1250,11 +1250,11 @@ RSpec.describe Profile do
 
             it 'does not close the case', :freeze_time do
               profile.deactivate_duplicate
-              duplicate_profile.reload
-              expect(duplicate_profile.profile_ids).not_to include(profile.id)
-              expect(duplicate_profile.closed_at).to be(nil)
-              expect(duplicate_profile.self_serviced).to be(nil)
-              expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to be(nil)
+              expect(duplicate_profile_set.self_serviced).to be(nil)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(nil)
             end
 
             it 'notifies the user' do
@@ -1284,9 +1284,9 @@ RSpec.describe Profile do
       end
 
       context 'when the profile is identified as a duplicate' do
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: profile_ids,
             closed_at: closed_at,
           )
@@ -1314,11 +1314,11 @@ RSpec.describe Profile do
 
             it 'closes the case as resolved by fraud', :freeze_time do
               profile.clear_duplicate
-              duplicate_profile.reload
-              expect(duplicate_profile.profile_ids).to include(profile.id)
-              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-              expect(duplicate_profile.self_serviced).to be(false)
-              expect(duplicate_profile.fraud_investigation_conclusive).to be(true)
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(true)
             end
 
             it 'notifies the user' do
@@ -1358,9 +1358,9 @@ RSpec.describe Profile do
       end
 
       context 'when the profile is identified as a duplicate' do
-        let!(:duplicate_profile) do
+        let!(:duplicate_profile_set) do
           create(
-            :duplicate_profile,
+            :duplicate_profile_set,
             profile_ids: profile_ids,
             closed_at: closed_at,
           )
@@ -1389,10 +1389,10 @@ RSpec.describe Profile do
 
             it 'closes the case as inconclusive', :freeze_time do
               profile.close_inconclusive_duplicate
-              duplicate_profile.reload
-              expect(duplicate_profile.closed_at).to eq(Time.zone.now)
-              expect(duplicate_profile.self_serviced).to be(false)
-              expect(duplicate_profile.fraud_investigation_conclusive).to be(false)
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(false)
             end
           end
 
@@ -1407,11 +1407,11 @@ RSpec.describe Profile do
 
             it 'does not close the case', :freeze_time do
               profile.close_inconclusive_duplicate
-              duplicate_profile.reload
-              expect(duplicate_profile.profile_ids).not_to include(profile.id)
-              expect(duplicate_profile.closed_at).to be(nil)
-              expect(duplicate_profile.self_serviced).to be(nil)
-              expect(duplicate_profile.fraud_investigation_conclusive).to be(nil)
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to be(nil)
+              expect(duplicate_profile_set.self_serviced).to be(nil)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(nil)
             end
 
             it 'notifies the user' do
