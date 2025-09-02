@@ -62,12 +62,12 @@ module AttemptsApi
       )
     end
 
-    def extra_attributes(event_type:)
+    def extra_attributes
       {}
     end
 
-    def extra_metadata(event_type:, metadata:)
-      failure_metadata(metadata:).merge(extra_attributes(event_type:))
+    def extra_metadata(metadata:)
+      failure_metadata(metadata:).merge(extra_attributes)
     end
 
     def failure_metadata(metadata:)
