@@ -508,7 +508,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
         context 'when a selfie is required' do
           let(:socure_docv_webhook_repeat_endpoints) { [] }
-          let(:max_attempts) { 5 }
+          let(:max_attempts) { 4 }
           before do
             allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
             visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
@@ -550,7 +550,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             remove_request_stub(@docv_stub)
             @docv_stub = stub_docv_verification_data_pass(
               docv_transaction_token: @docv_transaction_token,
-              reason_codes: ['not_processed'],
+              reason_codes: ['fail'],
               user:,
               document_type: :passport,
             )
@@ -563,7 +563,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             visit idv_socure_document_capture_update_path
             expect(page).to have_current_path(idv_socure_document_capture_errors_url)
-            expect(page).to have_content(t('idv.errors.try_again_later'))
+
+            expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
 
             click_on t('idv.failure.button.warning')
 
