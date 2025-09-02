@@ -551,7 +551,7 @@ class ApplicationController < ActionController::Base
     profile = current_user&.active_profile
     return false unless profile
     return false unless user_in_one_account_verification_bucket?
-    DuplicateProfile.involving_profile(
+    DuplicateProfileSet.involving_profile(
       profile_id: profile.id,
       service_provider: current_sp&.issuer,
     ).present?
