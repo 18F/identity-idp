@@ -268,7 +268,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
                 .to eq(Idp::Constants::Vendors::MOCK)
             end
           end
-      end
+        end
       end
     end
   end
