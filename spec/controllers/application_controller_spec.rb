@@ -660,7 +660,12 @@ RSpec.describe ApplicationController do
           end
         end
         context 'when duplicate profile ids found' do
-          let(:dupe_profile) { create(:duplicate_profile_set, profile_ids: [active_profile.id], service_provider: sp.issuer) }
+          let(:dupe_profile) do
+            create(
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: sp.issuer
+            )
+          end
           before do
             allow_any_instance_of(DuplicateProfileChecker)
               .to receive(:check_for_duplicate_profiles).and_return(dupe_profile)
