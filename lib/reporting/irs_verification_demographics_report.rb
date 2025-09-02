@@ -258,19 +258,14 @@ module Reporting
       }
 
       format(<<~QUERY, params)
-        | filter properties.service_provider IN %{issuers}
-        | filter (name = %{doc_auth_verify}
-        | fields jsonParse(@message) as message
-        | unnest message.properties.event_properties into event_properties
-        | unnest event_properties.proofing_results into proofing_results
-        | unnest proofing_results.biographical_info into biographical_info
-        | unnest biographical_info.birth_year into birth_year
-        | unnest biographical_info.state_id_jurisdiction into state
-        | unnest event_properties.success into success
-
-        | filter success = 1
-        | display properties.user_id,  birth_year, state
-        | limit 10000
+          fields properties.user_id as user_id
+                , properties.event_properties.proofing_results.biographical_info.birth_year as birth_year
+                , properties.event_properties.proofing_results.biographical_info.state_id_jurisdiction as state,
+        properties.event_properties.success as success
+                | filter properties.service_provider IN %{issuers}
+                | filter (name = %{doc_auth_verify} and 
+                | filter success = 1
+                | limit 10000
       QUERY
     end
 
