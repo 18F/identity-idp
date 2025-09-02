@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FraudOps::Tracker do
+RSpec.describe FraudOpsTracker::Tracker do
   before do
     allow(FeatureManagement).to receive(:fraudops_enabled?)
       .and_return(fraudops_enabled)

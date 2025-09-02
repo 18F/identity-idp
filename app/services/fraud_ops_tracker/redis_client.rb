@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FraudOpsApi
+module FraudOpsTracker
   class RedisClient < AttemptsApi::RedisClient
     attr_reader :redis_pool
     def initialize
