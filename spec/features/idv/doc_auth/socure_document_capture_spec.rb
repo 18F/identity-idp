@@ -505,6 +505,70 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             click_idv_continue
           end
         end
+
+        xcontext 'when a selfie is required' do
+          before do
+            allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+          end
+
+          it 'proceeds to the next page with valid info' do
+            perform_in_browser(:mobile) do
+              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+              sign_in_and_2fa_user(user)
+
+              complete_doc_auth_steps_before_hybrid_handoff_step
+              click_continue
+              expect(page).to have_current_path(idv_choose_id_type_url)
+              choose(t('doc_auth.forms.id_type_preference.passport'))
+              click_on t('forms.buttons.continue')
+
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+              @failed_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .to_return_json({ status: 200, body: { response: 'NO' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+              expect(page).to have_content(t('idv.errors.try_again_later'))
+
+              click_on t('idv.failure.button.warning')
+
+              remove_request_stub(@failed_stub)
+
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+              stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .to_return_json({ status: 200, body: { response: 'YES' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(idv_ssn_url)
+
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_document_request_submitted,
+              )
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+              )
+              expect(fake_analytics).to have_logged_event(
+                'IdV: doc auth image upload vendor pii validation',
+              )
+
+              fill_out_ssn_form_ok
+              click_idv_continue
+            end
+          end
+        end
       end
     end
 

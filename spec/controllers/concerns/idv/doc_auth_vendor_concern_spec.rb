@@ -155,10 +155,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       end
 
       before do
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_selfie_vendor_switching_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_selfie_vendor_lexis_nexis_percent).and_return(99)
         allow(controller).to receive(:resolved_authn_context_result).and_return(true)
         resolved_authn_context = AuthnContextResolver.new(
           user: user,
@@ -168,51 +164,111 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         ).result
         allow(controller).to receive(:resolved_authn_context_result)
           .and_return(resolved_authn_context)
-        allow(controller).to receive(:ab_test_bucket)
-          .with(:DOC_AUTH_SELFIE_VENDOR, user:)
-          .and_return(bucket)
       end
 
-      it 'returns Socure as the vendor' do
-        controller.update_doc_auth_vendor
-
-        expect(document_capture_session.doc_auth_vendor)
-          .to eq(Idp::Constants::Vendors::SOCURE)
-      end
-
-      context 'Lexis Nexis is disabled' do
+      context 'passport has not been requested' do
         before do
           allow(IdentityConfig.store)
-            .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-          allow(controller).to receive(:ab_test_bucket).and_return(:socure)
+            .to receive(:doc_auth_selfie_vendor_switching_enabled).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:doc_auth_selfie_vendor_lexis_nexis_percent).and_return(99)
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:DOC_AUTH_SELFIE_VENDOR, user:)
+            .and_return(bucket)
         end
 
-        context 'Socure user set is full after user bucketed' do
+        it 'returns Socure as the vendor' do
+          controller.update_doc_auth_vendor
+
+          expect(document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'Lexis Nexis is disabled' do
           before do
-            allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
-            expect(controller).to receive(:ab_test_bucket).and_call_original
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+            allow(controller).to receive(:ab_test_bucket).and_return(:socure)
           end
 
-          it 'returns enabled non socure bucket mock as the vendor' do
-            controller.update_doc_auth_vendor
+          context 'Socure user set is full after user bucketed' do
+            before do
+              allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
+              expect(controller).to receive(:ab_test_bucket).and_call_original
+            end
 
-            expect(document_capture_session.doc_auth_vendor)
-              .to eq(Idp::Constants::Vendors::MOCK)
+            it 'returns enabled non socure bucket mock as the vendor' do
+              controller.update_doc_auth_vendor
+
+              expect(document_capture_session.doc_auth_vendor)
+                .to eq(Idp::Constants::Vendors::MOCK)
+            end
+          end
+
+          context 'limit reached on allowed Socure users' do
+            before do
+              allow_any_instance_of(Idv::SocureUserSet).to receive(:maxed_users?).and_return(true)
+            end
+            it 'returns enabled non socure bucket mock as the vendor' do
+              controller.update_doc_auth_vendor
+
+              expect(controller).not_to receive(:ab_test_bucket)
+              expect(document_capture_session.doc_auth_vendor)
+                .to eq(Idp::Constants::Vendors::MOCK)
+            end
           end
         end
+      end
 
-        context 'limit reached on allowed Socure users' do
+      context 'passport requested' do
+        before do
+          document_capture_session.update!(passport_status: 'requested')
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:DOC_AUTH_PASSPORT_SELFIE_VENDOR, user:)
+            .and_return(bucket)
+        end
+
+        it 'returns Socure as the vendor' do
+          controller.update_doc_auth_vendor
+
+          expect(document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'Lexis Nexis is disabled' do
           before do
-            allow_any_instance_of(Idv::SocureUserSet).to receive(:maxed_users?).and_return(true)
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+            allow(controller).to receive(:ab_test_bucket).and_return(:socure)
           end
-          it 'returns enabled non socure bucket mock as the vendor' do
-            controller.update_doc_auth_vendor
 
-            expect(controller).not_to receive(:ab_test_bucket)
-            expect(document_capture_session.doc_auth_vendor)
-              .to eq(Idp::Constants::Vendors::MOCK)
+          context 'Socure user set is full after user bucketed' do
+            before do
+              allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
+              expect(controller).to receive(:ab_test_bucket).and_call_original
+            end
+
+            it 'returns enabled non socure bucket mock as the vendor' do
+              controller.update_doc_auth_vendor
+
+              expect(document_capture_session.doc_auth_vendor)
+                .to eq(Idp::Constants::Vendors::MOCK)
+            end
           end
-        end
+
+          context 'limit reached on allowed Socure users' do
+            before do
+              allow_any_instance_of(Idv::SocureUserSet).to receive(:maxed_users?).and_return(true)
+            end
+            it 'returns enabled non socure bucket mock as the vendor' do
+              controller.update_doc_auth_vendor
+
+              expect(controller).not_to receive(:ab_test_bucket)
+              expect(document_capture_session.doc_auth_vendor)
+                .to eq(Idp::Constants::Vendors::MOCK)
+            end
+          end
+      end
       end
     end
   end
