@@ -245,4 +245,29 @@ RSpec.describe ServiceProviderSession do
       end
     end
   end
+
+  describe '#attempt_api_request_uri' do
+    let(:service_provider_request) { ServiceProviderRequest.new(url:) }
+    let(:redirect_uri) { 'http://example.com/redirect' }
+
+    context 'with a redirect_uri in the request_url_params' do
+      let(:url) { "https://example.com/auth?param0=p0&redirect_uri=#{redirect_uri}&param2=p2" }
+
+      it 'returns the redirect_uri' do
+        expect(subject.attempts_api_redirect_uri).to eq redirect_uri
+      end
+    end
+
+    context 'with no redirect uri in the request_url_params' do
+      context 'with a SAML integration' do
+        let(:sp) { build_stubbed(:service_provider, acs_url: redirect_uri) }
+
+        let(:url) { 'https://example.com/auth?param0=p0' }
+
+        it 'returns the redirect_uri' do
+          expect(subject.attempts_api_redirect_uri).to eq redirect_uri
+        end
+      end
+    end
+  end
 end

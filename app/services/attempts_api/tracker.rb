@@ -7,16 +7,16 @@ module AttemptsApi
       'forgot-password-email-sent',
     ].freeze
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
-                :sp_request_uri
+                :sp_redirect_uri
 
     def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
-                   sp_request_uri:, enabled_for_session:)
+                   sp_redirect_uri:, enabled_for_session:)
       @session_id = session_id
       @request = request
       @user = user
       @sp = sp
       @cookie_device_uuid = cookie_device_uuid
-      @sp_request_uri = sp_request_uri
+      @sp_redirect_uri = sp_redirect_uri
       @enabled_for_session = enabled_for_session
     end
     include TrackerEvents
@@ -38,7 +38,7 @@ module AttemptsApi
         user_uuid: agency_uuid(event_type: event_type),
         device_id: cookie_device_uuid,
         user_ip_address: request&.remote_ip,
-        application_url: sp_request_uri,
+        application_url: sp_redirect_uri,
         language: user&.email_language || I18n.locale.to_s,
         client_port: CloudFrontHeaderParser.new(request).client_port,
         aws_region: IdentityConfig.store.aws_region,

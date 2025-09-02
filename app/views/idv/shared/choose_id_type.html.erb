@@ -19,7 +19,7 @@
     <% end %>
 <% end %>
 
-<% if dos_passport_api_down %>
+<% if disable_passports %>
     <%= render AlertComponent.new(type: :error, class: 'margin-bottom-4') do %>
     <%= t('doc_auth.info.dos_passport_api_down_message') %>
     <% end %>
@@ -51,7 +51,7 @@
             as: :radio_buttons,
             collection: [
               [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
-              [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: dos_passport_api_down],
+              [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
             ],
             form: f,
             input_html: { class: 'usa-radio__input--tile' },

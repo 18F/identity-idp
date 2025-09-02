@@ -10,7 +10,7 @@ class DuplicateProfilesDetectedController < ApplicationController
       dupe_profile: dupe_profile,
     )
     notify_users_of_duplicate_profile_sign_in
-    analytics.one_account_duplicate_profiles_detected
+    analytics.one_account_duplicate_profiles_detected_visited
   end
 
   private

@@ -18,7 +18,7 @@ RSpec.describe AttemptsApi::Tracker do
   let(:request) { instance_double(ActionDispatch::Request) }
   let(:service_provider) { create(:service_provider) }
   let(:cookie_device_uuid) { 'device_id' }
-  let(:sp_request_uri) { 'https://example.com/auth_page' }
+  let(:sp_redirect_uri) { 'https://example.com/auth_page' }
   let(:user) { create(:user) }
 
   subject do
@@ -28,7 +28,7 @@ RSpec.describe AttemptsApi::Tracker do
       user: user,
       sp: service_provider,
       cookie_device_uuid: cookie_device_uuid,
-      sp_request_uri: sp_request_uri,
+      sp_redirect_uri: sp_redirect_uri,
       enabled_for_session: enabled_for_session,
     )
   end

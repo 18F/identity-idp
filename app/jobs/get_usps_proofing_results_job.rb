@@ -516,7 +516,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       user: enrollment.user,
       sp: enrollment.service_provider,
       cookie_device_uuid: nil,
-      sp_request_uri: nil,
+      sp_redirect_uri: nil,
     )
   end
 

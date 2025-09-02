@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_11_221924) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_18_192257) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -219,16 +219,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_11_221924) do
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
-  end
-
-  create_table "duplicate_profile_confirmations", force: :cascade do |t|
-    t.bigint "profile_id", null: false, comment: "sensitive=false"
-    t.datetime "confirmed_at", precision: nil, null: false, comment: "sensitive=false"
-    t.bigint "duplicate_profile_ids", null: false, comment: "sensitive=false", array: true
-    t.boolean "confirmed_all", comment: "sensitive=false"
-    t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "updated_at", null: false, comment: "sensitive=false"
-    t.index ["profile_id"], name: "index_duplicate_profile_confirmations_on_profile_id"
   end
 
   create_table "duplicate_profiles", force: :cascade do |t|

@@ -8,13 +8,13 @@ module Idv
     include Idv::ChooseIdTypeConcern
 
     before_action :redirect_if_passport_not_available
+    before_action :confirm_step_allowed
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
 
       render 'idv/shared/choose_id_type',
              locals: locals_attrs(
-               analytics:,
                presenter: Idv::ChooseIdTypePresenter.new,
                form_submit_url: idv_choose_id_type_path,
              ),
@@ -32,7 +32,10 @@ module Idv
           .merge({ chosen_id_type: }),
       )
 
-      if result.success?
+      if passport_chosen? &&
+         !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+        redirect_to idv_choose_id_type_url(passports: false)
+      elsif result.success?
         set_passport_requested
         redirect_to next_step
       else
@@ -45,10 +48,10 @@ module Idv
         key: :choose_id_type,
         controller: self,
         next_steps: [:document_capture],
-        preconditions: ->(idv_session:, user:) {
+        preconditions: ->(idv_session:, user:) do
           idv_session.flow_path == 'standard' &&
-            idv_session.passport_allowed == true
-        },
+          idv_session.passport_allowed == true
+        end,
         undo_step: ->(idv_session:, user:) do
           if idv_session.document_capture_session_uuid
             DocumentCaptureSession.find_by(
