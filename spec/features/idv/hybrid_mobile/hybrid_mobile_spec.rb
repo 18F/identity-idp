@@ -307,11 +307,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       context 'selfie is required' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_enabled)
-            .and_return(true)
-        end
-
         it 'works with valid passport data' do
           user = nil
 
