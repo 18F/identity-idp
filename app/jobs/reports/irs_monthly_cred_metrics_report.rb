@@ -197,6 +197,13 @@ module Reports
         'Credentials Authorized',
         'New ID Verifications Authorized Credentials',
         'Existing Identity Verification Credentials',
+        # TODO
+        # the relevant billing report columns are iaa_unique_users for monthly active users
+        #   and issuer_ial1_plus_2_total_auth_count for authentications (
+        # - Total Authentications: Total number of *billable* sign ins at any IAL,
+        #   -- IAL Issuer 1+2 count --
+        # - IAL2 Auths:
+        # - Monthly Active Users: Signed in at any IAL level, -- IAA Unique users --
       ]
     end
 
