@@ -278,15 +278,6 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def dupe_profile_personal_information_verified
-    UserMailer.with(
-      user: user,
-      email_address: email_address_record,
-    ).dupe_profile_personal_information_verified(
-      agency_name: 'Sample APP',
-    )
-  end
-
   def in_person_ready_to_verify_reminder_enhanced_ipp_enabled
     UserMailer.with(
       user: user,
