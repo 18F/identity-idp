@@ -647,7 +647,7 @@ RSpec.describe ApplicationController do
       end
 
       context 'when user has active profile' do
-        let!(:active_profile) { create(:profile, :active, user: user) }
+        let!(:active_profile) { create(:profile, :active, :facial_match_proof, user: user) }
 
         context 'when no duplicate profile ids found in session' do
           it 'returns false' do
@@ -655,12 +655,16 @@ RSpec.describe ApplicationController do
             expect(response.body).to eq('false')
           end
         end
+
         context 'when duplicate profile ids found in session' do
           before do
-            create(
+            dupe_profile = create(
               :duplicate_profile, profile_ids: [active_profile.id],
                                   service_provider: sp.issuer
             )
+
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:check_for_duplicate_profiles).and_return(dupe_profile)
           end
 
           it 'returns true' do

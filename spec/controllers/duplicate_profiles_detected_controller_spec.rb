@@ -54,14 +54,14 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
           type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
         )
 
-        controller.send(:notify_users_of_duplicate_profile_sign_in)
+        controller.send(:notify_users_of_duplicate_profile, source: :sign_in)
       end
 
       it 'logs an event' do
         get :show, params: { source: :sign_in }
 
         expect(@analytics).to have_logged_event(
-          :one_account_duplicate_profiles_detected_visited,
+          :one_account_duplicate_profiles_warning_page_visited,
         )
       end
     end
