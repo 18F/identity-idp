@@ -6541,11 +6541,13 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a emailt ype was not used properly
-  def one_account_dupe_profile_email_type_not_found(type:)
+  # Tracks when a email type was not used properly
+  # @param [String] type The type of email that was not found
+  def one_account_dupe_profile_email_type_not_found(type:, **extra)
     track_event(
       :one_account_dupe_profile_email_type_not_found,
       type: type,
+      **extra,
     )
   end
 

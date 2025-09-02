@@ -650,6 +650,10 @@ RSpec.describe ApplicationController do
         let!(:active_profile) { create(:profile, :active, :facial_match_proof, user: user) }
 
         context 'when no duplicate profile ids found in session' do
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:check_for_duplicate_profiles).and_return(nil)
+          end
           it 'returns false' do
             get :index
             expect(response.body).to eq('false')
