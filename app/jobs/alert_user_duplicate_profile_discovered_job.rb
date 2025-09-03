@@ -21,19 +21,17 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
       end
     end
     return unless phone
-    phone_params = {
-      to: phone,
-      country_code: Phonelib.parse(phone).country,
-      agency_name: agency,
-    }
-
     if type == SIGN_IN_ATTEMPTED
       Telephony.send_dupe_profile_sign_in_attempted_notice(
-        phone_params,
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        agency_name: agency,
       )
     elsif type == ACCOUNT_VERIFIED
       Telephony.send_dupe_profile_created_notice(
-        phone_params,
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        agency_name: agency,
       )
     end
   end
