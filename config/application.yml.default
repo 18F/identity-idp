@@ -142,6 +142,7 @@ domain_name: login.gov
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
 dos_passport_composite_healthcheck_endpoint: ''
+dos_passport_healthcheck_cache_expiration_seconds: 60
 dos_passport_healthcheck_endpoint: ''
 dos_passport_healthcheck_maxretry: 1
 dos_passport_healthcheck_timeout_seconds: 5
