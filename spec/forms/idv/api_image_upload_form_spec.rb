@@ -949,7 +949,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
-      context 'when on the final submit attempt' do
+      context 'when the rate limit is reached' do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:errors) do
@@ -967,8 +967,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           form.submit
         end
 
-        it 'sets the final submit attempt to true in the document_capture_session' do
-          expect(document_capture_session.reload.load_result.final_submit_attempt).to be(true)
+        it 'sets max_attempts_reached to true in the document_capture_session' do
+          expect(document_capture_session.reload.load_result.max_attempts_reached).to be(true)
         end
       end
 
@@ -987,7 +987,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.submit
           end
 
-          it 'sets the final submit attempt to true in the document_capture_session' do
+          it 'sets max_attempts_reached to true in the document_capture_session' do
             expect(document_capture_session.reload.load_result).to have_attributes(
               failed_front_image_fingerprints: [],
               failed_back_image_fingerprints: [],
@@ -995,7 +995,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               failed_selfie_image_fingerprints: [],
               doc_auth_success: false,
               selfie_status: :fail,
-              final_submit_attempt: false,
+              max_attempts_reached: false,
               errors:,
             )
           end
@@ -1010,7 +1010,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.submit
           end
 
-          it 'sets the final submit attempt to true in the document_capture_session' do
+          it 'sets max_attempts_reached to true in the document_capture_session' do
             expect(document_capture_session.reload.load_result).to have_attributes(
               failed_front_image_fingerprints: [],
               failed_back_image_fingerprints: [],
@@ -1018,7 +1018,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               failed_selfie_image_fingerprints: [],
               doc_auth_success: false,
               selfie_status: :fail,
-              final_submit_attempt: true,
+              max_attempts_reached: true,
               errors:,
             )
           end
@@ -1050,7 +1050,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               failed_selfie_image_fingerprints: [selfie_image_fingerprint],
               doc_auth_success: false,
               selfie_status: :fail,
-              final_submit_attempt: false,
+              max_attempts_reached: false,
               errors:,
             )
           end
@@ -1102,7 +1102,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         capture_result = session.load_result
         expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
         expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
-        expect(capture_result.final_submit_attempt).to be(false)
+        expect(capture_result.max_attempts_reached).to be(false)
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value([I18n.t('doc_auth.errors.doc.resubmit_failed_image')])
@@ -1131,7 +1131,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           expect(capture_result.failed_front_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_back_image_fingerprints.length).to eq(1)
           expect(capture_result.failed_selfie_image_fingerprints).to be_nil
-          expect(capture_result.final_submit_attempt).to be(false)
+          expect(capture_result.max_attempts_reached).to be(false)
           response = form.submit
           expect(response.errors).to have_key(:front)
           expect(response.errors).to have_key(:back)
@@ -1152,7 +1152,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
       end
 
-      context 'when on the final submit attempt' do
+      context 'when the rate limit is reached' do
         let(:liveness_checking_required) { true }
         let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
         let(:back_image) { DocAuthImageFixtures.portrait_match_success_yaml }
@@ -1164,11 +1164,11 @@ RSpec.describe Idv::ApiImageUploadForm do
           r.increment!
         end
 
-        it 'sets final submit attempt to true in the document_capture_session' do
+        it 'sets max_attempts_reached to true in the document_capture_session' do
           form.submit
           session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
           capture_result = session.load_result
-          expect(capture_result.final_submit_attempt).to be(true)
+          expect(capture_result.max_attempts_reached).to be(true)
         end
       end
     end
@@ -1291,7 +1291,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           end
         end
 
-        context 'when on the final submit attempt' do
+        context 'when the rate limit is reached' do
           let(:failed_passport_mrz_response) do
             DocAuth::Response.new(
               success: false,
@@ -1316,14 +1316,14 @@ RSpec.describe Idv::ApiImageUploadForm do
             r.increment!
           end
 
-          it 'stores the final submit attempt true in the document_capture_session' do
+          it 'sets max_attempts_reached to true in the document_capture_session' do
             response
 
             expect(document_capture_session.reload.load_result).to have_attributes(
               success: false,
               pii: nil,
               failed_passport_image_fingerprints: a_kind_of(Array),
-              final_submit_attempt: true,
+              max_attempts_reached: true,
             )
           end
         end
@@ -1652,6 +1652,24 @@ RSpec.describe Idv::ApiImageUploadForm do
         allow(client_response).to receive(:success?).and_return(false)
         allow(client_response).to receive(:network_error?).and_return(true)
         allow(client_response).to receive(:errors).and_return(errors)
+        allow(client_response).to receive(:doc_auth_success?).and_return(false)
+        allow(client_response).to receive(:selfie_status).and_return(:not_processed)
+      end
+
+      it 'does not store failed images' do
+        form.send(:validate_form)
+        capture_result = form.send(:store_failed_images, client_response, nil, nil)
+        expect(capture_result[:front]).to be_empty
+        expect(capture_result[:back]).to be_empty
+        expect(capture_result[:passport]).to be_empty
+      end
+    end
+
+    context 'when client_response is successful' do
+      before do
+        allow(client_response).to receive(:success?).and_return(true)
+        allow(client_response).to receive(:network_error?).and_return(false)
+        allow(client_response).to receive(:doc_auth_success?).and_return(false)
         allow(client_response).to receive(:selfie_status).and_return(:not_processed)
       end
 
@@ -1688,7 +1706,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
           end
 
-          it 'stores the failed passport image' do
+          it 'stores failed passport image' do
             form.send(:validate_form)
             capture_result = form.send(
               :store_failed_images,
@@ -1698,7 +1716,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             )
             expect(capture_result[:front]).to be_empty
             expect(capture_result[:back]).to be_empty
-            expect(capture_result[:passport]).to_not be_empty
+            expect(capture_result[:passport]).not_to be_empty
           end
         end
 

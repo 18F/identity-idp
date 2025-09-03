@@ -93,7 +93,7 @@ RSpec.describe Idv::LinkSentPollController do
       end
     end
 
-    context 'when document_capture_session has final_submit_attempt as true' do
+    context 'when max_attempts_reached is true in document_capture_session' do
       before do
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: 'fingerprint-front1',
@@ -102,7 +102,7 @@ RSpec.describe Idv::LinkSentPollController do
           selfie_image_fingerprint: 'fingerprint-selfie1',
           doc_auth_success: false,
           selfie_status: :fail,
-          final_submit_attempt: true,
+          max_attempts_reached: true,
         )
       end
 

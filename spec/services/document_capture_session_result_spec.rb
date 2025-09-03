@@ -14,7 +14,7 @@ RSpec.describe DocumentCaptureSessionResult do
         selfie_status: :success,
         pii: pii,
         attention_with_barcode: false,
-        final_submit_attempt: true,
+        max_attempts_reached: true,
       )
       EncryptedRedisStructStorage.store(result)
       loaded_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
@@ -26,7 +26,7 @@ RSpec.describe DocumentCaptureSessionResult do
         attention_with_barcode: false,
         selfie_status: :success,
         doc_auth_success: true,
-        final_submit_attempt: true,
+        max_attempts_reached: true,
       )
     end
 

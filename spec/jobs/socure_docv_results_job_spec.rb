@@ -191,7 +191,7 @@ RSpec.describe SocureDocvResultsJob do
       context 'when the response is not successful' do
         let(:decision_value) { 'decline' }
 
-        context 'when the submit attempt is not the final one' do
+        context 'when the rate limit is not reached' do
           before do
             allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
             perform
@@ -206,7 +206,7 @@ RSpec.describe SocureDocvResultsJob do
               failed_passport_image_fingerprints: [],
               failed_selfie_image_fingerprints: nil,
               errors: { socure: { reason_codes: } },
-              final_submit_attempt: false,
+              max_attempts_reached: false,
             )
           end
 
@@ -230,7 +230,7 @@ RSpec.describe SocureDocvResultsJob do
           end
         end
 
-        context 'when the submit attempt is the final one' do
+        context 'when the rate limit is reached' do
           let(:rate_limiter) do
             RateLimiter.new(
               user: document_capture_session.user,
@@ -253,7 +253,7 @@ RSpec.describe SocureDocvResultsJob do
               failed_passport_image_fingerprints: [],
               failed_selfie_image_fingerprints: nil,
               errors: { socure: { reason_codes: } },
-              final_submit_attempt: true,
+              max_attempts_reached: true,
             )
           end
 
@@ -754,7 +754,7 @@ RSpec.describe SocureDocvResultsJob do
                         failed_selfie_image_fingerprints: nil,
                         errors: { passport: 'Please add a new image' },
                         mrz_status: :failed,
-                        final_submit_attempt: false,
+                        max_attempts_reached: false,
                       )
                     end
                   end
@@ -782,7 +782,7 @@ RSpec.describe SocureDocvResultsJob do
                         failed_selfie_image_fingerprints: nil,
                         errors: { passport: 'Please add a new image' },
                         mrz_status: :failed,
-                        final_submit_attempt: true,
+                        max_attempts_reached: true,
                       )
                     end
                   end
@@ -950,7 +950,7 @@ RSpec.describe SocureDocvResultsJob do
           allow_any_instance_of(Idv::DocPiiStateId).to receive(:zipcode).and_return(:invalid_junk)
         end
 
-        context 'when the submit attempt is not the final one' do
+        context 'when the rate limit is reached' do
           before do
             allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
             perform
@@ -965,7 +965,7 @@ RSpec.describe SocureDocvResultsJob do
               failed_passport_image_fingerprints: [],
               failed_selfie_image_fingerprints: nil,
               errors: { pii_validation: 'failed' },
-              final_submit_attempt: false,
+              max_attempts_reached: false,
             )
           end
 
@@ -989,7 +989,7 @@ RSpec.describe SocureDocvResultsJob do
           end
         end
 
-        context 'when the submit attempt is the final one' do
+        context 'when the rate limit is reached' do
           let(:rate_limiter) do
             RateLimiter.new(
               user: document_capture_session.user,
@@ -1012,7 +1012,7 @@ RSpec.describe SocureDocvResultsJob do
               failed_passport_image_fingerprints: [],
               failed_selfie_image_fingerprints: nil,
               errors: { pii_validation: 'failed' },
-              final_submit_attempt: true,
+              max_attempts_reached: true,
             )
           end
 

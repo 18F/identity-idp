@@ -176,7 +176,7 @@ RSpec.describe DocumentCaptureSession do
           failed_selfie_image_fingerprints: ['fingerprint-selfie1'],
           errors: nil,
           mrz_status: :not_processed,
-          final_submit_attempt: false,
+          max_attempts_reached: false,
         )
       end
     end
@@ -194,7 +194,7 @@ RSpec.describe DocumentCaptureSession do
             selfie_status: :fail,
             errors: [error: 'I am error'],
             mrz_status: :processed,
-            final_submit_attempt: true,
+            max_attempts_reached: true,
           )
         end
       end
@@ -211,7 +211,7 @@ RSpec.describe DocumentCaptureSession do
           failed_selfie_image_fingerprints: ['fingerprint-selfie1'],
           errors: [error: 'I am error'],
           mrz_status: :processed,
-          final_submit_attempt: true,
+          max_attempts_reached: true,
         )
       end
     end
