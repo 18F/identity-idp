@@ -16,23 +16,25 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
       case type
       when ACCOUNT_VERIFIED
         mailer.dupe_profile_created(agency_name: agency).deliver_now_or_later
-        next unless phone
-        @telephony_response = Telephony.send_dupe_profile_created_notice(
-          to: phone,
-          country_code: Phonelib.parse(phone).country,
-          agency_name: agency,
-        )
       when SIGN_IN_ATTEMPTED
         mailer.dupe_profile_sign_in_attempted(agency_name: agency).deliver_now_or_later
-        next unless phone
-        @telephony_response = Telephony.send_dupe_profile_sign_in_attempted_notice(
-          to: phone,
-          country_code: Phonelib.parse(phone).country,
-          agency_name: agency,
-        )
-      else
-        analytics(user: user).one_account_dupe_profile_email_type_not_found(type: type)
       end
+    end
+    return unless phone
+    phone_params = {
+      to: phone,
+      country_code: Phonelib.parse(phone).country,
+      agency_name: agency,
+    }
+
+    if type == SIGN_IN_ATTEMPTED
+      Telephony.send_dupe_profile_sign_in_attempted_notice(
+        phone_params,
+      )
+    elsif type == ACCOUNT_VERIFIED
+      Telephony.send_dupe_profile_created_notice(
+        phone_params,
+      )
     end
   end
 

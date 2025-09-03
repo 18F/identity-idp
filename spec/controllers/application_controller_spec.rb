@@ -629,16 +629,19 @@ RSpec.describe ApplicationController do
         expect(response.body).to eq('false')
       end
 
-      it 'returns false even with duplicate profiles' do
-        create(:duplicate_profile_set, profile_ids: [profile.id], service_provider: 'wrong-sp')
-
+      context 'with duplicate profile but for different sp' do
+        let(:duplicate_profile_set) do
+          create(:duplicate_profile_set, profile_ids: [profile.id], service_provider: 'wrong-sp')
+        end
         before do
           allow_any_instance_of(DuplicateProfileChecker)
             .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
         end
 
-        get :index
-        expect(response.body).to eq('false')
+        it 'returns false even with duplicate profiles' do
+          get :index
+          expect(response.body).to eq('false')
+        end
       end
     end
 
@@ -664,7 +667,7 @@ RSpec.describe ApplicationController do
           end
         end
         context 'when duplicate profile set found for user' do
-          let(:dupe_profile) do
+          let(:duplicate_profile_set) do
             create(
               :duplicate_profile_set, profile_ids: [active_profile.id],
                                       service_provider: sp.issuer
@@ -672,12 +675,20 @@ RSpec.describe ApplicationController do
           end
           before do
             allow_any_instance_of(DuplicateProfileChecker)
-              .to receive(:dupe_profile_set_for_user).and_return(dupe_profile)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
           end
 
           it 'returns true' do
             get :index
             expect(response.body).to eq('true')
+          end
+
+          context 'when duplicate profile set is already closed' do
+            it 'returns false' do
+              duplicate_profile_set.update!(closed_at: Time.zone.now)
+              get :index
+              expect(response.body).to eq('false')
+            end
           end
         end
       end

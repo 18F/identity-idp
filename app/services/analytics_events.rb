@@ -6558,16 +6558,6 @@ module AnalyticsEvents
     track_event(:one_account_dupe_profile_already_created)
   end
 
-  # Tracks when a email type was not used properly
-  # @param [String] type The type of email that was not found
-  def one_account_dupe_profile_email_type_not_found(type:, **extra)
-    track_event(
-      :one_account_dupe_profile_email_type_not_found,
-      type: type,
-      **extra,
-    )
-  end
-
   # Tracks when a user that had duplicate profiles is closed
   def one_account_duplicate_profile_closed
     track_event(:one_account_duplicate_profile_closed)
