@@ -24,7 +24,7 @@ module AttemptsApi
       jwk = JWT::JWK.new(public_key)
 
       JWE.encrypt(
-        jwe_payload(payload_json: payload_json(issuer:)),
+        signed_payload(payload_json: payload_json(issuer:)),
         public_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
@@ -73,7 +73,7 @@ module AttemptsApi
     end
 
     def payload_json(issuer:)
-      @payload_json ||= payload(issuer:).to_json
+      @payload_json ||= payload(issuer:)
     end
 
     private
@@ -88,7 +88,7 @@ module AttemptsApi
       }.merge(event_metadata || {})
     end
 
-    def jwe_payload(payload_json:)
+    def signed_payload(payload_json:)
       if IdentityConfig.store.attempts_api_signing_enabled
         JWT.encode(payload_json, SigningKey.private_key, 'ES256')
       else
