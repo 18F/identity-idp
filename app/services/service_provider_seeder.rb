@@ -18,7 +18,11 @@ class ServiceProviderSeeder
     end
   end
 
+  # Seed data appropriate only to per-branch review applications.
+  # This method must not run in production.
   def run_review_app(dashboard_url:)
+    return run if service_provider_data&.include?(dashboard_url)
+
     issuer = 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard'
     config = {
       'friendly_name' => 'Dashboard',
@@ -42,7 +46,9 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
+    file = service_provider_data
+    return [] unless file
+
     file.gsub!('%{env}', deploy_env) if deploy_env
     YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
@@ -51,6 +57,11 @@ class ServiceProviderSeeder
   rescue KeyError => key_error
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
+  end
+
+  def service_provider_data
+    file = Rails.root.join(@yaml_path, 'service_providers.yml')
+    file.read if file.exist?
   end
 
   def write_service_provider?(config)
