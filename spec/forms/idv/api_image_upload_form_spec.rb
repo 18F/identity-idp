@@ -964,13 +964,96 @@ RSpec.describe Idv::ApiImageUploadForm do
           r.increment!
           r.increment!
           r.increment!
+          form.submit
         end
 
         it 'sets the final submit attempt to true in the document_capture_session' do
-          form.submit
-          session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
-          capture_result = session.load_result
-          expect(capture_result.final_submit_attempt).to be(true)
+          expect(document_capture_session.reload.load_result.final_submit_attempt).to be(true)
+        end
+      end
+
+      context 'when the error is a network error' do
+        let(:errors) { {} }
+
+        before do
+          allow(failed_response).to receive(:success?).and_return(false)
+          allow(failed_response).to receive(:network_error?).and_return(true)
+          allow(failed_response).to receive(:errors).and_return(errors)
+          allow(failed_response).to receive(:selfie_status).and_return(:fail)
+        end
+
+        context 'when the rate limit is not reached' do
+          before do
+            form.submit
+          end
+
+          it 'sets the final submit attempt to true in the document_capture_session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: [],
+              doc_auth_success: false,
+              selfie_status: :fail,
+              final_submit_attempt: false,
+              errors:,
+            )
+          end
+        end
+
+        context 'when the rate limit is reached' do
+          before do
+            r = RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+            r.increment!
+            r.increment!
+            r.increment!
+            form.submit
+          end
+
+          it 'sets the final submit attempt to true in the document_capture_session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: [],
+              doc_auth_success: false,
+              selfie_status: :fail,
+              final_submit_attempt: true,
+              errors:,
+            )
+          end
+        end
+
+        context 'when failed images exist in document_capture_session' do
+          let(:front_image_fingerprint) { 'front-1' }
+          let(:back_image_fingerprint) { 'back-1' }
+          let(:passport_image_fingerprint) { 'passport-1' }
+          let(:selfie_image_fingerprint) { 'selfie-1' }
+
+          before do
+            document_capture_session.store_failed_auth_data(
+              front_image_fingerprint:,
+              back_image_fingerprint:,
+              passport_image_fingerprint:,
+              selfie_image_fingerprint:,
+              doc_auth_success: false,
+              selfie_status: :fail,
+            )
+            form.submit
+          end
+
+          it 'does not add or remove failed images in the document_capture_session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              failed_front_image_fingerprints: [front_image_fingerprint],
+              failed_back_image_fingerprints: [back_image_fingerprint],
+              failed_passport_image_fingerprints: [passport_image_fingerprint],
+              failed_selfie_image_fingerprints: [selfie_image_fingerprint],
+              doc_auth_success: false,
+              selfie_status: :fail,
+              final_submit_attempt: false,
+              errors:,
+            )
+          end
         end
       end
     end
