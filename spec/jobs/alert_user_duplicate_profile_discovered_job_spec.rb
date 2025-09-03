@@ -36,7 +36,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
         let(:user) { create(:user, :with_multiple_emails, :with_phone) }
 
         it 'sends dupe_profile_created email for each confirmed email address' do
-          user.confirmed_email_addresses.each do |email|
+          user.confirmed_email_addresses.each do |_email|
             expect_any_instance_of(UserMailer).to receive(:dupe_profile_created)
               .with(agency_name: agency)
               .and_call_original
@@ -47,8 +47,12 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
 
         it 'only sends one text per user' do
           expect(Telephony).to receive(:send_dupe_profile_created_notice)
-              .with(to: user.phone_configurations.first.phone, country_code: 'US', agency_name: agency)
-              .once
+            .with(
+              to: user.phone_configurations.first.phone,
+              country_code: 'US',
+              agency_name: agency,
+            )
+            .once
 
           subject.perform(user: user, agency: agency, type: :account_verified)
         end
@@ -80,7 +84,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
         let(:user) { create(:user, :with_multiple_emails, :with_phone) }
 
         it 'sends dupe_profile_sign_in_attempted email for each confirmed email address' do
-          user.confirmed_email_addresses.each do |email|
+          user.confirmed_email_addresses.each do |_email|
             expect_any_instance_of(UserMailer).to receive(:dupe_profile_sign_in_attempted)
               .with(agency_name: agency)
               .and_call_original
@@ -91,8 +95,12 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
 
         it 'only sends one text per user' do
           expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
-              .with(to: user.phone_configurations.first.phone, country_code: 'US', agency_name: agency)
-              .once
+            .with(
+              to: user.phone_configurations.first.phone,
+              country_code: 'US',
+              agency_name: agency,
+            )
+            .once
 
           subject.perform(user: user, agency: agency, type: :sign_in)
         end
