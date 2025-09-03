@@ -1098,4 +1098,80 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
   end
+
+  describe '#track_passport_proofing_success' do
+    context 'when user completed proofing with passport' do
+      before do
+        passport_pii = {
+          first_name: 'John',
+          last_name: 'Doe',
+          middle_name: 'Robert',
+          dob: Date.new(1990, 1, 1),
+          sex: 'M',
+          birth_place: 'NEW YORK NY USA',
+          passport_expiration: Date.new(2025, 12, 31),
+          issuing_country_code: 'US',
+          mrz: 'P<USAMOORE<<JOHN<<<<<<<<<<<<<<<<<<<<<<1234567890US9001014M2501017<<<<<<<<<<<<<<<<8',
+          passport_issued: Date.new(2015, 1, 1),
+          nationality_code: 'US',
+          document_number: 'P1234567890',
+          id_doc_type: Idp::Constants::DocumentTypes::PASSPORT,
+        }
+        subject.idv_session.pii_from_doc = Pii::Passport.new(**passport_pii)
+        subject.idv_session.doc_auth_vendor = 'TrueID'
+        subject.idv_session.address_verification_mechanism = 'phone'
+      end
+
+      it 'logs proofed_with_passport event' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@analytics).to have_logged_event(:proofed_with_passport)
+      end
+    end
+
+    context 'when user completed proofing with state ID' do
+      before do
+        subject.idv_session.pii_from_doc = Pii::StateId.new(
+          **Idp::Constants::MOCK_IDV_APPLICANT.merge(
+            id_doc_type: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+          ),
+        )
+        subject.idv_session.doc_auth_vendor = 'TrueID'
+      end
+
+      it 'does not log proofed_with_passport event' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@analytics).not_to have_logged_event(:proofed_with_passport)
+      end
+    end
+
+    context 'when vendor is missing' do
+      before do
+        passport_pii = {
+          first_name: 'John',
+          last_name: 'Doe',
+          middle_name: 'Robert',
+          dob: Date.new(1990, 1, 1),
+          sex: 'M',
+          birth_place: 'NEW YORK NY USA',
+          passport_expiration: Date.new(2025, 12, 31),
+          issuing_country_code: 'US',
+          mrz: 'P<USAMOORE<<JOHN<<<<<<<<<<<<<<<<<<<<<<1234567890US9001014M2501017<<<<<<<<<<<<<<<<8',
+          passport_issued: Date.new(2015, 1, 1),
+          nationality_code: 'US',
+          document_number: 'P1234567890',
+          id_doc_type: Idp::Constants::DocumentTypes::PASSPORT,
+        }
+        subject.idv_session.pii_from_doc = Pii::Passport.new(**passport_pii)
+        subject.idv_session.doc_auth_vendor = nil
+      end
+
+      it 'does not log proofed_with_passport event' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@analytics).not_to have_logged_event(:proofed_with_passport)
+      end
+    end
+  end
 end

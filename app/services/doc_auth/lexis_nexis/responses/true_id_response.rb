@@ -88,6 +88,8 @@ module DocAuth
             }
           end
 
+          log_passport_analytics_events
+
           basic_logging_info.merge(attrs)
         end
 
@@ -401,6 +403,57 @@ module DocAuth
 
         def with_authentication_result?
           true_id_product&.dig(:AUTHENTICATION_RESULT).present?
+        end
+
+        def log_passport_analytics_events
+          return unless passport_pii?
+
+          tampering_detected = check_tampering_detected
+          alert_names = tampering_alert_names if tampering_detected
+
+          Analytics.new.passport_validation(
+            vendor: 'TrueID',
+            success: successful_result?,
+            is_passport: true,
+            tampering_detected: tampering_detected,
+            reason_codes: [],
+          )
+
+          if tampering_detected
+            Analytics.new.passport_tampering_detected(
+              vendor: 'TrueID',
+              document_type: doc_class_name || 'Passport',
+              alert_names: alert_names,
+            )
+          end
+
+          if successful_result?
+            Analytics.new.passport_success(vendor: 'TrueID')
+          end
+        end
+
+        def check_tampering_detected
+          return false unless with_authentication_result?
+
+          tampering_alerts = parsed_alerts[:failed]&.select do |alert|
+            alert[:name]&.include?('tampering') ||
+              alert[:name]&.include?('Tamper') ||
+              alert[:disposition]&.downcase&.include?('tamper')
+          end
+
+          tampering_alerts&.any? || false
+        end
+
+        def tampering_alert_names
+          return [] unless with_authentication_result?
+
+          parsed_alerts[:failed]&.filter_map do |alert|
+            if alert[:name]&.include?('tampering') ||
+               alert[:name]&.include?('Tamper') ||
+               alert[:disposition]&.downcase&.include?('tamper')
+              alert[:name]
+            end
+          end || []
         end
       end
     end
