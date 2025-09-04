@@ -60,7 +60,7 @@ module Api
       end
 
       def batch_size
-        poll_params[:maxEvents]&.to_i || 1000
+        poll_params[:maxEvents]&.to_i || event_limit
       end
 
       def redis_client
@@ -72,7 +72,10 @@ module Api
       end
 
       def validate_params
-        if poll_params[:maxEvents].present? && !poll_params[:maxEvents].to_i.between?(1, 1000)
+        if poll_params[:maxEvents].present? && !poll_params[:maxEvents].to_i.between?(
+          1,
+          event_limit,
+        )
           track_failure
           render json: { error: 'maxEvents must be between 1 and 1000' },
                  status: :bad_request
@@ -88,6 +91,10 @@ module Api
           acknowledged_events_count: nil,
           success: false,
         )
+      end
+
+      def event_limit
+        1000
       end
     end
   end
