@@ -58,6 +58,11 @@ module Idv
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
         .call(:verified, :view, true)
+      # Add vendor information to idv_final for passport cases (backward compatibility)
+      proofing_components = ProofingComponents.new(idv_session:).to_h
+      is_passport = proofing_components[:document_type] == Idp::Constants::DocumentTypes::PASSPORT
+      vendor = proofing_components[:document_check]
+
       analytics.idv_final(
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
@@ -67,6 +72,9 @@ module Idv
         in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
+        proofing_components: proofing_components.merge(
+          is_passport ? { vendor: vendor } : {},
+        ),
         **ab_test_analytics_buckets,
       )
 

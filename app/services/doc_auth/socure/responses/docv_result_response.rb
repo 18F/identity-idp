@@ -283,6 +283,7 @@ module DocAuth
 
           tampering_detected = check_tampering_detected
 
+          # New vendor-specific events
           Analytics.new.passport_validation(
             vendor: 'Socure',
             success: successful_result?,
@@ -302,6 +303,15 @@ module DocAuth
           if successful_result?
             Analytics.new.passport_success(vendor: 'Socure')
           end
+
+          # Legacy DoS event for backward compatibility
+          Analytics.new.idv_dos_passport_verification(
+            success: successful_result?,
+            submit_attempts: 1,
+            remaining_submit_attempts: 1,
+            document_type: 'passport',
+            vendor: 'Socure',
+          )
         end
 
         def check_tampering_detected

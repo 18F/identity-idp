@@ -69,6 +69,7 @@ RSpec.describe DocAuth::Socure::Responses::DocvResultResponse do
       allow(analytics).to receive(:passport_validation)
       allow(analytics).to receive(:passport_success)
       allow(analytics).to receive(:passport_tampering_detected)
+      allow(analytics).to receive(:idv_dos_passport_verification)
     end
 
     context 'with successful passport validation' do
