@@ -168,10 +168,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       context 'passport has not been requested' do
         before do
-          allow(IdentityConfig.store)
-            .to receive(:doc_auth_selfie_vendor_switching_enabled).and_return(true)
-          allow(IdentityConfig.store)
-            .to receive(:doc_auth_selfie_vendor_lexis_nexis_percent).and_return(99)
           allow(controller).to receive(:ab_test_bucket)
             .with(:DOC_AUTH_SELFIE_VENDOR, user:)
             .and_return(bucket)
@@ -185,12 +181,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
 
         context 'Lexis Nexis is disabled' do
-          before do
-            allow(IdentityConfig.store)
-              .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-            allow(controller).to receive(:ab_test_bucket).and_return(:socure)
-          end
-
           context 'Socure user set is full after user bucketed' do
             before do
               allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
@@ -236,12 +226,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         end
 
         context 'Lexis Nexis is disabled' do
-          before do
-            allow(IdentityConfig.store)
-              .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-            allow(controller).to receive(:ab_test_bucket).and_return(:socure)
-          end
-
           context 'Socure user set is full after user bucketed' do
             before do
               allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
