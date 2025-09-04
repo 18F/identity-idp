@@ -10,8 +10,8 @@ module Idv
       idv_session.doc_auth_vendor
     end
 
-    def document_type_received
-      idv_session.pii_from_doc&.document_type_received || idv_session.pii_from_doc&.id_doc_type
+    def document_type
+      idv_session.pii_from_doc&.id_doc_type
     end
 
     def source_check
@@ -48,7 +48,7 @@ module Idv
     def to_h
       {
         document_check:,
-        document_type_received:,
+        document_type:,
         source_check:,
         residential_resolution_check:,
         resolution_check:,

@@ -16,7 +16,7 @@ RSpec.describe Proofing::Aamva::Response::VerificationResponse do
       state_id_expiration: true,
       state_id_issued: true,
       state_id_number: true,
-      document_type_received: true,
+      id_doc_type: true,
       dob: true,
       height: true,
       sex: true,

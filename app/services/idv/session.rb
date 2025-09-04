@@ -232,19 +232,14 @@ module Idv
       if new_pii_from_doc.blank?
         session[:pii_from_doc] = nil
       else
-        pii_hash = new_pii_from_doc.to_h
-        # Normalize document type keys until past the 50/50 state
-        pii_hash[:document_type_received] ||= pii_hash[:id_doc_type]
-        pii_hash[:id_doc_type] ||= pii_hash[:document_type_received]
-        session[:pii_from_doc] = pii_hash # new_pii_from_doc.to_h
+        session[:pii_from_doc] = new_pii_from_doc.to_h
       end
     end
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
 
-      if session[:pii_from_doc][:document_type_received] == 'passport' ||
-         session[:pii_from_doc][:id_doc_type] == 'passport'
+      if session[:pii_from_doc][:id_doc_type] == 'passport'
         passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
         Pii::Passport.new(**passport_data)
       else

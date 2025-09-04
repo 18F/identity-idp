@@ -122,8 +122,7 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        proofing_components: { document_check: 'mock',
-                               document_type_received: 'drivers_license' },
+        proofing_components: { document_check: 'mock', document_type: 'drivers_license' },
         request_came_from: 'idv/ssn#show',
         step: 'ssn',
       )
@@ -139,8 +138,7 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation go back',
-        proofing_components: { document_check: 'mock',
-                               document_type_received: 'drivers_license' },
+        proofing_components: { document_check: 'mock', document_type: 'drivers_license' },
         step: 'ssn',
       )
 
@@ -150,8 +148,7 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: start over',
-        proofing_components: { document_check: 'mock',
-                               document_type_received: 'drivers_license' },
+        proofing_components: { document_check: 'mock', document_type: 'drivers_license' },
         step: 'ssn',
       )
 
@@ -163,8 +160,7 @@ RSpec.describe 'cancel IdV' do
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
         step: 'ssn',
-        proofing_components: { document_check: 'mock',
-                               document_type_received: 'drivers_license' },
+        proofing_components: { document_check: 'mock', document_type: 'drivers_license' },
       )
     end
   end

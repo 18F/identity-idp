@@ -14,7 +14,7 @@ module DocAuth
         front_image: nil,
         back_image: nil,
         passport_image: nil,
-        document_type_requested: nil,
+        document_type: nil,
         selfie_image: nil,
         image_source: nil,
         images_cropped: false,
@@ -34,7 +34,7 @@ module DocAuth
           image_source: image_source,
           images_cropped: images_cropped,
           liveness_checking_required: liveness_checking_required,
-          document_type_requested: document_type_requested,
+          document_type: document_type,
           passport_requested: passport_requested,
         ).fetch
       end

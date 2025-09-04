@@ -12,7 +12,7 @@ RSpec.describe Idv::Agent do
     let(:app_id) { 'fake-app-id' }
     let(:ipp_enrollment_in_progress) { false }
     let(:applicant) do
-      Idp::Constants.mock_idv_applicant_with_ssn
+      Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
     end
     let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
     let(:session) { {} }
@@ -147,7 +147,7 @@ RSpec.describe Idv::Agent do
         expect(ResolutionProofingJob).to receive(:perform_later).with(
           hash_including(
             proofing_components: {
-              document_type_received: 'drivers_license',
+              document_type: 'drivers_license',
             },
           ),
         )
@@ -170,7 +170,7 @@ RSpec.describe Idv::Agent do
       context 'in-person proofing is enabled' do
         let(:ipp_enrollment_in_progress) { true }
         let(:applicant) do
-          Idp::Constants.mock_idv_applicant_state_id_address
+          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
         end
 
         it 'returns a successful result if resolution passes' do

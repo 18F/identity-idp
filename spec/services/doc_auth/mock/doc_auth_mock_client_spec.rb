@@ -42,7 +42,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        document_type_received: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
@@ -83,7 +83,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         passport_issued: '2015-03-15',
         nationality_code: 'USA',
         document_number: '000000',
-        document_type_received: 'passport',
+        id_doc_type: 'passport',
       ).to_h
     end
 
@@ -125,7 +125,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         height: 66
         state_id_number: '111111111'
         state_id_jurisdiction: ND
-        document_type_received: drivers_license
+        id_doc_type: drivers_license
         state_id_expiration: '2089-12-31'
         state_id_issued: '2009-12-31'
         issuing_country_code: 'CA'
@@ -164,7 +164,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '111111111',
         state_id_jurisdiction: 'ND',
-        document_type_received: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2089-12-31',
         state_id_issued: '2009-12-31',
         issuing_country_code: 'CA',
@@ -212,7 +212,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         eye_color: nil,
         state_id_number: '1111111111111',
         state_id_jurisdiction: 'ND',
-        document_type_received: 'drivers_license',
+        id_doc_type: 'drivers_license',
         state_id_expiration: '2099-12-31',
         state_id_issued: '2019-12-31',
         issuing_country_code: 'US',
@@ -570,7 +570,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     let(:post_images_response) do
       client.post_images(
         passport_image: DocAuthImageFixtures.document_front_image_data_uri,
-        document_type_requested: 'Passport',
+        document_type: 'Passport',
       )
     end
 
@@ -578,9 +578,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       it 'returns a successful mock doc auth response with passport pii' do
         expect(post_images_response).to be_a(DocAuth::Mock::ResultResponse)
         expect(post_images_response.success?).to be(true)
-        expect(post_images_response.pii_from_doc).to have_attributes(
-          document_type_received: 'passport',
-        )
+        expect(post_images_response.pii_from_doc).to have_attributes(id_doc_type: 'passport')
       end
     end
   end

@@ -240,7 +240,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: liveness_checking_required,
-          document_type_requested: document_type,
+          document_type: document_type,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -277,7 +277,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_submit_attempts: 3,
           state: 'MT',
           country: 'US',
-          document_type_received: 'drivers_license',
+          id_doc_type: 'drivers_license',
           success: true,
           user_id: document_capture_session.user.uuid,
           vendor_request_time_in_ms: a_kind_of(Float),
@@ -294,7 +294,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
-          document_type_requested: document_type,
+          document_type: document_type,
           passport_check_result: {},
         )
       end
@@ -422,7 +422,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             back_image_fingerprint: an_instance_of(String),
             selfie_image_fingerprint: an_instance_of(String),
             liveness_checking_required: liveness_checking_required,
-            document_type_requested: document_type,
+            document_type: document_type,
           )
 
           expect(fake_analytics).to have_logged_event(
@@ -467,7 +467,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             remaining_submit_attempts: 3,
             state: 'MT',
             country: 'US',
-            document_type_received: 'drivers_license',
+            id_doc_type: 'drivers_license',
             success: true,
             user_id: document_capture_session.user.uuid,
             vendor_request_time_in_ms: a_kind_of(Float),
@@ -485,7 +485,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             zip_code: '59010',
             issue_year: 2019,
             selfie_attempts: a_kind_of(Numeric),
-            document_type_requested: document_type,
+            document_type: document_type,
             passport_check_result: {},
           )
         end
@@ -665,7 +665,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: liveness_checking_required,
-          document_type_requested: document_type,
+          document_type: document_type,
         )
       end
 
@@ -1006,7 +1006,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: liveness_checking_required,
           side: 'both',
-          document_type_requested: document_type,
+          document_type: document_type,
         )
       end
 
@@ -1036,7 +1036,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             selfie_image_fingerprint: an_instance_of(String),
             liveness_checking_required: liveness_checking_required,
             side: 'both',
-            document_type_requested: document_type,
+            document_type: document_type,
           )
         end
       end
@@ -1050,7 +1050,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         DocAuth::Mock::ResultResponse.new(
           passport_image.read,
           image_config,
-          passport_submittal: true,
         )
       end
       let(:response) { form.submit }
@@ -1115,7 +1114,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
-            document_type_requested: document_type,
+            document_type: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
             errors: { passport: 'invalid MRZ' },
@@ -1148,7 +1147,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               submit_attempts: 1,
               remaining_submit_attempts: 3,
               user_id: document_capture_session.user.uuid,
-              document_type_requested: document_type,
+              document_type: document_type,
               correlation_id_received: 'something else',
               correlation_id_sent: 'something',
               error_code: 'ERR',
@@ -1225,7 +1224,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             submit_attempts: 1,
             remaining_submit_attempts: 3,
             user_id: document_capture_session.user.uuid,
-            document_type_requested: document_type,
+            document_type: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
             errors: {},

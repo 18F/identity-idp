@@ -613,7 +613,7 @@ RSpec.describe FakeAnalytics do
         errors: nil,
         exception: nil,
         state: nil,
-        document_type_received: nil,
+        id_doc_type: nil,
         async: nil,
         submit_attempts: nil,
         remaining_submit_attempts: nil,

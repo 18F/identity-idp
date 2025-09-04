@@ -39,13 +39,13 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with drivers_license' do
-      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
           {
             document_check: 'feedabee',
-            document_type_received: 'drivers_license',
+            document_type: 'drivers_license',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
@@ -57,13 +57,13 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with state_id' do
-      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant_state_id }
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
           {
             document_check: 'feedabee',
-            document_type_received: 'state_id',
+            document_type: 'state_id',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
@@ -75,13 +75,13 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'with passport' do
-      let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
+      let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
           {
             document_check: 'feedabee',
-            document_type_received: 'passport',
+            document_type: 'passport',
             source_check: 'aamva',
             resolution_check: 'lexis_nexis',
             address_check: 'gpo_letter',
@@ -101,13 +101,13 @@ RSpec.describe Idv::ProofingComponents do
     end
   end
 
-  describe '#document_type_received' do
+  describe '#document_type' do
     context 'in-person proofing' do
       context 'establishing' do
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
 
         it 'returns nil' do
-          expect(subject.document_type_received).to be_nil
+          expect(subject.document_type).to be_nil
         end
       end
 
@@ -115,7 +115,7 @@ RSpec.describe Idv::ProofingComponents do
         let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
 
         it 'returns nil' do
-          expect(subject.document_type_received).to be_nil
+          expect(subject.document_type).to be_nil
         end
       end
     end
@@ -123,23 +123,23 @@ RSpec.describe Idv::ProofingComponents do
     context 'doc auth' do
       context 'before doc auth complete' do
         it 'returns nil' do
-          expect(subject.document_type_received).to be_nil
+          expect(subject.document_type).to be_nil
         end
       end
 
       context 'after doc auth completed successfully' do
-        let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
+        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
 
         it 'returns doc auth vendor' do
-          expect(subject.document_type_received).to eql('drivers_license')
+          expect(subject.document_type).to eql('drivers_license')
         end
       end
 
       context 'after doc auth completed successfully with passport' do
-        let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
+        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
 
         it 'returns doc auth vendor' do
-          expect(subject.document_type_received).to eql('passport')
+          expect(subject.document_type).to eql('passport')
         end
       end
     end

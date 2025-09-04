@@ -34,7 +34,7 @@ module DocAuth
 
           {
             config: {
-              documentType: document_type_requested,
+              documentType: document_type,
               redirect: redirect,
               language: lang(language),
               useCaseKey: use_case_key,
@@ -78,7 +78,7 @@ module DocAuth
           end
         end
 
-        def document_type_requested
+        def document_type
           passport_requested ? PASSPORT_DOCUMENT_TYPE : DRIVERS_LICENSE_DOCUMENT_TYPE
         end
       end

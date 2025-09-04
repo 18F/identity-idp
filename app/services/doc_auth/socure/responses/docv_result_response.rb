@@ -12,7 +12,7 @@ module DocAuth
           msg: %w[msg],
           document_verification: %w[documentVerification],
           reason_codes: %w[documentVerification reasonCodes],
-          document_metadata: %w[documentVerification documentType],
+          document_type: %w[documentVerification documentType],
           id_type: %w[documentVerification documentType type],
           issuing_state: %w[documentVerification documentType state],
           issuing_country: %w[documentVerification documentType country],
@@ -91,9 +91,9 @@ module DocAuth
             customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
             decision: get_data(DATA_PATHS[:decision]),
             doc_auth_success: doc_auth_success?,
-            document_metadata: get_data(DATA_PATHS[:document_metadata]),
+            document_type: get_data(DATA_PATHS[:document_type]),
             flow_path: nil,
-            document_type_received:,
+            id_doc_type:,
             issue_year: state_id_issued&.year,
             liveness_enabled:,
             reason_codes:,
@@ -127,7 +127,7 @@ module DocAuth
         end
 
         def read_pii
-          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+          if id_doc_type == Idp::Constants::DocumentTypes::PASSPORT
             return Pii::Passport.new(
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
@@ -137,7 +137,7 @@ module DocAuth
               issuing_country_code:,
               nationality_code: issuing_country_code,
               document_number: get_data(DATA_PATHS[:document_number]),
-              document_type_received: document_type_received,
+              id_doc_type:,
               passport_expiration: expiration_date,
               sex: nil,
               birth_place: nil,
@@ -163,7 +163,7 @@ module DocAuth
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued:,
             state_id_expiration: expiration_date,
-            document_type_received:,
+            id_doc_type:,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
             issuing_country_code:,
           )
@@ -199,7 +199,7 @@ module DocAuth
           parse_date(get_data(DATA_PATHS[:issue_date]))
         end
 
-        def document_type_received
+        def id_doc_type
           document_id_type&.gsub(/\W/, '')&.underscore
         end
 
@@ -242,7 +242,7 @@ module DocAuth
         end
 
         def id_type_expected?
-          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+          if id_doc_type == Idp::Constants::DocumentTypes::PASSPORT
             passport_requested
           else
             !passport_requested

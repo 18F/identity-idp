@@ -15,11 +15,7 @@ module Pii
     :passport_issued,
     :nationality_code,
     :document_number,
-    :document_type_received,
-  ) do
-    def id_doc_type
-      document_type_received
-    end
-  end
+    :id_doc_type,
+  )
 end
 # rubocop:enable Style/MutableConstant

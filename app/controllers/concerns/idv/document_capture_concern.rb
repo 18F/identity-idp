@@ -63,7 +63,7 @@ module Idv
 
     def mrz_requirement_met?
       return true if !document_capture_session.passport_requested?
-      return false if document_type_received != 'passport'
+      return false if submitted_id_type != 'passport'
       return false if !IdentityConfig.store.doc_auth_passports_enabled
 
       stored_result.mrz_status == :pass
@@ -114,7 +114,7 @@ module Idv
         vendor_request_time_in_ms: timer.results['vendor_request'],
         success: @url.present?,
         customer_user_id: document_request_body[:customerUserId],
-        document_type_requested: document_request_body[:documentType],
+        document_type: document_request_body[:documentType],
         use_case_key: document_request_body[:useCaseKey],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
         socure_status: response_hash[:status],
@@ -146,25 +146,24 @@ module Idv
     def document_type_mismatch?
       # Reject passports when feature is disabled but user submitted a passport
       return true if !IdentityConfig.store.doc_auth_passports_enabled &&
-                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+                     submitted_id_type == Idp::Constants::DocumentTypes::PASSPORT
 
       # Reject when user requested passport flow but submitted a different document type
       return true if document_capture_session.passport_requested? &&
-                     document_type_received != Idp::Constants::DocumentTypes::PASSPORT
+                     submitted_id_type != Idp::Constants::DocumentTypes::PASSPORT
 
       # Reject when user didn't request passport flow but submitted a passport
       return true if !document_capture_session.passport_requested? &&
-                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+                     submitted_id_type == Idp::Constants::DocumentTypes::PASSPORT
 
       false
     end
 
-    def document_type_received
-      stored_result.pii_from_doc&.dig(:document_type_received) ||
-        stored_result.pii_from_doc&.dig(:id_doc_type)
+    def submitted_id_type
+      stored_result.pii_from_doc&.dig(:id_doc_type)
     end
 
-    def document_type_requested
+    def id_type_requested
       document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
         Idp::Constants::DocumentTypes::STATE_ID_CARD
     end
