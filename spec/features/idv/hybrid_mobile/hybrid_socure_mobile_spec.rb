@@ -43,6 +43,7 @@ RSpec.describe 'Hybrid Flow' do
         user:,
       )
     end
+
     it 'proofs and hands off to mobile', js: true do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 

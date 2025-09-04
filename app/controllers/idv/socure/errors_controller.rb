@@ -66,6 +66,7 @@ module Idv
           sp_name: decorated_sp_session&.sp_name || APP_NAME,
           issuer: decorated_sp_session&.sp_issuer,
           flow_path:,
+          passport_allowed: document_capture_session.passport_allowed?,
         )
       end
     end

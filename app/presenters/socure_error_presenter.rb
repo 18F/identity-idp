@@ -8,13 +8,15 @@ class SocureErrorPresenter
 
   attr_reader :url_options
 
-  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, flow_path:)
+  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, flow_path:,
+                 passport_allowed: false)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
     @issuer = issuer
     @flow_path = flow_path
     @url_options = {}
+    @passport_allowed = passport_allowed
   end
 
   def heading
@@ -32,8 +34,8 @@ class SocureErrorPresenter
   end
 
   def action
-    url = flow_path == :hybrid ? idv_hybrid_mobile_socure_document_capture_path
-                               : idv_socure_document_capture_path
+    url = hybrid_flow? ? idv_hybrid_mobile_socure_document_capture_path :
+                         idv_socure_document_capture_path
     {
       text: I18n.t('idv.failure.button.warning'),
       url:,
@@ -49,8 +51,7 @@ class SocureErrorPresenter
   end
 
   def secondary_action
-    url = flow_path == :hybrid ? idv_hybrid_mobile_in_person_direct_url :
-                                  idv_in_person_direct_url
+    url = hybrid_flow? ? idv_hybrid_mobile_in_person_direct_url : idv_in_person_direct_url
 
     if in_person_enabled?
       {
@@ -67,32 +68,9 @@ class SocureErrorPresenter
   def options
     return [] if error_code == :timeout || error_code == :url_not_found
 
-    [
-      {
-        url: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'how-to-add-images-of-your-state-issued-id',
-        ),
-        text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
-        isExternal: true,
-      },
-      {
-        url: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'accepted-identification-documents',
-        ),
-        text: I18n.t('idv.troubleshooting.options.supported_documents'),
-        isExternal: true,
-      },
-      {
-        url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-        text: t(
-          'idv.failure.verify.fail_link_html',
-          sp_name: sp_name,
-        ),
-        isExternal: true,
-      },
-    ]
+    options = []
+    options.append(choose_id_type_troubleshooting_option) if passport_allowed?
+    options.concat(default_troubleshooting_options)
   end
 
   def step_indicator_steps
@@ -101,7 +79,7 @@ class SocureErrorPresenter
 
   private
 
-  attr_reader :error_code, :remaining_attempts, :sp_name, :issuer, :flow_path
+  attr_reader :error_code, :remaining_attempts, :sp_name, :issuer, :flow_path, :passport_allowed
 
   SOCURE_ERROR_MAP = {
     'I848' => 'unreadable_id',
@@ -186,5 +164,50 @@ class SocureErrorPresenter
   def in_person_enabled?
     IdentityConfig.store.in_person_doc_auth_button_enabled &&
       Idv::InPersonConfig.enabled_for_issuer?(issuer)
+  end
+
+  def hybrid_flow?
+    flow_path == :hybrid
+  end
+
+  def default_troubleshooting_options
+    [
+      {
+        url: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'how-to-add-images-of-your-state-issued-id',
+        ),
+        text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+        isExternal: true,
+      },
+      {
+        url: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'accepted-identification-documents',
+        ),
+        text: I18n.t('idv.troubleshooting.options.supported_documents'),
+        isExternal: true,
+      },
+      {
+        url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+        text: t(
+          'idv.failure.verify.fail_link_html',
+          sp_name: sp_name,
+        ),
+        isExternal: true,
+      },
+    ]
+  end
+
+  def choose_id_type_troubleshooting_option
+    {
+      url: hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path,
+      text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+      isExternal: false,
+    }
+  end
+
+  def passport_allowed?
+    passport_allowed == true
   end
 end

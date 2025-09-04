@@ -69,6 +69,7 @@ module Idv
             sp_name: service_provider&.friendly_name || APP_NAME,
             issuer: service_provider&.issuer,
             flow_path: :hybrid,
+            passport_allowed: document_capture_session.passport_allowed?,
           )
         end
 

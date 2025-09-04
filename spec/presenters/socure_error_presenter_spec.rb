@@ -106,4 +106,176 @@ RSpec.describe SocureErrorPresenter do
       end
     end
   end
+
+  describe '#options' do
+    context 'when error code is timeout' do
+      let(:error_code) { :timeout }
+
+      it 'returns an empty array' do
+        expect(presenter.options).to be_empty
+      end
+    end
+
+    context 'when error code is url_not_found' do
+      let(:error_code) { :url_not_found }
+
+      it 'returns an empty array' do
+        expect(presenter.options).to be_empty
+      end
+    end
+
+    context 'when error code is not timeout or url_not_found' do
+      let(:error_code) { :different_error }
+
+      context 'when passports are not allowed' do
+        subject(:presenter) do
+          described_class.new(
+            error_code: error_code,
+            remaining_attempts: remaining_attempts,
+            sp_name: sp_name,
+            issuer: issuer,
+            flow_path: flow_path,
+            passport_allowed: false,
+          )
+        end
+
+        it 'returns an array of options' do
+          expect(presenter.options).to eq(
+            [
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'how-to-add-images-of-your-state-issued-id',
+                ),
+                isExternal: true,
+                text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+              },
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'accepted-identification-documents',
+                ),
+                text: I18n.t('idv.troubleshooting.options.supported_documents'),
+                isExternal: true,
+              },
+              {
+                url: presenter.return_to_sp_failure_to_proof_url(step: 'document_capture'),
+                text: t(
+                  'idv.failure.verify.fail_link_html',
+                  sp_name: sp_name,
+                ),
+                isExternal: true,
+              },
+            ],
+          )
+        end
+      end
+
+      context 'when passports are allowed' do
+        let(:passport_allowed) { true }
+
+        context 'when the flow path is hybrid' do
+          let(:flow_path) { :hybrid }
+
+          subject(:presenter) do
+            described_class.new(
+              error_code: error_code,
+              remaining_attempts: remaining_attempts,
+              sp_name: sp_name,
+              issuer: issuer,
+              flow_path:,
+              passport_allowed:,
+            )
+          end
+
+          it 'returns an array of options including a choose_id_type option' do
+            expect(presenter.options).to eq(
+              [
+                {
+                  url: '/verify/hybrid_mobile/choose_id_type',
+                  text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+                  isExternal: false,
+                },
+                {
+                  url: presenter.help_center_redirect_path(
+                    category: 'verify-your-identity',
+                    article: 'how-to-add-images-of-your-state-issued-id',
+                  ),
+                  isExternal: true,
+                  text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+                },
+                {
+                  url: presenter.help_center_redirect_path(
+                    category: 'verify-your-identity',
+                    article: 'accepted-identification-documents',
+                  ),
+                  text: I18n.t('idv.troubleshooting.options.supported_documents'),
+                  isExternal: true,
+                },
+                {
+                  url: presenter.return_to_sp_failure_to_proof_url(step: 'document_capture'),
+                  text: t(
+                    'idv.failure.verify.fail_link_html',
+                    sp_name: sp_name,
+                  ),
+                  isExternal: true,
+                },
+              ],
+            )
+          end
+        end
+
+        context 'when the flow path is not hybrid' do
+          let(:flow_path) { :standard }
+
+          subject(:presenter) do
+            described_class.new(
+              error_code: error_code,
+              remaining_attempts: remaining_attempts,
+              sp_name: sp_name,
+              issuer: issuer,
+              flow_path:,
+              passport_allowed:,
+            )
+          end
+
+          it 'returns an array of options including a choose_id_type option' do
+            expect(presenter.options).to eq(
+              [
+                {
+                  url: '/verify/choose_id_type',
+                  text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+                  isExternal: false,
+                },
+                {
+                  url: presenter.help_center_redirect_path(
+                    category: 'verify-your-identity',
+                    article: 'how-to-add-images-of-your-state-issued-id',
+                  ),
+                  isExternal: true,
+                  text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+                },
+                {
+                  url: presenter.help_center_redirect_path(
+                    category: 'verify-your-identity',
+                    article: 'accepted-identification-documents',
+                  ),
+                  text: I18n.t('idv.troubleshooting.options.supported_documents'),
+                  isExternal: true,
+                },
+                {
+                  url: presenter.return_to_sp_failure_to_proof_url(step: 'document_capture'),
+                  text: t(
+                    'idv.failure.verify.fail_link_html',
+                    sp_name: sp_name,
+                  ),
+                  isExternal: true,
+                },
+              ],
+            )
+          end
+        end
+      end
+    end
+  end
 end
