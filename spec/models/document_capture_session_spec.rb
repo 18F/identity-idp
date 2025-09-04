@@ -303,4 +303,48 @@ RSpec.describe DocumentCaptureSession do
       end
     end
   end
+
+  describe('#set_passport_as_requested') do
+    it 'sets the correct attributes for a requested passport' do
+      record = build(:document_capture_session)
+
+      record.set_passport_as_requested
+
+      expect(record.passport_status).to eq('requested')
+      expect(record.doc_auth_vendor).to be_nil
+      expect(record.socure_docv_capture_app_url).to be_nil
+      expect(record.socure_docv_transaction_token).to be_nil
+    end
+  end
+
+  describe('#set_passport_as_not_requested') do
+    context 'passport was not requested before' do
+      it 'sets the correct attributes for a not requested passport' do
+        record = build(:document_capture_session)
+
+        record.set_passport_as_not_requested
+
+        expect(record.passport_status).to eq('not_requested')
+        expect(record.doc_auth_vendor).to be_nil
+      end
+    end
+
+    context 'passport was requested before' do
+      it 'sets the socure attributes to nil' do
+        record = build(
+          :document_capture_session,
+          passport_status: 'requested',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.set_passport_as_not_requested
+
+        expect(record.passport_status).to eq('not_requested')
+        expect(record.doc_auth_vendor).to be_nil
+        expect(record.socure_docv_capture_app_url).to be_nil
+        expect(record.socure_docv_transaction_token).to be_nil
+      end
+    end
+  end
 end

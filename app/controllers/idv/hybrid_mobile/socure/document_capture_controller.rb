@@ -36,10 +36,7 @@ module Idv
           @hybrid_flow = true
           @passport_requested = document_capture_session.passport_requested?
 
-          if document_capture_session.socure_docv_capture_app_url.present?
-            @url = document_capture_session.socure_docv_capture_app_url
-            return
-          end
+          return if existing_socure_capture_url_available?
 
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
@@ -120,6 +117,13 @@ module Idv
             issuer: decorated_sp_session&.sp_issuer,
             flow_path: :hybrid,
           )
+        end
+
+        def existing_socure_capture_url_available?
+          return false unless document_capture_session.socure_docv_capture_app_url.present?
+
+          @url = document_capture_session.socure_docv_capture_app_url
+          true
         end
 
         def wait_for_result?

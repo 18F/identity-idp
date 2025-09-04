@@ -116,6 +116,22 @@ class DocumentCaptureSession < ApplicationRecord
     passport_status == 'requested'
   end
 
+  def set_passport_as_requested
+    update!(
+      passport_status: 'requested',
+      doc_auth_vendor: nil,
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    )
+  end
+
+  def set_passport_as_not_requested
+    attrs = passport_not_requested_attributes
+    attrs.merge!(clear_socure_attributes) if passport_requested?
+
+    update!(attrs)
+  end
+
   private
 
   def generate_result_id
@@ -127,4 +143,19 @@ class DocumentCaptureSession < ApplicationRecord
 
     mrz_response.success? ? :pass : :failed
   end
+
+  def passport_not_requested_attributes
+    {
+      passport_status: 'not_requested',
+      doc_auth_vendor: nil,
+    }
+  end
+
+  def clear_socure_attributes
+    {
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    }
+  end
+
 end

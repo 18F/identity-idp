@@ -58,33 +58,11 @@ module Idv
     def set_passport_as_requested
       return if document_capture_session.passport_requested?
 
-      document_capture_session.update!(
-        passport_status: 'requested',
-        doc_auth_vendor: nil,
-        socure_docv_capture_app_url: nil,
-        socure_docv_transaction_token: nil,
-      )
+      document_capture_session.set_passport_as_requested
     end
 
     def set_passport_as_not_requested
-      attributes = passport_not_requested_attributes
-      attributes.merge!(clear_socure_attributes) if document_capture_session.passport_requested?
-
-      document_capture_session.update!(attributes)
-    end
-
-    def passport_not_requested_attributes
-      {
-        passport_status: 'not_requested',
-        doc_auth_vendor: nil,
-      }
-    end
-
-    def clear_socure_attributes
-      {
-        socure_docv_capture_app_url: nil,
-        socure_docv_transaction_token: nil,
-      }
+      document_capture_session.set_passport_as_not_requested
     end
   end
 end
