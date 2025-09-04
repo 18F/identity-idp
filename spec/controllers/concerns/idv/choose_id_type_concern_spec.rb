@@ -13,6 +13,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:passport_status) { nil }
   let(:document_capture_session) { create(:document_capture_session, passport_status:) }
   let(:id_type) { 'drivers_license' }
+  let(:socure_docv_capture_app_url) { 'http://example.com' }
+  let(:socure_docv_transaction_token) { '12345' }
   let(:parameters) do
     ActionController::Parameters.new(
       {
@@ -51,6 +53,51 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       it 'updates the document_capture_session passport status to "requested"' do
         expect(document_capture_session.passport_requested?).to be true
       end
+
+      it 'sets socure attributes to nil' do
+        expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+        expect(document_capture_session.socure_docv_transaction_token).to be_nil
+      end
+
+      context 'passport was already requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            passport_status: 'requested',
+            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+            socure_docv_capture_app_url: socure_docv_capture_app_url,
+            socure_docv_transaction_token: socure_docv_transaction_token,
+          )
+        end
+
+        it 'keeps the socure attributes' do
+          expect(document_capture_session.socure_docv_capture_app_url)
+            .to eq(socure_docv_capture_app_url)
+          expect(document_capture_session.socure_docv_transaction_token)
+            .to eq(socure_docv_transaction_token)
+        end
+      end
+
+      context 'when document_capture_session has has attributes from drivers license' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            passport_status: 'not_requested',
+            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+            socure_docv_capture_app_url: socure_docv_capture_app_url,
+            socure_docv_transaction_token: socure_docv_transaction_token,
+          )
+        end
+
+        it 'sets doc_auth_vendor to nil' do
+          expect(document_capture_session.doc_auth_vendor).to be_nil
+        end
+
+        it 'resets socure attributes to nil' do
+          expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+          expect(document_capture_session.socure_docv_transaction_token).to be_nil
+        end
+      end
     end
 
     context 'when chosen_id_type is not "passport"' do
@@ -63,6 +110,23 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       it 'updates the document_capture_session passport status to "not_requested"' do
         expect(document_capture_session.passport_status).to eq('not_requested')
+      end
+
+      context 'when document_capture_session.passport_requested? is true' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            passport_status: 'requested',
+            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+            socure_docv_capture_app_url: socure_docv_capture_app_url,
+            socure_docv_transaction_token: socure_docv_transaction_token,
+          )
+        end
+
+        it 'sets socure attributes to nil' do
+          expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+          expect(document_capture_session.socure_docv_transaction_token).to be_nil
+        end
       end
 
       context 'when the document_capture_session doc_auth_vendor is already defined' do
