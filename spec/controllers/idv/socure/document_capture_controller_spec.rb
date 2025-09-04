@@ -405,23 +405,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         expect(request_class).not_to have_received(:new)
         expect(dcs.socure_docv_capture_app_url).to eq(fake_capture_app_url)
       end
-
-      context 'user changes document type on choose id screen' do
-        it 'creates a new DocumentRequest even though a valid capture app url exists' do
-          dcs = create(
-            :document_capture_session,
-            :socure,
-            user:,
-            doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
-            socure_docv_capture_app_url: fake_capture_app_url,
-          )
-          allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
-          allow(dcs).to receive(:choose_document_type_changed?).and_return(true)
-          get(:show)
-          expect(request_class).to have_received(:new)
-          expect(dcs.socure_docv_capture_app_url).to_not eq(fake_capture_app_url)
-        end
-      end
     end
   end
 

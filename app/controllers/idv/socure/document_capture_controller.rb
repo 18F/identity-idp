@@ -114,8 +114,7 @@ module Idv
       private
 
       def should_use_existing_docv_capture_url?
-        document_capture_session.socure_docv_capture_app_url.present? &&
-          !document_capture_session.choose_document_type_changed?
+        document_capture_session.socure_docv_capture_app_url.present?
       end
 
       def use_existing_docv_capture_url
