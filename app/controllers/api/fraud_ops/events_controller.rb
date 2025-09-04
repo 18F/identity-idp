@@ -24,6 +24,10 @@ module Api
           success: false,
         )
       end
+
+      def event_limit
+        IdentityConfig.store.fraud_ops_event_limit || 1000
+      end
     end
   end
 end

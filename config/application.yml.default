@@ -164,6 +164,7 @@ encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 fraudops_config: '[]'
+fraud_ops_event_limit: 1000
 fraudops_event_ttl_seconds: 604800
 feature_fraudops_enabled: false
 feature_idv_force_gpo_verification_enabled: false
