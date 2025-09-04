@@ -1,0 +1,5 @@
+---
+.merge_request:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_PIPELINE_SOURCE != "external_pull_request_event"'
+      when: never
