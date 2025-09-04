@@ -8,7 +8,7 @@ RSpec.describe 'Approving Pending IPP Enrollments' do
       first_user = create(
         :user, :with_phone, :with_pending_in_person_enrollment, password: 'p@assword!'
       )
-      second_user = create(
+      create(
         :user, :with_phone, :with_pending_in_person_enrollment, password: 'p@assword!'
       )
 
@@ -16,7 +16,7 @@ RSpec.describe 'Approving Pending IPP Enrollments' do
       visit test_ipp_path
 
       expect(page).not_to have_content(first_user.uuid)
-      expect(page).to have_content "404"
+      expect(page).to have_content '404'
     end
   end
 
