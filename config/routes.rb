@@ -25,6 +25,12 @@ Rails.application.routes.draw do
     end
     get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
 
+    namespace :secured_data do
+      post '/poll' => 'events#poll', as: :poll
+      get '/status' => 'events#status', as: :status
+    end
+    get '/secured-data-certs' => 'secured_data_certs#index', as: :secured_data_certs
+
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
@@ -42,6 +48,9 @@ Rails.application.routes.draw do
 
   # Attempts API
   get '/.well-known/ssf-configuration' => 'api/attempts/configuration#index'
+
+  # Secured Data API
+  get '/.well-known/ssf-configuration-secured-data' => 'api/secured_data/configuration#index'
 
   # SAML secret rotation paths
   constraints(path_year: SamlEndpoint.suffixes) do

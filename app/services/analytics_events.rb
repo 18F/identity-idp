@@ -335,6 +335,33 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String, nil] issuer
+  # @param [Integer, nil] requested_events_count
+  # @param [Integer, nil] requested_acknowledged_events_count
+  # @param [Integer, nil] returned_events_count
+  # @param [Integer, nil] acknowledged_events_count
+  # @param [Boolean] success
+  def secured_data_api_poll_events_request(
+    issuer:,
+    requested_events_count:,
+    requested_acknowledged_events_count:,
+    returned_events_count:,
+    acknowledged_events_count:,
+    success:,
+    **extra
+  )
+    track_event(
+      :secured_data_api_poll_events_request,
+      issuer:,
+      requested_events_count:,
+      requested_acknowledged_events_count:,
+      returned_events_count:,
+      acknowledged_events_count:,
+      success:,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name TOTP: User Disabled
   # Tracks when a user deletes their auth app from account
   # @param [Boolean] success

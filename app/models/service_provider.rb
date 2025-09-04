@@ -88,9 +88,21 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.attempts_api_enabled && attempts_config.present?
   end
 
+  def secured_data_api_enabled?
+    IdentityConfig.store.secured_data_api_enabled && secured_data_config.present?
+  end
+
   def attempts_public_key
     if attempts_config.present? && attempts_config['keys'].present?
       OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
+    else
+      ssl_certs.first.public_key
+    end
+  end
+
+  def secured_data_public_key
+    if secured_data_config.present? && secured_data_config['keys'].present?
+      OpenSSL::PKey::RSA.new(secured_data_config['keys'].first)
     else
       ssl_certs.first.public_key
     end
@@ -125,6 +137,12 @@ class ServiceProvider < ApplicationRecord
 
   def attempts_config
     IdentityConfig.store.allowed_attempts_providers.find do |config|
+      config['issuer'] == issuer
+    end
+  end
+
+  def secured_data_config
+    IdentityConfig.store.allowed_secured_data_providers.find do |config|
       config['issuer'] == issuer
     end
   end

@@ -1,0 +1,17 @@
+properties:
+  mfa-enroll-phone-otp-sent:
+    $ref: './registration/MfaEnrollPhoneOtpSent.yml'
+  mfa-enroll-code-rate-limited:
+    $ref: './registration/MfaEnrollCodeRateLimited.yml'
+  mfa-enroll-phone-otp-sent-rate-limited:
+    $ref: './registration/MfaEnrollPhoneOtpSentRateLimited.yml'
+  mfa-enrolled:
+    $ref: './registration/MfaEnrolled.yml'
+  user-registration-email-confirmed:
+    $ref: './registration/UserRegistrationEmailConfirmed.yml'
+  user-registration-email-submission-rate-limited:
+    $ref: './registration/UserRegistrationEmailSubmissionRateLimited.yml'
+  user-registration-email-submitted:
+    $ref: './registration/UserRegistrationEmailSubmitted.yml'
+  user-registration-password-submitted:
+    $ref: './registration/UserRegistrationPasswordSubmitted.yml'

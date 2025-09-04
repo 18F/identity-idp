@@ -38,6 +38,7 @@ address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_ialmax_providers: '[]'
+allowed_secured_data_providers: '[]'
 allowed_verified_within_providers: '[]'
 api_transaction_count_report_config: '[]'
 asset_host: ''
@@ -374,6 +375,8 @@ recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1
 redis_attempts_api_url: redis://localhost:6379/2
+redis_secured_data_api_pool_size: 1
+redis_secured_data_api_url: redis://localhost:6379/3
 redis_pool_size: 10
 redis_throttle_pool_size: 5
 redis_throttle_url: redis://localhost:6379/1
@@ -414,6 +417,10 @@ scrypt_cost: 10000$8$1$
 second_mfa_reminder_account_age_in_days: 30
 second_mfa_reminder_sign_in_count: 10
 secret_key_base:
+secured_data_api_enabled: false
+secured_data_api_event_ttl_seconds: 7_200
+secured_data_api_signing_enabled: false
+secured_data_api_signing_key: ''
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 ses_configuration_set_name: ''
