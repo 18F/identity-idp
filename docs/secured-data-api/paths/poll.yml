@@ -33,7 +33,7 @@ post:
          "iss": "https://secure.login.gov",
          "jti": "6454bc0b-00fc-4404-885c-7f07bef243ce",
          "events": {
-         "https://schemas.login.gov/secevent/attempts-api/event-type/mfa-enroll-backup-code": {
+         "https://schemas.login.gov/secevent/secured-data-api/event-type/mfa-enroll-backup-code": {
          "application_url": "string",
          "occurred_at": 1657920726,
          "subject": {

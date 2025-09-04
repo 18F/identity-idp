@@ -1,7 +1,7 @@
 type: object
 title: Polling Request
 description: |
-  Acceptable body to poll the Attempts API
+  Acceptable body to poll the Secured Data API
 properties:
   ack:
     type: array
