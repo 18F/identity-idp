@@ -82,7 +82,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          id_doc_type: drivers_license
+          document_type_received: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -111,7 +111,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -136,7 +136,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           dob: 10/06/1938
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          id_doc_type: drivers_license
+          document_type_received: drivers_license
       YAML
     end
 
@@ -332,7 +332,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           sex: female
           height: 66
           state_id_number: '123456789'
-          id_doc_type: drivers_license
+          document_type_received: drivers_license
           state_id_jurisdiction: 'NY'
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
@@ -362,7 +362,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66,
           weight: nil,
           eye_color: nil,
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',
@@ -423,7 +423,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '1111111111111',
           state_id_jurisdiction: 'ND',
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           state_id_expiration: '2099-12-31',
           state_id_issued: '2019-12-31',
           issuing_country_code: 'US',
@@ -554,7 +554,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           height: 66
           state_id_number: '111111111'
           state_id_jurisdiction: ND
-          id_doc_type: drivers_license
+          document_type_received: drivers_license
           state_id_expiration: '2089-12-31'
           state_id_issued: '2009-12-31'
           issuing_country_code: 'CA'
@@ -583,7 +583,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
           eye_color: nil,
           state_id_number: '111111111',
           state_id_jurisdiction: 'ND',
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           state_id_expiration: '2089-12-31',
           state_id_issued: '2009-12-31',
           issuing_country_code: 'CA',

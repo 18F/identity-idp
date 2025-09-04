@@ -94,7 +94,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'with pii in idv_session' do
         it 'allows the back button and does not redirect' do
-          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants.mock_idv_applicant)
           get :show
 
           expect(response).to render_template :show
@@ -115,7 +115,7 @@ RSpec.describe Idv::LinkSentController do
     end
 
     it 'invalidates future steps' do
-      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      subject.idv_session.applicant = Idp::Constants.mock_idv_applicant
       expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
@@ -151,7 +151,7 @@ RSpec.describe Idv::LinkSentController do
       let(:load_result_success) { true }
 
       before do
-        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
+        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants.mock_idv_applicant)
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
@@ -180,7 +180,7 @@ RSpec.describe Idv::LinkSentController do
             idv_session: subject.idv_session,
           )
           expect(proofing_components.document_check).to eq('mock')
-          expect(proofing_components.document_type).to eq('drivers_license')
+          expect(proofing_components.document_type_received).to eq('drivers_license')
         end
 
         context 'redo document capture' do
