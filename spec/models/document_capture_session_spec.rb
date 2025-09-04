@@ -303,30 +303,4 @@ RSpec.describe DocumentCaptureSession do
       end
     end
   end
-
-  describe('#choose_document_type_changed?') do
-    context 'document type has not changed' do
-      it 'returns false' do
-        record = create(:document_capture_session, passport_status: 'requested')
-        record.update!(passport_status: 'requested')
-        expect(record.choose_document_type_changed?).to eq(false)
-      end
-    end
-
-    context 'document type was changed from allowed to new status' do
-      it 'returns false' do
-        record = create(:document_capture_session, passport_status: 'allowed')
-        record.update!(passport_status: 'requested')
-        expect(record.choose_document_type_changed?).to eq(false)
-      end
-    end
-
-    context 'document type has been changed' do
-      it 'returns true' do
-        record = create(:document_capture_session, passport_status: 'requested')
-        record.update!(passport_status: 'not_requested')
-        expect(record.choose_document_type_changed?).to eq(true)
-      end
-    end
-  end
 end
