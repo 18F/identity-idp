@@ -384,11 +384,12 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
+        document_capture_session.update!(socure_docv_capture_app_url: fake_capture_app_url)
       end
 
       it 'does not create a DocumentRequest when valid capture app exists' do
-        document_capture_session.update!(socure_docv_capture_app_url: fake_capture_app_url)
         get(:show)
+
         expect(request_class).not_to have_received(:new)
         expect(document_capture_session.socure_docv_capture_app_url).to eq(fake_capture_app_url)
       end
