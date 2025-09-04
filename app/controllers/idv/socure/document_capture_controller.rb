@@ -33,7 +33,10 @@ module Idv
         @hybrid_flow = false
         @passport_requested = document_capture_session.passport_requested?
 
-        return use_existing_docv_capture_url if should_use_existing_docv_capture_url?
+        if document_capture_session.socure_docv_capture_app_url.present?
+          @url = document_capture_session.socure_docv_capture_app_url
+          return
+        end
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(
@@ -112,14 +115,6 @@ module Idv
       end
 
       private
-
-      def should_use_existing_docv_capture_url?
-        document_capture_session.socure_docv_capture_app_url.present?
-      end
-
-      def use_existing_docv_capture_url
-        @url = document_capture_session.socure_docv_capture_app_url
-      end
 
       def wait_for_result?
         document_capture_session.reload unless document_capture_session.result_id
