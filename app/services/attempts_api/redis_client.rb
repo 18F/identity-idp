@@ -12,7 +12,6 @@ module AttemptsApi
       @redis_pool.with do |client|
         client.hset(key, event_key, jwe)
         client.expire(key, event_ttl_seconds)
-        puts event_ttl_seconds
       end
     end
 
