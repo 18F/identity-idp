@@ -41,11 +41,11 @@ RSpec.describe DuplicateProfileChecker do
             analytics: @analytics,
           )
           dupe_profile_checker.check_for_duplicate_profiles
-          dupe_profile_object = DuplicateProfile.involving_profile(
+          dupe_profile_set = DuplicateProfileSet.involving_profile(
             profile_id: profile.id,
             service_provider: sp.issuer,
           )
-          expect(dupe_profile_object).to eq(nil)
+          expect(dupe_profile_set).to eq(nil)
           expect(@analytics).to_not have_logged_event(:one_account_duplicate_profile_created)
           expect(@analytics).to_not have_logged_event(:one_account_duplicate_profile_updated)
           expect(@analytics).to_not have_logged_event(:one_account_duplicate_profile_closed)
@@ -82,7 +82,7 @@ RSpec.describe DuplicateProfileChecker do
             .and_return([profile2])
         end
 
-        it 'creates a new duplicate profile object entry and tracks analysis' do
+        it 'creates a new duplicate profile set entry and tracks analysis' do
           dupe_profile_checker = DuplicateProfileChecker.new(
             user: user,
             user_session: session,
@@ -91,27 +91,27 @@ RSpec.describe DuplicateProfileChecker do
           )
           dupe_profile_checker.check_for_duplicate_profiles
 
-          dupe_profile_objects = DuplicateProfile.involving_profile(
+          dupe_profile_set = DuplicateProfileSet.involving_profile(
             profile_id: profile.id,
             service_provider: sp.issuer,
           )
-          expect(dupe_profile_objects.profile_ids).to match_array([profile2.id, profile.id])
+          expect(dupe_profile_set.profile_ids).to match_array([profile2.id, profile.id])
           expect(@analytics).to have_logged_event(
             :one_account_duplicate_profile_created,
           )
         end
 
-        context 'when duplicate profile already exists' do
-          let!(:dupe_profile) do
+        context 'when duplicate profile set already exists' do
+          let!(:dupe_profile_set) do
             create(
-              :duplicate_profile,
+              :duplicate_profile_set,
               profile_ids: [profile.id, profile2.id],
               service_provider: sp.issuer,
             )
           end
 
           context 'when the profile_ids are the same' do
-            it 'does not create a new duplicate profile objects' do
+            it 'does not create a new duplicate profile set' do
               dupe_profile_checker = DuplicateProfileChecker.new(
                 user: user,
                 user_session: session,
@@ -141,7 +141,7 @@ RSpec.describe DuplicateProfileChecker do
                 .and_return([profile2, profile3])
             end
 
-            context 'using the same profile already in dupe profile' do
+            context 'using the same profile already in the duplicate profile set' do
               it 'updates the existing duplicate profile object' do
                 dupe_profile_checker = DuplicateProfileChecker.new(
                   user: user,
@@ -151,11 +151,11 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 dupe_profile_checker.check_for_duplicate_profiles
 
-                updated_dupe_profile = DuplicateProfile.involving_profile(
+                updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
                   profile_id: profile.id,
                   service_provider: sp.issuer,
                 )
-                expect(updated_dupe_profile.profile_ids).to match_array(
+                expect(updated_dupe_profile_set.profile_ids).to match_array(
                   [profile2.id, profile.id,
                    profile3.id],
                 )
@@ -166,9 +166,9 @@ RSpec.describe DuplicateProfileChecker do
             end
 
             context 'using the new profile not in dupe profile' do
-              let!(:dupe_profile) do
+              let!(:dupe_profile_set) do
                 create(
-                  :duplicate_profile,
+                  :duplicate_profile_set,
                   profile_ids: [profile3.id, profile2.id],
                   service_provider: sp.issuer,
                 )
@@ -183,11 +183,11 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 dupe_profile_checker.check_for_duplicate_profiles
 
-                updated_dupe_profile = DuplicateProfile.involving_profile(
+                updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
                   profile_id: profile.id,
                   service_provider: sp.issuer,
                 )
-                expect(updated_dupe_profile.profile_ids).to match_array(
+                expect(updated_dupe_profile_set.profile_ids).to match_array(
                   [profile2.id, profile.id,
                    profile3.id],
                 )
@@ -215,8 +215,8 @@ RSpec.describe DuplicateProfileChecker do
                 )
                 dupe_profile_checker.check_for_duplicate_profiles
 
-                dupe_profile.reload
-                expect(dupe_profile.closed_at).to eq(Time.zone.now)
+                dupe_profile_set.reload
+                expect(dupe_profile_set.closed_at).to eq(Time.zone.now)
                 expect(@analytics).to have_logged_event(
                   :one_account_duplicate_profile_closed,
                 )
@@ -247,11 +247,11 @@ RSpec.describe DuplicateProfileChecker do
         )
         dupe_profile_checker.check_for_duplicate_profiles
 
-        dupe_profile_objects = DuplicateProfile.involving_profile(
+        dupe_profile_set = DuplicateProfileSet.involving_profile(
           profile_id: profile.id,
           service_provider: sp.issuer,
         )
-        expect(dupe_profile_objects).to eq(nil)
+        expect(dupe_profile_set).to eq(nil)
       end
     end
   end

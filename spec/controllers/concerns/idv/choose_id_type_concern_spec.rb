@@ -143,16 +143,16 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
   describe '#dos_passport_api_healthy?' do
     context 'when the endpoint is set' do
-      let(:request) { double(DocAuth::Dos::Requests::HealthCheckRequest) }
       let(:response) { double(DocAuth::Dos::Responses::HealthCheckResponse) }
+      let(:dos_passport_composite_healthcheck_endpoint) { 'http://dos-health.test/status' }
 
       before do
         allow(IdentityConfig.store).to receive(
           :dos_passport_composite_healthcheck_endpoint,
-        ).and_return('http://dostest.com/status')
-        allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-        allow(request).to receive(:fetch).with(analytics, context_analytics: context_analytics)
-          .and_return(response)
+        ).and_return(dos_passport_composite_healthcheck_endpoint)
+        allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_call_original
+        allow_any_instance_of(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:fetch)
+          .with(analytics, context_analytics: context_analytics).and_return(response)
       end
 
       context 'when the dos response is successful' do
@@ -162,6 +162,21 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
         it 'returns true' do
           expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+        end
+
+        context 'when cached' do
+          let(:dos_passport_composite_healthcheck_endpoint) { 'http://cached.dos-health.test/status' }
+
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:dos_passport_healthcheck_cache_expiration_seconds).and_return(5)
+          end
+
+          it 'uses cached value on repeat request' do
+            expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+            expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+            expect(DocAuth::Dos::Requests::HealthCheckRequest).to have_received(:new).once
+          end
         end
       end
 

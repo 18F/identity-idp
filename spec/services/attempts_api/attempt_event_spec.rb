@@ -58,7 +58,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
             { algorithm: 'ES256' },
           )
 
-          token = JSON.parse(decoded_jwe_payload.first)
+          token = decoded_jwe_payload.first
 
           expect(token['iss']).to eq(Rails.application.routes.url_helpers.root_url)
           expect(token['jti']).to eq(jti)

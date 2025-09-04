@@ -161,6 +161,7 @@ module IdentityConfig
     config.add(:dos_passport_client_id, type: :string)
     config.add(:dos_passport_client_secret, type: :string)
     config.add(:dos_passport_composite_healthcheck_endpoint, type: :string)
+    config.add(:dos_passport_healthcheck_cache_expiration_seconds, type: :integer)
     config.add(:dos_passport_healthcheck_endpoint, type: :string)
     config.add(:dos_passport_healthcheck_maxretry, type: :integer)
     config.add(:dos_passport_healthcheck_timeout_seconds, type: :integer)

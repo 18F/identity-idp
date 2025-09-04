@@ -22,7 +22,7 @@ class DuplicateProfileChecker
     )
     ids = associated_profiles.map(&:id)
     dupe_profile_ids = (ids + [profile.id]).sort
-    existing_profile = DuplicateProfile.involving_profiles(
+    existing_profile = DuplicateProfileSet.involving_profiles(
       profile_ids: dupe_profile_ids,
       service_provider: sp.issuer,
     )
@@ -34,7 +34,7 @@ class DuplicateProfileChecker
           analytics.one_account_duplicate_profile_updated
         end
       else
-        DuplicateProfile.create(profile_ids: dupe_profile_ids, service_provider: sp.issuer)
+        DuplicateProfileSet.create(profile_ids: dupe_profile_ids, service_provider: sp.issuer)
         analytics.one_account_duplicate_profile_created
       end
     elsif existing_profile
