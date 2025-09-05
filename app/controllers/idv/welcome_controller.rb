@@ -24,6 +24,7 @@ module Idv
 
     def update
       clear_future_steps!
+      idv_session.clear
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
