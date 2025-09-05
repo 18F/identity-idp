@@ -17,7 +17,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           .with(agency_name: agency)
           .and_call_original
 
-        subject.perform(user: user, agency: agency, type: :account_created)
+        subject.perform(user: user, agency: agency, type: :account_verified)
       end
 
       context 'when phone is present' do
@@ -28,7 +28,33 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           expect(Telephony).to receive(:send_dupe_profile_created_notice)
             .with(to: user_phone, country_code: 'US', agency_name: agency)
 
-          subject.perform(user: user, agency: agency, type: :account_created)
+          subject.perform(user: user, agency: agency, type: :account_verified)
+        end
+      end
+
+      context 'with multiple emails' do
+        let(:user) { create(:user, :with_multiple_emails, :with_phone) }
+
+        it 'sends dupe_profile_created email for each confirmed email address' do
+          user.confirmed_email_addresses.each do |_email|
+            expect_any_instance_of(UserMailer).to receive(:dupe_profile_created)
+              .with(agency_name: agency)
+              .and_call_original
+          end
+
+          subject.perform(user: user, agency: agency, type: :account_verified)
+        end
+
+        it 'only sends one text per user' do
+          expect(Telephony).to receive(:send_dupe_profile_created_notice)
+            .with(
+              to: user.phone_configurations.first.phone,
+              country_code: 'US',
+              agency_name: agency,
+            )
+            .once
+
+          subject.perform(user: user, agency: agency, type: :account_verified)
         end
       end
     end
@@ -39,7 +65,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           .with(agency_name: agency)
           .and_call_original
 
-        subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+        subject.perform(user: user, agency: agency, type: :sign_in)
       end
 
       context 'when phone is present' do
@@ -50,21 +76,34 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
           expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
             .with(to: user_phone, country_code: 'US', agency_name: agency)
 
-          subject.perform(user: user, agency: agency, type: :sign_in_attempted)
+          subject.perform(user: user, agency: agency, type: :sign_in)
         end
       end
-    end
 
-    context 'when type is invalid' do
-      let(:invalid_type) { :invalid_type }
+      context 'with multiple emails' do
+        let(:user) { create(:user, :with_multiple_emails, :with_phone) }
 
-      it 'calls analytics duplicate_profile_email_type_not_found' do
-        allow(subject).to receive(:analytics).with(user: user).and_return(job_analytics)
-        expect(job_analytics)
-          .to receive(:duplicate_profile_email_type_not_found)
-          .with(type: invalid_type)
+        it 'sends dupe_profile_sign_in_attempted email for each confirmed email address' do
+          user.confirmed_email_addresses.each do |_email|
+            expect_any_instance_of(UserMailer).to receive(:dupe_profile_sign_in_attempted)
+              .with(agency_name: agency)
+              .and_call_original
+          end
 
-        subject.perform(user: user, agency: agency, type: invalid_type)
+          subject.perform(user: user, agency: agency, type: :sign_in)
+        end
+
+        it 'only sends one text per user' do
+          expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
+            .with(
+              to: user.phone_configurations.first.phone,
+              country_code: 'US',
+              agency_name: agency,
+            )
+            .once
+
+          subject.perform(user: user, agency: agency, type: :sign_in)
+        end
       end
     end
   end

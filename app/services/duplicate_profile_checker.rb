@@ -11,7 +11,7 @@ class DuplicateProfileChecker
     @profile = user&.active_profile
   end
 
-  def check_for_duplicate_profiles
+  def dupe_profile_set_for_user
     return unless user_has_ial2_profile? && user_sp_eligible_for_one_account?
     cacher = Pii::Cacher.new(user, user_session)
 
@@ -34,9 +34,17 @@ class DuplicateProfileChecker
           analytics.one_account_duplicate_profile_updated
         end
       else
-        DuplicateProfileSet.create(profile_ids: dupe_profile_ids, service_provider: sp.issuer)
-        analytics.one_account_duplicate_profile_created
+        existing_profile = DuplicateProfileSet.find_or_create_by(
+          profile_ids: dupe_profile_ids,
+          service_provider: sp.issuer,
+        )
+        if existing_profile.closed_at.present?
+          analytics.one_account_dupe_profile_already_created
+        else
+          analytics.one_account_duplicate_profile_created
+        end
       end
+      existing_profile
     elsif existing_profile
       existing_profile.update(closed_at: Time.zone.now)
       analytics.one_account_duplicate_profile_closed
