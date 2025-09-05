@@ -51,6 +51,7 @@ module Idv
     end
 
     def address_from_document
+      return if idv_session.pii_from_doc.document_type_received == 'passport'
       return if idv_session.pii_from_doc.id_doc_type == 'passport'
 
       Pii::Address.new(

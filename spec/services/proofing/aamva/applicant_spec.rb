@@ -9,7 +9,7 @@ RSpec.describe Proofing::Aamva::Applicant do
       dob: '10/29/1942',
       state_id_number: '123-456-789',
       state_id_jurisdiction: 'VA',
-      id_doc_type: 'drivers_license',
+      document_type_received: 'drivers_license',
     }
   end
 
@@ -27,7 +27,9 @@ RSpec.describe Proofing::Aamva::Applicant do
       expect(aamva_applicant.state_id_data.state_id_jurisdiction).to eq(
         proofer_applicant[:state_id_jurisdiction],
       )
-      expect(aamva_applicant.state_id_data.id_doc_type).to eq(proofer_applicant[:id_doc_type])
+      expect(aamva_applicant.state_id_data.document_type_received).to eq(
+        proofer_applicant[:document_type_received],
+      )
     end
   end
 

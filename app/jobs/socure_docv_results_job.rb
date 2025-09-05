@@ -242,7 +242,8 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_mrz(doc_pii_response)
-    id_type = doc_pii_response.extra[:id_doc_type]
+    id_type = doc_pii_response.extra[:document_type_received] ||
+              doc_pii_response.extra[:id_doc_type]
     unless id_type == 'passport'
       return unless document_capture_session.passport_requested?
     end
@@ -253,7 +254,7 @@ class SocureDocvResultsJob < ApplicationJob
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
-      document_type:,
+      document_type_requested:,
       remaining_submit_attempts:,
       submit_attempts:,
       user_id: user_uuid,
@@ -268,8 +269,8 @@ class SocureDocvResultsJob < ApplicationJob
     response
   end
 
-  def document_type
-    @document_type ||= document_capture_session.passport_requested? \
+  def document_type_requested
+    @document_type_requested ||= document_capture_session.passport_requested? \
       ? DocAuth::Socure::DocumentTypes::PASSPORT : DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
   end
 

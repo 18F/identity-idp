@@ -21,8 +21,12 @@ module Pii
     :state_id_issued,
     :state_id_jurisdiction,
     :state_id_number,
-    :id_doc_type,
+    :document_type_received,
     :issuing_country_code,
-  )
+  ) do
+    def id_doc_type
+      document_type_received
+    end
+  end
 end
 # rubocop:enable Style/MutableConstant
