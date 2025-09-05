@@ -157,5 +157,4 @@ class DocumentCaptureSession < ApplicationRecord
       socure_docv_transaction_token: nil,
     }
   end
-
 end
