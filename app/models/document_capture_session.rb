@@ -108,10 +108,6 @@ class DocumentCaptureSession < ApplicationRecord
     update!(ocr_confirmation_pending: false)
   end
 
-  def passport_allowed?
-    PASSPORT_STATUSES.include? passport_status
-  end
-
   def passport_requested?
     passport_status == 'requested'
   end

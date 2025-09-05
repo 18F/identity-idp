@@ -92,7 +92,6 @@ module Idv
       @presenter = Idv::HowToVerifyPresenter.new(
         mobile_required: mobile_required?,
         selfie_check_required: @selfie_required,
-        passport_allowed: idv_session.passport_allowed,
       )
     end
 
@@ -170,21 +169,13 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      redirect_to next_step
+      redirect_to idv_choose_id_type_url
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
       )
-    end
-
-    def next_step
-      if idv_session.passport_allowed
-        idv_choose_id_type_url
-      else
-        idv_document_capture_url
-      end
     end
 
     def extra_view_variables
