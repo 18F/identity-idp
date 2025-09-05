@@ -94,12 +94,6 @@ RSpec.describe Idv::WelcomeController do
       )
     end
 
-    it 'sets the proofing started timestamp', :freeze_time do
-      get :show
-
-      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
-    end
-
     context 'welcome already visited' do
       before do
         subject.idv_session.welcome_visited = true
@@ -223,6 +217,12 @@ RSpec.describe Idv::WelcomeController do
       put :update
 
       expect(subject.document_capture_session.passport_status).to be_nil
+    end
+
+    it 'sets the proofing started timestamp', :freeze_time do
+      put :update
+
+      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
   end
 end
