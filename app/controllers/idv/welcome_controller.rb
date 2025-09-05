@@ -11,11 +11,9 @@ module Idv
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
     before_action :update_passport_allowed,
-                  only: :show,
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
 
     def show
-      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
@@ -29,6 +27,8 @@ module Idv
 
     def update
       clear_future_steps!
+      idv_session.clear
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
