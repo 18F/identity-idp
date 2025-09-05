@@ -33,7 +33,7 @@ module Reporting
       verbose: false,
       progress: false,
       slice: 6.hours,
-      threads: 1
+      threads: 5
     )
       @issuers = issuers
       @time_range = time_range
@@ -98,7 +98,7 @@ module Reporting
 
     def age_metrics_table
       rows = [['Age Range', 'User Count']]
-      bins = age_bins_for_event(Events::SP_REDIRECT_INITIATED)
+      bins = age_bins
 
       bins.each do |range, count|
         rows << [range, count.to_s]
@@ -109,7 +109,7 @@ module Reporting
 
     def state_metrics_table
       rows = [['State', 'User Count']]
-      counts = state_counts_for_event(Events::SP_REDIRECT_INITIATED)
+      counts = state_counts
 
       counts.each do |state, count|
         rows << [state, count.to_s]
@@ -118,14 +118,28 @@ module Reporting
       rows
     end
 
-    # event name => set(user ids)
-    # @return Hash<String,Set<String>>
-    def data
-      @data ||= begin
+    # TODO:-----------------------------------------------------------------------
+    # modify the data function and split into two related to the two new queries
+    def data_sp_redirect
+      @data_sp_redirect ||= begin
         event_users = Hash.new { |h, k| h[k] = [] }
 
-        fetch_results.each do |row|
-          event_users[row['name']] << {
+        fetch_sp_redirect_results.each do |row|
+          event_users[row['user_id']] << { # HELP HERE
+            user_id: row['user_id'],
+          }
+        end
+
+        event_users
+      end
+    end
+
+    def data_doc_auth_success_bio_info
+      @data_doc_auth_success_bio_info ||= begin
+        event_users = Hash.new { |h, k| h[k] = [] }
+
+        fetch_doc_auth_success_bio_info_results.each do |row|
+          event_users[row['user_id']] << {
             user_id: row['user_id'],
             birth_year: row['birth_year']&.to_i,
             state: row['state']&.upcase,
@@ -135,36 +149,51 @@ module Reporting
         event_users
       end
     end
+    # TODO: END -----------------------------------------------------------------------
 
+    # TODO:-----------------------------------------------------------------------
+    # FIGURE OUT HOW TO DO THE JOIN ON MULTIPLE QUERIES
+    # JOIN: Only user_ids present in data_sp_redirect
+    def data
+      sp_redirects = data_sp_redirect
+      bio_infos = data_doc_auth_success_bio_info
+
+      result = {}
+      sp_redirects.keys.each do |user_id|
+        if bio_infos.key?(user_id)
+          result[user_id] = bio_infos[user_id]
+        end
+      end
+      result
+    end
+    # TODO: END -----------------------------------------------------------------------
+
+    # TODO need to update the metadata or do I even need it anymore??------------
     def user_metadata
       @user_metadata ||= begin
         metadata = {}
-
-        data[Events::IDV_DOC_AUTH_PROOFING_RESULTS].each do |entry|
-          user_id = entry[:user_id]
+        data.each do |user_id, bio_info|
           next unless user_id.present?
 
+          # If bio_info is an array, get the first element
+          info = bio_info.is_a?(Array) ? bio_info.first : bio_info
+          next unless info.present?
+
           metadata[user_id] = {
-            birth_year: entry[:birth_year]&.to_i,
-            state: entry[:state]&.upcase,
+            birth_year: info[:birth_year]&.to_i,
+            state: info[:state]&.upcase,
           }
         end
-
         metadata
       end
     end
+    # TODO: END ----------------------------------------------------------------
 
-    def age_bins_for_event(event_name)
+    def age_bins
       current_year = Time.zone.today.year
-
-      user_ids = data[event_name].map { |entry| entry[:user_id] }.uniq
-
       bins = Hash.new(0)
 
-      user_ids.each do |user_id|
-        metadata = user_metadata[user_id]
-        next unless metadata
-
+      user_metadata.each do |_user_id, metadata|
         birth_year = metadata[:birth_year]
         next unless birth_year
 
@@ -179,45 +208,67 @@ module Reporting
       bins.sort_by { |range, _| range.split('-').first.to_i }.to_h
     end
 
-    def state_counts_for_event(event_name)
-      user_ids = data[event_name].map { |entry| entry[:user_id] }.uniq
-
+    def state_counts
       counts = Hash.new(0)
-
-      user_ids.each do |user_id|
-        state = user_metadata[user_id]&.dig(:state)
+      user_metadata.each do |_user_id, metadata|
+        state = metadata[:state]
         next unless state.present?
-
         counts[state] += 1
       end
-
       counts.sort.to_h
     end
 
-    def fetch_results
-      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+    # TODO:-----------------------------------------------------------------------
+    # modify and and additional fetch for the new queries
+    def fetch_sp_redirect_results
+      cloudwatch_client.fetch(query: sp_redirect_query, from: time_range.begin, to: time_range.end)
     end
 
-    def query
+    def fetch_doc_auth_success_bio_info_results
+      cloudwatch_client.fetch(
+        query: doc_auth_success_bio_info_query, from: time_range.begin,
+        to: time_range.end
+      )
+    end
+    # TODO: END -----------------------------------------------------------------------
+
+    # TODO: -----------------------------------------------------------------------
+    # split the original query into two
+    def sp_redirect_query
       params = {
         issuers: quote(issuers),
-        event_names: quote(Events.all_events),
         sp_redirect_initiated: quote(Events::SP_REDIRECT_INITIATED),
       }
 
       format(<<~QUERY, params)
         fields
-            name
-          , properties.user_id as user_id
-          , properties.event_properties.proofing_results.biographical_info.birth_year as birth_year
-          , properties.event_properties.proofing_results.biographical_info.state_id_jurisdiction as state
+            properties.user_id as user_id
         | filter properties.service_provider IN %{issuers}
         | filter (name = %{sp_redirect_initiated} and properties.event_properties.ial = 2 and properties.sp_request.facial_match = 1)
-                 or (name != %{sp_redirect_initiated})
-        | filter name in %{event_names}
+          
         | limit 10000
       QUERY
     end
+
+    def doc_auth_success_bio_info_query
+      params = {
+        issuers: quote(issuers),
+        doc_auth_verify: quote(Events::IDV_DOC_AUTH_PROOFING_RESULTS),
+      }
+
+      format(<<~QUERY, params)
+          fields properties.user_id as user_id
+                , properties.event_properties.proofing_results.biographical_info.birth_year as birth_year
+                , properties.event_properties.proofing_results.biographical_info.state_id_jurisdiction as state,
+        properties.event_properties.success as success
+                | filter properties.service_provider IN %{issuers}
+                | filter name = %{doc_auth_verify} 
+                | filter success = 1
+                | limit 10000
+      QUERY
+    end
+
+    # TODO: END -----------------------------------------------------------------------
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
