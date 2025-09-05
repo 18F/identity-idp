@@ -157,33 +157,125 @@ RSpec.describe SocureDocvResultsJob do
           )
       end
 
-      it 'stores the result from the Socure DocV request' do
-        expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-          success: true,
-          document_state: address_data[:state],
-          document_number: pii_from_doc[:documentNumber],
-          document_issued: Date.parse(pii_from_doc[:issueDate]),
-          document_expiration: Date.parse(pii_from_doc[:expirationDate]),
-          first_name: pii_from_doc[:firstName],
-          last_name: pii_from_doc[:surName],
-          date_of_birth: Date.parse(pii_from_doc[:dob]),
-          address1: address_data[:physicalAddress],
-          address2: address_data[:physicalAddress2],
-          city: address_data[:city],
-          state: address_data[:state],
-          zip: address_data[:zip],
-          failure_reason: nil,
-        )
-        perform
+      context 'when the response is successful' do
+        it 'stores the result from the Socure DocV request' do
+          expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+            success: true,
+            document_state: address_data[:state],
+            document_number: pii_from_doc[:documentNumber],
+            document_issued: Date.parse(pii_from_doc[:issueDate]),
+            document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+            first_name: pii_from_doc[:firstName],
+            last_name: pii_from_doc[:surName],
+            date_of_birth: Date.parse(pii_from_doc[:dob]),
+            address1: address_data[:physicalAddress],
+            address2: address_data[:physicalAddress2],
+            city: address_data[:city],
+            state: address_data[:state],
+            zip: address_data[:zip],
+            failure_reason: nil,
+          )
+          perform
 
-        document_capture_session.reload
-        document_capture_session_result = document_capture_session.load_result
-        expect(document_capture_session_result.success).to eq(true)
-        expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
-        expect(document_capture_session_result.attention_with_barcode).to eq(false)
-        expect(document_capture_session_result.doc_auth_success).to eq(true)
-        expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-        expect(document_capture_session.last_doc_auth_result).to eq('accept')
+          document_capture_session.reload
+          document_capture_session_result = document_capture_session.load_result
+          expect(document_capture_session_result.success).to eq(true)
+          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.attention_with_barcode).to eq(false)
+          expect(document_capture_session_result.doc_auth_success).to eq(true)
+          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session.last_doc_auth_result).to eq('accept')
+        end
+      end
+
+      context 'when the response is not successful' do
+        let(:decision_value) { 'decline' }
+
+        context 'when the rate limit is not reached' do
+          before do
+            allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+            perform
+          end
+
+          it 'stores a failed result in the document capture session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              doc_auth_success: false,
+              selfie_status: :not_processed,
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: nil,
+              errors: { socure: { reason_codes: } },
+              max_attempts_reached: false,
+            )
+          end
+
+          it 'tracks the document upload in the attempts api tracker' do
+            expect(attempts_api_tracker).to have_received(:idv_document_upload_submitted).with(
+              success: false,
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: address_data[:zip],
+              failure_reason: { reason_codes: },
+            )
+          end
+        end
+
+        context 'when the rate limit is reached' do
+          let(:rate_limiter) do
+            RateLimiter.new(
+              user: document_capture_session.user,
+              rate_limit_type: :idv_doc_auth,
+            )
+          end
+
+          before do
+            allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+            rate_limiter.increment_to_limited!
+            perform
+          end
+
+          it 'stores a failed result in the document capture session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              doc_auth_success: false,
+              selfie_status: :not_processed,
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: nil,
+              errors: { socure: { reason_codes: } },
+              max_attempts_reached: true,
+            )
+          end
+
+          it 'tracks the document upload in the attempts api tracker' do
+            expect(attempts_api_tracker).to have_received(:idv_document_upload_submitted).with(
+              success: false,
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: address_data[:zip],
+              failure_reason: { reason_codes: },
+            )
+          end
+        end
       end
 
       context 'document escrow is enabled' do
@@ -349,6 +441,7 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when facial match fails' do
           let(:reason_codes) { reason_codes_selfie_fail }
+
           it 'selfies status is :fail' do
             perform
 
@@ -394,6 +487,7 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when facial match is not processed code received' do
           let(:reason_codes) { reason_codes_selfie_not_processed }
+
           it 'selfies status is :not_processed' do
             perform
 
@@ -405,6 +499,7 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when no facial match docs are received' do
           let(:reason_codes) { ['random code'] }
+
           it 'selfies status is :not_processed' do
             perform
 
@@ -417,6 +512,7 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'Identification Card is submitted' do
         let(:document_metadata_type) { 'Identification Card' }
+
         it 'doc auth succeeds' do
           perform
 
@@ -643,18 +739,52 @@ RSpec.describe SocureDocvResultsJob do
                 context 'when the MRZ is not valid' do
                   let(:mrz_response) { 'NO' }
 
-                  it 'result fails' do
-                    perform
+                  context 'when the rate limit is not reached' do
+                    before do
+                      perform
+                    end
 
-                    document_capture_session.reload
-                    document_capture_session_result = document_capture_session.load_result
-                    expect(document_capture_session_result.success).to eq(false)
-                    expect(document_capture_session_result.pii).to be_nil
-                    expect(document_capture_session_result.doc_auth_success).to eq(true)
-                    expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                    expect(document_capture_session_result.mrz_status).to eq(:failed)
-                    expect(document_capture_session_result.errors)
-                      .to eq({ passport: 'Please add a new image' })
+                    it 'stores the failed result in the document capture session' do
+                      expect(document_capture_session.reload.load_result).to have_attributes(
+                        doc_auth_success: true,
+                        selfie_status: :not_processed,
+                        failed_front_image_fingerprints: [],
+                        failed_back_image_fingerprints: [],
+                        failed_passport_image_fingerprints: [],
+                        failed_selfie_image_fingerprints: nil,
+                        errors: { passport: 'Please add a new image' },
+                        mrz_status: :failed,
+                        max_attempts_reached: false,
+                      )
+                    end
+                  end
+
+                  context 'when the rate limit is reached' do
+                    let(:rate_limiter) do
+                      RateLimiter.new(
+                        user: document_capture_session.user,
+                        rate_limit_type: :idv_doc_auth,
+                      )
+                    end
+
+                    before do
+                      rate_limiter.increment_to_limited!
+                      perform
+                    end
+
+                    it 'stores the failed result in the document capture session' do
+                      expect(document_capture_session.reload.load_result).to have_attributes(
+                        doc_auth_success: true,
+                        selfie_status: :not_processed,
+                        failed_front_image_fingerprints: [],
+                        failed_back_image_fingerprints: [],
+                        failed_passport_image_fingerprints: [],
+                        failed_selfie_image_fingerprints: nil,
+                        errors: { passport: 'Please add a new image' },
+                        mrz_status: :failed,
+                        max_attempts_reached: true,
+                      )
+                    end
                   end
                 end
 
@@ -820,14 +950,90 @@ RSpec.describe SocureDocvResultsJob do
           allow_any_instance_of(Idv::DocPiiStateId).to receive(:zipcode).and_return(:invalid_junk)
         end
 
-        it 'stores a failed result' do
-          perform
+        context 'when the rate limit is reached' do
+          before do
+            allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+            perform
+          end
 
-          document_capture_session.reload
-          document_capture_session_result = document_capture_session.load_result
-          expect(document_capture_session_result.success).to eq(false)
-          expect(document_capture_session_result.doc_auth_success).to eq(true)
-          expect(document_capture_session_result.errors).to eq({ pii_validation: 'failed' })
+          it 'stores a failed result in the document session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: nil,
+              errors: { pii_validation: 'failed' },
+              max_attempts_reached: false,
+            )
+          end
+
+          it 'tracks the attempt and stores the images via doc escrow' do
+            expect(attempts_api_tracker).to have_received(:idv_document_upload_submitted).with(
+              success: false,
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: '10001',
+              failure_reason: { zipcode: [:zipcode] },
+            )
+          end
+        end
+
+        context 'when the rate limit is reached' do
+          let(:rate_limiter) do
+            RateLimiter.new(
+              user: document_capture_session.user,
+              rate_limit_type: :idv_doc_auth,
+            )
+          end
+
+          before do
+            allow(attempts_api_tracker).to receive(:idv_document_upload_submitted)
+            rate_limiter.increment_to_limited!
+            perform
+          end
+
+          it 'stores a failed result in the document session' do
+            expect(document_capture_session.reload.load_result).to have_attributes(
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              failed_front_image_fingerprints: [],
+              failed_back_image_fingerprints: [],
+              failed_passport_image_fingerprints: [],
+              failed_selfie_image_fingerprints: nil,
+              errors: { pii_validation: 'failed' },
+              max_attempts_reached: true,
+            )
+          end
+
+          it 'tracks the attempt and stores the images via doc escrow' do
+            expect(attempts_api_tracker).to have_received(:idv_document_upload_submitted).with(
+              success: false,
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: '10001',
+              failure_reason: { zipcode: [:zipcode] },
+            )
+          end
         end
 
         context 'doc escrow is enabled' do

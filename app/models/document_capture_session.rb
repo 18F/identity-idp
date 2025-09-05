@@ -45,7 +45,7 @@ class DocumentCaptureSession < ApplicationRecord
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
                              passport_image_fingerprint:, selfie_image_fingerprint:,
                              doc_auth_success:, selfie_status:,
-                             errors: nil, mrz_status: :not_processed)
+                             errors: nil, mrz_status: :not_processed, max_attempts_reached: false)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -61,6 +61,7 @@ class DocumentCaptureSession < ApplicationRecord
 
     session_result.errors = errors
     session_result.mrz_status = mrz_status
+    session_result.max_attempts_reached = max_attempts_reached
 
     EncryptedRedisStructStorage.store(
       session_result,

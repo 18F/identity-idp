@@ -146,106 +146,109 @@ RSpec.describe DocumentCaptureSession do
   end
 
   describe('#store_failed_auth_data') do
-    it 'stores image finger print' do
-      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
-      record.store_failed_auth_data(
-        front_image_fingerprint: 'fingerprint1',
-        back_image_fingerprint: nil,
-        passport_image_fingerprint: 'fingerprint-p1',
-        selfie_image_fingerprint: nil,
-        doc_auth_success: false,
-        selfie_status: :not_processed,
-      )
-      result_id = record.result_id
-      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionResult)
-      data = REDIS_POOL.with { |client| client.get(key) }
-      expect(data).to be_a(String)
-      result = record.load_result
-      expect(result.failed_front_image?('fingerprint1')).to eq(true)
-      expect(result.failed_front_image?(nil)).to eq(false)
-      expect(result.failed_back_image?(nil)).to eq(false)
-      expect(result.failed_passport_image?('fingerprint-p1')).to eq(true)
-      expect(result.doc_auth_success).to eq(false)
-      expect(result.selfie_status).to eq(:not_processed)
+    let(:current_time) { Time.zone.now }
+    let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.uuid) }
+
+    context 'when all required fields are passed in' do
+      before do
+        freeze_time
+        travel_to(current_time) do
+          document_capture_session.store_failed_auth_data(
+            front_image_fingerprint: 'fingerprint-front1',
+            back_image_fingerprint: 'fingerprint-back1',
+            passport_image_fingerprint: 'fingerprint-passport1',
+            selfie_image_fingerprint: 'fingerprint-selfie1',
+            doc_auth_success: false,
+            selfie_status: :fail,
+          )
+        end
+      end
+
+      it 'stores the failed data results' do
+        expect(document_capture_session.load_result).to have_attributes(
+          success: false,
+          captured_at: current_time,
+          doc_auth_success: false,
+          selfie_status: :fail,
+          failed_front_image_fingerprints: ['fingerprint-front1'],
+          failed_back_image_fingerprints: ['fingerprint-back1'],
+          failed_passport_image_fingerprints: ['fingerprint-passport1'],
+          failed_selfie_image_fingerprints: ['fingerprint-selfie1'],
+          errors: nil,
+          mrz_status: :not_processed,
+          max_attempts_reached: false,
+        )
+      end
     end
 
-    it 'saves failed image fingerprints' do
-      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
+    context 'when all fields are passed in' do
+      before do
+        freeze_time
+        travel_to(current_time) do
+          document_capture_session.store_failed_auth_data(
+            front_image_fingerprint: 'fingerprint-front1',
+            back_image_fingerprint: 'fingerprint-back1',
+            passport_image_fingerprint: 'fingerprint-passport1',
+            selfie_image_fingerprint: 'fingerprint-selfie1',
+            doc_auth_success: false,
+            selfie_status: :fail,
+            errors: [error: 'I am error'],
+            mrz_status: :processed,
+            max_attempts_reached: true,
+          )
+        end
+      end
 
-      record.store_failed_auth_data(
-        front_image_fingerprint: 'fingerprint1',
-        back_image_fingerprint: nil,
-        passport_image_fingerprint: 'fingerprint-p1',
-        selfie_image_fingerprint: nil,
-        doc_auth_success: false,
-        selfie_status: :not_processed,
-      )
-      old_result = record.load_result
+      it 'stores the failed data results' do
+        expect(document_capture_session.load_result).to have_attributes(
+          success: false,
+          captured_at: current_time,
+          doc_auth_success: false,
+          selfie_status: :fail,
+          failed_front_image_fingerprints: ['fingerprint-front1'],
+          failed_back_image_fingerprints: ['fingerprint-back1'],
+          failed_passport_image_fingerprints: ['fingerprint-passport1'],
+          failed_selfie_image_fingerprints: ['fingerprint-selfie1'],
+          errors: [error: 'I am error'],
+          mrz_status: :processed,
+          max_attempts_reached: true,
+        )
+      end
+    end
 
-      record.store_failed_auth_data(
-        front_image_fingerprint: 'fingerprint2',
-        back_image_fingerprint: 'fingerprint3',
-        passport_image_fingerprint: 'fingerprint-p2',
-        selfie_image_fingerprint: nil,
-        doc_auth_success: false,
-        selfie_status: :not_processed,
-      )
-      new_result = record.load_result
+    context 'when multiple calls are made' do
+      before do
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front1',
+          back_image_fingerprint: 'fingerprint-back1',
+          passport_image_fingerprint: 'fingerprint-passport1',
+          selfie_image_fingerprint: 'fingerprint-selfie1',
+          doc_auth_success: false,
+          selfie_status: :fail,
+        )
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: 'fingerprint-front2',
+          back_image_fingerprint: 'fingerprint-back2',
+          passport_image_fingerprint: 'fingerprint-passport2',
+          selfie_image_fingerprint: 'fingerprint-selfie2',
+          doc_auth_success: false,
+          selfie_status: :fail,
+        )
+      end
 
-      expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
-      expect(old_result.failed_front_image?('fingerprint2')).to eq(false)
-      expect(old_result.failed_back_image?('fingerprint3')).to eq(false)
-      expect(old_result.failed_passport_image?('fingerprint-p1')).to eq(true)
-      expect(old_result.failed_passport_image?('fingerprint-p2')).to eq(false)
-      expect(old_result.failed_selfie_image_fingerprints).to be_nil
-      expect(old_result.doc_auth_success).to eq(false)
-      expect(old_result.selfie_status).to eq(:not_processed)
-
-      expect(new_result.failed_front_image?('fingerprint1')).to eq(true)
-      expect(new_result.failed_front_image?('fingerprint2')).to eq(true)
-      expect(new_result.failed_back_image?('fingerprint3')).to eq(true)
-      expect(new_result.failed_passport_image?('fingerprint-p1')).to eq(true)
-      expect(new_result.failed_passport_image?('fingerprint-p2')).to eq(true)
-      expect(new_result.failed_selfie_image_fingerprints).to be_nil
-      expect(new_result.doc_auth_success).to eq(false)
-      expect(new_result.selfie_status).to eq(:not_processed)
-
-      old_result = new_result
-
-      record.store_failed_auth_data(
-        front_image_fingerprint: 'fingerprint2',
-        back_image_fingerprint: 'fingerprint3',
-        passport_image_fingerprint: 'fingerprint-p3',
-        selfie_image_fingerprint: 'fingerprint4',
-        doc_auth_success: false,
-        selfie_status: :fail,
-      )
-      new_result = record.load_result
-
-      expect(old_result.failed_front_image?('fingerprint1')).to eq(true)
-      expect(old_result.failed_front_image?('fingerprint2')).to eq(true)
-      expect(old_result.failed_back_image?('fingerprint3')).to eq(true)
-      expect(old_result.failed_passport_image?('fingerprint-p1')).to eq(true)
-      expect(old_result.failed_passport_image?('fingerprint-p2')).to eq(true)
-      expect(old_result.failed_passport_image?('fingerprint-p3')).to eq(false)
-      expect(old_result.failed_selfie_image_fingerprints).to be_nil
-      expect(old_result.doc_auth_success).to eq(false)
-      expect(old_result.selfie_status).to eq(:not_processed)
-
-      expect(new_result.failed_front_image_fingerprints.length).to eq(2)
-      expect(new_result.failed_back_image_fingerprints.length).to eq(1)
-      expect(new_result.failed_passport_image_fingerprints.length).to eq(3)
-      expect(new_result.failed_passport_image?('fingerprint-p3')).to eq(true)
-      expect(new_result.failed_selfie_image?('fingerprint4')).to eq(true)
-      expect(new_result.doc_auth_success).to eq(false)
-      expect(new_result.selfie_status).to eq(:fail)
+      it 'stores multiple images in the failed data results' do
+        expect(document_capture_session.load_result).to have_attributes(
+          failed_front_image_fingerprints: ['fingerprint-front1', 'fingerprint-front2'],
+          failed_back_image_fingerprints: ['fingerprint-back1', 'fingerprint-back2'],
+          failed_passport_image_fingerprints: ['fingerprint-passport1', 'fingerprint-passport2'],
+          failed_selfie_image_fingerprints: ['fingerprint-selfie1', 'fingerprint-selfie2'],
+        )
+      end
     end
 
     context 'when selfie is successful' do
-      it 'does not add selfie to failed image fingerprints' do
-        record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
-
-        record.store_failed_auth_data(
+      before do
+        document_capture_session.store_failed_auth_data(
           front_image_fingerprint: 'fingerprint1',
           back_image_fingerprint: 'fingerprint2',
           passport_image_fingerprint: nil,
@@ -253,11 +256,14 @@ RSpec.describe DocumentCaptureSession do
           doc_auth_success: false,
           selfie_status: :pass,
         )
-        result = record.load_result
+      end
 
-        expect(result.failed_front_image?('fingerprint1')).to eq(true)
-        expect(result.failed_back_image?('fingerprint2')).to eq(true)
-        expect(result.failed_selfie_image_fingerprints).to be_nil
+      it 'does not add selfie to failed image fingerprints' do
+        expect(document_capture_session.load_result).to have_attributes(
+          failed_front_image_fingerprints: ['fingerprint1'],
+          failed_back_image_fingerprints: ['fingerprint2'],
+          failed_selfie_image_fingerprints: nil,
+        )
       end
     end
   end
