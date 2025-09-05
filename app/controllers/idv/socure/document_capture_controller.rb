@@ -32,11 +32,9 @@ module Idv
         @selfie_check_required = resolved_authn_context_result.facial_match?
         @hybrid_flow = false
         @passport_requested = document_capture_session.passport_requested?
+        @url = document_capture_session.socure_docv_capture_app_url
 
-        if document_capture_session.socure_docv_capture_app_url.present?
-          @url = document_capture_session.socure_docv_capture_app_url
-          return
-        end
+        return if @url.present?
 
         # document request
         document_request = DocAuth::Socure::Requests::DocumentRequest.new(

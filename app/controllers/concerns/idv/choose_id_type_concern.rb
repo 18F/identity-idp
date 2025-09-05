@@ -12,17 +12,9 @@ module Idv
 
     def set_passport_requested
       if passport_chosen?
-        unless document_capture_session.passport_requested?
-          document_capture_session.update!(
-            passport_status: 'requested',
-            doc_auth_vendor: nil,
-          )
-        end
+        set_passport_as_requested
       else
-        document_capture_session.update!(
-          passport_status: 'not_requested',
-          doc_auth_vendor: nil,
-        )
+        set_passport_as_not_requested
       end
     end
 
@@ -64,6 +56,18 @@ module Idv
         disable_passports:,
         auto_check_value: disable_passports ? :drivers_license : selected_id_type,
       }
+    end
+
+    private
+
+    def set_passport_as_requested
+      return if document_capture_session.passport_requested?
+
+      document_capture_session.set_passport_as_requested
+    end
+
+    def set_passport_as_not_requested
+      document_capture_session.set_passport_as_not_requested
     end
   end
 end
