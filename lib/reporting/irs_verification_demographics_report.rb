@@ -33,7 +33,7 @@ module Reporting
       verbose: false,
       progress: false,
       slice: 6.hours,
-      threads: 1
+      threads: 5
     )
       @issuers = issuers
       @time_range = time_range
@@ -243,7 +243,6 @@ module Reporting
       format(<<~QUERY, params)
         fields
             properties.user_id as user_id
-          , 
         | filter properties.service_provider IN %{issuers}
         | filter (name = %{sp_redirect_initiated} and properties.event_properties.ial = 2 and properties.sp_request.facial_match = 1)
           
@@ -263,7 +262,7 @@ module Reporting
                 , properties.event_properties.proofing_results.biographical_info.state_id_jurisdiction as state,
         properties.event_properties.success as success
                 | filter properties.service_provider IN %{issuers}
-                | filter (name = %{doc_auth_verify} and 
+                | filter name = %{doc_auth_verify} 
                 | filter success = 1
                 | limit 10000
       QUERY
