@@ -596,7 +596,6 @@ RSpec.feature 'document capture step', :js do
 
           context 'with a valid passport', driver: :headless_chrome_mobile do
             let(:passports_enabled) { true }
-            let(:doc_auth_passport_selfie_enabled) { true }
             let(:passport_image) do
               Rails.root.join(
                 'spec', 'fixtures',
@@ -615,8 +614,6 @@ RSpec.feature 'document capture step', :js do
               allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
               allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
                 .and_return(fake_dos_api_endpoint)
-              allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_enabled)
-                .and_return(doc_auth_passport_selfie_enabled)
               stub_request(:post, fake_dos_api_endpoint)
                 .to_return_json({ status: 200, body: { response: 'YES' } })
               stub_health_check_settings

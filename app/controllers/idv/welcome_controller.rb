@@ -76,23 +76,10 @@ module Idv
     end
 
     def update_passport_allowed
-      if !IdentityConfig.store.doc_auth_passports_enabled || (
-        resolved_authn_context_result.facial_match? &&
-        !IdentityConfig.store.doc_auth_passport_selfie_enabled
-      )
-        idv_session.passport_allowed = nil
-        return
-      end
-
       idv_session.passport_allowed ||= ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed
     end
 
     def passport_status
-      if resolved_authn_context_result.facial_match? &&
-         !IdentityConfig.store.doc_auth_passport_selfie_enabled
-        idv_session.passport_allowed = nil
-      end
-
       :allowed if idv_session.passport_allowed
     end
   end

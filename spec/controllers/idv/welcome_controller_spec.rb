@@ -162,21 +162,6 @@ RSpec.describe Idv::WelcomeController do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       end
 
-      context 'when facial match is required' do
-        before do
-          subject.idv_session.passport_allowed = true
-          vot = 'Pb'
-          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
-          allow(subject).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-          put :show
-        end
-
-        it 'sets passport_allowed to nil on idv session' do
-          expect(subject.idv_session.passport_allowed).to be_nil
-        end
-      end
-
       context 'when the user is not bucketed for passports' do
         let(:passport_bucket) { :default }
 
