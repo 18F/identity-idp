@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include Idv::ChooseIdTypeConcern
 
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
@@ -15,7 +14,6 @@ module Idv
                   if: -> { IdentityConfig.store.doc_auth_passports_enabled }
 
     def show
-      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
@@ -23,12 +21,15 @@ module Idv
 
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
-        passport_allowed: idv_session.passport_allowed,
+        passport_allowed: true,
       )
     end
 
     def update
       clear_future_steps!
+      # user_session[:idv] = {}
+      idv_session.clear
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
@@ -56,7 +57,7 @@ module Idv
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-        passport_allowed: idv_session.passport_allowed,
+        passport_allowed: true, # idv_session.passport_allowed,
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -76,11 +77,11 @@ module Idv
     end
 
     def update_passport_allowed
-      idv_session.passport_allowed ||= ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed
+      true
     end
 
     def passport_status
-      :allowed if idv_session.passport_allowed
+      :allowed
     end
   end
 end

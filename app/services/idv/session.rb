@@ -189,7 +189,8 @@ module Idv
     end
 
     def clear
-      user_session.delete(:idv)
+      # user_session.delete(:idv)
+      user_session[:idv] = {}
       @profile = nil
       @gpo_otp = nil
     end
