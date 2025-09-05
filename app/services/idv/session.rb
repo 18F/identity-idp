@@ -17,7 +17,6 @@ module Idv
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
-  # @attr passport_allowed [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
@@ -65,7 +64,6 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       opted_in_to_in_person_proofing
-      passport_allowed
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
@@ -385,7 +383,7 @@ module Idv
     end
 
     def in_person_passports_allowed?
-      passport_allowed && IdentityConfig.store.in_person_passports_enabled
+      IdentityConfig.store.in_person_passports_enabled
     end
 
     private

@@ -7,7 +7,6 @@ module Idv
     include StepIndicatorConcern
     include Idv::ChooseIdTypeConcern
 
-    before_action :redirect_if_passport_not_available
     before_action :confirm_step_allowed
 
     def show
@@ -49,24 +48,19 @@ module Idv
         controller: self,
         next_steps: [:document_capture],
         preconditions: ->(idv_session:, user:) do
-          idv_session.flow_path == 'standard' &&
-          idv_session.passport_allowed == true
+          idv_session.flow_path == 'standard'
         end,
         undo_step: ->(idv_session:, user:) do
           if idv_session.document_capture_session_uuid
             DocumentCaptureSession.find_by(
               uuid: idv_session.document_capture_session_uuid,
-            )&.update!(passport_status: idv_session.passport_allowed ? 'allowed' : nil)
+            )&.update!(passport_status: nil)
           end
         end,
       )
     end
 
     private
-
-    def redirect_if_passport_not_available
-      redirect_to idv_how_to_verify_url if !idv_session.passport_allowed
-    end
 
     def next_step
       idv_document_capture_url

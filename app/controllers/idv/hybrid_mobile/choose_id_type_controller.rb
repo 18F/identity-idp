@@ -9,7 +9,6 @@ module Idv
       include Idv::ChooseIdTypeConcern
 
       before_action :check_valid_document_capture_session
-      before_action :redirect_if_passport_not_available, only: :show
 
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
@@ -43,12 +42,6 @@ module Idv
       end
 
       private
-
-      def redirect_if_passport_not_available
-        unless document_capture_session.passport_allowed?
-          redirect_to idv_hybrid_mobile_document_capture_url
-        end
-      end
 
       def next_step
         idv_hybrid_mobile_document_capture_url

@@ -73,10 +73,8 @@ module IdvStepConcern
 
       if in_person_proofing_route_enabled?
         redirect_to idv_how_to_verify_url
-      elsif idv_session.passport_allowed
-        redirect_to idv_choose_id_type_url
       else
-        redirect_to vendor_document_capture_url
+        redirect_to idv_choose_id_type_url
       end
     end
   end
@@ -101,7 +99,7 @@ module IdvStepConcern
   end
 
   def in_person_passports_allowed?
-    IdentityConfig.store.in_person_passports_enabled && document_capture_session.passport_allowed?
+    IdentityConfig.store.in_person_passports_enabled
   end
 
   private

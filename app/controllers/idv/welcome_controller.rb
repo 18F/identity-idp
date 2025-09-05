@@ -10,12 +10,8 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
     before_action :cancel_previous_in_person_enrollments, only: :show
-    before_action :update_passport_allowed,
-                  only: :show,
-                  if: -> { IdentityConfig.store.doc_auth_passports_enabled }
 
     def show
-      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
@@ -23,12 +19,12 @@ module Idv
 
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
-        passport_allowed: idv_session.passport_allowed,
       )
     end
 
     def update
       clear_future_steps!
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
@@ -45,7 +41,6 @@ module Idv
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
           idv_session.document_capture_session_uuid = nil
-          idv_session.passport_allowed = nil
         end,
       )
     end
@@ -56,7 +51,6 @@ module Idv
       {
         step: 'welcome',
         analytics_id: 'Doc Auth',
-        passport_allowed: idv_session.passport_allowed,
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -64,7 +58,6 @@ module Idv
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
-        passport_status:,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
@@ -73,14 +66,6 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
-    end
-
-    def update_passport_allowed
-      idv_session.passport_allowed ||= ab_test_bucket(:DOC_AUTH_PASSPORT) == :passport_allowed
-    end
-
-    def passport_status
-      :allowed if idv_session.passport_allowed
     end
   end
 end
