@@ -93,13 +93,13 @@ RSpec.describe Idv::DocumentCaptureController do
       describe 'with sp selfie enabled' do
         let(:facial_match_required) { true }
 
-        it 'does satisfy precondition' do
+        it 'does not satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
           expect(subject).not_to receive(:render).with(:show, locals: an_instance_of(Hash))
 
           get :show
 
-          expect(response).to redirect_to(idv_hybrid_handoff_path)
+          expect(response).to redirect_to(idv_choose_id_type_path)
         end
       end
     end
