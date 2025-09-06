@@ -115,7 +115,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
   end
 
-  describe '#selected_id_type' do    
+  describe '#selected_id_type' do
     it 'returns nil' do
       expect(subject.selected_id_type).to be_nil
     end
