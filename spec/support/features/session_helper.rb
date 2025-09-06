@@ -221,7 +221,6 @@ module Features
     end
 
     def confirm_last_user
-      byebug
       user = User.last
       @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
