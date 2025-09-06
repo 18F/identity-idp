@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomePresenter do
-  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session:, passport_allowed:) }
+  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session:) }
 
   let(:sp) { build(:service_provider) }
   let(:sp_session) { {} }
@@ -15,7 +15,6 @@ RSpec.describe Idv::WelcomePresenter do
       service_provider_request: nil,
     )
   end
-  let(:passport_allowed) { false }
 
   before do
     allow(view_context).to receive(:current_user).and_return(user)
@@ -60,9 +59,9 @@ RSpec.describe Idv::WelcomePresenter do
   end
 
   describe 'the bullet points' do
-    it 'uses the bullet point 1a header' do
+    it 'uses the bullet point 1b header' do
       expect(presenter.bullet_points[0].bullet).to eq(
-        t('doc_auth.instructions.bullet1a'),
+        t('doc_auth.instructions.bullet1b'),
       )
     end
 
@@ -106,16 +105,6 @@ RSpec.describe Idv::WelcomePresenter do
       expect(presenter.bullet_points[3].text).to eq(
         t('doc_auth.instructions.text4'),
       )
-    end
-
-    context 'when the user is allowed to use a passport' do
-      let(:passport_allowed) { true }
-
-      it 'uses the bullet point 1b header' do
-        expect(presenter.bullet_points[0].bullet).to eq(
-          t('doc_auth.instructions.bullet1b'),
-        )
-      end
     end
   end
 end
