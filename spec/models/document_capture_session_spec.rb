@@ -51,13 +51,6 @@ RSpec.describe DocumentCaptureSession do
       end
     end
 
-    context 'passport_status is allowed' do
-      it 'does not throws error' do
-        expect { create(:document_capture_session, passport_status: 'allowed') }
-          .not_to raise_error(ActiveRecord::RecordInvalid)
-      end
-    end
-
     context 'passport_status is requested' do
       it 'does not throw error' do
         expect { create(:document_capture_session, passport_status: 'requested') }
