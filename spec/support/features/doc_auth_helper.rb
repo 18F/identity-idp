@@ -73,22 +73,43 @@ module DocAuthHelper
   end
 
   def complete_hybrid_handoff_step
+    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
     click_on t('forms.buttons.upload_photos')
   end
 
-  def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
+  def complete_choose_id_type_step(
+    expect_accessible: false, choose_id_type: nil
+  )
+    expect(page).to have_content(t('doc_auth.headings.choose_id_type'))
+
+    if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+    else
+      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+    end
+
+    click_on t('forms.buttons.continue')
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+  end
+
+  def complete_doc_auth_steps_before_document_capture_step(
+    expect_accessible: false,
+    choose_id_type: nil
+  )
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.mode == :headless_chrome_mobile
-
-    if IdentityConfig.store.in_person_proofing_opt_in_enabled
-      click_on t('forms.buttons.continue_online')
+    unless page.mode == :headless_chrome_mobile
+      if IdentityConfig.store.in_person_proofing_opt_in_enabled
+        click_on t('forms.buttons.continue_online')
+      end
+      complete_hybrid_handoff_step
+      expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     end
-    complete_hybrid_handoff_step
-    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+
+    complete_choose_id_type_step(expect_accessible:, choose_id_type:)
   end
 
   def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)

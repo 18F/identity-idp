@@ -24,13 +24,6 @@ RSpec.describe Idv::ChooseIdTypeController do
   end
 
   describe 'before actions' do
-    it 'includes redirect_if_passport_not_available before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :redirect_if_passport_not_available,
-      )
-    end
-
     it 'includes confirm_steps_allowed' do
       expect(subject).to have_actions(
         :before,
@@ -52,7 +45,6 @@ RSpec.describe Idv::ChooseIdTypeController do
 
       before do
         subject.idv_session.flow_path = 'standard'
-        subject.idv_session.passport_allowed = true
         subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
         get :show
       end
@@ -66,26 +58,9 @@ RSpec.describe Idv::ChooseIdTypeController do
       end
     end
 
-    context 'passport is not available' do
-      before do
-        subject.idv_session.flow_path = 'standard'
-        subject.idv_session.passport_allowed = false
-        get :show
-      end
-
-      it 'does not render the shared choose_id_type template' do
-        expect(response).not_to render_template 'idv/shared/choose_id_type'
-      end
-
-      it 'redirects to how to verify' do
-        expect(response).to redirect_to(idv_how_to_verify_url)
-      end
-    end
-
     context 'when the user does not have a flow path' do
       before do
         subject.idv_session.flow_path = nil
-        subject.idv_session.passport_allowed = true
         get :show
       end
 
@@ -116,10 +91,6 @@ RSpec.describe Idv::ChooseIdTypeController do
       { doc_auth: { choose_id_type_preference: chosen_id_type } }
     end
 
-    before do
-      allow(subject.idv_session).to receive(:passport_allowed).and_return(true)
-    end
-
     it 'invalidates future steps' do
       expect(subject).to receive(:clear_future_steps!)
 
@@ -133,24 +104,6 @@ RSpec.describe Idv::ChooseIdTypeController do
     end
 
     context 'user selects drivers license' do
-      it 'document_capture_session passport remains allowed' do
-        put :update, params: params
-
-        expect(subject.document_capture_session.passport_allowed?).to eq(true)
-      end
-
-      context 'when previously requested' do
-        before do
-          subject.document_capture_session.update!(passport_status: 'requested')
-        end
-
-        it 'sets document_capture_session to passport allowed' do
-          put :update, params: params
-
-          expect(subject.document_capture_session.passport_allowed?).to eq(true)
-        end
-      end
-
       it 'redirects to document capture session' do
         put :update, params: params
 
@@ -194,27 +147,23 @@ RSpec.describe Idv::ChooseIdTypeController do
 
         context 'when idv_session allows passports' do
           before do
-            subject.idv_session.passport_allowed = true
             described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
           end
 
           it 'resets relevant fields on idv_session to "allowed"' do
             subject.document_capture_session.reload
             expect(subject.document_capture_session.passport_requested?).to eq(false)
-            expect(subject.document_capture_session.passport_allowed?).to eq(true)
           end
         end
 
         context 'when idv_session does not allow passports' do
           before do
-            subject.idv_session.passport_allowed = false
             described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
           end
 
           it 'resets relevant fields on idv_session to nil' do
             subject.document_capture_session.reload
             expect(subject.document_capture_session.passport_requested?).to eq(false)
-            expect(subject.document_capture_session.passport_allowed?).to eq(false)
           end
         end
       end

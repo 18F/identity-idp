@@ -7,7 +7,6 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   PASSPORT_STATUSES = [
-    'allowed',
     'not_requested',
     'requested',
   ].freeze
@@ -106,10 +105,6 @@ class DocumentCaptureSession < ApplicationRecord
     return unless self.ocr_confirmation_pending
 
     update!(ocr_confirmation_pending: false)
-  end
-
-  def passport_allowed?
-    PASSPORT_STATUSES.include? passport_status
   end
 
   def passport_requested?
