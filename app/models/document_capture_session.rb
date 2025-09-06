@@ -7,7 +7,6 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   PASSPORT_STATUSES = [
-    'allowed',
     'not_requested',
     'requested',
   ].freeze
