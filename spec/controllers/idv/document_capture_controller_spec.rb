@@ -228,7 +228,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
           get :show
 
-          expect(response).to redirect_to(idv_hybrid_handoff_path)
+          expect(response).to redirect_to(idv_choose_id_type_path)
         end
       end
 
@@ -348,7 +348,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         get :show, params: { step: 'hybrid_handoff' }
 
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
         expect(subject.idv_session.skip_doc_auth_from_handoff).to_not eq(true)
       end
     end
