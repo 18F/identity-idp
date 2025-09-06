@@ -26,6 +26,7 @@ RSpec.describe 'when Socure throws an internal error' do
       visit_idp_from_oidc_sp_with_ial2
       @user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_hybrid_handoff_step
+      complete_choose_id_type_step
       click_try_again # acting as a wait for logged_event
     end
 
@@ -56,6 +57,7 @@ RSpec.describe 'when Socure throws an internal error' do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         click_try_again # acting as a wait for logged_event
       end
 
