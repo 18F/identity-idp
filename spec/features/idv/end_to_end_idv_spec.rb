@@ -24,6 +24,10 @@ RSpec.describe 'Identity verification', :js do
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
+    validate_choose_id_type_page
+    try_to_skip_ahead_from_choose_id_type
+    complete_choose_id_type_step
+
     validate_document_capture_page
     complete_document_capture_step
     validate_document_capture_submit(user)
@@ -66,6 +70,10 @@ RSpec.describe 'Identity verification', :js do
 
     test_go_back_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
+
+    expect(page).to have_current_path(idv_choose_id_type_path)
+    test_go_back_from_choose_id_type
+    complete_choose_id_type_step
 
     expect(page).to have_current_path(idv_document_capture_path)
     test_go_back_from_document_capture
@@ -211,6 +219,14 @@ RSpec.describe 'Identity verification', :js do
     field = page.find_field(t('two_factor_authentication.phone_label'))
     expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE))
       .to be true
+  end
+
+  def validate_choose_id_type_page
+    expect(page).to have_current_path(idv_choose_id_type_path)
+
+    # Check for expected content
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+    expect(page).to have_content(t('doc_auth.headings.choose_id_type'))
   end
 
   def validate_document_capture_page
@@ -454,7 +470,7 @@ RSpec.describe 'Identity verification', :js do
     complete_agreement_step
   end
 
-  def test_go_back_from_document_capture
+  def test_go_back_from_choose_id_type
     go_back
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     go_back
@@ -466,6 +482,18 @@ RSpec.describe 'Identity verification', :js do
 
     go_forward
     expect(page).to have_current_path(idv_hybrid_handoff_path)
+    go_forward
+    expect(page).to have_current_path(idv_choose_id_type_path)
+  end
+
+  def test_go_back_from_document_capture
+    go_back
+    expect(page).to have_current_path(idv_choose_id_type_path)
+    go_back
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+
+    go_forward
+    expect(page).to have_current_path(idv_choose_id_type_path)
     go_forward
     expect(page).to have_content(t('doc_auth.headings.front'))
     expect(page).to have_content(t('doc_auth.headings.back'))

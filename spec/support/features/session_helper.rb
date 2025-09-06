@@ -221,6 +221,7 @@ module Features
     end
 
     def confirm_last_user
+      byebug
       user = User.last
       @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
@@ -537,7 +538,7 @@ module Features
     end
 
     def skip_second_mfa_prompt
-      click_on t('mfa.skip')
+      click_on t('webauthn_platform_recommended.skip')
     end
 
     def sign_in_via_branded_page(user)
