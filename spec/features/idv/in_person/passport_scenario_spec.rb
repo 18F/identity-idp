@@ -40,7 +40,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
         expect(page).to have_current_path(idv_welcome_path)
         expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1b')
+        expect(page).to have_content t('doc_auth.instructions.bullet1')
 
         complete_welcome_step
 
@@ -75,7 +75,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             'doc_auth.headings.welcome',
             sp_name: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1b')
+          expect(page).to have_content t('doc_auth.instructions.bullet1')
 
           complete_welcome_step
 
@@ -116,7 +116,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             'doc_auth.headings.welcome',
             sp_name: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1b')
+          expect(page).to have_content t('doc_auth.instructions.bullet1')
 
           complete_welcome_step
 
@@ -185,7 +185,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             'doc_auth.headings.welcome',
             sp_name: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1b')
+          expect(page).to have_content t('doc_auth.instructions.bullet1')
 
           complete_welcome_step
 
@@ -239,7 +239,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
         expect(page).to have_current_path(idv_welcome_path)
         expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1b')
+        expect(page).to have_content t('doc_auth.instructions.bullet1')
 
         complete_welcome_step
 
@@ -279,7 +279,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
         expect(page).to have_current_path(idv_welcome_path)
         expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1b')
+        expect(page).to have_content t('doc_auth.instructions.bullet1')
 
         complete_welcome_step
 

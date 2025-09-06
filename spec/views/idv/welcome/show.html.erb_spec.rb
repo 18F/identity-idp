@@ -40,7 +40,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
           link_html: '',
         ),
       )
-      expect(rendered).to have_content(t('doc_auth.instructions.bullet1b'))
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
       expect(rendered).to have_link(
         t('doc_auth.info.getting_started_learn_more'),
         href: help_center_redirect_path(
@@ -56,7 +56,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
 
   context 'when a user has the passport option' do
     it 'renders the modified bullet point' do
-      expect(rendered).to have_content(t('doc_auth.instructions.bullet1b'))
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
     end
   end
 

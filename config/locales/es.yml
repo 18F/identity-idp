@@ -714,8 +714,7 @@ doc_auth.info.verify_online_instruction: Tomará fotografías de su identificaci
 doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted para verificar su identidad por completo en línea.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.you_entered: 'Usted ingresó:'
-doc_auth.instructions.bullet1a: Tener una licencia de conducir o una tarjeta de identificación estatal
-doc_auth.instructions.bullet1b: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
+doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}

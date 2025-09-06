@@ -703,8 +703,7 @@ doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièc
 doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.you_entered: 'Vous avez saisi :'
-doc_auth.instructions.bullet1a: Présenter votre permis de conduire ou votre carte d’identité d’un État
-doc_auth.instructions.bullet1b: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
+doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}

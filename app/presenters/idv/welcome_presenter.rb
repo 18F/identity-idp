@@ -75,7 +75,7 @@ module Idv
     end
 
     def id_type_copy
-      t('doc_auth.instructions.bullet1b')
+      t('doc_auth.instructions.bullet1')
     end
 
     def bullet_point(bullet, text)
