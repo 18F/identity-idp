@@ -65,7 +65,7 @@ RSpec.feature 'welcome step' do
       end
 
       it 'displays only State ID instructions to the user' do
-        expect(page).to have_content t('doc_auth.instructions.bullet1a')
+        expect(page).to have_content t('doc_auth.instructions.bullet1b')
       end
     end
   end
