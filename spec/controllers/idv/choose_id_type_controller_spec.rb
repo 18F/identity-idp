@@ -5,7 +5,7 @@ RSpec.describe Idv::ChooseIdTypeController do
 
   let(:user) { create(:user) }
   let(:document_capture_session) do
-    create(:document_capture_session, user:, passport_status: 'allowed')
+    create(:document_capture_session, user:)
   end
 
   before do
@@ -145,26 +145,13 @@ RSpec.describe Idv::ChooseIdTypeController do
           subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
         end
 
-        context 'when idv_session allows passports' do
-          before do
-            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
-          end
-
-          it 'resets relevant fields on idv_session to "allowed"' do
-            subject.document_capture_session.reload
-            expect(subject.document_capture_session.passport_requested?).to eq(false)
-          end
+        before do
+          described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
         end
 
-        context 'when idv_session does not allow passports' do
-          before do
-            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
-          end
-
-          it 'resets relevant fields on idv_session to nil' do
-            subject.document_capture_session.reload
-            expect(subject.document_capture_session.passport_requested?).to eq(false)
-          end
+        it 'resets relevant fields on idv_session to nil' do
+          subject.document_capture_session.reload
+          expect(subject.document_capture_session.passport_requested?).to eq(false)
         end
       end
 
