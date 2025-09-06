@@ -262,36 +262,10 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe('#passport_allowed') do
-    it 'returns nil by default' do
-      record = build(:document_capture_session)
-      expect(record.passport_allowed?).to eq(false)
-    end
-
-    context 'when passport_status is allowed' do
-      it 'returns true' do
-        record = build(:document_capture_session, passport_status: 'allowed')
-        expect(record.passport_allowed?).to eq(true)
-      end
-    end
-
-    context 'when passport_status is requested' do
-      it 'returns true' do
-        record = build(:document_capture_session, passport_status: 'requested')
-        expect(record.passport_allowed?).to eq(true)
-      end
-    end
-  end
-
   describe('#passport_requested') do
-    it 'returns nil by default' do
-      record = build(:document_capture_session)
-      expect(record.passport_allowed?).to eq(false)
-    end
-
     context 'when passport_status is allowed' do
       it 'returns false' do
-        record = build(:document_capture_session, passport_status: 'allowed')
+        record = build(:document_capture_session)
         expect(record.passport_requested?).to eq(false)
       end
     end
