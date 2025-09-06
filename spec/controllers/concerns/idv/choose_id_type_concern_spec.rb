@@ -115,7 +115,11 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
   end
 
-  describe '#selected_id_type' do
+  describe '#selected_id_type' do    
+    it 'returns nil' do
+      expect(subject.selected_id_type).to be_nil
+    end
+
     context 'when the document capture session passport status is "requested"' do
       let(:passport_status) { 'requested' }
 
@@ -129,14 +133,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       it 'returns :drivers_license' do
         expect(subject.selected_id_type).to eq(:drivers_license)
-      end
-    end
-
-    context 'when the document capture session passport status is "allowed"' do
-      let(:passport_status) { 'allowed' }
-
-      it 'returns nil' do
-        expect(subject.selected_id_type).to be_nil
       end
     end
   end
