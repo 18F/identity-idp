@@ -25,7 +25,6 @@ RSpec.describe 'Identity verification', :js do
     complete_hybrid_handoff_step # upload photos
 
     validate_choose_id_type_page
-    try_to_skip_ahead_from_choose_id_type
     complete_choose_id_type_step
 
     validate_document_capture_page
@@ -512,8 +511,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    5.times { go_forward }
+    6.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
