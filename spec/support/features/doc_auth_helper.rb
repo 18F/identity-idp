@@ -104,12 +104,14 @@ module DocAuthHelper
     unless page.mode == :headless_chrome_mobile
       if IdentityConfig.store.in_person_proofing_opt_in_enabled
         click_on t('forms.buttons.continue_online')
-      else
-        complete_hybrid_handoff_step
-        expect_page_to_have_no_accessibility_violations(page) if expect_accessible
-        complete_choose_id_type_step(expect_accessible:, choose_id_type:)
       end
+
+      expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+      complete_hybrid_handoff_step
     end
+
+    complete_choose_id_type_step(expect_accessible:, choose_id_type:)
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
