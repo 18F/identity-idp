@@ -537,7 +537,7 @@ module Features
     end
 
     def skip_second_mfa_prompt
-      click_on t('webauthn_platform_recommended.skip')
+      click_on t('mfa.skip')
     end
 
     def sign_in_via_branded_page(user)
