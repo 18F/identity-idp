@@ -331,10 +331,9 @@ RSpec.feature 'document capture step', :js do
     it 'shows only one image on review step if passport selected' do
       perform_in_browser(:mobile) do
         sign_in_and_2fa_user(@user)
-        complete_doc_auth_steps_before_document_capture_step
-        expect(page).to have_current_path(idv_choose_id_type_url)
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        complete_doc_auth_steps_before_document_capture_step(
+          choose_id_type: Idp::Constants::DocumentTypes::PASSPORT,
+        )
         expect(page).to have_current_path(idv_document_capture_url)
         # Attach fail images and then continue to retry
         attach_passport_image(

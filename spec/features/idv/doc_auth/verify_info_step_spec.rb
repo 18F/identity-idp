@@ -337,6 +337,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
     end
