@@ -683,6 +683,7 @@ RSpec.feature 'document capture step', :js do
               expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.upload_photos')
+              complete_choose_id_type_step
               expect(page).to have_current_path(idv_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect(page).to have_text(t('doc_auth.headings.document_capture'))

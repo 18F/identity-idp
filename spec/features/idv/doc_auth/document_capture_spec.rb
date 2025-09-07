@@ -849,6 +849,7 @@ RSpec.feature 'document capture step', :js do
                 )
                 sign_in_and_2fa_user(@user)
                 complete_up_to_how_to_verify_step_for_opt_in_ipp
+                complete_choose_id_type_step
               end
             end
 
