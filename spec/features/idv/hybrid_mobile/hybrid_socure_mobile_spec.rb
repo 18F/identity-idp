@@ -70,7 +70,7 @@ RSpec.describe 'Hybrid Flow' do
         complete_choose_id_type_step
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
-        expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+        expect(page).to have_current_path(root_url)
 
         # Confirm that we end up on the Socure page even if we try to
         # go to the LN / Mock one.
