@@ -521,28 +521,6 @@ RSpec.describe AbTests do
     end
   end
 
-  describe 'DOC_AUTH_PASSPORT' do
-    let(:ab_test) { :DOC_AUTH_PASSPORT }
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
-          .and_return(50)
-      }
-    end
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-          .and_return(false)
-      }
-    end
-
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
-  end
-
   describe 'PROOFING_VENDOR' do
     let(:ab_test) { :PROOFING_VENDOR }
 
