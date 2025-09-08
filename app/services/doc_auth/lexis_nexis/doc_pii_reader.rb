@@ -107,6 +107,14 @@ module DocAuth
         nil
       end
 
+      def zipcode
+        zip = id_auth_field_data&.dig('Fields_PostalCode')
+        unless /^\d{5}(-\d{4})?$/.match? zipcode
+          zip = zip&.slice(0, 5)
+        end
+        zip
+      end
+
       def sex
         parse_sex_value(authentication_result_field_data&.[]('Sex'))
       end
@@ -151,7 +159,7 @@ module DocAuth
           address2: id_auth_field_data&.dig('Fields_AddressLine2'),
           city: id_auth_field_data&.dig('Fields_City'),
           state: id_auth_field_data&.dig('Fields_State'),
-          zipcode: id_auth_field_data&.dig('Fields_PostalCode'),
+          zipcode:,
           dob:,
           sex:,
           height: parse_height_value(id_auth_field_data&.dig('Fields_Height')),
