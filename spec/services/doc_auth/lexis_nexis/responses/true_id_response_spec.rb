@@ -100,7 +100,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.to_h[:vendor]).to eq('TrueID')
     end
 
-    context 'when zipcode extension is invalid' do
+    context 'when postal code extension is invalid' do
       let(:response) do
         described_class.new(
           http_response: success_with_invalid_zip_extension,
@@ -111,7 +111,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         )
       end
 
-      it 'truncates zipcode extension' do
+      it 'shortens postal code' do
         expect(response.successful_result?).to eq(true)
         expect(response.selfie_status).to eq(:not_processed)
         expect(response.success?).to eq(true)
