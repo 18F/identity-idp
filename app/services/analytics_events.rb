@@ -6553,7 +6553,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when we attempt to recreate dupe profile when already processed
+  # Tracks an attempt to create a duplicate profile set for a completed set of profiles
   def one_account_dupe_profile_already_created
     track_event(:one_account_dupe_profile_already_created)
   end

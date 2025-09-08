@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
-  ACCOUNT_VERIFIED = :account_verified
-  SIGN_IN_ATTEMPTED = :sign_in
-
   DUPE_PROFILE_DETECTED = {
     sign_in: :sign_in,
     account_verified: :account_verified,
@@ -14,20 +11,20 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
       mailer = UserMailer.with(user: user, email_address: email_address)
 
       case type
-      when ACCOUNT_VERIFIED
+      when :account_verified
         mailer.dupe_profile_created(agency_name: agency).deliver_now_or_later
-      when SIGN_IN_ATTEMPTED
+      when :sign_in
         mailer.dupe_profile_sign_in_attempted(agency_name: agency).deliver_now_or_later
       end
     end
     return unless phone
-    if type == SIGN_IN_ATTEMPTED
+    if type == :sign_in
       Telephony.send_dupe_profile_sign_in_attempted_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
         agency_name: agency,
       )
-    elsif type == ACCOUNT_VERIFIED
+    elsif type == :account_verified
       Telephony.send_dupe_profile_created_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
