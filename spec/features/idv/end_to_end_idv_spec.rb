@@ -525,8 +525,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    6.times { go_forward }
+    7.times { go_forward }
     expect(page).to have_current_path(idv_phone_path)
   end
 

@@ -81,6 +81,7 @@ RSpec.feature 'IdV Outage Spec' do
       expect(page).to have_current_path idv_hybrid_handoff_path
 
       complete_hybrid_handoff_step
+      complete_choose_id_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -161,7 +162,7 @@ RSpec.feature 'IdV Outage Spec' do
           click_idv_continue
           complete_agreement_step
 
-          expect(page).to have_current_path idv_document_capture_path
+          expect(page).to have_current_path idv_choose_id_type_path
         end
       end
     end
@@ -207,7 +208,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(page).to have_current_path idv_document_capture_path
+      expect(page).to have_current_path idv_choose_id_type_path
     end
   end
 

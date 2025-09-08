@@ -4,12 +4,10 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
   selection = Idv::HowToVerifyForm::IPP
   let(:mobile_required) { false }
   let(:selfie_check_required) { false }
-  let(:passport_allowed) { false }
   let(:presenter) do
     Idv::HowToVerifyPresenter.new(
       mobile_required: mobile_required,
       selfie_check_required: selfie_check_required,
-      passport_allowed:,
     )
   end
   let(:idv_how_to_verify_form) { Idv::HowToVerifyForm.new(selection: selection) }
@@ -73,38 +71,34 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       )
     end
 
-    context 'when passport is allowed' do
-      let(:passport_allowed) { true }
+    context 'when in person passports is disabled' do
+      it 'renders passport specific content to verify your identity online' do
+        render
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_online_description_passport'),
+        ).once
+        expect(rendered).to have_content(
+          strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+        )
+      end
+    end
 
-      context 'when in person passports is disabled' do
-        it 'renders passport specific content to verify your identity online' do
-          render
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-          expect(rendered).to have_content(
-            t('doc_auth.info.verify_online_description_passport'),
-          ).once
-          expect(rendered).to have_content(
-            strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
-          )
-        end
+    context 'when in person passports is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
       end
 
-      context 'when in person passports is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
-        end
+      it 'renders passport specific content to verify your identity online and in person' do
+        render
 
-        it 'renders passport specific content to verify your identity online and in person' do
-          render
-
-          expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-          expect(rendered).to have_content(
-            t('doc_auth.info.verify_online_description_passport'),
-          ).twice
-          expect(rendered).not_to have_content(
-            strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
-          )
-        end
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
+        expect(rendered).to have_content(
+          t('doc_auth.info.verify_online_description_passport'),
+        ).twice
+        expect(rendered).not_to have_content(
+          strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
+        )
       end
     end
   end

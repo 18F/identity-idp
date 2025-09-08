@@ -96,7 +96,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
               :document_capture_session,
               user:,
               socure_docv_transaction_token: docv_transaction_token,
-              passport_status: 'allowed',
             )
           end
           let(:doc_type) { 'Passport' }
