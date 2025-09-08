@@ -303,7 +303,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
-
+            complete_choose_id_type_step
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
             expect(fake_analytics).to have_logged_event(
@@ -803,6 +803,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step
+      complete_choose_id_type_step
       click_idv_continue
 
       socure_docv_upload_documents(

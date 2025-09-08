@@ -322,6 +322,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
       # hybrid handoff
       click_on t('forms.buttons.upload_photos')
+      complete_choose_id_type_step
       mock_doc_auth_attention_with_barcode
 
       # doc auth- attach and submit images to fail doc auth
@@ -479,6 +480,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_agreement_step
       expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -495,6 +497,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_agreement_step
       expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step

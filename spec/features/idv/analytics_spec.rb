@@ -929,6 +929,7 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         attach_and_submit_images
         visit idv_hybrid_mobile_document_capture_url
       end
@@ -1196,6 +1197,7 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         attach_and_submit_images
         visit idv_hybrid_mobile_document_capture_url
       end
