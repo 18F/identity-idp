@@ -342,11 +342,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       complete_ssn_step
     end
 
-    it 'should be at the verify step page' do
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
-
     it 'redirects to the gpo page when continuing from verify info page' do
+      expect(page).to have_current_path(idv_verify_info_path)
       complete_verify_step
       expect(page).to have_current_path(idv_request_letter_path)
 

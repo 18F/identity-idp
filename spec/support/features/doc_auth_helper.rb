@@ -73,10 +73,10 @@ module DocAuthHelper
   end
 
   def complete_hybrid_handoff_step
-    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
+    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
     click_on t('forms.buttons.upload_photos')
   end
 
