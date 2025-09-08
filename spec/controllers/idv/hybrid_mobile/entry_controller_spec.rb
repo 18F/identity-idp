@@ -79,7 +79,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
         expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
       end
 
-
       context 'doc auth vendor is mock' do
         let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
         before do
