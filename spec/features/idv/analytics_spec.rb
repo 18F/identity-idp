@@ -237,6 +237,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => hash_including(flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean),
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
@@ -357,6 +363,12 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, errors: hash_including(message: nil), destination: :link_sent, flow_path: 'hybrid', step: 'hybrid_handoff', analytics_id: 'Doc Auth', telephony_response: hash_including(errors: {}, message_id: 'fake-message-id', request_id: 'fake-message-request-id', success: true), selfie_check_required: boolean
+      },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid', chosen_id_type: 'drivers_license'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -480,6 +492,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
@@ -581,6 +599,12 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+      },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -723,6 +747,12 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
+      },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true
