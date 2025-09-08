@@ -854,6 +854,7 @@ RSpec.feature 'Analytics Regression', :js do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
+      complete_choose_id_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -1001,6 +1002,7 @@ RSpec.feature 'Analytics Regression', :js do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
+      complete_choose_id_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -1055,6 +1057,7 @@ RSpec.feature 'Analytics Regression', :js do
         complete_welcome_step
         complete_agreement_step
         complete_hybrid_handoff_step
+        complete_choose_id_step
         complete_document_capture_step
         complete_ssn_step
         complete_verify_step
