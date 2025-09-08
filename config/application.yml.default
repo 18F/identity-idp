@@ -578,7 +578,6 @@ production:
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   idv_sp_required: true
-  in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20
