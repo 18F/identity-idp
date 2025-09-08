@@ -345,6 +345,20 @@ RSpec.describe Idv::DocPiiForm do
         end
       end
 
+      context 'when zipcode extension is invalid' do
+        let(:pii) { good_state_id_pii.merge(zipcode: '12345-123') }
+
+        it 'returns a single generic pii error' do
+          result = subject.submit
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:zipcode]).to eq [
+            t('doc_auth.errors.general.no_liveness'),
+          ]
+        end
+      end
+
       context 'when there was attention with barcode' do
         let(:subject) { Idv::DocPiiForm.new(pii: good_state_id_pii, attention_with_barcode: true) }
 

@@ -109,7 +109,7 @@ module DocAuth
 
       def zipcode
         zip = id_auth_field_data&.dig('Fields_PostalCode')
-        unless /^\d{5}(-\d{4})?$/.match? zipcode
+        unless /^\d{5}(-\d{4})?$/.match? zip
           zip = zip&.slice(0, 5)
         end
         zip
