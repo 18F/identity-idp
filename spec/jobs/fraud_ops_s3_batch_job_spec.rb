@@ -28,7 +28,6 @@ RSpec.describe FraudOpsS3BatchJob do
       before do
         allow(redis_client).to receive(:read_all_events).and_return(test_events)
         allow(redis_client).to receive(:delete_events).and_return(2)
-        allow(redis_client).to receive(:clear_expired_keys).and_return(0)
         allow(s3_client).to receive(:put_object)
       end
 
@@ -54,12 +53,6 @@ RSpec.describe FraudOpsS3BatchJob do
         subject.perform
 
         expect(redis_client).to have_received(:delete_events).with(keys: test_events.keys)
-      end
-
-      it 'cleans up expired Redis keys' do
-        subject.perform
-
-        expect(redis_client).to have_received(:clear_expired_keys)
       end
 
       it 'logs successful upload' do
@@ -105,7 +98,6 @@ RSpec.describe FraudOpsS3BatchJob do
     context 'when there are no events' do
       before do
         allow(redis_client).to receive(:read_all_events).and_return({})
-        allow(redis_client).to receive(:clear_expired_keys).and_return(0)
         allow(s3_client).to receive(:put_object)
       end
 
@@ -113,7 +105,6 @@ RSpec.describe FraudOpsS3BatchJob do
         subject.perform
 
         expect(s3_client).not_to have_received(:put_object)
-        expect(redis_client).to have_received(:clear_expired_keys)
       end
     end
 
@@ -122,7 +113,6 @@ RSpec.describe FraudOpsS3BatchJob do
         allow(IdentityConfig.store).to receive(:s3_idp_dw_tasks).and_return('')
         allow(redis_client).to receive(:read_all_events).and_return({ 'event-1' => 'data-1' })
         allow(redis_client).to receive(:delete_events).and_return(0)
-        allow(redis_client).to receive(:clear_expired_keys).and_return(0)
         allow(s3_client).to receive(:put_object)
       end
 

@@ -92,10 +92,4 @@ RSpec.describe FraudOpsRedisClient do
       expect(deleted_count).to eq(0)
     end
   end
-
-  describe '#clear_expired_keys' do
-    it 'clears expired keys' do
-      expect { redis_client.clear_expired_keys }.not_to raise_error
-    end
-  end
 end

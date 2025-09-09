@@ -28,7 +28,6 @@ RSpec.describe 'Fraud Ops Integration' do
 
     allow(redis_client).to receive(:read_all_events).and_return(events_to_return)
     allow(redis_client).to receive(:delete_events).and_return(2)
-    allow(redis_client).to receive(:clear_expired_keys).and_return(0)
     allow(FraudOpsRedisClient).to receive(:new).and_return(redis_client)
 
     redis_wrapper = instance_double(FraudOpsRedisClientWrapper)

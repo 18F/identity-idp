@@ -22,9 +22,6 @@ class FraudOpsS3BatchJob < ApplicationJob
         )
       end
     end
-
-    expired_count = redis_client.clear_expired_keys
-    Rails.logger.info("FraudOpsS3BatchJob: Cleaned up #{expired_count} expired Redis keys") if expired_count > 0
   end
 
   private

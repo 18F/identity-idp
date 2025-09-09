@@ -38,32 +38,6 @@ class FraudOpsRedisClient
     total_deleted
   end
 
-  def clear_expired_keys
-    expired_keys = []
-    cutoff_time = IdentityConfig.store.fraud_ops_event_ttl_seconds.seconds.ago
-
-    REDIS_FRAUD_OPS_POOL.with do |client|
-      all_hourly_keys.each do |key|
-        ttl = client.ttl(key)
-        if ttl == -1 || ttl == -2
-          expired_keys << key
-        else
-          timestamp_str = key.split(':').last
-          begin
-            key_time = Time.parse(timestamp_str)
-            expired_keys << key if key_time < cutoff_time
-          rescue ArgumentError
-            expired_keys << key
-          end
-        end
-      end
-
-      expired_keys.each { |key| client.del(key) } if expired_keys.any?
-    end
-
-    expired_keys.length
-  end
-
   private
 
   def hourly_key(timestamp)
