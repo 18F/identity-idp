@@ -656,7 +656,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
                 it 'redirects user to duplicate profiles detected page' do
                   action
-                  expect(response).to redirect_to(duplicate_profiles_detected_url)
+                  expect(response).to redirect_to(duplicate_profiles_detected_url(source: :sign_in))
                 end
               end
             end

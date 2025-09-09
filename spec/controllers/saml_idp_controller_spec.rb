@@ -963,7 +963,7 @@ RSpec.describe SamlIdpController do
 
         it 'redirects user to duplicate profiles detected page' do
           saml_get_auth(ial2_settings)
-          expect(response).to redirect_to(duplicate_profiles_detected_url)
+          expect(response).to redirect_to(duplicate_profiles_detected_url(source: :sign_in))
         end
       end
     end
