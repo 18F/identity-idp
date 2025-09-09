@@ -55,6 +55,7 @@ module Users
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
       attempts_api_tracker.logout_initiated(success: true)
+      fraud_ops_tracker.logout_initiated(success: true)
       super
     end
 
@@ -83,6 +84,7 @@ module Users
 
     def process_rate_limited
       attempts_api_tracker.login_rate_limited(email: auth_params[:email])
+      fraud_ops_tracker.login_rate_limited(email: auth_params[:email])
       sign_out(:user)
       warden.lock!
 
@@ -239,6 +241,7 @@ module Users
         new_device: success ? new_device? : nil,
       )
       attempts_api_tracker.login_email_and_password_auth(success:)
+      fraud_ops_tracker.login_email_and_password_auth(success:)
     end
 
     def user_locked_out?(user)

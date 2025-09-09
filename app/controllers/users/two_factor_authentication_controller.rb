@@ -244,6 +244,12 @@ module Users
           otp_delivery_method: otp_delivery_preference,
           failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
         )
+        fraud_ops_tracker.mfa_enroll_phone_otp_sent(
+          success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: fraud_ops_tracker.parse_failure_reason(@telephony_result),
+        )
       elsif UserSessionContext.authentication_or_reauthentication_context?(context)
         attempts_api_tracker.mfa_login_phone_otp_sent(
           success: @telephony_result.success?,
@@ -252,7 +258,13 @@ module Users
           otp_delivery_method: otp_delivery_preference,
           failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
         )
-
+        fraud_ops_tracker.mfa_login_phone_otp_sent(
+          success: @telephony_result.success?,
+          reauthentication: UserSessionContext.reauthentication_context?(context),
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: fraud_ops_tracker.parse_failure_reason(@telephony_result),
+        )
       end
     end
 

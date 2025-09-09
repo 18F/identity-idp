@@ -30,6 +30,11 @@ module Users
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
       )
 
+      fraud_ops_tracker.logged_in_password_change(
+        success: result.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
+      )
+
       analytics.password_changed(**result)
 
       if result.success?

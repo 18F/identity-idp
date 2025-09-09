@@ -27,6 +27,10 @@ module OpenidConnect
         success: result.success?,
       )
 
+      fraud_ops_tracker.logout_initiated(
+        success: result.success?,
+      )
+
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
@@ -51,6 +55,10 @@ module OpenidConnect
 
       analytics.oidc_logout_submitted(**to_event(result))
       attempts_api_tracker.logout_initiated(
+        success: result.success?,
+      )
+
+      fraud_ops_tracker.logout_initiated(
         success: result.success?,
       )
 

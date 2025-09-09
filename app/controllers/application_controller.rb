@@ -90,6 +90,17 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOpsTracker.new(
+      session_id: attempts_api_session_id,
+      request:,
+      user: analytics_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+      sp_redirect_uri: attempts_api_redirect_uri,
+    )
+  end
+
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
@@ -185,6 +196,7 @@ class ApplicationController < ActionController::Base
     if params[:timeout] == 'session'
       analytics.session_timed_out
       attempts_api_tracker.session_timeout
+      fraud_ops_tracker.session_timeout
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,

@@ -352,6 +352,12 @@ module Idv
         failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
 
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+      )
+
       return if success
 
       FraudReviewRequest.create(
@@ -398,6 +404,24 @@ module Idv
       pii_from_doc = pii || {}
 
       attempts_api_tracker.idv_verification_submitted(
+        success: success,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address1: pii_from_doc[:address1],
+        address2: pii_from_doc[:address2],
+        ssn: idv_session.ssn,
+        city: pii_from_doc[:city],
+        state: pii_from_doc[:state],
+        zip: pii_from_doc[:zip],
+        failure_reason:,
+      )
+
+      fraud_ops_tracker.idv_verification_submitted(
         success: success,
         document_state: pii_from_doc[:state],
         document_number: pii_from_doc[:state_id_number],

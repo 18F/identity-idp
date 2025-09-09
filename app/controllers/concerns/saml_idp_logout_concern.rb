@@ -63,6 +63,7 @@ module SamlIdpLogoutConcern
   def track_logout_event
     sp_initiated = saml_request.present?
     attempts_api_tracker.logout_initiated(success: true)
+    fraud_ops_tracker.logout_initiated(success: true)
 
     analytics.logout_initiated(
       sp_initiated: sp_initiated,

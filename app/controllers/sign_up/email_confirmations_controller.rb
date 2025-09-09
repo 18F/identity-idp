@@ -29,6 +29,13 @@ module SignUp
           email_confirmation_token_validator_result,
         ),
       )
+      fraud_ops_tracker.user_registration_email_confirmed(
+        success: email_confirmation_token_validator_result.success?,
+        email: @email_address&.email.presence,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(
+          email_confirmation_token_validator_result,
+        ),
+      )
     end
 
     def clear_setup_piv_cac_from_sign_in

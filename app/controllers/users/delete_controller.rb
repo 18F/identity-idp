@@ -18,6 +18,7 @@ module Users
       notify_user_via_sms_of_deletion
       analytics.account_delete_submitted(success: true)
       attempts_api_tracker.logged_in_account_purged(success: true)
+      fraud_ops_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
@@ -39,6 +40,7 @@ module Users
       flash.now[:error] = t('idv.errors.incorrect_password')
       analytics.account_delete_submitted(success: false)
       attempts_api_tracker.logged_in_account_purged(success: false)
+      fraud_ops_tracker.logged_in_account_purged(success: false)
       render :show
     end
 

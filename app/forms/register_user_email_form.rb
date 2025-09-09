@@ -15,10 +15,11 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, attempts_api_tracker:)
+  def initialize(analytics:, attempts_api_tracker:, fraud_ops_tracker:)
     @rate_limited = false
     @analytics = analytics
     @attempts_api_tracker = attempts_api_tracker
+    @fraud_ops_tracker = fraud_ops_tracker
   end
 
   def user
@@ -146,6 +147,10 @@ class RegisterUserEmailForm
         email:,
         email_already_registered: false,
       )
+      @fraud_ops_tracker.user_registration_email_submission_rate_limited(
+        email:,
+        email_already_registered: false,
+      )
     else
       user.accepted_terms_at = Time.zone.now
       user.save!
@@ -165,6 +170,10 @@ class RegisterUserEmailForm
         email:,
         email_already_registered: false,
       )
+      @fraud_ops_tracker.user_registration_email_submission_rate_limited(
+        email:,
+        email_already_registered: false,
+      )
     else
       SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
     end
@@ -179,6 +188,10 @@ class RegisterUserEmailForm
       )
       @attempts_api_tracker.user_registration_email_submission_rate_limited(
         email: email,
+        email_already_registered: true,
+      )
+      @fraud_ops_tracker.user_registration_email_submission_rate_limited(
+        email:,
         email_already_registered: true,
       )
     else

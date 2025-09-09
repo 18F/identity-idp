@@ -36,6 +36,11 @@ module Users
           failure_reason: attempts_api_tracker.parse_failure_reason(result),
         )
 
+        fraud_ops_tracker.forgot_password_email_confirmed(
+          success: result.success?,
+          failure_reason: fraud_ops_tracker.parse_failure_reason(result),
+        )
+
         if result.success?
           @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
@@ -55,6 +60,11 @@ module Users
       attempts_api_tracker.forgot_password_new_password_submitted(
         success: result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
+
+      fraud_ops_tracker.forgot_password_new_password_submitted(
+        success: result.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
       )
 
       if result.success?
@@ -97,6 +107,7 @@ module Users
         request_id:,
         analytics:,
         attempts_api_tracker:,
+        fraud_ops_tracker:,
       ).perform
 
       session[:email] = email

@@ -52,6 +52,12 @@ module Idv
         failure_reason: attempts_api_tracker.parse_failure_reason(form_response),
       )
 
+      fraud_ops_tracker.idv_ssn_submitted(
+        success: form_response.success?,
+        ssn: ssn_params[:ssn],
+        failure_reason: fraud_ops_tracker.parse_failure_reason(form_response),
+      )
+
       if form_response.success?
         idv_session.previous_ssn = idv_session.ssn
         idv_session.ssn = SsnFormatter.normalize(ssn_params[:ssn])

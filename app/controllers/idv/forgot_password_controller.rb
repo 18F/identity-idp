@@ -28,6 +28,7 @@ module Idv
         request_id:,
         analytics:,
         attempts_api_tracker:,
+        fraud_ops_tracker:,
       ).perform
       # The user/email is always found so...
       session[:email] = email

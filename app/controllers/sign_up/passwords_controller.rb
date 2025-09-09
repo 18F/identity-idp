@@ -39,10 +39,13 @@ module SignUp
     def track_analytics(result)
       analytics.password_creation(**result)
 
-      failure_reason = attempts_api_tracker.parse_failure_reason(result)
       attempts_api_tracker.user_registration_password_submitted(
         success: result.success?,
-        failure_reason:,
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
+      fraud_ops_tracker.user_registration_password_submitted(
+        success: result.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
       )
     end
 
