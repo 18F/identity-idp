@@ -59,7 +59,7 @@ RSpec.describe Idv::WelcomePresenter do
   end
 
   describe 'the bullet points' do
-    it 'uses the bullet point 1b header' do
+    it 'uses the bullet point 1 header' do
       expect(presenter.bullet_points[0].bullet).to eq(
         t('doc_auth.instructions.bullet1'),
       )

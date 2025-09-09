@@ -415,7 +415,8 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'passports are not enabled' do
         before do
-          IdentityConfig.store.doc_auth_passports_enabled = false
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+            .and_return(false)
         end
 
         it 'redirects to choose id type url' do

@@ -57,12 +57,11 @@ module Idv
     end
 
     def locals_attrs(presenter:, form_submit_url: nil)
-      disable_passports = params.permit(:passports)[:passports].present?
       {
         presenter:,
         form_submit_url:,
         disable_passports: disable_passports?,
-        auto_check_value: disable_passports ? :drivers_license : selected_id_type,
+        auto_check_value: disable_passports? ? :drivers_license : selected_id_type,
       }
     end
 

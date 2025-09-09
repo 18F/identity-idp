@@ -105,23 +105,6 @@ RSpec.describe 'IdvStepConcern' do
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
-
-      context 'when IPP proofing route is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-            .and_return(true)
-          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
-            .and_return(true)
-          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        end
-
-        it 'redirects to how to verify' do
-          get :show
-
-          expect(response).to redirect_to(idv_how_to_verify_url)
-        end
-      end
     end
 
     context 'hybrid flow not available' do

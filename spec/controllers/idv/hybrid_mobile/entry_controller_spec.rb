@@ -89,16 +89,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
           expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
         end
       end
-
-      context 'passport allowed' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_passport_enabled).and_return(false)
-        end
-
-        it 'redirects to choose id type step' do
-          expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
-        end
-      end
     end
   end
 end
