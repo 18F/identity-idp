@@ -42,7 +42,7 @@ class DuplicateProfilesDetectedController < ApplicationController
       AlertUserDuplicateProfileDiscoveredJob.perform_later(
         user: profile.user,
         agency: agency_name,
-        type: AlertUserDuplicateProfileDiscoveredJob::DUPE_PROFILE_DETECTED[source],
+        type: source,
       )
     end
 

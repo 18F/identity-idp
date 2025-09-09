@@ -51,7 +51,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
         expect(AlertUserDuplicateProfileDiscoveredJob).to receive(:perform_later).with(
           user: profile2.user,
           agency: current_sp.friendly_name,
-          type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
+          type: :sign_in,
         )
 
         controller.send(:notify_users_of_duplicate_profile, source: :sign_in)

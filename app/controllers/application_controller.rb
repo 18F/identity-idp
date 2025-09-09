@@ -572,6 +572,6 @@ class ApplicationController < ActionController::Base
 
   def handle_duplicate_profile_user
     return unless user_duplicate_profiles_detected?
-    redirect_to duplicate_profiles_detected_url
+    redirect_to duplicate_profiles_detected_url(source: :sign_in)
   end
 end

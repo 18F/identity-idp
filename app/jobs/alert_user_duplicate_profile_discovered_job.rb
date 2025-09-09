@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
-  DUPE_PROFILE_DETECTED = {
-    sign_in: :sign_in,
-    account_verified: :account_verified,
-  }.freeze
   def perform(user:, agency:, type:)
     @user = user
     user.confirmed_email_addresses.each do |email_address|
