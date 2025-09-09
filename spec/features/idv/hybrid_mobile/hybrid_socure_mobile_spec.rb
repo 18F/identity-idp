@@ -38,7 +38,7 @@ RSpec.describe 'Hybrid Flow' do
 
   context 'happy path', allow_browser_log: true do
     before do
-      @pass_stub = stub_docv_verification_data_pass(
+      @docv_stub = stub_docv_verification_data_pass(
         docv_transaction_token: @docv_transaction_token,
         user:,
       )
@@ -188,7 +188,7 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
-          @failed_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+          @mrz_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
             .to_return_json({ status: 200, body: { response: 'NO' } })
 
           click_idv_continue
@@ -201,7 +201,7 @@ RSpec.describe 'Hybrid Flow' do
 
           click_on t('idv.failure.button.warning')
 
-          remove_request_stub(@failed_stub)
+          remove_request_stub(@mrz_stub)
 
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
           expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -230,6 +230,142 @@ RSpec.describe 'Hybrid Flow' do
           )
           fill_out_ssn_form_ok
           click_idv_continue
+        end
+      end
+
+      context 'when a selfie is required', :js do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(4)
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
+            .and_return(['pass'])
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
+            .and_return(['fail'])
+          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
+            .and_return(['not_processed'])
+          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
+            .and_return(0)
+          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+          stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+            .to_return_json({ status: 200, body: { response: 'YES' } })
+        end
+
+        it 'proceeds to the next page with valid info' do
+          expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
+
+          perform_in_browser(:desktop) do
+            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            sign_in_and_2fa_user(user)
+
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            clear_and_fill_in(:doc_auth_phone, phone_number)
+            click_send_link
+          end
+
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            choose(t('doc_auth.forms.id_type_preference.passport'))
+            click_on t('forms.buttons.continue')
+
+            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['not_processed'],
+              user:,
+              document_type: :passport,
+            )
+
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
+
+            visit idv_hybrid_mobile_socure_document_capture_update_url
+            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+            expect(page).to have_content(t('idv.errors.try_again_later'))
+
+            click_on t('idv.failure.button.warning')
+
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['fail'],
+              user:,
+              document_type: :passport,
+            )
+
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
+
+            visit idv_hybrid_mobile_socure_document_capture_update_url
+            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+
+            expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
+
+            click_on t('idv.failure.button.warning')
+
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_fail_with(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['pass'],
+              user:,
+              document_type: :passport,
+            )
+
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
+
+            visit idv_hybrid_mobile_socure_document_capture_update_url
+            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+            expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
+
+            click_on t('idv.failure.button.warning')
+
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['pass'],
+              user:,
+              document_type: :passport,
+            )
+
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
+
+            visit idv_hybrid_mobile_socure_document_capture_update_url
+
+            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+            expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
+            expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+          end
+
+          perform_in_browser(:desktop) do
+            expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+            expect(page).to have_current_path(idv_ssn_path)
+            expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+            expect(@analytics).to have_logged_event(:idv_socure_verification_data_requested)
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
+            fill_out_ssn_form_ok
+            click_idv_continue
+          end
         end
       end
     end
@@ -355,7 +491,7 @@ RSpec.describe 'Hybrid Flow' do
       end
 
       before do
-        remove_request_stub(@pass_stub)
+        remove_request_stub(@docv_stub)
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: ['R827'],
@@ -489,7 +625,7 @@ RSpec.describe 'Hybrid Flow' do
 
           body = JSON.parse(SocureDocvFixtures.pass_json)
           body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
-          remove_request_stub(@pass_stub)
+          remove_request_stub(@docv_stub)
           stub_docv_verification_data(
             docv_transaction_token: @docv_transaction_token,
             body: body.to_json,
@@ -559,8 +695,8 @@ RSpec.describe 'Hybrid Flow' do
 
           click_on t('idv.failure.button.warning')
 
-          remove_request_stub(@pass_stub)
-          @pass_stub = stub_docv_verification_data_pass(
+          remove_request_stub(@docv_stub)
+          @docv_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['not_processed'],
             user:,
@@ -578,8 +714,8 @@ RSpec.describe 'Hybrid Flow' do
           expect(page).to have_content(t('idv.errors.try_again_later'))
 
           click_on t('idv.failure.button.warning')
-          remove_request_stub(@pass_stub)
-          @pass_stub = stub_docv_verification_data_fail_with(
+          remove_request_stub(@docv_stub)
+          @docv_stub = stub_docv_verification_data_fail_with(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['pass'],
             user:,
@@ -598,8 +734,8 @@ RSpec.describe 'Hybrid Flow' do
 
           click_on t('idv.failure.button.warning')
 
-          remove_request_stub(@pass_stub)
-          @pass_stub = stub_docv_verification_data_pass(
+          remove_request_stub(@docv_stub)
+          @docv_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['pass'],
             user:,

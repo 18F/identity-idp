@@ -68,7 +68,7 @@ module Idv
           bucket = choose_non_socure_bucket
         elsif resolved_authn_context_result.facial_match?
           if document_capture_session.passport_requested?
-            bucket = choose_non_socure_bucket
+            bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_SELFIE_VENDOR, user:)
           else
             bucket = ab_test_bucket(:DOC_AUTH_SELFIE_VENDOR, user:)
           end
