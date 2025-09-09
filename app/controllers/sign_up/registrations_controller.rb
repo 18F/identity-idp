@@ -12,14 +12,14 @@ module SignUp
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(
-        analytics:, attempts_api_tracker:, fraud_ops_tracker:,
+        analytics:, attempts_api_tracker:,
       )
       analytics.user_registration_enter_email_visit
     end
 
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
-        analytics:, attempts_api_tracker:, fraud_ops_tracker:,
+        analytics:, attempts_api_tracker:,
       )
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
@@ -29,12 +29,6 @@ module SignUp
         email: permitted_params[:email].presence,
         success: result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
-      )
-
-      fraud_ops_tracker.user_registration_email_submitted(
-        email: permitted_params[:email].presence,
-        success: result.success?,
-        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
       )
 
       if result.success?

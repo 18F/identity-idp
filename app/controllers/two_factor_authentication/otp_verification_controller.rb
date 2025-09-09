@@ -174,12 +174,6 @@ module TwoFactorAuthentication
         otp_delivery_method: otp_auth_method,
         phone_number: Phonelib.parse(phone).e164,
       )
-      fraud_ops_tracker.mfa_enrolled(
-        success: result.success?,
-        mfa_device_type: 'phone',
-        otp_delivery_method: otp_auth_method,
-        phone_number: Phonelib.parse(phone).e164,
-      )
     end
 
     def analytics_properties

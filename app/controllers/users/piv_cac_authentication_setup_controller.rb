@@ -81,11 +81,6 @@ module Users
         mfa_device_type: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
 
-      fraud_ops_tracker.mfa_enrolled(
-        success: result.success?,
-        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
-      )
-
       if result.success?
         process_valid_submission
         user_session.delete(:mfa_attempts)

@@ -34,13 +34,6 @@ module TwoFactorAuthenticatableMethods
       reauthentication: generic_data[:reauthn],
     )
 
-    fraud_ops_tracker.mfa_login_auth_submitted(
-      mfa_device_type: mfa_device_type(auth_method:),
-      success: result.success?,
-      failure_reason: fraud_ops_tracker.parse_failure_reason(result),
-      reauthentication: generic_data[:reauthn],
-    )
-
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
@@ -99,10 +92,8 @@ module TwoFactorAuthenticatableMethods
     if context
       if UserSessionContext.confirmation_context?(context)
         attempts_api_tracker.mfa_enroll_code_rate_limited(mfa_device_type: type)
-        fraud_ops_tracker.mfa_enroll_code_rate_limited(mfa_device_type: type)
       elsif UserSessionContext.authentication_context?(context)
         attempts_api_tracker.mfa_submission_code_rate_limited(mfa_device_type: type)
-        fraud_ops_tracker.mfa_submission_code_rate_limited(mfa_device_type: type)
       end
     end
 
@@ -116,10 +107,8 @@ module TwoFactorAuthenticatableMethods
     if context && phone_number
       if UserSessionContext.authentication_context?(context)
         attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(phone_number:)
-        fraud_ops_tracker.mfa_login_phone_otp_sent_rate_limited(phone_number:)
       elsif UserSessionContext.confirmation_context?(context)
         attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
-        fraud_ops_tracker.mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
       end
     end
 

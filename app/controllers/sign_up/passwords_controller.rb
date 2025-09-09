@@ -43,10 +43,6 @@ module SignUp
         success: result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
       )
-      fraud_ops_tracker.user_registration_password_submitted(
-        success: result.success?,
-        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
-      )
     end
 
     def permitted_params

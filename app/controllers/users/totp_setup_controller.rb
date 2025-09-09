@@ -35,11 +35,6 @@ module Users
         mfa_device_type: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
 
-      fraud_ops_tracker.mfa_enrolled(
-        success: result.success?,
-        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::TOTP,
-      )
-
       if result.success?
         process_valid_code
         user_session.delete(:mfa_attempts)

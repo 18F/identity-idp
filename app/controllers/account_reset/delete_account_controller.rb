@@ -37,10 +37,6 @@ module AccountReset
         success: result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
       )
-      fraud_ops_tracker.account_reset_account_deleted(
-        success: result.success?,
-        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
-      )
 
       if result.success?
         handle_successful_deletion(result)

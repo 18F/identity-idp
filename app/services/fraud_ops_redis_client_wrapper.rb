@@ -50,6 +50,6 @@ class FraudOpsRedisClientWrapper
   end
 
   def encryption_key
-    IdentityConfig.store.fraud_ops_encryption_key
+    IdentityConfig.store.attribute_encryption_key
   end
 end

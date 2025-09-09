@@ -59,10 +59,6 @@ module Users
           success: false,
           mfa_device_type:,
         )
-        fraud_ops_tracker.mfa_enrolled(
-          success: false,
-          mfa_device_type:,
-        )
 
       end
 
@@ -94,11 +90,6 @@ module Users
         TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
 
       attempts_api_tracker.mfa_enrolled(
-        success: result.success?,
-        mfa_device_type:,
-      )
-
-      fraud_ops_tracker.mfa_enrolled(
         success: result.success?,
         mfa_device_type:,
       )

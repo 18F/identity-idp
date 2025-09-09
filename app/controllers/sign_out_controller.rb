@@ -6,7 +6,6 @@ class SignOutController < ApplicationController
   def destroy
     analytics.logout_initiated(method: 'cancel link')
     attempts_api_tracker.logout_initiated(success: true)
-    fraud_ops_tracker.logout_initiated(success: true)
 
     url_after_cancellation = decorated_sp_session.cancel_link_url
     sign_out

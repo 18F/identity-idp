@@ -239,7 +239,6 @@ module OpenidConnect
       )
 
       attempts_api_tracker.login_completed
-      fraud_ops_tracker.login_completed
       track_billing_events
     end
 
