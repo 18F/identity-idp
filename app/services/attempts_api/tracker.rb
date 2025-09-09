@@ -62,12 +62,12 @@ module AttemptsApi
       )
     end
 
-    def extra_attributes
+    def extra_attributes(event_type: nil) # rubocop:disable Lint/UnusedMethodArgument
       {}
     end
 
-    def extra_metadata(metadata:)
-      failure_metadata(metadata:).merge(extra_attributes)
+    def extra_metadata(event_type:, metadata:)
+      failure_metadata(metadata:).merge(extra_attributes(event_type:))
     end
 
     def failure_metadata(metadata:)
@@ -91,7 +91,7 @@ module AttemptsApi
         client_port: CloudFrontHeaderParser.new(request).client_port,
         aws_region: IdentityConfig.store.aws_region,
         google_analytics_cookies: google_analytics_cookies(request),
-      }.merge!(extra_metadata(metadata:))
+      }.merge!(extra_metadata(event_type:, metadata:))
     end
 
     def google_analytics_cookies(request)

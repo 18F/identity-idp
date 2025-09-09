@@ -7,6 +7,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:user) { create(:user) }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider) }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
@@ -41,6 +42,7 @@ RSpec.describe SocureDocvResultsJob do
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
 
     rate_limiter.increment!
 

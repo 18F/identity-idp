@@ -149,6 +149,7 @@ module Idv
           profile: idv_session.profile,
         )
         attempts_api_tracker.idv_enrollment_complete(reproof:)
+        fraud_ops_tracker.idv_enrollment_complete(reproof:)
       end
     end
 

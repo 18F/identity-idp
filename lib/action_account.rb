@@ -320,6 +320,7 @@ class ActionAccount
 
           if profile.active?
             attempts_api_tracker(profile:).idv_enrollment_complete(reproof:)
+            fraud_ops_tracker(profile:).idv_enrollment_complete(reproof:)
             UserEventCreator.new(current_user: user)
               .create_out_of_band_user_event(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
@@ -393,6 +394,17 @@ class ActionAccount
     def attempts_api_tracker(profile:)
       AttemptsApi::Tracker.new(
         enabled_for_session: profile.initiating_service_provider&.attempts_api_enabled?,
+        session_id: nil,
+        request: nil,
+        user: profile.user,
+        sp: profile.initiating_service_provider,
+        cookie_device_uuid: nil,
+        sp_redirect_uri: nil,
+      )
+    end
+
+    def fraud_ops_tracker(profile:)
+      FraudOpsTracker.new(
         session_id: nil,
         request: nil,
         user: profile.user,
