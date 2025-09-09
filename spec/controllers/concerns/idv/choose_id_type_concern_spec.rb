@@ -116,6 +116,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#selected_id_type' do
+    it 'returns nil' do
+      expect(subject.selected_id_type).to be_nil
+    end
+
     context 'when the document capture session passport status is "requested"' do
       let(:passport_status) { 'requested' }
 
@@ -129,14 +133,6 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       it 'returns :drivers_license' do
         expect(subject.selected_id_type).to eq(:drivers_license)
-      end
-    end
-
-    context 'when the document capture session passport status is "allowed"' do
-      let(:passport_status) { 'allowed' }
-
-      it 'returns nil' do
-        expect(subject.selected_id_type).to be_nil
       end
     end
   end
@@ -228,6 +224,24 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           form_submit_url:,
           disable_passports: false,
           auto_check_value: :passport,
+        )
+      end
+    end
+
+    context 'when passports are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(false)
+      end
+
+      it 'returns expected local attributes with passports disabled' do
+        expect(
+          subject.locals_attrs(presenter:, form_submit_url:),
+        ).to include(
+          presenter:,
+          form_submit_url:,
+          disable_passports: true,
+          auto_check_value: :drivers_license,
         )
       end
     end

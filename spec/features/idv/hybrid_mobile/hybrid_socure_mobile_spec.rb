@@ -67,6 +67,7 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
+        complete_choose_id_type_step
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
         expect(page).to have_current_path(root_url)
@@ -386,6 +387,7 @@ RSpec.describe 'Hybrid Flow' do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
         click_on t('links.cancel')
@@ -426,6 +428,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
           click_idv_continue
@@ -517,7 +520,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           max_attempts.times do
@@ -569,7 +572,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -622,7 +625,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           body = JSON.parse(SocureDocvFixtures.pass_json)
           body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
           remove_request_stub(@docv_stub)
@@ -684,7 +687,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -821,7 +824,7 @@ RSpec.describe 'Hybrid Flow' do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: [socure_error_code],
@@ -891,7 +894,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           expect(page).to have_text(t('doc_auth.headers.general.network_error'))
           expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
           expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
@@ -950,7 +953,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token, user:)
 
           click_idv_continue

@@ -110,6 +110,7 @@ RSpec.describe 'cancel IdV' do
       complete_agreement_step
       expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       expect(page).to have_content(t('doc_auth.headings.document_capture'))
       complete_document_capture_step
     end

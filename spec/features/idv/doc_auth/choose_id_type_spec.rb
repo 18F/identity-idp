@@ -168,6 +168,7 @@ RSpec.feature 'choose id type step error checking' do
         it 'goes from how to verify to document capture' do
           expect(page).to have_current_path(idv_how_to_verify_url)
           click_button t('forms.buttons.continue_online')
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_document_capture_url)
         end
       end

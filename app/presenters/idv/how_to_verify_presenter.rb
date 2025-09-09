@@ -4,12 +4,11 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :mobile_required, :selfie_required, :passport_allowed
+  attr_reader :mobile_required, :selfie_required
 
-  def initialize(mobile_required:, selfie_check_required:, passport_allowed:)
+  def initialize(mobile_required:, selfie_check_required:)
     @mobile_required = mobile_required
     @selfie_required = selfie_check_required
-    @passport_allowed = passport_allowed
   end
 
   def how_to_verify_info
@@ -51,11 +50,7 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
-    if passport_allowed
-      t('doc_auth.info.verify_online_description_passport')
-    else
-      ''
-    end
+    t('doc_auth.info.verify_online_description_passport')
   end
 
   def online_submit
@@ -83,13 +78,9 @@ class Idv::HowToVerifyPresenter
   end
 
   def post_office_description
-    if passport_allowed
-      IdentityConfig.store.in_person_passports_enabled ?
+    IdentityConfig.store.in_person_passports_enabled ?
       t('doc_auth.info.verify_online_description_passport') :
       t('doc_auth.info.verify_at_post_office_description_passport_html')
-    else
-      ''
-    end
   end
 
   def post_office_submit

@@ -165,17 +165,6 @@ module AbTests
     },
   ).freeze
 
-  DOC_AUTH_PASSPORT = AbTest.new(
-    experiment_name: 'Passport allowed',
-    should_log: /^idv/i,
-    buckets: {
-      passport_allowed: IdentityConfig.store.doc_auth_passports_enabled ?
-        IdentityConfig.store.doc_auth_passports_percent : 0,
-    },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,

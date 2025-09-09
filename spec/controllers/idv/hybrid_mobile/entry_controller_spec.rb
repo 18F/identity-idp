@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::EntryController do
   describe '#show' do
-    let(:idv_vendor) { nil }
     let(:user) { create(:user) }
     let(:passport_status) { nil }
 
@@ -11,7 +10,6 @@ RSpec.describe Idv::HybridMobile::EntryController do
         :document_capture_session,
         user:,
         requested_at: Time.zone.now,
-        doc_auth_vendor: idv_vendor,
         passport_status:,
       )
     end
@@ -76,34 +74,18 @@ RSpec.describe Idv::HybridMobile::EntryController do
         get :show, params: { 'document-capture-session': session_uuid }
       end
 
-      context 'doc auth vendor is socure' do
-        let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
-
-        it 'redirects to the first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-        end
-      end
-
-      context 'doc auth vendor is lexis nexis' do
-        let(:idv_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
-        it 'redirects to the first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-        end
+      it 'redirects to the first step' do
+        expect(document_capture_session.doc_auth_vendor).to be_nil
+        expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
       end
 
       context 'doc auth vendor is mock' do
         let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+        before do
+          document_capture_session.update(doc_auth_vendor: idv_vendor)
+        end
 
         it 'redirects to the first step' do
-          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-        end
-      end
-
-      context 'passport allowed' do
-        let(:passport_status) { 'allowed' }
-
-        it 'redirects to choose id type step' do
           expect(response).to redirect_to idv_hybrid_mobile_choose_id_type_url
         end
       end

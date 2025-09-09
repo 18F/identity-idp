@@ -714,8 +714,7 @@ doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需
 doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1a: 带上驾照或州身份证件
-doc_auth.instructions.bullet1b: 拥有美国护照本、美国驾照或州身份证件
+doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
