@@ -8,7 +8,7 @@ module Test
     before_action :confirm_two_factor_authenticated
 
     def index
-      @enrollments = Rails.env.development? ? all_enrollments : enrollments_for_current_user
+      @enrollments = all_enrollments
 
       @enrollments_with_actions = @enrollments.map do |e|
         case e.status
@@ -19,7 +19,7 @@ module Test
     end
 
     def update
-      enrollment = Rails.env.development? ? enrollment_for_id : enrollment_for_current_user
+      enrollment = enrollment_for_id
 
       if enrollment.present?
         approve_enrollment(enrollment)
@@ -32,21 +32,11 @@ module Test
 
     private
 
-    def enrollments_for_current_user
-      InPersonEnrollment
-        .order(created_at: :desc)
-        .where(user_id: current_user&.id)
-    end
-
     def all_enrollments
       InPersonEnrollment
         .includes(:user)
         .order(created_at: :desc)
         .limit(10)
-    end
-
-    def enrollment_for_current_user
-      InPersonEnrollment.find_by(id: enrollment_id, user_id: current_user&.id)
     end
 
     def enrollment_for_id
@@ -78,7 +68,7 @@ module Test
     end
 
     def authorize
-      return if FeatureManagement.allow_ipp_enrollment_approval?
+      return if Rails.env.development?
 
       render_not_found
     end
