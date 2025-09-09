@@ -24,7 +24,7 @@ module Idv
 
     def update
       clear_future_steps!
-      idv_session.clear
+      clear_idv_session
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
@@ -47,6 +47,12 @@ module Idv
     end
 
     private
+
+    def clear_idv_session
+      mail_only_warning_shown = idv_session.mail_only_warning_shown
+      idv_session.clear
+      idv_session.mail_only_warning_shown = mail_only_warning_shown
+    end
 
     def analytics_arguments
       {
