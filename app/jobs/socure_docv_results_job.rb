@@ -143,6 +143,24 @@ class SocureDocvResultsJob < ApplicationJob
       zip: pii_from_doc[:zipcode],
       failure_reason:,
     )
+
+    fraud_ops_tracker.idv_document_upload_submitted(
+      **image_data,
+      success:,
+      document_state: pii_from_doc[:state],
+      document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+      document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+      document_expiration: pii_from_doc[:state_id_expiration] || pii_from_doc[:passport_expiration],
+      first_name: pii_from_doc[:first_name],
+      last_name: pii_from_doc[:last_name],
+      date_of_birth: pii_from_doc[:dob],
+      address1: pii_from_doc[:address1],
+      address2: pii_from_doc[:address2],
+      city: pii_from_doc[:city],
+      state: pii_from_doc[:state],
+      zip: pii_from_doc[:zipcode],
+      failure_reason:,
+    )
   end
 
   def image_storage_data(ial2:, passport_book:)
@@ -175,6 +193,17 @@ class SocureDocvResultsJob < ApplicationJob
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
       enabled_for_session: sp&.attempts_api_enabled?,
+    )
+  end
+
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      session_id: nil,
+      request: nil,
+      user: document_capture_session.user,
+      sp:,
+      cookie_device_uuid: nil,
+      sp_redirect_uri: nil,
     )
   end
 

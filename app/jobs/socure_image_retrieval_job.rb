@@ -29,6 +29,18 @@ class SocureImageRetrievalJob < ApplicationJob
           :document_selfie_image_file_id,
         ),
       )
+      fraud_ops_tracker.idv_image_retrieval_failed(
+        document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
+        document_front_image_file_id: image_storage_data.dig(:front, :document_front_image_file_id),
+        document_passport_image_file_id: image_storage_data.dig(
+          :passport,
+          :document_passport_image_file_id,
+        ),
+        document_selfie_image_file_id: image_storage_data.dig(
+          :selfie,
+          :document_selfie_image_file_id,
+        ),
+      )
     end
   end
 
@@ -41,6 +53,17 @@ class SocureImageRetrievalJob < ApplicationJob
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
       enabled_for_session: sp&.attempts_api_enabled?,
+    )
+  end
+
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      session_id: nil,
+      request: nil,
+      user: document_capture_session.user,
+      sp:,
+      cookie_device_uuid: nil,
+      sp_redirect_uri: nil,
     )
   end
 
