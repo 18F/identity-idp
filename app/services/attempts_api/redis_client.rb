@@ -2,18 +2,23 @@
 
 module AttemptsApi
   class RedisClient
+    attr_reader :redis_pool
+    def initialize
+      @redis_pool = REDIS_ATTEMPTS_API_POOL
+    end
+
     def write_event(event_key:, jwe:, timestamp:, issuer:)
       key = key(timestamp, issuer)
-      REDIS_ATTEMPTS_API_POOL.with do |client|
+      @redis_pool.with do |client|
         client.hset(key, event_key, jwe)
-        client.expire(key, IdentityConfig.store.attempts_api_event_ttl_seconds)
+        client.expire(key, event_ttl_seconds)
       end
     end
 
     def read_events(issuer:, batch_size: 1000)
       events = {}
       hourly_keys(issuer).each do |hourly_key|
-        REDIS_ATTEMPTS_API_POOL.with do |client|
+        @redis_pool.with do |client|
           client.hscan_each(hourly_key, count: batch_size) do |k, v|
             break if events.keys.count == batch_size
 
@@ -27,7 +32,7 @@ module AttemptsApi
     def delete_events(issuer:, keys:)
       total_deleted = 0
       hourly_keys(issuer).each do |hourly_key|
-        REDIS_ATTEMPTS_API_POOL.with do |client|
+        @redis_pool.with do |client|
           total_deleted += client.hdel(hourly_key, keys)
         end
       end
@@ -37,8 +42,12 @@ module AttemptsApi
 
     private
 
+    def event_ttl_seconds
+      IdentityConfig.store.attempts_api_event_ttl_seconds
+    end
+
     def hourly_keys(issuer)
-      REDIS_ATTEMPTS_API_POOL.with do |client|
+      @redis_pool.with do |client|
         client.keys("attempts-api-events:#{issuer}:*")
       end.sort
     end
