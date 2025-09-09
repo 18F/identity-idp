@@ -53,15 +53,22 @@ module Reports
 
     def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
+      # IRS only has one issuer at the moment, unclear whether this is needed
       issuers = IaaReportingHelper.partner_accounts.select do |pc|
         pc.partner == 'IRS'
       end.flat_map(&:issuers)
-      IaaReportingHelper.iaas.filter { |x| x.end_date > 90.days.ago }
 
+      # Why is this here? Dead code remove
+      IaaReportingHelper.iaas.filter do |x|
+        x.end_date > 90.days.ago
+      end
+      # Unclear why were using iaas as the starting point
       iaas = IaaReportingHelper.iaas.filter do |iaa|
         iaa.end_date > 90.days.ago &&
           (iaa.issuers & issuers).any? # intersection: at least one issuer matches
       end
+
+      # Why are we using ALL partner accounts?
       csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
       email_addresses = emails.select(&:present?)
 
@@ -142,11 +149,12 @@ module Reports
     def build_csv(iaas, partner_accounts, report_date)
       report_month_start = report_date.beginning_of_month
       report_month_end = report_date.end_of_month
+      # the key is only used for formating, why not pass the issuers directly?
       by_iaa_results = iaas.flat_map do |iaa|
         Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
-          key: iaa.key,
-          issuers: iaa.issuers,
-          start_date: report_month_start,
+          key: iaa.key, # this can be any string
+          issuers: iaa.issuers, # can use a collection of issuers this does not depend on the iaa object
+          start_date: report_month_start, # unclear if we need to do the month thing
           end_date: report_month_end,
         )
       end
@@ -154,10 +162,10 @@ module Reports
       by_issuer_results = iaas.flat_map do |iaa|
         iaa.issuers.flat_map do |issuer|
           Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-            issuer: issuer,
+            issuer: issuer, # used for a single issuer
             iaa_start_date: report_month_start,
             iaa_end_date: report_month_end,
-            iaa: iaa.key,
+            iaa: iaa.key, # can be any string
           )
         end
       end
@@ -199,7 +207,7 @@ module Reports
         'Existing Identity Verification Credentials',
         # TODO
         # the relevant billing report columns are iaa_unique_users for monthly active users
-        #   and issuer_ial1_plus_2_total_auth_count for authentications (
+        #   and issuer_ial1_plus_2_total_auth_count for authentications
         # - Total Authentications: Total number of *billable* sign ins at any IAL,
         #   -- IAL Issuer 1+2 count --
         # - IAL2 Auths:
