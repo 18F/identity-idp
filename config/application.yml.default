@@ -31,7 +31,7 @@ account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
 # These are publicly available credentials used to initialize the client-side Acuant SDK
-acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
+acuant_sdk_initialization_creds: 'a2V5bGVzc0dTQV9wcm9kQGxleGlzbmV4aXNyaXNrLmNvbTouPkQ3VTRgMj1ae2E='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
