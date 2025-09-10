@@ -17,6 +17,7 @@ module Users
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
       analytics.account_delete_submitted(success: true)
+      measure_one_account_self_service_if_applicable
       attempts_api_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out
@@ -73,6 +74,19 @@ module Users
           country_code: Phonelib.parse(configuration.phone).country,
         )
       end
+    end
+
+    def measure_one_account_self_service_if_applicable
+      return unless user_has_ial2_facial_match_profile?
+      set = DuplicateProfileSet.find_by_profile(profile_id: current_user&.active_profile)
+      return unless set
+
+      analytics.one_account_self_service(
+        source: :account_management_delete,
+        service_provider: set.service_provider,
+        associated_profiles_count: set.profile_ids.exclude?(current_user.active_profile.id).count,
+        dupe_profile_set_id: set.id,
+      )
     end
   end
 end

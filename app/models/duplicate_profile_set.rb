@@ -16,4 +16,8 @@ class DuplicateProfileSet < ApplicationRecord
       .where('? = ANY(profile_ids)', profile_id)
       .first
   end
+
+  def self.find_by_profile(profile_id:)
+    where('ANY(profile_ids) = ?', profile_id).first
+  end
 end
