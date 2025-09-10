@@ -40,7 +40,6 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
-
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
@@ -165,7 +164,7 @@ module Idv
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
-          document_type: document_type,
+          document_type_requested: document_type_requested,
           passport_requested: document_capture_session.passport_requested?,
         )
       end
@@ -173,7 +172,8 @@ module Idv
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
-      response.extra[:id_doc_type] = pii_hash[:id_doc_type]
+      response.extra[:document_type_received] = pii_hash[:document_type_received] ||
+                                                pii_hash[:id_doc_type]
       response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
@@ -183,10 +183,10 @@ module Idv
       response
     end
 
-    def document_type
+    def document_type_requested
       return nil if document_capture_session.nil?
 
-      @document_type ||= passport_requested? \
+      @document_type_requested ||= passport_requested? \
         ? DocAuth::LexisNexis::DocumentTypes::PASSPORT :
           DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE
     end
@@ -200,7 +200,8 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
-          .merge(id_doc_type: client_response.pii_from_doc.id_doc_type)
+          .merge(document_type_received: client_response.pii_from_doc.document_type_received ||
+                 client_response.pii_from_doc.id_doc_type)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
@@ -208,7 +209,8 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      id_type = client_response.pii_from_doc.id_doc_type
+      id_type = client_response.pii_from_doc.document_type_received ||
+                client_response.pii_from_doc.id_doc_type
       unless id_type == 'passport'
         return DocAuth::Response.new(
           success: false,
@@ -221,7 +223,7 @@ module Idv
       response = mrz_client.fetch
 
       analytics.idv_dos_passport_verification(
-        document_type:,
+        document_type_requested:,
         remaining_submit_attempts:,
         submit_attempts:,
         user_id: user_uuid,
@@ -252,7 +254,7 @@ module Idv
         submit_attempts: submit_attempts,
         remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type),
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type_requested),
         flow_path: params[:flow_path],
       }
 
@@ -261,7 +263,7 @@ module Idv
       end
 
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
-      @extra_attributes[:document_type] = document_type
+      @extra_attributes[:document_type_requested] = document_type_requested
       @extra_attributes
     end
 

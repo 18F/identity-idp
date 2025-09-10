@@ -14,6 +14,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
+  let(:passport_status) { 'not_requested' }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -32,6 +33,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       user:,
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
+      passport_status:,
     )
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
@@ -241,6 +243,41 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               .to eq(docv_transaction_token)
           end
         end
+
+        context 'passport requested' do
+          let(:passport_status) { 'requested' }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                passport_requested: true,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: false,
+              )
+          end
+
+          it 'creates a DocumentRequest with passport requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
       end
 
       context 'selfie required' do
@@ -248,6 +285,17 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
           get(:show)
+        end
+
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              customer_user_id: user.uuid,
+              passport_requested: false,
+              redirect_url: idv_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: true,
+            )
         end
 
         it 'request the flow for selfie' do
@@ -268,6 +316,41 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 },
               ),
             )
+        end
+
+        context 'passport requested' do
+          let(:passport_status) { 'requested' }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                passport_requested: true,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: true,
+              )
+          end
+
+          it 'creates a DocumentRequest with passport requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_w_selfie,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
         end
       end
     end

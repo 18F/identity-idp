@@ -112,13 +112,15 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
-doc_auth_passport_selfie_enabled: false
+doc_auth_passport_selfie_vendor_default: 'mock'
+doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_passport_selfie_vendor_socure_percent: 0
+doc_auth_passport_selfie_vendor_switching_enabled: false
 doc_auth_passport_vendor_default: 'mock'
 doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_passport_vendor_socure_percent: 0
 doc_auth_passport_vendor_switching_enabled: false
-doc_auth_passports_enabled: false
-doc_auth_passports_percent: 0
+doc_auth_passports_enabled: true
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_selfie_vendor_default: 'mock'
@@ -142,6 +144,7 @@ domain_name: login.gov
 dos_passport_client_id: ''
 dos_passport_client_secret: ''
 dos_passport_composite_healthcheck_endpoint: ''
+dos_passport_healthcheck_cache_expiration_seconds: 60
 dos_passport_healthcheck_endpoint: ''
 dos_passport_healthcheck_maxretry: 1
 dos_passport_healthcheck_timeout_seconds: 5
@@ -229,7 +232,7 @@ in_person_outage_emailed_by_date: 'November 1, 2024'
 # are strings in the format 'Month day, year'
 in_person_outage_expected_update_date: 'October 31, 2024'
 in_person_outage_message_enabled: false
-in_person_passports_enabled: true
+in_person_passports_enabled: false
 in_person_password_reset_expiration_days: 90
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
@@ -575,7 +578,6 @@ production:
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   idv_sp_required: true
-  in_person_passports_enabled: false
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20

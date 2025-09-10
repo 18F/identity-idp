@@ -43,7 +43,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:base_proofing_components) do
     {
       document_check: 'mock',
-      document_type: 'drivers_license',
+      document_type_received: 'drivers_license',
       source_check: 'StateIdMock',
       resolution_check: 'ResolutionMock',
       residential_resolution_check: 'ResidentialAddressNotRequired',
@@ -77,7 +77,10 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:state_id_resolution_with_id_type) do
-    state_id_resolution.merge(id_doc_type: 'drivers_license')
+    state_id_resolution.merge(
+      document_type_received: 'drivers_license',
+      id_doc_type: 'drivers_license',
+    )
   end
 
   let(:resolution_block) do
@@ -234,6 +237,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => hash_including(flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean),
       'Frontend: IdV: front image added' => {
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
@@ -242,28 +251,28 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type_requested: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type: an_instance_of(String), id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type_requested: an_instance_of(String), document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type_requested: an_instance_of(String), document_type_received: an_instance_of(String)
       },
-      'IdV: doc auth document_capture submitted' => hash_including(success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, proofing_components: { document_check: 'mock', document_type: 'drivers_license' }),
+      'IdV: doc auth document_capture submitted' => hash_including(success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }),
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -355,6 +364,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, errors: hash_including(message: nil), destination: :link_sent, flow_path: 'hybrid', step: 'hybrid_handoff', analytics_id: 'Doc Auth', telephony_response: hash_including(errors: {}, message_id: 'fake-message-id', request_id: 'fake-message-request-id', success: true), selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
@@ -365,30 +380,30 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'hybrid', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'hybrid', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type_requested: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'hybrid', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'hybrid', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type_requested: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -477,6 +492,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
@@ -487,31 +508,31 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type_requested: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type_requested: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean,
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -579,6 +600,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
       },
@@ -589,9 +616,9 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type_requested: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean, id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention', liveness_checking_required: boolean, document_type_received: an_instance_of(String)),
       'IdV: verify in person troubleshooting option clicked' => {
         flow_path: 'standard', opted_in_to_in_person_proofing: false, submit_attempts: 1
       },
@@ -721,6 +748,12 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth hybrid handoff submitted' => {
         success: true, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', analytics_id: 'Doc Auth', selfie_check_required: boolean
       },
+      :idv_doc_auth_choose_id_type_visited => {
+        step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
+      },
+      :idv_doc_auth_choose_id_type_submitted => {
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+      },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true
       },
@@ -731,34 +764,34 @@ RSpec.feature 'Analytics Regression', :js do
         width: 284, height: 38, mimeType: 'image/png', source: 'upload', size: 3694, captureAttempts: 1, flow_path: 'standard', acuant_sdk_upgrade_a_b_testing_enabled: 'false', use_alternate_sdk: anything, acuant_version: kind_of(String), fingerprint: anything, failedImageResubmission: boolean, liveness_checking_required: boolean
       },
       'IdV: doc auth image upload form submitted' => {
-        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type: an_instance_of(String)
+        success: true, submit_attempts: 1, remaining_submit_attempts: 3, user_id: user.uuid, flow_path: 'standard', front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, document_type_requested: an_instance_of(String)
       },
-      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', id_doc_type: an_instance_of(String)),
+      'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: false, doc_auth_result: 'Passed', document_type_received: an_instance_of(String)),
       'IdV: doc auth image upload vendor pii validation' => {
-        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type: an_instance_of(String), id_doc_type: an_instance_of(String)
+        success: true, user_id: user.uuid, submit_attempts: 1, remaining_submit_attempts: 3, flow_path: 'standard', attention_with_barcode: false, front_image_fingerprint: an_instance_of(String), back_image_fingerprint: an_instance_of(String), selfie_image_fingerprint: an_instance_of(String), liveness_checking_required: boolean, classification_info: {}, id_issued_status: 'present', id_expiration_status: 'present', passport_issued_status: 'missing', passport_expiration_status: 'missing', document_type_requested: an_instance_of(String), document_type_received: an_instance_of(String)
       },
       'IdV: doc auth document_capture submitted' => {
         success: true, flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true,
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       :idv_selfie_image_added => {
         acuant_version: kind_of(String), captureAttempts: 1, fingerprint: 'aIzxkX_iMtoxFOURZr55qkshs53emQKUOr7VfTf6G1Q', flow_path: 'standard', height: 38, mimeType: 'image/png', size: 3694, source: 'upload', width: 284, liveness_checking_required: boolean, selfie_attempts: 0
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'standard', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       'IdV: doc auth verify submitted' => {
         flow_path: 'standard', step: 'verify', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
       },
       idv_threatmetrix_response_body: (
         if threatmetrix_response_body.present?
@@ -851,12 +884,14 @@ RSpec.feature 'Analytics Regression', :js do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
       complete_phone_step(user)
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(sign_up_completed_path)
     end
 
     it 'records all of the events' do
@@ -924,6 +959,7 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         attach_and_submit_images
         visit idv_hybrid_mobile_document_capture_url
       end
@@ -937,6 +973,7 @@ RSpec.feature 'Analytics Regression', :js do
         verify_phone_otp
         complete_enter_password_step(user)
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
     end
 
@@ -996,12 +1033,14 @@ RSpec.feature 'Analytics Regression', :js do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
       enter_gpo_flow
       complete_request_letter
       complete_enter_password_step(user)
+      expect(page).to have_current_path(idv_letter_enqueued_path)
     end
 
     it 'records all of the events' do
@@ -1049,12 +1088,14 @@ RSpec.feature 'Analytics Regression', :js do
         complete_welcome_step
         complete_agreement_step
         complete_hybrid_handoff_step
+        complete_choose_id_type_step
         complete_document_capture_step
         complete_ssn_step
         complete_verify_step
         complete_phone_step(user)
         complete_enter_password_step(user)
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
 
       it 'records all of the events' do
@@ -1129,6 +1170,7 @@ RSpec.feature 'Analytics Regression', :js do
           verify_phone_otp
           complete_enter_password_step(user)
           acknowledge_and_confirm_personal_key
+          expect(page).to have_current_path(sign_up_completed_path)
         end
       end
 
@@ -1185,6 +1227,7 @@ RSpec.feature 'Analytics Regression', :js do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         attach_and_submit_images
         visit idv_hybrid_mobile_document_capture_url
       end
@@ -1198,6 +1241,7 @@ RSpec.feature 'Analytics Regression', :js do
         verify_phone_otp
         complete_enter_password_step(user)
         acknowledge_and_confirm_personal_key
+        expect(page).to have_current_path(sign_up_completed_path)
       end
     end
 

@@ -17,7 +17,6 @@ module Idv
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
-  # @attr passport_allowed [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
@@ -65,7 +64,6 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       mail_only_warning_shown
       opted_in_to_in_person_proofing
-      passport_allowed
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
@@ -232,14 +230,19 @@ module Idv
       if new_pii_from_doc.blank?
         session[:pii_from_doc] = nil
       else
-        session[:pii_from_doc] = new_pii_from_doc.to_h
+        pii_hash = new_pii_from_doc.to_h
+        # Normalize document type keys until past the 50/50 state
+        pii_hash[:document_type_received] ||= pii_hash[:id_doc_type]
+        pii_hash[:id_doc_type] ||= pii_hash[:document_type_received]
+        session[:pii_from_doc] = pii_hash # new_pii_from_doc.to_h
       end
     end
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
 
-      if session[:pii_from_doc][:id_doc_type] == 'passport'
+      if session[:pii_from_doc][:document_type_received] == 'passport' ||
+         session[:pii_from_doc][:id_doc_type] == 'passport'
         passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
         Pii::Passport.new(**passport_data)
       else
@@ -380,7 +383,8 @@ module Idv
     end
 
     def in_person_passports_allowed?
-      passport_allowed && IdentityConfig.store.in_person_passports_enabled
+      IdentityConfig.store.doc_auth_passports_enabled &&
+        IdentityConfig.store.in_person_passports_enabled
     end
 
     private

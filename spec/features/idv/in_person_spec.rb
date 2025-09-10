@@ -241,7 +241,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_welcome_step
       complete_agreement_step
       complete_hybrid_handoff_step
-
+      complete_choose_id_type_step
       # Fail docauth
       complete_document_capture_step_with_yml(
         'spec/fixtures/ial2_test_credential_multiple_doc_auth_failures_both_sides.yml',
@@ -271,6 +271,7 @@ RSpec.describe 'In Person Proofing', js: true do
         # Change mind and resume remote identity verification
         visit idv_hybrid_handoff_path
         complete_hybrid_handoff_step
+        complete_choose_id_type_step
         complete_document_capture_step(with_selfie: false)
 
         complete_remote_idv_from_ssn(user)
@@ -298,6 +299,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'allows the user to successfully complete remote identity verification' do
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step(with_selfie: false)
 
       complete_remote_idv_from_ssn(user)
@@ -388,6 +390,7 @@ RSpec.describe 'In Person Proofing', js: true do
                 config: DocAuth::LexisNexis::Config.new,
               ),
             )
+            complete_choose_id_type_step
             complete_document_capture_step(with_selfie: false)
 
             complete_remote_idv_from_ssn(user)

@@ -94,12 +94,6 @@ RSpec.describe Idv::WelcomeController do
       )
     end
 
-    it 'sets the proofing started timestamp', :freeze_time do
-      get :show
-
-      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
-    end
-
     context 'welcome already visited' do
       before do
         subject.idv_session.welcome_visited = true
@@ -156,55 +150,6 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
       end
     end
-
-    context 'passports enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-      end
-
-      context 'when facial match is required' do
-        before do
-          subject.idv_session.passport_allowed = true
-          vot = 'Pb'
-          resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
-          allow(subject).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-          put :show
-        end
-
-        it 'sets passport_allowed to nil on idv session' do
-          expect(subject.idv_session.passport_allowed).to be_nil
-        end
-      end
-
-      context 'when the user is not bucketed for passports' do
-        let(:passport_bucket) { :default }
-
-        before do
-          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
-            .and_return(passport_bucket)
-          get :show
-        end
-
-        it 'does not allow passports in idv session' do
-          expect(subject.idv_session.passport_allowed).to eq(false)
-        end
-      end
-
-      context 'when the user is bucketed for passports' do
-        let(:passport_bucket) { :passport_allowed }
-
-        before do
-          allow(subject).to receive(:ab_test_bucket).with(:DOC_AUTH_PASSPORT)
-            .and_return(passport_bucket)
-          get :show
-        end
-
-        it 'allows passports in idv session' do
-          expect(subject.idv_session.passport_allowed).to eq(true)
-        end
-      end
-    end
   end
 
   describe '#update' do
@@ -238,6 +183,12 @@ RSpec.describe Idv::WelcomeController do
       put :update
 
       expect(subject.document_capture_session.passport_status).to be_nil
+    end
+
+    it 'sets the proofing started timestamp', :freeze_time do
+      put :update
+
+      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
   end
 end

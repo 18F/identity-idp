@@ -596,7 +596,6 @@ RSpec.feature 'document capture step', :js do
 
           context 'with a valid passport', driver: :headless_chrome_mobile do
             let(:passports_enabled) { true }
-            let(:doc_auth_passport_selfie_enabled) { true }
             let(:passport_image) do
               Rails.root.join(
                 'spec', 'fixtures',
@@ -615,8 +614,6 @@ RSpec.feature 'document capture step', :js do
               allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
               allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
                 .and_return(fake_dos_api_endpoint)
-              allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_enabled)
-                .and_return(doc_auth_passport_selfie_enabled)
               stub_request(:post, fake_dos_api_endpoint)
                 .to_return_json({ status: 200, body: { response: 'YES' } })
               stub_health_check_settings
@@ -701,6 +698,7 @@ RSpec.feature 'document capture step', :js do
               click_on t('forms.buttons.back')
               expect(page).to have_current_path(idv_how_to_verify_url)
               click_on t('forms.buttons.continue_online')
+              complete_choose_id_type_step
               expect(page).to have_current_path(idv_document_capture_url)
             end
           end
@@ -851,6 +849,7 @@ RSpec.feature 'document capture step', :js do
                 )
                 sign_in_and_2fa_user(@user)
                 complete_up_to_how_to_verify_step_for_opt_in_ipp
+                complete_choose_id_type_step
               end
             end
 
@@ -941,6 +940,7 @@ RSpec.feature 'document capture step', :js do
               expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.upload_photos')
+              complete_choose_id_type_step
               expect(page).to have_current_path(idv_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect(page).to have_text(t('doc_auth.headings.document_capture'))

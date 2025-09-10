@@ -6,6 +6,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
   # rubocop:disable Layout/LineLength
+  let(:success_with_invalid_zip_extension) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_invalid_zip_extension)
+  end
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
   end
@@ -97,6 +100,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.to_h[:vendor]).to eq('TrueID')
     end
 
+    context 'when postal code extension is invalid' do
+      let(:response) do
+        described_class.new(
+          http_response: success_with_invalid_zip_extension,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'shortens postal code' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.selfie_status).to eq(:not_processed)
+        expect(response.success?).to eq(true)
+        expect(response.to_h[:vendor]).to eq('TrueID')
+        expect(response.pii_from_doc.zipcode).to eq('12345')
+      end
+    end
+
     context 'when a portrait match is returned' do
       let(:liveness_checking_enabled) { true }
       context 'when selfie status is failed' do
@@ -163,7 +186,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        id_doc_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: 'USA',
       )
@@ -368,8 +391,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.successful_result?).to eq(false)
       end
 
-      it 'records the id_doc_type as passport_card' do
-        expect(response.pii_from_doc.id_doc_type).to eq('passport_card')
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
       end
 
       it 'has error messages' do
@@ -440,7 +463,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         nationality_code: 'USA',
         issuing_country_code: 'USA',
         mrz: mrz,
-        id_doc_type: 'passport',
+        document_type_received: 'passport',
         document_number: 'Z12345678',
       )
 
@@ -649,7 +672,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        id_doc_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: nil,
       )

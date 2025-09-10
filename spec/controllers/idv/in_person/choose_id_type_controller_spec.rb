@@ -5,7 +5,7 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
 
   let(:user) { create(:user) }
   let(:document_capture_session) do
-    create(:document_capture_session, user:, passport_status: 'allowed')
+    create(:document_capture_session, user:)
   end
   let(:idv_session) { subject.idv_session }
 
@@ -263,7 +263,7 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
           end
 
           it 'does not update the passport status in document_capture_session' do
-            expect(controller.document_capture_session.passport_status).to eq('allowed')
+            expect(controller.document_capture_session.passport_status).to be_nil
           end
 
           it 'redirects to the in in person choose id type page' do
@@ -325,26 +325,12 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
       end
 
       context 'when idv session has a document capture session uuid' do
-        context 'when passports are allowed in idv session' do
-          before do
-            subject.idv_session.passport_allowed = true
-            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
-          end
-
-          it 'sets passport status to "allowed" in the document capture session' do
-            expect(subject.document_capture_session.reload.passport_status).to eq('allowed')
-          end
+        before do
+          described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
         end
 
-        context 'when passports are not allowed in idv session' do
-          before do
-            subject.idv_session.passport_allowed = false
-            described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
-          end
-
-          it 'sets passport status to nil in the document capture session' do
-            expect(subject.document_capture_session.reload.passport_status).to eq(nil)
-          end
+        it 'sets passport status to nil in the document capture session' do
+          expect(subject.document_capture_session.reload.passport_status).to be_nil
         end
       end
 

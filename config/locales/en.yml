@@ -703,8 +703,7 @@ doc_auth.info.verify_online_instruction: You’ll take photos of your ID to veri
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.you_entered: 'You entered:'
-doc_auth.instructions.bullet1a: Have a driver’s license or state ID
-doc_auth.instructions.bullet1b: Have a U.S. passport book, U.S. driver’s license or state ID
+doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password

@@ -180,6 +180,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#selected_id_type' do
+    it 'returns nil' do
+      expect(subject.selected_id_type).to be_nil
+    end
+
     context 'when the document capture session passport status is "requested"' do
       let(:passport_status) { 'requested' }
 
@@ -195,28 +199,20 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         expect(subject.selected_id_type).to eq(:drivers_license)
       end
     end
-
-    context 'when the document capture session passport status is "allowed"' do
-      let(:passport_status) { 'allowed' }
-
-      it 'returns nil' do
-        expect(subject.selected_id_type).to be_nil
-      end
-    end
   end
 
   describe '#dos_passport_api_healthy?' do
     context 'when the endpoint is set' do
-      let(:request) { double(DocAuth::Dos::Requests::HealthCheckRequest) }
       let(:response) { double(DocAuth::Dos::Responses::HealthCheckResponse) }
+      let(:dos_passport_composite_healthcheck_endpoint) { 'http://dos-health.test/status' }
 
       before do
         allow(IdentityConfig.store).to receive(
           :dos_passport_composite_healthcheck_endpoint,
-        ).and_return('http://dostest.com/status')
-        allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_return(request)
-        allow(request).to receive(:fetch).with(analytics, context_analytics: context_analytics)
-          .and_return(response)
+        ).and_return(dos_passport_composite_healthcheck_endpoint)
+        allow(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:new).and_call_original
+        allow_any_instance_of(DocAuth::Dos::Requests::HealthCheckRequest).to receive(:fetch)
+          .with(analytics, context_analytics: context_analytics).and_return(response)
       end
 
       context 'when the dos response is successful' do
@@ -226,6 +222,21 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
         it 'returns true' do
           expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+        end
+
+        context 'when cached' do
+          let(:dos_passport_composite_healthcheck_endpoint) { 'http://cached.dos-health.test/status' }
+
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:dos_passport_healthcheck_cache_expiration_seconds).and_return(5)
+          end
+
+          it 'uses cached value on repeat request' do
+            expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+            expect(subject.dos_passport_api_healthy?(analytics:, step:)).to be(true)
+            expect(DocAuth::Dos::Requests::HealthCheckRequest).to have_received(:new).once
+          end
         end
       end
 
@@ -277,6 +288,24 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           form_submit_url:,
           disable_passports: false,
           auto_check_value: :passport,
+        )
+      end
+    end
+
+    context 'when passports are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(false)
+      end
+
+      it 'returns expected local attributes with passports disabled' do
+        expect(
+          subject.locals_attrs(presenter:, form_submit_url:),
+        ).to include(
+          presenter:,
+          form_submit_url:,
+          disable_passports: true,
+          auto_check_value: :drivers_license,
         )
       end
     end

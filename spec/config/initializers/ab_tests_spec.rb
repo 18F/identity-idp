@@ -303,6 +303,58 @@ RSpec.describe AbTests do
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
 
+  describe 'DOC_AUTH_PASSPORT_VENDOR' do
+    let(:ab_test) { :DOC_AUTH_PASSPORT_VENDOR }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+          .and_return('vendor_a')
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_socure_percent)
+          .and_return(50)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_lexis_nexis_percent)
+          .and_return(30)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_switching_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
+  describe 'DOC_AUTH_PASSPORT_SELFIE_VENDOR' do
+    let(:ab_test) { :DOC_AUTH_PASSPORT_SELFIE_VENDOR }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_default)
+          .and_return('vendor_a')
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_socure_percent)
+          .and_return(50)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_lexis_nexis_percent)
+          .and_return(30)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_switching_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
   describe 'ACUANT_SDK' do
     let(:ab_test) { :ACUANT_SDK }
 
@@ -467,28 +519,6 @@ RSpec.describe AbTests do
         expect(bucket).to eq :socure_shadow_mode_for_non_docv_users
       end
     end
-  end
-
-  describe 'DOC_AUTH_PASSPORT' do
-    let(:ab_test) { :DOC_AUTH_PASSPORT }
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_percent)
-          .and_return(50)
-      }
-    end
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-          .and_return(false)
-      }
-    end
-
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
 
   describe 'PROOFING_VENDOR' do

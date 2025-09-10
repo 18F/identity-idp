@@ -165,17 +165,6 @@ module AbTests
     },
   ).freeze
 
-  DOC_AUTH_PASSPORT = AbTest.new(
-    experiment_name: 'Passport allowed',
-    should_log: /^idv/i,
-    buckets: {
-      passport_allowed: IdentityConfig.store.doc_auth_passports_enabled ?
-        IdentityConfig.store.doc_auth_passports_percent : 0,
-    },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
@@ -202,6 +191,21 @@ module AbTests
           IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
           IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  DOC_AUTH_PASSPORT_SELFIE_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth Passport with Selfie Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_passport_selfie_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_selfie_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+          IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid

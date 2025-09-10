@@ -14,7 +14,7 @@ RSpec.describe Idv::DocPiiForm do
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
   let(:valid_expiration) { Time.zone.today.to_s }
   let(:invalid_expiration) { (Time.zone.today - 1.day).to_s }
-  let(:id_doc_type) { 'drivers_license' }
+  let(:document_type_received) { 'drivers_license' }
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
   end
@@ -29,14 +29,14 @@ RSpec.describe Idv::DocPiiForm do
       address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
-      id_doc_type: id_doc_type,
+      document_type_received: document_type_received,
       state_id_jurisdiction: 'AL',
       state_id_number: 'S59397998',
       state_id_issued: '2024-01-01',
       state_id_expiration: valid_expiration,
     }
   end
-  let(:nil_id_doc_type_pii) { good_state_id_pii.merge(id_doc_type: nil) }
+  let(:nil_document_type_received_pii) { good_state_id_pii.merge(document_type_received: nil) }
   let(:name_errors_pii) { good_state_id_pii.merge(first_name: nil, last_name: nil) }
   let(:name_and_dob_errors_pii) do
     good_state_id_pii.merge(
@@ -65,7 +65,7 @@ RSpec.describe Idv::DocPiiForm do
       birth_place: 'WASHINGTON D.C.. U.S.A.',
       passport_issued: '2024-01-01',
       passport_expiration: '2099-01-01',
-      id_doc_type: 'passport',
+      document_type_received: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
       mrz: mrz,
@@ -79,7 +79,7 @@ RSpec.describe Idv::DocPiiForm do
   let(:issuing_country_code_error_pii) { good_passport_pii.merge(issuing_country_code: 'XYZ') }
   let(:nationality_code_error_pii) { good_passport_pii.merge(nationality_code: 'XYZ') }
   let(:nil_mrz_pii) { good_passport_pii.merge(mrz: nil) }
-  let(:passport_card_pii) { good_passport_pii.merge(id_doc_type: 'passport_card') }
+  let(:passport_card_pii) { good_passport_pii.merge(document_type_received: 'passport_card') }
 
   describe '#submit' do
     context 'when the form is valid' do
@@ -93,7 +93,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors).to be_empty
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
@@ -103,8 +103,8 @@ RSpec.describe Idv::DocPiiForm do
       end
     end
 
-    context 'when the id_doc_type is not specified' do
-      let(:pii) { nil_id_doc_type_pii }
+    context 'when the document_type_received is not specified' do
+      let(:pii) { nil_document_type_received_pii }
 
       it 'returns a general no liveness error' do
         result = subject.submit
@@ -128,7 +128,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
@@ -153,7 +153,7 @@ RSpec.describe Idv::DocPiiForm do
           )
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
@@ -176,7 +176,7 @@ RSpec.describe Idv::DocPiiForm do
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
-          id_doc_type: 'drivers_license',
+          document_type_received: 'drivers_license',
           pii_like_keypaths: pii_like_keypaths_state_id,
           id_issued_status: 'present',
           id_expiration_status: 'present',
@@ -198,7 +198,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:state_id_expiration]).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'drivers_license',
+            document_type_received: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'missing',
@@ -221,7 +221,7 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'drivers_license',
+            document_type_received: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
@@ -242,7 +242,7 @@ RSpec.describe Idv::DocPiiForm do
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
@@ -268,7 +268,7 @@ RSpec.describe Idv::DocPiiForm do
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
-              id_doc_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               pii_like_keypaths: pii_like_keypaths_state_id,
               id_issued_status: 'present',
               id_expiration_status: 'present',
@@ -287,7 +287,7 @@ RSpec.describe Idv::DocPiiForm do
               expect(result.errors).to be_empty
               expect(result.extra).to eq(
                 attention_with_barcode: false,
-                id_doc_type: 'drivers_license',
+                document_type_received: 'drivers_license',
                 pii_like_keypaths: pii_like_keypaths_state_id,
                 id_issued_status: 'present',
                 id_expiration_status: 'present',
@@ -312,7 +312,7 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'drivers_license',
+            document_type_received: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
@@ -335,13 +335,27 @@ RSpec.describe Idv::DocPiiForm do
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'drivers_license',
+            document_type_received: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
             passport_issued_status: 'missing',
             passport_expiration_status: 'missing',
           )
+        end
+      end
+
+      context 'when zipcode extension is invalid' do
+        let(:pii) { good_state_id_pii.merge(zipcode: '12345-123') }
+
+        it 'returns a single generic pii error' do
+          result = subject.submit
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[:zipcode]).to eq [
+            t('doc_auth.errors.general.no_liveness'),
+          ]
         end
       end
 
@@ -366,7 +380,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'drivers_license',
+            document_type_received: 'drivers_license',
             pii_like_keypaths: pii_like_keypaths_state_id,
             id_issued_status: 'present',
             id_expiration_status: 'present',
@@ -424,7 +438,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport',
+            document_type_received: 'passport',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -446,7 +460,7 @@ RSpec.describe Idv::DocPiiForm do
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport',
+            document_type_received: 'passport',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -466,7 +480,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result.errors).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport',
+            document_type_received: 'passport',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -488,7 +502,7 @@ RSpec.describe Idv::DocPiiForm do
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport',
+            document_type_received: 'passport',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -510,7 +524,7 @@ RSpec.describe Idv::DocPiiForm do
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport',
+            document_type_received: 'passport',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',
@@ -527,12 +541,12 @@ RSpec.describe Idv::DocPiiForm do
           result = subject.submit
 
           expect(result.success?).to eq(false)
-          expect(result.errors[:id_doc_type]).to eq(
+          expect(result.errors[:document_type_received]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
-            id_doc_type: 'passport_card',
+            document_type_received: 'passport_card',
             pii_like_keypaths: pii_like_keypaths_passport,
             id_issued_status: 'missing',
             id_expiration_status: 'missing',

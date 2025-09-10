@@ -173,7 +173,7 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.flow_path = 'standard'
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_document_capture_url)
+          expect(response).to redirect_to(idv_choose_id_type_url)
         end
       end
 
@@ -216,8 +216,9 @@ RSpec.describe Idv::HybridHandoffController do
 
       it 'redirects the user straight to document capture' do
         get :show
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
+
       it 'does not set idv_session.skip_hybrid_handoff' do
         expect do
           get :show
@@ -383,6 +384,12 @@ RSpec.describe Idv::HybridHandoffController do
           subject.document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::SOCURE)
         end
 
+        it 'redirects to choose id type url' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
+
         it 'sends analytics_submitted event for desktop' do
           put :update, params: params
 
@@ -408,19 +415,10 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'passports are not enabled' do
         before do
-          allow(subject.idv_session).to receive(:passport_allowed).and_return(false)
+          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+            .and_return(false)
         end
-        it 'redirects to choose id type url' do
-          put :update, params: params
 
-          expect(response).to redirect_to(idv_document_capture_url)
-        end
-      end
-
-      context 'passports are enabled' do
-        before do
-          allow(subject.idv_session).to receive(:passport_allowed).and_return(true)
-        end
         it 'redirects to choose id type url' do
           put :update, params: params
 

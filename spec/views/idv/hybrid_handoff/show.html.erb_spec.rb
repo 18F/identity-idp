@@ -8,7 +8,6 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     @presenter = Idv::HowToVerifyPresenter.new(
       mobile_required: true,
       selfie_check_required: true,
-      passport_allowed: true,
     )
   end
 

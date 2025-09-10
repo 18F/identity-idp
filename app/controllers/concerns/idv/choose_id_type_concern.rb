@@ -40,19 +40,32 @@ module Idv
     )
       return true if endpoint.blank?
 
-      request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
-      response = request.fetch(analytics, context_analytics: { step: })
-      response.success?
+      Rails.cache.fetch(
+        endpoint,
+        expires_in: IdentityConfig.store.dos_passport_healthcheck_cache_expiration_seconds,
+      ) do
+        request = DocAuth::Dos::Requests::HealthCheckRequest.new(endpoint:)
+        response = request.fetch(analytics, context_analytics: { step: })
+        response.success?
+      end
     end
 
     def locals_attrs(presenter:, form_submit_url: nil)
-      disable_passports = params.permit(:passports)[:passports].present?
       {
         presenter:,
         form_submit_url:,
-        disable_passports:,
-        auto_check_value: disable_passports ? :drivers_license : selected_id_type,
+        disable_passports: disable_passports?,
+        auto_check_value: disable_passports? ? :drivers_license : selected_id_type,
       }
+    end
+
+    def disable_passports?
+      !passports_enabled? ||
+        params.permit(:passports)[:passports].present?
+    end
+
+    def passports_enabled?
+      IdentityConfig.store.doc_auth_passports_enabled
     end
   end
 end

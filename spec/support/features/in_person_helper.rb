@@ -246,6 +246,7 @@ module InPersonHelper
     perform_in_browser(:mobile) do
       # doc auth page
       visit @sms_link
+      complete_choose_id_type_step
       mock_doc_auth_attention_with_barcode
       attach_and_submit_images
 
