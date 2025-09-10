@@ -628,21 +628,6 @@ RSpec.describe ApplicationController do
         get :index
         expect(response.body).to eq('false')
       end
-
-      context 'with duplicate profile but for different sp' do
-        let(:duplicate_profile_set) do
-          create(:duplicate_profile_set, profile_ids: [profile.id], service_provider: 'wrong-sp')
-        end
-        before do
-          allow_any_instance_of(DuplicateProfileChecker)
-            .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
-        end
-
-        it 'returns false even with duplicate profiles' do
-          get :index
-          expect(response.body).to eq('false')
-        end
-      end
     end
 
     context 'when SP is eligible for one account' do
@@ -666,6 +651,25 @@ RSpec.describe ApplicationController do
             expect(response.body).to eq('false')
           end
         end
+
+        context 'with duplicate profile but for different sp' do
+          let(:issuer2) { 'wrong.com' }
+          let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+
+          let(:duplicate_profile_set) do
+            create(:duplicate_profile_set, profile_ids: [active_profile.id], service_provider: 'wrong-sp')
+          end
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
+          end
+
+          it 'returns false even with duplicate profiles' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
         context 'when duplicate profile set found for user' do
           let(:duplicate_profile_set) do
             create(
