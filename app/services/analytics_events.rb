@@ -6553,11 +6553,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks an attempt to create a duplicate profile set for a completed set of profiles
-  def one_account_dupe_profile_already_created
-    track_event(:one_account_dupe_profile_already_created)
-  end
-
   # Tracks when a user that had duplicate profiles is closed
   def one_account_duplicate_profile_closed
     track_event(:one_account_duplicate_profile_closed)
