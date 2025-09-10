@@ -71,7 +71,7 @@ module AttemptsApi
     end
 
     def public_key
-      sp.public_key
+      sp.attempts_public_key
     end
 
     def extra_attributes
