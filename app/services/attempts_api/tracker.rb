@@ -31,12 +31,7 @@ module AttemptsApi
         event_metadata: event_metadata(event_type:, metadata:),
       )
 
-      redis_client.write_event(
-        event_key: event.jti,
-        jwe: jwe(event),
-        timestamp: event.occurred_at,
-        issuer: sp.issuer,
-      )
+      write_event(event)
 
       event
     end
@@ -57,9 +52,26 @@ module AttemptsApi
 
     def jwe(event)
       event.to_jwe(
-        issuer: sp.issuer,
-        public_key: sp.attempts_public_key,
+        issuer:,
+        public_key:,
       )
+    end
+
+    def write_event(event)
+      redis_client.write_event(
+        event_key: event.jti,
+        jwe: jwe(event),
+        timestamp: event.occurred_at,
+        issuer:,
+      )
+    end
+
+    def issuer
+      sp.issuer
+    end
+
+    def public_key
+      sp.public_key
     end
 
     def extra_attributes
