@@ -13,10 +13,10 @@ module Idv
     def set_passport_requested
       if passport_chosen?
         unless document_capture_session.passport_requested?
-          document_capture_session.set_passport_as_requested
+          document_capture_session.request_passport!
         end
       else
-        document_capture_session.set_passport_as_not_requested
+        document_capture_session.request_state_id!
       end
     end
 

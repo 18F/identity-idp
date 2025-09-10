@@ -116,7 +116,7 @@ class DocumentCaptureSession < ApplicationRecord
     passport_status == 'requested'
   end
 
-  def set_passport_as_requested
+  def request_passport!
     update!(
       passport_status: 'requested',
       doc_auth_vendor: nil,
@@ -125,7 +125,7 @@ class DocumentCaptureSession < ApplicationRecord
     )
   end
 
-  def set_passport_as_not_requested
+  def request_state_id!
     attrs = passport_not_requested_attributes
     attrs.merge!(clear_socure_attributes) if passport_requested?
 
