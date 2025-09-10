@@ -657,7 +657,10 @@ RSpec.describe ApplicationController do
           let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
 
           let(:duplicate_profile_set) do
-            create(:duplicate_profile_set, profile_ids: [active_profile.id], service_provider: 'wrong-sp')
+            create(
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: 'wrong-sp'
+            )
           end
           before do
             allow_any_instance_of(DuplicateProfileChecker)
