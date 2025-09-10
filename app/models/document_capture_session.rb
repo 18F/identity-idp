@@ -19,8 +19,9 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   # @param doc_auth_response [DocAuth::Response]
+  # @param attempt [Integer] The current doc auth attempt number.
   # @param mrz_status [Symbol, nil] MRZ validation status for passport documents
-  def store_result_from_response(doc_auth_response, mrz_response: nil)
+  def store_result_from_response(doc_auth_response, attempt:, mrz_response: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -32,6 +33,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
     session_result.mrz_status = determine_mrz_status(mrz_response)
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -43,8 +45,8 @@ class DocumentCaptureSession < ApplicationRecord
 
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
                              passport_image_fingerprint:, selfie_image_fingerprint:,
-                             doc_auth_success:, selfie_status:,
-                             errors: nil, mrz_status: :not_processed)
+                             doc_auth_success:, selfie_status:, attempt:, errors: nil,
+                             mrz_status: :not_processed)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -60,6 +62,7 @@ class DocumentCaptureSession < ApplicationRecord
 
     session_result.errors = errors
     session_result.mrz_status = mrz_status
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,

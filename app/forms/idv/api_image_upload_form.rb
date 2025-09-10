@@ -513,7 +513,9 @@ module Idv
     end
 
     def store_pii(client_response, mrz_response)
-      document_capture_session.store_result_from_response(client_response, mrz_response:)
+      document_capture_session.store_result_from_response(
+        client_response, mrz_response:, attempt: submit_attempts
+      )
     end
 
     def user_id
@@ -585,6 +587,18 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
+        )
+      elsif client_response&.network_error?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: nil,
+          back_image_fingerprint: nil,
+          passport_image_fingerprint: nil,
+          selfie_image_fingerprint: nil,
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
+          errors: client_response.errors,
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
@@ -594,6 +608,7 @@ module Idv
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
         )
       elsif mrz_response && !mrz_response.success?
         document_capture_session.store_failed_auth_data(
@@ -605,6 +620,7 @@ module Idv
           selfie_status: client_response.selfie_status,
           errors: mrz_response.errors,
           mrz_status: :failed,
+          attempt: submit_attempts,
         )
       end
       # retrieve updated data from session

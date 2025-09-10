@@ -24,44 +24,16 @@ module AttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
-      extra_metadata =
-        if metadata.has_key?(:failure_reason) &&
-           (metadata[:failure_reason].blank? || metadata[:success].present?)
-          metadata.except(:failure_reason)
-        else
-          metadata
-        end
-
-      event_metadata = {
-        user_agent: request&.user_agent,
-        unique_session_id: hashed_session_id,
-        user_uuid: agency_uuid(event_type: event_type),
-        device_id: cookie_device_uuid,
-        user_ip_address: request&.remote_ip,
-        application_url: sp_redirect_uri,
-        language: user&.email_language || I18n.locale.to_s,
-        client_port: CloudFrontHeaderParser.new(request).client_port,
-        aws_region: IdentityConfig.store.aws_region,
-        google_analytics_cookies: google_analytics_cookies(request),
-      }
-
-      event_metadata.merge!(extra_metadata)
-
       event = AttemptEvent.new(
         event_type: event_type,
         session_id: session_id,
         occurred_at: Time.zone.now,
-        event_metadata: event_metadata,
-      )
-
-      jwe = event.to_jwe(
-        issuer: sp.issuer,
-        public_key: sp.attempts_public_key,
+        event_metadata: event_metadata(event_type:, metadata:),
       )
 
       redis_client.write_event(
         event_key: event.jti,
-        jwe: jwe,
+        jwe: jwe(event),
         timestamp: event.occurred_at,
         issuer: sp.issuer,
       )
@@ -82,6 +54,45 @@ module AttemptsApi
     end
 
     private
+
+    def jwe(event)
+      event.to_jwe(
+        issuer: sp.issuer,
+        public_key: sp.attempts_public_key,
+      )
+    end
+
+    def extra_attributes
+      {}
+    end
+
+    def extra_metadata(metadata:)
+      failure_metadata(metadata:).merge(extra_attributes)
+    end
+
+    def failure_metadata(metadata:)
+      if metadata.has_key?(:failure_reason) &&
+         (metadata[:failure_reason].blank? || metadata[:success].present?)
+        metadata.except(:failure_reason)
+      else
+        metadata
+      end
+    end
+
+    def event_metadata(event_type:, metadata:)
+      {
+        user_agent: request&.user_agent,
+        unique_session_id: hashed_session_id,
+        user_uuid: agency_uuid(event_type: event_type),
+        device_id: cookie_device_uuid,
+        user_ip_address: request&.remote_ip,
+        application_url: sp_redirect_uri,
+        language: user&.email_language || I18n.locale.to_s,
+        client_port: CloudFrontHeaderParser.new(request).client_port,
+        aws_region: IdentityConfig.store.aws_region,
+        google_analytics_cookies: google_analytics_cookies(request),
+      }.merge!(extra_metadata(metadata:))
+    end
 
     def google_analytics_cookies(request)
       return nil unless request&.cookies
