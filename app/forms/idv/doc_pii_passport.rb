@@ -5,7 +5,12 @@ module Idv
     include ActiveModel::Model
 
     validates :mrz,
-              presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } }
+              presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } },
+              unless: supervised
+
+    validates :passport_number,
+              presence: { message: proc { I18n.t('doc_auth.errors.general.no_liveness') } },
+              if: supervised
 
     validates :issuing_country_code,
               inclusion: {
@@ -15,13 +20,15 @@ module Idv
     validate :passport_not_expired?
     validate :passport_book? # we don't support passport cards
 
-    attr_reader :passport_expiration, :issuing_country_code, :mrz
+    attr_reader :passport_expiration, :issuing_country_code, :mrz, :passportt_number, :supervised
 
-    def initialize(pii:)
+    def initialize(pii:, supervised: false)
       @pii_from_doc = pii
       @passport_expiration = pii[:passport_expiration]
       @issuing_country_code = pii[:issuing_country_code]
       @mrz = pii[:mrz]
+      @passport_number = pii[:passport_number]
+      @supervised = supervised
     end
 
     def self.pii_like_keypaths
