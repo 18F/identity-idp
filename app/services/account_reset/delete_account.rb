@@ -81,17 +81,19 @@ module AccountReset
     end
 
     def measure_one_account_self_service_if_applicable
-      profile = user&.active_profile
-      return unless profile&.facial_match?
-      set = DuplicateProfileSet.find_by_profile(profile_id: profile)
-      return unless set
+      return unless user&.active_profile&.facial_match?
+      sets = DuplicateProfileSet
+        .duplicate_profile_set_for_profile(profile_id: user.active_profile.id)
+      return unless sets
 
-      analytics.one_account_self_service(
-        source: :account_reset_delete,
-        service_provider: set.service_provider,
-        associated_profiles_count: set.profile_ids.exclude?(user.active_profile.id).count,
-        dupe_profile_set_id: set.id,
-      )
+      sets.each do |set|
+        analytics.one_account_self_service(
+          source: :account_reset_delete,
+          service_provider: set.service_provider,
+          associated_profiles_count: set.profile_ids.count - 1,
+          dupe_profile_set_id: set.id,
+        )
+      end
     end
   end
 end
