@@ -75,11 +75,11 @@ class SocureDocvResultsJob < ApplicationJob
         mrz_status: :failed,
         attempt: submit_attempts,
       )
-      record_attempt(docv_result_response:, doc_pii_response:)
+      record_attempt(docv_result_response:, doc_pii_response:, mrz_response:)
       return
     end
 
-    record_attempt(docv_result_response:, doc_pii_response:)
+    record_attempt(docv_result_response:, doc_pii_response:, success: true)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, attempt: submit_attempts
     )
@@ -87,7 +87,12 @@ class SocureDocvResultsJob < ApplicationJob
 
   private
 
-  def record_attempt(docv_result_response:, doc_pii_response: nil)
+  def record_attempt(
+    docv_result_response:,
+    doc_pii_response: nil,
+    mrz_response: nil,
+    success: false
+  )
     image_errors = {}
 
     if socure_doc_escrow_enabled? &&
@@ -130,11 +135,11 @@ class SocureDocvResultsJob < ApplicationJob
       **front,
       **back,
       **selfie,
-      success: docv_result_response.success? && doc_pii_response.success?,
+      success:,
       document_state: pii_from_doc[:state],
-      document_number: pii_from_doc[:state_id_number],
-      document_issued: pii_from_doc[:state_id_issued],
-      document_expiration: pii_from_doc[:state_id_expiration],
+      document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+      document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+      document_expiration: pii_from_doc[:state_id_expiration] || pii_from_doc[:passport_expiration],
       first_name: pii_from_doc[:first_name],
       last_name: pii_from_doc[:last_name],
       date_of_birth: pii_from_doc[:dob],
@@ -143,12 +148,19 @@ class SocureDocvResultsJob < ApplicationJob
       city: pii_from_doc[:city],
       state: pii_from_doc[:state],
       zip: pii_from_doc[:zipcode],
-      failure_reason: failure_reason(docv_result_response:, doc_pii_response:, image_errors:),
+      failure_reason: failure_reason(
+        docv_result_response:,
+        doc_pii_response:,
+        mrz_response:,
+        image_errors:,
+      ),
     )
   end
 
-  def failure_reason(docv_result_response:, image_errors:, doc_pii_response: nil)
-    if doc_pii_response.present?
+  def failure_reason(docv_result_response:, image_errors:, doc_pii_response: nil, mrz_response: nil)
+    if mrz_response.present?
+      failures = attempts_api_tracker.parse_failure_reason(mrz_response) || {}
+    elsif doc_pii_response.present?
       failures = attempts_api_tracker.parse_failure_reason(doc_pii_response) || {}
     else
       failures = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
