@@ -29,7 +29,7 @@ If not using macOS:
 
 1. You will need to install openssl version 1.1:
 
-    - Run `brew install openssl@1.1`
+   - Run `brew install openssl@1.1`
 
 1. Test that you have Postgres and Redis running.
 
@@ -37,79 +37,80 @@ If not using macOS:
 
 If using Devenv.sh:
 
-1. Install `nix`. We recommend using the Determinate Systems Nix installer, as it works well across multiple operating systems:
+1. Install `nix`. We recommend using the Experimental Nix installer, as it works well across multiple operating systems:
 
-    ```
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-    ```
+   ```bash
+   curl -L https://github.com/NixOS/experimental-nix-installer/releases/download/0.27.0/nix-installer.sh | sh -s -- install --ssl-cert-file /etc/ssl/certs/ca-certificates.crt --no-add-channel
+   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+   nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs
+   nix-channel --update --verbose
+   echo "trusted-users = root $(whoami)" | sudo tee /etc/nix/nix.conf
+   sudo launchctl kickstart -k system/org.nixos.nix-daemon
+   ```
+
 1. If using macOS, install a newer version of `bash`:
+
    ```
    nix-env --install --attr bashInteractive -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
    ```
-  
+
 1. Install `devenv`:
-    ```
-    nix-env --install --attr devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
-    ```
+
+   ```
+   nix-env --install --attr devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
+   ```
+
 1. Activate your development environment, and launch Postgres and Redis:
-    ```
-    devenv shell
-    devenv up -d
-    ```
+
+   ```
+   devenv shell
+   devenv up -d
+   ```
 
 ### Set up local environment
 
 1. Run the following command to set up your local environment:
 
-    ```
-    $ make setup
-    ```
+   ```
+   make setup
+   ```
 
-    This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
+   This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
 
 1. Now that you have you have everything installed, you can run the following command to start your local server:
 
-    ```
-    $ make run
-    ```
+   ```
+   make run
+   ```
 
-    You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
+   You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
 ### Simulating a partner authentication request
 
-Typically, a person who uses Login.gov will arrive from a partner application, and their experience
-on Login.gov will be customized to incorporate the name and logo of the partner. They will also be
-asked to consent to share their information with the partner before being sent back.
+Typically, a person who uses Login.gov will arrive from a partner application, and their experience on Login.gov will be customized to incorporate the name and logo of the partner. They will also be asked to consent to share their information with the partner before being sent back.
 
 To simulate a true end-to-end user experience, you can either...
 
-- Use the built-in test controller for SAML logins at http://localhost:3000/test/saml/login or OIDC logins at http://localhost:3000/test/oidc/login
+- Use the built-in test controller for SAML logins at <http://localhost:3000/test/saml/login> or OIDC logins at <http://localhost:3000/test/oidc/login>
 
   Note: to update service provider configurations, run the command `rake db:seed` or `make setup`.
-- Or, run a sample partner application, which is configured by default to run with your local IdP instance:
-   - OIDC: https://github.com/18F/identity-oidc-sinatra
-      - Runs at http://localhost:9292/
-   - SAML: https://github.com/18F/identity-saml-sinatra
-      - Runs at http://localhost:4567/
 
-Running the sample application requires a few additional steps, but can be useful if you want to
-test the experience of a user being redirected to an external site, or if you want to configure
-different options of the authentication request, such as AAL or IAL.
+- Or, run a sample partner application, which is configured by default to run with your local IdP instance:
+  - OIDC: <https://github.com/18F/identity-oidc-sinatra>
+    - Runs at <http://localhost:9292/>
+  - SAML: <https://github.com/18F/identity-saml-sinatra>
+    - Runs at <http://localhost:4567/>
+
+Running the sample application requires a few additional steps, but can be useful if you want to test the experience of a user being redirected to an external site, or if you want to configure different options of the authentication request, such as AAL or IAL.
 
 ### PIV/CAC authentication using PKI service
 
-The IdP's PIV/CAC features are not maintained as part of this codebase, and are instead managed in a
-separate application whose code can be found in the [`18F/identity-pki`](https://github.com/18f/identity-pki)
-GitHub repository.
+The IdP's PIV/CAC features are not maintained as part of this codebase, and are instead managed in a separate application whose code can be found in the [`18F/identity-pki`](https://github.com/18f/identity-pki) GitHub repository.
 
 In local development, you have two choices for working with PIV/CAC:
 
-- Follow the [setup instructions for `identity-pki`](https://github.com/18f/identity-pki#local-development)
-  and run the application in parallel to the IdP. The IdP is configured by default to connect to the
-  default port of a locally-running `identity-pki` instance (http://localhost:8443)
-- Override application configuration to set `identity_pki_disabled: true` in your local `config/application.yml`.
-  This will allow you to simulate PKI results without having an instance running, and can be useful
-  for testing different error scenarios or distinct PIV/CAC subject identifiers.
+- Follow the [setup instructions for `identity-pki`](https://github.com/18f/identity-pki#local-development) and run the application in parallel to the IdP. The IdP is configured by default to connect to the default port of a locally-running `identity-pki` instance (<http://localhost:8443>)
+- Override application configuration to set `identity_pki_disabled: true` in your local `config/application.yml`. This will allow you to simulate PKI results without having an instance running, and can be useful for testing different error scenarios or distinct PIV/CAC subject identifiers.
 
 ### Running tests locally
 
@@ -121,19 +122,19 @@ Login.gov uses the following tools for our testing:
 To run our full test suite locally, use the following command:
 
 ```
-$ make test
+make test
 ```
 
-Running the full test suite takes a very long time, so usually you'll want to run the individual
-test files or folders you're interested in:
+Running the full test suite takes a very long time, so usually you'll want to run the individual test files or folders you're interested in:
 
 ```
-$ bundle exec rspec spec/i18n_spec.rb
+bundle exec rspec spec/i18n_spec.rb
 ```
 
-Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+Check out our Makefile commands and learn more about how you can customize this command to run specific tests using rspec: <https://github.com/18F/identity-idp/blob/main/Makefile#L41>
 
 To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
+
 ```
 test:
   rack_timeout_service_timeout_seconds: 9_999_999_999
@@ -141,26 +142,24 @@ test:
 
 #### Showing the Browser
 
-  By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:
-
-  ```
-  $ SHOW_BROWSER=true bundle exec rspec spec/features/
-  ```
-
-  > [!TIP]
-  > Only JavaScript-enabled tests are configured to run using a real browser, since browser tests are slow to run. If you have a feature test you want to run in a real browser, you can add the `js` metadata to your test to mark it as requiring JavaScript:
-  > ```rb
-  > it 'does something', :js do … end
-  > ```
-#### Skipping asset compilation in feature tests
-
-To ensure that tests are run using the latest source code, JavaScript-enabled feature specs will
-compile all JavaScript and stylesheets in local development. This can be time-consuming if you're
-repeatedly running the same tests, so you can choose to skip the build by passing the
-`SKIP_BUILD=true` environment variable:
+By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:
 
 ```
-$ SKIP_BUILD=true bundle exec rspec spec/features
+SHOW_BROWSER=true bundle exec rspec spec/features/
+```
+
+> [!TIP] Only JavaScript-enabled tests are configured to run using a real browser, since browser tests are slow to run. If you have a feature test you want to run in a real browser, you can add the `js` metadata to your test to mark it as requiring JavaScript:
+>
+> ```rb
+> it 'does something', :js do … end
+> ```
+
+#### Skipping asset compilation in feature tests
+
+To ensure that tests are run using the latest source code, JavaScript-enabled feature specs will compile all JavaScript and stylesheets in local development. This can be time-consuming if you're repeatedly running the same tests, so you can choose to skip the build by passing the `SKIP_BUILD=true` environment variable:
+
+```
+SKIP_BUILD=true bundle exec rspec spec/features
 ```
 
 Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
@@ -170,45 +169,43 @@ for stylesheets.
 
 ### Viewing email messages
 
-  In local development, the application does not deliver real email messages. Instead, we use a tool
-  called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
+In local development, the application does not deliver real email messages. Instead, we use a tool called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
 
 #### Disabling letter opener new window behavior
 
-  Letter opener will open each outgoing email in a new browser window or tab. In cases where this
-  will be annoying the application also supports writing outgoing emails to a file. To write emails
-  to a file add the following config to the `development` group in `config/application.yml`:
+Letter opener will open each outgoing email in a new browser window or tab. In cases where this will be annoying the application also supports writing outgoing emails to a file. To write emails to a file add the following config to the `development` group in `config/application.yml`:
 
-  ```
-  development:
-    development_mailer_deliver_method: file
-  ```
+```
+development:
+  development_mailer_deliver_method: file
+```
 
-  After restarting the app emails will be written to the `tmp/mails` folder.
+After restarting the app emails will be written to the `tmp/mails` folder.
 
 #### Email template previews
 
-  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+To view email templates with placeholder values, visit <http://localhost:3000/rails/mailers/> to see a list of template previews.
 
 ### Translations
 
-  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
+Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
 
-  ```
-  $ make normalize_yaml
-  ```
+```
+make normalize_yaml
+```
 
-  If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
-  - http://localhost:3000 becomes http://localhost:3000/es
-  - http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email
+If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
+
+- <http://localhost:3000> becomes <http://localhost:3000/es>
+- <http://localhost:3000/sign_up/enter_email> becomes <http://localhost:3000/es/sign_up/enter_email>
 
 ### Viewing outbound SMS messages and phone calls
 
-  To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
+To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
 
 ### Viewing RISC push notifications
 
-To view [RISC Security Events](https://developers.login.gov/security-events/) push notifications delivered by the application, visit http://localhost:3000/test/push_notification.
+To view [RISC Security Events](https://developers.login.gov/security-events/) push notifications delivered by the application, visit <http://localhost:3000/test/push_notification>.
 
 ### Setting up Geolocation
 
@@ -216,8 +213,7 @@ Login.gov uses MaxMind Geolite2 for geolocation. To test geolocation locally, yo
 
 The Geolite2-City database can be downloaded from MaxMind's site at [https://dev.maxmind.com/geoip/geoip2/geolite2/](https://dev.maxmind.com/geoip/geoip2/geolite2/).
 
-Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
-The app will start using that Geolite2 file for geolocation after restart.
+Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`. The app will start using that Geolite2 file for geolocation after restart.
 
 ### Testing in a virtual machine
 
@@ -225,22 +221,24 @@ By default, the application binds to `localhost`. To test on a local network dev
 
 1. From the "Network" tab on:
 
-  * Monterey and below
+- Monterey and below
 
-    Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
+  Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
 
-  * Ventura
+- Ventura
 
-    Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+  Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
 
-    **IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.**
+  **IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.**
 
 2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
+
    ```yaml
    development:
      domain_name: <your-local-ip>:3000
      mailer_domain_name: <your-local-ip>:3000
    ```
+
    replacing `<your-local-ip>` with the address you found in Step 1
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. From on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
@@ -252,18 +250,18 @@ By default, the application binds to `localhost`. To test on a local network dev
 ### Testing the application over HTTPS
 
 ```
-$ make run-https
+make run-https
 ```
 
 Or, to run on a different host:
 
 ```
-$ HOST=0.0.0.0 make run-https
+HOST=0.0.0.0 make run-https
 ```
 
 The `run-https` Makefile target will automatically provision a self-signed certificate and start the built-in Rails server.
 
-You can now navigate to https://localhost:3000/ .
+You can now navigate to <https://localhost:3000/> .
 
 It's likely that you'll be prompted with a screen with warnings about an unsafe connection. This is normal. Find the option on the screen to bypass the warning. It may be hidden under an "Advanced" toggle button. In Chrome, you may not see an option to bypass this screen. In these situations, type the letters `thisisunsafe` while the screen is active, and you will be redirected automatically.
 
