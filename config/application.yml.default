@@ -477,6 +477,7 @@ use_vot_in_sp_requests: true
 usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 30
 usps_eipp_sponsor_id: ''
+usps_ipp_applicant_document_info_enabled: false
 usps_ipp_client_id: ''
 usps_ipp_enrollment_status_update_email_address: 'no-reply@login.gov'
 usps_ipp_password: ''
