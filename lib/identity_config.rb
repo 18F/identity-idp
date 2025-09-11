@@ -516,6 +516,7 @@ module IdentityConfig
     config.add(:usps_ipp_username, type: :string)
     config.add(:usps_ipp_enrollment_status_update_email_address, type: :string)
     config.add(:usps_mock_fallback, type: :boolean)
+    config.add(:usps_opt_in_ipp_applicant_with_document_data, type: :boolean)
     config.add(:usps_upload_enabled, type: :boolean)
     config.add(:usps_upload_sftp_directory, type: :string)
     config.add(:usps_upload_sftp_host, type: :string)

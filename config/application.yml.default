@@ -492,6 +492,7 @@ usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
+usps_opt_in_ipp_applicant_with_document_data: false
 usps_upload_enabled: false
 usps_upload_sftp_directory: ''
 usps_upload_sftp_host: ''
