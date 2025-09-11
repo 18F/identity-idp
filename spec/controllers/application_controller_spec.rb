@@ -620,19 +620,11 @@ RSpec.describe ApplicationController do
     context 'when SP is not eligible for one account' do
       let(:issuer2) { 'wrong.com' }
       let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
-      let(:profile2) { create(:profile, :facial_match_proof) }
       let(:profile) do
         create(:profile, :active, user: user, initiating_service_provider_issuer: sp.issuer)
       end
 
       it 'returns false' do
-        get :index
-        expect(response.body).to eq('false')
-      end
-
-      it 'returns false even with duplicate profiles' do
-        create(:duplicate_profile_set, profile_ids: [profile.id], service_provider: 'wrong-sp')
-
         get :index
         expect(response.body).to eq('false')
       end
@@ -647,25 +639,63 @@ RSpec.describe ApplicationController do
       end
 
       context 'when user has active profile' do
-        let!(:active_profile) { create(:profile, :active, user: user) }
+        let!(:active_profile) { create(:profile, :active, :facial_match_proof, user: user) }
 
-        context 'when no duplicate profile ids found in session' do
+        context 'when no duplicate profile set found for user' do
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(nil)
+          end
           it 'returns false' do
             get :index
             expect(response.body).to eq('false')
           end
         end
-        context 'when duplicate profile ids found' do
+
+        context 'with duplicate profile but for different sp' do
+          let(:issuer2) { 'wrong.com' }
+          let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+
+          let(:duplicate_profile_set) do
+            create(
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: 'wrong-sp'
+            )
+          end
           before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
+          end
+
+          it 'returns false even with duplicate profiles' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
+        context 'when duplicate profile set found for user' do
+          let(:duplicate_profile_set) do
             create(
               :duplicate_profile_set, profile_ids: [active_profile.id],
                                       service_provider: sp.issuer
             )
           end
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
+          end
 
           it 'returns true' do
             get :index
             expect(response.body).to eq('true')
+          end
+
+          context 'when duplicate profile set is already closed' do
+            it 'returns false' do
+              duplicate_profile_set.update!(closed_at: Time.zone.now)
+              get :index
+              expect(response.body).to eq('false')
+            end
           end
         end
       end
