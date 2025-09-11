@@ -14,9 +14,8 @@ module Idv
 
     attr_accessor :url_options
 
-    def initialize(decorated_sp_session:, passport_allowed:)
+    def initialize(decorated_sp_session:)
       @decorated_sp_session = decorated_sp_session
-      @passport_allowed = passport_allowed
       @url_options = {}
     end
 
@@ -69,16 +68,14 @@ module Idv
 
     private
 
-    attr_reader :decorated_sp_session, :passport_allowed
+    attr_reader :decorated_sp_session
 
     def current_user
       decorated_sp_session&.current_user
     end
 
     def id_type_copy
-      return t('doc_auth.instructions.bullet1b') if passport_allowed
-
-      t('doc_auth.instructions.bullet1a')
+      t('doc_auth.instructions.bullet1')
     end
 
     def bullet_point(bullet, text)

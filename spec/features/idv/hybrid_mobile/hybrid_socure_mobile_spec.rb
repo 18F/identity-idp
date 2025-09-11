@@ -67,6 +67,7 @@ RSpec.describe 'Hybrid Flow' do
       perform_in_browser(:mobile) do
         visit @sms_link
 
+        complete_choose_id_type_step
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
         expect(page).to have_current_path(root_url)
@@ -386,6 +387,7 @@ RSpec.describe 'Hybrid Flow' do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
         expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
         click_on t('links.cancel')
@@ -426,6 +428,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
 
           click_idv_continue
@@ -517,7 +520,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           max_attempts.times do
@@ -535,6 +538,73 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:desktop) do
           expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
+        end
+      end
+    end
+
+    context 'user reaches rate limit and succeeds on last request' do
+      let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
+      let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
+        ['https://1.example.test/thepath', 'https://2.example.test/thepath']
+      end
+
+      before do
+        stub_request(:post, "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore")
+          .to_return(
+            headers: {
+              'Content-Type' => 'application/json',
+            },
+            body: SocureDocvFixtures.fail_json(reason_codes: ['R287']),
+          )
+          .times(max_attempts - 1)
+          .then
+          .to_return do |_request|
+            sleep(1)
+            {
+              headers: {
+                'Content-Type' => 'application/json',
+              },
+              body: SocureDocvFixtures.pass_json,
+            }
+          end
+      end
+
+      it 'shows capture complete on mobile and navigates to SSN on desktop', js: true do
+        expect(SocureDocvRepeatWebhookJob).to receive(:perform_later)
+          .exactly(6 * max_attempts * socure_docv_webhook_repeat_endpoints.length)
+          .times.and_call_original
+
+        perform_in_browser(:desktop) do
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+          complete_choose_id_type_step
+          click_idv_continue
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          max_attempts.times do
+            socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          end
+
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+
+          visit idv_hybrid_mobile_socure_document_capture_url
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_ssn_path, wait: 10)
         end
       end
     end
@@ -569,7 +639,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -622,7 +692,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           body = JSON.parse(SocureDocvFixtures.pass_json)
           body['documentVerification']['documentType']['type'] = 'Non-Document-Type'
           remove_request_stub(@docv_stub)
@@ -684,7 +754,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           click_idv_continue
           expect(page).to have_current_path(fake_socure_document_capture_app_url)
           socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
@@ -821,7 +891,7 @@ RSpec.describe 'Hybrid Flow' do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         stub_docv_verification_data_fail_with(
           docv_transaction_token: @docv_transaction_token,
           reason_codes: [socure_error_code],
@@ -891,7 +961,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           expect(page).to have_text(t('doc_auth.headers.general.network_error'))
           expect(page).to have_text(t('doc_auth.errors.general.new_network_error'))
           expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
@@ -950,7 +1020,7 @@ RSpec.describe 'Hybrid Flow' do
 
         perform_in_browser(:mobile) do
           visit @sms_link
-
+          complete_choose_id_type_step
           stub_docv_verification_data_pass(docv_transaction_token: @docv_transaction_token, user:)
 
           click_idv_continue

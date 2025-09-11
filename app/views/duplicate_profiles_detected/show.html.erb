@@ -8,10 +8,7 @@
           'duplicate_profiles_detected.intro_html',
           link_html: new_tab_link_to(
             t('duplicate_profiles_detected.intro.link'),
-            MarketingSite.help_center_article_url(
-              category: 'manage-your-account',
-              article: 'resolve-duplicate-accounts',
-            ),
+            MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'resolve-duplicate-accounts'),
           ),
           app_name: APP_NAME,
           sp_name: decorated_sp_session.sp_name,
@@ -29,10 +26,7 @@
                'duplicate_profiles_detected.delete_duplicates.details_html',
                link_html: new_tab_link_to(
                  t('duplicate_profiles_detected.delete_duplicates.link'),
-                 MarketingSite.help_center_article_url(
-                   category: 'manage-your-account',
-                   article: 'delete-your-account',
-                 ),
+                 MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'delete-your-account'),
                ),
              ) %></p>
     <% end %>
@@ -64,7 +58,11 @@
   </div>
 
   <div class="margin-top-4 grid-row">
-    <%= new_tab_link_to(t('duplicate_profiles_detected.get_help'), '/', class: 'usa-button usa-button usa-button--wide usa-button--big') %>
+    <%= new_tab_link_to(
+          t('duplicate_profiles_detected.get_help'),
+          MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'resolve-duplicate-accounts'),
+          class: 'usa-button usa-button usa-button--wide usa-button--big',
+        ) %>
   </div>
 
   <div class="margin-top-3 grid-col-4">
@@ -84,5 +82,3 @@
         ).with_content(t('duplicate_profiles_detected.cant_access')) %>
   </div>
 <% end %>
-  
-

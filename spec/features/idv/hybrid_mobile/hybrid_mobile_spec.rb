@@ -54,7 +54,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       # Confirm that jumping to LinkSent page does not cause errors
       visit idv_link_sent_url
       expect(page).to have_current_path(root_url)
-
+      visit idv_hybrid_mobile_choose_id_type_path
+      complete_choose_id_type_step
       # Confirm that we end up on the LN / Mock page even if we try to
       # go to the Socure one.
       visit idv_hybrid_mobile_socure_document_capture_url
@@ -582,6 +583,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
+      complete_choose_id_type_step
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
       click_on t('links.cancel')
@@ -625,7 +627,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         (max_attempts - 1).times do
           attach_and_submit_images
           click_on t('idv.failure.button.warning')
@@ -715,7 +717,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         # final attempt
         attach_and_submit_images
 
@@ -745,7 +747,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
         click_idv_continue
@@ -778,7 +780,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
-
+        complete_choose_id_type_step
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
@@ -835,6 +837,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       perform_in_browser(:mobile) do
         visit @sms_link
 
+        complete_choose_id_type_step
+
         DocAuth::Mock::DocAuthMockClient.reset!
 
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
@@ -884,7 +888,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
-
+      complete_choose_id_type_step
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
 
       attach_liveness_images

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
   let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
   let(:user) { create(:user) }
-  let(:passport_status) { 'allowed' }
+  let(:passport_status) { nil }
 
   let!(:document_capture_session) do
     create(
@@ -34,23 +34,12 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     it 'includes correct before_actions' do
       expect(subject).to have_actions(
         :before,
-        :redirect_if_passport_not_available,
-      )
-      expect(subject).to have_actions(
-        :before,
         :check_valid_document_capture_session,
       )
     end
   end
-  describe '#show' do
-    context 'passport not available' do
-      let(:passport_status) { nil }
 
-      it 'redirects to the vendor document capture' do
-        get :show
-        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
-      end
-    end
+  describe '#show' do
     context 'passport is available' do
       let(:analytics_name) { :idv_doc_auth_choose_id_type_visited }
       let(:analytics_args) do

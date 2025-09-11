@@ -132,7 +132,6 @@ module IdentityConfig
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_mock_dos_api, type: :boolean)
     config.add(:doc_auth_passports_enabled, type: :boolean)
-    config.add(:doc_auth_passports_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_default, type: :string)
     config.add(:doc_auth_passport_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_socure_percent, type: :integer)

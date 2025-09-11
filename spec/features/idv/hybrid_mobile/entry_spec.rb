@@ -31,7 +31,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
       Capybara.using_session('mobile') do
         visit link_to_visit
-        # Should have redirected to the actual doc capture url
+        complete_choose_id_type_step
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_path)
 
         # Confirm that we end up on the LN / Mock page even if we try to
@@ -53,7 +53,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
         Capybara.using_session('mobile') do
           visit link_to_visit
-          # Should have redirected to the actual doc capture url
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_path)
 
           # Confirm that we end up on the LN / Mock page even if we try to
@@ -78,7 +78,7 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
       Capybara.using_session('mobile') do
         visit link_to_visit
-        # Should have redirected to the actual doc capture url
+        complete_choose_id_type_step
         expect(page).to have_current_path(idv_hybrid_mobile_document_capture_path)
       end
     end

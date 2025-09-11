@@ -7,7 +7,6 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   PASSPORT_STATUSES = [
-    'allowed',
     'not_requested',
     'requested',
   ].freeze
@@ -20,8 +19,9 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   # @param doc_auth_response [DocAuth::Response]
+  # @param attempt [Integer] The current doc auth attempt number.
   # @param mrz_status [Symbol, nil] MRZ validation status for passport documents
-  def store_result_from_response(doc_auth_response, mrz_response: nil)
+  def store_result_from_response(doc_auth_response, attempt:, mrz_response: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -33,6 +33,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
     session_result.mrz_status = determine_mrz_status(mrz_response)
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -44,8 +45,8 @@ class DocumentCaptureSession < ApplicationRecord
 
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
                              passport_image_fingerprint:, selfie_image_fingerprint:,
-                             doc_auth_success:, selfie_status:,
-                             errors: nil, mrz_status: :not_processed)
+                             doc_auth_success:, selfie_status:, attempt:, errors: nil,
+                             mrz_status: :not_processed)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -61,6 +62,7 @@ class DocumentCaptureSession < ApplicationRecord
 
     session_result.errors = errors
     session_result.mrz_status = mrz_status
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -108,12 +110,24 @@ class DocumentCaptureSession < ApplicationRecord
     update!(ocr_confirmation_pending: false)
   end
 
-  def passport_allowed?
-    PASSPORT_STATUSES.include? passport_status
-  end
-
   def passport_requested?
     passport_status == 'requested'
+  end
+
+  def request_passport!
+    update!(
+      passport_status: 'requested',
+      doc_auth_vendor: nil,
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    )
+  end
+
+  def request_state_id!
+    attrs = passport_not_requested_attributes
+    attrs.merge!(clear_socure_attributes) if passport_requested?
+
+    update!(attrs)
   end
 
   private
@@ -126,5 +140,19 @@ class DocumentCaptureSession < ApplicationRecord
     return :not_processed unless mrz_response
 
     mrz_response.success? ? :pass : :failed
+  end
+
+  def passport_not_requested_attributes
+    {
+      passport_status: 'not_requested',
+      doc_auth_vendor: nil,
+    }
+  end
+
+  def clear_socure_attributes
+    {
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    }
   end
 end

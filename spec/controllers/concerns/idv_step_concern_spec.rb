@@ -86,7 +86,7 @@ RSpec.describe 'IdvStepConcern' do
       it 'redirects to document capture' do
         get :show
 
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
 
       context 'when IPP proofing route is enabled' do
@@ -105,35 +105,6 @@ RSpec.describe 'IdvStepConcern' do
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
-
-      context 'when passport is allowed' do
-        before do
-          idv_session.passport_allowed = true
-        end
-
-        it 'redirects to choose id type' do
-          get :show
-
-          expect(response).to redirect_to(idv_choose_id_type_url)
-        end
-
-        context 'when IPP proofing route is enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-            allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-              .and_return(true)
-            allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
-              .and_return(true)
-            allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-          end
-
-          it 'redirects to how to verify' do
-            get :show
-
-            expect(response).to redirect_to(idv_how_to_verify_url)
-          end
-        end
-      end
     end
 
     context 'hybrid flow not available' do
@@ -147,7 +118,7 @@ RSpec.describe 'IdvStepConcern' do
       end
 
       it 'redirects to document capture' do
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
     end
   end

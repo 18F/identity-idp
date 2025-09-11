@@ -57,7 +57,7 @@ module Idv
     end
 
     def zipcode_valid?
-      return if zipcode.is_a?(String) && zipcode.present?
+      return if zipcode.is_a?(String) && /^\d{5}(-\d{4})?$/.match?(zipcode)
 
       errors.add(:zipcode, generic_error, type: :zipcode)
     end

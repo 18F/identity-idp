@@ -4,6 +4,7 @@ RSpec.describe Idv::InPersonController do
   include PassportApiHelpers
 
   let(:in_person_proofing_enabled) { false }
+  let(:in_person_passports_enabled) { true }
   let(:sp) { nil }
   let(:user) { build(:user) }
   let(:idv_session) do
@@ -15,6 +16,8 @@ RSpec.describe Idv::InPersonController do
   end
 
   before do
+    allow(IdentityConfig.store).to receive(:in_person_passports_enabled)
+      .and_return(in_person_passports_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
       .and_return(in_person_proofing_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
@@ -70,7 +73,12 @@ RSpec.describe Idv::InPersonController do
               create(:in_person_enrollment, :establishing, user: user)
             end
 
-            context 'when passports are not allowed' do
+            context 'when passports are not enabled' do
+              before do
+                allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+                  .and_return(false)
+              end
+
               it 'initializes the in-person session' do
                 get :index
 
@@ -92,11 +100,10 @@ RSpec.describe Idv::InPersonController do
               end
             end
 
-            context 'when passports are allowed' do
+            context 'when passports are enabled' do
               let(:document_capture_session) do
                 DocumentCaptureSession.create(
                   user: user, requested_at: Time.zone.now,
-                  passport_status: 'allowed'
                 )
               end
               let(:document_capture_session_uuid) { document_capture_session&.uuid }
@@ -158,14 +165,13 @@ RSpec.describe Idv::InPersonController do
             let(:document_capture_session) do
               DocumentCaptureSession.create(
                 user: user, requested_at: Time.zone.now,
-                passport_status: 'allowed'
               )
             end
             let(:document_capture_session_uuid) { document_capture_session&.uuid }
+            let(:in_person_passports_enabled) { false }
             before do
               idv_session.document_capture_session_uuid = document_capture_session_uuid
               create(:in_person_enrollment, :establishing, user: user)
-              allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
             end
 
             it 'initializes the in-person session' do

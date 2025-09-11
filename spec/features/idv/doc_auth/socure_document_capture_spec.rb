@@ -51,6 +51,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
+        complete_choose_id_type_step
         click_idv_continue
       end
 
@@ -302,7 +303,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
-
+            complete_choose_id_type_step
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
             expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
             expect(fake_analytics).to have_logged_event(
@@ -401,7 +402,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           visit_idp_from_oidc_sp_with_ial2
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
-
+          complete_choose_id_type_step
           expect(page).to have_current_path(idv_socure_document_capture_url)
           expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
           click_idv_continue
@@ -639,6 +640,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
+        complete_choose_id_type_step
       end
 
       it 'proceeds to the next page with valid info' do
@@ -740,6 +742,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step
+      complete_choose_id_type_step
       click_idv_continue
       socure_docv_upload_documents(
         docv_transaction_token: @docv_transaction_token,
@@ -800,6 +803,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
 
       complete_doc_auth_steps_before_hybrid_handoff_step
+      complete_choose_id_type_step
       click_idv_continue
 
       socure_docv_upload_documents(

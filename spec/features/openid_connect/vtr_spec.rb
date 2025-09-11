@@ -128,6 +128,9 @@ RSpec.feature 'OIDC requests using VTR' do
 
     click_button(t('doc_auth.buttons.upload_picture'))
 
+    choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+    click_continue
+
     expect(page).to have_content(t('doc_auth.headings.document_capture'))
   end
 end
