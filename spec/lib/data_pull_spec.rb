@@ -575,6 +575,55 @@ RSpec.describe DataPull do
     end
   end
 
+  describe DataPull::UuidExport do
+    subject(:subtask) { DataPull::DuplicateProfileLookup.new }
+
+    let(:user1) { create(:user, :fully_registered) }
+    let(:user2) { create(:user, :fully_registered) }
+
+    let(:service_provider) { create(:service_provider) }
+
+    let(:profile1) { create(:profile, :active, user: user1) }
+    let(:profile2) { create(:profile, :active, user: user2) }
+    let(:profile3) { create(:profile, :active) }
+    let(:profile4) { create(:profile, :active) }
+
+    let!(:duplicate_profile_set) do
+      create(
+        :duplicate_profile_set,
+        service_provider: service_provider.issuer,
+        profile_ids: [profile1.id, profile3.id, profile4.id],
+      )
+    end
+
+    let(:args) do
+      [user1.email_addresses.sole.email,
+       user2.email_addresses.sole.email,
+       'does-not-exist']
+    end
+
+    let(:include_missing) { true }
+
+    subject(:result) { subtask.run(args: args, config: config) }
+
+    describe '#run' do
+      let(:config) { ScriptBase::Config.new(include_missing: include_missing) }
+
+      it 'returns duplicates if they exist', aggregate_failures: true do
+        expected_table = [
+          ['email', 'uuid', 'service_provider', 'duplicate_uuids'],
+          [user1.email_addresses.sole.email, user1.uuid, service_provider.issuer,
+           [profile3.user.uuid, profile4.user.uuid]],
+          [user2.email_addresses.sole.email, '[DUPLICATES NOT FOUND]', nil, nil],
+          ['does-not-exist', '[EMAIL NOT FOUND]', nil, nil],
+        ]
+        expect(result.table).to match_array(expected_table)
+        expect(result.subtask).to eq('duplicate-profile-lookup')
+        expect(result.uuids).to match_array([user1.uuid])
+      end
+    end
+  end
+
   # Assert that each row has the same length
   def expect_consistent_row_length(table)
     first_row_length = table.first.length
