@@ -118,7 +118,7 @@ class Profile < ApplicationRecord
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      reload
+      reload if id.present?
       update!(attrs)
     end
 
