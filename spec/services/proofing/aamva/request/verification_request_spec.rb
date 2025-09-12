@@ -6,6 +6,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   let(:config) { AamvaFixtures.example_config }
   let(:state_id_jurisdiction) { 'CA' }
   let(:state_id_number) { '123456789' }
+  let(:state_id_expiration) { nil }
   let(:last_name) { 'McTesterson' }
 
   let(:applicant_data) do
@@ -28,7 +29,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       state_id_number: state_id_number,
       state_id_jurisdiction: state_id_jurisdiction,
       document_type_received: 'drivers_license',
-      state_id_expiration: nil,
+      state_id_expiration: state_id_expiration,
       state_id_issued: nil,
     }
   end
@@ -100,12 +101,19 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.requested_attributes).to include(state_id_issued: :present)
     end
 
-    it 'includes expiration date if present' do
-      applicant.state_id_data.state_id_expiration = '2030-01-02'
-      expect(subject.body).to include(
-        '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
-      )
-      expect(subject.requested_attributes).to include(state_id_expiration: :present)
+    context 'with state id expiration' do
+      let(:state_id_expiration) { '2030-01-02' }
+
+      it 'includes the state id expiration date if present' do
+        document = REXML::Document.new(subject.body)
+        exp_node = REXML::XPath.first(
+          document,
+          '//dldv:verifyDriverLicenseDataRequest/aa:DriverLicenseExpirationDate',
+        )
+
+        expect(exp_node.text).to eq('2030-01-02')
+        expect(subject.requested_attributes).to include(state_id_expiration: :present)
+      end
     end
 
     it 'includes height if it is present' do
