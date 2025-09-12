@@ -142,7 +142,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def image_storage_data(ial2:)
     keys = [:front, :back]
-    keys += [:selfie] if ial2
+    keys.push(:selfie) if ial2
 
     keys.index_with do |key|
       {
