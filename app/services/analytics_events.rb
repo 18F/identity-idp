@@ -6526,8 +6526,8 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when fraud clears duplicate profile
-  # @param [Boolean] success Whether the profile was successfully cleared
+  # Tracks when the fraud investigation is inconclusive
+  # @param [Boolean] success Whether the duplicate was successfully closed
   # @param [Hash] errors Errors resulting from clearing
   def one_account_close_inconclusive_duplicate(success:, errors:, **extra)
     track_event(
