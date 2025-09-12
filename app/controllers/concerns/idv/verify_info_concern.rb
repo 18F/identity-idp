@@ -58,6 +58,8 @@ module Idv
         { source: :hybrid_handoff, phone: idv_session.phone_for_mobile_flow }
       elsif current_user.default_phone_configuration
         { source: :mfa, phone: current_user.default_phone_configuration.formatted_phone }
+      elsif idv_session.phone_for_trusted_referee_flow
+        { phone: idv_session.phone_for_trusted_referee_flow }
       end
     end
 

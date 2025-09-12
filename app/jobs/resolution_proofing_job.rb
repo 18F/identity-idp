@@ -65,6 +65,8 @@ class ResolutionProofingJob < ApplicationJob
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
+  rescue => e
+    byebug
   ensure
     logger_info_hash(
       name: 'ProofResolution',
@@ -120,7 +122,8 @@ class ResolutionProofingJob < ApplicationJob
     current_sp:,
     proofing_vendor:
   )
-    result = progressive_proofer(user:, proofing_vendor:).proof(
+    user_email = user_email_for_proofing(user) || applicant_pii[:email]
+    result = progressive_proofer(user:, proofing_vendor:, user_email:).proof(
       applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
@@ -142,7 +145,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def user_email_for_proofing(user)
-    user.last_sign_in_email_address.email
+    user.last_sign_in_email_address&.email
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)
@@ -158,9 +161,9 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:, proofing_vendor:)
+  def progressive_proofer(user:, proofing_vendor:, user_email:)
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
-      user_uuid: user.uuid, proofing_vendor:, user_email: user_email_for_proofing(user),
+      user_uuid: user.uuid, proofing_vendor:, user_email:,
     )
   end
 

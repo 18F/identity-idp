@@ -6,6 +6,7 @@ module Idv
   # @attr applicant [Struct, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
+  # @attr email_for_trusted_referee_flow [String, nil]
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
   # @attr gpo_code_verified [Boolean, nil]
@@ -21,6 +22,7 @@ module Idv
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
   # @attr phone_for_mobile_flow [String, nil]
+  # @attr phone_for_trusted_referee_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
   # @attr profile_id [Integer, nil]
@@ -53,6 +55,7 @@ module Idv
       bucketed_doc_auth_vendor
       doc_auth_vendor
       document_capture_session_uuid
+      email_for_trusted_referee_flow
       flow_path
       go_back_path
       gpo_code_verified
@@ -67,6 +70,7 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
+      phone_for_trusted_referee_flow
       previous_phone_step_params
       previous_ssn
       profile_id
