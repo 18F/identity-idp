@@ -555,7 +555,7 @@ RSpec.describe Profile do
 
     context 'When a profile already has a verified_at timestamp' do
       it 'does not update the timestamp when #activate is called' do
-        profile = create(:profile, :verified, user: user)
+        profile = create(:profile, :verified, user: user, verified_at: 1.day.ago)
         original_timestamp = profile.verified_at
         expect(profile.reason_not_to_activate).to be_nil
         profile.activate
