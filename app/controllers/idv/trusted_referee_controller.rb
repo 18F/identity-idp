@@ -4,6 +4,7 @@ module Idv
   class TrustedRefereeController < ApplicationController
     include RenderConditionConcern
     include Idv::VerifyInfoConcern
+    include EnterPasswordConcern
 
     skip_before_action :verify_authenticity_token
     # check_or_render_not_found -> { IdentityConfig.store.trusted_referee_enabled }
@@ -13,6 +14,20 @@ module Idv
       begin
         log_request
         proof_applicant
+        i = 0
+        proofing_job_result = load_async_state
+        until proofing_job_result.done?
+          break if i > 60
+          sleep(1)
+          i += 1
+          proofing_job_result = load_async_state
+        end
+        if proofing_job_result.done?
+          if proofing_job_result.result[:success] == true
+            move_applicant_to_idv_session
+            init_profile # where to call this?
+          end
+        end
       rescue StandardError => e
         byebug
         NewRelic::Agent.notice_error(e)
@@ -158,7 +173,7 @@ module Idv
         email = params.dig('email').downcase
         user = User.find_with_email(email)
         return user if user
-        user = User.new
+        user = User.new(email:, password:, password_confirmation: password)
         user.email_addresses.build(
           user: user,
           email: email,
@@ -182,6 +197,10 @@ module Idv
         email: params[:email],
         phone: params[:phone],
       ).with_indifferent_access
+    end
+
+    def password
+      @password ||= Random.hex
     end
   end
 end

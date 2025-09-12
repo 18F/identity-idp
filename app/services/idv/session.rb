@@ -133,9 +133,9 @@ module Idv
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
-        gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
+        gpo_verification_needed: phone_for_trusted_referee_flow.present? ? nil : !phone_confirmed? || verify_by_mail?,
         in_person_verification_needed: active_enrollment.present?,
-        selfie_check_performed: session[:selfie_check_performed],
+        selfie_check_performed: phone_for_trusted_referee_flow.present? || session[:selfie_check_performed],
         proofing_components:,
       )
 

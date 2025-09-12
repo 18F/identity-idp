@@ -47,6 +47,7 @@ module Idv
 
     private
 
+    # to add trusted referee
     def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
       if in_person_verification_needed
         if IdentityConfig.store.in_person_proofing_enforce_tmx &&
