@@ -106,4 +106,108 @@ RSpec.describe SocureErrorPresenter do
       end
     end
   end
+
+  describe '#options' do
+    subject { presenter.options }
+
+    context 'when error code is timeout' do
+      let(:error_code) { :timeout }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when error code is url_not_found' do
+      let(:error_code) { :url_not_found }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when error code is not timeout or url_not_found' do
+      let(:error_code) { :different_error }
+
+      context 'when the flow path is hybrid' do
+        let(:flow_path) { :hybrid }
+
+        it 'returns an array of options including a hybrid flow choose id type option' do
+          is_expected.to eq(
+            [
+              {
+                url: '/verify/hybrid_mobile/choose_id_type',
+                text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+                isExternal: false,
+              },
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'how-to-add-images-of-your-state-issued-id',
+                ),
+                isExternal: true,
+                text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+              },
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'accepted-identification-documents',
+                ),
+                text: I18n.t('idv.troubleshooting.options.supported_documents'),
+                isExternal: true,
+              },
+              {
+                url: presenter.return_to_sp_failure_to_proof_url(step: 'document_capture'),
+                text: t(
+                  'idv.failure.verify.fail_link_html',
+                  sp_name: sp_name,
+                ),
+                isExternal: true,
+              },
+            ],
+          )
+        end
+      end
+
+      context 'when the flow path is not hybrid' do
+        let(:flow_path) { :standard }
+
+        it 'returns an array of options including a standard flow choose_id_type option' do
+          is_expected.to eq(
+            [
+              {
+                url: '/verify/choose_id_type',
+                text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+                isExternal: false,
+              },
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'how-to-add-images-of-your-state-issued-id',
+                ),
+                isExternal: true,
+                text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+              },
+              {
+                url: presenter.help_center_redirect_path(
+                  category: 'verify-your-identity',
+                  article: 'accepted-identification-documents',
+                ),
+                text: I18n.t('idv.troubleshooting.options.supported_documents'),
+                isExternal: true,
+              },
+              {
+                url: presenter.return_to_sp_failure_to_proof_url(step: 'document_capture'),
+                text: t(
+                  'idv.failure.verify.fail_link_html',
+                  sp_name: sp_name,
+                ),
+                isExternal: true,
+              },
+            ],
+          )
+        end
+      end
+    end
+  end
 end

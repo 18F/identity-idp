@@ -43,6 +43,7 @@ RSpec.describe 'Hybrid Flow' do
         user:,
       )
     end
+
     it 'proofs and hands off to mobile', js: true do
       expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 
@@ -199,6 +200,9 @@ RSpec.describe 'Hybrid Flow' do
 
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
           expect(page).to have_content(t('idv.errors.try_again_later'))
+          expect(page).to have_content(
+            I18n.t('idv.troubleshooting.options.use_another_id_type'),
+          )
 
           click_on t('idv.failure.button.warning')
 
@@ -410,6 +414,8 @@ RSpec.describe 'Hybrid Flow' do
           .to receive(:in_person_proofing_enabled).and_return(true)
         allow(IdentityConfig.store)
           .to receive(:in_person_doc_auth_button_enabled).and_return(true)
+        allow(IdentityConfig.store)
+          .to receive(:doc_auth_passports_enabled).and_return(false)
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
           .and_return(0)
@@ -453,6 +459,9 @@ RSpec.describe 'Hybrid Flow' do
           visit idv_hybrid_mobile_socure_document_capture_update_url
           expect(page).to have_current_path(timeout_socure_route)
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+          expect(page).to have_content(
+            I18n.t('idv.troubleshooting.options.use_another_id_type'),
+          )
 
           # Try in person
           click_on t('in_person_proofing.body.cta.button')
