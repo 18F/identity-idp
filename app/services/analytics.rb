@@ -20,7 +20,6 @@ class Analytics
   end
 
   def track_event(event, attributes = {})
-  byebug
     attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
