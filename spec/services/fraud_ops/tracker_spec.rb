@@ -1,8 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe FraudOpsTracker do
+RSpec.describe FraudOps::Tracker do
   let(:user) { create(:user) }
   let(:sp) { create(:service_provider) }
+  let(:fraud_ops_private_key) { OpenSSL::PKey::RSA.new(2048) }
+  let(:fraud_ops_public_key) { fraud_ops_private_key.public_key }
   let(:request) do
     double(
       'request', user_agent: 'test browser', remote_ip: '192.168.1.1', cookies: {},
@@ -14,7 +16,7 @@ RSpec.describe FraudOpsTracker do
   let(:sp_redirect_uri) { 'https://example.com/redirect' }
 
   subject(:tracker) do
-    FraudOpsTracker.new(
+    FraudOps::Tracker.new(
       session_id: session_id,
       request: request,
       user: user,
@@ -26,8 +28,8 @@ RSpec.describe FraudOpsTracker do
 
   before do
     allow(IdentityConfig.store).to receive(:fraud_ops_tracker_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:fraud_ops_encryption_key).and_return(
-      Base64.encode64(SecureRandom.random_bytes(32)),
+    allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return(
+      fraud_ops_public_key.to_pem,
     )
     allow(IdentityConfig.store).to receive(:fraud_ops_event_ttl_seconds).and_return(604800)
     allow(IdentityConfig.store).to receive(:aws_region).and_return('us-east-1')
@@ -40,12 +42,12 @@ RSpec.describe FraudOpsTracker do
       expect(tracker).to respond_to(:session_timeout)
     end
 
-    it 'uses FraudOpsRedisClientWrapper for Redis operations' do
-      redis_wrapper = instance_double(FraudOpsRedisClientWrapper)
-      allow(FraudOpsRedisClientWrapper).to receive(:new).and_return(redis_wrapper)
+    it 'uses FraudOps::RedisClient for Redis operations' do
+      redis_wrapper = instance_double(FraudOps::RedisClient)
+      allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
       allow(redis_wrapper).to receive(:write_event)
 
-      new_tracker = FraudOpsTracker.new(
+      new_tracker = FraudOps::Tracker.new(
         session_id: SecureRandom.hex(16),
         request: request,
         user: user,

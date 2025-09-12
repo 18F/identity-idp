@@ -188,7 +188,7 @@ module IdentityConfig
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:fraud_ops_tracker_enabled, type: :boolean)
-    config.add(:fraud_ops_encryption_key, type: :string)
+    config.add(:fraud_ops_public_key, type: :string)
     config.add(:fraud_ops_s3_bucket, type: :string)
     config.add(:fraud_ops_event_ttl_seconds, type: :integer)
     config.add(:irs_registration_funnel_issuers, type: :json)

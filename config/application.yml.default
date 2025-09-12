@@ -172,6 +172,7 @@ feature_idv_hybrid_flow_enabled: true
 fraud_ops_tracker_enabled: false
 fraud_ops_encryption_key: ''
 fraud_ops_event_ttl_seconds: 604800
+fraud_ops_public_key: ''
 fraud_ops_s3_bucket: ''
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
@@ -620,6 +621,7 @@ test:
   domain_name: www.example.com
   dos_passport_composite_healthcheck_endpoint: 'https://dos-passport-api.test/composite-healthcheck/'
   email_registrations_per_ip_limit: 3
+  fraud_ops_public_key: 123abc
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true

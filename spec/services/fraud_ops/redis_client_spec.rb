@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe FraudOpsRedisClient do
-  subject(:redis_client) { FraudOpsRedisClient.new }
+RSpec.describe FraudOps::RedisClient do
+  subject(:redis_client) { FraudOps::RedisClient.new }
 
   before do
     allow(IdentityConfig.store).to receive(:fraud_ops_event_ttl_seconds).and_return(604800)
@@ -12,14 +12,14 @@ RSpec.describe FraudOpsRedisClient do
   end
 
   describe '#write_event' do
-    it 'writes an event to Redis with expiration' do
+    it 'writes a JWE token to Redis with expiration' do
       event_key = SecureRandom.uuid
-      encrypted_data = 'encrypted-test-data'
+      jwe_token = 'eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.test-jwe-token'
       timestamp = Time.zone.now
 
       redis_client.write_event(
         event_key: event_key,
-        encrypted_data: encrypted_data,
+        jwe: jwe_token,
         timestamp: timestamp,
       )
 
@@ -29,7 +29,7 @@ RSpec.describe FraudOpsRedisClient do
           sec: 0,
         ).iso8601}"
         stored_data = client.hget(hourly_key, event_key)
-        expect(stored_data).to eq(encrypted_data)
+        expect(stored_data).to eq(jwe_token)
 
         ttl = client.ttl(hourly_key)
         expect(ttl).to be > 0
@@ -43,17 +43,17 @@ RSpec.describe FraudOpsRedisClient do
       3.times do |i|
         redis_client.write_event(
           event_key: "test-event-#{i}",
-          encrypted_data: "encrypted-data-#{i}",
+          jwe: "test-jwe-token-#{i}",
           timestamp: Time.zone.now,
         )
       end
     end
 
-    it 'reads all events from Redis' do
+    it 'reads all JWE tokens from Redis' do
       events = redis_client.read_all_events
 
       expect(events.keys).to include('test-event-0', 'test-event-1', 'test-event-2')
-      expect(events['test-event-0']).to eq('encrypted-data-0')
+      expect(events['test-event-0']).to eq('test-jwe-token-0')
     end
 
     it 'respects batch size' do
@@ -67,12 +67,12 @@ RSpec.describe FraudOpsRedisClient do
     before do
       redis_client.write_event(
         event_key: 'delete-me',
-        encrypted_data: 'test-data',
+        jwe: 'test-jwe-token',
         timestamp: Time.zone.now,
       )
       redis_client.write_event(
         event_key: 'keep-me',
-        encrypted_data: 'test-data',
+        jwe: 'test-jwe-token',
         timestamp: Time.zone.now,
       )
     end
