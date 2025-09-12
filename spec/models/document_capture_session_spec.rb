@@ -174,7 +174,7 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe('#store_failed_auth_data') do
+  describe '#store_failed_auth_data' do
     let(:current_time) { Time.zone.now }
     let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.uuid) }
 
@@ -302,10 +302,11 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe('#passport_requested') do
+  describe '#passport_requested?' do
     context 'when passport_status is allowed' do
       it 'returns false' do
         record = build(:document_capture_session)
+
         expect(record.passport_requested?).to eq(false)
       end
     end
@@ -313,7 +314,58 @@ RSpec.describe DocumentCaptureSession do
     context 'when passport_status is requested' do
       it 'returns false' do
         record = build(:document_capture_session, passport_status: 'requested')
+
         expect(record.passport_requested?).to eq(true)
+      end
+    end
+  end
+
+  describe '#request_passport!' do
+    it 'sets the correct attributes for a requested passport' do
+      record = build(:document_capture_session)
+
+      record.request_passport!
+
+      expect(record).to have_attributes(
+        passport_status: 'requested',
+        doc_auth_vendor: nil,
+        socure_docv_capture_app_url: nil,
+        socure_docv_transaction_token: nil,
+      )
+    end
+  end
+
+  describe '#request_state_id!' do
+    context 'passport was not requested before' do
+      it 'sets the correct attributes for a not requested passport' do
+        record = build(:document_capture_session)
+
+        record.request_state_id!
+
+        expect(record).to have_attributes(
+          passport_status: 'not_requested',
+          doc_auth_vendor: nil,
+        )
+      end
+    end
+
+    context 'passport was requested before' do
+      it 'sets the socure attributes to nil' do
+        record = build(
+          :document_capture_session,
+          passport_status: 'requested',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_state_id!
+
+        expect(record).to have_attributes(
+          passport_status: 'not_requested',
+          doc_auth_vendor: nil,
+          socure_docv_capture_app_url: nil,
+          socure_docv_transaction_token: nil,
+        )
       end
     end
   end

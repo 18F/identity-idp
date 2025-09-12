@@ -595,5 +595,27 @@ RSpec.describe Idv::PersonalKeyController do
         end
       end
     end
+
+    context 'with one account enabled for service provider' do
+      context 'with duplicate profile set found for user' do
+        before do
+          allow(controller).to receive(:user_duplicate_profiles_detected?).and_return(true)
+        end
+        it 'redirects to duplicate profile detected page' do
+          patch :update
+          expect(response).to redirect_to duplicate_profiles_detected_url(source: :account_verified)
+        end
+      end
+
+      context 'with duplicate profile set not found for user' do
+        before do
+          allow(controller).to receive(:user_duplicate_profiles_detected?).and_return(false)
+        end
+        it 'redirects to account path' do
+          patch :update
+          expect(response).to redirect_to account_path
+        end
+      end
+    end
   end
 end
