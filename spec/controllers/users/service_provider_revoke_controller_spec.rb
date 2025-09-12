@@ -103,5 +103,44 @@ RSpec.describe Users::ServiceProviderRevokeController do
         expect(response).to redirect_to(account_connected_accounts_path)
       end
     end
+
+    context 'when user has an active profile that is in a DuplicateProfileSet' do
+      let(:user) { create(:user, :fully_registered, password: ControllerHelper::VALID_PASSWORD) }
+      let(:profile1) do
+        create(
+          :profile,
+          :active,
+          :facial_match_proof,
+          user: user,
+        )
+      end
+      let(:profile2) do
+        create(
+          :profile,
+          :active,
+          :facial_match_proof,
+        )
+      end
+      let!(:duplicate_profile_set) do
+        create(
+          :duplicate_profile_set, profile_ids: [profile1.id, profile2.id],
+                                  service_provider: 'random-sp'
+        )
+      end
+
+      it 'tracks the self-service analytics' do
+        stub_analytics
+
+        subject
+
+        expect(@analytics).to have_logged_event(
+          :one_account_self_service,
+          source: :account_management_unlinked_from_sp,
+          service_provider: duplicate_profile_set.service_provider,
+          associated_profiles_count: duplicate_profile_set.profile_ids.count - 1,
+          dupe_profile_set_id: duplicate_profile_set.id,
+        )
+      end
+    end
   end
 end
