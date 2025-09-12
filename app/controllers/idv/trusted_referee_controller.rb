@@ -14,29 +14,40 @@ module Idv
       begin
         log_request
         proof_applicant
-        i = 0
-        proofing_job_result = load_async_state
-        until proofing_job_result.done?
-          break if i > 60
-          sleep(1)
-          i += 1
-          proofing_job_result = load_async_state
-        end
-        if proofing_job_result.done?
-          if proofing_job_result.result[:success] == true
-            move_applicant_to_idv_session
-            init_profile # where to call this?
-          end
-        end
+        proofing_result = await_result
+        process_result(proofing_result)
       rescue StandardError => e
         byebug
         NewRelic::Agent.notice_error(e)
+        # send failure response
       ensure
         render json: { message: 'Secret token is valid.' }, status: :ok
       end
     end
 
     private
+
+    def await_result
+      i = 0
+      proofing_job_result = load_async_state
+      until proofing_job_result.done?
+        break if i > 60
+        sleep(1)
+        i += 1
+        proofing_job_result = load_async_state
+      end
+      proofing_job_result
+    end
+
+    def process_result(proofing_result)
+      if proofing_result.done? && proofing_result.result[:success] == true
+        move_applicant_to_idv_session
+        init_profile # where to call this?
+      else
+        byebug
+        # send failure response
+      end
+    end
 
     def proof_applicant
       idv_session.ssn = SsnFormatter.normalize(params[:ssn])
