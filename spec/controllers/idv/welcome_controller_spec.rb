@@ -174,6 +174,20 @@ RSpec.describe Idv::WelcomeController do
       put :update
     end
 
+    it 'clears the previous idv session if applicable' do
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+
+      put :update
+
+      expect(subject.idv_session.applicant).to be_nil
+    end
+
+    it 'sets mail_only_warning_shown to true if true' do
+      subject.idv_session.mail_only_warning_shown = true
+      put :update
+      expect(subject.idv_session.mail_only_warning_shown).to eq(true)
+    end
+
     it 'creates a document capture session' do
       expect { put :update }
         .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
