@@ -118,8 +118,10 @@ class Profile < ApplicationRecord
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
+      reload
       update!(attrs)
     end
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end

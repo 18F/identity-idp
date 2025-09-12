@@ -393,6 +393,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present
 
       profile.activate
+      profile.reload
 
       expect(profile.activated_at).to be_present # changed
       expect(profile.active).to eq(true)
