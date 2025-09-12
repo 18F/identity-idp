@@ -547,9 +547,13 @@ class ApplicationController < ActionController::Base
   end
 
   def user_duplicate_profiles_detected?
+    return false unless duplicate_already_processed?
     return false unless sp_eligible_for_one_account?
     return false unless current_user&.active_profile
     return false unless user_in_one_account_verification_bucket?
+  end
+
+  def duplicate_already_processed?
     dupe_profile_set = DuplicateProfileChecker.new(
       user: current_user,
       user_session: user_session,
