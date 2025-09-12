@@ -583,10 +583,10 @@ RSpec.describe DataPull do
 
     let(:service_provider) { create(:service_provider) }
 
-    let(:profile1) { create(:profile, :active, user: user1) }
-    let(:profile2) { create(:profile, :active, user: user2) }
-    let(:profile3) { create(:profile, :active) }
-    let(:profile4) { create(:profile, :active) }
+    let!(:profile1) { create(:profile, :active, user: user1) }
+    let!(:profile2) { create(:profile, :active, user: user2) }
+    let!(:profile3) { create(:profile, :active) }
+    let!(:profile4) { create(:profile, :active) }
 
     let!(:duplicate_profile_set) do
       create(

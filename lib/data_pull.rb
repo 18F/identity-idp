@@ -487,7 +487,7 @@ class DataPull
         user = User.find_with_email(email)
         if user
           duplicate_profile_sets = find_duplicates(user)
-          if duplicate_profile_sets
+          if duplicate_profile_sets.present?
             uuids << user.uuid
             duplicate_profile_sets.each do |duplicate_profile_set|
               duplicate_profile_ids = duplicate_profile_set.profile_ids - [user.active_profile.id]
@@ -512,7 +512,7 @@ class DataPull
     private
 
     def find_duplicates(user)
-      if user.active_profile
+      if user.active_profile?
         DuplicateProfileSet
           .open
           .where('? = ANY(profile_ids)', user.active_profile.id)
