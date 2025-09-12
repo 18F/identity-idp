@@ -178,6 +178,7 @@ module Idp
       state_id_jurisdiction: 'Virginia',
       identity_doc_address_state: 'VA',
       state_id_number: '1111111111111',
+      state_id_expiration: '2099-12-31',
       same_address_as_id: 'true',
     }.freeze
 

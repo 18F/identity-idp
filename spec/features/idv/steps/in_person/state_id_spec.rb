@@ -289,10 +289,13 @@ RSpec.describe 'state id controller enabled', :js do
       buffer_to_avoid_test_flakiness = 2.days
 
       less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
+      dob = [
+        less_than_13_years_ago.year,
+        less_than_13_years_ago.month,
+        less_than_13_years_ago.day,
+      ].join('-')
 
-      fill_in t('components.memorable_date.month'), with: less_than_13_years_ago.month
-      fill_in t('components.memorable_date.day'), with: less_than_13_years_ago.day
-      fill_in t('components.memorable_date.year'), with: less_than_13_years_ago.year
+      fill_in_memorable_date('identity_doc[dob]', dob)
 
       click_idv_continue
       expect(page).to have_content(
@@ -303,9 +306,13 @@ RSpec.describe 'state id controller enabled', :js do
       )
 
       thirteenish_years_ago = Time.zone.now - (13.years + buffer_to_avoid_test_flakiness)
-      fill_in t('components.memorable_date.month'), with: thirteenish_years_ago.month
-      fill_in t('components.memorable_date.day'), with: thirteenish_years_ago.day
-      fill_in t('components.memorable_date.year'), with: thirteenish_years_ago.year
+      dob = [
+        thirteenish_years_ago.year,
+        thirteenish_years_ago.month,
+        thirteenish_years_ago.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[dob]', dob)
 
       click_idv_continue
       expect(page).not_to have_content(
