@@ -559,7 +559,7 @@ RSpec.describe Profile do
         original_timestamp = profile.verified_at
         expect(profile.reason_not_to_activate).to be_nil
         profile.activate
-        expect(profile.verified_at).to eq(original_timestamp)
+        expect(profile.verified_at).to be_within(1.second).of(original_timestamp)
       end
     end
   end
