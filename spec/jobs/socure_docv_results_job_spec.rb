@@ -25,6 +25,9 @@ RSpec.describe SocureDocvResultsJob do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
   end
 
+  let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
+  let(:address_data) { pii_from_doc[:parsedAddress] || {} }
+
   before do
     document_capture_session.update(
       socure_docv_transaction_token:,
@@ -130,9 +133,6 @@ RSpec.describe SocureDocvResultsJob do
           customer_user_id: user.uuid,
         }
       end
-
-      let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
-      let(:address_data) { pii_from_doc[:parsedAddress] }
 
       before do
         stub_request(:post, "#{socure_idplus_base_url}/api/3.0/EmailAuthScore")
@@ -566,7 +566,6 @@ RSpec.describe SocureDocvResultsJob do
                 fullName: 'Dwayne Denver',
                 documentNumber: '000000000',
                 dob: '2000-01-01',
-                issueDate: '2020-01-01',
                 expirationDate: expiration_date,
               },
               rawData: { mrz: },
@@ -693,14 +692,63 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.mrz_status).to eq(:pass)
                 end
 
+                it 'tracks the attempt with mrz data' do
+                  expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                    success: true,
+                    document_state: address_data[:state],
+                    document_number: pii_from_doc[:documentNumber],
+                    # Socure does not send back a document issue date for passports
+                    document_issued: nil,
+                    document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                    first_name: pii_from_doc[:firstName],
+                    last_name: pii_from_doc[:surName],
+                    date_of_birth: Date.parse(pii_from_doc[:dob]),
+                    address1: address_data[:physicalAddress],
+                    address2: address_data[:physicalAddress2],
+                    city: address_data[:city],
+                    state: address_data[:state],
+                    zip: address_data[:zip],
+                    failure_reason: nil,
+                  )
+
+                  perform
+                end
+
+                context 'when socure_doc_escrow_enabled is true' do
+                  let(:socure_doc_escrow_enabled) { true }
+
+                  it 'tracks the attempt with mrz data' do
+                    expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                      success: true,
+                      document_back_image_encryption_key: an_instance_of(String),
+                      document_back_image_file_id: an_instance_of(String),
+                      document_front_image_encryption_key: an_instance_of(String),
+                      document_front_image_file_id: an_instance_of(String),
+                      document_state: address_data[:state],
+                      document_number: pii_from_doc[:documentNumber],
+                      # Socure does not send back a document issue date for passports
+                      document_issued: nil,
+                      document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                      first_name: pii_from_doc[:firstName],
+                      last_name: pii_from_doc[:surName],
+                      date_of_birth: Date.parse(pii_from_doc[:dob]),
+                      address1: address_data[:physicalAddress],
+                      address2: address_data[:physicalAddress2],
+                      city: address_data[:city],
+                      state: address_data[:state],
+                      zip: address_data[:zip],
+                      failure_reason: nil,
+                    )
+
+                    perform
+                  end
+                end
+
                 context 'when the MRZ is not valid' do
                   let(:mrz_response) { 'NO' }
 
-                  before do
-                    perform
-                  end
-
                   it 'stores the failed result in the document capture session' do
+                    perform
                     expect(document_capture_session.reload.load_result).to have_attributes(
                       success: false,
                       doc_auth_success: true,
@@ -713,6 +761,27 @@ RSpec.describe SocureDocvResultsJob do
                       mrz_status: :failed,
                       attempt: 1,
                     )
+                  end
+
+                  it 'tracks the attempt with mrz data' do
+                    expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                      success: false,
+                      document_state: address_data[:state],
+                      document_number: pii_from_doc[:documentNumber],
+                      # Socure does not send back a document issue date for passports
+                      document_issued: nil,
+                      document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+                      first_name: pii_from_doc[:firstName],
+                      last_name: pii_from_doc[:surName],
+                      date_of_birth: Date.parse(pii_from_doc[:dob]),
+                      address1: address_data[:physicalAddress],
+                      address2: address_data[:physicalAddress2],
+                      city: address_data[:city],
+                      state: address_data[:state],
+                      zip: address_data[:zip],
+                      failure_reason: { passport: 'Please add a new image' },
+                    )
+                    perform
                   end
                 end
 
