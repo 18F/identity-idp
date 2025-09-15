@@ -9,7 +9,7 @@ module SignUp
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
     before_action :verify_profiling_passed
-    before_action :handle_duplicate_profile_user, only: :show
+    before_action :redirect_if_user_duplicate_profile, only: :show
 
     def show
       analytics.user_registration_agency_handoff_page_visit(
@@ -142,6 +142,12 @@ module SignUp
         current_user,
         current_sp.issuer,
       )
+    end
+
+    def redirect_if_user_duplicate_profile
+      return unless IdentityConfig.store.one_account_profile_creation_check_enabled
+      return unless user_duplicate_profiles_detected?
+      redirect_to duplicate_profiles_detected_url(source: :account_verified)
     end
   end
 end
