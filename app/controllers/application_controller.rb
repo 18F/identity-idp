@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
   include AbTestingConcern
+  include OneAccountConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -542,36 +543,10 @@ class ApplicationController < ActionController::Base
     ).last
   end
 
-  def user_in_one_account_verification_bucket?
-    ab_test_bucket(:ONE_ACCOUNT_USER_VERIFICATION_ENABLED) == :one_account_user_verification_enabled
-  end
-
-  def user_duplicate_profiles_detected?
-    return false unless sp_eligible_for_one_account?
-    return false unless current_user&.active_profile
-    return false unless user_in_one_account_verification_bucket?
-    dupe_profile_set = DuplicateProfileChecker.new(
-      user: current_user,
-      user_session: user_session,
-      sp: sp_from_sp_session,
-      analytics: analytics,
-    ).dupe_profile_set_for_user
-    dupe_profile_set.present? && dupe_profile_set.closed_at.nil?
-  end
-
-  def sp_eligible_for_one_account?
-    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
-  end
-
   def handle_banned_user
     return unless user_is_banned?
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
-  end
-
-  def handle_duplicate_profile_user
-    return unless user_duplicate_profiles_detected?
-    redirect_to duplicate_profiles_detected_url(source: :sign_in)
   end
 end
