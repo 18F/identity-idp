@@ -84,7 +84,7 @@ module AccountReset
       return unless user&.active_profile&.facial_match?
       sets = DuplicateProfileSet
         .duplicate_profile_set_for_profile(profile_id: user.active_profile.id)
-      return unless sets
+      return if sets.blank?
 
       sets.each do |set|
         analytics.one_account_self_service(
