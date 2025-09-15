@@ -1138,8 +1138,9 @@ module Reporting
     # successful ipp users
     def successful_ipp_users_count
       set = @successful_ipp_users_count || data_fetch_successful_ipp_results[
-        Events::SUCCESSFUL_IPP_OUTPUT] || Set[]
-      set.find { |v| v.present? }&.to_s || '0'
+        Events::SUCCESSFUL_IPP_OUTPUT]
+      set ||= Set[]
+      set.find { |v| v }&.to_i || 0
     end
   end
 end
