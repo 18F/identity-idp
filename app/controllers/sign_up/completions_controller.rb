@@ -9,7 +9,6 @@ module SignUp
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
     before_action :verify_profiling_passed
-    before_action :handle_duplicate_profile_account_creation_user, only: :show
 
     def show
       analytics.user_registration_agency_handoff_page_visit(

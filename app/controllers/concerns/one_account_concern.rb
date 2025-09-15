@@ -18,9 +18,8 @@ module OneAccountConcern
   end
 
   def user_eligible_for_one_account?
-    sp_eligible_for_one_account? &&
-      current_user&.active_profile &&
-      user_in_one_account_verification_bucket?
+    sp_eligible_for_one_account? && 
+      current_user&.active_profile && user_in_one_account_verification_bucket?
   end
 
   def sp_eligible_for_one_account?
@@ -37,9 +36,6 @@ module OneAccountConcern
     ab_test_bucket(:ONE_ACCOUNT_USER_VERIFICATION_ENABLED) == :one_account_user_verification_enabled
   end
 
-  def handle_duplicate_profile_account_creation_user
-    handle_duplicate_profile_account_creation_user(source: :account_verified)
-  end
 
   def user_has_duplicate_account_profiles?
     DuplicateProfileSet.involving_profile(
