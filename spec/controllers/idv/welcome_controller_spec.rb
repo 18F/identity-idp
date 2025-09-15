@@ -182,7 +182,7 @@ RSpec.describe Idv::WelcomeController do
       expect(subject.idv_session.applicant).to be_nil
     end
 
-    it 'sets mail_only_warning_shown to true if true' do
+    it 'sets mail_only_warning_shown to previous mail_only_warning_shown value' do
       subject.idv_session.mail_only_warning_shown = true
       put :update
       expect(subject.idv_session.mail_only_warning_shown).to eq(true)
