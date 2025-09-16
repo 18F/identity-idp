@@ -71,7 +71,7 @@ module Idv
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required || # desktop but selfie not required
               idv_session.desktop_selfie_test_mode_enabled?
-          )
+          ) && choose_id_type_completed?(idv_session:)
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -82,6 +82,21 @@ module Idv
           idv_session.doc_auth_vendor = nil
         end,
       )
+    end
+
+    def self.choose_id_type_completed?(idv_session:)
+      # Skip check for flows that bypass choose_id_type
+      return true if idv_session.skip_doc_auth_from_handoff ||
+                     idv_session.skip_doc_auth_from_how_to_verify ||
+                     idv_session.skip_hybrid_handoff
+
+      # Check if document_capture_session exists and has id type selected
+      return false unless idv_session.document_capture_session_uuid
+
+      # Use select to avoid loading the entire record
+      DocumentCaptureSession.where(
+        uuid: idv_session.document_capture_session_uuid,
+      ).where.not(passport_status: nil).exists?
     end
 
     private

@@ -25,6 +25,7 @@ RSpec.describe 'Identity verification', :js do
     complete_hybrid_handoff_step # upload photos
 
     validate_choose_id_type_page
+    try_to_skip_ahead_from_choose_id_type
     complete_choose_id_type_step
 
     validate_document_capture_page
@@ -427,6 +428,11 @@ RSpec.describe 'Identity verification', :js do
   def try_to_skip_ahead_from_hybrid_handoff
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  def try_to_skip_ahead_from_choose_id_type
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_choose_id_type_path)
   end
 
   def try_to_skip_ahead_from_phone
