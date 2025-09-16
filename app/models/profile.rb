@@ -117,8 +117,7 @@ class Profile < ApplicationRecord
     attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
 
     transaction do
-      Profile.where(user_id: user_id).update_all(active: false)
-      reload if id.present?
+      Profile.where(user_id: user_id).where.not(id:).update_all(active: false)
       update!(attrs)
     end
 
