@@ -50,6 +50,8 @@ class DataPull
         * #{basename} uuid-export uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
         * #{basename} uuid-lookup email1@example.com email2@example.com
+
+        * #{basename} duplicate-profile-lookup email1@example.com email2@example.com
       Options:
     EOS
   end
@@ -69,6 +71,7 @@ class DataPull
       'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
       'uuid-lookup' => UuidLookup,
+      'duplicate-profile-lookup' => DuplicateProfileLookup,
     }[name]
   end
 
@@ -468,6 +471,56 @@ class DataPull
         uuids: found_uuids,
         table:,
       )
+    end
+  end
+
+  class DuplicateProfileLookup
+    def run(args:, config:)
+      emails = args
+
+      table = []
+      table << %w[email uuid service_provider duplicate_uuids]
+
+      uuids = []
+
+      emails.each do |email|
+        user = User.find_with_email(email)
+        if user
+          duplicate_profile_sets = find_duplicates(user)
+          if duplicate_profile_sets.present?
+            uuids << user.uuid
+            duplicate_profile_sets.each do |duplicate_profile_set|
+              duplicate_profile_ids = duplicate_profile_set.profile_ids - [user.active_profile.id]
+              duplicate_uuids = user_uuids(duplicate_profile_ids)
+              table << [email, user.uuid, duplicate_profile_set.service_provider, duplicate_uuids]
+            end
+          else
+            table << [email, '[DUPLICATES NOT FOUND]', nil, nil]
+          end
+        elsif config.include_missing?
+          table << [email, '[EMAIL NOT FOUND]', nil, nil]
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'duplicate-profile-lookup',
+        table:,
+        uuids:,
+      )
+    end
+
+    private
+
+    def find_duplicates(user)
+      if user.active_profile?
+        DuplicateProfileSet
+          .open
+          .where('? = ANY(profile_ids)', user.active_profile.id)
+      end
+    end
+
+    def user_uuids(profile_ids)
+      profile_ids.map { |profile_id| Profile.find(profile_id).user.uuid }
     end
   end
 end

@@ -26,7 +26,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       let(:duplicate_profile_set) { nil }
 
       it 'redirects to sign in page' do
-        get :show
+        get :show, params: { source: :sign_in }
         expect(response).to redirect_to(root_path)
       end
     end
@@ -37,46 +37,32 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
 
       it 'renders the show template' do
-        get :show
+        get :show, params: { source: :sign_in }
         expect(response).to render_template(:show)
       end
 
       it 'initializes the DuplicateProfilesDetectedPresenter' do
         expect(DuplicateProfilesDetectedPresenter).to receive(:new)
           .with(user: user, duplicate_profile_set: duplicate_profile_set)
-        get :show
+        get :show, params: { source: :sign_in }
       end
 
       it 'enqueues an alert job for each duplicate profile' do
         expect(AlertUserDuplicateProfileDiscoveredJob).to receive(:perform_later).with(
           user: profile2.user,
           agency: current_sp.friendly_name,
-          type: AlertUserDuplicateProfileDiscoveredJob::SIGN_IN_ATTEMPTED,
+          type: :sign_in,
         )
 
-        controller.send(:notify_users_of_duplicate_profile_sign_in)
+        controller.send(:notify_users_of_duplicate_profile, source: :sign_in)
       end
 
       it 'logs an event' do
-        get :show
+        get :show, params: { source: :sign_in }
 
         expect(@analytics).to have_logged_event(
-          :one_account_duplicate_profiles_detected_visited,
+          :one_account_duplicate_profiles_warning_page_visited,
         )
-      end
-    end
-  end
-
-  describe '#redirect_unless_user_has_active_duplicate_profile_confirmation' do
-    context 'when user does not have an active profile' do
-      before do
-        allow(controller).to receive(:current_user).and_return(user)
-        allow(user).to receive(:active_profile).and_return(nil)
-        allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
-      end
-
-      it 'updates dupe profile confirmation' do
-        get :show
       end
     end
   end

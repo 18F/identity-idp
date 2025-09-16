@@ -956,13 +956,14 @@ RSpec.describe SamlIdpController do
             .and_return([service_provider.issuer])
           allow(controller).to receive(:user_in_one_account_verification_bucket?)
             .and_return(true)
-          duplicate_profile_set
+          allow_any_instance_of(DuplicateProfileChecker)
+            .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
           allow(controller).to receive(:current_user).and_return(user)
         end
 
         it 'redirects user to duplicate profiles detected page' do
           saml_get_auth(ial2_settings)
-          expect(response).to redirect_to(duplicate_profiles_detected_url)
+          expect(response).to redirect_to(duplicate_profiles_detected_url(source: :sign_in))
         end
       end
     end

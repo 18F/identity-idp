@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
   include AbTestingConcern
+  include OneAccountConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -253,7 +254,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
-    return duplicate_profiles_detected_url if user_duplicate_profiles_detected?
+    return duplicate_profiles_detected_url(source: :sign_in) if user_duplicate_profiles_detected?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
@@ -542,34 +543,10 @@ class ApplicationController < ActionController::Base
     ).last
   end
 
-  def user_in_one_account_verification_bucket?
-    ab_test_bucket(:ONE_ACCOUNT_USER_VERIFICATION_ENABLED) == :one_account_user_verification_enabled
-  end
-
-  def user_duplicate_profiles_detected?
-    return false unless sp_eligible_for_one_account?
-    profile = current_user&.active_profile
-    return false unless profile
-    return false unless user_in_one_account_verification_bucket?
-    DuplicateProfileSet.involving_profile(
-      profile_id: profile.id,
-      service_provider: current_sp&.issuer,
-    ).present?
-  end
-
-  def sp_eligible_for_one_account?
-    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
-  end
-
   def handle_banned_user
     return unless user_is_banned?
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
-  end
-
-  def handle_duplicate_profile_user
-    return unless user_duplicate_profiles_detected?
-    redirect_to duplicate_profiles_detected_url
   end
 end

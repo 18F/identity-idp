@@ -6526,8 +6526,8 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when fraud clears duplicate profile
-  # @param [Boolean] success Whether the profile was successfully cleared
+  # Tracks when the fraud investigation is inconclusive
+  # @param [Boolean] success Whether the duplicate was successfully closed
   # @param [Hash] errors Errors resulting from clearing
   def one_account_close_inconclusive_duplicate(success:, errors:, **extra)
     track_event(
@@ -6565,15 +6565,16 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profile_updated)
   end
 
-  # Tracks when a user with duplicate profiles lands on the page to notify them of other programs
-  def one_account_duplicate_profiles_detected_visited
-    track_event(:one_account_duplicate_profiles_detected_visited)
-  end
-
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
   # @param [String] source The link that the user followed to visit the page
   def one_account_duplicate_profiles_please_call_visited(source:, **extra)
     track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
+  end
+
+  # Tracks when user lands on page notifying them multiple profiles contain same information
+  # @param [String] source how the user came through to the page
+  def one_account_duplicate_profiles_warning_page_visited(source:, **extra)
+    track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
 
   # Tracks when a sucessful openid authorization request is returned
