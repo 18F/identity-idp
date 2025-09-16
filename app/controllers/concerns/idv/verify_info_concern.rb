@@ -43,6 +43,8 @@ module Idv
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_components: ProofingComponents.new(idv_session:),
         proofing_vendor:,
+        trusted_referee_webhook_endpoint: defined?(trusted_referee_webhook_endpoint) ? trusted_referee_webhook_endpoint : nil,
+        trusted_referee_request_id: defined?(trusted_referee_request_id) ? trusted_referee_request_id : nil,
       )
 
       return true

@@ -16,7 +16,9 @@ module Idv
       request_ip:,
       ipp_enrollment_in_progress:,
       proofing_components:,
-      proofing_vendor:
+      proofing_vendor:,
+      trusted_referee_request_id: nil,
+      trusted_referee_webhook_endpoint: nil
     )
       document_capture_session.create_proofing_session
 
@@ -35,6 +37,8 @@ module Idv
         ipp_enrollment_in_progress:,
         proofing_components: proofing_components.to_h,
         proofing_vendor:,
+        trusted_referee_request_id:,
+        trusted_referee_webhook_endpoint:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

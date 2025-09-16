@@ -13,19 +13,70 @@ module Idv
     def create
       begin
         log_request
+        validate_pii
+        validate_webhook_endpoint
         proof_applicant
-        proofing_result = await_result
-        process_result(proofing_result)
+        # proofing_result = await_result
+        # process_result(proofing_result)
+        head :ok
       rescue StandardError => e
+        puts e.inspect
+        render json: {}, status: :bad_request
         byebug
         NewRelic::Agent.notice_error(e)
         # send failure response
       ensure
-        render json: { message: 'Secret token is valid.' }, status: :ok
+        # log to analytics
       end
     end
 
+    def webhook
+      byebug
+      body = webhook_params.except(:webhook_endpoint)
+      endpoint = webhook_params[:endpoint]
+
+      response = send_http_post_request(endpoint:, body:)
+    rescue => exception
+      NewRelic::Agent.notice_error(
+        exception,
+        custom_params: {
+          event: 'Failed to send webhook',
+          endpoint:,
+          body:,
+        },
+      )
+    ensure
+      puts response.inspect
+      # log to analytics
+    end
+
+    def result
+      byebug
+      profile = current_user&.profiles.last
+      body = {}
+      if profile
+        body = { uuid: profile.uuid, active: profile.active }
+      end
+      render json: {}, status: :ok
+    rescue => exception
+      puts exception.inspect
+      render json: {}, status: :bad_request
+      NewRelic::Agent.notice_error(
+        exception,
+        custom_params: {
+          event: 'Failed to respond to result',
+          body:,
+        },
+      )
+    ensure
+      # log to analytics
+    end
+
     private
+
+    def validate_pii
+      # todo return 400 if invalid
+    end
 
     def await_result
       i = 0
@@ -40,7 +91,7 @@ module Idv
     end
 
     def process_result(proofing_result)
-      if proofing_result.done? && proofing_result.result[:success] == true
+      if proofing_result.done? && proofing_result.result[:success] == true ## && phone_pre_check success?
         move_applicant_to_idv_session
         init_profile # where to call this?
       else
@@ -52,6 +103,7 @@ module Idv
     def proof_applicant
       idv_session.ssn = SsnFormatter.normalize(params[:ssn])
       idv_session.phone_for_trusted_referee_flow = params[:phone]
+      idv_session.webhook_for_trusted_referee_flow = webhook_endpoint # || IdentityConfig.store.trusted_referre_webhook_endpoint
       shared_update
     end
 
@@ -66,24 +118,16 @@ module Idv
       authorization_header = request.headers['Authorization']&.split&.last
 
       authorization_header.present? &&
-        (verify_current_key(authorization_header: authorization_header) ||
-          verify_queue(authorization_header: authorization_header))
+        verify_key(authorization_header: authorization_header)
     end
 
-    def verify_current_key(authorization_header:)
-      ActiveSupport::SecurityUtils.secure_compare(
-        authorization_header,
-        IdentityConfig.store.socure_docv_webhook_secret_key,
-      )
-    end
-
-    def verify_queue(authorization_header:)
-      IdentityConfig.store.socure_docv_webhook_secret_key_queue.any? do |key|
-        ActiveSupport::SecurityUtils.secure_compare(
-          authorization_header,
-          key,
-        )
-      end
+    def verify_key(authorization_header:)
+      # IdentityConfig.store.trusted_referee_secret_key_queue.any? do |key|
+      #   ActiveSupport::SecurityUtils.secure_compare(
+      #     authorization_header,
+      #     key,
+      #   )
+      # end
     end
 
     def log_request
@@ -93,6 +137,7 @@ module Idv
     def profile_params
       @profile_params ||=
         params.permit(
+          :request_id,
           :webhook_endpoint,
           :email,
           :first_name,
@@ -105,18 +150,18 @@ module Idv
           :dob,
           :phone,
           :ssn,
-          state_id: {
-            state_id_number:,
-            jurisdiction:,
-            state_id_expiration:,
-            state_id_issued:,
-          },
-          passport: {
-            passport_expiration:,
-            issuing_country_code:,
-            passport_number:,
-            passport_issued:,
-          },
+          state_id: [
+            :state_id_number,
+            :jurisdiction,
+            :state_id_expiration,
+            :state_id_issued,
+          ],
+          passport: [
+            :passport_expiration,
+            :issuing_country_code,
+            :passport_number,
+            :passport_issued,
+          ],
         )
     end
 
@@ -181,15 +226,20 @@ module Idv
 
     def current_user
       @current_user ||= begin
-        email = params.dig('email').downcase
-        user = User.find_with_email(email)
-        return user if user
-        user = User.new(email:, password:, password_confirmation: password)
-        user.email_addresses.build(
-          user: user,
-          email: email,
-        )
-        user.save!
+        user = nil
+
+        if(email = params.dig('email')&.downcase)
+          user = User.find_with_email(email)
+          return user if user
+          user = User.new(email:, password:, password_confirmation: password)
+          user.email_addresses.build(
+            user: user,
+            email: email,
+          )
+          user.save!
+        elsif (user_uuid = params.permit(:uid)[:uid])
+          user = User.find_by(uuid: user_uuid)
+        end
         user
       end
     end
@@ -212,6 +262,68 @@ module Idv
 
     def password
       @password ||= Random.hex
+    end
+
+    def send_http_post_request(endpoint:, body:)
+      faraday_connection(endpoint).post do |req|
+        req.options.context = { service_name: 'trusted_referee webhook' }
+        req.body = body.to_json
+      end
+    end
+
+    def faraday_connection(endpoint)
+      retry_options = {
+        max: 2,
+        interval: 0.05,
+        interval_randomness: 0.5,
+        backoff_factor: 2,
+        retry_statuses: [404, 500],
+        retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+          NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
+        end,
+      }
+
+      timeout = 15
+
+      Faraday.new(url: url(endpoint).to_s, headers: request_headers) do |conn|
+        conn.request :retry, retry_options
+        conn.request :instrumentation, name: 'request_metric.faraday'
+        conn.adapter :net_http
+        conn.options.timeout = timeout
+        conn.options.read_timeout = timeout
+        conn.options.open_timeout = timeout
+        conn.options.write_timeout = timeout
+      end
+    end
+
+    def url(endpoint)
+      URI.join(endpoint)
+    end
+
+    def request_headers(extras = {})
+      # headers.merge(extras)
+      extras
+    end
+
+    def webhook_params
+      params.permit(:uid, :request_id, :webhook_endpoint, :pid, :reason)
+    end
+
+    def webhook_endpoint
+      @webhook_endpoint ||= profile_params[:webhook_endpoint] ||
+                            IdentityConfig.store.trusted_referee_webhook_endpoint
+    end
+
+    def validate_webhook_endpoint
+      # todo return 400 if invalid
+    end
+
+    def trusted_referee_webhook_endpoint
+      webhook_endpoint
+    end
+
+    def trusted_referee_request_id
+      profile_params[:request_id]
     end
   end
 end

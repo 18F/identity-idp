@@ -26,7 +26,9 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    proofing_components: nil
+    proofing_components: nil,
+    trusted_referee_request_id: nil,
+    trusted_referee_webhook_endpoint: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -64,10 +66,12 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data.result[:ssn_is_unique] = ssn_is_unique
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
-    document_capture_session.store_proofing_result(callback_log_data.result)
+    result = callback_log_data.result
+    document_capture_session.store_proofing_result(result)
   rescue => e
     byebug
   ensure
+    send_trusted_referee_webhook(endpoint: trusted_referee_webhook_endpoint, result:, user_uuid: user.uuid, request_id: trusted_referee_request_id)
     logger_info_hash(
       name: 'ProofResolution',
       proofing_vendor:,
@@ -175,5 +179,74 @@ class ResolutionProofingJob < ApplicationJob
       user:,
       user_session: nil,
     )
+  end
+
+  def send_trusted_referee_webhook(endpoint: nil, result:, request_id:, user_uuid:)
+    if endpoint
+      # send back failure with reasons
+      body = {
+        reason: 'because ...',
+        request_id:,
+        uid: user_uuid,
+      }
+      send_http_post_request(endpoint:, body:)
+    end
+  rescue => exception
+    byebug
+    NewRelic::Agent.notice_error(
+      exception,
+      custom_params: {
+        event: 'Failed to send webhook',
+        endpoint:,
+        body:,
+      },
+    )
+  ensure
+    # log to analytics
+  end
+
+  def send_http_post_request(endpoint: IdentityConfig.store.trusted_referee_webhook_endpoint, body:)
+    puts "body:\t#{body.inspect}"
+    puts "endpoint:\t#{endpoint}"
+    faraday_connection(endpoint).post do |req|
+      req.options.context = { service_name: 'trusted_referee webhook' }
+      req.body = body.to_json
+    end
+  end
+
+  def faraday_connection(endpoint)
+    retry_options = {
+      max: 2,
+      interval: 0.05,
+      interval_randomness: 0.5,
+      backoff_factor: 2,
+      retry_statuses: [404, 500],
+      retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
+        NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
+      end,
+    }
+
+    timeout = 15
+
+    Faraday.new(url: url(endpoint).to_s, headers: request_headers) do |conn|
+      conn.request :retry, retry_options
+      conn.request :instrumentation, name: 'request_metric.faraday'
+      conn.adapter :net_http
+      conn.options.timeout = timeout
+      conn.options.read_timeout = timeout
+      conn.options.open_timeout = timeout
+      conn.options.write_timeout = timeout
+    end
+  end
+
+  def url(endpoint)
+    URI.join(endpoint)
+  end
+
+  def request_headers(extras = {})
+    {
+      'Content-Type': 'application/json',
+      # Authorization: "SocureApiKey #{IdentityConfig.store.socure_idplus_api_key}",
+    }.merge(extras)
   end
 end

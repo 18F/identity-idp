@@ -43,6 +43,7 @@ module Idv
   # @attr user_phone_confirmation [Boolean, nil]
   # @attr vendor_phone_confirmation [Boolean, nil]
   # @attr verify_info_step_document_capture_session_uuid [String, nil]
+  # @attr webhook_for_trusted_referee_flow [String, nil]
   # @attr welcome_visited [Boolean, nil]
   # @attr_reader current_user [User]
   # @attr_reader gpo_otp [String, nil]
@@ -93,6 +94,7 @@ module Idv
       user_phone_confirmation
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid
+      webhook_for_trusted_referee_flow
       welcome_visited
     ].freeze
 
