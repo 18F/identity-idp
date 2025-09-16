@@ -242,8 +242,6 @@ module Idv
             email: email,
           )
           user.save!
-        elsif dcs_uuid
-          user = DocumentCaptureSession.find_by(uuid: dcs_uuid)&.user
         end
         user
       end
@@ -329,10 +327,6 @@ module Idv
 
     def trusted_referee_request_id
       profile_params[:request_id]
-    end
-
-    def dcs_uuid
-      @document_capture_session_uuid ||= params.permit(:dcs_uuid)[:dcs_uuid]
     end
   end
 end
