@@ -119,6 +119,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
+doc_auth_mock_client_sleep_delay_seconds: 0
 doc_auth_passport_selfie_vendor_default: 'mock'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100

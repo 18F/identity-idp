@@ -134,6 +134,7 @@ module IdentityConfig
     config.add(:doc_auth_manual_capture_after_failures_enabled, type: :boolean)
     config.add(:doc_auth_manual_capture_failure_threshold, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
+    config.add(:doc_auth_mock_client_sleep_delay_seconds, type: :integer)
     config.add(:doc_auth_mock_dos_api, type: :boolean)
     config.add(:doc_auth_passports_enabled, type: :boolean)
     config.add(:doc_auth_passport_vendor_default, type: :string)
