@@ -51,7 +51,12 @@ module Idv
     end
 
     def result
-      byebug
+      result_id = params.permit(:result_id)[:result_id]
+      dcs_uuid = DocumentCaptureSession.find_by(result_id:)
+      idv_session.verify_info_step_document_capture_session_uuid = dcs_uuid
+      proofing_result = load_async_state
+      process_result(proofing_result)
+
       profile = current_user&.profiles.last
       body = {}
       if profile
@@ -237,8 +242,8 @@ module Idv
             email: email,
           )
           user.save!
-        elsif (user_uuid = params.permit(:uid)[:uid])
-          user = User.find_by(uuid: user_uuid)
+        elsif dcs_uuid
+          user = DocumentCaptureSession.find_by(uuid: dcs_uuid)&.user
         end
         user
       end
@@ -324,6 +329,10 @@ module Idv
 
     def trusted_referee_request_id
       profile_params[:request_id]
+    end
+
+    def dcs_uuid
+      @document_capture_session_uuid ||= params.permit(:dcs_uuid)[:dcs_uuid]
     end
   end
 end

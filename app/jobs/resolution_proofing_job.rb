@@ -71,7 +71,7 @@ class ResolutionProofingJob < ApplicationJob
   rescue => e
     byebug
   ensure
-    send_trusted_referee_webhook(endpoint: trusted_referee_webhook_endpoint, result:, user_uuid: user.uuid, request_id: trusted_referee_request_id)
+    send_trusted_referee_webhook(endpoint: trusted_referee_webhook_endpoint, result:, result_id:, request_id: trusted_referee_request_id)
     logger_info_hash(
       name: 'ProofResolution',
       proofing_vendor:,
@@ -181,13 +181,13 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
-  def send_trusted_referee_webhook(endpoint: nil, result:, request_id:, user_uuid:)
+  def send_trusted_referee_webhook(endpoint: nil, result:, request_id:, result_id:)
     if endpoint
       # send back failure with reasons
       body = {
         reason: 'because ...',
         request_id:,
-        uid: user_uuid,
+        result_id:,
       }
       send_http_post_request(endpoint:, body:)
     end
