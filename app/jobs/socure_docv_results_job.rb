@@ -40,7 +40,9 @@ class SocureDocvResultsJob < ApplicationJob
         attempt: submit_attempts,
       )
 
-      record_attempt(docv_result_response:)
+      failure_reason = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
+      failure_reason = failure_reason[:socure].presence || failure_reason
+      record_attempt(docv_result_response:, failure_reason:)
       return
     end
 
@@ -58,7 +60,10 @@ class SocureDocvResultsJob < ApplicationJob
         selfie_image_fingerprint: nil,
         attempt: submit_attempts,
       )
-      record_attempt(docv_result_response:, doc_pii_response:)
+      record_attempt(
+        docv_result_response:,
+        failure_reason: attempts_api_tracker.parse_failure_reason(doc_pii_response),
+      )
       return
     end
 
@@ -75,11 +80,14 @@ class SocureDocvResultsJob < ApplicationJob
         mrz_status: :failed,
         attempt: submit_attempts,
       )
-      record_attempt(docv_result_response:, doc_pii_response:)
+      record_attempt(
+        docv_result_response:,
+        failure_reason: attempts_api_tracker.parse_failure_reason(mrz_response),
+      )
       return
     end
 
-    record_attempt(docv_result_response:, doc_pii_response:)
+    record_attempt(docv_result_response:, success: true)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, attempt: submit_attempts
     )
@@ -87,36 +95,23 @@ class SocureDocvResultsJob < ApplicationJob
 
   private
 
-  def record_attempt(docv_result_response:, doc_pii_response: nil)
-    image_errors = {}
+  def record_attempt(
+    docv_result_response:,
+    failure_reason: nil,
+    success: false
+  )
+    image_data = {}
 
     if socure_doc_escrow_enabled? &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
-      front = {
-        document_front_image_file_id: doc_escrow_name,
-        document_front_image_encryption_key: doc_escrow_key,
-      }
-      back = {
-        document_back_image_file_id: doc_escrow_name,
-        document_back_image_encryption_key: doc_escrow_key,
-      }
-
-      image_storage_data = { front:, back: }
-
-      if docv_result_response.liveness_enabled
-        selfie = {
-          document_selfie_image_file_id: doc_escrow_name,
-          document_selfie_image_encryption_key: doc_escrow_key,
-        }
-        image_storage_data[:selfie] = selfie
-      end
 
       job_data = {
         document_capture_session_uuid:,
         reference_id: docv_result_response.to_h[:reference_id],
-        image_storage_data:,
+        image_storage_data: image_storage_data(ial2: docv_result_response.liveness_enabled),
       }
 
+      image_data = job_data[:image_storage_data].values.reduce(:merge)
       if IdentityConfig.store.ruby_workers_idv_enabled
         SocureImageRetrievalJob.perform_later(**job_data)
       else
@@ -127,14 +122,12 @@ class SocureDocvResultsJob < ApplicationJob
     pii_from_doc = docv_result_response.pii_from_doc.to_h || {}
 
     attempts_api_tracker.idv_document_upload_submitted(
-      **front,
-      **back,
-      **selfie,
-      success: docv_result_response.success? && doc_pii_response.success?,
+      **image_data,
+      success:,
       document_state: pii_from_doc[:state],
-      document_number: pii_from_doc[:state_id_number],
-      document_issued: pii_from_doc[:state_id_issued],
-      document_expiration: pii_from_doc[:state_id_expiration],
+      document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+      document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+      document_expiration: pii_from_doc[:state_id_expiration] || pii_from_doc[:passport_expiration],
       first_name: pii_from_doc[:first_name],
       last_name: pii_from_doc[:last_name],
       date_of_birth: pii_from_doc[:dob],
@@ -143,19 +136,20 @@ class SocureDocvResultsJob < ApplicationJob
       city: pii_from_doc[:city],
       state: pii_from_doc[:state],
       zip: pii_from_doc[:zipcode],
-      failure_reason: failure_reason(docv_result_response:, doc_pii_response:, image_errors:),
+      failure_reason:,
     )
   end
 
-  def failure_reason(docv_result_response:, image_errors:, doc_pii_response: nil)
-    if doc_pii_response.present?
-      failures = attempts_api_tracker.parse_failure_reason(doc_pii_response) || {}
-    else
-      failures = attempts_api_tracker.parse_failure_reason(docv_result_response) || {}
-      failures = failures[:socure].presence || failures || {}
-    end
+  def image_storage_data(ial2:)
+    keys = [:front, :back]
+    keys.push(:selfie) if ial2
 
-    failures.merge(image_errors).presence
+    keys.index_with do |key|
+      {
+        "document_#{key}_image_file_id": doc_escrow_name,
+        "document_#{key}_image_encryption_key": doc_escrow_key,
+      }
+    end
   end
 
   def analytics

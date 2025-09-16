@@ -326,6 +326,7 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:newrelic_license_key, type: :string)
     config.add(:one_account_user_verification_enabled_percentage, type: :integer)
+    config.add(:one_account_profile_creation_check_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,

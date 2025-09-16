@@ -286,7 +286,7 @@ may also be rendered in formats other than SVG, since these are provided to us b
 Image assets saved in source control should be optimized using a lossless image optimizer before
 being committed, to ensure they're served to users at the lowest possible file size. This is
 [enforced automatically for SVG images][lint-optimized-assets], but must be done manually for other
-image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][image-optim]
+image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][imageoptim]
 (macOS) for these other image types.
 
 Since images, GIFs, and videos are artifacts authored in other tools, there is no need to keep
