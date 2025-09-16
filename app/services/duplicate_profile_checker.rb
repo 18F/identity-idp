@@ -12,46 +12,94 @@ class DuplicateProfileChecker
   end
 
   def dupe_profile_set_for_user
-    return unless user_has_ial2_profile? && user_sp_eligible_for_one_account?
-    cacher = Pii::Cacher.new(user, user_session)
+    return unless should_check_for_duplicates?
 
-    pii = cacher.fetch(profile.id)
+    pii = get_pii_for_context
+    return unless pii.dig(:ssn)
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
       service_provider: sp.issuer,
     )
-    ids = associated_profiles.map(&:id)
-    dupe_profile_ids = (ids + [profile.id]).sort
-    existing_profile = DuplicateProfileSet.involving_profiles(
-      profile_ids: dupe_profile_ids,
-      service_provider: sp.issuer,
-    )
+
     if associated_profiles.present?
-      if existing_profile
-        if existing_profile.profile_ids.sort != dupe_profile_ids
-          # Update existing profile with new ids if they differ
-          existing_profile.update(profile_ids: dupe_profile_ids)
-          analytics.one_account_duplicate_profile_updated
-        end
-      else
-        existing_profile = DuplicateProfileSet.create(
-          profile_ids: dupe_profile_ids,
-          service_provider: sp.issuer,
-        )
-        analytics.one_account_duplicate_profile_created
+      handle_duplicate_profiles_found(associated_profiles)
+    else
+      existing_profile = DuplicateProfileSet.involving_profile(
+        profile_id: profile.id,
+        service_provider: sp.issuer,
+      )
+      if existing_profile.present?
+        existing_profile.update!(closed_at: Time.zone.now, self_serviced: true)
       end
-      existing_profile
-    elsif existing_profile
-      existing_profile.update(closed_at: Time.zone.now)
-      analytics.one_account_duplicate_profile_closed
-      nil
     end
   end
 
   private
 
+  def handle_duplicate_profiles_found(associated_profiles)
+    profile_ids = (associated_profiles.map(&:id) + [profile.id]).uniq.sort
+
+    # Use find_or_create_by with proper conflict handling
+    duplicate_profile = find_or_create_duplicate_profile(profile_ids)
+
+    # Update profile_ids if the record already existed but with different profiles
+    if duplicate_profile.profile_ids.sort != profile_ids
+      duplicate_profile.update!(profile_ids: profile_ids)
+      analytics.one_account_duplicate_profile_updated
+    end
+
+    duplicate_profile
+  end
+
+  def find_or_create_duplicate_profile(profile_ids)
+    existing_duplicate = find_existing_duplicate_profile(profile_ids)
+
+    if existing_duplicate
+      # Merge profile_ids if we found an existing record
+      merged_ids = (existing_duplicate.profile_ids + profile_ids).uniq.sort
+      if existing_duplicate.profile_ids.sort != merged_ids
+        existing_duplicate.update!(profile_ids: merged_ids)
+      end
+      return existing_duplicate
+    end
+
+    # Create new record with proper conflict handling
+    create_duplicate_profile(profile_ids)
+  end
+
+  def find_existing_duplicate_profile(profile_ids)
+    DuplicateProfileSet.involving_profiles(
+      profile_ids: profile_ids,
+      service_provider: sp.issuer,
+    )
+  end
+
+  def create_duplicate_profile(profile_ids)
+    set = DuplicateProfileSet.create(
+      service_provider: sp&.issuer,
+      profile_ids: profile_ids,
+    )
+    analytics.one_account_duplicate_profile_created
+    set
+  rescue ActiveRecord::RecordNotUnique => e
+    Rails.logger.error do
+      "Duplicate Profile Set Duplicate found already, may be closed #{e.message}"
+    end
+    nil
+  end
+
   def user_has_ial2_profile?
     user.identity_verified_with_facial_match?
+  end
+
+  def should_check_for_duplicates?
+    user_has_ial2_profile? && user_sp_eligible_for_one_account?
+  end
+
+  def get_pii_for_context
+    cacher = Pii::Cacher.new(user, user_session)
+
+    cacher.fetch(profile.id)
   end
 
   def user_sp_eligible_for_one_account?
