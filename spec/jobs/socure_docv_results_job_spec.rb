@@ -782,6 +782,7 @@ RSpec.describe SocureDocvResultsJob do
                       failure_reason: { passport: 'Please add a new image' },
                     )
                     perform
+
                   end
                 end
 
