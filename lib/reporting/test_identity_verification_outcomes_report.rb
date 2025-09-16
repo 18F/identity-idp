@@ -135,7 +135,7 @@ module Reporting
     end
 
     # this will come from IdP and thus needs to be modified
-    # table for Proofing Success
+    # table for Proofing Success -------------------------------------------------------
     def proofing_success_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -256,22 +256,6 @@ module Reporting
     def stats_month
       time_range.begin.strftime('%b-%Y')
     end
-
-    # Create Data Dictionary that will store results from idp sql query --------------------
-    def data_get_proofing_ial2
-      @data_get_proofing_ial2 ||= begin
-        event_users = Hash.new do |h, uuid|
-          h[uuid] = Set.new
-        end
-
-        fetch_proofing_ial2_data.each do |row|
-          event_users[Events::IAL2] << row['ial_2']
-        end
-
-        event_users
-      end
-    end
-    #---------------------------------------------------------------------------------------
 
     # Create Data Dictionary that will store results from each cloudwatch query ------------
     def data_authentic_license_facial_match_socure
@@ -441,38 +425,38 @@ module Reporting
     # TODO: END --------------------------------------------------------------------------
 
     # TODO: SQL QUERY FOR IDP---------------------------------------------------------------
-    # DOES THIS NEED TO BE FURTHER DOWN? DO I NEED A SIMILAR PARAMS FOR THIS LIKE IN CW?
     # fetch command for idp sql query ------------------------------------------------------
     def fetch_proofing_ial2_data
-      # Use Arel to safely quote values
-      conn = ActiveRecord::Base.connection
       params = {
-        start_date: conn.quote(time_range.begin),
-        end_date: conn.quote(time_range.end),
-        issuer: conn.quote(issuers.first), # only one issuer supported for now
-      }
-      sql = format(<<~SQL, params)
-        WITH base_data AS (
-          SELECT 
-            user_id,
-            ial,
-            profile_requested_issuer,
-            profile_verified_at,
-            DATE_TRUNC('day', returned_at) as return_day,
-            CASE WHEN profile_verified_at >= %{start_date} AND profile_verified_at <= %{end_date} THEN 1 ELSE 0 END as verified_in_period,
-            CASE WHEN profile_verified_at < %{start_date} THEN 1 ELSE 0 END as verified_before_period
-          FROM sp_return_logs
-          WHERE 
-            billable = TRUE
-            AND issuer = %{issuer}
-            AND returned_at >= %{start_date}
-            AND returned_at <= %{end_date}
-        )
-        SELECT
+        start_date: time_range.begin,
+        end_date: time_range.end + 1,
+        issuer: issuers.first,
+      }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+
+      sql = format(<<-SQL, params)
+      WITH
+      base_data AS (
+            SELECT 
+                user_id,
+                ial
+            FROM sp_return_logs
+      
+            WHERE 
+                billable = TRUE
+                AND issuer = %{issuer}
+                AND returned_at >= CAST(%{start_date} AS DATE)
+                AND returned_at < CAST(%{end_date} AS DATE)
+          )
+      SELECT
           COUNT(DISTINCT CASE WHEN ial = 2 THEN user_id END) AS ial_2
-        FROM base_data;
+      FROM base_data;
       SQL
-      conn.execute(sql)
+
+      ial2_result = Reports::BaseReport.transaction_with_timeout do
+        ActiveRecord::Base.connection.execute(sql)
+      end
+
+      return ial2_result.to_a[0].values[0]
     end
     # TODO: END --------------------------------------------------------------------------
 
@@ -564,7 +548,7 @@ module Reporting
     def as_tables
       [
         overview_table,
-        proofing_success_metrics_table,
+        # proofing_success_metrics_table,
         suspected_fraud_blocks_metrics_table,
         key_points_user_friction_metrics_table,
         successful_ipp_table,
@@ -982,11 +966,9 @@ module Reporting
 
     # Extracting data that was gathered from idp sql query and placed in dictionaries -------------
     def ial2
-      set = @ial2 || data_get_proofing_ial2[
-        Events::IAL2]
-      set ||= Set[]
-      set.find { |v| v }&.to_i || 0
+      @ial2 = fetch_proofing_ial2_data
     end
+    # ---------------------------------------------------------------------------------------------
 
     def sum_key_friction_points
       @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
