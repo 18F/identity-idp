@@ -87,7 +87,6 @@ class SocureDocvResultsJob < ApplicationJob
       return
     end
 
-
     record_attempt(docv_result_response:, success: true)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, attempt: submit_attempts
