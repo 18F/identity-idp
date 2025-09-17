@@ -71,7 +71,14 @@ class ResolutionProofingJob < ApplicationJob
   rescue => e
     byebug
   ensure
-    process_results_for_trusted_referee(applicant_pii:, result:, request_id: trusted_referee_request_id, endpoint: trusted_referee_webhook_endpoint, result_id:)
+    process_results_for_trusted_referee(
+      applicant_pii:,
+      result:,
+      request_id: trusted_referee_request_id,
+      endpoint: trusted_referee_webhook_endpoint,
+      result_id:,
+      user:
+    )
     logger_info_hash(
       name: 'ProofResolution',
       proofing_vendor:,
@@ -181,14 +188,49 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
-  def create_profile
+  def proofing_components
+     {} # return hash equivalent - ProofingComponents.new(idv_session:).to_h,
   end
 
-  def process_results_for_trusted_referee(applicant_pii:, result:, request_id:, endpoint:, result_id:)
+  def create_profile(user:, applicant_pii:)
+    user_password = SecureRandom.hex
+    user.password = user_password
+    user.password_confirmation = user_password
+    user.save
+
+    profile_maker = Idv::ProfileMaker.new(
+      applicant: applicant_pii,
+      user:,
+      user_password:,
+      initiating_service_provider: nil
+    )
+
+    profile = profile_maker.save_profile(
+      fraud_pending_reason: nil,
+      gpo_verification_needed: false,
+      in_person_verification_needed: false,
+      selfie_check_performed: true,
+      proofing_components:,
+    )
+
+    profile.activate
+
+    # what do we need to do here?
+    # Pii::Cacher.new(current_user, user_session).save_decrypted_pii(
+    #   profile_maker.pii_attributes,
+    #   profile.id,
+    # )
+
+    user.save!
+    profile
+  end
+
+  def process_results_for_trusted_referee(applicant_pii:, result:, request_id:, endpoint:, result_id:, user:)
     return unless request_id
 
-    send_trusted_referee_webhook(endpoint:, request_id:, result_id:)
-    create_profile if result[:success] == true
+    profile = result[:success] == true ? create_profile(user:, applicant_pii:) : nil
+    send_trusted_referee_webhook(endpoint:, request_id:, result_id:, profile:)
+
   rescue => exception
     byebug
     NewRelic::Agent.notice_error(
@@ -202,13 +244,14 @@ class ResolutionProofingJob < ApplicationJob
   ensure
   end
 
-  def send_trusted_referee_webhook(endpoint: nil, request_id:, result_id:)
+  def send_trusted_referee_webhook(endpoint: nil, request_id:, result_id:, profile:)
     if endpoint
       # send back failure with reasons
       body = {
         reason: 'because ...',
         request_id:,
         result_id:,
+        profile_active: !!profile&.active,
       }
       send_http_post_request(endpoint:, body:)
     end
