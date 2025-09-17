@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Reports::FraudBlocksProofingRateReport do
+RSpec.describe Reports::IdentityVerificationOutcomesReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  subject(:report) { Reports::FraudBlocksProofingRateReport.new(report_date) }
+  subject(:report) { Reports::IdentityVerificationOutcomesReport.new(report_date) }
 
-  let(:name) { 'fraud-blocks-proofing-rate-report' }
+  let(:name) { 'identity-verification-outcomes-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/fraud-blocks-proofing-rate-report/2021/2021-03-02.fraud-blocks-proofing-rate-report'
+    'int/identity-verification-outcomes-report/2021/2021-03-02.identity-verification-outcomes-report'
   end
 
   let(:expected_s3_paths) do
@@ -93,33 +93,33 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
       },
     }
 
-    allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails)
+    allow(IdentityConfig.store).to receive(:identity_verification_outcomes_report_emails)
       .and_return(mock_test_fraud_emails)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(:overview_table)
+    allow(report.identity_verification_outcomes_report).to receive(:overview_table)
       .and_return(mock_overview_data)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(:proofing_success_metrics_table)
+    allow(report.identity_verification_outcomes_report).to receive(:proofing_success_metrics_table)
       .and_return(mock_proofing_success_data)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(
+    allow(report.identity_verification_outcomes_report).to receive(
       :suspected_fraud_blocks_metrics_table,
     )
       .and_return(mock_suspected_fraud_blocks_metrics_data)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(
+    allow(report.identity_verification_outcomes_report).to receive(
       :key_points_user_friction_metrics_table,
     )
       .and_return(mock_key_points_user_friction_metrics_data)
 
-    allow(report.fraud_blocks_proofing_rate_report).to receive(:successful_ipp_table)
+    allow(report.identity_verification_outcomes_report).to receive(:successful_ipp_table)
       .and_return(mock_successful_ipp_data)
   end
 
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: anything,
-      subject: 'Fraud Blocks Proofing Rate Report - 2021-03-02',
+      subject: 'Identity Verification Outcomes Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
       attachment_format: :csv,
@@ -129,7 +129,7 @@ RSpec.describe Reports::FraudBlocksProofingRateReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:fraud_blocks_proofing_rate_report_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:identity_verification_outcomes_report_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 

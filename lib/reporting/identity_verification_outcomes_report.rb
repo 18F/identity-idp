@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class TestIdentityVerificationOutcomesReport
+  class IdentityVerificationOutcomesReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
@@ -74,9 +74,9 @@ module Reporting
       issuers:,
       time_range:,
       verbose: false,
-      progress: true,
-      slice: 1.day,
-      threads: 5
+      progress: false,
+      slice: 6.hours,
+      threads: 1
     )
       @issuers = issuers
       @time_range = time_range
@@ -141,7 +141,7 @@ module Reporting
         ['Metric', 'Total', 'Range Start', 'Range End'],
         ['Identity Verified Users', ial2.to_s, time_range.begin.to_s,
          time_range.end.to_s],
-        ['Idv Rate w/Preverified Users', idv_rate.to_s, time_range.begin.to_s,
+        ['Idv Rate w/Preverified Users', idv_rate.to_s.concat('%'), time_range.begin.to_s,
          time_range.end.to_s],
       ]
     end
@@ -548,7 +548,7 @@ module Reporting
     def as_tables
       [
         overview_table,
-        # proofing_success_metrics_table,
+        proofing_success_metrics_table,
         suspected_fraud_blocks_metrics_table,
         key_points_user_friction_metrics_table,
         successful_ipp_table,
@@ -977,12 +977,12 @@ module Reporting
 
     def denominator
       # to do need to calculate ipp_barcode and then subtract it from the following line
-      @denominator = (ial2 + sum_key_friction_points) - ipp_barcode_count
+      @denominator = (ial2.to_i + sum_key_friction_points.to_i) - ipp_barcode_count.to_i
     end
 
     def idv_rate
       # @idv_rate = '86.34%' # just testing
-      @idv_rate || (ial2 / denominator.to_f * 100).round(2).to_s + '%'
+      @idv_rate = (ial2.to_i / denominator.to_f * 100).round(2)
     end
 
     def ipp_barcode_count
@@ -1130,7 +1130,7 @@ end
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
 
-  Reporting::TestIdentityVerificationOutcomesReport.new(**options).to_csvs.each do |csv|
+  Reporting::IdentityVerificationOutcomesReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end

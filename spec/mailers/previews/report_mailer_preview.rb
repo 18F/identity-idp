@@ -95,22 +95,6 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def fraud_blocks_proofing_rate_report
-    fraud_blocks_proofing_rate_report = Reports::FraudBlocksProofingRateReport.new(
-      Time.zone.yesterday,
-    )
-
-    stub_cloudwatch_client(fraud_blocks_proofing_rate_report.fraud_blocks_proofing_rate_report)
-
-    ReportMailer.tables_report(
-      email: 'test@example.com',
-      subject: "Example Fraud Blocks and Proofing Rate Report - #{Time.zone.now.to_date}",
-      message: fraud_blocks_proofing_rate_report.preamble,
-      attachment_format: :csv,
-      reports: fraud_blocks_proofing_rate_report.reports,
-    )
-  end
-
   def fraud_metrics_report
     fraud_metrics_report = Reports::FraudMetricsReport.new(Time.zone.yesterday)
 
@@ -122,6 +106,22 @@ class ReportMailerPreview < ActionMailer::Preview
       message: fraud_metrics_report.preamble,
       attachment_format: :xlsx,
       reports: fraud_metrics_report.reports,
+    )
+  end
+
+  def identity_verification_outcomes_report
+    identity_verification_outcomes_report = Reports::IdentityVerificationOutcomesReport.new(
+      Time.zone.yesterday,
+    )
+
+    stub_cloudwatch_client(identity_verification_outcomes_report.identity_verification_outcomes_report)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example Identity Verification Outcomes Report - #{Time.zone.now.to_date}",
+      message: identity_verification_outcomes_report.preamble,
+      attachment_format: :csv,
+      reports: identity_verification_outcomes_report.reports,
     )
   end
 
