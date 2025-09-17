@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/fraud_blocks_proofing_rate_report'
+require 'reporting/identity_verification_outcomes_report'
 
-RSpec.describe Reporting::FraudBlocksProofingRateReport do
+RSpec.describe Reporting::IdentityVerificationOutcomesReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
   let(:expected_overview_table) do
@@ -52,7 +52,9 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
     ]
   end
 
-  subject(:report) { Reporting::FraudBlocksProofingRateReport.new(issuers: [issuer], time_range:) }
+  subject(:report) do
+    Reporting::IdentityVerificationOutcomesReport.new(issuers: [issuer], time_range:)
+  end
 
   before do
     travel_to Time.zone.now.beginning_of_day
@@ -142,15 +144,23 @@ RSpec.describe Reporting::FraudBlocksProofingRateReport do
 
   describe '#as_emailable_reports' do
     before do
-      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
-        .to receive(:fraud_blocks_proofing_rate_report)
+      allow_any_instance_of(Reporting::IdentityVerificationOutcomesReport)
+        .to receive(:overview_table)
+        .and_return(expected_overview_table)
+
+      allow_any_instance_of(Reporting::IdentityVerificationOutcomesReport)
+        .to receive(:proofing_success_metrics_table)
+        .and_return(expected_proofing_success_metrics_table)
+
+      allow_any_instance_of(Reporting::IdentityVerificationOutcomesReport)
+        .to receive(:suspected_fraud_blocks_metrics_table)
         .and_return(expected_suspected_fraud_blocks_metrics_table)
 
-      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
+      allow_any_instance_of(Reporting::IdentityVerificationOutcomesReport)
         .to receive(:key_points_user_friction_metrics_table)
         .and_return(expected_key_points_user_friction_metrics_table)
 
-      allow_any_instance_of(Reporting::FraudBlocksProofingRateReport)
+      allow_any_instance_of(Reporting::IdentityVerificationOutcomesReport)
         .to receive(:successful_ipp_table)
         .and_return(expected_successful_ipp_table)
     end

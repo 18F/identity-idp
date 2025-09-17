@@ -1,7 +1,7 @@
 require 'csv'
-require 'reporting/test_identity_verification_outcomes_report'
+require 'reporting/identity_verification_outcomes_report'
 module Reports
-  class TestIdentityVerificationOutcomesReport < BaseReport
+  class IdentityVerificationOutcomesReport < BaseReport
     REPORT_NAME = 'identity-verification-outcomes-report'
 
     attr_reader :report_date
@@ -11,7 +11,7 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day)
+    def perform(date = Time.zone.yesterday.end_of_day) # modify this for testing to be start_of_day to see if values match
       @report_date = date
 
       email_addresses = emails.select(&:present?)
@@ -61,21 +61,19 @@ module Reports
     end
 
     def identity_verification_outcomes_report
-      @identity_verification_outcomes_report ||= Reporting::TestIdentityVerificationOutcomesReport.new(
+      @identity_verification_outcomes_report ||= Reporting::IdentityVerificationOutcomesReport.new(
         issuers: issuers,
-        time_range: report_date.all_day,
+        time_range: report_date.all_month,
       )
     end
 
     # these two need to be saved in the config file application.yml.default as empty '[]'
-    # change these back to what is in the original file when ready to run for real
     def issuers
-      ['urn:gov:gsa:SAML:2.0.profiles:sp:sso:SSA:mySSAsp']
-      # ['DOIFOIAXpressPALPOI', 'LGDOI240001']
+      [*IdentityConfig.store.identity_verification_outcomes_report_issuers]
     end
 
     def emails
-      ['kalea.sebesta@gsa.gov']
+      [*IdentityConfig.store.identity_verification_outcomes_report_emails]
     end
     # -------------------------------------------------------------------
 
