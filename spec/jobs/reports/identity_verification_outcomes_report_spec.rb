@@ -99,7 +99,9 @@ RSpec.describe Reports::IdentityVerificationOutcomesReport do
     allow(report.identity_verification_outcomes_report).to receive(:overview_table)
       .and_return(mock_overview_data)
 
-    allow(report.identity_verification_outcomes_report).to receive(:proofing_success_metrics_table)
+    allow(report.identity_verification_outcomes_report).to receive(
+      :proofing_success_metrics_table,
+    )
       .and_return(mock_proofing_success_data)
 
     allow(report.identity_verification_outcomes_report).to receive(
@@ -129,7 +131,8 @@ RSpec.describe Reports::IdentityVerificationOutcomesReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:identity_verification_outcomes_report_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:identity_verification_outcomes_report_emails)
+      .and_return('')
 
     expect(report).to_not receive(:reports)
 
