@@ -30,8 +30,7 @@ module Idv
       end
     end
 
-    def webhook
-      byebug
+    def webhook # action not needed
       body = webhook_params.except(:webhook_endpoint)
       endpoint = webhook_params[:endpoint]
 
@@ -51,26 +50,36 @@ module Idv
     end
 
     def result
-      result_id = params.permit(:result_id)[:result_id]
-      dcs_uuid = DocumentCaptureSession.find_by(result_id:)
-      idv_session.verify_info_step_document_capture_session_uuid = dcs_uuid
-      proofing_result = load_async_state
-      process_result(proofing_result)
-
-      profile = current_user&.profiles.last
-      body = {}
-      if profile
-        body = { uuid: profile.uuid, active: profile.active }
+      result_id = params.permit(:rid)[:rid]
+      dcs = DocumentCaptureSession.find_by(result_id:)
+      unless dcs
+        render json: { message: 'Result Not Found' }, status: :bad_request
+        return
       end
-      render json: {}, status: :ok
+      @current_user = dcs.user
+      idv_session.verify_info_step_document_capture_session_uuid = dcs.uuid
+
+      # abandoned below approach b/c pii is not available - should create profile in proofing job
+      proofing_result = load_async_state
+      # byebug unless proofing_result
+      # process_result(proofing_result)
+
+      # profile = dcs.user.profiles&.last
+      # body = {}
+      # if profile
+      #   body = { uuid: profile&.uuid, active: profile&.active }
+      # end
+      # render json: body, status: :ok
+      head :ok
     rescue => exception
       puts exception.inspect
+      puts exception.backtrace
       render json: {}, status: :bad_request
       NewRelic::Agent.notice_error(
         exception,
         custom_params: {
           event: 'Failed to respond to result',
-          body:,
+          # body:,
         },
       )
     ensure
