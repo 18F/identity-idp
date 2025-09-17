@@ -224,6 +224,29 @@ RSpec.describe DuplicateProfileChecker do
               end
             end
           end
+
+          context 'when duplicate is found but existing set is closed' do
+            before do
+              dupe_profile_set.update(closed_at: Time.zone.now)
+              allow_any_instance_of(Idv::DuplicateSsnFinder)
+                .to receive(:duplicate_facial_match_profiles)
+                .and_return([profile2])
+            end
+
+            it 'logs a dupe profile set attempted' do
+              dupe_profile_checker = DuplicateProfileChecker.new(
+                user: user,
+                user_session: session,
+                sp: sp,
+                analytics: @analytics,
+              )
+              dupe_profile_checker.dupe_profile_set_for_user
+
+              expect(@analytics).to have_logged_event(
+                :one_account_duplicate_profile_creation_failed,
+              )
+            end
+          end
         end
       end
     end
