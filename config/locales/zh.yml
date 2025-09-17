@@ -1602,7 +1602,7 @@ openid_connect.user_info.errors.no_authorization: 未提供授权标头
 openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。
 pages.page_took_too_long.body: 你也许想等几分钟后再试。（503）
 pages.page_took_too_long.header: 服务器处理你请求的时间过长。
-profiling_failed.details: 我们无法证实你的身份并让你登录。请联系你的机构以获取服务。
+profiling_failed.details_html: '请拨打 <strong>(844) 875-6446</strong> 致电我们的联系中心并提供出错代码 <strong>LG22</strong>'
 profiling_failed.title: 我们无法把你登入你的帐户。
 report_mailer.deleted_accounts_report.issuers: 发放方
 report_mailer.deleted_accounts_report.name: 姓名
