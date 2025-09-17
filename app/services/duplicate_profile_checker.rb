@@ -14,7 +14,7 @@ class DuplicateProfileChecker
   def dupe_profile_set_for_user
     return unless should_check_for_duplicates?
 
-    pii = get_pii_for_context
+    pii = get_pii
     return unless pii.dig(:ssn)
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
@@ -96,7 +96,7 @@ class DuplicateProfileChecker
     user_has_ial2_profile? && user_sp_eligible_for_one_account?
   end
 
-  def get_pii_for_context
+  def get_pii
     cacher = Pii::Cacher.new(user, user_session)
 
     cacher.fetch(profile.id)
