@@ -117,9 +117,10 @@ class Profile < ApplicationRecord
     attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
 
     transaction do
-      Profile.where(user_id: user_id).update_all(active: false)
+      Profile.where(user_id: user_id).where.not(id:).update_all(active: false)
       update!(attrs)
     end
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
