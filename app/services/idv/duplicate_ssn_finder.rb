@@ -14,7 +14,7 @@ module Idv
     end
 
     def duplicate_facial_match_profiles(service_provider:)
-      Profile
+      (Profile
         .active
         .facial_match
         .where(ssn_signature: ssn_signatures)
@@ -22,7 +22,14 @@ module Idv
         .where(identities: { service_provider: service_provider })
         .where(identities: { deleted_at: nil })
         .where.not(user_id: user.id)
-        .distinct
+       + Profile
+        .active
+        .facial_match
+        .where.not(user_id: user.id)
+        .where(
+          ssn_signature: ssn_signatures,
+          initiating_service_provider_issuer: service_provider,
+        )).distinct
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:
