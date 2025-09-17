@@ -16,7 +16,7 @@ module UspsInPersonProofing
         zip_code: applicant.zipcode,
         email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
         document_number: applicant.id_number,
-        document_expiration_date: applicant.id_expiration_date,
+        document_expiration_date: applicant.id_expiration,
         document_type: enrollment.document_type,
       )
     end

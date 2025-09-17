@@ -12,7 +12,7 @@ RSpec.describe Pii::UspsApplicant do
         'identity_doc_address_state' => Faker::Address.state_abbr,
         'identity_doc_zipcode' => Faker::Address.zip_code,
         'state_id_number' => Faker::Number.number(digits: 9),
-        'state_id_expiration_date' => Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
+        'state_id_expiration' => Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
         'same_address_as_id' => false,
       }
     end
@@ -26,8 +26,8 @@ RSpec.describe Pii::UspsApplicant do
         city: idv_applicant['identity_doc_city'],
         state: idv_applicant['identity_doc_address_state'],
         zipcode: idv_applicant['identity_doc_zipcode'],
-        id_expiration_date: idv_applicant['state_id_expiration_date'],
         id_number: idv_applicant['state_id_number'],
+        id_expiration: idv_applicant['state_id_expiration'],
         current_address_same_as_id: idv_applicant['same_address_as_id'],
       )
     end

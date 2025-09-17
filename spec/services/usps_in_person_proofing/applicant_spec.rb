@@ -1,18 +1,29 @@
 require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
+  let(:applicant_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      address1: Faker::Address.street_name,
+      city: Faker::Address.city,
+      state: Faker::Address.state_abbr,
+      zipcode: Faker::Address.zip_code,
+      id_number: Faker::Number.number(digits: 9),
+      id_expiration: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
+    }
+  end
+
   describe '.from_usps_applicant_and_enrollment' do
     context 'when values contains transliterable characters' do
       let(:applicant) do
         Pii::UspsApplicant.new(
-          first_name: 'Tèst',
-          last_name: 'Tèstington',
-          address1: 'Qüery ST',
-          city: 'Qüertyton',
-          state: Faker::Address.state_abbr,
-          zipcode: Faker::Address.zip_code,
-          id_number: Faker::Number.number(digits: 9),
-          id_expiration_date: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
+          **applicant_pii.merge(
+            first_name: 'Tèst',
+            last_name: 'Tèstington',
+            address1: 'Qüery ST',
+            city: 'Qüertyton',
+          ),
         )
       end
       let(:enrollment) { build('in_person_enrollment', document_type: 'state_id') }
@@ -38,7 +49,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
           state: applicant.state,
           zip_code: applicant.zipcode,
           document_number: applicant.id_number,
-          document_expiration_date: applicant.id_expiration_date,
+          document_expiration_date: applicant.id_expiration,
           email:,
           document_type: enrollment.document_type,
         )
@@ -46,18 +57,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
     end
 
     context 'when values do not contain transliterable characters' do
-      let(:applicant) do
-        Pii::UspsApplicant.new(
-          first_name: Faker::Name.first_name,
-          last_name: Faker::Name.last_name,
-          address1: Faker::Address.street_name,
-          city: Faker::Address.city,
-          state: Faker::Address.state_abbr,
-          zipcode: Faker::Address.zip_code,
-          id_number: Faker::Number.number(digits: 9),
-          id_expiration_date: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
-        )
-      end
+      let(:applicant) { Pii::UspsApplicant.new(**applicant_pii) }
       let(:enrollment) { build('in_person_enrollment', document_type: 'state_id') }
       let(:email) { Faker::Internet.email(name: 'noreply') }
 
@@ -81,7 +81,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
           state: applicant.state,
           zip_code: applicant.zipcode,
           document_number: applicant.id_number,
-          document_expiration_date: applicant.id_expiration_date,
+          document_expiration_date: applicant.id_expiration,
           email:,
           document_type: enrollment.document_type,
         )
@@ -90,21 +90,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
   end
 
   describe '#has_valid_address?' do
-    let(:applicant) do
-      described_class.new(
-        unique_id: Faker::Number.number(digits: 10),
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        address:,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        email: Faker::Internet.email,
-        document_number: Faker::Number.number(digits: 9),
-        document_expiration_date: Faker::Date.in_date_period(year: 2030),
-        document_type: 'state_id',
-      )
-    end
+    let(:applicant) { described_class.new(address:) }
 
     context 'when the address is valid' do
       let(:address) { Faker::Address.street_address }
