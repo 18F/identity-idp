@@ -91,14 +91,9 @@ module Idv
 
       return true if user&.has_establishing_in_person_enrollment?
 
-      # If pii_from_doc is already set, document capture was completed
       return true if idv_session.pii_from_doc.present?
 
-      return false unless idv_session.document_capture_session_uuid
-
-      DocumentCaptureSession.where(
-        uuid: idv_session.document_capture_session_uuid,
-      ).where.not(passport_status: nil).exists?
+      idv_session.choose_id_type_completed
     end
 
     private

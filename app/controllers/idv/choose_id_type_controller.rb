@@ -36,6 +36,7 @@ module Idv
         redirect_to idv_choose_id_type_url(passports: false)
       elsif result.success?
         set_passport_requested
+        idv_session.choose_id_type_completed = true
         redirect_to next_step
       else
         redirect_to idv_choose_id_type_url
