@@ -71,7 +71,7 @@ class ResolutionProofingJob < ApplicationJob
   rescue => e
     byebug
   ensure
-    send_trusted_referee_webhook(endpoint: trusted_referee_webhook_endpoint, result:, result_id:, request_id: trusted_referee_request_id)
+    process_results_for_trusted_referee(applicant_pii:, result:, request_id: trusted_referee_request_id, endpoint: trusted_referee_webhook_endpoint, result_id:)
     logger_info_hash(
       name: 'ProofResolution',
       proofing_vendor:,
@@ -181,16 +181,14 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
-  def send_trusted_referee_webhook(endpoint: nil, result:, request_id:, result_id:)
-    if endpoint
-      # send back failure with reasons
-      body = {
-        reason: 'because ...',
-        request_id:,
-        result_id:,
-      }
-      send_http_post_request(endpoint:, body:)
-    end
+  def create_profile
+  end
+
+  def process_results_for_trusted_referee(applicant_pii:, result:, request_id:, endpoint:, result_id:)
+    return unless request_id
+
+    send_trusted_referee_webhook(endpoint:, request_id:, result_id:)
+    create_profile if result[:success] == true
   rescue => exception
     byebug
     NewRelic::Agent.notice_error(
@@ -202,6 +200,19 @@ class ResolutionProofingJob < ApplicationJob
       },
     )
   ensure
+  end
+
+  def send_trusted_referee_webhook(endpoint: nil, request_id:, result_id:)
+    if endpoint
+      # send back failure with reasons
+      body = {
+        reason: 'because ...',
+        request_id:,
+        result_id:,
+      }
+      send_http_post_request(endpoint:, body:)
+    end
+
     # log to analytics
   end
 
