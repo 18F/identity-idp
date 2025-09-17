@@ -114,19 +114,6 @@ module Proofing
           enabled_services
           event_datetime
           event_type
-          fraudpoint.conversation_id
-          fraudpoint.friendly_fraud_index
-          fraudpoint.manipulated_identity_index
-          fraudpoint.product_status
-          fraudpoint.transaction_reason_code
-          fraudpoint.risk_indicators_codes
-          fraudpoint.risk_indicators_descriptions
-          fraudpoint.score
-          fraudpoint.stolen_identity_index
-          fraudpoint.suspicious_activity_index
-          fraudpoint.synthetic_identity_index
-          fraudpoint.transaction_status
-          fraudpoint.vulnerable_victim_index
           fuzzy_device_first_seen
           fuzzy_device_id_confidence
           fuzzy_device_last_event

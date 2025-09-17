@@ -92,7 +92,6 @@ RSpec.describe SocureShadowModeProofingJob do
               transaction_id: 'ddp-mock-transaction-id-123',
               review_status: 'pass',
               response_body: {
-                "fraudpoint.score": '500',
                 request_id: '1234',
                 request_result: 'success',
                 review_status: 'pass',

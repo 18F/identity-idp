@@ -14,7 +14,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::ResponseRedacter do
         'ssn_hash' => 'unsafe ssn hash',
         'review_status' => 'safe value',
         'summary_risk_score' => 'safe value',
-        'fraudpoint.score' => 'safe value',
       }
     end
     context 'hash with mixed known and unknown keys' do
@@ -22,7 +21,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::ResponseRedacter do
         expect(json).to eq(
           'review_status' => 'safe value',
           'summary_risk_score' => 'safe value',
-          'fraudpoint.score' => 'safe value',
         )
       end
     end
