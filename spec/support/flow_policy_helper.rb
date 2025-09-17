@@ -19,7 +19,7 @@ module FlowPolicyHelper
       idv_session.flow_path = 'standard'
     when :choose_id_type
       idv_session.flow_path = 'standard'
-      idv_session.passport_allowed == true
+      idv_session.choose_id_type_completed = true
     when :link_sent
       idv_session.flow_path = 'hybrid'
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)

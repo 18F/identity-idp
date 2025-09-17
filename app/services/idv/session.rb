@@ -4,6 +4,7 @@ module Idv
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_mechanism [String, nil]
   # @attr applicant [Struct, nil]
+  # @attr choose_id_type_completed [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -51,6 +52,7 @@ module Idv
       address_verification_mechanism
       applicant
       bucketed_doc_auth_vendor
+      choose_id_type_completed
       doc_auth_vendor
       document_capture_session_uuid
       flow_path

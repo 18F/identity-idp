@@ -50,6 +50,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     subject.idv_session.flow_path = flow_path
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+    subject.idv_session.choose_id_type_completed = true
 
     vot = facial_match_required ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
@@ -87,6 +88,10 @@ RSpec.describe Idv::DocumentCaptureController do
           doc_auth_vendor: idv_vendor,
           passport_status: nil,
         )
+      end
+
+      before do
+        subject.idv_session.choose_id_type_completed = false
       end
 
       it 'redirects to choose_id_type' do
