@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'reporting/identity_verification_outcomes_report'
 module Reports
@@ -11,7 +13,8 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day) # modify this for testing to be start_of_day to see if values match
+    # modify this for testing to be start_of_day to see if values match
+    def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
 
       email_addresses = emails.select(&:present?)

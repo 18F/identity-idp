@@ -114,7 +114,9 @@ class ReportMailerPreview < ActionMailer::Preview
       Time.zone.yesterday,
     )
 
-    stub_cloudwatch_client(identity_verification_outcomes_report.identity_verification_outcomes_report)
+    stub_cloudwatch_client(
+      identity_verification_outcomes_report.identity_verification_outcomes_report,
+    )
 
     ReportMailer.tables_report(
       email: 'test@example.com',
