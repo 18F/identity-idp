@@ -295,6 +295,14 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.pii_from_doc = nil
+        # Create document capture session to simulate choose_id_type completion
+        document_capture_session = DocumentCaptureSession.create!(
+          user: user,
+          uuid: SecureRandom.uuid,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+        subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
         allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(
           Idp::Constants::Vendors::LEXIS_NEXIS,
         )

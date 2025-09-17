@@ -85,6 +85,14 @@ RSpec.describe Idv::LinkSentController do
           subject.idv_session.welcome_visited = true
           subject.idv_session.idv_consent_given_at = Time.zone.now
           subject.idv_session.flow_path = 'standard'
+          # Create document capture session to simulate choose_id_type completion
+          document_capture_session = DocumentCaptureSession.create!(
+            user: user,
+            uuid: SecureRandom.uuid,
+            requested_at: Time.zone.now,
+            passport_status: 'not_requested',
+          )
+          subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
 
           get :show
 
