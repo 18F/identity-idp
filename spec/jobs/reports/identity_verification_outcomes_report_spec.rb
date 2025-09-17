@@ -8,7 +8,7 @@ RSpec.describe Reports::IdentityVerificationOutcomesReport do
   let(:name) { 'identity-verification-outcomes-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:report_folder) do
-    'int/identity-verification-outcomes-report/2021/2021-03-02.identity-verification-outcomes-report'
+    'int/identity-verification-outcomes-report/2021/2021-03-02.identity-verification-outcomes-report' # rubocop:disable Layout/LineLength
   end
 
   let(:expected_s3_paths) do
