@@ -183,6 +183,10 @@ RSpec.describe Idv::WelcomeController do
     end
 
     it 'clears the idv/in_person session' do
+      subject.user_session['idv/in_person'] = { some: 'data' }
+
+      put :update
+
       expect(subject.user_session['idv/in_person']).to be_blank
     end
 
