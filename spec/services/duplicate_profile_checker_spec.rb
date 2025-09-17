@@ -126,7 +126,7 @@ RSpec.describe DuplicateProfileChecker do
             end
           end
 
-          context 'when a new profile is found' do
+          context 'when a new identical profile is found' do
             let!(:profile3) do
               create(
                 :profile,
@@ -135,6 +135,7 @@ RSpec.describe DuplicateProfileChecker do
                 user: create(:user, :fully_registered),
               )
             end
+
             before do
               allow_any_instance_of(Idv::DuplicateSsnFinder)
                 .to receive(:duplicate_facial_match_profiles)

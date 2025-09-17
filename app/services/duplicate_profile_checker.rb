@@ -29,7 +29,9 @@ class DuplicateProfileChecker
         service_provider: sp.issuer,
       )
       if existing_profile.present?
+        # Close out existing duplicate profile if no more duplicates found
         existing_profile.update!(closed_at: Time.zone.now, self_serviced: true)
+        analytics.one_account_duplicate_profile_closed
       end
     end
   end
@@ -39,16 +41,7 @@ class DuplicateProfileChecker
   def handle_duplicate_profiles_found(associated_profiles)
     profile_ids = (associated_profiles.map(&:id) + [profile.id]).uniq.sort
 
-    # Use find_or_create_by with proper conflict handling
-    duplicate_profile = find_or_create_duplicate_profile(profile_ids)
-
-    # Update profile_ids if the record already existed but with different profiles
-    if duplicate_profile.profile_ids.sort != profile_ids
-      duplicate_profile.update!(profile_ids: profile_ids)
-      analytics.one_account_duplicate_profile_updated
-    end
-
-    duplicate_profile
+    find_or_create_duplicate_profile(profile_ids)
   end
 
   def find_or_create_duplicate_profile(profile_ids)
@@ -59,6 +52,7 @@ class DuplicateProfileChecker
       merged_ids = (existing_duplicate.profile_ids + profile_ids).uniq.sort
       if existing_duplicate.profile_ids.sort != merged_ids
         existing_duplicate.update!(profile_ids: merged_ids)
+        analytics.one_account_duplicate_profile_updated
       end
       return existing_duplicate
     end
@@ -85,6 +79,12 @@ class DuplicateProfileChecker
     Rails.logger.error do
       "Duplicate Profile Set Duplicate found already, may be closed #{e.message}"
     end
+
+    analytics.one_account_duplicate_profile_creation_failed(
+      service_provider: sp&.issuer,
+      profile_ids: profile_ids,
+      error_message: e.message,
+    )
     nil
   end
 

@@ -6560,6 +6560,22 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profile_created)
   end
 
+  # When there's an error creating duplicate profile set
+  def one_account_duplicate_profile_creation_failed(
+    service_provider:,
+    profile_ids:,
+    error_message:,
+    **extra
+  )
+    track_event(
+      :one_account_duplicate_profile_creation_failed,
+      service_provider: service_provider,
+      profile_ids: profile_ids,
+      error_message: error_message,
+      **extra,
+    )
+  end
+
   # Tracks when a duplicate profile object is updated
   def one_account_duplicate_profile_updated
     track_event(:one_account_duplicate_profile_updated)
