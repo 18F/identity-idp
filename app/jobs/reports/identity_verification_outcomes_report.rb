@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 require 'reporting/identity_verification_outcomes_report'
 module Reports
