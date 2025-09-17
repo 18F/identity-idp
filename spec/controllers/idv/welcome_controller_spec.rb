@@ -182,6 +182,10 @@ RSpec.describe Idv::WelcomeController do
       expect(subject.idv_session.applicant).to be_nil
     end
 
+    it 'clears the idv/in_person session' do
+      expect(subject.user_session['idv/in_person']).to be_blank
+    end
+
     it 'sets mail_only_warning_shown to previous mail_only_warning_shown value' do
       subject.idv_session.mail_only_warning_shown = true
       put :update
