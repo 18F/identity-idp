@@ -2,6 +2,7 @@
 
 module Users
   class ServiceProviderRevokeController < ApplicationController
+    include OneAccountConcern
     before_action :confirm_two_factor_authenticated
 
     rescue_from ActiveRecord::RecordNotFound do
@@ -19,6 +20,7 @@ module Users
       identity = load_identity!(@service_provider)
 
       RevokeServiceProviderConsent.new(identity).call
+      log_one_account_self_service_if_applicable(source: :account_management_unlinked_from_sp)
       analytics.sp_revoke_consent_revoked(issuer: @service_provider.issuer)
 
       redirect_to account_connected_accounts_path

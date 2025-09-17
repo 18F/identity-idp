@@ -6577,6 +6577,28 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
 
+  # Tracks when a user self services their duplicate account issue
+  # @param [Symbol] source where the self service occurs (account_management, account_reset, etc...)
+  # @param [String] service_provider The service provider  of the duplicate profile set serviced
+  # @param [Integer] associated_profiles_count The number of associated profiles for the set
+  # @param [Integer] dupe_profile_set_id The ID of the duplicate profile set
+  def one_account_self_service(
+        source:,
+        service_provider:,
+        associated_profiles_count:,
+        dupe_profile_set_id:,
+        **extra
+      )
+    track_event(
+      :one_account_self_service,
+      source: source,
+      service_provider: service_provider,
+      associated_profiles_count: associated_profiles_count,
+      dupe_profile_set_id: dupe_profile_set_id,
+      **extra,
+    )
+  end
+
   # Tracks when a sucessful openid authorization request is returned
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Boolean] user_sp_authorized Whether user granted consent during this authorization
