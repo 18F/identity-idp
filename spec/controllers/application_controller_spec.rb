@@ -693,8 +693,18 @@ RSpec.describe ApplicationController do
           context 'when duplicate profile set is already closed' do
             it 'returns false' do
               duplicate_profile_set.update!(closed_at: Time.zone.now)
+
               get :index
               expect(response.body).to eq('false')
+            end
+
+            it 'logs an event when users are able to log in again after self-resolving duplicate profiles' do
+              stub_analytics
+              duplicate_profile_set.update!(closed_at: Time.zone.now)
+
+              get :index
+              
+              expect(@analytics).to have_logged_event(:one_account_login_success_after_dupe_deletion)
             end
           end
         end

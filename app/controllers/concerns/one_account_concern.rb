@@ -32,6 +32,7 @@ module OneAccountConcern
       sp: sp_from_sp_session,
       analytics: analytics,
     ).dupe_profile_set_for_user
+    login_success_after_dupe_deletion?(profile_set: dupe_profile_set)
     dupe_profile_set.present? && dupe_profile_set.closed_at.nil?
   end
 
@@ -59,5 +60,11 @@ module OneAccountConcern
       profile_id: current_user.active_profile.id,
       service_provider: sp_from_sp_session&.issuer,
     ).present?
+  end
+
+  def login_success_after_dupe_deletion?(profile_set: dupe_profile_set)
+    if profile_set.present? && profile_set.closed_at.present?
+      analytics.one_account_login_success_after_dupe_deletion
+    end
   end
 end
