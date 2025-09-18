@@ -404,7 +404,7 @@ class ActionAccount
     end
 
     def fraud_ops_tracker(profile:)
-      FraudOpsTracker.new(
+      FraudOps::Tracker.new(
         session_id: nil,
         request: nil,
         user: profile.user,

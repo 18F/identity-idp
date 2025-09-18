@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe SocureImageRetrievalJob do
   let(:job) { described_class.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider) }
   let(:user) { create(:user) }
   let(:document_capture_session) do
@@ -25,6 +26,7 @@ RSpec.describe SocureImageRetrievalJob do
 
   before do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
     document_capture_session.update(issuer: sp.issuer)
