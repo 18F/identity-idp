@@ -14,3 +14,8 @@ REDIS_ATTEMPTS_API_POOL =
   ConnectionPool.new(size: IdentityConfig.store.redis_attempts_api_pool_size) do
     Redis.new(url: IdentityConfig.store.redis_attempts_api_url)
   end.freeze
+
+REDIS_FRAUD_OPS_POOL =
+  ConnectionPool.new(size: IdentityConfig.store.redis_fraud_ops_pool_size) do
+    Redis.new(url: IdentityConfig.store.redis_fraud_ops_url)
+  end.freeze

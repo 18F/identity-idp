@@ -238,10 +238,12 @@ RSpec.describe ActionAccount do
 
       let(:analytics) { FakeAnalytics.new }
       let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+      let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
       before do
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+        allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
       end
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }

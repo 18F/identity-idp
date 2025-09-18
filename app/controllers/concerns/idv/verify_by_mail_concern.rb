@@ -18,6 +18,7 @@ module Idv
         **ab_test_analytics_buckets,
       )
       attempts_api_tracker.idv_verify_by_mail_letter_requested(resend:)
+      fraud_ops_tracker.idv_verify_by_mail_letter_requested(resend:)
     end
 
     def log_letter_enqueued_analytics(resend:)
