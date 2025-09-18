@@ -39,8 +39,7 @@ RSpec.feature 'One Account Sign In' do
         :profile,
         :active,
         :facial_match_proof,
-        :with_pii,
-        ssn_signature: ssn_fingerprint,
+        pii: pii_attrs,
         user: user,
       )
     end
@@ -57,8 +56,7 @@ RSpec.feature 'One Account Sign In' do
           :profile,
           :active,
           :facial_match_proof,
-          :with_pii,
-          ssn_signature: ssn_fingerprint,
+          pii: pii_attrs,
           user: user2,
         )
       end
