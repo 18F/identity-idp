@@ -6561,6 +6561,9 @@ module AnalyticsEvents
   end
 
   # When there's an error creating duplicate profile set
+  # @param [String] service_provider The service provider that initiated the creation
+  # @param [Array<Integer>] profile_ids The profile IDs that were attempted to be added
+  # @param [String] error_message The error message returned from the operation
   def one_account_duplicate_profile_creation_failed(
     service_provider:,
     profile_ids:,
@@ -6591,6 +6594,28 @@ module AnalyticsEvents
   # @param [String] source how the user came through to the page
   def one_account_duplicate_profiles_warning_page_visited(source:, **extra)
     track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
+  end
+
+  # Tracks when a user self services their duplicate account issue
+  # @param [Symbol] source where the self service occurs (account_management, account_reset, etc...)
+  # @param [String] service_provider The service provider  of the duplicate profile set serviced
+  # @param [Integer] associated_profiles_count The number of associated profiles for the set
+  # @param [Integer] dupe_profile_set_id The ID of the duplicate profile set
+  def one_account_self_service(
+        source:,
+        service_provider:,
+        associated_profiles_count:,
+        dupe_profile_set_id:,
+        **extra
+      )
+    track_event(
+      :one_account_self_service,
+      source: source,
+      service_provider: service_provider,
+      associated_profiles_count: associated_profiles_count,
+      dupe_profile_set_id: dupe_profile_set_id,
+      **extra,
+    )
   end
 
   # Tracks when a sucessful openid authorization request is returned
