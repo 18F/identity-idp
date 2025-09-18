@@ -11,12 +11,16 @@ RSpec.feature 'document capture step', :js do
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:passports_enabled) { false }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
       attempts_api_tracker,
+    )
+    allow_any_instance_of(ApplicationController).to receive(:fraud_ops_tracker).and_return(
+      fraud_ops_tracker,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)

@@ -522,7 +522,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def fraud_ops_tracker(enrollment:)
-    FraudOpsTracker.new(
+    FraudOps::Tracker.new(
       session_id: nil,
       request: nil,
       user: enrollment.user,
