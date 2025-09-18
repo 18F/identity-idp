@@ -6,8 +6,9 @@ module DocAuth
       class ImagesRequest < DocAuth::Socure::Request
         MAX_IMAGE_SIZE = 5 * 1024 * 1024 # 5 MB
 
-        def initialize(reference_id:)
+        def initialize(reference_id:, paper_passport:)
           @reference_id = reference_id
+          @paper_passport = paper_passport
         end
 
         private
@@ -35,7 +36,7 @@ module DocAuth
         def entry_name_to_type
           {
             'documentbackDoc_Back_1_blob.jpg' => :back,
-            'documentfrontDoc_Front_1_blob.jpg' => :front,
+            'documentfrontDoc_Front_1_blob.jpg' => @paper_passport ? :passport : :front,
             'Doc_Selfie_1_blob.jpg' => :selfie,
           }
         end
