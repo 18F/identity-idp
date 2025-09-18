@@ -6596,6 +6596,11 @@ module AnalyticsEvents
     track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
   end
 
+  # Tracks when a user logs in after deleting a duplicate profile
+  def one_account_login_success_after_dupe_deletion
+    track_event(:one_account_login_success_after_dupe_deletion)
+  end
+
   # Tracks when a user self services their duplicate account issue
   # @param [Symbol] source where the self service occurs (account_management, account_reset, etc...)
   # @param [String] service_provider The service provider  of the duplicate profile set serviced
