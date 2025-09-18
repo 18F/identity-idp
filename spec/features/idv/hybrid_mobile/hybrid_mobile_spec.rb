@@ -147,6 +147,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
 
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
