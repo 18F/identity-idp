@@ -77,6 +77,21 @@ RSpec.feature 'One Account Sign In' do
         end
       end
 
+      context 'with User2 with profile and linked to SP but signing into other SP' do
+        before do
+          link_identity(user, current_sp, 2)
+          link_identity(user2, current_sp, 2)
+        end
+
+        scenario 'User1 sign in to different SP does not show duplicate profile detected' do
+          visit_idp_from_ial1_oidc_sp
+          sign_in_user(user)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          expect(page).to have_current_path(sign_up_completed_path)
+        end
+      end
+
       context 'with User2 with profile but not linked to SP yet' do
         before do
           link_identity(user, current_sp, 2)
@@ -129,7 +144,6 @@ RSpec.feature 'One Account Sign In' do
           :profile,
           :active,
           :facial_match_proof,
-          :with_pii,
           ssn_signature: 'bbb',
           user: user2,
         )
@@ -145,7 +159,7 @@ RSpec.feature 'One Account Sign In' do
         sign_in_user(user)
         fill_in_code_with_last_phone_otp
         click_submit_default
-        expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(sign_up_completed_path)
       end
     end
   end
