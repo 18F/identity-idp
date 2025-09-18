@@ -4,6 +4,7 @@ RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(
       attempts_api_tracker:,
+      fraud_ops_tracker:,
       user:,
       pii: applicant,
       resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
@@ -12,6 +13,7 @@ RSpec.describe GpoVerifyForm do
   end
 
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { create(:user, :fully_registered) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:entered_otp) { otp }
