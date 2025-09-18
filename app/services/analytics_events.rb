@@ -6561,6 +6561,9 @@ module AnalyticsEvents
   end
 
   # When there's an error creating duplicate profile set
+  # @param [String] service_provider The service provider that initiated the creation
+  # @param [Array<Integer>] profile_ids The profile IDs that were attempted to be added
+  # @param [String] error_message The error message returned from the operation
   def one_account_duplicate_profile_creation_failed(
     service_provider:,
     profile_ids:,
