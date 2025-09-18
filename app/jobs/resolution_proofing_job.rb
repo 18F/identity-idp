@@ -189,7 +189,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def proofing_components
-     {} # return hash equivalent - ProofingComponents.new(idv_session:).to_h,
+     {} # TODO: return hash equivalent - ProofingComponents.new(idv_session:).to_h,
   end
 
   def create_profile(user:, applicant_pii:)
@@ -215,12 +215,6 @@ class ResolutionProofingJob < ApplicationJob
 
     profile.activate
 
-    # what do we need to do here?
-    # Pii::Cacher.new(current_user, user_session).save_decrypted_pii(
-    #   profile_maker.pii_attributes,
-    #   profile.id,
-    # )
-
     user.save!
     profile
   end
@@ -229,12 +223,13 @@ class ResolutionProofingJob < ApplicationJob
     return unless request_id
 
     profile = result[:success] == true ? create_profile(user:, applicant_pii:) : nil
-    send_trusted_referee_webhook(endpoint:, request_id:, result_id:, profile:)
+    personal_key = profile ? create_personal_key(user:, applicant_pii:) : nil
+    send_trusted_referee_webhook(endpoint:, request_id:, result_id:, profile:, personal_key:)
 
-  rescue => exception
+  rescue => ex
     byebug
     NewRelic::Agent.notice_error(
-      exception,
+      ex,
       custom_params: {
         event: 'Failed to send webhook',
         endpoint:,
@@ -244,7 +239,7 @@ class ResolutionProofingJob < ApplicationJob
   ensure
   end
 
-  def send_trusted_referee_webhook(endpoint: nil, request_id:, result_id:, profile:)
+  def send_trusted_referee_webhook(endpoint: nil, request_id:, result_id:, profile:, personal_key:)
     if endpoint
       # send back failure with reasons
       body = {
@@ -252,6 +247,7 @@ class ResolutionProofingJob < ApplicationJob
         request_id:,
         result_id:,
         profile_active: !!profile&.active,
+        personal_key:,
       }
       send_http_post_request(endpoint:, body:)
     end
@@ -302,5 +298,24 @@ class ResolutionProofingJob < ApplicationJob
       'Content-Type': 'application/json',
       # Authorization: "SocureApiKey #{IdentityConfig.store.socure_idplus_api_key}",
     }.merge(extras)
+  end
+
+  def create_personal_key(applicant_pii:, user:)
+    @personal_key ||= begin
+
+      new_personal_key = nil
+
+      Profile.transaction do
+        user.profiles.each do |profile|
+          new_personal_key = profile.encrypt_recovery_pii(applicant_pii, personal_key: new_personal_key)
+          profile.save!
+        end
+      end
+
+
+      new_personal_key
+    rescue => e
+      byebug
+    end
   end
 end
