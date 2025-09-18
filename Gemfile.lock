@@ -639,7 +639,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.4.1)
+    rexml (3.4.4)
     rotp (6.3.0)
     rouge (4.5.2)
     rqrcode (2.1.0)
