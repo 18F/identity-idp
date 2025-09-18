@@ -41,6 +41,7 @@ module AccountReset
 
     def handle_successful_submission
       notify_user_via_email_of_deletion
+      measure_one_account_self_service_if_applicable
       send_push_notifications
       destroy_user
     end
@@ -77,6 +78,22 @@ module AccountReset
         identity_verified: user.identity_verified?,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
+    end
+
+    def measure_one_account_self_service_if_applicable
+      return unless user&.active_profile&.facial_match?
+      sets = DuplicateProfileSet
+        .duplicate_profile_set_for_profile(profile_id: user.active_profile.id)
+      return if sets.blank?
+
+      sets.each do |set|
+        analytics.one_account_self_service(
+          source: :account_reset_delete,
+          service_provider: set.service_provider,
+          associated_profiles_count: set.profile_ids.count - 1,
+          dupe_profile_set_id: set.id,
+        )
+      end
     end
   end
 end
