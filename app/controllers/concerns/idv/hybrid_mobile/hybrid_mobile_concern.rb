@@ -34,6 +34,12 @@ module Idv
         end
 
         return handle_invalid_document_capture_session if document_capture_session.expired?
+
+        # Check if choose_id_type has been completed (passport_status must be set)
+        if requesting_document_capture? && !choose_id_type_completed?
+          redirect_to idv_hybrid_mobile_choose_id_type_url
+          return false
+        end
       end
 
       def document_capture_session
@@ -57,6 +63,15 @@ module Idv
         sign_out
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
+      end
+
+      def requesting_document_capture?
+        controller_name == 'document_capture' && action_name == 'show'
+      end
+
+      def choose_id_type_completed?
+        return true unless document_capture_session
+        document_capture_session.passport_status.present?
       end
     end
   end

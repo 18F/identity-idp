@@ -10,6 +10,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
+      passport_status: 'not_requested',
     )
   end
 
