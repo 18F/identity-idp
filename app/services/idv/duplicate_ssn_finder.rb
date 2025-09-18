@@ -14,22 +14,9 @@ module Idv
     end
 
     def duplicate_facial_match_profiles(service_provider:)
-      (Profile
-        .active
-        .facial_match
-        .where(ssn_signature: ssn_signatures)
-        .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
-        .where(identities: { service_provider: service_provider })
-        .where(identities: { deleted_at: nil })
-        .where.not(user_id: user.id)
-       + Profile
-        .active
-        .facial_match
-        .where.not(user_id: user.id)
-        .where(
-          ssn_signature: ssn_signatures,
-          initiating_service_provider_issuer: service_provider,
-        )).distinct
+      matching_profiles_with_linked_identities(service_provider).or(
+        matching_profiles_with_initiating_sp(service_provider)
+      ).distinct
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:
@@ -57,6 +44,29 @@ module Idv
 
     def sp_eligible_for_one_account
       IdentityConfig.store.eligible_one_account_providers
+    end
+
+    private 
+
+    def matching_profiles_with_linked_identities(service_provider)
+      Profile
+        .active
+        .facial_match
+        .where(ssn_signature: ssn_signatures)
+        .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
+        .where(identities: { service_provider: service_provider })
+        .where(identities: { deleted_at: nil })
+        .where.not(user_id: user.id)
+    end
+
+    def matching_profiles_with_initiating_sp(service_provider)
+      Profile
+        .active
+        .facial_match
+        .where(
+          ssn_signature: ssn_signatures,
+          initiating_service_provider_issuer: service_provider,
+        ).where.not(user_id: user.id)
     end
   end
 end
