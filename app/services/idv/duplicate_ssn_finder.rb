@@ -15,7 +15,7 @@ module Idv
 
     def duplicate_facial_match_profiles(service_provider:)
       matching_profiles_with_linked_identities(service_provider).or(
-        matching_profiles_with_initiating_sp(service_provider)
+        matching_profiles_with_initiating_sp(service_provider),
       ).distinct
     end
 
@@ -46,7 +46,7 @@ module Idv
       IdentityConfig.store.eligible_one_account_providers
     end
 
-    private 
+    private
 
     def matching_profiles_with_linked_identities(service_provider)
       Profile
