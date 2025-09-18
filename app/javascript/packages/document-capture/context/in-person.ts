@@ -67,11 +67,6 @@ export interface InPersonContextProps {
   socureErrorsTimeoutURL?: string;
 
   /**
-   * Whether or not passports are enabled as option for user
-   */
-  passportEnabled: boolean;
-
-  /**
    * URL for going back to previous steps in Doc Auth, like handoff and howToVerify
    */
   previousStepURL?: string;
@@ -81,7 +76,6 @@ const InPersonContext = createContext<InPersonContextProps>({
   locationsURL: '',
   inPersonOutageMessageEnabled: false,
   optedInToInPersonProofing: false,
-  passportEnabled: false,
   usStatesTerritories: [],
 });
 
