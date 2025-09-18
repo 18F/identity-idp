@@ -5,7 +5,7 @@
 If this command returns errors, you may need to install the dependencies first, outside of the Makefile:
 ```
 $ bundle install
-$ yarn install
+$ npm install
 ```
 
 ## I am receiving errors when creating the development and test databases
