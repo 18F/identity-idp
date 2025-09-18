@@ -37,6 +37,10 @@ RSpec.feature 'phone errors', :js do
 
     complete_hybrid_handoff_step # upload photos
     visit(phone_errors_url)
+    expect(page).to have_current_path(idv_choose_id_type_path)
+
+    complete_choose_id_type_step
+    visit(phone_errors_url)
     expect(page).to have_current_path(idv_document_capture_path)
 
     complete_document_capture_step

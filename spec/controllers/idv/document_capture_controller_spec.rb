@@ -24,6 +24,7 @@ RSpec.describe Idv::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
+      passport_status: 'not_requested',
     )
   end
 
@@ -49,6 +50,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     subject.idv_session.flow_path = flow_path
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+    subject.idv_session.choose_id_type_completed = true
 
     vot = facial_match_required ? 'Pb' : 'P1'
     resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
@@ -75,6 +77,119 @@ RSpec.describe Idv::DocumentCaptureController do
   describe '#step_info' do
     it 'returns a valid StepInfo object' do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
+    end
+
+    context 'when user tries to skip ahead without completing choose_id_type' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          passport_status: nil,
+        )
+      end
+
+      before do
+        subject.idv_session.choose_id_type_completed = false
+      end
+
+      it 'redirects to choose_id_type' do
+        get :show
+        expect(response).to redirect_to(idv_choose_id_type_path)
+      end
+
+      context 'when document_capture_session_uuid is missing' do
+        let(:document_capture_session_uuid) { nil }
+
+        it 'redirects to choose_id_type' do
+          get :show
+          expect(response).to redirect_to(idv_choose_id_type_path)
+        end
+      end
+
+      context 'when document_capture_session does not exist' do
+        let(:document_capture_session_uuid) { 'non-existent-uuid' }
+
+        it 'redirects to choose_id_type' do
+          get :show
+          expect(response).to redirect_to(idv_choose_id_type_path)
+        end
+      end
+    end
+
+    context 'when user has completed choose_id_type' do
+      context 'with passport requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: 'requested',
+          )
+        end
+
+        it 'allows access to document capture' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'with state ID requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: 'not_requested',
+          )
+        end
+
+        it 'allows access to document capture' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'when user bypasses choose_id_type via allowed flows' do
+      context 'with skip_doc_auth_from_handoff' do
+        before { subject.idv_session.skip_doc_auth_from_handoff = true }
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: nil,
+          )
+        end
+
+        it 'allows access without choose_id_type completion' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'with skip_hybrid_handoff' do
+        before { subject.idv_session.skip_hybrid_handoff = true }
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: nil,
+          )
+        end
+
+        it 'allows access without choose_id_type completion' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
     end
 
     context 'when selfie feature is enabled system wide' do

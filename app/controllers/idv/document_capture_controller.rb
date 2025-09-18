@@ -71,7 +71,7 @@ module Idv
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required || # desktop but selfie not required
               idv_session.desktop_selfie_test_mode_enabled?
-          )
+          ) && choose_id_type_completed?(idv_session:, user:)
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -82,6 +82,18 @@ module Idv
           idv_session.doc_auth_vendor = nil
         end,
       )
+    end
+
+    def self.choose_id_type_completed?(idv_session:, user:)
+      return true if idv_session.skip_doc_auth_from_handoff ||
+                     idv_session.skip_doc_auth_from_how_to_verify ||
+                     idv_session.skip_hybrid_handoff
+
+      return true if user&.has_establishing_in_person_enrollment?
+
+      return true if idv_session.pii_from_doc.present?
+
+      idv_session.choose_id_type_completed
     end
 
     private
