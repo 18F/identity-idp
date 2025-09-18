@@ -47,6 +47,7 @@ RSpec.feature 'One Account Sign In' do
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
         .and_return([issuer])
+      allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage).and_return(100)
     end
 
     context 'User2 has profile with matching SSN signature' do
