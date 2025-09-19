@@ -13,6 +13,7 @@ module Idv
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
         before_action :check_valid_document_capture_session
+        before_action :choose_id_type_completed?, only: :show
         before_action :validate_step_not_completed, only: [:show]
         before_action -> do
           update_doc_auth_vendor(user: document_capture_user)

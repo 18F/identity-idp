@@ -31,8 +31,6 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:enrollment) { nil }
 
       it 'redirects to document capture if not complete' do
-        subject.idv_session.choose_id_type_completed = true
-
         get :show
 
         expect(response).to redirect_to idv_document_capture_url

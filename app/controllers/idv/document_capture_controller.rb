@@ -93,7 +93,10 @@ module Idv
 
       return true if idv_session.pii_from_doc.present?
 
-      idv_session.choose_id_type_completed
+      doc_capture_session = DocumentCaptureSession.find_by(
+        uuid: idv_session.document_capture_session_uuid,
+      )
+      !!doc_capture_session&.passport_status&.present?
     end
 
     private

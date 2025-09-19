@@ -85,7 +85,6 @@ RSpec.describe Idv::LinkSentController do
           subject.idv_session.welcome_visited = true
           subject.idv_session.idv_consent_given_at = Time.zone.now
           subject.idv_session.flow_path = 'standard'
-          subject.idv_session.choose_id_type_completed = true
 
           get :show
 

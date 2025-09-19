@@ -10,6 +10,7 @@ module Idv
 
       before_action :check_valid_document_capture_session
       before_action :override_csp_to_allow_acuant
+      before_action :choose_id_type_completed?, only: :show
       before_action :confirm_document_capture_needed, only: :show
       before_action -> do
         update_doc_auth_vendor(user: document_capture_user)
