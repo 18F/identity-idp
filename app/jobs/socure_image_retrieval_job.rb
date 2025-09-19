@@ -8,11 +8,12 @@ class SocureImageRetrievalJob < ApplicationJob
   def perform(
     document_capture_session_uuid:,
     reference_id:,
-    image_storage_data:
+    image_storage_data:,
+    paper_passport:
   )
     @document_capture_session_uuid = document_capture_session_uuid
 
-    result = fetch_images(reference_id)
+    result = fetch_images(reference_id, paper_passport:)
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)
     else
@@ -48,9 +49,10 @@ class SocureImageRetrievalJob < ApplicationJob
       DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
   end
 
-  def fetch_images(reference_id)
+  def fetch_images(reference_id, paper_passport:)
     DocAuth::Socure::Requests::ImagesRequest.new(
       reference_id:,
+      paper_passport:,
     ).fetch
   end
 

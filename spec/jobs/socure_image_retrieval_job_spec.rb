@@ -15,6 +15,7 @@ RSpec.describe SocureImageRetrievalJob do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:reference_id) { 'image-reference-id' }
   let(:socure_image_endpoint) { "https://upload.socure.us/api/5.0/documents/#{reference_id}" }
+  let(:paper_passport) { false }
 
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:result) do
@@ -70,6 +71,7 @@ RSpec.describe SocureImageRetrievalJob do
         reference_id:,
         document_capture_session_uuid:,
         image_storage_data:,
+        paper_passport:,
       )
     end
 
@@ -117,6 +119,34 @@ RSpec.describe SocureImageRetrievalJob do
             )
 
             perform
+          end
+
+          context 'when paper_passport and selfie is true' do
+            let(:paper_passport) { true }
+            let(:selfie) { true }
+            let(:image_storage_data) do
+              {
+                passport: {
+                  document_passport_image_file_id: 'name',
+                  document_passport_image_encryption_key: Base64.strict_encode64('12345'),
+                },
+                selfie: {
+                  document_selfie_image_file_id: 'name',
+                  document_selfie_image_encryption_key: Base64.strict_encode64('12345'),
+                },
+              }
+            end
+
+            it 'tracks the attempt with an image-specific network error' do
+              expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
+                document_front_image_file_id: nil,
+                document_back_image_file_id: nil,
+                document_passport_image_file_id: 'name',
+                document_selfie_image_file_id: 'name',
+              )
+
+              perform
+            end
           end
         end
       end

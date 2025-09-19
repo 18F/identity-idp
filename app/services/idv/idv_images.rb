@@ -76,6 +76,10 @@ module Idv
       images.find { |image| image.type == :selfie }
     end
 
+    def passport
+      images.find { |image| image.type == :passport }
+    end
+
     private
 
     def write_image(issuer:, image:)

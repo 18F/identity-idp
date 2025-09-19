@@ -104,7 +104,7 @@ module DocAuthImageFixtures
 
     if passport
       # i don't think this is possible with socure?
-      FileUtils.cp(fixture_path('passport.jpg'), temp_dir)
+      FileUtils.cp(fixture_path('passport.jpg'), "#{temp_dir}/documentfrontDoc_Front_1_blob.jpg")
     else
       FileUtils.cp(fixture_path('id-back.jpg'), "#{temp_dir}/documentbackDoc_Back_1_blob.jpg")
       FileUtils.cp(fixture_path('id-front.jpg'), "#{temp_dir}/documentfrontDoc_Front_1_blob.jpg")

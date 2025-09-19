@@ -8,9 +8,10 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
       reference_id,
     ).to_s
   end
+  let(:paper_passport) { false }
 
-  subject(:images_request) { described_class.new(reference_id:) }
-  let(:body) { DocAuthImageFixtures.zipped_files(reference_id:).to_s }
+  subject(:images_request) { described_class.new(reference_id:, paper_passport:) }
+  let(:body) { DocAuthImageFixtures.zipped_files(reference_id:, passport: paper_passport).to_s }
   let(:status) { 200 }
   let(:message) do
     [
@@ -54,6 +55,19 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
       expect(response.class).to eq(Idv::IdvImages)
       expect(response.images.first.value.class).to eq Idv::BinaryImage
+      expect(response.images.map(&:type)).to contain_exactly(:back, :front)
+    end
+
+    context 'when paper_passport is true' do
+      let(:paper_passport) { true }
+
+      it 'creates an IdvImages object with the binary data including passport' do
+        response = subject.fetch
+
+        expect(response.class).to eq(Idv::IdvImages)
+        expect(response.images.first.value.class).to eq Idv::BinaryImage
+        expect(response.images.map(&:type)).to contain_exactly(:passport)
+      end
     end
 
     context 'when the response is empty' do
