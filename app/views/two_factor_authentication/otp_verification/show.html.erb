@@ -47,7 +47,7 @@
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
-        aria: { describedby: 'remember-browser-description' }
+        aria: { describedby: 'remember-browser-description' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
