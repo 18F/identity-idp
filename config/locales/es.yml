@@ -927,6 +927,7 @@ forms.buttons.upload_photos: Cargar fotos
 forms.confirmation.show_hdr: Crear una contraseña segura
 forms.email.buttons.delete: Eliminar dirección de correo electrónico
 forms.example: 'Ejemplo:'
+forms.messages.public_shared_device_html: Marque esta casilla para omitir la autenticación en los sitios compatibles. Si está usando un dispositivo público o compartido, <strong>NO</strong> seleccione “Recordar este navegador”.
 forms.messages.remember_device: Recuerde este navegador
 forms.password: Contraseña
 forms.passwords.edit.buttons.submit: Cambiar contraseña

@@ -26,12 +26,14 @@
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
+        aria: { describedby: 'remember-browser-description' },
         wrapper_html: { class: 'margin-y-5' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
 
   <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <% end %>
