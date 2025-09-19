@@ -37,6 +37,10 @@ module UspsInPersonProofing
         Response::RequestEnrollResponse.new(res)
       end
 
+      def request_enroll_v2(applicant, is_enhanced_ipp)
+        request_enroll(applicant, is_enhanced_ipp)
+      end
+
       def request_facilities(location, is_enhanced_ipp)
         if location['address'] == 'usps waiting'
           body = JSON.parse(Fixtures.internal_server_error_response)

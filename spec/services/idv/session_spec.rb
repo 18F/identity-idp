@@ -212,7 +212,7 @@ RSpec.describe Idv::Session do
               :schedule_in_person_enrollment,
             ).with(
               user: user,
-              pii: Pii::Attributes.new_from_hash(subject.applicant),
+              applicant_pii: Pii::UspsApplicant.from_idv_applicant(subject.applicant),
               is_enhanced_ipp: is_enhanced_ipp,
               opt_in: opt_in_param,
             )

@@ -120,7 +120,7 @@ namespace :dev do
               ('a'.ord + c.to_i).chr
             end.join('')
 
-            pii = Pii::Attributes.new_from_hash(
+            applicant = {
               first_name: 'Test',
               last_name: "User #{usps_compatible_number_alternative}",
               dob: '1970-05-01',
@@ -133,7 +133,9 @@ namespace :dev do
               identity_doc_city: 'GREAT FALLS',
               identity_doc_address_state: 'VA',
               identity_doc_zipcode: '22066',
-            )
+            }
+
+            pii = Pii::Attributes.new_from_hash(applicant)
             personal_key = profile.encrypt_pii(pii, pw)
 
             if raw_enrollment_status === InPersonEnrollment::STATUS_PENDING && create_in_usps
@@ -153,7 +155,7 @@ namespace :dev do
                 begin
                   UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
                     user: user,
-                    pii: pii,
+                    applicant_pii: Pii::UspsApplicant.from_idv_applicant(applicant),
                     is_enhanced_ipp: is_enhanced_ipp,
                   )
                 rescue StandardError => e

@@ -44,8 +44,8 @@ module UspsInPersonProofing
     # USPS sends an email to the email address with instructions and the enrollment code.
     # The API response also includes the enrollment code which should be
     # stored with the unique ID to be able to request the status of proofing.
-    # @param applicant [Hash]
-    # @return [Hash] API response
+    # @param applicant [UspsInPersonProofing::Applicant]
+    # @return [UspsInPersonProofing::Response::RequestEnrollResponse] API response
     def request_enroll(applicant, is_enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
       request_body = {
@@ -58,6 +58,43 @@ module UspsInPersonProofing
         state: applicant.state,
         zipCode: applicant.zip_code,
         emailAddress: applicant.email,
+        IPPAssuranceLevel: '1.5',
+      }
+
+      if is_enhanced_ipp
+        request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
+        request_body[:IPPAssuranceLevel] = '2.0'
+      end
+
+      res = faraday.post(url, request_body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enroll' }
+      end
+      Response::RequestEnrollResponse.new(res.body)
+    end
+
+    # Makes HTTP request to enroll an applicant in in-person proofing. Requires first name,
+    # last name, address, city, state, zip code, email address, document_type, document_number,
+    # document_expiration_date, and a generated unique ID. The unique ID must be no longer than 18
+    # characters. USPS sends an email to the email address with instructions and the enrollment
+    # code. The API response also includes the enrollment code which should be stored with the
+    # unique ID to be able to request the status of proofing.
+    # @param applicant [UspsInPersonProofing::Applicant]
+    # @return [UspsInPersonProofing::Response::RequestEnrollResponse] API response
+    def request_enroll_v2(applicant, is_enhanced_ipp)
+      url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
+      request_body = {
+        sponsorID: sponsor_id,
+        uniqueID: applicant.unique_id,
+        firstName: applicant.first_name,
+        lastName: applicant.last_name,
+        streetAddress: applicant.address,
+        city: applicant.city,
+        state: applicant.state,
+        zipCode: applicant.zip_code,
+        emailAddress: applicant.email,
+        documentType: applicant.document_type,
+        documentNumber: applicant.document_number,
+        documentExpirationDate: applicant.document_expiration_date,
         IPPAssuranceLevel: '1.5',
       }
 
