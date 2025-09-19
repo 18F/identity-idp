@@ -2,7 +2,7 @@
 
 module UspsInPersonProofing
   Applicant = RedactedStruct.new(
-    :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code, :same_address_as_id,
+    :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
     :email, :document_type, :document_number, :document_expiration_date, keyword_init: true
   ) do
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)

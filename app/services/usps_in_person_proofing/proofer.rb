@@ -92,9 +92,9 @@ module UspsInPersonProofing
         state: applicant.state,
         zipCode: applicant.zip_code,
         emailAddress: applicant.email,
-        document_type: applicant.document_type,
-        document_number: applicant.document_number,
-        document_expiration_date: applicant.document_expiration_date,
+        documentType: applicant.document_type,
+        documentNumber: applicant.document_number,
+        documentExpirationDate: applicant.document_expiration_date,
         IPPAssuranceLevel: '1.5',
       }
 
