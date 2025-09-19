@@ -917,6 +917,7 @@ forms.confirmation.show_hdr: Create a strong password
 forms.email.buttons.delete: Delete email address
 forms.example: 'Example:'
 forms.messages.remember_device: Remember this browser
+forms.messages.public_shared_device_html: Select this to skip authentication on supported sites. DO NOT select “Remember this browser” if you are on a public or shared device.
 forms.password: Password
 forms.passwords.edit.buttons.submit: Change password
 forms.passwords.edit.labels.password: New password
