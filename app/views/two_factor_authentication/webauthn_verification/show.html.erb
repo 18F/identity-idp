@@ -32,6 +32,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs'><%= t('forms.messages.public_shared_device_html') %></p>
 
   <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <% end %>

@@ -87,6 +87,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs'><%= t('forms.messages.public_shared_device_html') %></p>
   <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
 

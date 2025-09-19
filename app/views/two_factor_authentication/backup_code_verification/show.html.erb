@@ -35,6 +35,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs'><%= t('forms.messages.public_shared_device_html') %></p>
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
