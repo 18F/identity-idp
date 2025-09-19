@@ -928,7 +928,7 @@ forms.confirmation.show_hdr: 设一个强密码
 forms.email.buttons.delete: 删除电邮地址
 forms.example: 举例：
 forms.messages.remember_device: 记住这个浏览器
-forms.messages.public_shared_device_html: 选择这个可在得到支持的网站上跳过身份证实。如果你使用的是公共或共享设备，请勿选择“记住此浏览器”。
+forms.messages.public_shared_device_html: 选择这个可在得到支持的网站上跳过身份证实。如果你使用的是公共或共享设备，<strong>请勿</strong>选择“记住此浏览器”。
 forms.password: 密码
 forms.passwords.edit.buttons.submit: 变更密码
 forms.passwords.edit.labels.password: 新密码

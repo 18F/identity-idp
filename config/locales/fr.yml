@@ -917,7 +917,7 @@ forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'
 forms.messages.remember_device: Se souvenir de ce navigateur
-forms.messages.public_shared_device_html: Sélectionnez cette option pour ignorer l’authentification sur les sites pris en charge. NE SÉLECTIONNEZ PAS l’option « Se souvenir de ce navigateur » si vous êtes sur un ordinateur public ou partagé.
+forms.messages.public_shared_device_html: Sélectionnez cette option pour ignorer l’authentification sur les sites pris en charge. <strong>NE SÉLECTIONNEZ PAS</strong> l’option « Se souvenir de ce navigateur » si vous êtes sur un ordinateur public ou partagé.
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
 forms.passwords.edit.labels.password: Nouveau mot de passe
