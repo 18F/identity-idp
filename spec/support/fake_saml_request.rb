@@ -85,4 +85,8 @@ class FakeSamlRequest
       },
     }
   end
+
+  def errors
+    []
+  end
 end

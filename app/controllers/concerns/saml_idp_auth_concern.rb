@@ -77,7 +77,8 @@ module SamlIdpAuthConcern
   def validate_and_create_saml_request_object
     # this saml_idp method creates the saml_request object used for validations
     validate_saml_request
-    @saml_request_validator = SamlRequestValidator.new
+    saml_errors = saml_request.errors
+    @saml_request_validator = SamlRequestValidator.new(saml_errors:)
   rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
     @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end

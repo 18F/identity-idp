@@ -797,6 +797,7 @@ errors.messages.already_confirmed: 已确认，请尝试登录
 errors.messages.backup_code_limited: 你尝试了太多次。请在 %{timeout}后再试。
 errors.messages.blank: 请填写这一字段。
 errors.messages.blank_cert_element_req: 我们在你的请求中探查不到证书。
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: 验证码不对。你打字打对了吗？
 errors.messages.confirmation_invalid_token: 确认链接有误。链接已过期，或者你已确认了你的账户。
 errors.messages.confirmation_period_expired: 过期的确认链接。你可以点击“重新发送确认说明”来得到另一个。
@@ -810,11 +811,15 @@ errors.messages.invalid_calling_area: 不支持给那个号码打的电话。如
 errors.messages.invalid_phone_number.international: 输入一个位数正确的电话号码。
 errors.messages.invalid_phone_number.us: 输入 10 位的电话号码。
 errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验。
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: 请填写这一字段。
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: 我们在你的请求中探查不到证书。
 errors.messages.no_pending_profile: 没有等待验证的用户资料
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: 不是数字
 errors.messages.otp_format: 输入你完整的一次性代码（没有空白或特殊字符）
 errors.messages.password_incorrect: 密码不对。
