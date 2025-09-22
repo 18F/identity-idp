@@ -15,7 +15,7 @@ RSpec.describe SocureImageRetrievalJob do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:reference_id) { 'image-reference-id' }
   let(:socure_image_endpoint) { "https://upload.socure.us/api/5.0/documents/#{reference_id}" }
-  let(:paper_passport) { false }
+  let(:passport_book) { false }
 
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:result) do
@@ -71,7 +71,7 @@ RSpec.describe SocureImageRetrievalJob do
         reference_id:,
         document_capture_session_uuid:,
         image_storage_data:,
-        paper_passport:,
+        passport_book:,
       )
     end
 
@@ -121,8 +121,8 @@ RSpec.describe SocureImageRetrievalJob do
             perform
           end
 
-          context 'when paper_passport and selfie is true' do
-            let(:paper_passport) { true }
+          context 'when passport_book and selfie is true' do
+            let(:passport_book) { true }
             let(:selfie) { true }
             let(:image_storage_data) do
               {

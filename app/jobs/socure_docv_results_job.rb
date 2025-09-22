@@ -82,13 +82,13 @@ class SocureDocvResultsJob < ApplicationJob
       )
       record_attempt(
         docv_result_response:,
-        paper_passport: true,
+        passport_book: true,
         failure_reason: attempts_api_tracker.parse_failure_reason(mrz_response),
       )
       return
     end
 
-    record_attempt(docv_result_response:, success: true, paper_passport: mrz_response.present?)
+    record_attempt(docv_result_response:, success: true, passport_book: mrz_response.present?)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, attempt: submit_attempts
     )
@@ -99,7 +99,7 @@ class SocureDocvResultsJob < ApplicationJob
   def record_attempt(
     docv_result_response:,
     failure_reason: nil,
-    paper_passport: false,
+    passport_book: false,
     success: false
   )
     image_data = {}
@@ -112,15 +112,15 @@ class SocureDocvResultsJob < ApplicationJob
         reference_id: docv_result_response.to_h[:reference_id],
         image_storage_data: image_storage_data(
           ial2: docv_result_response.liveness_enabled,
-          paper_passport:,
+          passport_book:,
         ),
       }
 
       image_data = job_data[:image_storage_data].values.reduce(:merge)
       if IdentityConfig.store.ruby_workers_idv_enabled
-        SocureImageRetrievalJob.perform_later(**job_data, paper_passport:)
+        SocureImageRetrievalJob.perform_later(**job_data, passport_book:)
       else
-        SocureImageRetrievalJob.perform_now(**job_data, paper_passport:)
+        SocureImageRetrievalJob.perform_now(**job_data, passport_book:)
       end
     end
 
@@ -145,8 +145,8 @@ class SocureDocvResultsJob < ApplicationJob
     )
   end
 
-  def image_storage_data(ial2:, paper_passport:)
-    keys = paper_passport ? [:passport] : [:front, :back]
+  def image_storage_data(ial2:, passport_book:)
+    keys = passport_book ? [:passport] : [:front, :back]
     keys.push(:selfie) if ial2
 
     keys.index_with do |key|
