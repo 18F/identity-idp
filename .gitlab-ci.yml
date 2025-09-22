@@ -296,6 +296,19 @@ specs:
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
+  after_script:
+    - |-
+      if [ "$CI_JOB_STATUS" != "success" ] && [ "$CI_PIPELINE_SOURCE" == "schedule" ]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:"  \
+          --username "gitlab-notify" \
+          --channel "#login-appdev" \
+          --webhook "${SLACK_WEBHOOK}" \
+          --raise \
+          --text "$(printf "A scheduled test run failed in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
+      else
+        echo "Not notifying in slack"
+      fi
 
 lint:
   stage: test
