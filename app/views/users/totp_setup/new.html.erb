@@ -66,11 +66,13 @@
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
+        aria: { describedby: 'remember-browser-description' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
