@@ -312,16 +312,9 @@ module Reporting
       <<~QUERY
         filter name = "idv_threatmetrix_response_body"
         | fields 
-          properties.event_properties.response_body.fraudpoint.conversation_id as conversation_id,
-          properties.event_properties.response_body.fraudpoint.score as score,
-          properties.event_properties.response_body.fraudpoint.friendly_fraud_index as friendly_fraud_index,
-          properties.event_properties.response_body.fraudpoint.manipulated_identity_index as manipulated_identity_index,
-          properties.event_properties.response_body.fraudpoint.stolen_identity_index as stolen_identity_index,
-          properties.event_properties.response_body.fraudpoint.suspicious_activity_index as suspicious_activity_index,
-          properties.event_properties.response_body.fraudpoint.synthetic_identity_index as synthetic_identity_index,
-          properties.event_properties.response_body.fraudpoint.vulnerable_victim_index as vulnerable_victim_index,
-          properties.event_properties.response_body.fraudpoint.risk_indicators_codes as risk_indicators_codes,
-          properties.event_properties.response_body.fraudpoint.risk_indicators_descriptions as risk_indicators_descriptions
+          properties.event_properties.response_body.review_status as review_status,
+          properties.event_properties.response_body.risk_rating as risk_rating,
+          properties.event_properties.response_body.summary_risk_score as summary_risk_score
         | limit 10000
       QUERY
     end
