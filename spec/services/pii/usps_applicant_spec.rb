@@ -33,12 +33,12 @@ RSpec.describe Pii::UspsApplicant do
     end
   end
 
-  describe '#secondary_address_present?' do
+  describe '#address_line2_present?' do
     context 'when address2 is not an empty string' do
       subject { described_class.new(address2: Faker::Address.secondary_address) }
 
       it 'returns true' do
-        expect(subject.secondary_address_present?).to be(true)
+        expect(subject.address_line2_present?).to be(true)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Pii::UspsApplicant do
       subject { described_class.new(address2: '') }
 
       it 'returns false' do
-        expect(subject.secondary_address_present?).to be(false)
+        expect(subject.address_line2_present?).to be(false)
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Pii::UspsApplicant do
       subject { described_class.new(address2: nil) }
 
       it 'returns false' do
-        expect(subject.secondary_address_present?).to be(false)
+        expect(subject.address_line2_present?).to be(false)
       end
     end
   end

@@ -14,7 +14,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         .transform_keys(&:to_s),
     )
   end
-  let(:usps_opt_in_ipp_applicant_v2_enabled) { false }
   subject(:subject) { described_class }
   let(:subject_analytics) { FakeAnalytics.new }
   let(:service_provider) { nil }
@@ -25,8 +24,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:usps_ipp_sponsor_id) { '2718281828' }
 
   before(:each) do
-    allow(IdentityConfig.store).to receive(:usps_opt_in_ipp_applicant_v2_enabled)
-      .and_return(usps_opt_in_ipp_applicant_v2_enabled)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
     allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
       .and_return(usps_ipp_enrollment_status_update_email_address)
@@ -129,92 +126,44 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           let(:current_time) { Time.zone.now }
           let(:response) { double('UspsResponse') }
 
-          context 'when USPS opt in IPP applicant v2 is disabled' do
-            let(:usps_opt_in_ipp_applicant_v2_enabled) { false }
-
-            before do
-              allow(response).to receive(:enrollment_code).and_return(enrollment_code)
-              allow(proofer).to receive(:request_enroll).and_return(response)
-              freeze_time
-              travel_to(current_time) do
-                subject.schedule_in_person_enrollment(
-                  user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
-                )
-              end
-            end
-
-            it 'updates the enrollment' do
-              expect(enrollment.reload).to have_attributes(
-                enrollment_code: enrollment_code,
-                current_address_matches_id: applicant_pii.current_address_same_as_id,
-                status: 'pending',
-                enrollment_established_at: current_time,
-              )
-            end
-
-            it 'logs the usps_ippaas_enrollment_created event' do
-              expect(subject_analytics).to have_logged_event(
-                'USPS IPPaaS enrollment created',
-                enrollment_code: enrollment_code,
-                enrollment_id: enrollment.id,
-                second_address_line_present: false,
-                service_provider: issuer,
-                opted_in_to_in_person_proofing: opted_in,
-                enhanced_ipp: false,
-              )
-            end
-
-            it 'sends a ready to verify email' do
-              expect_delivered_email_count(1)
-              expect_delivered_email(
-                to: [user.email_addresses.first.email],
-                subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+          before do
+            allow(response).to receive(:enrollment_code).and_return(enrollment_code)
+            allow(proofer).to receive(:request_enroll).and_return(response)
+            freeze_time
+            travel_to(current_time) do
+              subject.schedule_in_person_enrollment(
+                user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
               )
             end
           end
 
-          context 'when USPS opt in IPP applicant v2 is enabled' do
-            let(:usps_opt_in_ipp_applicant_v2_enabled) { true }
+          it 'updates the enrollment' do
+            expect(enrollment.reload).to have_attributes(
+              enrollment_code: enrollment_code,
+              current_address_matches_id: applicant_pii.current_address_same_as_id,
+              status: 'pending',
+              enrollment_established_at: current_time,
+            )
+          end
 
-            before do
-              allow(response).to receive(:enrollment_code).and_return(enrollment_code)
-              allow(proofer).to receive(:request_enroll_v2).and_return(response)
-              freeze_time
-              travel_to(current_time) do
-                subject.schedule_in_person_enrollment(
-                  user:, applicant_pii:, is_enhanced_ipp:, opt_in: opted_in,
-                )
-              end
-            end
+          it 'logs the usps_ippaas_enrollment_created event' do
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: enrollment_code,
+              enrollment_id: enrollment.id,
+              second_address_line_present: false,
+              service_provider: issuer,
+              opted_in_to_in_person_proofing: opted_in,
+              enhanced_ipp: false,
+            )
+          end
 
-            it 'updates the enrollment' do
-              expect(enrollment.reload).to have_attributes(
-                enrollment_code: enrollment_code,
-                current_address_matches_id: applicant_pii.current_address_same_as_id,
-                status: 'pending',
-                enrollment_established_at: current_time,
-              )
-            end
-
-            it 'logs the usps_ippaas_enrollment_created event' do
-              expect(subject_analytics).to have_logged_event(
-                'USPS IPPaaS enrollment created',
-                enrollment_code: enrollment_code,
-                enrollment_id: enrollment.id,
-                second_address_line_present: false,
-                service_provider: issuer,
-                opted_in_to_in_person_proofing: opted_in,
-                enhanced_ipp: false,
-              )
-            end
-
-            it 'sends a ready to verify email' do
-              expect_delivered_email_count(1)
-              expect_delivered_email(
-                to: [user.email_addresses.first.email],
-                subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
-              )
-            end
+          it 'sends a ready to verify email' do
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              to: [user.email_addresses.first.email],
+              subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+            )
           end
         end
       end

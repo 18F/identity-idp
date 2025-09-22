@@ -27,7 +27,7 @@ module UspsInPersonProofing
         analytics(user: user).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
-          second_address_line_present: applicant_pii.secondary_address_present?,
+          second_address_line_present: applicant_pii.address_line2_present?,
           service_provider: enrollment.service_provider&.issuer,
           opted_in_to_in_person_proofing: opt_in,
           tmx_status: enrollment.profile&.tmx_status,
@@ -115,7 +115,7 @@ module UspsInPersonProofing
       end
 
       def create_usps_enrollment(enrollment, applicant_pii, is_enhanced_ipp)
-        response = usps_request_enroll(
+        response = usps_proofer.request_enroll(
           create_enrollment_applicant(applicant_pii, enrollment),
           is_enhanced_ipp,
         )
@@ -128,12 +128,6 @@ module UspsInPersonProofing
 
       def create_enrollment_applicant(applicant, enrollment)
         UspsInPersonProofing::Applicant.from_usps_applicant_and_enrollment(applicant, enrollment)
-      end
-
-      def usps_request_enroll(applicant, is_enhanced_ipp)
-        IdentityConfig.store.usps_opt_in_ipp_applicant_v2_enabled == true ?
-          usps_proofer.request_enroll_v2(applicant, is_enhanced_ipp) :
-          usps_proofer.request_enroll(applicant, is_enhanced_ipp)
       end
 
       def send_ready_to_verify_email(user, enrollment)

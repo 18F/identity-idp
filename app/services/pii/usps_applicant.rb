@@ -20,7 +20,7 @@ module Pii
       )
     end
 
-    def secondary_address_present?
+    def address_line2_present?
       address2.present?
     end
   end.freeze

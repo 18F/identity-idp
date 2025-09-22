@@ -284,7 +284,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         unique_id: Faker::Number.number(digits: 10),
         document_type: 'state_id',
         document_number: Faker::Number.number(digits: 9),
-        document_expiration_date: Faker::Date.in_date_period(year: 2030),
+        document_expiration_date: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
       )
     end
     let(:is_enhanced_ipp) { false }
@@ -367,6 +367,75 @@ RSpec.describe UspsInPersonProofing::Proofer do
           expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
         end
       end
+
+      context 'when USPS opt in IPP applicant v2 is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(
+            :usps_opt_in_ipp_applicant_v2_enabled,
+          ).and_return(true)
+          stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
+            .with(body: {
+              sponsorID: IdentityConfig.store.usps_ipp_sponsor_id.to_i,
+              uniqueID: applicant.unique_id,
+              firstName: applicant.first_name,
+              lastName: applicant.last_name,
+              streetAddress: applicant.address,
+              city: applicant.city,
+              state: applicant.state,
+              zipCode: applicant.zip_code,
+              emailAddress: applicant.email,
+              documentType: applicant.document_type,
+              documentNumber: applicant.document_number,
+              documentExpirationDate: applicant.document_expiration_date,
+              IPPAssuranceLevel: '1.5',
+            })
+            .to_return(
+              status: 200,
+              body: usps_mock_response,
+              headers: { 'content-type' => 'application/json' },
+            )
+        end
+
+        it 'returns request enroll response' do
+          response = subject.request_enroll(applicant, is_enhanced_ipp)
+          expect(response).to be_instance_of(UspsInPersonProofing::Response::RequestEnrollResponse)
+          expect(response.enrollment_code).to eq(JSON.parse(usps_mock_response)['enrollmentCode'])
+          expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
+        end
+      end
+
+      context 'when USPS opt in IPP applicant v2 is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(
+            :usps_opt_in_ipp_applicant_v2_enabled,
+          ).and_return(false)
+          stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
+            .with(body: {
+              sponsorID: IdentityConfig.store.usps_ipp_sponsor_id.to_i,
+              uniqueID: applicant.unique_id,
+              firstName: applicant.first_name,
+              lastName: applicant.last_name,
+              streetAddress: applicant.address,
+              city: applicant.city,
+              state: applicant.state,
+              zipCode: applicant.zip_code,
+              emailAddress: applicant.email,
+              IPPAssuranceLevel: '1.5',
+            })
+            .to_return(
+              status: 200,
+              body: usps_mock_response,
+              headers: { 'content-type' => 'application/json' },
+            )
+        end
+
+        it 'returns request enroll response' do
+          response = subject.request_enroll(applicant, is_enhanced_ipp)
+          expect(response).to be_instance_of(UspsInPersonProofing::Response::RequestEnrollResponse)
+          expect(response.enrollment_code).to eq(JSON.parse(usps_mock_response)['enrollmentCode'])
+          expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
+        end
+      end
     end
 
     context 'when the USPS API responds with a 4XX status' do
@@ -431,148 +500,6 @@ RSpec.describe UspsInPersonProofing::Proofer do
 
         expect(enrollment.enrollment_code).to be_present
         expect(enrollment.response_message).to be_present
-      end
-    end
-  end
-
-  describe '#request_enroll_v2' do
-    subject(:response) { described_class.new.request_enroll_v2(applicant, is_enhanced_ipp) }
-
-    let(:applicant) do
-      double(
-        'applicant',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        email: Faker::Internet.email,
-        unique_id: Faker::Number.number(digits: 10),
-        document_type: 'state_id',
-        document_number: Faker::Number.number(digits: 9),
-        document_expiration_date: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
-      )
-    end
-    let(:is_enhanced_ipp) { false }
-    let(:usps_mock_response) do
-      UspsInPersonProofing::Mock::Fixtures.request_enroll_response
-    end
-    let(:request_url) { "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant" }
-
-    before do
-      stub_request_token
-      allow(IdentityConfig.store).to receive(:usps_ipp_sponsor_id).and_return(usps_ipp_sponsor_id)
-    end
-
-    context 'when the USPS API responds with a 2XX status' do
-      context 'when is_enhanced_ipp is false' do
-        let(:is_enhanced_ipp) { false }
-        let(:usps_mock_response) do
-          UspsInPersonProofing::Mock::Fixtures.request_enroll_response
-        end
-
-        before do
-          stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
-            .with(body: {
-              sponsorID: IdentityConfig.store.usps_ipp_sponsor_id.to_i,
-              uniqueID: applicant.unique_id,
-              firstName: applicant.first_name,
-              lastName: applicant.last_name,
-              streetAddress: applicant.address,
-              city: applicant.city,
-              state: applicant.state,
-              zipCode: applicant.zip_code,
-              emailAddress: applicant.email,
-              documentType: applicant.document_type,
-              documentNumber: applicant.document_number,
-              documentExpirationDate: applicant.document_expiration_date,
-              IPPAssuranceLevel: '1.5',
-            })
-            .to_return(
-              status: 200,
-              body: usps_mock_response,
-              headers: { 'content-type' => 'application/json' },
-            )
-        end
-
-        it 'returns request enroll response' do
-          expect(response).to be_instance_of(UspsInPersonProofing::Response::RequestEnrollResponse)
-          expect(response.enrollment_code).to eq(JSON.parse(usps_mock_response)['enrollmentCode'])
-          expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
-        end
-      end
-
-      context 'when is_enhanced_ipp is true' do
-        let(:is_enhanced_ipp) { true }
-
-        before do
-          stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
-            .with(body: {
-              sponsorID: IdentityConfig.store.usps_eipp_sponsor_id.to_i,
-              uniqueID: applicant.unique_id,
-              firstName: applicant.first_name,
-              lastName: applicant.last_name,
-              streetAddress: applicant.address,
-              city: applicant.city,
-              state: applicant.state,
-              zipCode: applicant.zip_code,
-              emailAddress: applicant.email,
-              documentType: applicant.document_type,
-              documentNumber: applicant.document_number,
-              documentExpirationDate: applicant.document_expiration_date,
-              IPPAssuranceLevel: '2.0',
-            })
-            .to_return(
-              status: 200,
-              body: usps_mock_response,
-              headers: { 'content-type' => 'application/json' },
-            )
-        end
-
-        it 'returns request enroll response' do
-          expect(response).to be_instance_of(UspsInPersonProofing::Response::RequestEnrollResponse)
-          expect(response.enrollment_code).to eq(JSON.parse(usps_mock_response)['enrollmentCode'])
-          expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
-        end
-      end
-    end
-
-    context 'when the USPS API responds with a 4XX status' do
-      before do
-        stub_request_enroll_bad_request_response
-      end
-
-      it 'raises a Faraday::BadRequestError' do
-        expect { response }.to raise_error(
-          an_instance_of(Faraday::BadRequestError)
-          .and(having_attributes(
-            response: include(
-              body: include(
-                'responseMessage' => 'Sponsor for sponsorID 5 not found',
-              ),
-            ),
-          )),
-        )
-      end
-    end
-
-    context 'when the USPS API responds with a 5XX status' do
-      before do
-        stub_request_enroll_internal_server_error_response
-      end
-
-      it 'raises a Faraday::ServerError' do
-        expect { response }.to raise_error(
-          an_instance_of(Faraday::ServerError)
-          .and(having_attributes(
-            response: include(
-              body: include(
-                'responseMessage' => 'An internal error occurred processing the request',
-              ),
-            ),
-          )),
-        )
       end
     end
   end
