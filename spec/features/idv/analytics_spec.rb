@@ -14,7 +14,6 @@ RSpec.feature 'Analytics Regression', :js do
   let(:threatmetrix_response_body) do
     {
       account_lex_id: 'super-cool-test-lex-id',
-      'fraudpoint.score': '500',
       request_id: '1234',
       request_result: 'success',
       review_status: 'pass',
