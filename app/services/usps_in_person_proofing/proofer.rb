@@ -44,8 +44,8 @@ module UspsInPersonProofing
     # USPS sends an email to the email address with instructions and the enrollment code.
     # The API response also includes the enrollment code which should be
     # stored with the unique ID to be able to request the status of proofing.
-    # @param applicant [Hash]
-    # @return [Hash] API response
+    # @param applicant [UspsInPersonProofing::Applicant]
+    # @return [UspsInPersonProofing::Response::RequestEnrollResponse] API response
     def request_enroll(applicant, is_enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant"
       request_body = {
@@ -60,6 +60,14 @@ module UspsInPersonProofing
         emailAddress: applicant.email,
         IPPAssuranceLevel: '1.5',
       }
+
+      if IdentityConfig.store.usps_opt_in_ipp_applicant_with_document_data
+        request_body.merge!(
+          documentType: applicant.document_type,
+          documentNumber: applicant.document_number,
+          documentExpirationDate: applicant.document_expiration_date,
+        )
+      end
 
       if is_enhanced_ipp
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
