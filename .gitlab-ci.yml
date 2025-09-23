@@ -385,6 +385,8 @@ coverage:
   when: always
 
 # This job posts a message in Slack if the `spec` job fails for a commit on main.
+# We use artifacts from the merged rspec report to read the number of failed jobs to check
+# whether the tests all passed.
 # This must be a separate job because the tests run in parallel and there is no way to run
 # a single job based on the result of all of them.
 alert_main_test:
