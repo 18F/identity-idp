@@ -48,7 +48,13 @@ module Idv
         controller: self,
         next_steps: [:document_capture],
         preconditions: ->(idv_session:, user:) do
-          idv_session.flow_path == 'standard'
+          idv_session.flow_path == 'standard' && (
+            !idv_session.skip_doc_auth_from_handoff || # is not ipp from desktop
+            idv_session.skip_hybrid_handoff || # is not mobile user
+            !idv_session.skip_doc_auth_from_how_to_verify || # is not ipp user
+            !idv_session.selfie_check_required || # desktop but selfie not required
+            idv_session.desktop_selfie_test_mode_enabled?
+          )
         end,
         undo_step: ->(idv_session:, user:) do
           if idv_session.document_capture_session_uuid
