@@ -156,8 +156,7 @@ lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 
 lint_package_lock: package.json package-lock.json ## Lints the package.json and its lockfile
 	@npm install --ignore-scripts
-	@npm dedupe
-	@(! git diff --name-only | grep package-lock.json) || (echo "Error: There are uncommitted changes after running 'npm install'"; exit 1)
+	@(! git diff --name-only | grep package-lock.json) || (echo "Error: There are uncommitted changes after running 'npm ci'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_package_lock ## Lints to ensure lockfiles are in sync
 
