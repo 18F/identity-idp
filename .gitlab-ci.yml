@@ -406,7 +406,7 @@ alert_main_test:
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "$(printf "A scheduled test run failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
+          --text "$(printf "Pipeline failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
       else
         echo "Not notifying in slack"
       fi
