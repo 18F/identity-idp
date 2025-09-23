@@ -12,7 +12,6 @@ describe('InPersonOutageAlert', () => {
           inPersonOutageExpectedUpdateDate: 'January 1, 2024',
           inPersonOutageMessageEnabled: true,
           optedInToInPersonProofing: false,
-          passportEnabled: false,
           usStatesTerritories: [],
         }}
       >

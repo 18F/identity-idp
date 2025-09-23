@@ -25,7 +25,6 @@ If not using macOS:
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [Redis 7+](http://redis.io/)
     - [Node.js v22](https://nodejs.org)
-    - [Yarn](https://yarnpkg.com/en/)
     - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
 1. You will need to install openssl version 1.1:
@@ -144,7 +143,7 @@ $ SKIP_BUILD=true bundle exec rspec spec/features
 
 Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
 disabling it will mean you're responsible for running the build any time JavaScript or Sass source
-files are changed. You can do this by running `yarn build:js` for JavaScript, or `yarn build:css`
+files are changed. You can do this by running `npm run build:js` for JavaScript, or `npm run build:css`
 for stylesheets.
 
 ### Viewing email messages
