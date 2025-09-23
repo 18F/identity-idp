@@ -1,16 +1,44 @@
 # frozen_string_literal: true
 
-require 'csv'
-
 module Reports
-  class IrsMonthlyCredMetricsReport < BaseReport
+  class NewTestTheMonthlyIrsReport < CombinedInvoiceSupplementReportV2
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date
 
-    def initialize(report_date = nil, *args, **rest)
-      @report_date = report_date
-      super(*args, **rest)
+    def partner_accounts
+      partner = config&.fetch('partner', nil)
+
+      return [] unless partner
+
+      IaaReportingHelper.partner_accounts.filter do |x|
+        x.partner == partner
+      end
+    end
+
+    def iaas
+      IaaReportingHelper.iaas.filter do |x|
+        x.end_date > 90.days.ago && (x.issuers & issuers).any?
+      end
+    end
+
+    def issuers
+      issuers = config&.fetch('issuers', nil)
+      return [] unless issuers
+    end
+
+    def irs_monthly_cred
+      @irs_monthly_cred || Reports::IrsMonthlyCredMetricsReport.new(@report_date)
+    end
+
+    def email_addresses
+      email_addresses = config&.fetch('emails', nil)
+
+      return [] unless email_addresses
+    end
+
+    def config
+      IdentityConfig.store.irs_credential_tenure_report_config
     end
 
     def definitions_table
@@ -43,7 +71,7 @@ module Reports
       ]
     end
 
-    def overview_table(issuers)
+    def overview_table
       [
         ['Report Timeframe', 'Report Generated', 'Issuers'],
         ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s,
@@ -51,51 +79,57 @@ module Reports
       ]
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day)
-      @report_date = date
-      # IRS only has one issuer at the moment, unclear whether this is needed
-      issuers = IaaReportingHelper.partner_accounts.select do |pc|
-        pc.partner == 'IRS'
-      end.flat_map(&:issuers)
+    def perform(report_date = Time.zone.yesterday.end_of_day)
+      @report_date = report_date
 
-      # Why is this here? Dead code remove
-      IaaReportingHelper.iaas.filter do |x|
-        x.end_date > 90.days.ago
-      end
-      # Unclear why were using iaas as the starting point
-      iaas = IaaReportingHelper.iaas.filter do |iaa|
-        iaa.end_date > 90.days.ago &&
-          (iaa.issuers & issuers).any? # intersection: at least one issuer matches
+      # Exclude IAAs that ended more than 90 days ago
+      csv_data = build_csv(iaas, partner_accounts)
+      save_report(REPORT_NAME, csv_data, extension: 'csv')
+
+      parsed_csv = CSV.parse(csv_data, headers: true)
+
+      # Go straight to array of arrays format
+      selected_data = [
+        # Headers row
+        ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
+         'Total Auths'],
+      ] + parsed_csv.map do |row|
+        # Data rows - extract values directly from CSV row
+        [
+          row['year_month_readable'],
+          row['issuer_ial2_total_auth_count'].to_i,
+          row['partner_ial2_new_unique_user_events_year1'].to_i,
+          (row['partner_ial2_new_unique_user_events_year2'].to_i +
+           row['partner_ial2_new_unique_user_events_year3'].to_i +
+           row['partner_ial2_new_unique_user_events_year4'].to_i +
+           row['partner_ial2_new_unique_user_events_year5'].to_i),
+          row['iaa_unique_users'].to_i,
+          row['issuer_ial1_plus_2_total_auth_count'].to_i,
+        ]
       end
 
-      # Why are we using ALL partner accounts?
-      csv = build_csv(iaas, IaaReportingHelper.partner_accounts, report_date)
-      email_addresses = emails.select(&:present?)
-
-      # Check if any emails are found
-      if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
-        return false
-      end
       reports = as_emailable_irs_report(
-        iaas: iaas,
-        partner_accounts: IaaReportingHelper.partner_accounts, date: report_date,
-        issuers: issuers
+        date: report_date,
+        csv: selected_data,
       )
+
       reports.each do |report|
-        upload_to_s3(report.table, report_date, report_name: report.filename)
+        _latest_path, path = generate_s3_paths(report.filename, 'csv')
+        content_type = Mime::Type.lookup_by_extension('csv').to_s
+        _url = upload_file_to_s3_bucket(path: path, body: report.table, content_type: content_type)
       end
+
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Monthly Credential Metrics - #{date.to_date}",
-        message: preamble,
+        subject: "TEST - IRS Monthly Credential Metrics - #{report_date.to_date}",
+        message: irs_monthly_cred.preamble,
         reports: reports,
         attachment_format: :csv,
       ).deliver_now
-      csv
+      selected_data
     end
 
-    def as_emailable_irs_report(iaas:, partner_accounts:, date:, issuers:)
+    def as_emailable_irs_report(date:, csv:)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -104,12 +138,12 @@ module Reports
         ),
         Reporting::EmailableReport.new(
           title: 'Overview',
-          table: overview_table(issuers),
+          table: overview_table,
           filename: 'irs_monthly_cred_overview',
         ),
         Reporting::EmailableReport.new(
           title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: CSV.parse(build_csv(iaas, partner_accounts, date)),
+          table: csv,
           filename: 'irs_monthly_cred_metrics',
         ),
 
@@ -143,194 +177,12 @@ module Reports
       ERB
     end
 
-    # @param [Array<IaaReportingHelper::IaaConfig>] iaas
-    # @param [Array<IaaReportingHelper::PartnerConfig>] partner_accounts
-    # @return [String] CSV report
-    def build_csv(iaas, partner_accounts, report_date)
-      report_month_start = report_date.beginning_of_month
-      report_month_end = report_date.end_of_month
-      # the key is only used for formating, why not pass the issuers directly?
-      by_iaa_results = iaas.flat_map do |iaa|
-        Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
-          key: iaa.key, # this can be any string
-          issuers: iaa.issuers, # can use a collection of issuers this does not depend on the iaa object
-          start_date: report_month_start, # unclear if we need to do the month thing
-          end_date: report_month_end,
-        )
-      end
-
-      by_issuer_results = iaas.flat_map do |iaa|
-        iaa.issuers.flat_map do |issuer|
-          Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-            issuer: issuer, # used for a single issuer
-            iaa_start_date: report_month_start,
-            iaa_end_date: report_month_end,
-            iaa: iaa.key, # can be any string
-          )
-        end
-      end
-
-      by_partner_results = partner_accounts.flat_map do |partner_account|
-        Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
-          partner: partner_account.partner,
-          issuers: partner_account.issuers,
-          start_date: report_month_start,
-          end_date: report_month_end,
-        )
-      end
-
-      by_issuer_profile_age_results = partner_accounts.flat_map do |partner_account|
-        partner_account.issuers.flat_map do |issuer|
-          Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
-            partner: partner_account.partner,
-            issuers: [issuer],
-            start_date: report_month_start,
-            end_date: report_month_end,
-          )
-        end
-      end
-
-      combine_by_iaa_month(
-        by_iaa_results: by_iaa_results,
-        by_issuer_results: by_issuer_results,
-        by_partner_results: by_partner_results,
-        by_issuer_profile_age_results: by_issuer_profile_age_results,
-      )
-    end
-
-    private
-
-    def write_csv_header(csv)
-      csv << [
-        'Credentials Authorized',
-        'New ID Verifications Authorized Credentials',
-        'Existing Identity Verification Credentials',
-        # TODO
-        # the relevant billing report columns are iaa_unique_users for monthly active users
-        #   and issuer_ial1_plus_2_total_auth_count for authentications
-        # - Total Authentications: Total number of *billable* sign ins at any IAL,
-        #   -- IAL Issuer 1+2 count --
-        # - IAL2 Auths:
-        # - Monthly Active Users: Signed in at any IAL level, -- IAA Unique users --
-      ]
-    end
-
-    def write_csv_row(csv:, iaa_key:, year_month:, iaa_results:, by_issuer_results:,
-                      by_partner_results:, by_issuer_profile_age_results:)
-      Date.parse(iaa_results.first[:iaa_start_date])
-      Date.parse(iaa_results.first[:iaa_end_date])
-      Date.strptime(year_month, '%Y%m')
-
-      issuer_results = by_issuer_results.select do |r|
-        r[:iaa] == iaa_key && r[:year_month] == year_month
-      end
-
-      total_auth = issuer_results.sum do |r|
-        (r[:total_auth_count] if r[:ial] == 1 || r[:ial] == 2) || 0
-      end
-
-      related_issuers = issuer_results.map { |r| r[:issuer] }.uniq
-
-      partner_results = by_partner_results.select do |result|
-        result[:year_month] == year_month && (result[:issuers] & related_issuers).any?
-      end
-
-      new_users = partner_results.sum do |r|
-        %i[
-          partner_ial2_new_unique_user_events_year1
-          partner_ial2_new_unique_user_events_year2
-          partner_ial2_new_unique_user_events_year3
-          partner_ial2_new_unique_user_events_year4
-          partner_ial2_new_unique_user_events_year5
-          partner_ial2_new_unique_user_events_year_greater_than_5
-          partner_ial2_new_unique_user_events_unknown
-        ].sum { |key| r[key] || 0 }
-      end
-
-      existing_users = by_issuer_profile_age_results.select do |r|
-        r[:year_month] == year_month && (r[:issuers] & related_issuers).any?
-      end.sum do |r|
-        total = %i[
-          partner_ial2_unique_user_events_year1
-          partner_ial2_unique_user_events_year2
-          partner_ial2_unique_user_events_year3
-          partner_ial2_unique_user_events_year4
-          partner_ial2_unique_user_events_year5
-          partner_ial2_unique_user_events_year_greater_than_5
-          partner_ial2_unique_user_events_unknown
-        ].sum { |key| r[key] || 0 }
-
-        new = %i[
-          partner_ial2_new_unique_user_events_year1
-          partner_ial2_new_unique_user_events_year2
-          partner_ial2_new_unique_user_events_year3
-          partner_ial2_new_unique_user_events_year4
-          partner_ial2_new_unique_user_events_year5
-          partner_ial2_new_unique_user_events_year_greater_than_5
-          partner_ial2_new_unique_user_events_unknown
-        ].sum { |key| r[key] || 0 }
-
-        total - new
-      end
-
-      csv << [
-        total_auth,
-        new_users,
-        existing_users,
-      ]
-    end
-
-    def combine_by_iaa_month(
-      by_iaa_results:,
-      by_issuer_results:,
-      by_partner_results:,
-      by_issuer_profile_age_results:
-    )
-      by_iaa_and_year_month = by_iaa_results.group_by do |result|
-        [result[:key], result[:year_month]]
-      end
-      CSV.generate do |csv|
-        write_csv_header(csv)
-        by_iaa_and_year_month.each do |(iaa_key, year_month), iaa_results|
-          write_csv_row(
-            csv: csv,
-            iaa_key: iaa_key,
-            year_month: year_month,
-            iaa_results: iaa_results,
-            by_issuer_results: by_issuer_results,
-            by_partner_results: by_partner_results,
-            by_issuer_profile_age_results: by_issuer_profile_age_results,
-          )
-        end
-      end
-    end
-
-    def emails
-      [*IdentityConfig.store.irs_credentials_emails]
-    end
-
-    def upload_to_s3(report_body, report_date, report_name: nil)
-      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
-      if bucket_name.present?
-        upload_file_to_s3_bucket(
-          path: path,
-          body: csv_file(report_body),
-          content_type: 'text/csv',
-          bucket: bucket_name,
-        )
-      end
-    end
-
     def csv_file(report_array)
       CSV.generate do |csv|
         report_array.each do |row|
           csv << row
         end
       end
-    end
-
-    def extract(arr, key, ial:)
-      arr.find { |elem| elem[:ial] == ial && elem[key] }&.dig(key) || 0
     end
   end
 end
