@@ -20,9 +20,10 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
     stub_request_enroll
   end
 
-  context 'When the usps_opt_in_ipp_applicant_v2_enabled is true' do
+  context 'When the usps_opt_in_ipp_applicant_with_document_data is true' do
     before do
-      allow(IdentityConfig.store).to receive(:usps_opt_in_ipp_applicant_v2_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:usps_opt_in_ipp_applicant_with_document_data)
+        .and_return(true)
     end
 
     it 'Then the user can reach the IPP barcode page', allow_browser_log: true do
@@ -69,10 +70,10 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
     end
   end
 
-  context 'When the usps_opt_in_ipp_applicant_v2_enabled is false' do
+  context 'When the usps_opt_in_ipp_applicant_with_document_data is false' do
     before do
       allow(IdentityConfig.store).to receive(
-        :usps_opt_in_ipp_applicant_v2_enabled,
+        :usps_opt_in_ipp_applicant_with_document_data,
       ).and_return(false)
     end
 

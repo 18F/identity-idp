@@ -115,10 +115,9 @@ module UspsInPersonProofing
       end
 
       def create_usps_enrollment(enrollment, applicant_pii, is_enhanced_ipp)
-        response = usps_proofer.request_enroll(
-          create_enrollment_applicant(applicant_pii, enrollment),
-          is_enhanced_ipp,
-        )
+        applicant = create_enrollment_applicant(applicant_pii, enrollment)
+        response = usps_proofer.request_enroll(applicant, is_enhanced_ipp)
+
         response.enrollment_code
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
@@ -132,9 +131,10 @@ module UspsInPersonProofing
 
       def send_ready_to_verify_email(user, enrollment)
         user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-            enrollment: enrollment,
-          ).deliver_now_or_later
+          UserMailer
+            .with(user: user, email_address: email_address)
+            .in_person_ready_to_verify(enrollment:)
+            .deliver_now_or_later
         end
       end
     end

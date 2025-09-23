@@ -368,10 +368,10 @@ RSpec.describe UspsInPersonProofing::Proofer do
         end
       end
 
-      context 'when USPS opt in IPP applicant v2 is enabled' do
+      context 'when USPS opt in IPP applicant with document data is enabled' do
         before do
           allow(IdentityConfig.store).to receive(
-            :usps_opt_in_ipp_applicant_v2_enabled,
+            :usps_opt_in_ipp_applicant_with_document_data,
           ).and_return(true)
           stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
             .with(body: {
@@ -404,10 +404,10 @@ RSpec.describe UspsInPersonProofing::Proofer do
         end
       end
 
-      context 'when USPS opt in IPP applicant v2 is disabled' do
+      context 'when USPS opt in IPP applicant with document data is disabled' do
         before do
           allow(IdentityConfig.store).to receive(
-            :usps_opt_in_ipp_applicant_v2_enabled,
+            :usps_opt_in_ipp_applicant_with_document_data,
           ).and_return(false)
           stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
             .with(body: {

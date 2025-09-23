@@ -61,7 +61,7 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      if IdentityConfig.store.usps_opt_in_ipp_applicant_v2_enabled
+      if IdentityConfig.store.usps_opt_in_ipp_applicant_with_document_data
         request_body.merge!(
           documentType: applicant.document_type,
           documentNumber: applicant.document_number,
