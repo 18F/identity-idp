@@ -27,6 +27,7 @@ RSpec.describe SocureDocvResultsJob do
 
   let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
   let(:address_data) { pii_from_doc[:parsedAddress] || {} }
+  let(:doc_auth_passports_enabled) { false }
 
   before do
     document_capture_session.update(
@@ -41,6 +42,9 @@ RSpec.describe SocureDocvResultsJob do
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(
+      doc_auth_passports_enabled,
+    )
 
     rate_limiter.increment!
 
@@ -158,6 +162,7 @@ RSpec.describe SocureDocvResultsJob do
             body: DocAuthImageFixtures.zipped_files(
               reference_id: socure_response_body[:referenceId],
               selfie:,
+              passport: doc_auth_passports_enabled,
             ).to_s,
           )
       end
@@ -492,8 +497,8 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when passports are enabled' do
+          let(:doc_auth_passports_enabled) { true }
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
             allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
               .and_return(Idp::Constants::Vendors::SOCURE)
           end
@@ -623,9 +628,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when passports are enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-          end
+          let(:doc_auth_passports_enabled) { true }
 
           it 'logs the Socure verification data requested event' do
             perform
@@ -720,10 +723,8 @@ RSpec.describe SocureDocvResultsJob do
                   it 'tracks the attempt with mrz data' do
                     expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                       success: true,
-                      document_back_image_encryption_key: an_instance_of(String),
-                      document_back_image_file_id: an_instance_of(String),
-                      document_front_image_encryption_key: an_instance_of(String),
-                      document_front_image_file_id: an_instance_of(String),
+                      document_passport_image_encryption_key: an_instance_of(String),
+                      document_passport_image_file_id: an_instance_of(String),
                       document_state: address_data[:state],
                       document_number: pii_from_doc[:documentNumber],
                       # Socure does not send back a document issue date for passports
