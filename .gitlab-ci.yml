@@ -382,6 +382,7 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
+  when: always
 
 # This job posts a message in Slack if the `spec` job fails during a scheduled run.
 # This must be a separate job because the tests run in parallel and there is no way to run
