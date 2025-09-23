@@ -384,10 +384,10 @@ coverage:
       - coverage/coverage.xml
   when: always
 
-# This job posts a message in Slack if the `spec` job fails during a scheduled run.
+# This job posts a message in Slack if the `spec` job fails for a commit on main.
 # This must be a separate job because the tests run in parallel and there is no way to run
 # a single job based on the result of all of them.
-test_scheduled:
+alert_main_test:
   stage: after_test
   needs:
     - job: coverage
@@ -406,12 +406,12 @@ test_scheduled:
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "$(printf "A scheduled test run failed in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
+          --text "$(printf "A scheduled test run failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
       else
         echo "Not notifying in slack"
       fi
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "main"
 
 build-ci-image:
   stage: build
