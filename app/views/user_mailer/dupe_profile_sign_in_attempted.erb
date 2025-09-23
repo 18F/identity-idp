@@ -6,11 +6,14 @@
         'user_mailer.dupe_profile.sign_in.description2_html',
         steps_link_html: link_to(
           t('user_mailer.dupe_profile.sign_in.steps_link'),
-          root_url,
+          MarketingSite.help_center_article_url(
+            category: 'manage-your-account',
+            article: 'resolve-duplicate-accounts'
+          ),
         ),
         help_center_link_html: link_to(
           t('user_mailer.dupe_profile.sign_in.help_center_link', app_name: APP_NAME),
-          MarketingSite.help_url,
+          MarketingSite.contact_url,
         ),
       ) %>
 </p>
