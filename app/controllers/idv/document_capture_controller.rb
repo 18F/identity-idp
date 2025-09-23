@@ -11,6 +11,7 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
+    before_action :choose_id_type_completed?, only: :show
     before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
@@ -71,7 +72,7 @@ module Idv
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required || # desktop but selfie not required
               idv_session.desktop_selfie_test_mode_enabled?
-          ) && choose_id_type_completed?(idv_session:, user:)
+          )
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -100,6 +101,12 @@ module Idv
     end
 
     private
+
+    def choose_id_type_completed?
+      return if self.class.choose_id_type_completed?(idv_session:, user: current_user)
+
+      redirect_to idv_choose_id_type_url
+    end
 
     def extra_view_variables
       {
