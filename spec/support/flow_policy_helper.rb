@@ -19,6 +19,13 @@ module FlowPolicyHelper
       idv_session.flow_path = 'standard'
     when :choose_id_type
       idv_session.flow_path = 'standard'
+      idv_session.document_capture_session_uuid = SecureRandom.uuid
+      DocumentCaptureSession.create!(
+        uuid: idv_session.document_capture_session_uuid,
+        user: idv_session.current_user,
+        requested_at: Time.zone.now,
+        passport_status: 'requested',
+      )
     when :link_sent
       idv_session.flow_path = 'hybrid'
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)

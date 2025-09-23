@@ -72,7 +72,7 @@ module Idv
               idv_session.skip_doc_auth_from_how_to_verify ||
               !idv_session.selfie_check_required || # desktop but selfie not required
               idv_session.desktop_selfie_test_mode_enabled?
-          )
+          ) && choose_id_type_completed?(idv_session:, user:)
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
