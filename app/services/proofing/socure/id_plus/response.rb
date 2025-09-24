@@ -22,6 +22,17 @@ module Proofing
           @kyc_reason_codes ||= kyc('reasonCodes').to_set.freeze
         end
 
+        def phone_risk_field_validations
+          @phone_risk_field_validations ||= phone_risk('fieldValidations')
+            .each_with_object({}) do |(field, valid), obj|
+              obj[field.to_sym] = valid.round == 1
+            end.freeze
+        end
+
+        def phone_risk_reason_codes
+          @phone_risk_reason_codes ||= phone_risk('reasonCodes').to_set.freeze
+        end
+
         def reference_id
           http_response.body['referenceId']
         end
@@ -38,6 +49,12 @@ module Proofing
           kyc_object = http_response.body['kyc']
           raise 'No kyc section on response' unless kyc_object
           kyc_object.dig(*fields)
+        end
+
+        def phone_risk(*fields)
+          phone_risk_object = http_response.body['phoneRisk']
+          raise 'No phonerisk section on response' unless phone_risk_object
+          phone_risk_object.dig(*fields)
         end
       end
     end
