@@ -87,7 +87,7 @@ module FlowPolicyHelper
     when :link_sent
       %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture]
     when :ipp
       %i[welcome agreement how_to_verify hybrid_handoff ipp]
     when :ipp_state_id
@@ -95,26 +95,27 @@ module FlowPolicyHelper
     when :ipp_address
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address]
     when :ssn
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn]
     when :ipp_ssn
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn]
     when :verify_info
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info]
     when :ipp_verify_info
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn
          ipp_verify_info]
     when :phone
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
          verify_info phone]
     when :otp_verification
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         phone otp_verification]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info phone otp_verification]
     when :request_letter
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         request_letter]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info request_letter]
     when :enter_password
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         phone otp_verification enter_password]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info phone otp_verification enter_password]
     else
       []
     end
