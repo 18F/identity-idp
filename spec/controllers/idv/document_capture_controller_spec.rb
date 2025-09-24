@@ -151,7 +151,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'when user bypasses choose_id_type via allowed flows' do
       context 'with skip_doc_auth_from_handoff' do
-        before { subject.idv_session.skip_doc_auth_from_handoff = true }
         let(:document_capture_session) do
           create(
             :document_capture_session,
@@ -161,6 +160,8 @@ RSpec.describe Idv::DocumentCaptureController do
             passport_status: nil,
           )
         end
+
+        before { subject.idv_session.skip_doc_auth_from_handoff = true }
 
         it 'allows access without choose_id_type completion' do
           get :show
@@ -169,7 +170,6 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       context 'with skip_hybrid_handoff' do
-        before { subject.idv_session.skip_hybrid_handoff = true }
         let(:document_capture_session) do
           create(
             :document_capture_session,
@@ -180,10 +180,45 @@ RSpec.describe Idv::DocumentCaptureController do
           )
         end
 
+        before { subject.idv_session.skip_hybrid_handoff = true }
+
         it 'allows access without choose_id_type completion' do
           get :show
           expect(response).to render_template :show
         end
+      end
+    end
+
+    context 'mobile flow scenario - user tries to skip choose_id_type' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          passport_status: nil, # This simulates not having completed choose_id_type
+        )
+      end
+
+      before do
+        # Simulate mobile flow - no special bypass flags set
+        subject.idv_session.skip_doc_auth_from_handoff = nil
+        subject.idv_session.skip_hybrid_handoff = nil
+        subject.idv_session.skip_doc_auth_from_how_to_verify = nil
+      end
+
+      it 'redirects to choose_id_type when user manually navigates to document_capture' do
+        get :show
+        expect(response).to redirect_to(idv_choose_id_type_path)
+      end
+
+      it 'prevents access when document_capture_session has no passport_status set' do
+        expect(
+          Idv::DocumentCaptureController.choose_id_type_completed?(
+            idv_session: subject.idv_session,
+            user: user,
+          ),
+        ).to be_falsey
       end
     end
 

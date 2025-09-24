@@ -11,7 +11,6 @@ module Idv
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
-    before_action :choose_id_type_completed?, only: :show
     before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
@@ -66,12 +65,11 @@ module Idv
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
           idv_session.flow_path == 'standard' && (
-            # mobile
             idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_hybrid_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required || # desktop but selfie not required
-              idv_session.desktop_selfie_test_mode_enabled?
+              idv_session.desktop_selfie_test_mode_enabled? ||
+              !idv_session.selfie_check_required
           ) && choose_id_type_completed?(idv_session:, user:)
         },
         undo_step: ->(idv_session:, user:) do
@@ -94,19 +92,13 @@ module Idv
 
       return true if idv_session.pii_from_doc.present?
 
-      doc_capture_session = DocumentCaptureSession.find_by(
+      document_capture_session = DocumentCaptureSession.find_by(
         uuid: idv_session.document_capture_session_uuid,
       )
-      !!doc_capture_session&.passport_status&.present?
+      !!document_capture_session&.passport_status&.present?
     end
 
     private
-
-    def choose_id_type_completed?
-      return if self.class.choose_id_type_completed?(idv_session:, user: current_user)
-
-      redirect_to idv_choose_id_type_url
-    end
 
     def extra_view_variables
       {
