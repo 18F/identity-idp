@@ -119,6 +119,8 @@ module Idv
 
     def submit_proofing_attempt
       step.submit(step_params.to_h)
+    rescue => e
+      byebug
     end
 
     def send_phone_confirmation_otp_and_handle_result

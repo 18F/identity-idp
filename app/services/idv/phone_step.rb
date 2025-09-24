@@ -166,6 +166,8 @@ module Idv
         issuer: idv_session.service_provider&.issuer,
         user_id: idv_session.current_user.id,
       )
+    rescue => e
+      byebug
     end
 
     def missing
