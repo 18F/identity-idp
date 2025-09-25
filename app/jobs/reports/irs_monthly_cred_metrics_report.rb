@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 module Reports
-  class NewTestTheMonthlyIrsReport < CombinedInvoiceSupplementReportV2
+  class IrsMonthlyCredMetricsReport < CombinedInvoiceSupplementReportV2
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date
 
     def partner_accounts
-      partner = config&.fetch('partner', nil)
-
-      return [] unless partner
+      partner = 'IRS'
 
       IaaReportingHelper.partner_accounts.filter do |x|
         x.partner == partner
@@ -23,8 +21,7 @@ module Reports
     end
 
     def issuers
-      issuers = config&.fetch('issuers', nil)
-      return [] unless issuers
+      [*IdentityConfig.store.irs_issuers]
     end
 
     def irs_monthly_cred
@@ -32,13 +29,7 @@ module Reports
     end
 
     def email_addresses
-      email_addresses = config&.fetch('emails', nil)
-
-      return [] unless email_addresses
-    end
-
-    def config
-      IdentityConfig.store.irs_credential_tenure_report_config
+      [*IdentityConfig.store.irs_credentials_emails]
     end
 
     def definitions_table
