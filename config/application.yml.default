@@ -170,7 +170,6 @@ feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 fraud_ops_event_ttl_seconds: 604800
 fraud_ops_public_key: ''
-fraud_ops_s3_bucket: ''
 fraud_ops_tracker_enabled: false
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
