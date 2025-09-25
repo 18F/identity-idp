@@ -7,10 +7,10 @@ module Reports
     attr_reader :report_date
 
     def partner_accounts
-      partner = 'IRS'
+      partner_strings = [*IdentityConfig.store.irs_partner_strings]
 
       IaaReportingHelper.partner_accounts.filter do |x|
-        x.partner == partner
+        (x.issuers & partner_strings).any?
       end
     end
 

@@ -624,6 +624,7 @@ test:
   irs_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  irs_partner_strings: '["IRS"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
   irs_registration_funnel_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'
