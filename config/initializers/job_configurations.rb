@@ -4,13 +4,15 @@ cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
-cron_24h_and_a_bit = '12 0 * * *' # 0000 UTC + 12 min, staggered from whatever else runs at 0000 UTC
+cron_24h_and_a_bit = '12 4 * * *' # 0400 UTC + 12 min, staggered from whatever else runs at 0400 UTC
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
+cron_every_monday_3am = 'every Monday at 3:00 UTC' # equivalent to '0 3 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
-cron_quarterly = '0 0 1 1,4,7,10  *' # quarterly
+cron_monthly_3am = '0 3 1 * *' # monthly, 3 AM UTC to not overlap with jobs running at 0000
+cron_quarterly = '0 2 1 1,4,7,10  *' # quarterly
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
@@ -192,7 +194,7 @@ else
       # Send previous week's verification reports to partners
       irs_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
-        cron: cron_every_monday,
+        cron: cron_every_monday_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
@@ -241,7 +243,7 @@ else
       # Send previous week's authentication reports to partners
       weekly_authentication_report: {
         class: 'Reports::AuthenticationReport',
-        cron: cron_every_monday,
+        cron: cron_every_monday_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send previous week's authentication reports to irs
@@ -271,7 +273,7 @@ else
       # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
-        cron: cron_every_monday_1am,
+        cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous week's protocols report
@@ -283,13 +285,13 @@ else
       # Previous months's mfa report
       monthly_mfa_report: {
         class: 'Reports::MfaReport',
-        cron: cron_monthly,
+        cron: cron_monthly_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous months's irs verification report
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
-        cron: cron_monthly,
+        cron: cron_monthly_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send irs quarterly metrics to Team Data
