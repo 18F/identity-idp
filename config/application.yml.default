@@ -247,6 +247,8 @@ invalid_gpo_confirmation_zipcode: '00001'
 irs_credential_tenure_report_config: '[]'
 irs_credential_tenure_report_issuers: '[]'
 irs_credentials_emails: '[]'
+irs_issuers: '[]'
+irs_partner_strings: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
 irs_registration_funnel_emails: '[]'
@@ -620,8 +622,7 @@ test:
   fraud_ops_public_key: 123abc
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
-  identity_pki_disabled: true
-  irs_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  identity_pki_disabled: true  
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_partner_strings: '["IRS"]'

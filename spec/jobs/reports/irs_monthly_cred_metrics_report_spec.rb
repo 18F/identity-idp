@@ -21,23 +21,26 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     {
       body: anything,
       content_type: 'text/csv',
-      bucket: 'reports-bucket.1234-us-west-1',
     }
   end
 
   let(:mock_daily_reports_emails) { ['mock_irs@example.com'] }
+  let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:irs_app_name'] }
+  let(:irs_partners) { ['IRS'] }
 
   before do
     # App config/environment
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store)
-      .to receive(:s3_report_bucket_prefix)
-      .and_return(s3_report_bucket_prefix)
-    allow(IdentityConfig.store)
-      .to receive(:irs_credentials_emails)
+    allow(IdentityConfig.store).to receive(:irs_credentials_emails)
       .and_return(mock_daily_reports_emails)
+    allow(IdentityConfig.store).to receive(:irs_partner_strings)
+      .and_return(irs_partners)
+    allow(IdentityConfig.store).to receive(:irs_issuers)
+      .and_return(mock_issuers)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
+      .and_return(s3_report_bucket_prefix)
 
     # S3 stub
     Aws.config[:s3] = {
@@ -45,9 +48,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         put_object: {},
       },
     }
-
-    allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-      .and_return(mock_daily_reports_emails)
   end
 
   context 'the beginning of the month, it sends records for previous month' do
@@ -114,7 +114,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             requesting_agency: 'IRS',
           )
         end
-        let(:partner_account2) { create(:partner_account) }
         let(:service_provider1) { create(:service_provider) }
         let(:service_provider2) { create(:service_provider) }
         let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
@@ -122,9 +121,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
         let(:integration3) do
           build_integration2(service_provider: service_provider1, partner_account: partner_account1)
-        end
-        let(:integration4) do
-          build_integration2(service_provider: service_provider2, partner_account: partner_account2)
         end
 
         let(:gtc1) do
@@ -141,7 +137,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
           create(
             :iaa_gtc,
             gtc_number: 'gtc5678',
-            partner_account: partner_account2,
+            partner_account: partner_account1,
             start_date: iaa2_range.begin,
             end_date: iaa2_range.end,
           )
@@ -184,13 +180,11 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
         before do
           partner_account1.requesting_agency = 'IRS'
-          partner_account2.requesting_agency = 'IRS'
           iaa_order1.integrations << build_integration(
             issuer: iaa1_sp.issuer,
             partner_account: partner_account1,
           )
           partner_account1.integrations << integration3
-          partner_account2.integrations << integration4
           iaa_order1.integrations << integration3
           iaa_order1.save
           iaa_order2.save

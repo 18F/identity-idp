@@ -105,9 +105,17 @@ module Reports
       )
 
       reports.each do |report|
-        _latest_path, path = generate_s3_paths(report.filename, 'csv')
+        _latest_path, path = generate_s3_paths(
+          REPORT_NAME, 'csv',
+          subname: report.filename,
+          now: report_date
+        )
+
         content_type = Mime::Type.lookup_by_extension('csv').to_s
-        _url = upload_file_to_s3_bucket(path: path, body: report.table, content_type: content_type)
+        report_csv = csv_file(report.table)
+        _url = upload_file_to_s3_bucket(
+          path: path, body: report_csv, content_type: content_type,
+        )
       end
 
       ReportMailer.tables_report(
