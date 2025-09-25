@@ -18,20 +18,36 @@ module EventSummarizer
         }
       end
 
-      def self.failure_payload(result)
+      def self.itemized_errors(result)
         failed_items = []
         pf_instances = result.dig('errors', 'PhoneFinder')
-        pf_instances&.each do |pf_instance|
+        return [] if pf_instances.nil? || pf_instances.empty?
+
+        pf_instances.each do |pf_instance|
           next if pf_instance['ProductStatus'] != 'fail'
 
           items = pf_instance['Items']
           failed_items.concat(items.select { |item| item['ItemStatus'] == 'fail' })
         end
 
-        fail_reasons = failed_items
+        failed_items
           .map { |item| item.dig('ItemReason', 'Description').to_s.strip }
           .reject(&:empty?)
           .uniq
+      end
+
+      def self.general_error(result)
+        checks = result.dig('errors', 'PhoneFinder Checks')
+        return nil if checks.nil? || checks.empty?
+
+        failed_status = checks.find { |status| status['ProductStatus'] == 'fail' }
+        return nil if failed_status.nil?
+
+        failed_status.dig('ProductReason', 'Description')
+      end
+
+      def self.failure_payload(result)
+        fail_reasons = [*itemized_errors(result), general_error(result)].compact
 
         if fail_reasons.any?
           {
