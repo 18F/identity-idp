@@ -12,7 +12,7 @@ cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 cron_every_monday_3am = 'every Monday at 3:00 UTC' # equivalent to '0 3 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
 cron_monthly_3am = '0 3 1 * *' # monthly, 3 AM UTC to not overlap with jobs running at 0000
-cron_quarterly = '0 2 1 1,4,7,10  *' # quarterly
+cron_quarterly = '0 2 1 1,4,7,10  *' # quarterly at 2am UTC on the first of Jan, Apr, Jul, Oct
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
