@@ -7,6 +7,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:user) { create(:user) }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider) }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
@@ -45,6 +46,7 @@ RSpec.describe SocureDocvResultsJob do
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(
       doc_auth_passports_enabled,
     )
+    allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
 
     rate_limiter.increment!
 

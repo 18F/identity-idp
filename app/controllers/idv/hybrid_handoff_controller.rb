@@ -226,6 +226,9 @@ module Idv
       attempts_api_tracker.idv_rate_limited(
         limiter_type: :idv_send_link,
       )
+      fraud_ops_tracker.idv_rate_limited(
+        limiter_type: :idv_send_link,
+      )
       message = I18n.t(
         'doc_auth.errors.send_link_limited',
         timeout: distance_of_time_in_words(

@@ -91,6 +91,15 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      request:,
+      user: analytics_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+    )
+  end
+
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end

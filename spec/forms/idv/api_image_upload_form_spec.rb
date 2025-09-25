@@ -22,12 +22,14 @@ RSpec.describe Idv::ApiImageUploadForm do
       service_provider:,
       analytics: fake_analytics,
       attempts_api_tracker:,
+      fraud_ops_tracker:,
       liveness_checking_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
 
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:attempts_api_enabled_for_sp) { false }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
