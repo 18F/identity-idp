@@ -98,7 +98,7 @@ during application deployment.
 
 - All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
-- The code follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- The code follows [TTS JavaScript standards](https://guides.18f.org/engineering/languages-runtimes/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
 - Code styling is formatted automatically using [Prettier](https://prettier.io/)
 - Packages are managed with [npm](https://docs.npmjs.com/), organized using [npm workspaces](https://docs.npmjs.com/cli/using-npm/workspaces)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
@@ -377,14 +377,14 @@ For example, consider a **Password Input** component:
 
 Login.gov publishes and uses
 [our own custom Stylelint configuration](https://www.npmjs.com/package/@18f/identity-stylelint-config),
-which is based on [TTS engineering best-practices](https://engineering.18f.gov/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
+which is based on [TTS engineering best-practices](https://guides.18f.org/engineering/languages-runtimes/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
 enforces
 [BEM-style class naming conventions](https://en.bem.info/methodology/naming-convention/#two-dashes-style).
 
 It may be useful to consider installing a
 [Prettier editor integration](https://prettier.io/docs/en/editors.html) to automatically format
 files on save. Similarly, a
-[Stylelint editor integration](https://stylelint.io/user-guide/integrations/editor) can help
+[Stylelint editor integration](https://stylelint.io/user-guide/customize/#using-stylelint) can help
 identify issues in your code as you write.
 
 ### Mocha
@@ -472,8 +472,8 @@ If there is no record available, you can initialize `simple_form_for` with an em
 
 ### Form Validation
 
-Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
-wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#using_built-in_form_validation)
+Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation)
+wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation#using_built-in_form_validation)
 to define validation constraints. For advanced validation, consider using the [`setCustomValidity`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setCustomValidity)
 function to assign or remove validation messages when an input's value changes.
 
