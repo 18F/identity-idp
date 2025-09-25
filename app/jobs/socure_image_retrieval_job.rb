@@ -58,12 +58,10 @@ class SocureImageRetrievalJob < ApplicationJob
 
   def fraud_ops_tracker
     @fraud_ops_tracker ||= FraudOps::Tracker.new(
-      session_id: nil,
       request: nil,
       user: document_capture_session.user,
       sp:,
       cookie_device_uuid: nil,
-      sp_redirect_uri: nil,
     )
   end
 

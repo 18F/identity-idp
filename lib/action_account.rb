@@ -405,12 +405,10 @@ class ActionAccount
 
     def fraud_ops_tracker(profile:)
       FraudOps::Tracker.new(
-        session_id: nil,
         request: nil,
         user: profile.user,
         sp: profile.initiating_service_provider,
         cookie_device_uuid: nil,
-        sp_redirect_uri: nil,
       )
     end
   end

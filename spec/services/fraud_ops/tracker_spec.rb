@@ -17,12 +17,10 @@ RSpec.describe FraudOps::Tracker do
 
   subject(:tracker) do
     FraudOps::Tracker.new(
-      session_id: session_id,
       request: request,
       user: user,
       sp: sp,
       cookie_device_uuid: cookie_device_uuid,
-      sp_redirect_uri: sp_redirect_uri,
     )
   end
 
@@ -48,12 +46,10 @@ RSpec.describe FraudOps::Tracker do
       allow(redis_wrapper).to receive(:write_event)
 
       new_tracker = FraudOps::Tracker.new(
-        session_id: SecureRandom.hex(16),
         request: request,
         user: user,
         sp: sp,
         cookie_device_uuid: cookie_device_uuid,
-        sp_redirect_uri: sp_redirect_uri,
       )
 
       new_tracker.login_email_and_password_auth(success: true)
