@@ -73,13 +73,11 @@ module Reports
     def perform(report_date = Time.zone.yesterday.end_of_day)
       @report_date = report_date
 
-      # Exclude IAAs that ended more than 90 days ago
       csv_data = build_csv(iaas, partner_accounts)
       save_report(REPORT_NAME, csv_data, extension: 'csv')
 
       parsed_csv = CSV.parse(csv_data, headers: true)
 
-      # Go straight to array of arrays format
       selected_data = [
         # Headers row
         ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
@@ -118,9 +116,14 @@ module Reports
         )
       end
 
+      if email_addresses.empty?
+        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+        return false
+      end
+
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "TEST - IRS Monthly Credential Metrics - #{report_date.to_date}",
+        subject: "IRS Monthly Credential Metrics - #{report_date.to_date}",
         message: irs_monthly_cred.preamble,
         reports: reports,
         attachment_format: :csv,
