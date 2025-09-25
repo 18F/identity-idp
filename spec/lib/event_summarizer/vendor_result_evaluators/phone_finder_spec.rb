@@ -69,7 +69,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
       it 'returns the correct result' do
         expect(evaluation).to eql(
           {
-            description: 'Phone Finder check failed: Specific failure reason A; Specific failure reason B',
+            description: 'Phone Finder check failed: ' \
+            'Specific failure reason A; Specific failure reason B',
             type: :phone_finder_error,
           },
         )
