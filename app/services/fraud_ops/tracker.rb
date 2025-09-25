@@ -2,15 +2,15 @@
 
 module FraudOps
   class Tracker < AttemptsApi::Tracker
-    def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:, sp_redirect_uri:)
+    def initialize(request:, user:, sp:, cookie_device_uuid:)
       super(
-        session_id: session_id,
+        session_id: nil,
         request: request,
         user: user,
         sp: sp,
         cookie_device_uuid: cookie_device_uuid,
-        sp_redirect_uri: sp_redirect_uri,
         enabled_for_session: true,
+        sp_redirect_uri: nil,
       )
     end
 
