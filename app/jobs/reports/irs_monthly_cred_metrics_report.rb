@@ -6,6 +6,11 @@ module Reports
 
     attr_reader :report_date
 
+    def initialize(report_date = Time.zone.yesterday.end_of_day, *args, **rest)
+      @report_date = report_date
+      super(*args, **rest)
+    end
+
     def partner_accounts
       partner_strings = [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
       IaaReportingHelper.partner_accounts.filter do |x|
@@ -69,18 +74,16 @@ module Reports
       ]
     end
 
-    def perform(report_date = Time.zone.yesterday.end_of_day)
-      @report_date = report_date
-
+    def perform(perform_date = Time.zone.yesterday.end_of_day)
       reports = as_emailable_irs_report(
-        date: report_date,
+        date: perform_date,
       )
 
       reports.each do |report|
         _latest_path, path = generate_s3_paths(
           REPORT_NAME, 'csv',
           subname: report.filename,
-          now: report_date
+          now: perform_date
         )
 
         content_type = Mime::Type.lookup_by_extension('csv').to_s
@@ -97,7 +100,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Monthly Credential Metrics - #{report_date.to_date}",
+        subject: "IRS Monthly Credential Metrics - #{perform_date.to_date}",
         message: irs_monthly_cred.preamble,
         reports: reports,
         attachment_format: :csv,
@@ -105,7 +108,7 @@ module Reports
       report_data
     end
 
-    def as_emailable_irs_report(date: report_date)
+    def as_emailable_irs_report(date:)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
