@@ -152,11 +152,6 @@ module Reports
             </div>
           </div>
         <% end %>
-        <p>
-          For more information on how each of these metrics are calculated, take a look at our
-          <a href="https://handbook.login.gov/articles/monthly-key-metrics-explainer.html">
-          Monthly Key Metrics Report Explainer document</a>.
-        </p>
       ERB
     end
 
