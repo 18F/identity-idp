@@ -32,6 +32,8 @@ class AddressProofingJob < ApplicationJob
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(proofer_result.to_h)
+  rescue => e
+    byebug
   ensure
     logger.info(
       {

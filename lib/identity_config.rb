@@ -232,6 +232,8 @@ module IdentityConfig
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_socure_docv_flow_id_only, type: :string)
     config.add(:idv_socure_docv_flow_id_w_selfie, type: :string)
+    config.add(:idv_socure_phonerisk_name_correlation_score_threshold, type: :float)
+    config.add(:idv_socure_phonerisk_score_threshold, type: :float)
     config.add(:idv_socure_reason_code_download_enabled, type: :boolean)
     config.add(:idv_socure_reason_codes_docv_selfie_fail, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_not_processed, type: :json)

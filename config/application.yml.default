@@ -207,6 +207,8 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_phonerisk_score_threshold: 0
+idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_reason_code_download_enabled: false
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
@@ -535,6 +537,8 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
+  idv_socure_phonerisk_score_threshold: 0.5
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
@@ -620,6 +624,8 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  idv_socure_phonerisk_score_threshold: 0.5
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
