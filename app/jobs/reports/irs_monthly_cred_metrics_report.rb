@@ -72,38 +72,8 @@ module Reports
     def perform(report_date = Time.zone.yesterday.end_of_day)
       @report_date = report_date
 
-      csv_data = build_csv(iaas, partner_accounts)
-      save_report(REPORT_NAME, csv_data, extension: 'csv')
-
-      parsed_csv = CSV.parse(csv_data, headers: true)
-
-      report_year_month = report_date.strftime('%Y%m')
-      data_row = parsed_csv.filter do |row|
-        row['year_month'] == report_year_month
-      end
-
-      selected_data = [
-        # Headers row
-        ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
-         'Total Auths'],
-      ] + data_row.map do |row|
-        # Data rows - extract values directly from CSV row
-        [
-          row['year_month_readable'],
-          row['issuer_ial2_total_auth_count'].to_i,
-          row['partner_ial2_new_unique_user_events_year1'].to_i,
-          (row['partner_ial2_new_unique_user_events_year2'].to_i +
-           row['partner_ial2_new_unique_user_events_year3'].to_i +
-           row['partner_ial2_new_unique_user_events_year4'].to_i +
-           row['partner_ial2_new_unique_user_events_year5'].to_i),
-          row['iaa_unique_users'].to_i,
-          row['issuer_ial1_plus_2_total_auth_count'].to_i,
-        ]
-      end
-
       reports = as_emailable_irs_report(
         date: report_date,
-        csv: selected_data,
       )
 
       reports.each do |report|
@@ -132,10 +102,10 @@ module Reports
         reports: reports,
         attachment_format: :csv,
       ).deliver_now
-      selected_data
+      report_data
     end
 
-    def as_emailable_irs_report(date:, csv:)
+    def as_emailable_irs_report(date: report_date)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -149,11 +119,15 @@ module Reports
         ),
         Reporting::EmailableReport.new(
           title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: csv,
+          table: report_data,
           filename: 'irs_monthly_cred_metrics',
         ),
 
       ]
+    end
+
+    def report_data
+      @report_data ||= build_report_data
     end
 
     # @return [String]
@@ -189,6 +163,45 @@ module Reports
           csv << row
         end
       end
+    end
+
+    private
+
+    def build_report_data
+      csv_data = build_csv(iaas, partner_accounts)
+      save_report(REPORT_NAME, csv_data, extension: 'csv')
+
+      parsed_csv = CSV.parse(csv_data, headers: true)
+
+      report_year_month = report_date.strftime('%Y%m')
+      data_row = parsed_csv.filter do |row|
+        row['year_month'] == report_year_month
+      end
+
+      [
+        # Headers row
+        ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
+         'Total Auths'],
+      ] + data_row.map do |row|
+            # Data rows - extract values directly from CSV row
+            [
+              row['year_month_readable'],
+              row['issuer_ial2_total_auth_count'].to_i,
+              row['partner_ial2_new_unique_user_events_year1'].to_i,
+              ial2_year_2_plus(row),
+              row['iaa_unique_users'].to_i,
+              row['issuer_ial1_plus_2_total_auth_count'].to_i,
+            ]
+          end
+    end
+
+    def ial2_year_2_plus(row)
+      %w[
+        partner_ial2_new_unique_user_events_year2
+        partner_ial2_new_unique_user_events_year3
+        partner_ial2_new_unique_user_events_year4
+        partner_ial2_new_unique_user_events_year5
+      ].sum { |key| row[key].to_i }
     end
   end
 end
