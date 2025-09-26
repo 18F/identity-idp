@@ -22,15 +22,20 @@ module Proofing
           @kyc_reason_codes ||= kyc('reasonCodes').to_set.freeze
         end
 
-        def phone_risk_field_validations
-          @phone_risk_field_validations ||= phone_risk('fieldValidations')
-            .each_with_object({}) do |(field, valid), obj|
-              obj[field.to_sym] = valid.round == 1
-            end.freeze
+        def phonerisk_reason_codes
+          @phonerisk_reason_codes ||= phonerisk('reasonCodes').to_set.freeze
         end
 
-        def phone_risk_reason_codes
-          @phone_risk_reason_codes ||= phone_risk('reasonCodes').to_set.freeze
+        def phonerisk_score
+          @phonerisk_score ||= phonerisk('score')
+        end
+
+        def name_phone_correlation_reason_codes
+          @name_phone_correlation_reason_codes ||= name_phone_correlation('reasonCodes').to_set.freeze
+        end
+
+        def name_phone_correlation_score
+          @name_phone_correlation_score ||= name_phone_correlation('score')
         end
 
         def reference_id
@@ -51,10 +56,16 @@ module Proofing
           kyc_object.dig(*fields)
         end
 
-        def phone_risk(*fields)
-          phone_risk_object = http_response.body['phoneRisk']
-          raise 'No phonerisk section on response' unless phone_risk_object
-          phone_risk_object.dig(*fields)
+        def phonerisk(*fields)
+          phonerisk_object = http_response.body['phoneRisk']
+          raise 'No phonerisk section on response' unless phonerisk_object
+          phonerisk_object.dig(*fields)
+        end
+
+        def name_phone_correlation(*fields)
+          name_phone_correlation_object = http_response.body['namePhoneCorrelation']
+          raise 'No namePhoneCorrelation section on response' unless name_phone_correlation_object
+          name_phone_correlation_object.dig(*fields)
         end
       end
     end

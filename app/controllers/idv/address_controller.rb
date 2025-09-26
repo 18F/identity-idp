@@ -29,6 +29,8 @@ module Idv
       else
         failure
       end
+    rescue => e
+      byebug
     end
 
     def self.step_info

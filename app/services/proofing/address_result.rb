@@ -8,7 +8,9 @@ module Proofing
                 :vendor_name,
                 :transaction_id,
                 :reference,
-                :vendor_workflow
+                :vendor_workflow,
+                :reason_codes,
+                :customer_user_id
 
     def initialize(
       success:,
@@ -17,7 +19,9 @@ module Proofing
       vendor_name:,
       transaction_id: '',
       reference: '',
-      vendor_workflow: nil
+      vendor_workflow: nil,
+      reason_codes: nil,
+      customer_user_id: nil
     )
       @success = success
       @errors = errors
@@ -26,6 +30,8 @@ module Proofing
       @transaction_id = transaction_id
       @reference = reference
       @vendor_workflow = vendor_workflow
+      @reason_codes = reason_codes
+      @customer_user_id = customer_user_id
     end
 
     def success?
@@ -45,6 +51,8 @@ module Proofing
         transaction_id: transaction_id,
         reference: reference,
         vendor_name: vendor_name,
+        reason_codes:,
+        customer_user_id:,
       }
     end
   end

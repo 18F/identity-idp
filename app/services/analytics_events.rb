@@ -4962,7 +4962,7 @@ module AnalyticsEvents
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
-    errors:,
+    errors: nil, # default nil for poc
     vendor:,
     area_code:,
     country_code:,
@@ -4974,6 +4974,8 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    reason_codes: nil,
+    customer_user_id: nil,
     **extra
   )
     track_event(
@@ -4991,6 +4993,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      reason_codes:,
+      customer_user_id:,
       **extra,
     )
   end

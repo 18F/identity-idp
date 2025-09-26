@@ -61,44 +61,47 @@ module Proofing
         def build_result_from_response(response)
           AddressResult.new(
             success: successful?(response),
-            errors: parse_verification_errors(response),
+            errors: nil,
             exception: nil,
-            vendor_name: 'socure:phone_risk',
-            transaction_id: verification_response.conversation_id,
+            vendor_name: 'socure:phonerisk',
+            reference: response.reference_id,
+            transaction_id: nil,
             customer_user_id: response.customer_user_id,
-            reason_codes: reason_codes_as_errors(response)
+            reason_codes: reason_codes_as_errors(response),
           )
-        end
-
-        def parse_verification_errors(verification_response)
-          errors = Hash.new { |h, k| h[k] = [] }
-          verification_response.verification_errors.each do |key, value|
-            errors[key] << value
-          end
-          errors
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response
         # @return [Hash]
         def reason_codes_as_errors(response)
           known_codes = SocureReasonCode.where(
-            code: response.phone_risk_reason_codes,
+            code: response.phonerisk_reason_codes,
           ).pluck(:code, :description).to_h
-          response.phone_risk_reason_codes.index_with { |code| known_codes[code] || UNKNOWN_REASON_CODE }
+          response.phonerisk_reason_codes.index_with { |code| known_codes[code] || UNKNOWN_REASON_CODE }
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response
         def verified_attributes(response)
-          VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
-            if Array(field_names).all? { |f| response.phone_risk_field_validations[f] }
-              result << attr_name
-            end
-          end.to_set
+          result = []
+          result = %i[first_name last_name] if response.name_phone_correlation_score
+          result << :phone if response.phonerisk_score
         end
 
         def successful?(response)
-          # all_required_attributes_verified?(response)
-          true
+          name_correlation_successful?(response) && phonerisk_successful?(response) &&
+            all_required_attributes_verified?(response)
+        end
+
+        def phonerisk_successful?(response)
+          return false unless response.phonerisk_score
+
+          response.phonerisk_score < IdentityConfig.store.idv_socure_phonerisk_score_threshold
+        end
+
+        def name_correlation_successful?(response)
+          return false unless response.name_phone_correlation_score
+
+          IdentityConfig.store.idv_socure_phonerisk_name_correlation_score_threshold < response.name_phone_correlation_score
         end
       end
     end
