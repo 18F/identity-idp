@@ -39,30 +39,34 @@ module Reports
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
-        [
-          'Credentials authorized for Partner',
-          'Count',
-          'The total number of users (new and existing)
-          that successfully signed into the applications. ' \
-          'The combined count of the two rows below: "new identity
-           verification + existing identity verification".',
-        ],
-        [
-          'New identity verification/Credentials Authorized for Partner',
-          'Count',
-          'The number of users who are in their first IdV proofing year
+
+        ['Monthly Active Users', 'Count',
+         'The total number of unique users across all IAL levels
+          that successfully signed into IRS applications'],
+
+        ['New Users - IAL2 Year 1', 'Count',
+         'The number of new unique IRS users who are in their first IdV proofing year
            and authenticate with the IRS.
+
            This count correlates with the billing report charges for Newly Billed
-           IdV users (Year 1), Agreement-Level Count.',
-        ],
-        [
-          'Existing identity verification/Credentials Authorized for Partner',
-          'Count',
-          'The number of users who are in IdV proofing years 2 - 5 and authenticate with the IRS.
+           IdV users (Year 1), Agreement-Level Count.'],
+
+        ['New Users - IAL2 Year 2+', 'Count',
+         'The number of new unique IRS users who are in their IdV proofing years 2 - 5
+          and authenticate with the IRS.
+
           This count correlates with the billing report charges for Newly Billed
-          IdV users (Years 2 - 5+), Agreement-Level Count. ' \
-          'count of users who share credentials with these applications.',
-        ],
+          IdV users (Years 2 - 5+), Agreement-Level Count.'],
+
+        ['Total Auths', 'Count',
+         'The total number of authentication events processed
+         (including multiple events per users) across all IRS
+         applications during the reporting period'],
+
+        ['IAL2 Auths', 'Count',
+         'The total number of **IAL2** authentication events processed
+         (including multiple events per users) across all IRS
+         applications during the reporting period'],
       ]
     end
 
@@ -176,20 +180,26 @@ module Reports
         row['year_month'] == report_year_month
       end
 
+      headers = definitions_table.transpose[0]
+      report_array =
       [
         # Headers row
-        ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
-         'Total Auths'],
-      ] + data_row.map do |row|
+          headers,
+        ] + data_row.map do |invoice_report|
             # Data rows - extract values directly from CSV row
-            [
-              row['year_month_readable'],
-              row['issuer_ial2_total_auth_count'].to_i,
-              row['partner_ial2_new_unique_user_events_year1'].to_i,
-              ial2_year_2_plus(row),
-              row['iaa_unique_users'].to_i,
-              row['issuer_ial1_plus_2_total_auth_count'].to_i,
-            ]
+              ['Value',
+               invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
+               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New IAL Year 1
+               ial2_year_2_plus(invoice_report), # New IAL Year 2
+               invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i, # Total Auths
+               invoice_report['issuer_ial2_total_auth_count'].to_i] # IAL2 Auths
+            end
+      return report_array.transpose
+    end
+
+    def invoice_report_data
+      @invoice_report_data ||= begin
+        build_csv(iaas, partner_accounts)
           end
     end
 

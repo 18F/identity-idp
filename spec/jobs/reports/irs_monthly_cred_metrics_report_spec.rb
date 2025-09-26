@@ -134,16 +134,19 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         ).and_return(fixture_csv_data)
 
         result = report.perform(report_date)
-        expect(result.length).to eq(2) # Headers + 1 data rows
+        data_column = result.map { |row| row[1] }
+        expect(result.transpose.length).to eq(2) # Two Columns: "Metrics" and "Values"
+        expect(result.length).to eq(6) # One Header Row + 6 Data Rows"
 
         # Test the processed data
-        data_row = result[1]
-        expect(data_row[0]).to eq('Jan-21') # Month
-        expect(data_row[1]).to eq(776) # issuer_ial2_total_auth_count
-        expect(data_row[2]).to eq(95) # partner_ial2_unique_user_events_year1
-        expect(data_row[3]).to eq(53) # sum of partner_ial2_unique_user_events_year 2 to "grater 5"
-        expect(data_row[4]).to eq(9817) # iaa_unique_users
-        expect(data_row[5]).to eq(20769) # issuer_ial1_plus_2_total_auth_count
+        # rubocop:disable Layout/LineLength
+        expect(data_column[0]).to eq('Value') # Values
+        expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
+        expect(data_column[2]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
+        expect(data_column[3]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345+
+        expect(data_column[4]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
+        expect(data_column[5]).to eq(776) # IAL2 Auths - issuer_ial2_total_auth_count
+        # rubocop:enable Layout/LineLength
       end
     end
 
