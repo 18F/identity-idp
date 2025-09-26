@@ -21,7 +21,7 @@ module EventSummarizer
       def self.itemized_errors(result)
         failed_items = []
         pf_instances = result.dig('errors', 'PhoneFinder')
-        return [] if pf_instances.nil? || pf_instances.empty?
+        return [] unless pf_instances && !pf_instances.empty?
 
         pf_instances.each do |pf_instance|
           next if pf_instance['ProductStatus'] != 'fail'
@@ -38,12 +38,11 @@ module EventSummarizer
 
       def self.general_error(result)
         checks = result.dig('errors', 'PhoneFinder Checks')
-        return nil if checks.nil? || checks.empty?
+        return nil unless checks && !checks.empty?
 
         failed_status = checks.find { |status| status['ProductStatus'] == 'fail' }
-        return nil if failed_status.nil?
 
-        failed_status.dig('ProductReason', 'Description')
+        failed_status&.dig('ProductReason', 'Description')
       end
 
       def self.failure_payload(result)
