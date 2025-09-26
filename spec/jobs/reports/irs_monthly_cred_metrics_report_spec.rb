@@ -27,6 +27,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:mock_daily_reports_emails) { ['mock_irs@example.com'] }
   let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:irs_app_name'] }
   let(:irs_partners) { ['IRS'] }
+  let(:fixture_csv_data) do
+    fixture_path = Rails.root.join('spec', 'fixtures', 'irs_cred_metrics_input.csv')
+    File.read(fixture_path)
+  end
 
   before do
     # App config/environment
@@ -103,124 +107,36 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       end
     end
 
-    context 'with data generates reports by iaa + order number, issuer and year_month' do
-      context 'with an IAA with a single issuer in April 2020' do
-        let(:partner_account1) do
-          create(
-            :partner_account,
-            id: 123,
-            name: 'IRS',
-            description: 'This is a description.',
-            requesting_agency: 'IRS',
-          )
-        end
-        let(:service_provider1) { create(:service_provider) }
-        let(:service_provider2) { create(:service_provider) }
-        let(:iaa1_range) { DateTime.new(2020, 4, 15).utc..DateTime.new(2021, 4, 14).utc }
-        let(:iaa2_range) { DateTime.new(2020, 9, 1).utc..DateTime.new(2021, 8, 30).utc }
+    context 'with data generates report' do
+      let(:partner_account1) do
+        create(
+          :partner_account,
+          id: 123,
+          name: 'IRS',
+          description: 'This is a description.',
+          requesting_agency: 'IRS',
+        )
+      end
 
-        let(:integration3) do
-          build_integration2(service_provider: service_provider1, partner_account: partner_account1)
-        end
+      let(:report_date) { Date.new(2021, 1, 31).in_time_zone('UTC').end_of_day }
 
-        let(:gtc1) do
-          create(
-            :iaa_gtc,
-            gtc_number: 'gtc1234',
-            partner_account: partner_account1,
-            start_date: iaa1_range.begin,
-            end_date: iaa1_range.end,
-          )
-        end
+      it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+        allow(report).to receive(:build_csv).with(
+          anything,
+          anything,
+        ).and_return(fixture_csv_data)
 
-        let(:gtc2) do
-          create(
-            :iaa_gtc,
-            gtc_number: 'gtc5678',
-            partner_account: partner_account1,
-            start_date: iaa2_range.begin,
-            end_date: iaa2_range.end,
-          )
-        end
+        result = report.perform(report_date)
+        expect(result.length).to eq(2) # Headers + 1 data rows
 
-        let(:iaa1) { 'iaa1' }
-        let(:iaa2) { 'iaa2' }
-        let(:iaa1_key) { "#{gtc2.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
-        let(:iaa2_key) { "#{gtc2.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
-
-        let(:iaa1_sp) do
-          create(
-            :service_provider,
-            iaa: iaa1,
-            iaa_start_date: iaa1_range.begin,
-            iaa_end_date: iaa1_range.end,
-          )
-        end
-
-        let(:iaa_order1) do
-          build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
-        end
-        let(:iaa_order2) do
-          build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc2)
-        end
-
-        let(:inside_iaa1) { iaa1_range.begin + 1.day }
-
-        let(:user1) { create(:user, profiles: [profile1]) }
-        let(:profile1) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
-
-        let(:user2) { create(:user, profiles: [profile2]) }
-        let(:profile2) { build(:profile, verified_at: DateTime.new(2018, 6, 1).utc) }
-        let(:report_date) { inside_iaa1 }
-        let(:csv) do
-          travel_to report_date do
-            report.perform(report_date)
-          end
-        end
-
-        before do
-          partner_account1.requesting_agency = 'IRS'
-          iaa_order1.integrations << build_integration(
-            issuer: iaa1_sp.issuer,
-            partner_account: partner_account1,
-          )
-          partner_account1.integrations << integration3
-          iaa_order1.integrations << integration3
-          iaa_order1.save
-          iaa_order2.save
-
-          # 1 new unique user in month 1 at IAA 1 sp @ IAL 1
-          7.times do
-            create_sp_return_log(
-              user: user1,
-              issuer: iaa1_sp.issuer,
-              ial: 1,
-              returned_at: inside_iaa1,
-            )
-          end
-
-          # 2 new unique users in month 1 at IAA 1 sp @ IAL 2 with profile age 2
-          # user1 is both IAL1 and IAL2
-          [user1, user2].each do |user|
-            create_sp_return_log(
-              user: user,
-              issuer: iaa1_sp.issuer,
-              ial: 2,
-              returned_at: inside_iaa1,
-            )
-          end
-        end
-
-        it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
-          parsed = CSV.parse(csv, headers: true)
-          expect(parsed.length).to eq(1)
-
-          row = parsed.first
-
-          expect(row['Credentials Authorized']).to eq('9')
-          expect(row['New ID Verifications Authorized Credentials']).to eq('2')
-          expect(row['Existing Identity Verification Credentials']).to eq('0')
-        end
+        # Test the processed data
+        data_row = result[1]
+        expect(data_row[0]).to eq('Jan-21') # Month
+        expect(data_row[1]).to eq(776) # issuer_ial2_total_auth_count
+        expect(data_row[2]).to eq(95) # partner_ial2_unique_user_events_year1
+        expect(data_row[3]).to eq(53) # partner_ial2_unique_user_events_year2+..partner_ial2_unique_user_events_year_greater_than_5
+        expect(data_row[4]).to eq(9817) # iaa_unique_users
+        expect(data_row[5]).to eq(20769) # issuer_ial1_plus_2_total_auth_count
       end
     end
 

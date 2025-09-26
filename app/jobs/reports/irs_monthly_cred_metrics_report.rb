@@ -7,10 +7,9 @@ module Reports
     attr_reader :report_date
 
     def partner_accounts
-      partner_strings = [*IdentityConfig.store.irs_partner_strings]
-
+      partner_strings = [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
       IaaReportingHelper.partner_accounts.filter do |x|
-        (x.issuers & partner_strings).any?
+        partner_strings.include?(x.partner)
       end
     end
 
@@ -21,7 +20,7 @@ module Reports
     end
 
     def issuers
-      [*IdentityConfig.store.irs_issuers]
+      [*IdentityConfig.store.irs_issuers].reject(&:blank?)
     end
 
     def irs_monthly_cred
@@ -29,7 +28,7 @@ module Reports
     end
 
     def email_addresses
-      [*IdentityConfig.store.irs_credentials_emails]
+      [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
     end
 
     def definitions_table
@@ -78,11 +77,16 @@ module Reports
 
       parsed_csv = CSV.parse(csv_data, headers: true)
 
+      report_year_month = report_date.strftime('%Y%m')
+      data_row = parsed_csv.filter do |row|
+        row['year_month'] == report_year_month
+      end
+
       selected_data = [
         # Headers row
         ['Month', 'IAL2 Auths', 'IAL2 Year 1', 'IAL2 Year 2+', 'Monthly Active Users',
          'Total Auths'],
-      ] + parsed_csv.map do |row|
+      ] + data_row.map do |row|
         # Data rows - extract values directly from CSV row
         [
           row['year_month_readable'],
