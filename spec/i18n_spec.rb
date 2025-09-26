@@ -68,6 +68,11 @@ module I18n
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'errors.messages.both_auth_and_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.invalid_signature', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.issuer_missing_or_invalid', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_auth_or_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_response_url', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
         { key: 'date.formats.long', locales: %i[es zh] },
         { key: 'date.formats.short', locales: %i[es zh] },
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English

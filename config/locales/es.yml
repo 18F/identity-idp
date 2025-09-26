@@ -797,6 +797,7 @@ errors.messages.already_confirmed: ya estaba confirmado, intente iniciar una ses
 errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto
 errors.messages.confirmation_invalid_token: El vínculo de confirmación no es válido. El vínculo venció o usted ya confirmó su cuenta.
 errors.messages.confirmation_period_expired: El vínculo de confirmación venció. Puede hacer clic en “Volver a enviar instrucciones de confirmación” para obtener otro.
@@ -810,11 +811,15 @@ errors.messages.invalid_calling_area: No se admiten llamadas a ese número de te
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
 errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: Llene este campo.
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: No podemos detectar un certificado en su solicitud.
 errors.messages.no_pending_profile: No hay ningún perfil en espera de verificación
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: no es un número
 errors.messages.otp_format: Ingrese su código de un solo uso completo, sin espacios ni caracteres especiales.
 errors.messages.password_incorrect: Contraseña incorrecta
