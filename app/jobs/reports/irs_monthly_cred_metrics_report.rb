@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Reports
-  class IrsMonthlyCredMetricsReport < CombinedInvoiceSupplementReportV2
+  class IrsMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date
@@ -192,7 +192,9 @@ module Reports
 
     def invoice_report_data
       @invoice_report_data ||= begin
-        data = build_csv(iaas, partner_accounts)
+        # Delegate only the CSV building to the existing class
+        invoice_reporter = CombinedInvoiceSupplementReportV2.new
+        data = invoice_reporter.build_csv(iaas, partner_accounts)
         save_report(REPORT_NAME, data, extension: 'csv')
         data
       end
