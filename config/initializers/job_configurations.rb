@@ -7,7 +7,6 @@ cron_24h = '0 0 * * *'
 cron_24h_and_a_bit = '12 4 * * *' # 0400 UTC + 12 min, staggered from whatever else runs at 0400 UTC
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
-cron_every_monday_1am = 'every Monday at 1:00 UTC' # equivalent to '0 1 * * 1'
 cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 cron_every_monday_3am = 'every Monday at 3:00 UTC' # equivalent to '0 3 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
