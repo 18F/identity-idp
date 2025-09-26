@@ -13,14 +13,14 @@ module Reports
 
     def partner_accounts
       partner_strings = [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
-      IaaReportingHelper.partner_accounts.filter do |x|
-        partner_strings.include?(x.partner)
+      IaaReportingHelper.partner_accounts.filter do |account|
+        partner_strings.include?(account.partner)
       end
     end
 
     def iaas
-      IaaReportingHelper.iaas.filter do |x|
-        x.end_date > 90.days.ago && (x.issuers & issuers).any?
+      IaaReportingHelper.iaas.filter do |iaa|
+        iaa.end_date > 90.days.ago && (iaa.issuers & issuers).any?
       end
     end
 
