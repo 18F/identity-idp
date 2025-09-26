@@ -69,9 +69,7 @@ module Idv
             (
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              !!DocumentCaptureSession.find_by(
-                uuid: idv_session.document_capture_session_uuid,
-              )&.passport_status&.present?
+              choose_id_type_completed?(idv_session: idv_session, user: user)
             )
         },
         undo_step: ->(idv_session:, user:) do

@@ -30,12 +30,32 @@ module FlowPolicyHelper
       idv_session.flow_path = 'hybrid'
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :document_capture
+      idv_session.flow_path = 'standard'
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :ipp
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: {},
       }
     when :ipp_state_id
+      idv_session.flow_path = 'standard'
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT.dup,
       }
@@ -44,6 +64,15 @@ module FlowPolicyHelper
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
       }
     when :ssn
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
       idv_session.threatmetrix_session_id = 'a-random-session-id'
     when :ipp_ssn
