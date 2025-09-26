@@ -28,10 +28,6 @@ module Reports
       [*IdentityConfig.store.irs_issuers].reject(&:blank?)
     end
 
-    def irs_monthly_cred
-      @irs_monthly_cred || Reports::IrsMonthlyCredMetricsReport.new(@report_date)
-    end
-
     def email_addresses
       [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
     end
@@ -105,7 +101,7 @@ module Reports
       ReportMailer.tables_report(
         email: email_addresses,
         subject: "IRS Monthly Credential Metrics - #{perform_date.to_date}",
-        message: irs_monthly_cred.preamble,
+        message: preamble,
         reports: reports,
         attachment_format: :csv,
       ).deliver_now
