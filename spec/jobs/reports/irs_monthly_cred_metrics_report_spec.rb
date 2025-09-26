@@ -92,16 +92,23 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    it 'is valid HTML' do
-      expect(preamble).to be_html_safe
-      expect { Nokogiri::XML(preamble) { |c| c.strict } }.not_to raise_error
+    it 'has a blank preamble' do
+      expect(preamble).to be_blank
     end
 
     context 'in a non-prod environment' do
       let(:env) { 'staging' }
+      subject(:preamble) { report.preamble(env:) }
+
+      it 'is valid HTML' do
+        expect(preamble).to be_html_safe
+        expect { Nokogiri::XML(preamble) { |c| c.strict } }.not_to raise_error
+      end
+
       it 'has an alert with the environment name' do
         expect(preamble).to be_html_safe
         doc = Nokogiri::XML(preamble)
+
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end
