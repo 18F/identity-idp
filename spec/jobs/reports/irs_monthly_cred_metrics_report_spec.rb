@@ -54,7 +54,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  context 'the beginning of the month, it sends records for previous month' do
+  context 'for a report_date is the beginning of the month, it sends records for previous month' do
     let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
     it 'sends out a report to IRS' do
@@ -92,8 +92,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    it 'has a blank preamble' do
-      expect(preamble).to be_blank
+    context 'in a prod environment' do
+      it 'has a blank preamble' do
+        expect(preamble).to be_blank
+      end
     end
 
     context 'in a non-prod environment' do
@@ -113,79 +115,74 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         expect(alert.text).to include(env)
       end
     end
+  end
 
-    context 'with data generates report' do
-      let(:partner_account1) do
-        create(
-          :partner_account,
-          id: 123,
-          name: 'IRS',
-          description: 'This is a description.',
-          requesting_agency: 'IRS',
-        )
-      end
-
-      let(:report_date) { Date.new(2021, 1, 31).in_time_zone('UTC').end_of_day }
-
-      it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
-        allow(report).to receive(:build_csv).with(
-          anything,
-          anything,
-        ).and_return(fixture_csv_data)
-
-        result = report.perform(report_date)
-        data_column = result.map { |row| row[1] }
-        expect(result.transpose.length).to eq(2) # Two Columns: "Metrics" and "Values"
-        expect(result.length).to eq(6) # One Header Row + 6 Data Rows"
-
-        # Test the processed data
-        # rubocop:disable Layout/LineLength
-        expect(data_column[0]).to eq('Value') # Values
-        expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
-        expect(data_column[2]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
-        expect(data_column[3]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345+
-        expect(data_column[4]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
-        expect(data_column[5]).to eq(776) # IAL2 Auths - issuer_ial2_total_auth_count
-        # rubocop:enable Layout/LineLength
-      end
-    end
-
-    def build_iaa_order(order_number:, date_range:, iaa_gtc:)
+  context 'with data generates report' do
+    let(:partner_account1) do
       create(
-        :iaa_order,
-        order_number: order_number,
-        start_date: date_range.begin,
-        end_date: date_range.end,
-        iaa_gtc: iaa_gtc,
+        :partner_account,
+        id: 123,
+        name: 'IRS',
+        description: 'This is a description.',
+        requesting_agency: 'IRS',
       )
     end
 
-    def build_integration(issuer:, partner_account:)
-      create(
-        :integration,
-        issuer: issuer,
-        partner_account: partner_account,
-      )
-    end
+    let(:report_date) { Date.new(2021, 1, 31).in_time_zone('UTC').end_of_day }
 
-    def build_integration2(service_provider:, partner_account:)
-      create(
-        :integration,
-        service_provider: service_provider,
-        partner_account: partner_account,
-      )
-    end
+    it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
+      allow(report).to receive(:invoice_report_data).and_return(fixture_csv_data)
 
-    def create_sp_return_log(user:, issuer:, ial:, returned_at:)
-      create(
-        :sp_return_log,
-        user_id: user.id,
-        issuer: issuer,
-        ial: ial,
-        returned_at: returned_at,
-        profile_verified_at: user.profiles.map(&:verified_at).max,
-        billable: true,
-      )
+      result = report.perform(report_date)
+      data_column = result.map { |row| row[1] }
+      expect(result.transpose.length).to eq(2) # Two Columns: "Metrics" and "Values"
+      expect(result.length).to eq(6) # One Header Row + 6 Data Rows"
+
+      # Test the processed data
+      expect(data_column[0]).to eq('Value') # Values
+      expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
+      expect(data_column[2]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
+      expect(data_column[3]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345+
+      expect(data_column[4]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
+      expect(data_column[5]).to eq(776) # IAL2 Auths - issuer_ial2_total_auth_count
     end
+  end
+
+  def build_iaa_order(order_number:, date_range:, iaa_gtc:)
+    create(
+      :iaa_order,
+      order_number: order_number,
+      start_date: date_range.begin,
+      end_date: date_range.end,
+      iaa_gtc: iaa_gtc,
+    )
+  end
+
+  def build_integration(issuer:, partner_account:)
+    create(
+      :integration,
+      issuer: issuer,
+      partner_account: partner_account,
+    )
+  end
+
+  def build_integration2(service_provider:, partner_account:)
+    create(
+      :integration,
+      service_provider: service_provider,
+      partner_account: partner_account,
+    )
+  end
+
+  def create_sp_return_log(user:, issuer:, ial:, returned_at:)
+    create(
+      :sp_return_log,
+      user_id: user.id,
+      issuer: issuer,
+      ial: ial,
+      returned_at: returned_at,
+      profile_verified_at: user.profiles.map(&:verified_at).max,
+      billable: true,
+    )
   end
 end
