@@ -170,23 +170,20 @@ module Reports
     private
 
     def build_report_data
-      csv_data = build_csv(iaas, partner_accounts)
-      save_report(REPORT_NAME, csv_data, extension: 'csv')
-
-      parsed_csv = CSV.parse(csv_data, headers: true)
+      parsed_invoice_data = CSV.parse(invoice_report_data, headers: true)
 
       report_year_month = report_date.strftime('%Y%m')
-      data_row = parsed_csv.filter do |row|
+      data_row = parsed_invoice_data.filter do |row|
         row['year_month'] == report_year_month
       end
 
       headers = definitions_table.transpose[0]
       report_array =
-      [
-        # Headers row
+        [
+          # Headers row
           headers,
         ] + data_row.map do |invoice_report|
-            # Data rows - extract values directly from CSV row
+              # Data rows - extract values directly from CSV row
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
                invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New IAL Year 1
@@ -199,8 +196,10 @@ module Reports
 
     def invoice_report_data
       @invoice_report_data ||= begin
-        build_csv(iaas, partner_accounts)
-          end
+        data = build_csv(iaas, partner_accounts)
+        save_report(REPORT_NAME, data, extension: 'csv')
+        data
+      end
     end
 
     def ial2_year_2_plus(row)
