@@ -1343,13 +1343,13 @@ in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exac
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
 in_person_proofing.form.passport.dob: Date of birth
-in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.dob_hint: 'Ejemplo: 4 28 1986'
 in_person_proofing.form.passport.errors.passport_number.pattern_mismatch: 'Enter a nine-character passport number'
-in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.expiration_date: Fecha de vencimiento
+in_person_proofing.form.passport.expiration_date_hint: 'Ejemplo: 4 28 2028'
 in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
-in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 'You cannot use an expired passport book'
+in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: No puede usar una identificación vencida.
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
 in_person_proofing.form.passport.surname: Surname
@@ -1364,6 +1364,8 @@ in_person_proofing.form.state_id.date_hint.year: 'Ejemplo: 1986'
 in_person_proofing.form.state_id.dob: Fecha de nacimiento
 in_person_proofing.form.state_id.dob_hint: 'Ejemplo: 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando los caracteres de su identificación.'
+in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
+in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
 in_person_proofing.form.state_id.first_name: Nombre
 in_person_proofing.form.state_id.identity_doc_address_state: Estado
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Seleccione -'
@@ -1371,6 +1373,7 @@ in_person_proofing.form.state_id.last_name: Apellido
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Ingrese una fecha de nacimiento
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Debe ser mayor de 13 años para usar %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Ingrese una fecha ya transcurrida
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: No puede usar una identificación vencida.
 in_person_proofing.form.state_id.same_address_as_id: '¿Vive actualmente en la dirección que figura en su identificación emitida por el estado?'
 in_person_proofing.form.state_id.same_address_as_id_no: No, vivo en otra dirección
 in_person_proofing.form.state_id.same_address_as_id_yes: Sí, vivo en la misma dirección que figura en mi identificación emitida por el estado

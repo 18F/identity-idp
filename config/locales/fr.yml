@@ -1332,13 +1332,13 @@ in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>e
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
 in_person_proofing.form.passport.dob: Date of birth
-in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.dob_hint: 'Exemple : 4 28 1986'
 in_person_proofing.form.passport.errors.passport_number.pattern_mismatch: 'Enter a nine-character passport number'
-in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.expiration_date: Date d’expiration
+in_person_proofing.form.passport.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
-in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 'You cannot use an expired passport book'
+in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
 in_person_proofing.form.passport.surname: Surname
@@ -1353,6 +1353,8 @@ in_person_proofing.form.state_id.date_hint.year: 'Exemple : 1986'
 in_person_proofing.form.state_id.dob: Date de naissance
 in_person_proofing.form.state_id.dob_hint: 'Exemple : 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant les caractères de votre pièce d’identité.'
+in_person_proofing.form.state_id.expiration_date: Date d’expiration
+in_person_proofing.form.state_id.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.state_id.first_name: Prénom
 in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
@@ -1360,6 +1362,7 @@ in_person_proofing.form.state_id.last_name: Nom de famille
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Saisissez une date de naissance
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
 in_person_proofing.form.state_id.same_address_as_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
 in_person_proofing.form.state_id.same_address_as_id_no: Non, j’habite à une adresse différente
 in_person_proofing.form.state_id.same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État

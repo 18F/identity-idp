@@ -1335,10 +1335,10 @@ in_person_proofing.form.passport.dob: Date of birth
 in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
 in_person_proofing.form.passport.errors.passport_number.pattern_mismatch: 'Enter a nine-character passport number'
 in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028'
 in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
-in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 'You cannot use an expired passport book'
+in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: You cannot use an expired ID.
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
 in_person_proofing.form.passport.surname: Surname
@@ -1353,6 +1353,8 @@ in_person_proofing.form.state_id.date_hint.year: 'Example: 1986'
 in_person_proofing.form.state_id.dob: Date of birth
 in_person_proofing.form.state_id.dob_hint: 'Example: 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using the characters on your ID.'
+in_person_proofing.form.state_id.expiration_date: Expiration date
+in_person_proofing.form.state_id.expiration_date_hint: 'Example: 4 28 2028'
 in_person_proofing.form.state_id.first_name: First name
 in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
@@ -1360,6 +1362,7 @@ in_person_proofing.form.state_id.last_name: Last name
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Enter a date of birth
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over 13 years of age to use %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Enter a date that is in the past
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: You cannot use an expired ID.
 in_person_proofing.form.state_id.same_address_as_id: Do you currently live at the address listed on your state‑issued ID?
 in_person_proofing.form.state_id.same_address_as_id_no: No, I live at a different address
 in_person_proofing.form.state_id.same_address_as_id_yes: Yes, I live at the address on my state‑issued ID

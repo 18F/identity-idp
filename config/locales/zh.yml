@@ -1345,13 +1345,13 @@ in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发�
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
 in_person_proofing.form.passport.dob: Date of birth
-in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.dob_hint: 举例：4 28 1986
 in_person_proofing.form.passport.errors.passport_number.pattern_mismatch: 'Enter a nine-character passport number'
-in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.expiration_date: 过期日期
+in_person_proofing.form.passport.expiration_date_hint: 举例：4 28 2028
 in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
-in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 'You cannot use an expired passport book'
+in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 你不能使用过期 ID。
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
 in_person_proofing.form.passport.surname: Surname
@@ -1366,6 +1366,8 @@ in_person_proofing.form.state_id.date_hint.year: 举例：1986
 in_person_proofing.form.state_id.dob: 生日
 in_person_proofing.form.state_id.dob_hint: 举例：4 28 1986
 in_person_proofing.form.state_id.errors.unsupported_chars: 我们的系统无法读取以下字符：%{char_list}.请使用你身份证件上的字符再试一次。
+in_person_proofing.form.state_id.expiration_date: 过期日期
+in_person_proofing.form.state_id.expiration_date_hint: 举例：4 28 2028
 in_person_proofing.form.state_id.first_name: 名
 in_person_proofing.form.state_id.identity_doc_address_state: 州
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- 选择 -'
@@ -1373,6 +1375,7 @@ in_person_proofing.form.state_id.last_name: 姓
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: 输入生日
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: 你年龄必须超过 13 岁才能使用 %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: 输入过去的一个日期
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: 你不能使用过期 ID。
 in_person_proofing.form.state_id.same_address_as_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
 in_person_proofing.form.state_id.same_address_as_id_no: 不是，我住在一个不同的地址。
 in_person_proofing.form.state_id.same_address_as_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
