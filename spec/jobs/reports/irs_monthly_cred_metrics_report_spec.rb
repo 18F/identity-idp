@@ -134,7 +134,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         expect(data_row[0]).to eq('Jan-21') # Month
         expect(data_row[1]).to eq(776) # issuer_ial2_total_auth_count
         expect(data_row[2]).to eq(95) # partner_ial2_unique_user_events_year1
-        expect(data_row[3]).to eq(53) # partner_ial2_unique_user_events_year2+..partner_ial2_unique_user_events_year_greater_than_5
+        expect(data_row[3]).to eq(53) # sum of partner_ial2_unique_user_events_year 2 to "grater 5"
         expect(data_row[4]).to eq(9817) # iaa_unique_users
         expect(data_row[5]).to eq(20769) # issuer_ial1_plus_2_total_auth_count
       end
