@@ -222,7 +222,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
       it 'prevents access when document_capture_session has no passport_status set' do
         expect(
-          Idv::DocumentCaptureController.choose_id_type_completed?(
+          Idv::DocumentCaptureController.ensure_choose_id_type_completed(
             idv_session: subject.idv_session,
             user: user,
           ),

@@ -59,7 +59,7 @@ module Idv
         redirect_to root_url
       end
 
-      def choose_id_type_completed?
+      def ensure_choose_id_type_completed
         return if !!document_capture_session&.passport_status&.present?
 
         redirect_to idv_hybrid_mobile_choose_id_type_url

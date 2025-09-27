@@ -64,12 +64,11 @@ module Idv
         controller: self,
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
-          idv_session.flow_path == 'standard' &&
-            (idv_session.skip_hybrid_handoff || idv_session.desktop_selfie_test_mode_enabled?) &&
+          idv_session.standard_flow_document_capture_eligible? &&
             (
               idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              choose_id_type_completed?(idv_session: idv_session, user: user)
+              ensure_choose_id_type_completed(idv_session: idv_session, user: user)
             )
         },
         undo_step: ->(idv_session:, user:) do
@@ -83,7 +82,7 @@ module Idv
       )
     end
 
-    def self.choose_id_type_completed?(idv_session:, user:)
+    def self.ensure_choose_id_type_completed(idv_session:, user:)
       return true if user&.has_establishing_in_person_enrollment?
 
       return true if idv_session.pii_from_doc.present?
