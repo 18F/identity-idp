@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
@@ -238,15 +238,13 @@ export interface AcuantSuccessResponse {
   dpi: number;
 }
 
-type AcuantSuccessCallback = (response: AcuantSuccessResponse) => void;
-
 type AcuantFailureCallback = (error?: AcuantCaptureFailureError, code?: string) => void;
 
 interface AcuantCameraContextProps {
   /**
    * Success callback
    */
-  onImageCaptureSuccess: AcuantSuccessCallback;
+  onImageCaptureSuccess: (response: AcuantSuccessResponse, uncroppedData?: string) => void;
   /**
    * Failure callback
    */
@@ -269,15 +267,48 @@ function AcuantCamera({
 }: AcuantCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
+  const uncroppedImageDataRef = useRef<string | null>(null);
+
+  const processUncropped = useImmutableCallback(async (response: AcuantCaptureImage) => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return;
+      }
+
+      canvas.width = response.width;
+      canvas.height = response.height;
+
+      const imageBitmap = await createImageBitmap(response.data);
+      ctx.drawImage(imageBitmap, 0, 0);
+
+      const base64Data = canvas.toDataURL('image/jpeg');
+      uncroppedImageDataRef.current = base64Data;
+    } catch {}
+  }, []);
+
+  const onCaptured = useImmutableCallback(
+    (response: AcuantCaptureImage) => {
+      onCropStart();
+
+      if (response && response.data) {
+        processUncropped(response);
+      }
+    },
+    [onCropStart, processUncropped],
+  );
+
   const onCropped = useImmutableCallback(
     (response) => {
       if (response) {
-        onImageCaptureSuccess(response);
+        onImageCaptureSuccess(response, uncroppedImageDataRef.current || undefined);
       } else {
         onImageCaptureFailure();
       }
+      uncroppedImageDataRef.current = null;
     },
-    [onImageCaptureSuccess],
+    [onImageCaptureSuccess, onImageCaptureFailure],
   );
 
   useEffect(() => {
@@ -299,7 +330,7 @@ function AcuantCamera({
 
       window.AcuantCameraUI.start(
         {
-          onCaptured: onCropStart,
+          onCaptured,
           onCropped,
           onError: onImageCaptureFailure,
         },
