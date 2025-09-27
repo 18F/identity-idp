@@ -58,6 +58,12 @@ module Idv
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end
+
+      def ensure_choose_id_type_completed
+        return if !!document_capture_session&.passport_status&.present?
+
+        redirect_to idv_hybrid_mobile_choose_id_type_url
+      end
     end
   end
 end

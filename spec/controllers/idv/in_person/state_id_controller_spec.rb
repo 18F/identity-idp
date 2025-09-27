@@ -31,6 +31,15 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:enrollment) { nil }
 
       it 'redirects to document capture if not complete' do
+        # Set up DocumentCaptureSession to satisfy choose_id_type completion
+        subject.idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: subject.idv_session.document_capture_session_uuid,
+          user: user,
+          requested_at: Time.zone.now,
+          passport_status: 'requested',
+        )
+
         get :show
 
         expect(response).to redirect_to idv_document_capture_url

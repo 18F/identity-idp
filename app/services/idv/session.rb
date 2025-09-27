@@ -388,6 +388,11 @@ module Idv
         IdentityConfig.store.in_person_passports_enabled
     end
 
+    def standard_flow_document_capture_eligible?
+      flow_path == 'standard' &&
+        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
+    end
+
     private
 
     attr_reader :user_session

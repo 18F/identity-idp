@@ -181,9 +181,19 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for choose_id_type are present' do
+      it 'returns choose_id_type' do
+        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+
+        expect(subject.info_for_latest_step.key).to eq(:choose_id_type)
+        expect(subject.controller_allowed?(controller: Idv::ChooseIdTypeController)).to be
+        expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).not_to be
+      end
+    end
+
     context 'preconditions for document_capture are present' do
       it 'returns document_capture' do
-        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+        stub_up_to(:choose_id_type, idv_session: idv_session)
 
         expect(subject.info_for_latest_step.key).to eq(:document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
