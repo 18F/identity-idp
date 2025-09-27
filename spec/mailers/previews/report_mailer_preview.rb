@@ -216,12 +216,7 @@ class ReportMailerPreview < ActionMailer::Preview
     report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
 
     # Build emailable report
-    emailable_report = report.as_emailable_irs_report(
-      iaas: IaaReportingHelper.iaas,
-      partner_accounts: IaaReportingHelper.partner_accounts,
-      date: report_date,
-      issuers: ['test-sp-1', 'test-sp-2'],
-    )
+    emailable_report = report.as_emailable_irs_report(date: report_date)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
