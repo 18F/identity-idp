@@ -144,9 +144,8 @@ module Idv
         if params.has_key?(:identity_doc) || params.has_key?(:state_id)
           data = data.merge(flow_params)
         end
-        data.deep_symbolize_keys
         data[:id_expiration] = data.delete(:state_id_expiration) if data.key?(:state_id_expiration)
-        data
+        data.deep_symbolize_keys
       end
 
       def flow_params
