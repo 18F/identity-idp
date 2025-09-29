@@ -5,7 +5,7 @@ module Db
     module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
-      UserVerifiedKey = Data.define(:user_id, :profile_verified_at, :profile_age, :profile_requested_issuer).freeze
+      UserVerifiedKey = Data.define(:user_id, :profile_verified_at, :profile_age, :profile_requested_issuer, :issuer).freeze
 
       module_function
 
@@ -50,8 +50,9 @@ module Db
                 user_id = row['user_id']
                 profile_verified_at = row['profile_verified_at']
                 profile_requested_issuer = row['profile_requested_issuer']
+                issuer = row['issuer']
 
-                user_unique_id = UserVerifiedKey.new(user_id:, profile_verified_at:, profile_age:, profile_requested_issuer:)
+                user_unique_id = UserVerifiedKey.new(user_id:, profile_verified_at:, profile_age:, profile_requested_issuer:, issuer:)
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
@@ -93,8 +94,8 @@ module Db
             partner_ial2_unique_user_events_year_greater_than_5: unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
             partner_ial2_unique_user_events_unknown: unique_profiles_by_age[:unknown].count,
             new_unique_user_proofed_events: new_unique_user_proofed_events.count,
-            partner_ial2_new_unique_user_events_year1_upfront: new_unique_profiles_year1[:upfront],
-            partner_ial2_new_unique_user_events_year1_existing: new_unique_profiles_year1[:existing],
+            partner_ial2_new_unique_user_events_year1_upfront: new_unique_profiles_year1[:upfront].count,
+            partner_ial2_new_unique_user_events_year1_existing: new_unique_profiles_year1[:existing].count,
             partner_ial2_new_unique_user_events_year1: new_unique_profiles_by_age[0].count,
             partner_ial2_new_unique_user_events_year2: new_unique_profiles_by_age[1].count,
             partner_ial2_new_unique_user_events_year3: new_unique_profiles_by_age[2].count,
@@ -128,12 +129,14 @@ module Db
             , subq.profile_verified_at
             , subq.profile_age
             , subq.profile_requested_issuer
+            , subq.issuer
             FROM (
               SELECT
                   sp_return_logs.user_id
                 , sp_return_logs.profile_verified_at
                 , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
                 , sp_return_logs.profile_requested_issuer
+                , sp_return_logs.issuer
               FROM sp_return_logs
               WHERE
                     sp_return_logs.ial > 1
@@ -146,6 +149,7 @@ module Db
               , subq.profile_verified_at
               , subq.profile_age
               , subq.profile_requested_issuer
+              , subq.issuer
           SQL
         end
       end
@@ -168,7 +172,7 @@ module Db
           age = user_unique_id.profile_age
           if age.nil? || age.negative?
             next
-          else age.zero?
+          elsif age == 0
             if user_unique_id&.profile_requested_issuer == user_unique_id.issuer
               :upfront
             else
