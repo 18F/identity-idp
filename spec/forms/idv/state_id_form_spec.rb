@@ -37,7 +37,7 @@ RSpec.describe Idv::StateIdForm do
   let(:same_address_as_id) { 'true' }
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
-  let(:state_id_expiration) { valid_exp }
+  let(:id_expiration) { valid_exp }
   let(:params) do
     {
       first_name:,
@@ -51,7 +51,7 @@ RSpec.describe Idv::StateIdForm do
       same_address_as_id:,
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
-      state_id_expiration:,
+      id_expiration:,
     }
   end
   let(:invalid_char) { '1' }
@@ -61,7 +61,7 @@ RSpec.describe Idv::StateIdForm do
       dob: too_young_dob,
     )
   end
-  let(:expired_params) { params.merge(state_id_expiration: expired_exp) }
+  let(:expired_params) { params.merge(id_expiration: expired_exp) }
   let(:name_error_params) { params.merge(first_name: Faker::Name.first_name + invalid_char) }
   let(:pii) { nil }
   describe '#submit' do
@@ -131,13 +131,13 @@ RSpec.describe Idv::StateIdForm do
     end
 
     context 'when the ID is expired' do
-      let(:state_id_expiration) { expired_exp }
+      let(:id_expiration) { expired_exp }
 
       it 'returns both expired error' do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(subject.errors.empty?).to be(false)
-        expect(subject.errors[:state_id_expiration]).to eq [
+        expect(subject.errors[:id_expiration]).to eq [
           I18n.t(
             'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
             app_name: APP_NAME,

@@ -140,7 +140,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         year: parsed_dob.year.to_s }
     end
 
-    let(:state_id_expiration) do
+    let(:id_expiration) do
       parsed_exp = Date.parse(formatted_expiration)
       { month: parsed_exp.month.to_s,
         day: parsed_exp.day.to_s,
@@ -176,7 +176,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           identity_doc_address_state:,
           identity_doc_zipcode:,
           dob:,
-          state_id_expiration:,
+          id_expiration:,
         },
       }
     end

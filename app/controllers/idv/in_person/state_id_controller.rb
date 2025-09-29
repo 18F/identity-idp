@@ -36,9 +36,12 @@ module Idv
 
           # Accept Expiration Date from both memorable date and input date components
           formatted_exp = MemorableDateComponent.extract_date_param(
-            flow_params&.[](:state_id_expiration),
+            flow_params&.[](:id_expiration),
           )
-          pii_from_user[:state_id_expiration] = formatted_exp if formatted_exp
+          if formatted_exp
+            pii_from_user[:state_id_expiration] = formatted_exp
+            pii_from_user.delete(:id_expiration)
+          end
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
@@ -133,7 +136,7 @@ module Idv
       end
 
       def parsed_expiration
-        parse_date(pii[:state_id_expiration])
+        parse_date(pii[:id_expiration])
       end
 
       def pii
@@ -142,6 +145,8 @@ module Idv
           data = data.merge(flow_params)
         end
         data.deep_symbolize_keys
+        data[:id_expiration] = data.delete(:state_id_expiration) if data.key?(:state_id_expiration)
+        data
       end
 
       def flow_params
@@ -163,7 +168,7 @@ module Idv
             :day,
             :year,
           ],
-          state_id_expiration: [
+          id_expiration: [
             :month,
             :day,
             :year,

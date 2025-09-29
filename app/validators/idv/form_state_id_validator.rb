@@ -13,7 +13,7 @@ module Idv
                 :identity_doc_city,
                 :state_id_jurisdiction,
                 :state_id_number,
-                :state_id_expiration,
+                :id_expiration,
                 :same_address_as_id,
                 presence: true
 
@@ -50,7 +50,7 @@ module Idv
       # rubocop:enable Layout/LineLength
       # rubocop:disable Layout/LineLength
       validates_with UspsInPersonProofing::DateValidator,
-                     attributes: [:state_id_expiration], greater_than_or_equal_to: ->(_rec) {
+                     attributes: [:id_expiration], greater_than_or_equal_to: ->(_rec) {
                        Time.zone.today + 2.days
                      },
                      message: ->(_, _) do

@@ -8,7 +8,7 @@ module Idv
     ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
                     identity_doc_city identity_doc_zipcode state_id_jurisdiction
                     identity_doc_address_state state_id_number same_address_as_id
-                    state_id_expiration].freeze
+                    id_expiration].freeze
 
     attr_accessor(*ATTRIBUTES)
 
