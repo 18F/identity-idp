@@ -92,6 +92,9 @@ RSpec.describe 'state id controller enabled', :js do
         t('in_person_proofing.form.state_id.state_id_number'),
         with: InPersonHelper::GOOD_STATE_ID_NUMBER,
       )
+      expect(page).to have_field(t('components.memorable_date.month'), with: '12')
+      expect(page).to have_field(t('components.memorable_date.day'), with: '31')
+      expect(page).to have_field(t('components.memorable_date.year'), with: '2099')
       expect(page).to have_field(
         t('in_person_proofing.form.state_id.address1'),
         with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
@@ -318,6 +321,45 @@ RSpec.describe 'state id controller enabled', :js do
       expect(page).not_to have_content(
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+          app_name: APP_NAME,
+        ),
+      )
+    end
+
+    it 'shows error for an expired ID', allow_browser_log: true do
+      complete_steps_before_state_id_controller
+
+      yesterday = Time.zone.now - 1.day
+      exp = [
+        yesterday.year,
+        yesterday.month,
+        yesterday.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+
+      click_idv_continue
+
+      expect(page).to have_content(
+        t(
+          'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
+          app_name: APP_NAME,
+        ),
+      )
+
+      two_days_from_today = Time.zone.now + 2.days
+      exp = [
+        two_days_from_today.year,
+        two_days_from_today.month,
+        two_days_from_today.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+
+      click_idv_continue
+      expect(page).not_to have_content(
+        t(
+          'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
           app_name: APP_NAME,
         ),
       )
