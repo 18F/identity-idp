@@ -162,16 +162,8 @@ module Idv
 
         params.require(:state_id).permit(
           *Idv::StateIdForm::ATTRIBUTES,
-          dob: [
-            :month,
-            :day,
-            :year,
-          ],
-          id_expiration: [
-            :month,
-            :day,
-            :year,
-          ],
+          dob: [:month, :day, :year],
+          id_expiration: [:month, :day, :year],
         )
       end
 
