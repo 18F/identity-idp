@@ -26,7 +26,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   let(:mock_daily_reports_emails) { ['mock_irs@example.com'] }
   let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:irs_app_name'] }
-  let(:irs_partners) { ['IRS'] }
+  let(:irs_partners) { ['PARTNER_NAME'] }
   let(:fixture_csv_data) do
     fixture_path = Rails.root.join('spec', 'fixtures', 'irs_cred_metrics_input.csv')
     File.read(fixture_path)
@@ -57,7 +57,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   context 'for a report_date is the beginning of the month, it sends records for previous month' do
     let(:report_date) { Date.new(2021, 3, 1).prev_day }
 
-    it 'sends out a report to IRS' do
+    it 'sends out a report to PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_irs@example.com'],
         subject: 'IRS Monthly Credential Metrics - 2021-02-28',
@@ -122,9 +122,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       create(
         :partner_account,
         id: 123,
-        name: 'IRS',
+        name: 'PARTNER_NAME',
         description: 'This is a description.',
-        requesting_agency: 'IRS',
+        requesting_agency: 'PARTNER_NAME',
       )
     end
 
