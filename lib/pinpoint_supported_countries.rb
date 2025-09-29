@@ -81,7 +81,7 @@ class PinpointSupportedCountries
           SENDER_ID_COUNTRIES.include?(iso_code) || SENDER_ID_EXCEPTION_COUNTRIES.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
           true
-        when 'Registration required9' # if a sender ID is sent, it must be registered
+        when 'Registration required8' # if a sender ID is sent, it must be registered
           !SENDER_ID_COUNTRIES.include?(iso_code)
         else
           true
