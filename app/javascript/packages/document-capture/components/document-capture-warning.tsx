@@ -27,6 +27,7 @@ type GetHeadingArguments = {
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
+  unexpectedIdTypeError: boolean;
   t: typeof I18n.prototype.t;
 };
 function getHeading({
@@ -34,8 +35,12 @@ function getHeading({
   isFailedDocType,
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
+  unexpectedIdTypeError,
   t,
 }: GetHeadingArguments) {
+  if (unexpectedIdTypeError) {
+    return t('doc_auth.errors.verify_passport_heading');
+  }
   if (isFailedDocType) {
     return t('doc_auth.errors.rate_limited_heading');
   }
@@ -64,6 +69,10 @@ function isPassportError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'passport');
 }
 
+function isUnexpectedIdTypeError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'unexpected_id_type');
+}
+
 function DocumentCaptureWarning({
   isResultCodeInvalid,
   isFailedDocType,
@@ -81,11 +90,13 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
+  const unexpectedIdTypeError = isUnexpectedIdTypeError(unknownFieldErrors);
   const heading = getHeading({
     isResultCodeInvalid,
     isFailedDocType,
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
+    unexpectedIdTypeError,
     t,
   });
   const actionText = nonIppOrFailedResult
@@ -138,6 +149,7 @@ function DocumentCaptureWarning({
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
             isPassportError={passportError}
+            isUnexpectedIdTypeError={unexpectedIdTypeError}
           />
         </div>
         <p>

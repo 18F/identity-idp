@@ -13,6 +13,7 @@ interface GeneralErrorProps extends ComponentProps<'p'> {
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   isPassportError?: boolean;
+  isUnexpectedIdTypeError?: boolean;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -52,6 +53,7 @@ function GeneralError({
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   isPassportError = false,
+  isUnexpectedIdTypeError = false,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
@@ -99,6 +101,16 @@ function GeneralError({
         )}
       </p>
     );
+  }
+  if (isUnexpectedIdTypeError) {
+    return (
+      <p>
+        {t('doc_auth.errors.verify_passport_text_html' )}{' '}
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
+          {t('doc_auth.errors.verify.use_another_type_of_id')}
+        </Link>
+      </p>
+    )
   }
   if (isPassportError) {
     if (!isNetwork) {
