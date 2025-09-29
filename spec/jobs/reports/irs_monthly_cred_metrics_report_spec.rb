@@ -24,11 +24,11 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  let(:mock_daily_reports_emails) { ['mock_irs@example.com'] }
-  let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:irs_app_name'] }
+  let(:mock_daily_reports_emails) { ['mock_partner@example.com'] }
+  let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:partner_app_name'] }
   let(:irs_partners) { ['PARTNER_NAME'] }
   let(:fixture_csv_data) do
-    fixture_path = Rails.root.join('spec', 'fixtures', 'irs_cred_metrics_input.csv')
+    fixture_path = Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv')
     File.read(fixture_path)
   end
 
@@ -59,7 +59,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'sends out a report to PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_irs@example.com'],
+        email: ['mock_partner@example.com'],
         subject: 'IRS Monthly Credential Metrics - 2021-02-28',
         reports: anything,
         message: report.preamble,
