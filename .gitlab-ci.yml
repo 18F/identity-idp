@@ -254,6 +254,7 @@ specs:
     AWS_REGION: us-west-2
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
+    RUBYOPT: '--enable=frozen-string-literal'
     COVERAGE: 'true'
     DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity_idp_test
