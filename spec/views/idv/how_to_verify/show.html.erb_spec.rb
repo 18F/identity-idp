@@ -16,7 +16,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
     assign(:presenter, presenter)
     assign :idv_how_to_verify_form, idv_how_to_verify_form
   end
-  context 'when mobile is required' do
+  context 'when selfie is not required' do
     let(:selfie_check_required) { false }
 
     before do
