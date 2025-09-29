@@ -16,7 +16,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       "#{report_folder}/definitions.csv",
       "#{report_folder}/overview.csv",
       "#{report_folder}/lg99_metrics.csv",
-      "#{report_folder}/Credential_Tenure_Metric.csv",
     ]
   end
 
@@ -37,14 +36,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
        time_range.end.to_s],
       ['Credentials Reinstated', 1, time_range.begin.to_s,
        time_range.end.to_s],
-    ]
-  end
-
-  let(:mock_credential_tenure_metric) do
-    [
-      ['Metric', 'Value'],
-      ['Total Users', 5],
-      ['Credential Tenure', 2],
     ]
   end
 
@@ -69,9 +60,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
     allow(report.irs_fraud_metrics_lg99_report).to receive(:lg99_metrics_table)
       .and_return(mock_identity_verification_lg99_data)
-
-    allow(report.irs_fraud_metrics_lg99_report).to receive(:credential_tenure_report_metric)
-      .and_return(mock_credential_tenure_metric)
   end
 
   it 'sends out a report to just to team data' do

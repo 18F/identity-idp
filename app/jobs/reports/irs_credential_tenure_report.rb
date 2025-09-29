@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+## Note: IrsCredentialTenureReport report is not currently used.
 
 require 'csv'
 
