@@ -7,19 +7,29 @@
 <% end %>
 
 <% if @presenter.otp_expiration.present? %>
-    <%= render CountdownAlertComponent.new(
-          show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-          alert_options: { class: 'margin-bottom-4', role: 'presentation' },
-          countdown_options: { expiration: @presenter.otp_expiration },
-        ) %>
+  <% test_expiration = Time.zone.now + 12.seconds %>
+  <% test_phases = [
+    { at_s: 12, type: :info,    label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 10) },
+    { at_s:  6, type: :warning, label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 5)  },
+    { at_s:  3, type: :warning, label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 1)   },
+    { at_s:  1, type: :warning, label: t('instructions.mfa.sms.seconds_remaining_html', seconds: 30) },
+    { at_s:  0, type: :error,   label: t(
+      'instructions.mfa.sms.code_expired_html'
+      )
+  },
+  ] %>
 
-    <div class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
-      <%= render CountdownAlertComponent.new(
-            expiration: @presenter.otp_expiration,
-            show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds + 30.seconds,
-            countdown_options: { expiration: @presenter.otp_expiration, update_interval: 30.seconds },
-          ) %>
-    </div>
+  <div id="otp-live-phase" class="usa-sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div id="otp-live-expiry" class="usa-sr-only" role="alert" aria-atomic="true"></div>
+
+  <%= render CountdownAlertComponent.new(
+        expiration: test_expiration,
+        phases: test_phases,
+        sr_phase_region_id:  "otp-live-phase",
+        sr_expiry_region_id: "otp-live-expiry",
+        alert_options: { class: "margin-bottom-4", role: "presentation" },
+        countdown_options: { update_interval: 1.second }
+      ) %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
