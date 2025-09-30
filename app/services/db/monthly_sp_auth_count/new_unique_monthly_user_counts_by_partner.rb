@@ -5,7 +5,10 @@ module Db
     module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
-      UserVerifiedKey = Data.define(:user_id, :profile_verified_at, :profile_age, :profile_requested_issuer, :issuer).freeze
+      UserVerifiedKey = Data.define(
+        :user_id, :profile_verified_at, :profile_age,
+        :profile_requested_issuer, :issuer
+      ).freeze
 
       module_function
 
@@ -27,6 +30,7 @@ module Db
           ym_h[ym_k] = {}
         end
 
+        # rubocop:disable Metrics/BlockLength
         queries.each do |query|
           temp_copy = year_month_to_users_to_profile_age.deep_dup
 
@@ -52,13 +56,17 @@ module Db
                 profile_requested_issuer = row['profile_requested_issuer']
                 issuer = row['issuer']
 
-                user_unique_id = UserVerifiedKey.new(user_id:, profile_verified_at:, profile_age:, profile_requested_issuer:, issuer:)
+                user_unique_id = UserVerifiedKey.new(
+                  user_id:, profile_verified_at:, profile_age:,
+                  profile_requested_issuer:, issuer:
+                )
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
             end
           end
         end
+        # rubocop:enable Metrics/BlockLength
         rows = []
 
         prev_seen_user_proofed_events = Set.new
@@ -94,8 +102,8 @@ module Db
             partner_ial2_unique_user_events_year_greater_than_5: unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
             partner_ial2_unique_user_events_unknown: unique_profiles_by_age[:unknown].count,
             new_unique_user_proofed_events: new_unique_user_proofed_events.count,
-            partner_ial2_new_unique_user_events_year1_upfront: new_unique_profiles_year1[:upfront].count,
-            partner_ial2_new_unique_user_events_year1_existing: new_unique_profiles_year1[:existing].count,
+            partner_ial2_new_unique_user_events_year1_upfront: new_unique_profiles_year1[:upfront].count, # rubocop:disable Layout/LineLength
+            partner_ial2_new_unique_user_events_year1_existing: new_unique_profiles_year1[:existing].count, # rubocop:disable Layout/LineLength
             partner_ial2_new_unique_user_events_year1: new_unique_profiles_by_age[0].count,
             partner_ial2_new_unique_user_events_year2: new_unique_profiles_by_age[1].count,
             partner_ial2_new_unique_user_events_year3: new_unique_profiles_by_age[2].count,
