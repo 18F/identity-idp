@@ -1476,7 +1476,7 @@ instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
 instructions.mfa.piv_cac.step_3: 添加 PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。
 instructions.mfa.piv_cac.try_again: 再试一次
-instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。这一代码 %{expiration} 分钟后会作废。
+instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
 instructions.mfa.webauthn_platform.learn_more_help: 了解更多有关人脸或触摸解锁的信息
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
