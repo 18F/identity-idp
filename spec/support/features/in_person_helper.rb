@@ -15,6 +15,8 @@ module InPersonHelper
   ).freeze
   GOOD_STATE_ID_JURISDICTION = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
   GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number].freeze
+  GOOD_STATE_ID_EXPIRATION =
+    Idp::Constants::MOCK_IPP_APPLICANT[:state_id_expiration].freeze
 
   GOOD_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT[:address1].freeze
   GOOD_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT[:address2].freeze
@@ -40,14 +42,11 @@ module InPersonHelper
   def fill_out_state_id_form_ok(same_address_as_id: false, first_name: GOOD_FIRST_NAME)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
-    year, month, day = GOOD_DOB.split('-')
-    fill_in t('components.memorable_date.month'), with: month
-    fill_in t('components.memorable_date.day'), with: day
-    fill_in t('components.memorable_date.year'), with: year
+    fill_in_memorable_date('identity_doc[dob]', GOOD_DOB)
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
-
+    fill_in_memorable_date('identity_doc[id_expiration]', GOOD_STATE_ID_EXPIRATION)
     fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
     fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY

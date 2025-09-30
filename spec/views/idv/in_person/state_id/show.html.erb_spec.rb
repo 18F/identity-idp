@@ -4,6 +4,7 @@ RSpec.describe 'idv/in_person/state_id/show.html.erb' do
   let(:pii) { {} }
   let(:form) { Idv::StateIdForm.new(pii) }
   let(:parsed_dob) { Date.new(1970, 1, 1) }
+  let(:parsed_expiration) { Time.zone.today + 1.year }
   let(:presenter) { Idv::InPerson::UspsFormPresenter.new }
 
   before do
@@ -13,7 +14,13 @@ RSpec.describe 'idv/in_person/state_id/show.html.erb' do
 
   subject(:render_template) do
     render template: 'idv/in_person/state_id/show',
-           locals: { updating_state_id: true, form: form, pii: pii, parsed_dob: parsed_dob }
+           locals: {
+             updating_state_id: true,
+             form: form,
+             pii: pii,
+             parsed_dob: parsed_dob,
+             parsed_expiration: parsed_expiration,
+           }
   end
 
   it 'renders state ID hint text with correct screenreader tags', aggregate_failures: true do

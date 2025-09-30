@@ -131,12 +131,20 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:first_name) { 'Natalya' }
     let(:last_name) { 'Rostova' }
     let(:formatted_dob) { InPersonHelper::GOOD_DOB }
+    let(:formatted_expiration) { InPersonHelper::GOOD_STATE_ID_EXPIRATION }
 
     let(:dob) do
       parsed_dob = Date.parse(formatted_dob)
       { month: parsed_dob.month.to_s,
         day: parsed_dob.day.to_s,
         year: parsed_dob.year.to_s }
+    end
+
+    let(:id_expiration) do
+      parsed_exp = Date.parse(formatted_expiration)
+      { month: parsed_exp.month.to_s,
+        day: parsed_exp.day.to_s,
+        year: parsed_exp.year.to_s }
     end
 
     # residential
@@ -147,34 +155,19 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
     let(:id_number) { 'ABC123234' }
     let(:state_id_jurisdiction) { 'AL' }
+    let(:same_address_as_id) { 'true' }
     let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
     let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
     let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
     let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
 
-    context 'with values submitted' do
-      let(:invalid_params) do
-        { identity_doc: {
-          first_name: 'S@ndy!',
-          last_name:,
-          same_address_as_id: 'true', # value on submission
-          identity_doc_address1:,
-          identity_doc_address2:,
-          identity_doc_city:,
-          state_id_jurisdiction:,
-          id_number:,
-          identity_doc_address_state:,
-          identity_doc_zipcode:,
-          dob:,
-        } }
-      end
-
-      let(:params) do
-        { identity_doc: {
+    let(:params) do
+      {
+        identity_doc: {
           first_name:,
           last_name:,
-          same_address_as_id: 'true', # value on submission
+          same_address_as_id:,
           identity_doc_address1:,
           identity_doc_address2:,
           identity_doc_city:,
@@ -183,7 +176,18 @@ RSpec.describe Idv::InPerson::StateIdController do
           identity_doc_address_state:,
           identity_doc_zipcode:,
           dob:,
-        } }
+          id_expiration:,
+        },
+      }
+    end
+
+    context 'with values submitted' do
+      let(:invalid_params) do
+        params.merge(
+          identity_doc: {
+            first_name: 'S@ndy!',
+          },
+        )
       end
 
       let(:analytics_name) { 'IdV: in person proofing state_id submitted' }
@@ -242,6 +246,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq formatted_dob
+        expect(pii_from_user[:state_id_expiration]).to eq formatted_expiration
         expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         # param from form as id_number but is renamed to state_id_number on update
@@ -265,23 +270,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
 
       context 'changed from "true" to "false"' do
-        let(:params) do
-          {
-            identity_doc: {
-              first_name:,
-              last_name:,
-              same_address_as_id: 'false', # value on submission
-              identity_doc_address1:,
-              identity_doc_address2:,
-              identity_doc_city:,
-              state_id_jurisdiction:,
-              id_number:,
-              identity_doc_address_state:,
-              identity_doc_zipcode:,
-              dob:,
-            },
-          }
-        end
+        let(:same_address_as_id) { 'false' }
 
         it 'retains identity_doc_ attrs/value but removes addr attr in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -330,22 +319,6 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'changed from "false" to "true"' do
-        let(:params) do
-          { identity_doc: {
-            first_name:,
-            last_name:,
-            same_address_as_id: 'true', # value on submission
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            state_id_jurisdiction:,
-            id_number:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-            dob:,
-          } }
-        end
-
         it <<~EOS.squish do
           retains identity_doc_ attrs/value ands addr attr
           with same value as identity_doc in flow session
@@ -369,22 +342,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'not changed from "false"' do
-        let(:params) do
-          { identity_doc: {
-            dob:,
-            same_address_as_id: 'false',
-            address1:,
-            address2:,
-            city:,
-            state:,
-            zipcode:,
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-          } }
-        end
+        let(:same_address_as_id) { 'false' }
 
         it 'retains identity_doc_ and addr attrs/value in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -424,47 +382,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe '#step_info' do
-    let(:first_name) { 'Natalya' }
-    let(:last_name) { 'Rostova' }
-    let(:formatted_dob) { InPersonHelper::GOOD_DOB }
-
-    let(:dob) do
-      parsed_dob = Date.parse(formatted_dob)
-      { month: parsed_dob.month.to_s,
-        day: parsed_dob.day.to_s,
-        year: parsed_dob.year.to_s }
-    end
-
-    # residential
-    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
-    let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
-    let(:city) { InPersonHelper::GOOD_CITY }
-    let(:state) { InPersonHelper::GOOD_STATE }
-    let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
-    let(:id_number) { 'ABC123234' }
-    let(:state_id_jurisdiction) { 'AL' }
-    let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
-    let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
-    let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
-    let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
-    let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
-
-    let(:params) do
-      { identity_doc: {
-        first_name:,
-        last_name:,
-        same_address_as_id: 'true', # value on submission
-        identity_doc_address1:,
-        identity_doc_address2:,
-        identity_doc_city:,
-        state_id_jurisdiction:,
-        id_number:,
-        identity_doc_address_state:,
-        identity_doc_zipcode:,
-        dob:,
-      } }
-    end
-
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::StateIdController.step_info).to be_valid
     end
