@@ -16,7 +16,6 @@ module Idv
       t(
         "instructions.mfa.#{otp_delivery_preference}.number_message_html",
         number_html: content_tag(:strong, phone_number),
-        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
     end
 
