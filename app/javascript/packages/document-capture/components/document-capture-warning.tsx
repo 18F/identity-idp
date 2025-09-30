@@ -28,6 +28,7 @@ type GetHeadingArguments = {
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   unexpectedIdTypeError: boolean;
+  unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   t: typeof I18n.prototype.t;
 };
 function getHeading({
@@ -36,10 +37,16 @@ function getHeading({
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
   unexpectedIdTypeError,
+  unknownFieldErrors,
   t,
 }: GetHeadingArguments) {
   if (unexpectedIdTypeError) {
-    return t('doc_auth.errors.verify_passport_heading');
+    const idType = getIdType(unknownFieldErrors);
+    const isPassport = idType?.message === 'passport';
+    const heading = isPassport
+      ? t('doc_auth.errors.verify_drivers_license_heading')
+      : t('doc_auth.errors.verify_passport_heading')
+    return heading;
   }
   if (isFailedDocType) {
     return t('doc_auth.errors.rate_limited_heading');
@@ -73,6 +80,11 @@ function isUnexpectedIdTypeError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'unexpected_id_type');
 }
 
+function getIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'unexpected_id_type')
+  return idType ? idType.error : null;
+}
+
 function DocumentCaptureWarning({
   isResultCodeInvalid,
   isFailedDocType,
@@ -97,6 +109,7 @@ function DocumentCaptureWarning({
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
     unexpectedIdTypeError,
+    unknownFieldErrors,
     t,
   });
   const actionText = nonIppOrFailedResult

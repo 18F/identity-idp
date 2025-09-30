@@ -65,7 +65,7 @@ module DocAuth
             ].any?(&:present?)
 
             if id_type.present?
-              return { unexpected_id_type: true } unless expected_document_type_received?
+              return { unexpected_id_type: id_type } unless expected_document_type_received?
             end
 
             if has_fields
@@ -74,7 +74,6 @@ module DocAuth
               return {} if all_doc_capture_values_passing?(
                 transaction_status, id_type_supported?
               )
-
 
               mock_args = {}
               mock_args[:transaction_status] = transaction_status if transaction_status.present?
