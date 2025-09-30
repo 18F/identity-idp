@@ -47,7 +47,9 @@ RSpec.feature 'One Account Sign In' do
     before do
       allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
         .and_return([issuer])
-      allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage).and_return(100)
+      allow(IdentityConfig.store).to receive(:one_account_user_verification_enabled_percentage)
+        .and_return(100)
+      reload_ab_tests
     end
 
     context 'User2 has profile with matching SSN signature' do
@@ -61,6 +63,7 @@ RSpec.feature 'One Account Sign In' do
           user: user2,
         )
       end
+
       context 'with User2 with profile linked to SP' do
         before do
           link_identity(user, current_sp, 2)
