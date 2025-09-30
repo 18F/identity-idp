@@ -1474,7 +1474,10 @@ instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de ta
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
 instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
+instructions.mfa.sms.code_expired_html: '<strong>Su código de un solo uso venció.</strong> Haga clic abajo en “Enviar otro código” para recibir un código nuevo.'
+instructions.mfa.sms.minutes_remaining_html: 'Quedan <strong>%{minutes} minutos</strong> antes de tener que solicitar un nuevo código'
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}.
+instructions.mfa.sms.seconds_remaining_html: 'Quedan <strong>%{seconds} segundos</strong> antes de tener que solicitar un nuevo código'
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
