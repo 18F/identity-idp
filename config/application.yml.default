@@ -207,8 +207,9 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
-idv_socure_phonerisk_score_threshold: 0
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
+idv_socure_phonerisk_score_threshold: 0
+idv_socure_phone_risk_shadow_mode: false
 idv_socure_reason_code_download_enabled: false
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'

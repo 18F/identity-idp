@@ -15,6 +15,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   def load_result
     return nil unless result_id.present?
+    byebug
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
