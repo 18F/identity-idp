@@ -3,6 +3,7 @@
 class SamlRequestValidator
   include ActiveModel::Model
 
+  validate :basic_saml_checks_pass
   validate :request_cert_exists
   validate :authorized_service_provider
   validate :registered_cert_exists
@@ -10,8 +11,9 @@ class SamlRequestValidator
   validate :parsable_vtr
   validate :authorized_email_nameid_format
 
-  def initialize(blank_cert: false)
+  def initialize(blank_cert: false, saml_errors: [])
     @blank_cert = blank_cert
+    @saml_errors = saml_errors
   end
 
   def call(service_provider:, authn_context:, nameid_format:, authn_context_comparison: nil)
@@ -25,7 +27,16 @@ class SamlRequestValidator
 
   private
 
-  attr_accessor :service_provider, :authn_context, :authn_context_comparison, :nameid_format
+  attr_accessor :service_provider, :authn_context, :authn_context_comparison, :nameid_format,
+                :saml_errors
+
+  # rubocop:disable IdentityIdp/ErrorsAddLinter
+  def basic_saml_checks_pass
+    return if saml_errors.empty?
+
+    saml_errors.each { |error| errors.add(:service_provider, error) }
+  end
+  # rubocop:enable IdentityIdp/ErrorsAddLinter
 
   def extra_analytics_attributes
     {
@@ -53,8 +64,7 @@ class SamlRequestValidator
   def authorized_service_provider
     return if service_provider
     errors.add(
-      :service_provider, :unauthorized_service_provider,
-      type: :unauthorized_service_provider
+      :service_provider, :unauthorized_service_provider
     )
   end
 
@@ -66,13 +76,13 @@ class SamlRequestValidator
        (identity_proofing_requested? && !service_provider.identity_proofing_allowed?) ||
        (ial_max_requested? && !service_provider.ialmax_allowed?) ||
        (facial_match_ial_requested? && !service_provider.facial_match_ial_allowed?)
-      errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
+      errors.add(:authn_context, :unauthorized_authn_context)
     end
   end
 
   def parsable_vtr
     if !vtr.blank? && parsed_vectors_of_trust.blank?
-      errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
+      errors.add(:authn_context, :unauthorized_authn_context)
     end
   end
 
@@ -82,15 +92,12 @@ class SamlRequestValidator
     return if service_provider.certs.present?
     return unless service_provider.encrypt_responses?
 
-    errors.add(
-      :service_provider, :no_cert_registered,
-      type: :no_cert_registered
-    )
+    errors.add(:service_provider, :no_cert_registered)
   end
 
   def request_cert_exists
     if @blank_cert
-      errors.add(:service_provider, :blank_cert_element_req, type: :blank_cert_element_req)
+      errors.add(:service_provider, :blank_cert_element_req)
     end
   end
 
@@ -142,7 +149,7 @@ class SamlRequestValidator
     return unless email_nameid_format?
     return if service_provider&.email_nameid_format_allowed
 
-    errors.add(:nameid_format, :unauthorized_nameid_format, type: :unauthorized_nameid_format)
+    errors.add(:nameid_format, :unauthorized_nameid_format)
   end
 
   def email_nameid_format?

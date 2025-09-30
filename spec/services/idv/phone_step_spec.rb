@@ -37,6 +37,7 @@ RSpec.describe Idv::PhoneStep do
   let(:trace_id) { SecureRandom.uuid }
   let(:analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   subject do
     described_class.new(
@@ -44,6 +45,7 @@ RSpec.describe Idv::PhoneStep do
       trace_id:,
       analytics:,
       attempts_api_tracker:,
+      fraud_ops_tracker:,
     )
   end
 

@@ -63,6 +63,12 @@ module Idv
         failure_reason: attempts_api_tracker.parse_failure_reason(result),
       )
 
+      fraud_ops_tracker.idv_phone_submitted(
+        phone_number: Phonelib.parse(step_params[:phone]).e164,
+        success: result.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
+      )
+
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
@@ -129,6 +135,13 @@ module Idv
         failure_reason: result.success? ? nil : otp_sent_tracker_error(result),
       )
 
+      fraud_ops_tracker.idv_phone_otp_sent(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        otp_delivery_method: result.extra[:otp_delivery_preference],
+        failure_reason: result.success? ? nil : otp_sent_tracker_error(result),
+      )
+
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -154,6 +167,7 @@ module Idv
         trace_id: amzn_trace_id,
         analytics:,
         attempts_api_tracker:,
+        fraud_ops_tracker:,
       )
     end
 

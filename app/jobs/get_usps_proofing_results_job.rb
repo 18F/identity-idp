@@ -495,6 +495,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
       if enrollment.profile&.active?
         attempts_api_tracker(enrollment:).idv_enrollment_complete(reproof:)
+        fraud_ops_tracker(enrollment:).idv_enrollment_complete(reproof:)
       end
 
       # send SMS and email
@@ -517,6 +518,15 @@ class GetUspsProofingResultsJob < ApplicationJob
       sp: enrollment.service_provider,
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
+    )
+  end
+
+  def fraud_ops_tracker(enrollment:)
+    FraudOps::Tracker.new(
+      request: nil,
+      user: enrollment.user,
+      sp: enrollment.service_provider,
+      cookie_device_uuid: nil,
     )
   end
 
