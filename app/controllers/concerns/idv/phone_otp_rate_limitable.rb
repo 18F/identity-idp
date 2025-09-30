@@ -31,6 +31,9 @@ module Idv
       attempts_api_tracker.idv_rate_limited(
         limiter_type: :phone_otp,
       )
+      fraud_ops_tracker.idv_rate_limited(
+        limiter_type: :phone_otp,
+      )
       handle_max_attempts('otp_requests')
     end
 
@@ -38,6 +41,9 @@ module Idv
       analytics.idv_phone_confirmation_otp_rate_limit_attempts
       # TODO: Attempts API PII phone_number: current_user.phone
       attempts_api_tracker.idv_rate_limited(
+        limiter_type: :phone_otp,
+      )
+      fraud_ops_tracker.idv_rate_limited(
         limiter_type: :phone_otp,
       )
       handle_max_attempts('otp_login_attempts')

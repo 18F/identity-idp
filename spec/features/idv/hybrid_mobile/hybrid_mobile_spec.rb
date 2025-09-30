@@ -147,6 +147,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       perform_in_browser(:mobile) do
         visit @sms_link
+        complete_choose_id_type_step
 
         # Confirm that jumping to LinkSent page does not cause errors
         visit idv_link_sent_url
@@ -430,6 +431,32 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         perform_in_browser(:desktop) do
           page.refresh
           expect(page).to have_current_path(idv_link_sent_url)
+        end
+      end
+
+      it 'displays the error page with troubleshooting links' do
+        perform_in_browser(:desktop) do
+          sign_in_and_2fa_user
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+          choose_id_type(:passport)
+          expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+          attach_passport_image(passport_image)
+          submit_images
+
+          expect(page).to have_content(t('idv.troubleshooting.options.use_another_id_type'))
+          expect(page).to have_content(t('idv.troubleshooting.options.doc_capture_tips'))
+          expect(page).to have_content(t('idv.troubleshooting.options.supported_documents'))
         end
       end
 
@@ -914,6 +941,45 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       ).to eq(
         PhoneFormatter.format(phone_number),
       )
+    end
+  end
+
+  context 'When passports are disabled', :js, allow_browser_log: true do
+    let(:passports_enabled) { false }
+
+    context 'when doc auth fails' do
+      let(:image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'ial2_test_credential_forces_error.yml'
+        )
+      end
+
+      it 'displays the error page with troubleshooting links' do
+        perform_in_browser(:desktop) do
+          sign_in_and_2fa_user
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+          complete_choose_id_type_step
+          expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+          attach_images(image)
+          submit_images
+
+          expect(page).to have_content(t('idv.troubleshooting.options.use_another_id_type'))
+          expect(page).to have_content(t('idv.troubleshooting.options.doc_capture_tips'))
+          expect(page).to have_content(t('idv.troubleshooting.options.supported_documents'))
+        end
+      end
     end
   end
 end

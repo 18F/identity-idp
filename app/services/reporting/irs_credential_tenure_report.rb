@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+## Note: IrsCredentialTenureReport report is not currently used.
+
 module Reporting
   class IrsCredentialTenureReport
     attr_reader :report_date, :issuers

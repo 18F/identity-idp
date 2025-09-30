@@ -786,6 +786,7 @@ errors.messages.already_confirmed: was already confirmed, please try signing in
 errors.messages.backup_code_limited: You tried too many times, please try again in %{timeout}.
 errors.messages.blank: Please fill in this field.
 errors.messages.blank_cert_element_req: We cannot detect a certificate in your request.
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: Incorrect verification code
 errors.messages.confirmation_invalid_token: Invalid confirmation link. Either the link expired or you already confirmed your account.
 errors.messages.confirmation_period_expired: Expired confirmation link. You can click “Resend confirmation instructions” to get another one.
@@ -799,11 +800,15 @@ errors.messages.invalid_calling_area: Calls to that phone number are not support
 errors.messages.invalid_phone_number.international: Enter a phone number with the correct number of digits.
 errors.messages.invalid_phone_number.us: Enter a 10 digit phone number.
 errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: Please fill in this field.
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: Your service provider does not have a certificate registered.
 errors.messages.no_pending_profile: No profile is waiting for verification
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: is not a number
 errors.messages.otp_format: Enter your entire one-time code without spaces or special characters
 errors.messages.password_incorrect: Incorrect password
@@ -916,6 +921,7 @@ forms.buttons.upload_photos: Upload photos
 forms.confirmation.show_hdr: Create a strong password
 forms.email.buttons.delete: Delete email address
 forms.example: 'Example:'
+forms.messages.public_shared_device_html: Select this to skip authentication on supported sites. <strong>DO NOT</strong> select “Remember this browser” if you are on a public or shared device.
 forms.messages.remember_device: Remember this browser
 forms.password: Password
 forms.passwords.edit.buttons.submit: Change password
@@ -1589,7 +1595,7 @@ openid_connect.user_info.errors.no_authorization: No Authorization header provid
 openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
-profiling_failed.details: We are unable to authenticate or sign you in. Reach out to your agency to access services.
+profiling_failed.details_html: 'Call our contact center at <strong>(844) 875-6446</strong> and provide them with the error code <strong>LG22</strong>.'
 profiling_failed.title: We couldn’t sign you into your account
 report_mailer.deleted_accounts_report.issuers: Issuers
 report_mailer.deleted_accounts_report.name: Name

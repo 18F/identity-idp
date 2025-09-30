@@ -78,7 +78,7 @@ Vagrantfile
 .yardoc
 /doc/
 
-package-lock.json
+yarn.lock
 browsers.json
 Brewfile.lock.json
 

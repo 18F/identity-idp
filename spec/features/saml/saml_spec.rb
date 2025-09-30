@@ -34,11 +34,11 @@ RSpec.feature 'saml api' do
       sp.save
     end
 
-    it 'returns a 403' do
+    it 'returns a 400' do
       sign_in_via_branded_page(user)
       click_submit_default
 
-      expect(page.status_code).to eq 403
+      expect(page.status_code).to eq 400
     end
   end
 

@@ -786,6 +786,7 @@ errors.messages.already_confirmed: a déjà été confirmé, veuillez essayer de
 errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
 errors.messages.confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
 errors.messages.confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Renvoyer les instructions de confirmation » pour en obtenir un autre.
@@ -799,11 +800,15 @@ errors.messages.invalid_calling_area: Les appels vers ce numéro de téléphone 
 errors.messages.invalid_phone_number.international: Saisissez un numéro de téléphone avec le nombre correct de chiffres.
 errors.messages.invalid_phone_number.us: Saisissez un numéro de téléphone à 10 chiffres.
 errors.messages.invalid_recaptcha_token: Désolé, il est possible que votre ordinateur ou votre réseau envoie des requêtes automatiques. Pour protéger nos utilisateurs, nous ne pouvons pas traiter votre demande pour le moment.
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les messages texte. Veuillez essayer l’option d’appel téléphonique.
 errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifiez que vous avez entré le bon indicatif international ou régional.
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: Veuillez remplir ce champ.
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.no_pending_profile: Aucun profil en attente de vérification
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: n’est pas un chiffre
 errors.messages.otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni caractères spéciaux
 errors.messages.password_incorrect: Mot de passe incorrect
@@ -916,6 +921,7 @@ forms.buttons.upload_photos: Télécharger des photos
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'
+forms.messages.public_shared_device_html: Sélectionnez cette option pour ignorer l’authentification sur les sites pris en charge. <strong>NE SÉLECTIONNEZ PAS</strong> l’option «&nbsp;Se souvenir de ce navigateur&nbsp;» si vous êtes sur un ordinateur public ou partagé.
 forms.messages.remember_device: Se souvenir de ce navigateur
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
@@ -1589,7 +1595,7 @@ openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisati
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré
 pages.page_took_too_long.body: Nous vous recommandons de patienter quelques minutes, puis de réessayer. (503)
 pages.page_took_too_long.header: Le serveur a mis trop de temps à traiter votre demande.
-profiling_failed.details: Nous ne sommes pas en mesure de vous authentifier pour vous connecter. Veuillez contacter votre organisme pour accéder à ses services.
+profiling_failed.details_html: 'Appelez notre centre de contact au <strong>(844) 875-6446</strong> en fournissant le code d’erreur <strong>LG22</strong>.'
 profiling_failed.title: Nous n’avons pas pu vous connecter à votre compte
 report_mailer.deleted_accounts_report.issuers: Émetteurs
 report_mailer.deleted_accounts_report.name: Nom

@@ -8,15 +8,28 @@ class SocureImageRetrievalJob < ApplicationJob
   def perform(
     document_capture_session_uuid:,
     reference_id:,
-    image_storage_data:
+    image_storage_data:,
+    passport_book:
   )
     @document_capture_session_uuid = document_capture_session_uuid
 
-    result = fetch_images(reference_id)
+    result = fetch_images(reference_id, passport_book:)
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)
     else
       attempts_api_tracker.idv_image_retrieval_failed(
+        document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
+        document_front_image_file_id: image_storage_data.dig(:front, :document_front_image_file_id),
+        document_passport_image_file_id: image_storage_data.dig(
+          :passport,
+          :document_passport_image_file_id,
+        ),
+        document_selfie_image_file_id: image_storage_data.dig(
+          :selfie,
+          :document_selfie_image_file_id,
+        ),
+      )
+      fraud_ops_tracker.idv_image_retrieval_failed(
         document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
         document_front_image_file_id: image_storage_data.dig(:front, :document_front_image_file_id),
         document_passport_image_file_id: image_storage_data.dig(
@@ -43,14 +56,24 @@ class SocureImageRetrievalJob < ApplicationJob
     )
   end
 
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      request: nil,
+      user: document_capture_session.user,
+      sp:,
+      cookie_device_uuid: nil,
+    )
+  end
+
   def document_capture_session
     @document_capture_session ||=
       DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
   end
 
-  def fetch_images(reference_id)
+  def fetch_images(reference_id, passport_book:)
     DocAuth::Socure::Requests::ImagesRequest.new(
       reference_id:,
+      passport_book:,
     ).fetch
   end
 

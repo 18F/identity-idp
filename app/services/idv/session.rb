@@ -187,7 +187,8 @@ module Idv
     end
 
     def clear
-      user_session.delete(:idv)
+      user_session[:idv] = {}
+      user_session['idv/in_person'] = {}
       @profile = nil
       @gpo_otp = nil
     end
@@ -385,6 +386,11 @@ module Idv
     def in_person_passports_allowed?
       IdentityConfig.store.doc_auth_passports_enabled &&
         IdentityConfig.store.in_person_passports_enabled
+    end
+
+    def standard_flow_document_capture_eligible?
+      flow_path == 'standard' &&
+        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
     end
 
     private

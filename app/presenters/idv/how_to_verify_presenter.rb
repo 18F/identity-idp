@@ -4,10 +4,9 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :mobile_required, :selfie_required
+  attr_reader :selfie_required
 
-  def initialize(mobile_required:, selfie_check_required:)
-    @mobile_required = mobile_required
+  def initialize(selfie_check_required:)
     @selfie_required = selfie_check_required
   end
 
@@ -32,11 +31,7 @@ class Idv::HowToVerifyPresenter
   end
 
   def online_asset_alt_text
-    if mobile_required
-      t('image_description.phone_icon')
-    else
-      t('image_description.laptop_and_phone')
-    end
+    t('image_description.phone_icon')
   end
 
   def verify_online_text

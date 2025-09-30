@@ -83,14 +83,8 @@ module Idv
 
     private
 
-    def mobile_required?
-      idv_session.selfie_check_required ||
-        document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
-    end
-
     def set_how_to_verify_presenter
       @presenter = Idv::HowToVerifyPresenter.new(
-        mobile_required: mobile_required?,
         selfie_check_required: @selfie_required,
       )
     end
@@ -224,6 +218,9 @@ module Idv
       )
       # TODO: Attempts API PII Add phone_number: formatted_destination_phone,
       attempts_api_tracker.idv_rate_limited(
+        limiter_type: :idv_send_link,
+      )
+      fraud_ops_tracker.idv_rate_limited(
         limiter_type: :idv_send_link,
       )
       message = I18n.t(

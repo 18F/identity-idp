@@ -51,7 +51,6 @@ describe('DocumentCaptureReviewIssues', () => {
             locationsURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
-            passportEnabled: false,
             usStatesTerritories: [['Los Angeles', 'NY']],
           }}
         >
@@ -114,7 +113,6 @@ describe('DocumentCaptureReviewIssues', () => {
             locationsURL: '',
             inPersonOutageMessageEnabled: false,
             optedInToInPersonProofing: false,
-            passportEnabled: false,
             usStatesTerritories: [['Los Angeles', 'NY']],
           }}
         >

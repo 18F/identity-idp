@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe SocureImageRetrievalJob do
   let(:job) { described_class.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider) }
   let(:user) { create(:user) }
   let(:document_capture_session) do
@@ -15,6 +16,7 @@ RSpec.describe SocureImageRetrievalJob do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:reference_id) { 'image-reference-id' }
   let(:socure_image_endpoint) { "https://upload.socure.us/api/5.0/documents/#{reference_id}" }
+  let(:passport_book) { false }
 
   let(:writer) { EncryptedDocStorage::DocWriter.new }
   let(:result) do
@@ -24,6 +26,7 @@ RSpec.describe SocureImageRetrievalJob do
 
   before do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
 
     document_capture_session.update(issuer: sp.issuer)
@@ -70,6 +73,7 @@ RSpec.describe SocureImageRetrievalJob do
         reference_id:,
         document_capture_session_uuid:,
         image_storage_data:,
+        passport_book:,
       )
     end
 
@@ -117,6 +121,34 @@ RSpec.describe SocureImageRetrievalJob do
             )
 
             perform
+          end
+
+          context 'when passport_book and selfie is true' do
+            let(:passport_book) { true }
+            let(:selfie) { true }
+            let(:image_storage_data) do
+              {
+                passport: {
+                  document_passport_image_file_id: 'name',
+                  document_passport_image_encryption_key: Base64.strict_encode64('12345'),
+                },
+                selfie: {
+                  document_selfie_image_file_id: 'name',
+                  document_selfie_image_encryption_key: Base64.strict_encode64('12345'),
+                },
+              }
+            end
+
+            it 'tracks the attempt with an image-specific network error' do
+              expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
+                document_front_image_file_id: nil,
+                document_back_image_file_id: nil,
+                document_passport_image_file_id: 'name',
+                document_selfie_image_file_id: 'name',
+              )
+
+              perform
+            end
           end
         end
       end

@@ -144,11 +144,6 @@ BO:
   supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: false
-BQ:
-  country_code: '599'
-  name: Netherlands Antilles
-  supports_sms: true
-  supports_voice: false
 BR:
   country_code: '55'
   name: Brazil

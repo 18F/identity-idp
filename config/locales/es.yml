@@ -797,6 +797,7 @@ errors.messages.already_confirmed: ya estaba confirmado, intente iniciar una ses
 errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}.
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto
 errors.messages.confirmation_invalid_token: El vínculo de confirmación no es válido. El vínculo venció o usted ya confirmó su cuenta.
 errors.messages.confirmation_period_expired: El vínculo de confirmación venció. Puede hacer clic en “Volver a enviar instrucciones de confirmación” para obtener otro.
@@ -810,11 +811,15 @@ errors.messages.invalid_calling_area: No se admiten llamadas a ese número de te
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
 errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: Llene este campo.
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: No podemos detectar un certificado en su solicitud.
 errors.messages.no_pending_profile: No hay ningún perfil en espera de verificación
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: no es un número
 errors.messages.otp_format: Ingrese su código de un solo uso completo, sin espacios ni caracteres especiales.
 errors.messages.password_incorrect: Contraseña incorrecta
@@ -927,6 +932,7 @@ forms.buttons.upload_photos: Cargar fotos
 forms.confirmation.show_hdr: Crear una contraseña segura
 forms.email.buttons.delete: Eliminar dirección de correo electrónico
 forms.example: 'Ejemplo:'
+forms.messages.public_shared_device_html: Marque esta casilla para omitir la autenticación en los sitios compatibles. Si está usando un dispositivo público o compartido, <strong>NO</strong> seleccione “Recordar este navegador”.
 forms.messages.remember_device: Recuerde este navegador
 forms.password: Contraseña
 forms.passwords.edit.buttons.submit: Cambiar contraseña
@@ -1601,7 +1607,7 @@ openid_connect.user_info.errors.no_authorization: No se proporcionó ningún enc
 openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
-profiling_failed.details: No podemos autenticarle ni iniciar sesión. Contacte con su agencia para acceder a los servicios.
+profiling_failed.details_html: 'Llame a nuestro centro de contacto al <strong>(844) 875-6446</strong> y mencione el código de error <strong>LG22</strong>.'
 profiling_failed.title: No pudimos iniciar sesión en su cuenta
 report_mailer.deleted_accounts_report.issuers: Emisores
 report_mailer.deleted_accounts_report.name: Nombre
@@ -1635,7 +1641,7 @@ service_providers.errors.inactive.heading: '%{sp_name} ya no utiliza %{app_name}
 service_providers.errors.inactive.instructions: '%{sp_name} ya no utiliza %{app_name} como servicio para iniciar sesión en su sitio web. Si ya creó una cuenta de %{app_name}, todavía está activa y se puede usar para acceder a otros sitios web participantes del gobierno.'
 service_providers.errors.inactive.instructions2: Visite la agencia para contactarlos y obtener más información.
 shared.banner.fake_site: Un sitio web de demostración del Gobierno de los Estados Unidos
-shared.banner.gov_description_html: Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.
+shared.banner.gov_description_html: 'Un sitio web <strong>.gov</strong> pertenece a una organización oficial del Gobierno de los Estados Unidos.'
 shared.banner.gov_heading: Los sitios web oficiales usan .gov
 shared.banner.how: Así es como usted puede saberlo
 shared.banner.landmark_label: Sitio web oficial del Gobierno
