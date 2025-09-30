@@ -8,7 +8,7 @@ class AddressProofingJob < ApplicationJob
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
   # rubocop:disable Lint/UnusedMethodArgument
-  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id: nil)
+  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, address_vendor:, user_id: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -22,7 +22,7 @@ class AddressProofingJob < ApplicationJob
 
     user = User.find(user_id)
     proofer_result = timer.time('address') do
-      address_proofer(user:).proof(applicant_pii)
+      address_proofer(user:, address_vendor:).proof(applicant_pii)
     end
 
     service_provider = ServiceProvider.find_by(issuer: issuer)
@@ -43,16 +43,23 @@ class AddressProofingJob < ApplicationJob
         timing: timer.results,
       }.to_json,
     )
+
+    if IdentityConfig.store.idv_socure_phone_risk_shadow_mode
+      SocureShadowModePhoneRiskJob.perform_later(
+        document_capture_session_result_id: result_id,
+        encrypted_arguments:,
+        service_provider_issuer: issuer,
+        user_email: user.last_sign_in_email_address.email,
+        user_uuid: user.uuid,
+      )
+    end
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
   private
 
-  def address_proofer(user:)
+  def address_proofer(user:, address_vendor:)
     @address_proofer ||= begin
-      address_vendor = address_vendor_ab_test_bucket ||
-        IdentityConfig.store.idv_address_default_vendor
-
       case address_vendor
       when :lexis_nexis
         Proofing::LexisNexis::PhoneFinder::Proofer.new(
@@ -79,15 +86,5 @@ class AddressProofingJob < ApplicationJob
         Proofing::Mock::AddressMockClient.new
       end
     end
-  end
-
-  def address_vendor_ab_test_bucket
-    AbTests::ADDRESS_PROOFING_VENDOR.bucket(
-      request: nil,
-      service_provider: nil,
-      session: nil,
-      user: nil,
-      user_session: nil,
-    )
   end
 end
