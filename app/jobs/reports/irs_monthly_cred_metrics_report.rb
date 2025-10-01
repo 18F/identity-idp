@@ -40,14 +40,18 @@ module Reports
          'The total number of unique users across all IAL levels
           that successfully signed into IRS applications'],
 
-        ['New Users - IAL2 Year 1', 'Count',
+        ['Total Credentials authorized for Partner', 'Count',
+         'The total number of users (new and existing)
+         that successfully signed into the applications'],
+
+        ['New Credentials Authorized for Partner', 'Count',
          'The number of new unique IRS users who are in their first IdV proofing year
            and authenticate with the IRS.
 
            This count correlates with the billing report charges for Newly Billed
            IdV users (Year 1), Agreement-Level Count.'],
 
-        ['New Users - IAL2 Year 2+', 'Count',
+        ['Existing Credentials Authorized for Partner', 'Count',
          'The number of new unique IRS users who are in their IdV proofing years 2 - 5
           and authenticate with the IRS.
 
@@ -59,10 +63,6 @@ module Reports
          (including multiple events per users) across all IRS
          applications during the reporting period'],
 
-        ['IAL2 Auths', 'Count',
-         'The total number of **IAL2** authentication events processed
-         (including multiple events per users) across all IRS
-         applications during the reporting period'],
       ]
     end
 
@@ -182,10 +182,10 @@ module Reports
               # Data rows - extract values directly from CSV row
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
+               ial2_new_unique_all(invoice_report), # New IAL2 Users
                invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New IAL Year 1
-               ial2_year_2_plus(invoice_report), # New IAL Year 2
-               invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i, # Total Auths
-               invoice_report['issuer_ial2_total_auth_count'].to_i] # IAL2 Auths
+               ial2_new_unique_year_2_to_5(invoice_report), # New IAL Year 2 to
+               invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
       return report_array.transpose
     end
@@ -200,8 +200,18 @@ module Reports
       end
     end
 
-    def ial2_year_2_plus(row)
+    def ial2_new_unique_year_2_to_5(row)
       %w[
+        partner_ial2_new_unique_user_events_year2
+        partner_ial2_new_unique_user_events_year3
+        partner_ial2_new_unique_user_events_year4
+        partner_ial2_new_unique_user_events_year5
+      ].sum { |key| row[key].to_i }
+    end
+
+    def ial2_new_unique_all(row)
+      %w[
+        partner_ial2_new_unique_user_events_year1
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
