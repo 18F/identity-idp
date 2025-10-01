@@ -5,6 +5,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
   let(:remaining_submit_attempts) { 5 }
   let(:in_person_url) { nil }
+  let(:passport_requested) { false }
   let(:flow_path) { :standard }
   let(:sp) { create(:service_provider) }
   let(:error_code) { nil }
@@ -22,6 +23,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       remaining_attempts: remaining_submit_attempts,
       sp_name: decorated_sp_session&.sp_name || APP_NAME,
       issuer: decorated_sp_session&.sp_issuer,
+      passport_requested:,
       flow_path:,
     )
   end
@@ -128,6 +130,56 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
             count: remaining_submit_attempts,
           ),
         ),
+      )
+    end
+  end
+
+  context 'unexpected id type error' do
+    let(:error_code) { :unexpected_id_type }
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      assign(:presenter, presenter)
+
+      render
+    end
+
+    context 'when passport is not requested' do
+      it 'shows correct h1' do
+        expect(rendered).to have_css('h1', text: t('doc_auth.errors.verify_drivers_license_heading'))
+      end
+
+      it 'shows unexpected_id_type message' do
+        expect(rendered).to have_text(t('doc_auth.errors.verify_drivers_license_text_html'))
+      end
+    end
+
+    context 'when passport is requested' do
+      let(:passport_requested) { true }
+      it 'shows correct h1' do
+        expect(rendered).to have_css('h1', text: t('doc_auth.errors.verify_passport_heading'))
+      end
+
+      it 'shows unexpected_id_type message' do
+        expect(rendered).to have_text(t('doc_auth.errors.verify_passport_text_html'))
+      end
+    end
+
+    it 'shows remaining attempts' do
+      expect(rendered).to have_text(
+        strip_tags(
+          t(
+            'doc_auth.rate_limit_warning_html',
+            count: remaining_submit_attempts,
+          ),
+        ),
+      )
+    end
+
+    it 'shows a primary action' do
+      expect(rendered).to have_link(
+        t('idv.failure.button.warning'),
+        href: idv_socure_document_capture_path,
       )
     end
   end

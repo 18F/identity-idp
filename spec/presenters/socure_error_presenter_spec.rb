@@ -1,19 +1,25 @@
 require 'rails_helper'
 
 RSpec.describe SocureErrorPresenter do
+  include Rails.application.routes.url_helpers
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::OutputSafetyHelper
+
   let(:error_code) { :network }
   let(:remaining_attempts) { 3 }
   let(:sp_name) { 'Test Service Provider' }
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:test' }
+  let(:passport_requested) { false }
   let(:flow_path) { 'standard' }
 
   subject(:presenter) do
     described_class.new(
-      error_code: error_code,
-      remaining_attempts: remaining_attempts,
-      sp_name: sp_name,
-      issuer: issuer,
-      flow_path: flow_path,
+      error_code:,
+      remaining_attempts:,
+      sp_name:,
+      issuer:,
+      passport_requested:,
+      flow_path:,
     )
   end
 
@@ -31,6 +37,24 @@ RSpec.describe SocureErrorPresenter do
 
       it 'returns the unaccepted id type heading' do
         expect(presenter.heading).to eq(I18n.t('doc_auth.headers.unaccepted_id_type'))
+      end
+    end
+
+    context 'when error_code is :unexpected_id_type' do
+      let(:error_code) { :unexpected_id_type }
+
+      context 'when the passport is requested' do
+        let(:passport_requested) { true }
+        it 'returns the passport unexpected id type heading' do
+          expect(presenter.heading).to eq(I18n.t('doc_auth.errors.verify_passport_heading'))
+        end
+      end
+
+      context 'when the passport not requested' do
+        let(:passport_requested) { false }
+        it 'returns the passport unexpected id type heading' do
+          expect(presenter.heading).to eq(I18n.t('doc_auth.errors.verify_drivers_license_heading'))
+        end
       end
     end
 
@@ -69,6 +93,46 @@ RSpec.describe SocureErrorPresenter do
 
       it 'returns the unaccepted id type message' do
         expect(presenter.body_text).to eq(I18n.t('doc_auth.errors.unaccepted_id_type'))
+      end
+    end
+
+    context 'when error_code is :unexpected_id_type' do
+      let(:error_code) { :unexpected_id_type }
+
+      context 'when the passport is requested' do
+        let(:passport_requested) { true }
+        it 'returns the passport unexpected id type heading' do
+          expect(presenter.body_text).to eq(
+            safe_join(
+              [
+                I18n.t('doc_auth.errors.verify_passport_text_html'),
+                link_to(
+                  I18n.t('doc_auth.errors.verify.use_another_type_of_id'),
+                  idv_choose_id_type_path,
+                ),
+              ],
+              ' ',
+            ),
+          )
+        end
+      end
+
+      context 'when the passport not requested' do
+        let(:passport_requested) { false }
+        it 'returns the passport unexpected id type heading' do
+          expect(presenter.body_text).to eq(
+            safe_join(
+              [
+                I18n.t('doc_auth.errors.verify_drivers_license_text_html'),
+                link_to(
+                  I18n.t('doc_auth.errors.verify.use_another_type_of_id'),
+                  idv_choose_id_type_path,
+                ),
+              ],
+              ' ',
+            ),
+          )
+        end
       end
     end
 
