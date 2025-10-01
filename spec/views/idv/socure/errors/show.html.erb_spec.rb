@@ -146,11 +146,14 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
     context 'when passport is not requested' do
       it 'shows correct h1' do
-        expect(rendered).to have_css('h1', text: t('doc_auth.errors.verify_drivers_license_heading'))
+        expect(rendered).to have_css(
+          'h1',
+          text: t('doc_auth.errors.verify_drivers_license_heading'),
+        )
       end
 
       it 'shows unexpected_id_type message' do
-        expect(rendered).to have_text(t('doc_auth.errors.verify_drivers_license_text_html'))
+        expect(rendered).to have_text(t('doc_auth.errors.verify_drivers_license_text'))
       end
     end
 
@@ -161,7 +164,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       end
 
       it 'shows unexpected_id_type message' do
-        expect(rendered).to have_text(t('doc_auth.errors.verify_passport_text_html'))
+        expect(rendered).to have_text(t('doc_auth.errors.verify_passport_text'))
       end
     end
 

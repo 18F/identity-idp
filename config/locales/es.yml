@@ -599,9 +599,9 @@ doc_auth.errors.underage: Debe tener al menos 13 años para usar %{app_name}. Si
 doc_auth.errors.unreadable_id: Tome sus fotografías en un lugar bien iluminado sin sombras ni reflejos. Revise que la información en su identificación se vea nítida y que la tarjeta llene el marco.
 doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
 doc_auth.errors.verify_drivers_license_heading: No pudimos verificar su licencia de conducir o su identificación estatal
-doc_auth.errors.verify_drivers_license_text_html: Revise que las fotos que está tomando sean de una licencia de conducir o identificación estatal. Vuelva a intentarlo,
+doc_auth.errors.verify_drivers_license_text: Revise que las fotos que está tomando sean de una licencia de conducir o identificación estatal. Vuelva a intentarlo,
 doc_auth.errors.verify_passport_heading: No pudimos verificar su pasaporte
-doc_auth.errors.verify_passport_text_html: Revise que las fotos que está tomando sean de un pasaporte. Vuelva a intentarlo,
+doc_auth.errors.verify_passport_text: Revise que las fotos que está tomando sean de un pasaporte. Vuelva a intentarlo,
 doc_auth.errors.verify.use_another_type_of_id: o use otro tipo de identificación
 doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>

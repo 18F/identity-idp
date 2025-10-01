@@ -7,9 +7,11 @@ module DocAuth
       include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
-      attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal, :passport_requested
+      attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal,
+                  :passport_requested
 
-      def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false, passport_requested: false)
+      def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false,
+                     passport_requested: false)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @selfie_required = selfie_required

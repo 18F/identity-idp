@@ -92,7 +92,8 @@ module DocAuth
         )
       end
 
-      def get_results(instance_id:, selfie_required: false, passport_submittal: false, passport_requested: false)
+      def get_results(instance_id:, selfie_required: false, passport_submittal: false,
+                      passport_requested: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
         last_image = passport_submittal ?
                        self.class.last_uploaded_passport_image : self.class.last_uploaded_back_image

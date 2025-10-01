@@ -105,7 +105,7 @@ RSpec.describe SocureErrorPresenter do
           expect(presenter.body_text).to eq(
             safe_join(
               [
-                I18n.t('doc_auth.errors.verify_passport_text_html'),
+                I18n.t('doc_auth.errors.verify_passport_text'),
                 link_to(
                   I18n.t('doc_auth.errors.verify.use_another_type_of_id'),
                   idv_choose_id_type_path,
@@ -123,7 +123,7 @@ RSpec.describe SocureErrorPresenter do
           expect(presenter.body_text).to eq(
             safe_join(
               [
-                I18n.t('doc_auth.errors.verify_drivers_license_text_html'),
+                I18n.t('doc_auth.errors.verify_drivers_license_text'),
                 link_to(
                   I18n.t('doc_auth.errors.verify.use_another_type_of_id'),
                   idv_choose_id_type_path,

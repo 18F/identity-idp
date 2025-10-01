@@ -105,8 +105,8 @@ function GeneralError({
   if (isUnexpectedIdTypeError) {
     const isPassport = err?.message === 'passport';
     const message = isPassport
-      ? t('doc_auth.errors.verify_drivers_license_text_html')
-      : t('doc_auth.errors.verify_passport_text_html');
+      ? t('doc_auth.errors.verify_drivers_license_text')
+      : t('doc_auth.errors.verify_passport_text');
     return (
       <p>
         {t(message)}{' '}
@@ -114,7 +114,7 @@ function GeneralError({
           {t('doc_auth.errors.verify.use_another_type_of_id')}
         </Link>
       </p>
-    )
+    );
   }
   if (isPassportError) {
     if (!isNetwork) {

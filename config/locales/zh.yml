@@ -599,9 +599,9 @@ doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如�
 doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
 doc_auth.errors.verify_drivers_license_heading: 我们无法验证你的驾照或州 ID。
-doc_auth.errors.verify_drivers_license_text_html: 请确保你正在拍摄的是驾照或州 ID。再试一次，
+doc_auth.errors.verify_drivers_license_text: 请确保你正在拍摄的是驾照或州 ID。再试一次，
 doc_auth.errors.verify_passport_heading: 我们无法验证你的护照
-doc_auth.errors.verify_passport_text_html: 请确保你正在拍摄的是护照。再试一次，
+doc_auth.errors.verify_passport_text: 请确保你正在拍摄的是护照。再试一次，
 doc_auth.errors.verify.use_another_type_of_id: 或使用另一种类型的 ID。
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。

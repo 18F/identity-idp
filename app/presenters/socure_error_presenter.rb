@@ -8,7 +8,8 @@ class SocureErrorPresenter
 
   attr_reader :url_options, :passport_requested
 
-  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:, flow_path:)
+  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:,
+                 flow_path:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
@@ -172,8 +173,8 @@ class SocureErrorPresenter
 
   def unexpected_id_type_text
     verify_id_text = passport_requested ?
-      t('doc_auth.errors.verify_passport_text_html') :
-      t('doc_auth.errors.verify_drivers_license_text_html')
+      t('doc_auth.errors.verify_passport_text') :
+      t('doc_auth.errors.verify_drivers_license_text')
 
     safe_join(
       [

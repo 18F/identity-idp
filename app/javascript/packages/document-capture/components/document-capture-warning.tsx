@@ -22,6 +22,11 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
+function getIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'unexpected_id_type');
+  return idType ? idType.error : null;
+}
+
 type GetHeadingArguments = {
   isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
@@ -45,7 +50,7 @@ function getHeading({
     const isPassport = idType?.message === 'passport';
     const heading = isPassport
       ? t('doc_auth.errors.verify_drivers_license_heading')
-      : t('doc_auth.errors.verify_passport_heading')
+      : t('doc_auth.errors.verify_passport_heading');
     return heading;
   }
   if (isFailedDocType) {
@@ -78,11 +83,6 @@ function isPassportError(unknownFieldErrors) {
 
 function isUnexpectedIdTypeError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'unexpected_id_type');
-}
-
-function getIdType(unknownFieldErrors) {
-  const idType = unknownFieldErrors.find((error) => error.field === 'unexpected_id_type')
-  return idType ? idType.error : null;
 }
 
 function DocumentCaptureWarning({

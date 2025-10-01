@@ -288,7 +288,7 @@ describe('DocumentCaptureWarning', () => {
         validateTroubleShootingSection();
       });
     });
-    
+
     context('unexpected id type', () => {
       const isFailedResult = false;
       const isFailedDocType = false;
@@ -312,7 +312,7 @@ describe('DocumentCaptureWarning', () => {
           // error message section
           validateHeader('doc_auth.errors.verify_passport_heading', 1, true);
           validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
-          expect(getByText('doc_auth.errors.verify_passport_text_html')).to.be.ok();
+          expect(getByText('doc_auth.errors.verify_passport_text')).to.be.ok();
           expect(getByText('idv.failure.attempts_html')).to.be.ok();
           expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
           // the ipp section isn't displayed with isFailedResult=true
@@ -320,7 +320,7 @@ describe('DocumentCaptureWarning', () => {
           // troubleshooting section
           validateTroubleShootingSection();
         });
-      }); 
+      });
 
       context('expected id type is drivers_license', () => {
         it('renders a unable to verify drivers_license screen', () => {
@@ -341,7 +341,7 @@ describe('DocumentCaptureWarning', () => {
           // error message section
           validateHeader('doc_auth.errors.verify_drivers_license_heading', 1, true);
           validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
-          expect(getByText('doc_auth.errors.verify_drivers_license_text_html')).to.be.ok();
+          expect(getByText('doc_auth.errors.verify_drivers_license_text')).to.be.ok();
           expect(getByText('idv.failure.attempts_html')).to.be.ok();
           expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
           // the ipp section isn't displayed with isFailedResult=true
@@ -349,7 +349,7 @@ describe('DocumentCaptureWarning', () => {
           // troubleshooting section
           validateTroubleShootingSection();
         });
-      }); 
+      });
     });
 
     context('failed result', () => {
