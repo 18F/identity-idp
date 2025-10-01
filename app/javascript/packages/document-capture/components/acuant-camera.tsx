@@ -174,7 +174,7 @@ interface AcuantCaptureImage {
   /**
    * Pre-cropped image data
    */
-  data: Blob;
+  data: ImageData;
   /**
    * Image width
    */
@@ -269,7 +269,7 @@ function AcuantCamera({
   const { t } = useI18n();
   const uncroppedImageDataRef = useRef<string | null>(null);
 
-  const processUncropped = useImmutableCallback(async (response: AcuantCaptureImage) => {
+  const processUncropped = useImmutableCallback((response: AcuantCaptureImage) => {
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -277,13 +277,12 @@ function AcuantCamera({
         return;
       }
 
-      canvas.width = response.width;
-      canvas.height = response.height;
+      canvas.width = response.data.width;
+      canvas.height = response.data.height;
 
-      const imageBitmap = await createImageBitmap(response.data);
-      ctx.drawImage(imageBitmap, 0, 0);
+      ctx.putImageData(response.data, 0, 0);
 
-      const base64Data = canvas.toDataURL('image/jpeg');
+      const base64Data = canvas.toDataURL('image/jpg');
       uncroppedImageDataRef.current = base64Data;
     } catch {}
   }, []);
@@ -301,7 +300,7 @@ function AcuantCamera({
 
   const onCropped = useImmutableCallback(
     (response) => {
-      if (response) {
+      if (response && response.image) {
         onImageCaptureSuccess(response, uncroppedImageDataRef.current || undefined);
       } else {
         onImageCaptureFailure();
