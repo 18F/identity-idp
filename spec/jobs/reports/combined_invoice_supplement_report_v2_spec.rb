@@ -722,7 +722,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
       returned_at: returned_at,
       profile_verified_at: user.profiles.map(&:verified_at).max,
       billable: true,
-      profile_requested_issuer:,
+      profile_requested_issuer: profile_requested_issuer,
     )
   end
 end
