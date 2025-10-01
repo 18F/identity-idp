@@ -34,6 +34,7 @@ module Idv
         pii_validation: stored_result&.errors&.dig(:pii_validation),
         unaccepted_id_type: stored_result&.errors&.dig(:unaccepted_id_type),
         selfie_fail: stored_result&.errors&.dig(:selfie_fail),
+        unexpected_id_type: stored_result&.errors&.dig(:unexpected_id_type),
       }
     end
 

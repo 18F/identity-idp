@@ -16,6 +16,8 @@ module Idv
         :unaccepted_id_type
       elsif result.errors[:selfie_fail]
         :selfie_fail
+      elsif result.errors[:unexpected_id_type]
+        :unexpected_id_type
       elsif result.errors[:socure]
         result.errors.dig(:socure, :reason_codes).first
       elsif result.errors[:network]
