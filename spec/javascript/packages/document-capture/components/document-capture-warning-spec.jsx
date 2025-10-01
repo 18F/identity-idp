@@ -52,25 +52,29 @@ describe('DocumentCaptureWarning', () => {
     isFailedResult,
     isFailedSelfieLivenessOrQuality = false,
     isFailedSelfieFaceMatch = false,
+    unknownFieldErrors,
     inPersonUrl,
   }) {
-    const unknownFieldErrors = [
+    const defaultUnknownFieldErrors = [
       {
         field: 'general',
         error: toFormEntryError({ field: 'general', message: 'general error' }),
       },
     ];
+    const finalUnknownFieldErrors = unknownFieldErrors || defaultUnknownFieldErrors;
     return render(
       <AnalyticsContext.Provider value={{ trackEvent }}>
         <InPersonContext.Provider value={{ inPersonURL: inPersonUrl }}>
           <DocumentCaptureWarning
+            isResultCodeInvalid={false}
             isFailedDocType={isFailedDocType}
             isFailedResult={isFailedResult}
             isFailedSelfie={isFailedSelfieFaceMatch}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             remainingSubmitAttempts={2}
-            unknownFieldErrors={unknownFieldErrors}
+            unknownFieldErrors={finalUnknownFieldErrors}
             actionOnClick={() => {}}
+            hasDismissed={false}
           />
           ,
         </InPersonContext.Provider>
@@ -283,6 +287,69 @@ describe('DocumentCaptureWarning', () => {
         // troubleshooting section
         validateTroubleShootingSection();
       });
+    });
+    
+    context('unexpected id type', () => {
+      const isFailedResult = false;
+      const isFailedDocType = false;
+
+      context('expected id type is passport', () => {
+        it('renders a unable to verify passport screen', () => {
+          const unknownFieldErrors = [
+            {
+              field: 'unexpected_id_type',
+              error: toFormEntryError({ field: 'unexpected_id_type', message: 'drivers_license' }),
+            },
+          ];
+
+          const { getByRole, getByText } = renderContent({
+            isFailedResult,
+            isFailedDocType,
+            unknownFieldErrors,
+            inPersonUrl,
+          });
+
+          // error message section
+          validateHeader('doc_auth.errors.verify_passport_heading', 1, true);
+          validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
+          expect(getByText('doc_auth.errors.verify_passport_text_html')).to.be.ok();
+          expect(getByText('idv.failure.attempts_html')).to.be.ok();
+          expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+          // the ipp section isn't displayed with isFailedResult=true
+          validateIppSection(false);
+          // troubleshooting section
+          validateTroubleShootingSection();
+        });
+      }); 
+
+      context('expected id type is drivers_license', () => {
+        it('renders a unable to verify drivers_license screen', () => {
+          const unknownFieldErrors = [
+            {
+              field: 'unexpected_id_type',
+              error: toFormEntryError({ field: 'unexpected_id_type', message: 'passport' }),
+            },
+          ];
+
+          const { getByRole, getByText } = renderContent({
+            isFailedResult,
+            isFailedDocType,
+            unknownFieldErrors,
+            inPersonUrl,
+          });
+
+          // error message section
+          validateHeader('doc_auth.errors.verify_drivers_license_heading', 1, true);
+          validateHeader('doc_auth.errors.rate_limited_subheading', 2, false);
+          expect(getByText('doc_auth.errors.verify_drivers_license_text_html')).to.be.ok();
+          expect(getByText('idv.failure.attempts_html')).to.be.ok();
+          expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+          // the ipp section isn't displayed with isFailedResult=true
+          validateIppSection(false);
+          // troubleshooting section
+          validateTroubleShootingSection();
+        });
+      }); 
     });
 
     context('failed result', () => {
