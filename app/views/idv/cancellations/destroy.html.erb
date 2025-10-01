@@ -1,6 +1,6 @@
 <% self.title = t('titles.idv.canceled') %>
 
-<%= render StatusPageComponent.new(status: :error, render_icon: false) do |c| %>
+<%= render StatusPageComponent.new(status: :error, icon: :none) do |c| %>
   <center>
     <%= image_tag(asset_url('idv/switch.svg'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>
   </center>

@@ -4,7 +4,7 @@ class StatusPageComponent < BaseComponent
   ICONS = {
     info: [:question],
     warning: [nil],
-    error: [nil, :lock],
+    error: [nil, :lock, :none],
     delete: [nil],
   }.freeze
 
@@ -15,15 +15,14 @@ class StatusPageComponent < BaseComponent
   renders_one :troubleshooting_options, TroubleshootingOptionsComponent
   renders_one :footer, PageFooterComponent
 
-  attr_reader :status, :icon, :render_icon
+  attr_reader :status, :icon
 
   validates_inclusion_of :status, in: %i[info error warning delete]
   validate :validate_status_icon
 
-  def initialize(status: :error, icon: nil, render_icon: true)
+  def initialize(status: :error, icon: nil)
     @icon = icon
     @status = status
-    @render_icon = render_icon
   end
 
   def icon_name
