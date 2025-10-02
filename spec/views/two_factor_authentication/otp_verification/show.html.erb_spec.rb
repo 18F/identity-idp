@@ -286,7 +286,9 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         expect(rendered).to include('countdown-phase-alert')
 
-        expect(rendered).to have_css('lg-countdown[data-expiration].display-none[aria-hidden="true"]')
+        expect(rendered).to have_css(
+          'lg-countdown[data-expiration].display-none[aria-hidden="true"]',
+        )
 
         expect(rendered).to include(%(data-expiration="#{@presenter.otp_expiration.iso8601}"))
       end
