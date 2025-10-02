@@ -1,4 +1,4 @@
-import type { CountdownElement } from './countdown-element';
+import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 
 type Phase = { at_s: number; classes: string; label: string };
 
@@ -157,7 +157,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lg-countdown-alert': CountdownPhaseAlertElement;
+    'lg-countdown-phase-alert': CountdownPhaseAlertElement;
   }
 }
 
