@@ -23,7 +23,7 @@ class AlertIconComponent < BaseComponent
   end
 
   def render?
-    ICON_SOURCE.key?(icon_name) if ICON_SOURCE[icon_name]
+    ICON_SOURCE[icon_name].present?
   end
 
   def source
