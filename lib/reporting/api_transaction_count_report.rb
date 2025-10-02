@@ -73,7 +73,6 @@ module Reporting
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
-          'Socure (KYC) - Shadow',
           'Socure (KYC) - Non-Shadow',
           'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
@@ -85,7 +84,6 @@ module Reporting
           instant_verify_table.first,
           phone_finder_table.first,
           socure_table.first,
-          socure_kyc_shadow_table.first,
           socure_kyc_non_shadow_table.first,
           fraud_score_and_attribute_table.first,
           threat_metrix_idv_table.first,
@@ -124,12 +122,6 @@ module Reporting
 
     def socure_kyc_non_shadow_table
       result = fetch_results(query: socure_kyc_non_shadow_query)
-      socure_table_count = result.count
-      [socure_table_count, result]
-    end
-
-    def socure_kyc_shadow_table
-      result = fetch_results(query: socure_kyc_shadow_query)
       socure_table_count = result.count
       [socure_table_count, result]
     end
