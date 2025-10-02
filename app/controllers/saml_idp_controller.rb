@@ -31,6 +31,7 @@ class SamlIdpController < ApplicationController
   before_action :confirm_two_factor_authenticated, only: :auth
   before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
   before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: :auth
+  before_action :confirm_user_is_not_suspended, only: :auth
 
   def auth
     capture_analytics
@@ -269,5 +270,9 @@ class SamlIdpController < ApplicationController
 
   def req_attrs_regexp
     Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+  end
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 end
