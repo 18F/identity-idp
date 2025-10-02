@@ -323,9 +323,9 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Fraud Blocks Proofing Rate Report
-      fraud_blocks_proofing_rate_report: {
-        class: 'Reports::FraudBlocksProofingRateReport', # should this be Reports:: or Reporting::
+      # Identity Verification Outcomes Rate Report
+      identity_verification_outcomes_report: {
+        class: 'Reports::IdentityVerificationOutcomesReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
