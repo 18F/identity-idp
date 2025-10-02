@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CountdownAlertComponent < BaseComponent
-
   attr_reader :expiration, :phases, :alert_options, :countdown_options,
               :sr_phase_region_id, :sr_expiry_region_id, :tag_options
 
@@ -24,35 +23,34 @@ class CountdownAlertComponent < BaseComponent
   end
 
   def call
+    base = base_alert_classes.join(' ')
+
     content_tag(
       :'lg-countdown-alert',
-      content,
+      content(base),
       **tag_options,
       class: css_class,
       data: {
         phases: phases.to_json,
-        type_classes: type_classes_map.to_json,
+        base_classes: base,
         sr_phase_region_id: sr_phase_region_id,
         sr_expiry_region_id: sr_expiry_region_id,
       }.merge(tag_options[:data].to_h),
     )
   end
 
-  def content
+  def content(base_classes)
     initial = initial_phase
     AlertComponent.new(
       **alert_options,
-      type: initial[:type],
-      class: alert_css_for(initial[:type]),
+      class: [base_classes, initial[:classes]].join(' ').squeeze(' '),
     ).with_content(
       safe_join(
         [
           content_tag(:span, initial[:label], 'data-role': 'phase-label'),
           CountdownComponent.new(
-            **countdown_options, class: 'display-none',
-                                 'aria-hidden': 'true'
-          )
-                            .render_in(view_context),
+            **countdown_options, class: 'display-none', 'aria-hidden': 'true'
+          ).render_in(view_context),
         ],
       ),
     ).render_in(view_context)
@@ -65,33 +63,17 @@ class CountdownAlertComponent < BaseComponent
   end
 
   def initial_phase
-    remaining_s = [(expiration.to_f - Time.zone.now.to_f).round, 0].max
-    asc = phases.sort_by { |p| p[:at_s] }
-    asc.find { |p| p[:at_s] >= remaining_s } || asc.last
+    phases.max_by { |p| p[:at_s] }
   end
 
   def normalize_phases(phases)
-    phases.map do |p|
-      type = p[:type].to_sym
-      { at_s: Integer(p[:at_s]), type:, label: String(p[:label]) }
-    end
-  end
-
-  def type_classes_map
-    {
-      'info' => (alert_css_for(:info) - base_alert_classes),
-      'warning' => (alert_css_for(:warning) - base_alert_classes),
-      'error' => (alert_css_for(:error) - base_alert_classes),
-    }
-  end
-
-  def alert_css_for(type)
-    base_alert_classes + case type
-    when :info    then %w[usa-alert--info usa-alert--info-time]
-    when :warning then %w[usa-alert--warning]
-    when :error   then %w[usa-alert--error]
-    else []
-    end
+    Array(phases).map { |p|
+      {
+        at_s: Integer(p[:at_s]),
+        classes: String(p[:classes]).strip,
+        label: String(p[:label]),
+      }
+    }.sort_by { |p| p[:at_s] }
   end
 
   def base_alert_classes
