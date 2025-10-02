@@ -9,11 +9,11 @@
 <% if @presenter.otp_expiration.present? %>
   <% test_expiration = Time.zone.now + 12.seconds %>
   <% test_phases = [
-       { at_s: 12, type: :info, label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 10) },
-       { at_s:  6, type: :warning, label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 5) },
-       { at_s:  3, type: :warning, label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 1) },
-       { at_s:  1, type: :warning, label: t('instructions.mfa.sms.seconds_remaining_html', seconds: 30) },
-       { at_s:  0, type: :error,   label: t('instructions.mfa.sms.code_expired_html') },
+       { at_s: 12, classes: 'usa-alert--info', label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 10) },
+       { at_s:  6, classes: 'usa-alert--warning', label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 5) },
+       { at_s:  3, classes: 'usa-alert--warning', label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 1) },
+       { at_s:  1, classes: 'usa-alert--warning', label: t('instructions.mfa.sms.seconds_remaining_html', seconds: 30) },
+       { at_s:  0, classes: 'usa-alert--error', label: t('instructions.mfa.sms.code_expired_html') },
      ] %>
 
   <div id="otp-live-phase" class="usa-sr-only" aria-live="polite" aria-atomic="true"></div>
