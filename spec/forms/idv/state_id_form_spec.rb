@@ -5,72 +5,68 @@ RSpec.describe Idv::StateIdForm do
   let(:valid_dob) do
     valid_d = Time.zone.today - IdentityConfig.store.idv_min_age_years.years - 1.day
     ActionController::Parameters.new(
-      {
-        year: valid_d.year,
-        month: valid_d.month,
-        day: valid_d.mday,
-      },
+      year: valid_d.year,
+      month: valid_d.month,
+      day: valid_d.mday,
     ).permit(:year, :month, :day)
   end
   let(:too_young_dob) do
     dob = Time.zone.today - IdentityConfig.store.idv_min_age_years.years + 1.day
     ActionController::Parameters.new(
-      {
-        year: dob.year,
-        month: dob.month,
-        day: dob.mday,
-      },
-    )
+      year: dob.year,
+      month: dob.month,
+      day: dob.mday,
+    ).permit(:year, :month, :day)
+  end
+  let(:valid_exp) do
+    valid_d = Time.zone.today + 2.days
+    ActionController::Parameters.new(
+      year: valid_d.year,
+      month: valid_d.month,
+      day: valid_d.mday,
+    ).permit(:year, :month, :day)
+  end
+  let(:expired_exp) do
+    dob = Time.zone.today
+    ActionController::Parameters.new(
+      year: dob.year,
+      month: dob.month,
+      day: dob.mday,
+    ).permit(:year, :month, :day)
   end
   let(:same_address_as_id) { 'true' }
+  let(:first_name) { Faker::Name.first_name }
+  let(:dob) { valid_dob }
+  let(:id_expiration) { valid_exp }
   let(:params) do
     {
-      first_name: Faker::Name.first_name,
+      first_name:,
       last_name: Faker::Name.last_name,
-      dob: valid_dob,
+      dob:,
       identity_doc_address1: Faker::Address.street_address,
       identity_doc_address2: Faker::Address.secondary_address,
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: same_address_as_id,
+      same_address_as_id:,
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
-    }
-  end
-  let(:dob_min_age_name_error_params) do
-    {
-      first_name: Faker::Name.first_name + invalid_char,
-      last_name: Faker::Name.last_name,
-      dob: too_young_dob,
-      identity_doc_address1: Faker::Address.street_address,
-      identity_doc_address2: Faker::Address.secondary_address,
-      identity_doc_city: Faker::Address.city,
-      identity_doc_zipcode: Faker::Address.zip_code,
-      identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: same_address_as_id,
-      state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IdNumber.valid,
+      id_expiration:,
     }
   end
   let(:invalid_char) { '1' }
-  let(:name_error_params) do
-    {
+  let(:dob_min_age_name_error_params) do
+    params.merge(
       first_name: Faker::Name.first_name + invalid_char,
-      last_name: Faker::Name.last_name,
-      dob: valid_dob,
-      identity_doc_address1: Faker::Address.street_address,
-      identity_doc_address2: Faker::Address.secondary_address,
-      identity_doc_city: Faker::Address.city,
-      identity_doc_zipcode: Faker::Address.zip_code,
-      identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id: same_address_as_id,
-      state_id_jurisdiction: 'AL',
-      state_id_number: Faker::IdNumber.valid,
-    }
+      dob: too_young_dob,
+    )
   end
+  let(:expired_params) { params.merge(id_expiration: expired_exp) }
+  let(:name_error_params) { params.merge(first_name: Faker::Name.first_name + invalid_char) }
   let(:pii) { nil }
   describe '#submit' do
+    let(:result) { subject.submit(params) }
+
     context 'when the form is valid' do
       let(:form_response) do
         FormResponse.new(
@@ -82,12 +78,10 @@ RSpec.describe Idv::StateIdForm do
       end
 
       it 'returns a successful form response' do
-        expect(subject.submit(params)).to eq(form_response)
+        expect(result).to eq(form_response)
       end
 
       it 'logs extra analytics attributes' do
-        result = subject.submit(params)
-
         expect(result.extra).to eq(
           {
             birth_year: valid_dob[:year],
@@ -98,11 +92,12 @@ RSpec.describe Idv::StateIdForm do
     end
 
     context 'when there is an error with name' do
+      let(:first_name) { Faker::Name.first_name + invalid_char }
+
       it 'returns a single name error when name is wrong' do
-        result = subject.submit(name_error_params)
-        expect(subject.errors.empty?).to be(false)
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
         expect(subject.errors[:first_name]).to eq [
           I18n.t(
             'in_person_proofing.form.state_id.errors.unsupported_chars',
@@ -111,20 +106,40 @@ RSpec.describe Idv::StateIdForm do
         ]
         expect(result.errors.empty?).to be(true)
       end
-      it 'returns both name and dob error when both fields are invalid' do
-        result = subject.submit(dob_min_age_name_error_params)
-        expect(subject.errors.empty?).to be(false)
+
+      context 'also when the user is too young' do
+        let(:dob) { too_young_dob }
+
+        it 'returns both name and dob error when both fields are invalid' do
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(subject.errors.empty?).to be(false)
+          expect(subject.errors[:first_name]).to eq [
+            I18n.t(
+              'in_person_proofing.form.state_id.errors.unsupported_chars',
+              char_list: [invalid_char].join(', '),
+            ),
+          ]
+          expect(subject.errors[:dob]).to eq [
+            I18n.t(
+              'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+              app_name: APP_NAME,
+            ),
+          ]
+        end
+      end
+    end
+
+    context 'when the ID is expired' do
+      let(:id_expiration) { expired_exp }
+
+      it 'returns both expired error' do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(subject.errors[:first_name]).to eq [
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:id_expiration]).to eq [
           I18n.t(
-            'in_person_proofing.form.state_id.errors.unsupported_chars',
-            char_list: [invalid_char].join(', '),
-          ),
-        ]
-        expect(subject.errors[:dob]).to eq [
-          I18n.t(
-            'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+            'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
             app_name: APP_NAME,
           ),
         ]
@@ -132,14 +147,11 @@ RSpec.describe Idv::StateIdForm do
     end
 
     context 'when the same_address_as_id field is missing' do
-      before do
-        params.delete(:same_address_as_id)
-      end
       let(:same_address_as_id) { nil }
+
       it 'returns an error' do
-        result = subject.submit(params)
-        expect(subject.errors.empty?).to be(false)
         expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
         expect(subject.errors[:same_address_as_id]).to eq [
           I18n.t('errors.messages.missing_field'),
         ]

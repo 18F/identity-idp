@@ -13,6 +13,7 @@ module Idv
                 :identity_doc_city,
                 :state_id_jurisdiction,
                 :state_id_number,
+                :id_expiration,
                 :same_address_as_id,
                 presence: true
 
@@ -43,6 +44,18 @@ module Idv
                      message: ->(_, _) do
                        I18n.t(
                          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                         app_name: APP_NAME,
+                       )
+                     end
+      # rubocop:enable Layout/LineLength
+      # rubocop:disable Layout/LineLength
+      validates_with UspsInPersonProofing::DateValidator,
+                     attributes: [:id_expiration], greater_than_or_equal_to: ->(_rec) {
+                       Time.zone.today + 2.days
+                     },
+                     message: ->(_, _) do
+                       I18n.t(
+                         'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
                          app_name: APP_NAME,
                        )
                      end

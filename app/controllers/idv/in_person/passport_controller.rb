@@ -5,6 +5,7 @@ module Idv
     class PassportController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
+      include Idv::IdConcern
 
       before_action :confirm_step_allowed
       before_action :initialize_pii_from_user, only: [:show]
@@ -102,18 +103,6 @@ module Idv
 
       def parsed_expiration
         parse_date(pii[:passport_expiration])
-      end
-
-      def parse_date(date)
-        return nil unless date.present?
-
-        if date.instance_of?(String)
-          Date.parse(date)
-        elsif date.instance_of?(Hash)
-          Date.parse(MemorableDateComponent.extract_date_param(date))
-        end
-      rescue Date::Error
-        # Catch date parsing errors
       end
 
       def form

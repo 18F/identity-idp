@@ -1061,7 +1061,7 @@ RSpec.describe Idv::EnterPasswordController do
         expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
           .with(
             user: user,
-            pii: Pii::Attributes.new_from_hash(applicant),
+            applicant_pii: Pii::UspsApplicant.from_idv_applicant(idv_session.applicant),
             is_enhanced_ipp: is_enhanced_ipp,
             opt_in: nil,
           )
