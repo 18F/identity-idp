@@ -211,8 +211,6 @@ idv_socure_reason_code_download_enabled: false
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
 idv_socure_reason_codes_docv_selfie_pass: '[]'
-idv_socure_shadow_mode_enabled: false
-idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
 in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
@@ -457,7 +455,6 @@ socure_docv_webhook_secret_key: ''
 socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
-socure_idplus_shadow_mode_percent: 0
 socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''

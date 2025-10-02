@@ -319,30 +319,6 @@ module Reporting
       QUERY
     end
 
-    def socure_kyc_shadow_query
-      <<~QUERY
-        fields 
-          properties.event_properties.socure_result.success as success,
-          properties.event_properties.socure_result.timed_out as timed_out,
-          properties.event_properties.socure_result.transaction_id as transaction_id,
-          properties.event_properties.socure_result.vendor_name as vendor_name,
-          properties.event_properties.socure_result.verified_attributes.0 as v0,
-          properties.event_properties.socure_result.verified_attributes.1 as v1,
-          properties.event_properties.socure_result.verified_attributes.2 as v2,
-          properties.event_properties.socure_result.verified_attributes.3 as v3,
-          properties.event_properties.socure_result.verified_attributes.4 as v4,
-          properties.event_properties.socure_result.verified_attributes.5 as v5,
-          properties.event_properties.socure_result.errors.I352 as I352,
-          properties.event_properties.socure_result.errors.I900 as I900,
-          properties.event_properties.socure_result.errors.I901 as I901,
-          properties.event_properties.socure_result.errors.I902 as I902,
-          properties.event_properties.socure_result.errors.I919 as I919,
-          properties.event_properties.socure_result.errors.R354 as R354
-        | filter name = "idv_socure_shadow_mode_proofing_result"
-        | limit 10000
-      QUERY
-    end
-
     def socure_kyc_non_shadow_query
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
