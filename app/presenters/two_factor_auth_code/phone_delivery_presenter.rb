@@ -37,6 +37,36 @@ module TwoFactorAuthCode
       )
     end
 
+    def alert_countdown_phases
+      [
+        {
+          at_s: 10.minutes,
+          classes: 'usa-alert--info',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 10),
+        },
+        {
+          at_s: 5.minutes,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 5),
+        },
+        {
+          at_s: 1.minute,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 1),
+        },
+        {
+          at_s: 30,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.seconds_remaining_html', seconds: 30),
+        },
+        {
+          at_s: 0,
+          classes: 'usa-alert--error',
+          label: t('instructions.mfa.sms.code_expired_html'),
+        },
+      ]
+    end
+
     def phone_call_text
       t('two_factor_authentication.otp_delivery_preference.phone_call')
     end
