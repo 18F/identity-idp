@@ -49,7 +49,7 @@ class CountdownPhaseAlertComponent < BaseComponent
         [
           content_tag(:span, initial[:label], 'data-role': 'phase-label'),
           CountdownComponent.new(
-            **countdown_options, class: 'display-none', 'aria-hidden': 'true'
+            **countdown_options, class: 'display-none', 'aria-hidden': 'true',
           ).render_in(view_context),
         ],
       ),
@@ -67,13 +67,13 @@ class CountdownPhaseAlertComponent < BaseComponent
   end
 
   def normalize_phases(phases)
-    Array(phases).map { |p|
+    Array(phases).map do |p|
       {
         at_s: Integer(p[:at_s]),
         classes: String(p[:classes]).strip,
         label: String(p[:label]),
       }
-    }.sort_by { |p| p[:at_s] }
+    end.sort_by { |p| p[:at_s] }
   end
 
   def base_alert_classes
