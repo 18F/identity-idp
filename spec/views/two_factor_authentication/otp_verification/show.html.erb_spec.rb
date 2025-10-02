@@ -284,16 +284,11 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       it 'should render countdown component' do
         render
 
-        expect(rendered).to have_content(
-          t(
-            'components.countdown_alert.time_remaining_html',
-            countdown_html: distance_of_time_in_words(
-              Time.zone.now,
-              TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS.seconds.from_now,
-              true,
-            ),
-          ),
-        )
+        expect(rendered).to include('countdown-phase-alert')
+
+        expect(rendered).to have_css('lg-countdown[data-expiration].display-none[aria-hidden="true"]')
+
+        expect(rendered).to include(%(data-expiration="#{@presenter.otp_expiration.iso8601}"))
       end
     end
 
