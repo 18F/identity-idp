@@ -1,40 +1,48 @@
 import type { CountdownElement } from './countdown-element';
 
-type Phase = { at_s: number; type: 'info' | 'warning' | 'error'; label: string };
+type Phase = { at_s: number; classes: string; label: string };
 
 export class CountdownAlertElement extends HTMLElement {
+  #countdownEl?: CountdownElement;
+  #alertEl?: HTMLElement | null;
+  #labelEl?: HTMLElement | null;
+  #srPhaseEl?: HTMLElement | null;
+  #srExpiryEl?: HTMLElement | null;
+
   #currentPhaseKey?: string;
+  #phases: Phase[] = [];
+  #phaseIdx = 0;
 
   connectedCallback() {
+    this.#ensureFallbackLiveRegions();
+
+    this.#labelEl = this.querySelector('[data-role="phase-label"]');
+    this.#srPhaseEl = this.srPhaseRegion;
+    this.#srExpiryEl = this.srExpiryRegion;
+
+    this.#phases = this.#setupPhases();
+    this.#phaseIdx = Math.max(0, this.#phases.length - 1);
+
+    this.#countdownEl = this.querySelector('lg-countdown') || undefined;
+    this.#alertEl = this.querySelector('.usa-alert');
+
     this.addEventListener('lg:countdown:tick', this.#onTick);
-    this.#updatePhaseForRemaining(this.#remaining());
   }
 
   disconnectedCallback() {
     this.removeEventListener('lg:countdown:tick', this.#onTick);
+    this.#countdownEl = undefined;
+    this.#alertEl = null;
+    this.#labelEl = null;
+    this.#srPhaseEl = null;
+    this.#srExpiryEl = null;
   }
 
-  get countdown(): CountdownElement {
-    return this.querySelector('lg-countdown')!;
-  }
-
-  get labelEl(): HTMLElement | null {
-    return this.querySelector('[data-role="phase-label"]');
-  }
-
-  get phases(): Phase[] {
+  #setupPhases(): Phase[] {
     try {
-      return (JSON.parse(this.dataset.phases || '[]') as Phase[]).sort((a, b) => a.at_s - b.at_s);
+      return JSON.parse(this.dataset.phases || '[]') as Phase[];
     } catch {
       return [];
-    }
-  }
-
-  get typeClasses(): Record<string, string[]> {
-    try {
-      return JSON.parse(this.dataset.typeClasses || '{}');
-    } catch {
-      return {};
     }
   }
 
@@ -42,10 +50,12 @@ export class CountdownAlertElement extends HTMLElement {
     const id = this.dataset.srPhaseRegionId || '';
     return id ? document.getElementById(id) : null;
   }
-
   get srExpiryRegion(): HTMLElement | null {
     const id = this.dataset.srExpiryRegionId || '';
     return id ? document.getElementById(id) : null;
+  }
+  get baseClasses(): string {
+    return (this.dataset.baseClasses || '').trim();
   }
 
   #ensureFallbackLiveRegions() {
@@ -69,58 +79,64 @@ export class CountdownAlertElement extends HTMLElement {
     }
   }
 
-  #onTick = () => {
-    this.#updatePhaseForRemaining(this.#remaining());
-  };
-
-  #remaining(): number {
-    return Math.ceil(this.countdown.timeRemaining / 1000);
+  #remaining(): number | null {
+    const ms = this.#countdownEl?.timeRemaining;
+    if (typeof ms === 'number' && !Number.isNaN(ms)) {
+      return Math.max(0, Math.ceil(ms / 1000));
+    }
+    return null;
   }
 
-  // review DOM updates, innerHTML vs. textContent issues
-  #updatePhaseForRemaining(remainingS: number) {
-    if (!this.phases.length) {
-      return;
-    }
-    this.#ensureFallbackLiveRegions();
-
-    const active =
-      this.phases.find((p) => p.at_s >= remainingS) ?? this.phases[this.phases.length - 1];
-
-    const key = `${active.type}:${active.at_s}`;
+  #applyPhase(active: Phase) {
+    const key = String(active.at_s);
     if (this.#currentPhaseKey === key) {
       return;
     }
 
-    if (this.labelEl) {
-      this.labelEl.innerHTML = active.label;
-    }
-    this.#swapTypeClasses(active.type);
-
-    if (active.at_s > 0) {
-      this.srPhaseRegion && (this.srPhaseRegion.textContent = active.label);
-    } else {
-      this.srExpiryRegion && (this.srExpiryRegion.textContent = active.label);
-      this.srPhaseRegion && (this.srPhaseRegion.textContent = '');
-    }
+    this.#updateLabel(active.label);
+    this.#updateAlertClasses(active.classes);
+    this.#announceToScreenReaders(active);
 
     this.#currentPhaseKey = key;
   }
 
-  #swapTypeClasses(type: Phase['type']) {
-    const alert = this.querySelector('.usa-alert');
-    if (!alert) {
+  #updateLabel(label: string) {
+    if (this.#labelEl) {
+      this.#labelEl.innerHTML = label;
+    }
+  }
+
+  #updateAlertClasses(classes: string) {
+    const alert = this.#alertEl ?? this.querySelector('.usa-alert');
+    if (alert) {
+      alert.className = this.#joinClasses(this.baseClasses, classes);
+    }
+  }
+
+  #joinClasses(...parts: string[]) {
+    return parts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  #announceToScreenReaders(active: Phase) {
+    if (active.at_s > 0) {
+      this.#srPhaseEl && (this.#srPhaseEl.textContent = active.label);
+    } else {
+      this.#srExpiryEl && (this.#srExpiryEl.textContent = active.label);
+      this.#srPhaseEl && (this.#srPhaseEl.textContent = '');
+    }
+  }
+
+  #onTick = () => {
+    const remainingS = this.#remaining();
+    if (remainingS === null || this.#phases.length === 0) {
       return;
     }
 
-    const allKnown = [
-      ...(this.typeClasses.info || []),
-      ...(this.typeClasses.warning || []),
-      ...(this.typeClasses.error || []),
-    ];
-    allKnown.forEach((c) => alert.classList.remove(c));
-    (this.typeClasses[type] || []).forEach((c) => alert.classList.add(c));
-  }
+    while (this.#phaseIdx > 0 && remainingS <= this.#phases[this.#phaseIdx - 1].at_s) {
+      this.#phaseIdx--;
+    }
+    this.#applyPhase(this.#phases[this.#phaseIdx]);
+  };
 }
 
 declare global {
