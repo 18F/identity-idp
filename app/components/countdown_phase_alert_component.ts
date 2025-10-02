@@ -141,10 +141,10 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'lg-countdown-alert': CountdownAlertElement;
+    'lg-countdown-alert': CountdownPhaseAlertElement;
   }
 }
 
-if (!customElements.get('lg-countdown-alert')) {
-  customElements.define('lg-countdown-alert', CountdownAlertElement);
+if (!customElements.get('lg-countdown-phase-alert')) {
+  customElements.define('lg-countdown-phase-alert', CountdownPhaseAlertElement);
 }

@@ -19,7 +19,7 @@
   <div id="otp-live-phase" class="usa-sr-only" aria-live="polite" aria-atomic="true"></div>
   <div id="otp-live-expiry" class="usa-sr-only" role="alert" aria-atomic="true"></div>
 
-  <%= render CountdownAlertComponent.new(
+  <%= render CountdownPhaseAlertComponent.new(
         expiration: test_expiration,
         phases: test_phases,
         sr_phase_region_id: 'otp-live-phase',

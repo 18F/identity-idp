@@ -26,7 +26,7 @@ class CountdownPhaseAlertComponent < BaseComponent
     base = base_alert_classes.join(' ')
 
     content_tag(
-      :'lg-countdown-alert',
+      :'lg-countdown-phase-alert',
       content(base),
       **tag_options,
       class: css_class,

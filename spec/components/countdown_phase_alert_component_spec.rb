@@ -27,7 +27,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
 
   it 'renders the custom element' do
     rendered = render_inline described_class.new(**base_opts)
-    expect(rendered).to have_css('lg-countdown-alert')
+    expect(rendered).to have_css('lg-countdown-phase-alert')
   end
 
   it 'renders the initial phase label' do
@@ -60,7 +60,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
       alert_options: { class: 'margin-bottom-4' },
     )
 
-    node = rendered.at_css('lg-countdown-alert')
+    node = rendered.at_css('lg-countdown-phase-alert')
 
     expect(node['data-base-classes']).to eq('usa-alert margin-bottom-4')
     expect(node['data-type-classes']).to be_nil
@@ -71,7 +71,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
       **base_opts,
     )
 
-    node = rendered.at_css('lg-countdown-alert')
+    node = rendered.at_css('lg-countdown-phase-alert')
 
     phases   = JSON.parse(node['data-phases'])
     expected = JSON.parse(phases_sorted.to_json)
@@ -86,7 +86,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
       sr_expiry_region_id: 'otp-live-expiry',
     )
 
-    node = rendered.at_css('lg-countdown-alert')
+    node = rendered.at_css('lg-countdown-phase-alert')
     expect(node['data-sr-phase-region-id']).to eq('otp-live-phase')
     expect(node['data-sr-expiry-region-id']).to eq('otp-live-expiry')
   end
