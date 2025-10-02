@@ -48,10 +48,12 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
   get srPhaseRegion(): HTMLElement | null {
     const id = this.dataset.srPhaseRegionId || '';
+
     return id ? document.getElementById(id) : null;
   }
   get srExpiryRegion(): HTMLElement | null {
     const id = this.dataset.srExpiryRegionId || '';
+
     return id ? document.getElementById(id) : null;
   }
   get baseClasses(): string {
@@ -81,6 +83,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
   #remaining(): number | null {
     const ms = this.#countdownEl?.timeRemaining;
+
     if (typeof ms === 'number' && !Number.isNaN(ms)) {
       return Math.max(0, Math.ceil(ms / 1000));
     }
@@ -89,6 +92,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
   #applyPhase(active: Phase) {
     const key = String(active.at_s);
+
     if (this.#currentPhaseKey === key) {
       return;
     }
@@ -108,6 +112,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
 
   #updateAlertClasses(classes: string) {
     const alert = this.#alertEl ?? this.querySelector('.usa-alert');
+
     if (alert) {
       alert.className = this.#joinClasses(this.baseClasses, classes);
     }
@@ -117,17 +122,27 @@ export class CountdownPhaseAlertElement extends HTMLElement {
     return parts.join(' ').replace(/\s+/g, ' ').trim();
   }
 
+  #toPlainText(html: string): string {
+    const div = document.createElement('div');
+
+    div.innerHTML = html;
+    return (div.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
   #announceToScreenReaders(active: Phase) {
+    const text = this.#toPlainText(active.label);
+
     if (active.at_s > 0) {
-      this.#srPhaseEl && (this.#srPhaseEl.textContent = active.label);
+      this.#srPhaseEl && (this.#srPhaseEl.textContent = text);
     } else {
-      this.#srExpiryEl && (this.#srExpiryEl.textContent = active.label);
+      this.#srExpiryEl && (this.#srExpiryEl.textContent = text);
       this.#srPhaseEl && (this.#srPhaseEl.textContent = '');
     }
   }
 
   #onTick = () => {
     const remainingS = this.#remaining();
+
     if (remainingS === null || this.#phases.length === 0) {
       return;
     }
@@ -135,6 +150,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
     while (this.#phaseIdx > 0 && remainingS <= this.#phases[this.#phaseIdx - 1].at_s) {
       this.#phaseIdx--;
     }
+
     this.#applyPhase(this.#phases[this.#phaseIdx]);
   };
 }
