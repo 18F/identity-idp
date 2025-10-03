@@ -21,7 +21,7 @@ module TwoFactorAuthCode
 
     def phone_number_message
       t(
-        "instructions.mfa.#{otp_delivery_preference}.number_message_html",
+        "instructions.mfa.#{otp_delivery_preference}.code_sent_message_html",
         number_html: content_tag(:strong, phone_number),
       )
     end
