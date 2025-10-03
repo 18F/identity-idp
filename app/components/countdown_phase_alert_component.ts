@@ -122,7 +122,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
     return parts.join(' ').replace(/\s+/g, ' ').trim();
   }
 
-  #toPlainText(html: string): string {
+  #htmlToText(html: string): string {
     const div = document.createElement('div');
 
     div.innerHTML = html;
@@ -130,7 +130,7 @@ export class CountdownPhaseAlertElement extends HTMLElement {
   }
 
   #announceToScreenReaders(active: Phase) {
-    const text = this.#toPlainText(active.label);
+    const text = this.#htmlToText(active.label);
 
     if (active.at_s > 0) {
       this.#srPhaseEl && (this.#srPhaseEl.textContent = text);
