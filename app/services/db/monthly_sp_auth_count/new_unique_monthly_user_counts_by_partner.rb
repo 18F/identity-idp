@@ -137,7 +137,7 @@ module Db
             , subq.profile_verified_at
             , subq.profile_age
             , subq.profile_requested_issuer
-            , subq.issuer
+            , MIN(subq.issuer) AS issuer
             FROM (
               SELECT
                   sp_return_logs.user_id
@@ -157,7 +157,6 @@ module Db
               , subq.profile_verified_at
               , subq.profile_age
               , subq.profile_requested_issuer
-              , subq.issuer
           SQL
         end
       end
