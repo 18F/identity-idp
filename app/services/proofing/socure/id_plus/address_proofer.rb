@@ -65,10 +65,16 @@ module Proofing
             exception: nil,
             vendor_name: VENDOR_NAME,
             reference: response.reference_id,
-            customer_user_id: response.customer_user_id,
+            result: result(response),
+          )
+        end
+
+        def result(response)
+          {
             reason_codes: reason_codes(response),
             risk_scores: risk_scores(response),
-          )
+            customer_user_id: response.customer_user_id,
+          }
         end
 
         def risk_scores(response)
