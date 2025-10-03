@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require 'active_support'
+require 'active_support/hash_with_indifferent_access'
 require 'active_support/time'
 
 require 'event_summarizer/vendor_result_evaluators/aamva'
 require 'event_summarizer/vendor_result_evaluators/instant_verify'
 require 'event_summarizer/vendor_result_evaluators/phone_finder'
 require 'event_summarizer/vendor_result_evaluators/true_id'
+require 'event_summarizer/vendor_result_evaluators/socure_doc_v'
 
 module EventSummarizer
   class IdvMatcher
@@ -14,6 +16,7 @@ module EventSummarizer
     IDV_GPO_CODE_SUBMITTED_EVENT = 'IdV: enter verify by mail code submitted'
     IDV_FINAL_RESOLUTION_EVENT = 'IdV: final resolution'
     IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT = 'IdV: doc auth image upload vendor submitted'
+    IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
     IDV_PHONE_CONFIRMATION_VENDOR_EVENT = 'IdV: phone confirmation vendor'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
@@ -27,6 +30,11 @@ module EventSummarizer
         id: :trueid,
         name: 'True ID',
         evaluator_module: EventSummarizer::VendorResultEvaluators::TrueId,
+      },
+      'Socure' => {
+        id: :socure_docv,
+        name: 'Socure DocV',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::SocureDocV,
       },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
@@ -129,6 +137,11 @@ module EventSummarizer
         when IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT
           for_current_idv_attempt(event:) do
             handle_image_upload_vendor_submitted(event:)
+          end
+
+        when IDV_SOCURE_VERIFICATION_DATA_REQUESTED
+          for_current_idv_attempt(event:) do
+            handle_socure_verification_data_requested(event:)
           end
 
         when IDV_PHONE_CONFIRMATION_VENDOR_EVENT
@@ -408,7 +421,8 @@ module EventSummarizer
         add_significant_event(
           timestamp:,
           type: :passed_document_capture,
-          description: "User successfully verified their #{doc_type.downcase} #{attempts}",
+          description:
+            "User successfully verified their #{doc_type.downcase} via TrueID #{attempts}",
         )
         return
       end
@@ -418,6 +432,7 @@ module EventSummarizer
       alerts = event.dig(*EVENT_PROPERTIES, 'processed_alerts')
       alerts['success'] = false
       alerts['vendor_name'] = event.dig(*EVENT_PROPERTIES, 'vendor')
+      alerts['document_type'] = doc_type.downcase
 
       add_events_for_failed_vendor_result(
         alerts,
@@ -430,9 +445,57 @@ module EventSummarizer
         add_significant_event(
           timestamp:,
           type: :failed_document_capture,
-          description: "User failed to verify their #{doc_type.downcase} (check logs for reason)",
+          description: "User failed to verify their #{doc_type.downcase} via TrueID (check logs for reason)", # rubocop:disable Layout/LineLength
         )
       end
+    end
+
+    def handle_socure_verification_data_requested(event:)
+      timestamp = event['@timestamp']
+      success = event.dig(*EVENT_PROPERTIES, 'success')
+      doc_type = event.dig(*EVENT_PROPERTIES, 'document_metadata', 'type')
+
+      if success
+        prior_failures = current_idv_attempt.significant_events.count do |e|
+          e.type == :failed_document_capture
+        end
+        attempts = prior_failures > 0 ? "after #{prior_failures} tries" : 'on the first attempt'
+
+        add_significant_event(
+          timestamp:,
+          type: :passed_document_capture,
+          description:
+            "User successfully verified their #{doc_type.downcase} via Socure DocV #{attempts}",
+        )
+        return
+      end
+
+      prev_count = current_idv_attempt.significant_events.count
+
+      alerts = ActiveSupport::HashWithIndifferentAccess.new
+      alerts[:reason_codes] = socure_reason_codes(event)
+      alerts[:success] = false
+      alerts[:vendor_name] = event.dig(*EVENT_PROPERTIES, 'vendor')
+      alerts[:document_type] = doc_type.downcase
+
+      add_events_for_failed_vendor_result(
+        alerts,
+        timestamp:,
+      )
+
+      any_events_added = current_idv_attempt.significant_events.count > prev_count
+
+      if !any_events_added
+        add_significant_event(
+          timestamp:,
+          type: :failed_document_capture,
+          description: "User failed to verify their #{doc_type.downcase} via Socure DocV (check logs for reason)", # rubocop:disable Layout/LineLength
+        )
+      end
+    end
+
+    def socure_reason_codes(event)
+      event.dig(*EVENT_PROPERTIES, 'reason_codes') || []
     end
 
     def handle_phone_confirmation_vendor_event(event:)

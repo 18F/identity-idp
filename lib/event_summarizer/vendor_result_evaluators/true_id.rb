@@ -20,7 +20,8 @@ module EventSummarizer
           alerts.uniq! { |a| a[:description] }
           return {
             type: :trueid_failures,
-            description: "TrueID request failed. #{alerts.map { |a| a[:description] }.join(' ')}",
+            description: "TrueID request failed (document_type: #{result['document_type']}). " \
+                         "#{alerts.map { |a| a[:description] }.join(' ')}",
           }
         end
       end
