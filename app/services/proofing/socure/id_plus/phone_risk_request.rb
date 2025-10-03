@@ -64,11 +64,11 @@ module Proofing
             end,
           )
         rescue Faraday::BadRequestError,
-                Faraday::ConnectionFailed,
-                Faraday::ServerError,
-                Faraday::SSLError,
-                Faraday::TimeoutError,
-                Faraday::UnauthorizedError => e
+               Faraday::ConnectionFailed,
+               Faraday::ServerError,
+               Faraday::SSLError,
+               Faraday::TimeoutError,
+               Faraday::UnauthorizedError => e
 
           if timeout_error?(e)
             raise ::Proofing::TimeoutError,
@@ -85,15 +85,15 @@ module Proofing
             country: 'US',
 
             # optional fields
-            customerUserId: config.user_uuid, # notsure allowed
+            customerUserId: config.user_uuid,
             firstName: input.first_name,
             surName: input.last_name,
-            # physicalAddress: input.address1,
-            # physicalAddress2: input.address2,
-            # city: input.city,
-            # state: input.state,
-            # zip: input.zipcode,
-            dob: input.dob&.to_date&.to_s,
+            physicalAddress: input.address1,
+            physicalAddress2: input.address2,
+            city: input.city,
+            state: input.state,
+            zip: input.zipcode,
+            email: input.email,
           }.to_json
         end
 

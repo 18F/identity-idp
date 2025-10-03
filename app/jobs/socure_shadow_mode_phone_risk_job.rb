@@ -28,7 +28,7 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
       user:,
       service_provider_issuer:,
     )
-byebug
+# byebug
     proofing_result = load_proofing_result(document_capture_session_result_id:)
     if !proofing_result
       analytics.idv_socure_shadow_mode_phone_result_missing
@@ -44,20 +44,7 @@ byebug
       socure_result: socure_result.to_h,
       phone_source: applicant[:phone_source],
       user_id: user.uuid,
-      pii_like_keypaths: [
-        # [:errors, :ssn],
-        # [:resolution_result, :context, :stages, :resolution, :errors, :ssn],
-        # [:resolution_result, :context, :stages, :residential_address, :errors, :ssn],
-        # [:resolution_result, :context, :stages, :threatmetrix, :response_body, :first_name],
-        # [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
-        # [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
-        # [:resolution_result, :biographical_info, :identity_doc_address_state],
-        # [:resolution_result, :biographical_info, :state_id_jurisdiction],
-        # [:resolution_result, :biographical_info, :same_address_as_id],
-      ],
     )
-  rescue => e
-    byebug
   end
 
   def create_analytics(
@@ -103,16 +90,13 @@ byebug
       **applicant_pii.slice(
         :first_name,
         :last_name,
-        # :address1,
-        # :address2,
-        # :city,
-        # :state,
-        # :zipcode,
+        :address1,
+        :address2,
+        :city,
+        :state,
+        :zipcode,
         :phone,
         :phone_source,
-        # :dob,
-        # :ssn,
-        # :consent_given_at,
       ),
       email: user_email,
     }
