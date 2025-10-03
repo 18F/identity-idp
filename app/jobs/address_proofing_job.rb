@@ -45,6 +45,7 @@ class AddressProofingJob < ApplicationJob
     )
 
     if IdentityConfig.store.idv_socure_phone_risk_shadow_mode
+      byebug
       SocureShadowModePhoneRiskJob.perform_later(
         document_capture_session_result_id: result_id,
         encrypted_arguments:,
