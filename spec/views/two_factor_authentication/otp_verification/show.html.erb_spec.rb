@@ -59,7 +59,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
       expect(rendered).to include(
         t(
-          'instructions.mfa.sms.number_message_html',
+          'instructions.mfa.sms.code_sent_message_html',
           number_html: content_tag(:strong, presenter_data[:phone_number]),
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         ),
