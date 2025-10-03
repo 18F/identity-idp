@@ -157,6 +157,8 @@ class SamlIdpController < ApplicationController
   end
 
   def matching_cert_serial
+    return if saml_request_service_provider.blank?
+
     saml_request.matching_cert&.serial&.to_s
   rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
     nil

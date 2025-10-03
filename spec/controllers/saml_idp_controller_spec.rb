@@ -2070,6 +2070,7 @@ RSpec.describe SamlIdpController do
       end
 
       before do
+        allow_any_instance_of(Saml::XML::Document).to receive(:signed?).and_return true
         IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         expect(CGI).to receive(:unescape).and_return deflated_encoded_req
@@ -2087,7 +2088,7 @@ RSpec.describe SamlIdpController do
           requested_nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
           authn_context: [],
           authn_context_comparison: 'exact',
-          request_signed: false,
+          request_signed: true,
           requested_ial: 'none',
           endpoint: "/api/saml/auth#{path_year}",
           idv: false,
