@@ -48,6 +48,7 @@ module Proofing
         transaction_id:,
         reference:,
         vendor_name:,
+        result:,
       }
     end
   end
