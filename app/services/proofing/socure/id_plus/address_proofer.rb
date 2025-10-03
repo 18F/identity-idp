@@ -49,12 +49,12 @@ module Proofing
         end
 
         def build_result_from_error(err)
-          Proofing::Resolution::Result.new(
+          AddressResult.new(
             success: false,
             errors: {},
             exception: err,
             vendor_name: VENDOR_NAME,
-            transaction_id: err.respond_to?(:reference_id) ? err.reference_id : nil,
+            reference: err.respond_to?(:reference_id) ? err.reference_id : nil,
           )
         end
 
@@ -63,17 +63,24 @@ module Proofing
             success: successful?(response),
             errors: nil,
             exception: nil,
-            vendor_name: 'socure:phonerisk',
+            vendor_name: VENDOR_NAME,
             reference: response.reference_id,
-            transaction_id: nil,
             customer_user_id: response.customer_user_id,
-            reason_codes: reason_codes_as_errors(response),
+            reason_codes: reason_codes(response),
+            risk_scores: risk_scores(response),
           )
+        end
+
+        def risk_scores(response)
+          {
+            phonerisk_score: response.phonerisk_score,
+            name_phone_correlation_score: response.name_phone_correlation_score,
+          }
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response
         # @return [Hash]
-        def reason_codes_as_errors(response)
+        def reason_codes(response)
           known_codes = SocureReasonCode.where(
             code: response.phonerisk_reason_codes,
           ).pluck(:code, :description).to_h
