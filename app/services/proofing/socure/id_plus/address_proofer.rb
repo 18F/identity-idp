@@ -31,7 +31,7 @@ module Proofing
         def proof(applicant)
           input = Input.new(applicant.slice(*Input.members))
 
-          request = PhoneRiskRequest.new(config:, input:)
+          request = Requests::PhoneRiskRequest.new(config:, input:)
 
           response = request.send_request
 
