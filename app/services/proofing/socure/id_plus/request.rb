@@ -51,18 +51,7 @@ module Proofing
         end
 
         def send_request
-          conn = Faraday.new do |f|
-            f.request :instrumentation, name: 'request_metric.faraday'
-            f.response :raise_error
-            f.response :json
-            f.options.timeout = config.timeout
-          end
-
-          Response.new(
-            conn.post(url, body, headers) do |req|
-              req.options.context = { service_name: SERVICE_NAME }
-            end,
-          )
+          fetch_response
         rescue Faraday::BadRequestError,
                Faraday::ConnectionFailed,
                Faraday::ServerError,
@@ -123,6 +112,23 @@ module Proofing
         end
 
         private
+
+        def conn
+          Faraday.new do |f|
+            f.request :instrumentation, name: 'request_metric.faraday'
+            f.response :raise_error
+            f.response :json
+            f.options.timeout = config.timeout
+          end
+        end
+
+        def fetch_response
+          Response.new(
+            conn.post(url, body, headers) do |req|
+              req.options.context = { service_name: SERVICE_NAME }
+            end,
+          )
+        end
 
         # @param [Faraday::Error] err
         def faraday_error_message(err)
