@@ -46,6 +46,13 @@ module Proofing
           build_result_from_error(err)
         end
 
+        def self.reason_codes_with_defnitions(reason_codes)
+          known_codes = SocureReasonCode.where(
+            code: reason_codes,
+          ).pluck(:code, :description).to_h
+          reason_codes.index_with { |code| known_codes[code] || UNKNOWN_REASON_CODE }
+        end
+
         private
 
         # @param [Proofing::Socure::IdPlus::Response] response
@@ -80,10 +87,7 @@ module Proofing
         # @param [Proofing::Socure::IdPlus::Response] response
         # @return [Hash]
         def reason_codes_as_errors(response)
-          known_codes = SocureReasonCode.where(
-            code: response.kyc_reason_codes,
-          ).pluck(:code, :description).to_h
-          response.kyc_reason_codes.index_with { |code| known_codes[code] || UNKNOWN_REASON_CODE }
+          self.class.reason_codes_with_defnitions(response.kyc_reason_codes)
         end
 
         # @param [Proofing::Socure::IdPlus::Response] response

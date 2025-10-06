@@ -31,7 +31,7 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
 
     proofing_result = load_proofing_result(document_capture_session_result_id:)
     if !proofing_result
-      analytics.idv_socure_shadow_mode_phone_result_missing
+      analytics.idv_socure_shadow_mode_phonerisk_result_missing
       return
     end
 
@@ -39,9 +39,11 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
 
     socure_result = proofer(user:).proof(applicant)
 
-    analytics.idv_socure_shadow_mode_phone_risk_result(
+    proofing_result[:timed_out] = proofing_result[:exception].is_a?(Proofing::TimeoutError)
+
+    analytics.idv_socure_shadow_mode_phonerisk_result(
       phone_result: proofing_result,
-      socure_result: socure_result.to_h,
+      socure_result: socure_result,
       phone_source: applicant[:phone_source],
       user_id: user.uuid,
     )

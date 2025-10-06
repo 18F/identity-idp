@@ -13,9 +13,9 @@ module Proofing
 
     def initialize(
       success:,
-      errors:,
       exception:,
       vendor_name:,
+      errors: {},
       transaction_id: '',
       reference: '',
       vendor_workflow: nil,
