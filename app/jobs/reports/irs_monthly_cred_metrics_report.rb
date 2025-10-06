@@ -38,29 +38,29 @@ module Reports
 
         ['Monthly Active Users', 'Count',
          'The total number of unique users across all IAL levels
-          that successfully signed into the partner\'s applications'],
+          that successfully signed into the Partner\'s applications'],
 
         ['Total Credentials authorized for Partner', 'Count',
          'The total number of users (new and existing)
-         that successfully signed into the partner\'s applications'],
+         that successfully signed into the Partner\'s applications'],
 
         ['New Credentials Authorized for Partner', 'Count',
-         'The number of new unique IRS users who are in their first IdV proofing year
-           and authenticate with the IRS.
+         'The number of unique users who are new to the Partner\'s applications and are
+          in their first IdV proofing year.
 
            This count correlates with the billing report charges for Newly Billed
            IdV users (Year 1), Agreement-Level Count.'],
 
         ['Existing Credentials Authorized for Partner', 'Count',
-         'The number of new unique IRS users who are in their IdV proofing years 2 - 5
-          and authenticate with the IRS.
+         'The number of unique users who are new to the Partner\'s applications and are
+          in their second to fifth IdV proofing year.
 
           This count correlates with the billing report charges for Newly Billed
           IdV users (Years 2 - 5+), Agreement-Level Count.'],
 
         ['Total Auths', 'Count',
          'The total number of authentication events processed
-         (including multiple events per users) across all IRS
+         (including multiple events per users) across all partner
          applications during the reporting period'],
 
       ]
