@@ -34,7 +34,7 @@ in
     javascript = {
       enable = true;
       package = pkgs-unstable.nodejs-slim;
-      yarn.enable = true;
+      npm.enable = true;
     };
   };
 
