@@ -65,7 +65,9 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
-          Idv::InPersonConfig.enabled_for_issuer?(issuer: idv_session.service_provider&.issuer)
+          Idv::InPersonConfig.enabled_for_issuer?(
+            idv_session.service_provider&.issuer,
+          )
         end,
         undo_step: ->(idv_session:, user:) {
           idv_session.skip_doc_auth_from_how_to_verify = nil

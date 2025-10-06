@@ -4,9 +4,10 @@ RSpec.describe Idv::HybridHandoffController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:service_provider_ipp_enabled) { true }
 
   let(:service_provider) do
-    create(:service_provider, :active, :in_person_proofing_enabled)
+    create(:service_provider, :active, in_person_proofing_enabled: service_provider_ipp_enabled)
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
@@ -270,6 +271,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       context 'opt in ipp is not available on service provider' do
+        let(:service_provider_ipp_enabled) { false }
         before do
           subject.idv_session.service_provider.in_person_proofing_enabled = false
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
