@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AddressProofingJob, type: :job do
-  let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+  let(:document_capture_session) { create(:document_capture_session, result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: applicant_pii }.to_json,
@@ -19,6 +19,7 @@ RSpec.describe AddressProofingJob, type: :job do
     }
   end
   let(:trace_id) { SecureRandom.hex }
+  let(:user_id) { document_capture_session.user_id }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -27,6 +28,8 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor: :mock,
+        user_id:,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -36,6 +39,7 @@ RSpec.describe AddressProofingJob, type: :job do
 
   describe '#perform' do
     let(:conversation_id) { SecureRandom.hex }
+    let(:address_vendor) { :lexis_nexis }
 
     let(:instance) { AddressProofingJob.new }
     subject(:perform) do
@@ -44,6 +48,8 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor:,
+        user_id:,
       )
     end
 
@@ -92,6 +98,7 @@ RSpec.describe AddressProofingJob, type: :job do
     end
 
     context 'mock proofer' do
+      let(:address_vendor) { :mock }
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(

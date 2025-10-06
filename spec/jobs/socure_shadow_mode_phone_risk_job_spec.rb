@@ -66,9 +66,11 @@ RSpec.describe SocureShadowModePhoneRiskJob do
       FakeAnalytics.new
     end
 
+    let(:reference) { 'a1234b56-e789-0123-4fga-56b7c890d123' }
+
     let(:socure_response_body) do
       {
-        referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
+        referenceId: reference,
         namePhoneCorrelation: {
           reasonCodes: [
             'I123',

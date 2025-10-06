@@ -4965,13 +4965,13 @@ module AnalyticsEvents
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
-    errors: nil, # default nil for poc
     vendor:,
     area_code:,
     country_code:,
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
     proofing_components: nil,

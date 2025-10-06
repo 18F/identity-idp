@@ -19,6 +19,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           transaction_id: transaction_id,
           reference: '',
           vendor_name: 'AddressMock',
+          result: nil,
         )
       end
     end
@@ -37,6 +38,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           transaction_id: transaction_id,
           reference: '',
           vendor_name: 'AddressMock',
+          result: nil,
         )
       end
     end
@@ -55,6 +57,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           transaction_id: transaction_id,
           reference: '',
           vendor_name: 'AddressMock',
+          result: nil,
         )
       end
     end
@@ -73,6 +76,7 @@ RSpec.describe Proofing::Mock::AddressMockClient do
           transaction_id: transaction_id,
           reference: '',
           vendor_name: 'AddressMock',
+          result: nil,
         )
       end
     end
