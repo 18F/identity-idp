@@ -2,12 +2,11 @@ require 'rails_helper'
 
 RSpec.describe DuplicateProfilesDetectedPresenter do
   let(:user) { create(:user, :proofed_with_selfie) }
-  let(:sp) { create(:service_provider) }
   let(:duplicate_profile_set) do
     create(
       :duplicate_profile_set,
       profile_ids: [user.active_profile.id, profile2.id],
-      service_provider: sp,
+      service_provider: 'test-sp',
     )
   end
   let(:presenter) { described_class.new(user: user, duplicate_profile_set: duplicate_profile_set) }

@@ -20,7 +20,7 @@ class DuplicateProfilesDetectedPresenter
       dupe_user = profile.user
       sp_identity = ServiceProviderIdentity.find_by(
         user_id: dupe_user.id,
-        service_provider: profile.initiating_service_provider_issuer,
+        service_provider: duplicate_profile_set.service_provider,
       )
       email = dupe_user.last_sign_in_email_address.email
       {
