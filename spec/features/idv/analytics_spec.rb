@@ -291,7 +291,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
@@ -422,7 +422,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
@@ -672,7 +672,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: { document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation otp sent' => {
@@ -810,7 +810,7 @@ RSpec.feature 'Analytics Regression', :js do
         proofing_components: base_proofing_components
       },
       'IdV: phone confirmation vendor' => {
-        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
+        success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
         proofing_components: lexis_nexis_address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
