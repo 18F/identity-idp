@@ -615,7 +615,7 @@ function AcuantCapture(
     });
   }
 
-  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
+  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse, uncroppedData?: string) {
     const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
 
     const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
@@ -624,6 +624,7 @@ function AcuantCapture(
       cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT
     );
     const { width, height, data } = image;
+    const imageDataToSubmit = uncroppedData || data;
 
     let assessment: AcuantImageAssessment;
     if (isAssessedAsBlurry) {
@@ -655,7 +656,7 @@ function AcuantCapture(
       sharpnessScoreThreshold: sharpnessThreshold,
       isAssessedAsBlurry,
       assessment,
-      size: getDecodedBase64ByteSize(nextCapture.image.data),
+      size: getDecodedBase64ByteSize(imageDataToSubmit),
       fingerprint: null,
       failedImageResubmission: false,
       liveness_checking_required: false,
@@ -668,7 +669,7 @@ function AcuantCapture(
     );
 
     if (assessment === 'success') {
-      onChangeAndResetError(data, analyticsPayload);
+      onChangeAndResetError(imageDataToSubmit, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
       onFailedCaptureAttempt({
