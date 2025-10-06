@@ -4,10 +4,12 @@ module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
-    attr_reader :report_date
+    attr_reader :report_date, :receiver
 
-    def initialize(report_date = Time.zone.yesterday.end_of_day, *args, **rest)
+    def initialize(report_date = Time.zone.yesterday.end_of_day, receiver = :internal, *args,
+                   **rest)
       @report_date = report_date
+      @receiver = receiver.to_sym
       super(*args, **rest)
     end
 
@@ -29,7 +31,13 @@ module Reports
     end
 
     def email_addresses
-      [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
+      internal_emails = [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
+      irs_emails = [] # Need to add IRS email config
+
+      case receiver
+      when :internal then internal_emails
+      when :both then (internal_emails + irs_emails)
+      end
     end
 
     def definitions_table

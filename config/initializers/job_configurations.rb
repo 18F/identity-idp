@@ -263,11 +263,19 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send irs fraud metrics to Team Data
-      irs_fraud_metrics_report: {
+
+      # Send irs fraud metrics to Team Data - Daily (For internal review only)
+      daily_irs_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+      },
+
+      # Send irs fraud metrics to Team Data and IRS - Monthly
+      monthly_irs_fraud_metrics_report: {
+        class: 'Reports::IrsFraudMetricsReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       # Previous week's drop off report
       weekly_drop_off_report: {
@@ -293,11 +301,19 @@ else
         cron: cron_monthly_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send irs quarterly metrics to Team Data
-      irs_verification_demographics_report: {
+
+      # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
+      monthly_irs_verification_demographics_report: {
+        class: 'Reports::IrsVerificationDemographicsReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+      },
+
+      # Send irs quarterly metrics report to Team Data and IRS - Quarterly
+      quarterly_irs_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_quarterly,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       # Download and store Socure reason codes
       socure_reason_code_download: {
@@ -323,11 +339,19 @@ else
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Previous months's irs credentials report
+
+      # Previous months's irs credentials report to Team Data - Daily (For internal review only)
+      daily_irs_cred_metrics_report: {
+        class: 'Reports::IrsMonthlyCredMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+      },
+
+      # Previous months's irs credentials report to IRS and Team Data - Monthly
       monthly_irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
         cron: cron_monthly,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
     }.compact
   end
