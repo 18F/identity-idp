@@ -588,9 +588,9 @@ doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utilise
 doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.errors.verify_drivers_license_heading: Nous n’avons pas pu vérifier votre permis de conduire ou carte d’identité d’un État
-doc_auth.errors.verify_drivers_license_text: Assurez-vous que vous prenez des photos d'un permis de conduire ou d’une carte d’identité d’un État. Veuillez réessayer
+doc_auth.errors.verify_drivers_license_text: Assurez-vous que vous prenez des photos d’un permis de conduire ou d’une carte d’identité d’un État. Veuillez réessayer
 doc_auth.errors.verify_passport_heading: Nous n’avons pas pu vérifier votre passeport
-doc_auth.errors.verify_passport_text: Assurez-vous que vous prenez des photos d'un passeport. Veuillez réessayer
+doc_auth.errors.verify_passport_text: Assurez-vous que vous prenez des photos d’un passeport. Veuillez réessayer
 doc_auth.errors.verify.use_another_type_of_id: ou utiliser un autre type de pièce d’identité
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>

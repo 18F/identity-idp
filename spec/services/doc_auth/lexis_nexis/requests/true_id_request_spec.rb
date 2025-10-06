@@ -203,7 +203,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
         expect(response.success?).to eq(false)
         expect(response.errors)
-          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
+          .to eq({ unexpected_id_type: 'passport' })
       end
     end
 
@@ -230,7 +230,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
         expect(response.success?).to eq(false)
         expect(response.errors)
-          .to eq({ unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') })
+          .to eq({ unexpected_id_type: 'drivers_license' })
       end
     end
   end
