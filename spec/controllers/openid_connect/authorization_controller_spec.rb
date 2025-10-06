@@ -2269,6 +2269,34 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
     end
+
+    context 'user is suspended' do
+      let(:user) { create(:user, :fully_registered, :suspended) }
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:vtr) { nil }
+      let(:sign_in_flow) { :sign_in }
+
+      context 'user is signed in' do
+        before do
+          stub_sign_in user
+          session[:sign_in_flow] = sign_in_flow
+          session[:sign_in_page_visited_at] = Time.zone.now.to_s
+        end
+
+        it 'redirects to the please call page if the user is signed in and suspended' do
+          sign_in_as_user(user)
+          action
+          expect(response).to redirect_to(user_please_call_url)
+        end
+      end
+
+      context 'user not signed in' do
+        it 'redirects to sign in page' do
+          action
+          expect(response).to redirect_to(new_user_session_url)
+        end
+      end
+    end
   end
 end
 # rubocop:enable Layout/LineLength

@@ -2196,6 +2196,25 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'User is suspended' do
+      let(:user) { create(:user, :fully_registered, :suspended) }
+      let(:acr_values) do
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
+          ' ' +
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
+
+      before do
+        sign_in(user)
+        stub_analytics
+      end
+
+      it 'renders the please call for suspended user page' do
+        saml_get_auth(saml_settings)
+        expect(response).to redirect_to(user_please_call_url)
+      end
+    end
+
     describe 'NameID format' do
       let(:user) { create(:user, :fully_registered) }
       let(:subject_element) { xmldoc.subject_nodeset[0] }
