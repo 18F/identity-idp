@@ -50,7 +50,14 @@ export function DocumentsCaptureStep({
 
 export function DocumentCaptureSubheaderOne() {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.document_capture')}</h1>;
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
+
+  const heading = idIsPassport
+    ? t('doc_auth.headings.passport_capture')
+    : t('doc_auth.headings.document_capture');
+
+  return <h1>{heading}</h1>;
 }
 
 export default function DocumentsStep({
