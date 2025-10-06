@@ -504,6 +504,7 @@ RSpec.describe Idv::PhoneController do
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
+            result: nil,
           },
         )
       end
@@ -591,6 +592,7 @@ RSpec.describe Idv::PhoneController do
             timed_out: false,
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
+            result: nil,
           },
         )
       end

@@ -28,7 +28,7 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
       user:,
       service_provider_issuer:,
     )
-byebug
+
     proofing_result = load_proofing_result(document_capture_session_result_id:)
     if !proofing_result
       analytics.idv_socure_shadow_mode_phone_result_missing
@@ -45,8 +45,6 @@ byebug
       phone_source: applicant[:phone_source],
       user_id: user.uuid,
     )
-  rescue => e
-    byebug
   end
 
   def create_analytics(
@@ -59,12 +57,6 @@ byebug
       sp: service_provider_issuer,
       session: {},
     )
-  end
-
-  def format_proofing_result_for_logs(proofing_result)
-    proofing_result.to_h.tap do |hash|
-      hash.dig(:context, :stages, :threatmetrix)&.delete(:response_body)
-    end
   end
 
   def load_proofing_result(document_capture_session_result_id:)
