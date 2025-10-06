@@ -38,7 +38,6 @@ module Proofing
         def build_result_from_error(err)
           AddressResult.new(
             success: false,
-            errors: {},
             exception: err,
             vendor_name: VENDOR_NAME,
             reference: err.respond_to?(:reference_id) ? err.reference_id : nil,
@@ -48,7 +47,6 @@ module Proofing
         def build_result_from_response(response)
           AddressResult.new(
             success: success?(response),
-            errors: nil,
             exception: nil,
             vendor_name: VENDOR_NAME,
             reference: response.reference_id,

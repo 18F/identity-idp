@@ -118,24 +118,37 @@ RSpec.describe SocureShadowModePhoneRiskJob do
       let(:expected_event_body) do
         {
           user_id: user.uuid,
-          phone_result: proofing_result.to_h,
+          phone_result: proofing_result.to_h.merge(vendor_workflow: nil),
           socure_result: {
-            attributes_requiring_additional_verification: [],
-            can_pass_with_additional_verification: false,
+            # attributes_requiring_additional_verification: [],
+            # can_pass_with_additional_verification: false,
             errors: {},
-            reason_codes: {
-              'I123' => 'Person is over seven feet tall.',
-              'R890' => 'Help! I am trapped in a reason code factory!',
+            result: {
+              name_phone_correlation: {
+                reason_codes: {
+                  'I123' => 'Person is over seven feet tall.',
+                  'R567' => 'Person may be an armadillo.',
+                  'R890' => 'Help! I am trapped in a reason code factory!',
+                },
+                score: 0.99,
+              },
+              phonerisk: {
+                reason_codes: {
+                  'I123' => 'Person is over seven feet tall.',
+                  'R567' => 'Person may be an armadillo.',
+                },
+                score: 0.01,
+              },
+              customer_user_id: user.uuid,
             },
             exception: nil,
-            reference: '',
+            reference:,
             success: true,
+            transaction_id: '',
+            vendor_name: 'socure_phonerisk',
             timed_out: false,
-            transaction_id: 'a1234b56-e789-0123-4fga-56b7c890d123',
-            customer_user_id: user.uuid,
-            vendor_name: 'socure_kyc',
-            vendor_workflow: nil,
-            verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
+            # vendor_workflow: nil,
+            # verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
         }
       end
@@ -153,19 +166,14 @@ RSpec.describe SocureShadowModePhoneRiskJob do
       it 'logs an event' do
         perform
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+          :idv_socure_shadow_mode_phonerisk_result,
           expected_event_body,
         )
       end
 
       context 'when the user has an MFA phone number' do
         let(:applicant_pii) do
-          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-            best_effort_phone_number_for_socure: {
-              source: :mfa,
-              phone: '1 202-555-0000',
-            },
-          )
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
         end
 
         let(:encrypted_arguments) do
@@ -177,8 +185,8 @@ RSpec.describe SocureShadowModePhoneRiskJob do
         it 'logs an event with the phone number' do
           perform
           expect(analytics).to have_logged_event(
-            :idv_socure_shadow_mode_proofing_result,
-            expected_event_body.merge(phone_source: 'mfa'),
+            :idv_socure_shadow_mode_phonerisk_result,
+            expected_event_body,
           )
         end
       end
@@ -204,7 +212,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
         perform
 
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result_missing,
+          :idv_socure_shadow_mode_phonerisk_result_missing,
         )
       end
     end
@@ -247,17 +255,24 @@ RSpec.describe SocureShadowModePhoneRiskJob do
 
     context 'when an unknown reason code is encountered' do
       let(:socure_response_body) do
-        super().tap do |body|
-          body[:kyc][:reasonCodes] << 'I000'
-        end
+        {
+          phoneRisk: {
+            reasonCodes: ['I000'],
+            score: 0.05,
+          },
+          namePhoneCorrelation: {
+            reasonCodes: [],
+            score: 0.95,
+          },
+        }
       end
 
       it 'still logs it' do
         perform
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+          :idv_socure_shadow_mode_phonerisk_result,
           satisfy do |attributes|
-            reason_codes = attributes.dig(:socure_result, :reason_codes)
+            reason_codes = attributes.dig(:socure_result, :result, :phonerisk, :reason_codes)
             expect(reason_codes).to include(
               'I000' => '[unknown]',
             )
@@ -281,9 +296,8 @@ RSpec.describe SocureShadowModePhoneRiskJob do
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',
-        dob: '1938-10-06',
-        ssn: '900661234',
         email: user.email,
+        phone: '12025551212',
       }
     end
 
@@ -359,7 +373,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
 
       expect(job.proofer(user:).config.to_h).to eql(
         user_uuid: user.uuid,
-        user_email: nil,
+        user_email: user.last_sign_in_email_address.email,
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,

@@ -6,7 +6,17 @@ module Proofing
       module Responses
         class PhoneRiskResponse < Proofing::Socure::IdPlus::Response
           def to_h
-            { phonerisk:, name_phone_correlation:, customer_user_id: }
+            {
+              phonerisk: {
+                reason_codes: Proofer.reason_codes_with_defnitions(phonerisk_reason_codes),
+                score: phonerisk_score,
+              },
+              name_phone_correlation: {
+                reason_codes: Proofer.reason_codes_with_defnitions(name_phone_correlation_reason_codes),
+                score: name_phone_correlation_score,
+              },
+              customer_user_id:,
+            }
           end
 
           def successful?
@@ -47,8 +57,16 @@ module Proofing
             phonerisk.dig('score')
           end
 
+          def phonerisk_reason_codes
+            phonerisk.dig('reasonCodes')
+          end
+
           def name_phone_correlation_score
             name_phone_correlation.dig('score')
+          end
+
+          def name_phone_correlation_reason_codes
+            name_phone_correlation.dig('reasonCodes')
           end
         end
       end
