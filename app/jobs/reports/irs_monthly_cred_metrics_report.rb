@@ -38,11 +38,11 @@ module Reports
 
         ['Monthly Active Users', 'Count',
          'The total number of unique users across all IAL levels
-          that successfully signed into IRS applications'],
+          that successfully signed into the partner\'s applications'],
 
         ['Total Credentials authorized for Partner', 'Count',
          'The total number of users (new and existing)
-         that successfully signed into the applications'],
+         that successfully signed into the partner\'s applications'],
 
         ['New Credentials Authorized for Partner', 'Count',
          'The number of new unique IRS users who are in their first IdV proofing year
