@@ -47,12 +47,8 @@ module Reports
         ['New identity verification credentials authorized for partner', 'Count',
          'The number of users who go through the proofing process through a partner\'s request.'],
 
-        ['Existing Credentials Authorized for Partner', 'Count',
-         'The number of unique users who are new to the Partner\'s applications and are
-          in their second to fifth IdV proofing year.
-
-          This count correlates with the billing report charges for Newly Billed
-          IdV users (Years 2 - 5+), Agreement-Level Count.'],
+        ['Existing identity verification credentials authorized for partner', 'Count',
+         'The number of users who are in IdV proofing years 2 - 5 and authenticate with the IRS.'],
 
         ['Total Auths', 'Count',
          'The total number of authentication events processed
