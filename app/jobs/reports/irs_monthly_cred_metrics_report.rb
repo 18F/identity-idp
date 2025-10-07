@@ -164,6 +164,8 @@ module Reports
       end
 
       headers = definitions_table.transpose[0]
+
+      # rubocop:disable Layout/LineLength
       report_array =
         [
           # Headers row
@@ -172,12 +174,13 @@ module Reports
               # Data rows - extract values directly from CSV row
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
-               ial2_new_unique_all(invoice_report), # New IAL2 Users
-               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New IAL Year 1
-               ial2_new_unique_year_2_to_5(invoice_report), # New IAL Year 2 to
+               ial2_new_unique_all(invoice_report), # Credentials Authorized
+               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New identity verification credentials authorized
+               ial2_new_unique_year_2_to_5(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
       return report_array.transpose
+      # rubocop:enable Layout/LineLength
     end
 
     def invoice_report_data
