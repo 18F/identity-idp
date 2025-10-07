@@ -186,7 +186,8 @@ module Idv
         doc_auth_client.post_images(
           **images_metadata.submittable_images,
           image_source: image_source,
-          images_cropped: acuant_sdk_autocaptured_id?,
+          # autocapture no longer crops the images
+          images_cropped: false, # acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
