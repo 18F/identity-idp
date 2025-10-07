@@ -357,7 +357,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             user_id: anything,
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
-            proofing_components: Idv::ProofingComponents,
             proofing_vendor: :mock,
           )
 
@@ -379,7 +378,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           user_id: anything,
           request_ip: anything,
           ipp_enrollment_in_progress: true,
-          proofing_components: Idv::ProofingComponents,
           proofing_vendor: :mock,
         )
 
@@ -409,7 +407,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           user_id: anything,
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
-          proofing_components: Idv::ProofingComponents,
           proofing_vendor: :mock,
         )
 
@@ -489,7 +486,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             user_id: anything,
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: true,
-            proofing_components: Idv::ProofingComponents,
             proofing_vendor: :default_vendor,
           )
 
@@ -508,7 +504,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               user_id: anything,
               request_ip: request.remote_ip,
               ipp_enrollment_in_progress: true,
-              proofing_components: Idv::ProofingComponents,
               proofing_vendor: :instant_verify,
             )
 
@@ -528,7 +523,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 user_id: anything,
                 request_ip: request.remote_ip,
                 ipp_enrollment_in_progress: true,
-                proofing_components: Idv::ProofingComponents,
                 proofing_vendor: :socure_kyc,
               )
 

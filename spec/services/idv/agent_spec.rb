@@ -26,10 +26,6 @@ RSpec.describe Idv::Agent do
         idv_session.pii_from_doc = applicant
       end
     end
-    let(:proofing_components) do
-      Idv::ProofingComponents.new(idv_session:)
-    end
-
     let(:proofing_vendor) do
       IdentityConfig.store.idv_resolution_default_vendor
     end
@@ -53,7 +49,6 @@ RSpec.describe Idv::Agent do
           threatmetrix_session_id: nil,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          proofing_components:,
           proofing_vendor:,
         )
       end
@@ -140,17 +135,6 @@ RSpec.describe Idv::Agent do
           ),
         )
 
-        proof_resolution
-      end
-
-      it 'passes proofing components to ResolutionProofingJob' do
-        expect(ResolutionProofingJob).to receive(:perform_later).with(
-          hash_including(
-            proofing_components: {
-              document_type_received: 'drivers_license',
-            },
-          ),
-        )
         proof_resolution
       end
 

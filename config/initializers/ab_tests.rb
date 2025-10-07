@@ -159,14 +159,6 @@ module AbTests
     user&.uuid
   end.freeze
 
-  SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
-    experiment_name: 'Socure shadow mode',
-    should_log: ['IdV: doc auth verify proofing results'].to_set,
-    buckets: {
-      socure_shadow_mode_for_non_docv_users: IdentityConfig.store.socure_idplus_shadow_mode_percent,
-    },
-  ).freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,

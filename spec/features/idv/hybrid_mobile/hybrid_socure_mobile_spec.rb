@@ -16,17 +16,27 @@ RSpec.describe 'Hybrid Flow' do
   end
 
   before do
-    allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-      .and_return(Idp::Constants::Vendors::SOCURE)
-    allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-    allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
-      .and_return(fake_socure_docv_document_request_endpoint)
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
-      .and_return(socure_docv_webhook_repeat_endpoints)
+    allow(IdentityConfig.store).to receive_messages(
+      doc_auth_passport_selfie_vendor_lexis_nexis_percent: 0,
+      doc_auth_passport_selfie_vendor_socure_percent: 100,
+      doc_auth_passport_selfie_vendor_switching_enabled: true,
+      doc_auth_passport_vendor_lexis_nexis_percent: 0,
+      doc_auth_passport_vendor_socure_percent: 100,
+      doc_auth_passport_vendor_switching_enabled: true,
+      doc_auth_selfie_vendor_lexis_nexis_percent: 0,
+      doc_auth_selfie_vendor_socure_percent: 100,
+      doc_auth_selfie_vendor_switching_enabled: true,
+      doc_auth_vendor_lexis_nexis_percent: 0,
+      doc_auth_vendor_socure_percent: 100,
+      doc_auth_vendor_switching_enabled: true,
+      ruby_workers_idv_enabled: false,
+      socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+      socure_docv_enabled: true,
+      socure_docv_webhook_repeat_endpoints:,
+      use_vot_in_sp_requests: true,
+    )
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
+    allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
@@ -34,6 +44,7 @@ RSpec.describe 'Hybrid Flow' do
     @docv_transaction_token = stub_docv_document_request(user:)
     stub_analytics
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(@analytics)
+    reload_ab_tests
   end
 
   context 'happy path', allow_browser_log: true do
@@ -150,12 +161,8 @@ RSpec.describe 'Hybrid Flow' do
     context 'when a passport is submitted' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
-          .and_return(Idp::Constants::Vendors::SOCURE)
         stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
           .to_return_json({ status: 200, body: { status: 'UP' } })
-        reload_ab_tests
         DocAuth::Mock::DocAuthMockClient.reset!
         stub_docv_verification_data_pass(
           docv_transaction_token: @docv_transaction_token,
@@ -240,16 +247,14 @@ RSpec.describe 'Hybrid Flow' do
 
       context 'when a selfie is required', :js do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(4)
-          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
-            .and_return(['pass'])
-          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
-            .and_return(['fail'])
-          allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
-            .and_return(['not_processed'])
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-            .and_return(0)
-          allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+          allow(IdentityConfig.store).to receive_messages(
+            doc_auth_max_attempts: 4,
+            doc_auth_socure_wait_polling_timeout_minutes: 0,
+            idv_socure_reason_codes_docv_selfie_fail: ['fail'],
+            idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
+            idv_socure_reason_codes_docv_selfie_pass: ['pass'],
+            use_vot_in_sp_requests: true,
+          )
           stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
             .to_return_json({ status: 200, body: { response: 'YES' } })
         end
@@ -410,15 +415,13 @@ RSpec.describe 'Hybrid Flow' do
     context 'user times out waiting for result' do
       before do
         DocAuth::Mock::DocAuthMockClient.reset!
-        allow(IdentityConfig.store)
-          .to receive(:in_person_proofing_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:in_person_doc_auth_button_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_passports_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive_messages(
+          doc_auth_passports_enabled: false,
+          doc_auth_socure_wait_polling_timeout_minutes: 0,
+          in_person_doc_auth_button_enabled: true,
+          in_person_proofing_enabled: true,
+        )
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-          .and_return(0)
         allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(nil)
       end
 
@@ -729,17 +732,16 @@ RSpec.describe 'Hybrid Flow' do
 
     context 'selfie is required' do
       before do
-        allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(6)
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
-          .and_return(['pass'])
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
-          .and_return(['fail'])
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
-          .and_return(['not_processed'])
-        allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-          .and_return(0)
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+        allow(IdentityConfig.store).to receive_messages(
+          doc_auth_max_attempts: 6,
+          doc_auth_socure_wait_polling_timeout_minutes: 0,
+          idv_socure_reason_codes_docv_selfie_fail: ['fail'],
+          idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
+          idv_socure_reason_codes_docv_selfie_pass: ['pass'],
+          use_vot_in_sp_requests: true,
+        )
       end
+
       it 'proofs and hands off to mobile', js: true do
         expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
 

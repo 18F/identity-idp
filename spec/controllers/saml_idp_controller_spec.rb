@@ -2070,6 +2070,7 @@ RSpec.describe SamlIdpController do
       end
 
       before do
+        allow_any_instance_of(Saml::XML::Document).to receive(:signed?).and_return true
         IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         expect(CGI).to receive(:unescape).and_return deflated_encoded_req
@@ -2087,7 +2088,7 @@ RSpec.describe SamlIdpController do
           requested_nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
           authn_context: [],
           authn_context_comparison: 'exact',
-          request_signed: false,
+          request_signed: true,
           requested_ial: 'none',
           endpoint: "/api/saml/auth#{path_year}",
           idv: false,
@@ -2192,6 +2193,25 @@ RSpec.describe SamlIdpController do
             matching_cert_serial: saml_test_sp_cert_serial,
           ),
         )
+      end
+    end
+
+    context 'User is suspended' do
+      let(:user) { create(:user, :fully_registered, :suspended) }
+      let(:acr_values) do
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
+          ' ' +
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
+
+      before do
+        sign_in(user)
+        stub_analytics
+      end
+
+      it 'renders the please call for suspended user page' do
+        saml_get_auth(saml_settings)
+        expect(response).to redirect_to(user_please_call_url)
       end
     end
 
