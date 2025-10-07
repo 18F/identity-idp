@@ -33,6 +33,7 @@ module OpenidConnect
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
         return redirect_to idv_url if identity_needs_verification?
         return redirect_to idv_url if facial_match_needed?
+        return redirect_to idv_url if needs_to_reproof?
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -275,6 +276,10 @@ module OpenidConnect
 
       (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         .join(' ').presence
+    end
+
+    def needs_to_reproof?
+      current_sp.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
     end
   end
 end

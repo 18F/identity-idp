@@ -39,6 +39,7 @@ class SamlIdpController < ApplicationController
       return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
       return redirect_to idv_url if identity_needs_verification?
       return redirect_to idv_url if facial_match_needed?
+      return redirect_to idv_url if needs_to_reproof?
     end
     return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
@@ -269,5 +270,11 @@ class SamlIdpController < ApplicationController
 
   def req_attrs_regexp
     Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+  end
+
+  def needs_to_reproof?
+    saml_request_service_provider.needs_to_reproof?(
+      current_user.active_profile&.initiating_service_provider,
+    )
   end
 end

@@ -47,6 +47,7 @@ class ServiceProvider < ApplicationRecord
   scope(:external, -> { where.not(iaa: IAA_INTERNAL).or(where(iaa: nil)) })
 
   DEFAULT_LOGO = 'generic.svg'
+  REPROOF_FORCING_ISSUER = 'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost'
 
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
@@ -106,6 +107,11 @@ class ServiceProvider < ApplicationRecord
 
   def logo_is_email_compatible?
     logo_url.end_with?('.png')
+  end
+
+  def needs_to_reproof?(initiating_service_provider)
+    # TODO Check for past blackout period
+    issuer == REPROOF_FORCING_ISSUER && initiating_service_provider.issuer != REPROOF_FORCING_ISSUER
   end
 
   private
