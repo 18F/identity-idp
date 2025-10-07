@@ -6,8 +6,6 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-    # @param document_capture_session [DocumentCaptureSession]
-    # @param proofing_components [Idv::ProofingComponents]
     def proof_resolution(
       document_capture_session,
       trace_id:,
@@ -15,7 +13,6 @@ module Idv
       threatmetrix_session_id:,
       request_ip:,
       ipp_enrollment_in_progress:,
-      proofing_components:,
       proofing_vendor:
     )
       document_capture_session.create_proofing_session
@@ -33,7 +30,6 @@ module Idv
         threatmetrix_session_id:,
         request_ip:,
         ipp_enrollment_in_progress:,
-        proofing_components: proofing_components.to_h,
         proofing_vendor:,
       }
 
