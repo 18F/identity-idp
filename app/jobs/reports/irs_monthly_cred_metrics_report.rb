@@ -48,12 +48,10 @@ module Reports
          'The number of users who go through the proofing process through a partner\'s request.'],
 
         ['Existing identity verification credentials authorized for partner', 'Count',
-         'The number of users who are in IdV proofing years 2 - 5 and authenticate with the IRS.'],
+         'The number of users who are in IdV proofing years 2 - 5 and authenticate with the partner.'],
 
-        ['Total Auths', 'Count',
-         'The total number of authentication events processed
-         (including multiple events per users) across all partner
-         applications during the reporting period'],
+        ['Total authentications', 'Count',
+         'Total number of billable sign-ins at any IAL level in the reporting period'],
 
       ]
     end
