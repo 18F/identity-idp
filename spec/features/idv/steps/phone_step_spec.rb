@@ -234,6 +234,8 @@ RSpec.feature 'idv phone step', :js do
   end
 
   context 'phonerisk' do
+    let(:phonerisk_pass) { true }
+    let(:name_phone_correlation_pass) { true }
     let(:response_body) do
       {
         referenceId: 'some-reference-id',
@@ -243,14 +245,14 @@ RSpec.feature 'idv phone step', :js do
             'R567',
             'R890',
           ],
-          score: 0.99,
+          score: phonerisk_pass ? 0.99 : 0.1,
         },
         phoneRisk: {
           reasonCodes: [
             'I123',
             'R567',
           ],
-          score: 0.01,
+          score: name_phone_correlation_pass ? 0.01 : 0.99,
         },
         customerProfile: {
           customerUserId: user.uuid,
@@ -264,7 +266,7 @@ RSpec.feature 'idv phone step', :js do
         .and_return(true)
       reload_ab_tests
 
-      stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+      @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
         .to_return(
           status: 200,
           body: response_body.to_json,
@@ -322,53 +324,82 @@ RSpec.feature 'idv phone step', :js do
     end
 
     context "when the user's information cannot be verified" do
+      let(:phone_number) { '7035555555' }
       before do
         start_idv_from_sp
         complete_idv_steps_before_phone_step
-        fill_out_phone_form_fail
+        # fill_out_phone_form_ok(phone_number)
       end
 
-      it 'reports the number the user entered' do
-        click_idv_send_security_code
-
-        expect(page).to have_content(t('idv.failure.phone.warning.heading'))
-        expect(page).to have_content('+1 703-555-5555')
-      end
-
-      context 'resubmission after number failed verification' do
-        it 'phone field is empty after invalid submission' do
+      context 'when Socure returns a low phone risk score' do
+        let(:phonerisk_pass) { false }
+        it 'reports the number the user entered' do
           phone_field = find_field(t('two_factor_authentication.phone_label'))
           expect(phone_field.value).not_to be_empty
-
           click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 202-555-1212')
+
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
+        end
+      end
+
+      context 'when Socure returns a low name phone correlation score' do
+        let(:name_phone_correlation_pass) { false }
+        it 'reports the number the user entered' do
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 703-555-5555')
           click_on t('idv.failure.phone.warning.try_again_button')
 
           expect(page).to have_current_path(idv_phone_path)
 
+          # phone field is empty after invalid submission
           phone_field = find_field(t('two_factor_authentication.phone_label'))
           expect(phone_field.value).to be_empty
         end
+      end
 
+      context 'resubmission after number failed verification' do
+        let(:name_phone_correlation_pass) { false }
         it 'succeeds to otp verification with valid number resubmission' do
           click_idv_send_security_code
           click_on t('idv.failure.phone.warning.try_again_button')
 
           expect(page).to have_current_path(idv_phone_path)
 
+          remove_request_stub(@phonerisk_stub)
+          response_body[:namePhoneCorrelation][:score] = 0.99
+          response_body[:phoneRisk][:score] = 0.01
+
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return(
+              status: 200,
+              body: response_body.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
           fill_out_phone_form_ok
           click_idv_send_security_code
           expect(page).to have_current_path(idv_otp_verification_path)
         end
 
         context 'displays alert message if same nubmer is resubmitted' do
+          let(:phonerisk_pass) { false }
           context 'gpo verification is enabled' do
             it 'includes verify link' do
+              fill_out_phone_form_ok
               click_idv_send_security_code
               click_on t('idv.failure.phone.warning.try_again_button')
 
               expect(page).to have_current_path(idv_phone_path)
 
-              fill_out_phone_form_fail
+              fill_out_phone_form_ok
 
               expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
 
@@ -394,12 +425,13 @@ RSpec.feature 'idv phone step', :js do
             end
 
             it 'does not display verify link' do
+              fill_out_phone_form_ok
               click_idv_send_security_code
               click_on t('idv.failure.phone.warning.try_again_button')
 
               expect(page).to have_current_path(idv_phone_path)
 
-              fill_out_phone_form_fail
+              fill_out_phone_form_ok
 
               expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
               expect(page).not_to have_content(
