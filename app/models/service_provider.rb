@@ -108,6 +108,12 @@ class ServiceProvider < ApplicationRecord
     logo_url.end_with?('.png')
   end
 
+  def needs_to_reproof?(initiating_service_provider)
+    # TODO Check verification date against blackout period end
+    issuer == IdentityConfig.store.reproof_forcing_provider &&
+      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_provider
+  end
+
   private
 
   def s3_logo_url
