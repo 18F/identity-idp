@@ -418,7 +418,6 @@ RSpec.describe 'Hybrid Flow' do
         allow(IdentityConfig.store).to receive_messages(
           doc_auth_passports_enabled: false,
           doc_auth_socure_wait_polling_timeout_minutes: 0,
-          in_person_doc_auth_button_enabled: true,
           in_person_proofing_enabled: true,
         )
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)

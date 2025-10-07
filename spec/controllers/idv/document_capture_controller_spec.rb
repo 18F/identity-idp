@@ -465,7 +465,6 @@ RSpec.describe Idv::DocumentCaptureController do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
       end
 
       it 'renders show when flow path is standard' do
@@ -495,7 +494,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
       it 'renders show when accessed from handoff' do
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
         get :show, params: { step: 'hybrid_handoff' }
         expect(response).to render_template :show
         expect(subject.idv_session.skip_doc_auth_from_handoff).to eq(true)
