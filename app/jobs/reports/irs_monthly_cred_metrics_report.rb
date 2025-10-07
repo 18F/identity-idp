@@ -36,20 +36,16 @@ module Reports
       [
         ['Metric', 'Unit', 'Definition'],
 
-        ['Monthly Active Users', 'Count',
+        ['Monthly active users', 'Count',
          'The total number of unique users across all IAL levels
           that successfully signed into the Partner\'s applications'],
 
-        ['Total Credentials authorized for Partner', 'Count',
+        ['Credentials authorized for Partner', 'Count',
          'The total number of users (new and existing)
          that successfully signed into the Partner\'s applications'],
 
-        ['New Credentials Authorized for Partner', 'Count',
-         'The number of unique users who are new to the Partner\'s applications and are
-          in their first IdV proofing year.
-
-           This count correlates with the billing report charges for Newly Billed
-           IdV users (Year 1), Agreement-Level Count.'],
+        ['New identity verification credentials authorized for partner', 'Count',
+         'The number of users who go through the proofing process through a partner\'s request.'],
 
         ['Existing Credentials Authorized for Partner', 'Count',
          'The number of unique users who are new to the Partner\'s applications and are
