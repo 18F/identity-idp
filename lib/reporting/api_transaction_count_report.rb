@@ -73,7 +73,7 @@ module Reporting
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
-          'Socure (KYC) - Non-Shadow',
+          'Socure (KYC)',
           'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',

@@ -25,8 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     user_id: nil,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil,
-    proofing_components: nil # rubocop:disable Lint/UnusedMethodArgument
+    request_ip: nil
   )
     timer = JobHelpers::Timer.new
 
