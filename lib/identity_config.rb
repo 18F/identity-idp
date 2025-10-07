@@ -247,7 +247,6 @@ module IdentityConfig
     config.add(:idv_aamva_split_last_name_states, type: :json)
     config.add(:in_person_completion_survey_delivery_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
-    config.add(:in_person_doc_auth_button_enabled, type: :boolean)
     config.add(:in_person_eipp_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
