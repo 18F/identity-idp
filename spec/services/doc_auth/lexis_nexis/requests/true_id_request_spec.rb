@@ -202,8 +202,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors)
-          .to eq({ unexpected_id_type: 'passport' })
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('drivers_license')
       end
     end
 
@@ -229,8 +231,10 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors)
-          .to eq({ unexpected_id_type: 'drivers_license' })
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('passport')
       end
     end
   end
