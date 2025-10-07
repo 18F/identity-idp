@@ -273,7 +273,6 @@ RSpec.describe Idv::HybridHandoffController do
       context 'opt in ipp is not available on service provider' do
         let(:service_provider_ipp_enabled) { false }
         before do
-          subject.idv_session.service_provider.in_person_proofing_enabled = false
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
