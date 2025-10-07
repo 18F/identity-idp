@@ -38,11 +38,11 @@ module Reports
 
         ['Monthly active users', 'Count',
          'The total number of unique users across all IAL levels
-          that successfully signed into the Partner\'s applications'],
+          that successfully signed into the partner\'s applications'],
 
-        ['Credentials authorized for Partner', 'Count',
+        ['Credentials authorized for partner', 'Count',
          'The total number of users (new and existing)
-         that successfully signed into the Partner\'s applications'],
+         that successfully signed into the partner\'s applications'],
 
         ['New identity verification credentials authorized for partner', 'Count',
          'The number of users who go through the proofing process through a partner\'s request.'],
