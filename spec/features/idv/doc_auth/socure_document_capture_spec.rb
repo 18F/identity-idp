@@ -16,26 +16,36 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
-  before(:each) do
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-      .and_return(Idp::Constants::Vendors::SOCURE)
+  before do
+    allow(IdentityConfig.store).to receive_messages(
+      doc_auth_max_attempts: max_attempts,
+      doc_auth_passport_selfie_vendor_lexis_nexis_percent: 0,
+      doc_auth_passport_selfie_vendor_socure_percent: 100,
+      doc_auth_passport_selfie_vendor_switching_enabled: true,
+      doc_auth_passport_vendor_lexis_nexis_percent: 0,
+      doc_auth_passport_vendor_socure_percent: 100,
+      doc_auth_passport_vendor_switching_enabled: true,
+      doc_auth_selfie_vendor_lexis_nexis_percent: 0,
+      doc_auth_selfie_vendor_socure_percent: 100,
+      doc_auth_selfie_vendor_switching_enabled: true,
+      doc_auth_vendor_lexis_nexis_percent: 0,
+      doc_auth_vendor_socure_percent: 100,
+      doc_auth_vendor_switching_enabled: true,
+      ruby_workers_idv_enabled: false,
+      socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+      socure_docv_enabled: true,
+      socure_docv_webhook_repeat_endpoints:,
+      socure_docv_webhook_secret_key:,
+    )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
-      .and_return(socure_docv_webhook_secret_key)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
-      .and_return(fake_socure_docv_document_request_endpoint)
-    allow(IdentityConfig.store).to receive(:socure_docv_webhook_repeat_endpoints)
-      .and_return(socure_docv_webhook_repeat_endpoints)
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
-    allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
       attempts_api_tracker,
     )
     allow_any_instance_of(SocureDocvResultsJob).to receive(:analytics).and_return(fake_analytics)
     @docv_transaction_token = stub_docv_document_request(user:)
-    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+    reload_ab_tests
   end
 
   context 'happy path', allow_browser_log: true do
@@ -58,13 +68,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       context 'when the user times out waiting for results' do
         before do
           DocAuth::Mock::DocAuthMockClient.reset!
-          allow(IdentityConfig.store)
-            .to receive(:in_person_proofing_enabled).and_return(true)
-          allow(IdentityConfig.store)
-            .to receive(:in_person_doc_auth_button_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive_messages(
+            doc_auth_socure_wait_polling_timeout_minutes: 0,
+            in_person_doc_auth_button_enabled: true,
+            in_person_proofing_enabled: true,
+          )
           allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-            .and_return(0)
           allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(nil)
         end
 
@@ -432,13 +441,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
       context 'when a passport is submitted' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-          allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
-            .and_return(Idp::Constants::Vendors::SOCURE)
+          allow(IdentityConfig.store).to receive_messages(
+            doc_auth_passports_enabled: true,
+            doc_auth_passports_percent: 100,
+          )
           stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
             .to_return_json({ status: 200, body: { status: 'UP' } })
-          reload_ab_tests
           DocAuth::Mock::DocAuthMockClient.reset!
           @docv_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
@@ -510,18 +518,16 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         context 'when a selfie is required' do
           let(:socure_docv_webhook_repeat_endpoints) { [] }
           let(:max_attempts) { 4 }
+
           before do
-            allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+            allow(IdentityConfig.store).to receive_messages(
+              doc_auth_socure_wait_polling_timeout_minutes: 0,
+              idv_socure_reason_codes_docv_selfie_fail: ['fail'],
+              idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
+              idv_socure_reason_codes_docv_selfie_pass: ['pass'],
+              use_vot_in_sp_requests: true,
+            )
             visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
-            allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
-              .and_return(['pass'])
-            allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
-              .and_return(['fail'])
-            allow(IdentityConfig.store)
-              .to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
-              .and_return(['not_processed'])
-            allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-              .and_return(0)
             stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
               .to_return_json({ status: 200, body: { response: 'YES' } })
           end
@@ -628,15 +634,13 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
     context 'selfie required' do
       let(:max_attempts) { 5 }
       before do
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_pass)
-          .and_return(['pass'])
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_fail)
-          .and_return(['fail'])
-        allow(IdentityConfig.store).to receive(:idv_socure_reason_codes_docv_selfie_not_processed)
-          .and_return(['not_processed'])
-        allow(IdentityConfig.store).to receive(:doc_auth_socure_wait_polling_timeout_minutes)
-          .and_return(0)
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
+        allow(IdentityConfig.store).to receive_messages(
+          doc_auth_socure_wait_polling_timeout_minutes: 0,
+          idv_socure_reason_codes_docv_selfie_fail: ['fail'],
+          idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
+          idv_socure_reason_codes_docv_selfie_pass: ['pass'],
+          use_vot_in_sp_requests: true,
+        )
         visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_hybrid_handoff_step
@@ -837,21 +841,21 @@ RSpec.feature 'direct access to IPP on desktop', :js do
 
     before do
       service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
-        in_person_proofing_opt_in_enabled,
+      allow(IdentityConfig.store).to receive_messages(
+        allowed_biometric_ial_providers: [service_provider.issuer],
+        allowed_valid_authn_contexts_semantic_providers: [service_provider.issuer],
+        doc_auth_selfie_desktop_test_mode: false,
+        doc_auth_vendor_lexis_nexis_percent: 0,
+        doc_auth_vendor_socure_percent: 100,
+        doc_auth_vendor_switching_enabled: true,
+        in_person_proofing_enabled: true,
+        in_person_proofing_opt_in_enabled: in_person_proofing_opt_in_enabled,
+        socure_docv_enabled: true,
       )
-      allow(IdentityConfig.store).to receive(:allowed_biometric_ial_providers)
-        .and_return([service_provider.issuer])
-      allow(IdentityConfig.store).to receive(
-        :allowed_valid_authn_contexts_semantic_providers,
-      ).and_return([service_provider.issuer])
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
         .and_return(false)
-      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-      allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-        .and_return(Idp::Constants::Vendors::SOCURE)
+      reload_ab_tests
+
       visit_idp_from_sp_with_ial2(
         :oidc,
         **{ client_id: service_provider.issuer,
