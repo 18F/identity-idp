@@ -65,7 +65,7 @@ module Reports
     end
 
     def perform(perform_date = Time.zone.yesterday.end_of_day)
-      reports = as_emailable_irs_report(
+      reports = as_emailable_partner_report(
         date: perform_date,
       )
 
@@ -98,7 +98,7 @@ module Reports
       report_data
     end
 
-    def as_emailable_irs_report(date:)
+    def as_emailable_partner_report(date:)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
