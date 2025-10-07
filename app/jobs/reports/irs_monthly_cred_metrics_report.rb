@@ -32,6 +32,7 @@ module Reports
       [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
     end
 
+    # rubocop:disable Layout/LineLength
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
@@ -52,9 +53,9 @@ module Reports
 
         ['Total authentications', 'Count',
          'Total number of billable sign-ins at any IAL level in the reporting period'],
-
       ]
     end
+    # rubocop:enable Layout/LineLength
 
     def overview_table
       [
