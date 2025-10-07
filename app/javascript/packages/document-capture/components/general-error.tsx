@@ -47,6 +47,20 @@ function isNetworkError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'network');
 }
 
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedTypeText(expectedIdType, t) {
+  const idTypeToMessage = {
+    passport: t('doc_auth.errors.verify_passport_text'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_text'),
+  };
+
+  return idTypeToMessage[expectedIdType];
+}
+
 function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
@@ -103,13 +117,10 @@ function GeneralError({
     );
   }
   if (isUnexpectedIdTypeError) {
-    const isPassport = err?.message === 'passport';
-    const message = isPassport
-      ? t('doc_auth.errors.verify_drivers_license_text')
-      : t('doc_auth.errors.verify_passport_text');
+    const expectedIdType = getExpectedIdType(unknownFieldErrors);
     return (
       <p>
-        {t(message)}{' '}
+        {getUnexpectedTypeText(expectedIdType, t)}{' '}
         <Link href={chooseIdTypePath || ''} isExternal={false}>
           {t('doc_auth.errors.verify.use_another_type_of_id')}
         </Link>

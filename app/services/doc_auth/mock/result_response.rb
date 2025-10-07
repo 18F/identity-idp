@@ -66,8 +66,8 @@ module DocAuth
               passport_check_result,
             ].any?(&:present?)
 
-            if id_type.present?
-              return { unexpected_id_type: id_type } unless expected_document_type_received?
+            if id_type.present? && !expected_document_type_received?
+              return { unexpected_id_type: true, expected_id_type: expected_id_type }
             end
 
             if has_fields
@@ -253,6 +253,12 @@ module DocAuth
 
       def id_type
         parsed_data_from_uploaded_file&.dig('document', 'document_type_received')
+      end
+
+      def expected_id_type
+        passport_requested ?
+          Idp::Constants::DocumentTypes::PASSPORT :
+          Idp::Constants::DocumentTypes::DRIVERS_LICENSE
       end
 
       def selfie_passed?

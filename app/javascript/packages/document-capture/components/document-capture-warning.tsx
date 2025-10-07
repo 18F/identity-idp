@@ -22,9 +22,18 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
-function getIdType(unknownFieldErrors) {
-  const idType = unknownFieldErrors.find((error) => error.field === 'unexpected_id_type');
-  return idType ? idType.error : null;
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedIdTypeHeading(expectedIdType, t) {
+  const idTypeToHeading = {
+    passport: t('doc_auth.errors.verify_passport_heading'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_heading'),
+  };
+
+  return idTypeToHeading[expectedIdType];
 }
 
 type GetHeadingArguments = {
@@ -46,12 +55,7 @@ function getHeading({
   t,
 }: GetHeadingArguments) {
   if (unexpectedIdTypeError) {
-    const idType = getIdType(unknownFieldErrors);
-    const isPassport = idType?.message === 'passport';
-    const heading = isPassport
-      ? t('doc_auth.errors.verify_drivers_license_heading')
-      : t('doc_auth.errors.verify_passport_heading');
-    return heading;
+    return getUnexpectedIdTypeHeading(getExpectedIdType(unknownFieldErrors), t);
   }
   if (isFailedDocType) {
     return t('doc_auth.errors.rate_limited_heading');

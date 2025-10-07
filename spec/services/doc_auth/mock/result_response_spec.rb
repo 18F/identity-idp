@@ -84,7 +84,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
       it 'returns an error about the doc type mismatch' do
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({ unexpected_id_type: 'drivers_license' })
+        expect(response.errors).to eq({ unexpected_id_type: true, expected_id_type: 'passport' })
       end
     end
 
@@ -109,7 +109,8 @@ RSpec.describe DocAuth::Mock::ResultResponse do
 
       it 'returns an error about the doc type mismatch' do
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({ unexpected_id_type: 'passport' })
+        expect(response.errors)
+          .to eq({ unexpected_id_type: true, expected_id_type: 'drivers_license' })
       end
     end
   end

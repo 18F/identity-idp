@@ -298,7 +298,11 @@ describe('DocumentCaptureWarning', () => {
           const unknownFieldErrors = [
             {
               field: 'unexpected_id_type',
-              error: toFormEntryError({ field: 'unexpected_id_type', message: 'drivers_license' }),
+              error: toFormEntryError({ field: 'unexpected_id_type', message: true }),
+            },
+            {
+              field: 'expected_id_type',
+              error: toFormEntryError({ field: 'expected_id_type', message: 'passport' }),
             },
           ];
 
@@ -328,6 +332,10 @@ describe('DocumentCaptureWarning', () => {
             {
               field: 'unexpected_id_type',
               error: toFormEntryError({ field: 'unexpected_id_type', message: 'passport' }),
+            },
+            {
+              field: 'expected_id_type',
+              error: toFormEntryError({ field: 'expected_id_type', message: 'drivers_license' }),
             },
           ];
 
