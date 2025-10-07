@@ -18,7 +18,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
-  let(:proofing_components) { nil }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -44,7 +43,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-        proofing_components: proofing_components,
         proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
       )
     end
