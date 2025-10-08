@@ -7,7 +7,6 @@ class AddressProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  # rubocop:disable Lint/UnusedMethodArgument
   def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, address_vendor:, user_id: nil)
     timer = JobHelpers::Timer.new
 
@@ -54,7 +53,6 @@ class AddressProofingJob < ApplicationJob
       )
     end
   end
-  # rubocop:enable Lint/UnusedMethodArgument
 
   private
 
