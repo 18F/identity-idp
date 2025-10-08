@@ -24,7 +24,7 @@ class AddressProofingJob < ApplicationJob
       address_proofer(user:, address_vendor:).proof(applicant_pii)
     end
 
-    unless address_vendor == :socure
+    unless address_vendor == :socure # TBD: LG-16856
       service_provider = ServiceProvider.find_by(issuer: issuer)
       Db::SpCost::AddSpCost.call(
         service_provider, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
