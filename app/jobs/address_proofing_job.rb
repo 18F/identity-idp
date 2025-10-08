@@ -19,16 +19,17 @@ class AddressProofingJob < ApplicationJob
     )
 
     applicant_pii = decrypted_args[:applicant_pii]
-# byebug
     user = User.find(user_id)
     proofer_result = timer.time('address') do
       address_proofer(user:, address_vendor:).proof(applicant_pii)
     end
 
-    service_provider = ServiceProvider.find_by(issuer: issuer)
-    Db::SpCost::AddSpCost.call(
-      service_provider, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
-    )
+    if address_vendor == :lexis_nexis
+      service_provider = ServiceProvider.find_by(issuer: issuer)
+      Db::SpCost::AddSpCost.call(
+        service_provider, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
+      )
+    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(proofer_result.to_h)

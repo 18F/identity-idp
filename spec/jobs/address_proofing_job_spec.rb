@@ -97,6 +97,45 @@ RSpec.describe AddressProofingJob, type: :job do
       end
     end
 
+    context 'webmock vendor socure' do
+      let(:address_vendor) { :socure }
+      before do
+        stub_request(
+          :post,
+          'https://sandbox.socure.test/api/3.0/EmailAuthScore',
+        ).to_return(
+          body: {
+            reference: '',
+            phoneRisk: {
+              score: 0.01,
+              reasonCodes: [],
+            },
+            namePhoneCorrelation: {
+              score: 0.99,
+              reasonCodes: [],
+            },
+          }.to_json,
+          headers: { 'Content-Type' => 'application/json' },
+        )
+      end
+
+      it 'runs' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('socure_phonerisk')
+      end
+
+      it 'does not add cost data' do
+        expect { perform }.not_to(change { SpCost.count })
+      end
+    end
+
     context 'mock proofer' do
       let(:address_vendor) { :mock }
       context 'with an unsuccessful response from the proofer' do
