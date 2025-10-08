@@ -51,7 +51,7 @@ module Idv
       )
 
       address_vendor = address_vendor_ab_test_bucket ||
-                       IdentityConfig.store.idv_address_default_vendor.to_sym
+                       IdentityConfig.store.idv_address_default_vendor
 
       job_arguments = {
         user_id: user_id,

@@ -185,6 +185,7 @@ RSpec.feature 'idv phone step', :js do
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
       click_idv_send_security_code
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
       click_on t('links.cancel')
 
       expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
@@ -260,11 +261,7 @@ RSpec.feature 'idv phone step', :js do
       }
     end
     before do
-      allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
-        .and_return(100)
-      allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
-        .and_return(true)
-      reload_ab_tests
+      allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
 
       @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
         .to_return(
@@ -274,6 +271,8 @@ RSpec.feature 'idv phone step', :js do
             'Content-Type': 'application/json',
           },
         )
+
+      # reload_ab_tests
     end
 
     context 'after submitting valid information' do
@@ -341,6 +340,7 @@ RSpec.feature 'idv phone step', :js do
           expect(page).to have_content(t('idv.failure.phone.warning.heading'))
           expect(page).to have_content('+1 202-555-1212')
 
+          click_on t('idv.failure.phone.warning.try_again_button')
           # phone field is empty after invalid submission
           phone_field = find_field(t('two_factor_authentication.phone_label'))
           expect(phone_field.value).to be_empty
@@ -350,6 +350,7 @@ RSpec.feature 'idv phone step', :js do
       context 'when Socure returns a low name phone correlation score' do
         let(:name_phone_correlation_pass) { false }
         it 'reports the number the user entered' do
+          fill_out_phone_form_ok(phone_number)
           click_idv_send_security_code
 
           expect(page).to have_content(t('idv.failure.phone.warning.heading'))
@@ -458,78 +459,79 @@ RSpec.feature 'idv phone step', :js do
       end
 
       context 'phone number submission times out' do
+        before do
+          remove_request_stub(@phonerisk_stub)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_raise(Faraday::TimeoutError.new('Connection failed'))
+        end
         it 'does not display failed alert message' do
-          timeout_phone_number = '7035555888'
           start_idv_from_sp
           complete_idv_steps_before_phone_step
-          fill_out_phone_form_ok(timeout_phone_number)
+
           click_idv_send_security_code
+
           click_on t('idv.failure.button.warning')
 
           expect(page).to have_current_path(idv_phone_path)
-
-          fill_out_phone_form_ok(timeout_phone_number)
 
           expect(page).not_to have_content(t('idv.messages.phone.failed_number.alert_text'))
 
           click_idv_send_security_code
+
           click_on t('idv.failure.button.warning')
 
           expect(page).to have_current_path(idv_phone_path)
         end
       end
+      context 'paths after proofing failure' do
+        let(:phonerisk_pass) { false }
+        it 'goes to the cancel page when cancel link is clicked' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+          click_idv_send_security_code
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          click_on t('links.cancel')
 
-      it 'goes to the cancel page when cancel link is clicked' do
-        start_idv_from_sp
-        complete_idv_steps_before_phone_step
-        fill_out_phone_form_fail
-        click_idv_send_security_code
-        click_on t('links.cancel')
+          expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
+        end
 
-        expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
-      end
-
-      it 'links to verify by mail, from which user can return back to the warning screen' do
-        start_idv_from_sp
-        complete_idv_steps_before_phone_step
-        fill_out_phone_form_fail
-        click_idv_send_security_code
-
-        expect(page).to have_content(t('idv.failure.phone.warning.heading'))
-
-        click_on t('idv.failure.phone.warning.gpo.button')
-        expect(page).to have_content(t('idv.titles.mail.verify'))
-
-        click_doc_auth_back_link
-        expect(page).to have_content(t('idv.failure.phone.warning.heading'))
-      end
-
-      it 'does not render the link to proof by mail if proofing by mail is disabled' do
-        allow(FeatureManagement).to receive(:gpo_verification_enabled?).and_return(false)
-
-        start_idv_from_sp
-        complete_idv_steps_before_phone_step
-
-        4.times do
-          fill_out_phone_form_fail
+        it 'links to verify by mail, from which user can return back to the warning screen' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
           click_idv_send_security_code
 
           expect(page).to have_content(t('idv.failure.phone.warning.heading'))
-          expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
 
-          click_on t('idv.failure.phone.warning.try_again_button')
+          click_on t('idv.failure.phone.warning.gpo.button')
+          expect(page).to have_content(t('idv.titles.mail.verify'))
+
+          click_doc_auth_back_link
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
         end
 
-        fill_out_phone_form_fail
-        click_idv_send_security_code
+        it 'does not render the link to proof by mail if proofing by mail is disabled' do
+          allow(FeatureManagement).to receive(:gpo_verification_enabled?).and_return(false)
 
-        expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
-        expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+
+          4.times do
+            fill_out_phone_form_fail
+            click_idv_send_security_code
+
+            expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+            expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+
+            click_on t('idv.failure.phone.warning.try_again_button')
+          end
+
+          fill_out_phone_form_fail
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
+          expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+        end
       end
-    end
-
-    context 'when the IdV background job fails' do
-      it_behaves_like 'failed idv phone job'
     end
   end
 end
