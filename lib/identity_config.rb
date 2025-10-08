@@ -223,7 +223,7 @@ module IdentityConfig
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_percent, type: :integer)
     config.add(:idv_acuant_sdk_version_alternate, type: :string)
     config.add(:idv_acuant_sdk_version_default, type: :string)
-    config.add(:idv_address_default_vendor, type: :string)
+    config.add(:idv_address_default_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :socure])
     config.add(:idv_address_vendor_lexis_nexis_percent, type: :integer)
     config.add(:idv_address_vendor_socure_percent, type: :integer)
     config.add(:idv_address_vendor_switching_enabled, type: :boolean)
