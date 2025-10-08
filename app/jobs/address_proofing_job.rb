@@ -71,7 +71,7 @@ class AddressProofingJob < ApplicationJob
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
         )
       when :socure
-        Proofing::Socure::IdPlus::PhoneRisk.new(
+        Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
           Proofing::Socure::IdPlus::Config.new(
             user_uuid: user.uuid,
             user_email: user.last_sign_in_email_address.email,

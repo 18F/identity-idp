@@ -99,7 +99,7 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
   end
 
   def proofer(user:)
-    @proofer ||= Proofing::Socure::IdPlus::PhoneRisk.new(
+    @proofer ||= Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
       Proofing::Socure::IdPlus::Config.new(
         user_uuid: user.uuid,
         user_email: user.last_sign_in_email_address.email,
