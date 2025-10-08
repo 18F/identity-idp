@@ -12,8 +12,8 @@ module Proofing
                 score: phonerisk_score,
               },
               name_phone_correlation: {
-                reason_codes: Proofer.
-                  reason_codes_with_defnitions(name_phone_correlation_reason_codes),
+                reason_codes: Proofer
+                  .reason_codes_with_defnitions(name_phone_correlation_reason_codes),
                 score: name_phone_correlation_score,
               },
               customer_user_id:,
