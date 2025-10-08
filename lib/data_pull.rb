@@ -492,7 +492,11 @@ class DataPull
             duplicate_profile_sets.each do |duplicate_profile_set|
               duplicate_profile_ids = duplicate_profile_set.profile_ids - [user.active_profile.id]
               duplicate_uuids = user_uuids(duplicate_profile_ids)
-              table << [email, user.uuid, duplicate_profile_set.service_provider, duplicate_uuids]
+              if duplicate_uuids.present?
+                table << [email, user.uuid, duplicate_profile_set.service_provider, duplicate_uuids]
+              else
+                table << [email, '[DUPLICATES NOT FOUND]', nil, nil]
+              end
             end
           else
             table << [email, '[DUPLICATES NOT FOUND]', nil, nil]
@@ -520,7 +524,9 @@ class DataPull
     end
 
     def user_uuids(profile_ids)
-      profile_ids.map { |profile_id| Profile.find(profile_id).user.uuid }
+      profile_ids.map do |profile_id|
+        Profile.exists?(profile_id) ? Profile.find(profile_id).user.uuid : nil
+      end.compact
     end
   end
 end
