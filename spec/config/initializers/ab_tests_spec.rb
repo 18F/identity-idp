@@ -191,6 +191,61 @@ RSpec.describe AbTests do
     end
   end
 
+  shared_examples 'A/B test using idv_phone_step_document_capture_session_uuid discriminator' do
+    subject(:bucket) do
+      AbTests.all[ab_test].bucket(
+        request: nil,
+        service_provider: nil,
+        session:,
+        user:,
+        user_session:,
+      )
+    end
+
+    let(:session) { {} }
+    let(:user) { nil }
+    let(:user_session) { {} }
+
+    context 'when A/B test is enabled' do
+      before do
+        enable_ab_test.call
+        reload_ab_tests
+      end
+
+      context 'and user is logged in' do
+        let(:user) { build(:user) }
+
+        context 'with a idv_phone_step_document_capture_session_uuid in their IdV session' do
+          let(:user_session) do
+            {
+              idv: {
+                idv_phone_step_document_capture_session_uuid: 'a-random-uuid',
+              },
+            }
+          end
+
+          it 'returns a bucket' do
+            expect(bucket).not_to be_nil
+          end
+        end
+
+        context 'and the user does not have an Idv::Session' do
+          let(:user_session) do
+            {}
+          end
+
+          it 'does not return a bucket' do
+            expect(bucket).to be_nil
+          end
+
+          it 'does not write :idv key in user_session' do
+            expect { bucket }.not_to change { user_session }
+          end
+        end
+      end
+    end
+  end
+
   shared_examples 'an A/B test that uses user_uuid as a discriminator' do
     subject(:bucket) do
       AbTests.all[ab_test].bucket(
@@ -505,5 +560,31 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'A/B test using verify_info_step_document_capture_session_uuid discriminator'
+  end
+
+  describe 'ADDRESS_PROOFING_VENDOR' do
+    let(:ab_test) { :ADDRESS_PROOFING_VENDOR }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_address_default_vendor)
+          .and_return(:vendor_a)
+        allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
+          .and_return(50)
+        allow(IdentityConfig.store).to receive(:idv_address_vendor_lexis_nexis_percent)
+          .and_return(30)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'A/B test using idv_phone_step_document_capture_session_uuid discriminator'
   end
 end
