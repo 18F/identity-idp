@@ -19,11 +19,9 @@ module Reporting
     module Events
       # this for successful ipp
       SUCCESSFUL_IPP = 'GetUspsProofingResultsJob: Enrollment status updated'
-      # THESE FOR SUSPECTED FRAUD BLOCKS --------------------------------
       # note: events in the key friction points are also used in the suspected fraud blocks
       # queries as well.
       IDV_PHONE_CONF_VENDOR = 'IdV: phone confirmation vendor'
-      # THESE FOR KEY FRICTION POINTS -----------------------------------
       # these two for api connection fails
       IDV_DOC_AUTH_VERIFY_PROOFING_RESULTS = 'IdV: doc auth verify proofing results'
       IDV_PHONE_RECORD_VISITED = 'IdV: phone of record visited'
@@ -62,7 +60,6 @@ module Reporting
       TROUBLESHOOTING_OPTION = 'IdV: verify in person troubleshooting option clicked'
       IPP_BARCODE_OUTPUT = 'ipp_barcode_output'
       IPP_READY = 'IdV: in person ready to verify visited'
-      # -------------------------------------------------------------------
 
       def self.all_events
         constants.map { |c| const_get(c) }
@@ -135,18 +132,18 @@ module Reporting
     end
 
     # this will come from IdP and thus needs to be modified
-    # table for Proofing Success -------------------------------------------------------
+    # table for Proofing Success
     def proofing_success_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
-        ['Identity Verified Users', ial2.to_s, time_range.begin.to_s,
+        ['Identity Verified Users', ial2_users.to_s, time_range.begin.to_s,
          time_range.end.to_s],
         ['Idv Rate w/Preverified Users', idv_rate.to_s.concat('%'), time_range.begin.to_s,
          time_range.end.to_s],
       ]
     end
 
-    # table Suspected Fraud Related Blocks ----------------------------------------------
+    # table Suspected Fraud Related Blocks
     def suspected_fraud_blocks_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -210,11 +207,10 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-        # ---------------------------------------------------------------------------------
       ]
     end
 
-    # table Key Points of User Friction ---------------------------------------------------
+    # table Key Points of User Friction
     def key_points_user_friction_metrics_table
       [
         ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -236,7 +232,6 @@ module Reporting
           time_range.begin.to_s,
           time_range.end.to_s,
         ],
-        # -------------------------------------------------------------------------------
       ]
     end
 
@@ -257,7 +252,7 @@ module Reporting
       time_range.begin.strftime('%b-%Y')
     end
 
-    # Create Data Dictionary that will store results from each cloudwatch query ------------
+    # Create Data Dictionary that will store results from each cloudwatch query
     def data_authentic_license_facial_match_socure
       @data_authentic_license_facial_match_socure ||= begin
         event_users = Hash.new { |h, event| h[event] = Set.new }
@@ -422,10 +417,7 @@ module Reporting
       end
     end
 
-    # TODO: END --------------------------------------------------------------------------
-
-    # TODO: SQL QUERY FOR IDP---------------------------------------------------------------
-    # fetch command for idp sql query ------------------------------------------------------
+    # fetch command for idp sql query
     def fetch_proofing_ial2_data
       params = {
         start_date: time_range.begin,
@@ -458,9 +450,8 @@ module Reporting
 
       return ial2_result.to_a[0].values[0]
     end
-    # TODO: END --------------------------------------------------------------------------
 
-    # fetch commands for cloudwatch queries ------------------------------------------------
+    # fetch commands for cloudwatch queries
     def fetch_authentic_drivers_license_facial_match_socure_results
       cloudwatch_client.fetch(
         query: authentic_drivers_license_facial_match_socure_query, from: time_range.begin,
@@ -544,7 +535,6 @@ module Reporting
       )
     end
 
-    # ---------------------------------------------------------------------------------------
     def as_tables
       [
         overview_table,
@@ -565,7 +555,6 @@ module Reporting
       end
     end
 
-    # ---------------------------------------------------------------------------------------
     def authentic_drivers_license_facial_match_socure_query
       params = {
         issuers: quote(issuers),
@@ -852,7 +841,6 @@ module Reporting
       QUERY
     end
 
-    # --------------------------------------------------------------------------
     def api_connection_fails_query
       params = {
         issuers: quote(issuers),
@@ -964,25 +952,17 @@ module Reporting
       )
     end
 
-    # Extracting data that was gathered from idp sql query and placed in dictionaries -------------
-    def ial2
-      @ial2 = fetch_proofing_ial2_data
-    end
-    # ---------------------------------------------------------------------------------------------
-
-    def sum_key_friction_points
-      @sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
-                                 verification_code_not_received_count + api_connection_fails
-    end
-
-    def denominator
-      # to do need to calculate ipp_barcode and then subtract it from the following line
-      @denominator = (ial2.to_i + sum_key_friction_points.to_i) - ipp_barcode_count.to_i
+    # Extracting data that was gathered from idp sql query and placed in dictionaries
+    def ial2_users
+      @ial2_users ||= fetch_proofing_ial2_data
     end
 
     def idv_rate
-      # @idv_rate = '86.34%' # just testing
-      @idv_rate = (ial2.to_i / denominator.to_f * 100).round(2)
+      sum_key_friction_points = doc_selfie_ux_challenge_socure_and_lexis +
+                                verification_code_not_received_count + api_connection_fails
+      denominator = (ial2_users.to_i + sum_key_friction_points.to_i) - ipp_barcode_count.to_i
+      numerator = ial2_users.to_i
+      @idv_rate = (numerator / denominator.to_f * 100).round(2)
     end
 
     def ipp_barcode_count
@@ -991,9 +971,7 @@ module Reporting
       set.find { |v| v }&.to_i || 0
     end
 
-    # ---------------------------------------------------------------------------------------------
-
-    # Extracting data that was gathered from queries and placed in dictionaries -------------
+    # Extracting data that was gathered from queries and placed in dictionaries
     def authentic_drivers_license_facial_check_lexis
       @authentic_drivers_license_facial_check_lexis || data_authentic_license_facial_match_lexis[
         Events::DOC_AUTH_FACIAL_LEXIS]
