@@ -31,6 +31,14 @@ module Proofing
             @reason_codes ||= kyc('reasonCodes').to_set.freeze
           end
 
+          def verified_attributes
+            VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
+              if Array(field_names).all? { |f| field_validations[f] }
+                result << attr_name
+              end
+            end.to_set
+          end
+
           private
 
           attr_reader :http_response
@@ -46,14 +54,6 @@ module Proofing
               .each_with_object({}) do |(field, valid), obj|
                 obj[field.to_sym] = valid.round == 1
               end.freeze
-          end
-
-          def verified_attributes
-            VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
-              if Array(field_names).all? { |f| field_validations[f] }
-                result << attr_name
-              end
-            end.to_set
           end
         end
       end

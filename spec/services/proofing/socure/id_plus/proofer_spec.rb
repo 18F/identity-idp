@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Socure::IdPlus::Proofer do
+RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:config) do
   end
 

@@ -36,7 +36,7 @@ module Proofing
           end
 
           def request(input)
-            @request ||= KycRequest.new(config:, input:)
+            @request ||= Requests::KycRequest.new(config:, input:)
           end
         end
       end
