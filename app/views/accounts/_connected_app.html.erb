@@ -34,7 +34,7 @@
   <% if identity.service_provider_id %>
     <div class="margin-y-1">
       <%= render ButtonComponent.new(
-            url: service_provider_revoke_url(identity.service_provider_id),
+            url: service_provider_revoke_url(sp_id: identity.service_provider_id),
             outline: true,
           ).with_content(t('account.revoke_consent.link_title')) %>
     </div>
