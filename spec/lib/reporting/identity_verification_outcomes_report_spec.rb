@@ -195,7 +195,7 @@ RSpec.describe Reporting::IdentityVerificationOutcomesReport do
         ),
       ]
     end
-    # TODO: END ---------------------------------------------
+
     it 'return expected table for email' do
       expect(report.as_emailable_reports).to eq expected_reports
     end
