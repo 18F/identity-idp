@@ -8,11 +8,11 @@ module Proofing
           def to_h
             {
               phonerisk: {
-                reason_codes: reason_codes_with_defnitions(phonerisk_reason_codes),
+                reason_codes: SocureReasonCode.reason_codes_with_defnitions(phonerisk_reason_codes),
                 score: phonerisk_score,
               },
               name_phone_correlation: {
-                reason_codes: reason_codes_with_defnitions(name_phone_correlation_reason_codes),
+                reason_codes: SocureReasonCode.reason_codes_with_defnitions(name_phone_correlation_reason_codes),
                 score: name_phone_correlation_score,
               },
               customer_user_id:,
