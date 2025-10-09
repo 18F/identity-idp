@@ -764,7 +764,7 @@ duplicate_profiles_detected.intro_html: '%{sp_name} 规定你只能拥有一个�
 duplicate_profiles_detected.intro.link: 了解更多关于重复帐户的信息。
 duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.never_logged_in: Never logged in to
 duplicate_profiles_detected.select_an_account.details: 保留你最常用的那个帐户。例如，与最多机构绑定的那个帐户。这样，你就无需再重新连接这些机构。
 duplicate_profiles_detected.select_an_account.heading: 选择要保留的帐户
 duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 %{app_name} 帐户登录。

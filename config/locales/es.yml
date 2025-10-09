@@ -764,7 +764,7 @@ duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga una
 duplicate_profiles_detected.intro.link: Obtenga más información acerca de las cuentas duplicadas.
 duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.never_logged_in: Never logged in to
 duplicate_profiles_detected.select_an_account.details: Conserve la cuenta que más usa. Por ejemplo, la que está vinculada a más servicios. Así, no tendrá que volver a conectar los servicios.
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.

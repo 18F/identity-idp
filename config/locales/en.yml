@@ -753,7 +753,7 @@ duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only h
 duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
 duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.never_logged_in: Never logged in to
 duplicate_profiles_detected.select_an_account.details: Keep the account you use the most. For example, the one tied to the most services. That way, you won’t have to reconnect services.
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
