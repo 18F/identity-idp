@@ -53,7 +53,7 @@
       <% else %>
         <p> <%= t(
                   'duplicate_profiles_detected.last_sign_in_at_html',
-                  timestamp_html: t('duplicate_profiles_detected.never_logged_in'),
+                  timestamp_html: t('duplicate_profiles_detected.never_logged_in') + ' ' + sp_name,
                 ) %>
       <% end %>
     </div>
