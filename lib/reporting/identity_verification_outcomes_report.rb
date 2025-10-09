@@ -545,16 +545,6 @@ module Reporting
       ]
     end
 
-    def to_csvs
-      as_tables.map do |table|
-        CSV.generate do |csv|
-          table.each do |row|
-            csv << row
-          end
-        end
-      end
-    end
-
     def authentic_drivers_license_facial_match_socure_query
       params = {
         issuers: quote(issuers),
@@ -1102,13 +1092,5 @@ module Reporting
       set ||= Set[]
       set.find { |v| v }&.to_i || 0
     end
-  end
-end
-
-if __FILE__ == $PROGRAM_NAME
-  options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
-
-  Reporting::IdentityVerificationOutcomesReport.new(**options).to_csvs.each do |csv|
-    puts csv
   end
 end
