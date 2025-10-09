@@ -117,7 +117,7 @@ class SocureShadowModeProofingJob < ApplicationJob
   end
 
   def proofer(user:)
-    @proofer ||= Proofing::Socure::IdPlus::Proofer.new(
+    @proofer ||= Proofing::Socure::IdPlus::Proofers::KycProofer.new(
       Proofing::Socure::IdPlus::Config.new(
         user_uuid: user.uuid,
         api_key: IdentityConfig.store.socure_idplus_api_key,

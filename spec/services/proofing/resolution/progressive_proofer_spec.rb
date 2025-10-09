@@ -528,7 +528,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         )
 
         expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Socure::IdPlus::Proofer,
+          Proofing::Socure::IdPlus::Proofers::KycProofer,
         )
       end
     end
@@ -572,7 +572,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         )
 
         expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
-          Proofing::Socure::IdPlus::Proofer,
+          Proofing::Socure::IdPlus::Proofers::KycProofer,
         )
       end
     end
