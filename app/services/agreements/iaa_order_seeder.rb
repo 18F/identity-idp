@@ -40,16 +40,33 @@ module Agreements
 
         order = IaaOrder.find_by!(iaa_gtc_id: iaa_gtc_id, order_number: order_number)
 
+        yaml_integration_ids = []
         integrations.each do |issuer|
           integration = Integration.find_by!(issuer: issuer)
           IntegrationUsage.find_or_create_by!(iaa_order: order, integration: integration)
+          yaml_integration_ids << integration.id
         rescue ActiveRecord::RecordNotFound => e
           gtc = order.iaa_gtc.gtc_number
           message =
             "#{e.message} - #{filename}: #{gtc}-#{order.order_number} #{issuer}"
           raise ActiveRecord::RecordNotFound.new(message)
         end
+
+        remove_orphaned_integration_usages(order, yaml_integration_ids)
       end
+    end
+
+    private
+
+    def remove_orphaned_integration_usages(order, yaml_integration_ids)
+      orphaned_usages = order.integration_usages.where.not(integration_id: yaml_integration_ids)
+      return unless orphaned_usages.exists?
+
+      Rails.logger.info(
+        "Removing #{orphaned_usages.count} orphaned IntegrationUsage records for IAA order \
+        #{order.iaa_gtc.gtc_number}-#{order.order_number}",
+      )
+      orphaned_usages.destroy_all
     end
   end
 end

@@ -22,11 +22,27 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedIdTypeHeading(expectedIdType, t) {
+  const idTypeToHeading = {
+    passport: t('doc_auth.errors.verify_passport_heading'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_heading'),
+  };
+
+  return idTypeToHeading[expectedIdType];
+}
+
 type GetHeadingArguments = {
   isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
+  unexpectedIdTypeError: boolean;
+  unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   t: typeof I18n.prototype.t;
 };
 function getHeading({
@@ -34,8 +50,13 @@ function getHeading({
   isFailedDocType,
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
+  unexpectedIdTypeError,
+  unknownFieldErrors,
   t,
 }: GetHeadingArguments) {
+  if (unexpectedIdTypeError) {
+    return getUnexpectedIdTypeHeading(getExpectedIdType(unknownFieldErrors), t);
+  }
   if (isFailedDocType) {
     return t('doc_auth.errors.rate_limited_heading');
   }
@@ -64,6 +85,10 @@ function isPassportError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'passport');
 }
 
+function isUnexpectedIdTypeError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'unexpected_id_type');
+}
+
 function DocumentCaptureWarning({
   isResultCodeInvalid,
   isFailedDocType,
@@ -81,11 +106,14 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
+  const unexpectedIdTypeError = isUnexpectedIdTypeError(unknownFieldErrors);
   const heading = getHeading({
     isResultCodeInvalid,
     isFailedDocType,
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
+    unexpectedIdTypeError,
+    unknownFieldErrors,
     t,
   });
   const actionText = nonIppOrFailedResult
@@ -138,6 +166,7 @@ function DocumentCaptureWarning({
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
             isPassportError={passportError}
+            isUnexpectedIdTypeError={unexpectedIdTypeError}
           />
         </div>
         <p>

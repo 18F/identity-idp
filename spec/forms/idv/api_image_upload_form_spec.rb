@@ -1129,6 +1129,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           passport_image.read,
           image_config,
           passport_submittal: true,
+          passport_requested: passport_requested,
         )
       end
       let(:response) { form.submit }
@@ -1362,6 +1363,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           DocAuth::Mock::ResultResponse.new(
             passport_image.read,
             image_config,
+            passport_submittal: true,
+            passport_requested: true,
           )
         end
         let(:failed_pii_response) do

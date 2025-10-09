@@ -13,6 +13,7 @@ interface GeneralErrorProps extends ComponentProps<'p'> {
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
   isPassportError?: boolean;
+  isUnexpectedIdTypeError?: boolean;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -46,12 +47,27 @@ function isNetworkError(unknownFieldErrors) {
   return unknownFieldErrors.some((error) => error.field === 'network');
 }
 
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedTypeText(expectedIdType, t) {
+  const idTypeToMessage = {
+    passport: t('doc_auth.errors.verify_passport_text'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_text'),
+  };
+
+  return idTypeToMessage[expectedIdType];
+}
+
 function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
   isPassportError = false,
+  isUnexpectedIdTypeError = false,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
@@ -97,6 +113,17 @@ function GeneralError({
             {selfieHelpCenterLinkText}
           </Link>
         )}
+      </p>
+    );
+  }
+  if (isUnexpectedIdTypeError) {
+    const expectedIdType = getExpectedIdType(unknownFieldErrors);
+    return (
+      <p>
+        {getUnexpectedTypeText(expectedIdType, t)}{' '}
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
+          {t('doc_auth.errors.verify.use_another_type_of_id')}
+        </Link>
       </p>
     );
   }

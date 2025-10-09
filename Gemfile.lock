@@ -563,7 +563,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.0.18)
+    rack (3.2.2)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
@@ -770,7 +770,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
     uniform_notifier (1.17.0)
-    uri (1.0.3)
+    uri (1.0.4)
     useragent (0.16.11)
     valid_email (0.2.1)
       activemodel
@@ -909,7 +909,7 @@ DEPENDENCIES
   pry-rails
   psych
   puma (~> 6.0)
-  rack (~> 3.0.12)
+  rack (~> 3.0)
   rack-attack!
   rack-cors (> 2.0.1)
   rack-headers_filter

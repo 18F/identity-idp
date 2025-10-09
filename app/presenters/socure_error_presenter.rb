@@ -6,13 +6,15 @@ class SocureErrorPresenter
   include ActionView::Helpers::TranslationHelper
   include LinkHelper
 
-  attr_reader :url_options
+  attr_reader :url_options, :passport_requested
 
-  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, flow_path:)
+  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:,
+                 flow_path:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
     @issuer = issuer
+    @passport_requested = passport_requested
     @flow_path = flow_path
     @url_options = {}
   end
@@ -120,6 +122,8 @@ class SocureErrorPresenter
       t('idv.errors.technical_difficulties')
     when :unaccepted_id_type
       t('doc_auth.headers.unaccepted_id_type')
+    when :unexpected_id_type
+      unexpected_id_type_heading
     when :selfie_fail
       t('doc_auth.errors.selfie_fail_heading')
     else
@@ -141,6 +145,8 @@ class SocureErrorPresenter
       t('idv.errors.try_again_later')
     when :unaccepted_id_type
       t('doc_auth.errors.unaccepted_id_type')
+    when :unexpected_id_type
+      unexpected_id_type_text
     when :selfie_fail
       t('doc_auth.errors.general.selfie_failure')
     else
@@ -155,6 +161,31 @@ class SocureErrorPresenter
         I18n.t("doc_auth.errors.#{remapped_error(error_code)}")
       end
     end
+  end
+
+  def unexpected_id_type_heading
+    if passport_requested
+      t('doc_auth.errors.verify_passport_heading')
+    else
+      t('doc_auth.errors.verify_drivers_license_heading')
+    end
+  end
+
+  def unexpected_id_type_text
+    verify_id_text = passport_requested ?
+      t('doc_auth.errors.verify_passport_text') :
+      t('doc_auth.errors.verify_drivers_license_text')
+
+    safe_join(
+      [
+        verify_id_text,
+        link_to(
+          t('doc_auth.errors.verify.use_another_type_of_id'),
+          idv_choose_id_type_path,
+        ),
+      ],
+      ' ',
+    )
   end
 
   def in_person_enabled?

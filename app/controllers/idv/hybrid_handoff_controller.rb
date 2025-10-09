@@ -55,7 +55,9 @@ module Idv
     def self.selected_remote(idv_session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
-         idv_session.service_provider&.in_person_proofing_enabled
+         Idv::InPersonConfig.enabled_for_issuer?(
+           idv_session.service_provider&.issuer,
+         )
         idv_session.skip_doc_auth_from_how_to_verify == false
       else
         idv_session.skip_doc_auth_from_how_to_verify.nil? ||
