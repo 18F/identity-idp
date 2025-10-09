@@ -206,7 +206,7 @@ RSpec.describe Reporting::IdentityVerificationOutcomesReport do
     let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
-        num_threads: 1,
+        num_threads: 5,
         ensure_complete_logs: true,
         slice_interval: 6.hours,
         progress: false,
