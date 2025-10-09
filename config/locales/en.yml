@@ -907,6 +907,8 @@ forms.backup_code.regenerate: Get new codes
 forms.backup_code.saved: I’ve put my backup codes in a safe place.
 forms.backup_code.subinfo_html: '<strong>If you lose your device, you’ll need these codes to sign into %{app_name}.</strong> Save or print them and put them somewhere safe.'
 forms.backup_code.title: Save these backup codes
+forms.backup_code.warning_html: '<strong>Do not share these codes.</strong> %{app_name} will never call, text, or email you asking for them.'
+forms.backup_code.warning_link: Learn how to identify fraud and report it.
 forms.buttons.back: Back
 forms.buttons.cancel: Yes, cancel
 forms.buttons.confirm: Confirm
