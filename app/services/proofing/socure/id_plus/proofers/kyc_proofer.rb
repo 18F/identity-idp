@@ -31,7 +31,7 @@ module Proofing
               verified_attributes: response.verified_attributes,
               transaction_id: response.reference_id,
               customer_user_id: response.customer_user_id,
-              reason_codes: SocureReasonCode.reason_codes_with_defnitions(response.reason_codes),
+              reason_codes: SocureReasonCode.with_defnitions(response.reason_codes),
             )
           end
 
