@@ -587,6 +587,11 @@ doc_auth.errors.unaccepted_id_type: We do not accept passports, military IDs, pa
 doc_auth.errors.underage: You must be at least 13 years old to use %{app_name}. If you are 13 or older, try again and make sure your date of birth is in focus.
 doc_auth.errors.unreadable_id: Take your photos in a well-lit area without shadows or glare. Make sure that everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
+doc_auth.errors.verify_drivers_license_heading: We couldn’t verify your driver’s license or state ID
+doc_auth.errors.verify_drivers_license_text: Make sure you are taking photos of a driver’s license or state ID. Try again,
+doc_auth.errors.verify_passport_heading: We couldn’t verify your passport
+doc_auth.errors.verify_passport_text: Make sure you are taking photos of a passport. Try again,
+doc_auth.errors.verify.use_another_type_of_id: or use another type of ID.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information

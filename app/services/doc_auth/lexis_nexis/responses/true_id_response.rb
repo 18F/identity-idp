@@ -64,7 +64,7 @@ module DocAuth
           elsif passport_card_detected?
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif id_type.present? && !expected_document_type_received?
-            { unexpected_id_type: I18n.t('doc_auth.errors.general.no_liveness') }
+            { unexpected_id_type: true, expected_id_type: expected_id_type }
           elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
@@ -141,6 +141,12 @@ module DocAuth
 
         def id_type
           pii_from_doc&.document_type_received || pii_from_doc&.id_doc_type
+        end
+
+        def expected_id_type
+          passport_requested ?
+            Idp::Constants::DocumentTypes::PASSPORT :
+            Idp::Constants::DocumentTypes::DRIVERS_LICENSE
         end
 
         def passport_pii?

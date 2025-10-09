@@ -4,7 +4,7 @@ class StatusPageComponent < BaseComponent
   ICONS = {
     info: [:question],
     warning: [nil],
-    error: [nil, :lock],
+    error: [nil, :lock, :none],
     delete: [nil],
   }.freeze
 

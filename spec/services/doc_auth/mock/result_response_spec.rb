@@ -64,6 +64,57 @@ RSpec.describe DocAuth::Mock::ResultResponse do
     end
   end
 
+  context 'document_type_received does not match requested doc type' do
+    subject(:response) do
+      described_class.new(input, config, selfie_required:, passport_submittal:, passport_requested:)
+    end
+
+    context 'doc type requested is passport but document_type_received is drivers_license' do
+      let(:passport_submittal) { false }
+      let(:passport_requested) { true }
+      let(:input) do
+        <<~YAML
+          document:
+            first_name: Susan
+            last_name: Smith
+            middle_name: Q
+            document_type_received: drivers_license
+        YAML
+      end
+
+      it 'returns an error about the doc type mismatch' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq({ unexpected_id_type: true, expected_id_type: 'passport' })
+      end
+    end
+
+    context 'doc type requested is drivers_license but document_type_received is passport' do
+      let(:passport_submittal) { true }
+      let(:passport_requested) { false }
+      let(:input) do
+        <<~YAML
+          document:
+            first_name: Susan
+            last_name: Smith
+            middle_name: Q
+            birth_place: 'Springfield, IL'
+            passport_expiration: '2030-01-01'
+            mrz: 'P<USASMITH<<SUSAN<<<<<<<<<<<<<<<<<<<<<<<<<1234567890USA8001019F2301012<<<<<<<<<<<<<<04'
+            passport_issued: '2020-01-01'
+            nationality_code: USA
+            document_number: '1234567890'
+            document_type_received: passport
+        YAML
+      end
+
+      it 'returns an error about the doc type mismatch' do
+        expect(response.success?).to eq(false)
+        expect(response.errors)
+          .to eq({ unexpected_id_type: true, expected_id_type: 'drivers_license' })
+      end
+    end
+  end
+
   context 'with a yaml file containing PII' do
     let(:input) do
       <<~YAML

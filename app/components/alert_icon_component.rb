@@ -8,6 +8,7 @@ class AlertIconComponent < BaseComponent
     personal_key: 'status/personal-key.svg',
     info_question: 'status/info-question.svg',
     delete: 'status/delete.svg',
+    error_none: nil,
   }.freeze
   DEFAULT_WIDTH = 88
   DEFAULT_HEIGHT = 88
@@ -22,7 +23,7 @@ class AlertIconComponent < BaseComponent
   end
 
   def render?
-    ICON_SOURCE.key?(icon_name)
+    ICON_SOURCE[icon_name].present?
   end
 
   def source

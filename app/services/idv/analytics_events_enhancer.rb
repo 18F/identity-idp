@@ -62,8 +62,6 @@ module Idv
       idv_in_person_usps_proofing_results_job_user_sent_to_fraud_review
       idv_ipp_deactivated_for_never_visiting_post_office
       idv_socure_reason_code_download
-      idv_socure_shadow_mode_proofing_result
-      idv_socure_shadow_mode_proofing_result_missing
       idv_socure_verification_data_requested
       idv_usps_auth_token_refresh_job_completed
       idv_usps_auth_token_refresh_job_network_error

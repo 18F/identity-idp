@@ -41,7 +41,6 @@ module Idv
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
-        proofing_components: ProofingComponents.new(idv_session:),
         proofing_vendor:,
       )
 
