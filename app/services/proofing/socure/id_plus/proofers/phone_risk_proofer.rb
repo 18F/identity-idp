@@ -9,19 +9,6 @@ module Proofing
 
           VENDOR_NAME = 'socure_phonerisk'
 
-          # @param [Hash] applicant
-          # @return [Proofing::Resolution::Result]
-          def proof(applicant)
-            input = Input.new(applicant.slice(*Input.members))
-
-            response = request.send_request
-
-            build_result_from_response(response)
-          rescue Proofing::TimeoutError, Request::Error => err
-            NewRelic::Agent.notice_error(err)
-            build_result_from_error(err)
-          end
-
           private
 
           def build_result_from_error(err)
