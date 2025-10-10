@@ -40,6 +40,11 @@ RSpec.describe Idv::Agent do
         friendly_name: friendly_name,
         app_id: app_id,
       )
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
     end
 
     describe '#proof_resolution' do
@@ -221,10 +226,6 @@ RSpec.describe Idv::Agent do
             .and_return(idv_address_vendor_socure_percent)
           allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
             .and_return(idv_address_vendor_switching_enabled)
-          reload_ab_tests
-        end
-
-        after do
           reload_ab_tests
         end
 
