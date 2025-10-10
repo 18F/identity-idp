@@ -341,7 +341,7 @@ else
         args: -> {
           JobHelpers::JobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
-            :quarterly,
+            :monthly,
           )
         },
       },
