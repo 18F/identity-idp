@@ -5,7 +5,6 @@ module Proofing
     module IdPlus
       module Responses
         class KycResponse < Proofing::Socure::IdPlus::Response
-
           VERIFIED_ATTRIBUTE_MAP = {
             address: %i[streetAddress city state zip].freeze,
             first_name: :firstName,
