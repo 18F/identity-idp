@@ -907,7 +907,7 @@ forms.backup_code.regenerate: Obtenir de nouveaux codes
 forms.backup_code.saved: J’ai placé mes codes de sauvegarde en lieu sûr.
 forms.backup_code.subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les et placez-les en lieu sûr.'
 forms.backup_code.title: Enregistrer ces codes de sauvegarde
-forms.backup_code.warning_html: Ne partagez pas ce code. %{app_name} ne vous appellera, n'enverra de textos ou de courriels jamais pour vous le demander.
+forms.backup_code.warning_html: Ne partagez pas ce code. %{app_name} ne vous appellera, n’enverra de textos ou de courriels jamais pour vous le demander.
 forms.backup_code.warning_link: Apprenez comment identifier la fraude et la signaler.
 forms.buttons.back: Retour
 forms.buttons.cancel: Oui, annuler
