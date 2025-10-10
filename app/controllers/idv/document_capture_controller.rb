@@ -137,7 +137,7 @@ module Idv
       return false if params[:action].to_s != 'show' && params[:action] != 'direct_in_person'
       return false if idv_session.flow_path == 'hybrid'
       # Only allow direct access to document capture if IPP available
-      return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      return false unless IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
       @previous_step_url = step_is_handoff? ? idv_hybrid_handoff_path : nil
       idv_session.flow_path = 'standard'
