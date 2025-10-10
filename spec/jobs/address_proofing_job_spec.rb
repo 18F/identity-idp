@@ -99,6 +99,8 @@ RSpec.describe AddressProofingJob, type: :job do
 
     context 'webmock vendor socure' do
       let(:address_vendor) { :socure }
+      let(:phonerisk_score) { 0.01 }
+      let(:namephone_correlation_score) { 0.99 }
       before do
         stub_request(
           :post,
@@ -107,11 +109,11 @@ RSpec.describe AddressProofingJob, type: :job do
           body: {
             reference: '',
             phoneRisk: {
-              score: 0.01,
+              score: phonerisk_score,
               reasonCodes: [],
             },
             namePhoneCorrelation: {
-              score: 0.99,
+              score: namephone_correlation_score,
               reasonCodes: [],
             },
           }.to_json,
@@ -119,7 +121,7 @@ RSpec.describe AddressProofingJob, type: :job do
         )
       end
 
-      it 'runs' do
+      it 'passes proofing' do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
@@ -133,6 +135,35 @@ RSpec.describe AddressProofingJob, type: :job do
 
       it 'does not add cost data' do
         expect { perform }.not_to(change { SpCost.count })
+      end
+
+      context 'high phonerisk score' do
+        let(:phonerisk_score) { 0.99 }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
+      end
+      context 'low name phone correlation score' do
+        let(:namephone_correlation_score) { 0.01 }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
       end
     end
 

@@ -4959,6 +4959,8 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] customer_user_id user uuid sent to socure
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
