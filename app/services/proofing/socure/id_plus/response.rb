@@ -4,7 +4,6 @@ module Proofing
   module Socure
     module IdPlus
       class Response
-        UNKNOWN_REASON_CODE = '[unknown]'
         # @param [Faraday::Response] http_response
         def initialize(http_response)
           @http_response = http_response

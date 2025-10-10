@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Socure::IdPlus::Request do
+RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
       user_uuid: user.uuid,
@@ -127,8 +127,8 @@ RSpec.describe Proofing::Socure::IdPlus::Request do
 
       it 'response has kyc data' do
         res = request.send_request
-        expect(res.kyc_field_validations).to be
-        expect(res.kyc_reason_codes).to be
+        expect(res.field_validations).to be
+        expect(res.reason_codes).to be
       end
 
       it 'response has customer_user_id' do

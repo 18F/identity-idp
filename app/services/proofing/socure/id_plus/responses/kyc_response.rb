@@ -39,6 +39,13 @@ module Proofing
             end.to_set
           end
 
+          def field_validations
+            @field_validations ||= kyc('fieldValidations')
+              .each_with_object({}) do |(field, valid), obj|
+                obj[field.to_sym] = valid.round == 1
+              end.freeze
+          end
+
           private
 
           attr_reader :http_response
@@ -47,13 +54,6 @@ module Proofing
             kyc_object = http_response.body['kyc']
             raise 'No kyc section on response' unless kyc_object
             kyc_object.dig(*fields)
-          end
-
-          def field_validations
-            @field_validations ||= kyc('fieldValidations')
-              .each_with_object({}) do |(field, valid), obj|
-                obj[field.to_sym] = valid.round == 1
-              end.freeze
           end
         end
       end
