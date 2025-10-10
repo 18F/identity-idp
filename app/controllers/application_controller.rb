@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
+  before_action :handle_suspended_user
   after_action :store_web_locale_in_session
 
   def session_expires_at
@@ -557,5 +558,14 @@ class ApplicationController < ActionController::Base
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
+  end
+
+  def handle_suspended_user
+    return unless user_signed_in?
+    return unless current_user.suspended?
+    return if request.path == user_please_call_path
+
+    sign_out
+    redirect_to user_please_call_url
   end
 end

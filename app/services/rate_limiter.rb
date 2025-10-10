@@ -219,6 +219,10 @@ class RateLimiter
         max_attempts: IdentityConfig.store.account_reset_request_max_attempts,
         attempt_window: IdentityConfig.store.account_reset_request_attempt_window_in_minutes,
       },
+      account_reset_request_attempts: {
+        max_attempts: IdentityConfig.store.account_reset_request_attempts_max_attempts,
+        attempt_window: IdentityConfig.store.account_reset_request_attempts_attempt_window_in_minutes,
+      },
       idv_doc_auth: {
         max_attempts: IdentityConfig.store.doc_auth_max_attempts,
         attempt_window: IdentityConfig.store.doc_auth_attempt_window_in_minutes,
