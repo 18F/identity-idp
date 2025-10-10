@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
+RSpec.describe Proofing::Socure::IdPlus::Requests::PhoneRiskRequest do
   let(:config) do
     Proofing::Socure::IdPlus::Config.new(
       user_uuid: user.uuid,
@@ -17,7 +17,7 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
   let(:input) do
     Proofing::Socure::IdPlus::Input.new(
       **Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-        consent_given_at: '2024-09-01T00:00:00Z',
+        email: 'fakey@mckfakerson.test',
       ).slice(
         *Proofing::Socure::IdPlus::Input.members,
       ),
@@ -33,26 +33,19 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
       expect(JSON.parse(request.body, symbolize_names: true)).to eql(
         {
           modules: [
-            'kyc',
+            'phonerisk',
           ],
           firstName: 'FAKEY',
           surName: 'MCFAKERSON',
-          dob: '1938-10-06',
           physicalAddress: '1 FAKE RD',
           physicalAddress2: '',
           city: 'GREAT FALLS',
           state: 'MT',
           zip: '59010-1234',
           country: 'US',
-          nationalId: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:ssn],
-          countryOfOrigin: 'US',
           customerUserId: user.uuid,
-
-          email: user.email,
+          email: 'fakey@mckfakerson.test',
           mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
-
-          userConsent: true,
-          consentTimestamp: '2024-09-01T00:00:00+00:00',
         },
       )
     end
@@ -69,37 +62,37 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
   end
 
   describe '#send_request' do
+    let(:response_body) do
+      {
+        referenceId: 'some-reference-id',
+        namePhoneCorrelation: {
+          reasonCodes: [
+            'I123',
+            'R567',
+            'R890',
+          ],
+          score: 0.99,
+        },
+        phoneRisk: {
+          reasonCodes: [
+            'I123',
+            'R567',
+          ],
+          score: 0.01,
+        },
+        customerProfile: {
+          customerUserId: user.uuid,
+        },
+      }
+    end
+
     before do
       stub_request(:post, 'https://example.org/api/3.0/EmailAuthScore')
         .to_return(
           headers: {
             'Content-Type' => 'application/json',
           },
-          body: JSON.generate(
-            {
-              referenceId: 'a-big-unique-reference-id',
-              kyc: {
-                reasonCodes: [
-                  'I100',
-                  'R200',
-                ],
-                fieldValidations: {
-                  firstName: 0.99,
-                  surName: 0.99,
-                  streetAddress: 0.99,
-                  city: 0.99,
-                  state: 0.99,
-                  zip: 0.99,
-                  mobileNumber: 0.99,
-                  dob: 0.99,
-                  ssn: 0.99,
-                },
-              },
-              customerProfile: {
-                customerUserId: user.uuid,
-              },
-            },
-          ),
+          body: JSON.generate(response_body),
         )
     end
 
@@ -122,13 +115,16 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::KycRequest do
     context 'when service returns HTTP 200 response' do
       it 'method returns a Proofing::Socure::IdPlus::Response' do
         res = request.send_request
-        expect(res).to be_a(Proofing::Socure::IdPlus::Responses::KycResponse)
+        expect(res).to be_a(Proofing::Socure::IdPlus::Responses::PhoneRiskResponse)
       end
 
-      it 'response has kyc data' do
-        res = request.send_request
-        expect(res.field_validations).to be
-        expect(res.reason_codes).to be
+      it 'response has phonerisk data' do
+        res = request.send_request.to_h
+
+        expect(res.dig(:phonerisk, :reason_codes).keys).to eq(['I123', 'R567'])
+        expect(res.dig(:phonerisk, :score)).to eq(0.01)
+        expect(res.dig(:name_phone_correlation, :reason_codes).keys).to eq(['I123', 'R567', 'R890'])
+        expect(res.dig(:name_phone_correlation, :score)).to eq(0.99)
       end
 
       it 'response has customer_user_id' do
