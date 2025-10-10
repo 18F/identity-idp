@@ -45,7 +45,6 @@ module Proofing
         end
 
         def proofer
-          # to add PhoneRisk
           @proofer ||=
             if IdentityConfig.store.proofer_mock_fallback
               Proofing::Mock::AddressMockClient.new
