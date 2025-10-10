@@ -2277,6 +2277,7 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param exceptions [Hash, nil] The exceptions found in the proofing results.
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2294,6 +2295,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    exceptions: nil,
     **extra
   )
     track_event(
@@ -2314,6 +2316,7 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      exceptions:,
       **extra,
     )
   end
