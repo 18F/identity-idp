@@ -329,11 +329,7 @@ module Reporting
     def threat_metrix_idv_query
       <<~QUERY
         filter name = "IdV: doc auth verify proofing results"
-        | fields
-            properties.user_id as uuid,
-            @timestamp as timestamp,
-            properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success
-        | stats max(tmx_success) as max_tmx_success by uuid
+        | stats count(*) as ThreatMetrix_count
         | limit 10000
       QUERY
     end
