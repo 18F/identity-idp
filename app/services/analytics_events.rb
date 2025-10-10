@@ -2294,6 +2294,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    exceptions: nil,
     **extra
   )
     track_event(
@@ -2314,6 +2315,7 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      exceptions:,
       **extra,
     )
   end
