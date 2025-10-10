@@ -11,7 +11,6 @@ cron_every_monday_2am = 'every Monday at 2:00 UTC' # equivalent to '0 2 * * 1'
 cron_every_monday_3am = 'every Monday at 3:00 UTC' # equivalent to '0 3 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
 cron_monthly_3am = '0 3 1 * *' # monthly, 3 AM UTC to not overlap with jobs running at 0000
-cron_quarterly = '0 2 1 1,4,7,10  *' # quarterly at 2am UTC on the first of Jan, Apr, Jul, Oct
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
@@ -263,12 +262,20 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send irs fraud metrics to Team Data
+
+      # Send irs fraud metrics to Team Data - Daily (For internal review only)
+      # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> {
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
       },
+
       # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
@@ -293,12 +300,20 @@ else
         cron: cron_monthly_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send irs quarterly metrics to Team Data
+
+      # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
+      # And, quarterly on 1st date (For IRS and Internal)
       irs_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
-        cron: cron_quarterly,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        cron: cron_monthly,
+        args: -> {
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :quarterly,
+          )
+        },
       },
+
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
@@ -317,11 +332,18 @@ else
         cron: cron_every_monday_2am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Previous months's irs credentials report
-      monthly_irs_cred_metrics_report: {
+
+      # Previous months's irs credentials report to Team Data - Daily (For internal review only)
+      # And, monthly on 1st date (For IRS and Internal)
+      irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
-        cron: cron_monthly,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
       },
       # Identity Verification Outcomes Rate Report
       identity_verification_outcomes_report: {

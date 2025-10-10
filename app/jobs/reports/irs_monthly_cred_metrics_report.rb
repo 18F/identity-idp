@@ -4,10 +4,12 @@ module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
-    attr_reader :report_date
+    attr_reader :report_date, :report_receiver
 
-    def initialize(report_date = Time.zone.yesterday.end_of_day, *args, **rest)
+    def initialize(report_date = Time.zone.yesterday.end_of_day, report_receiver = :internal, *args,
+                   **rest)
       @report_date = report_date
+      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -29,7 +31,13 @@ module Reports
     end
 
     def email_addresses
-      [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
+      internal_emails = [*IdentityConfig.store.irs_credentials_emails]
+      irs_emails = [] # Need to add IRS email config
+
+      case report_receiver
+      when :internal then internal_emails
+      when :both then (internal_emails + irs_emails)
+      end
     end
 
     # rubocop:disable Layout/LineLength
@@ -84,7 +92,8 @@ module Reports
         )
       end
 
-      if email_addresses.empty?
+      emails = email_addresses.select(&:present?)
+      if emails.empty?
         Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
