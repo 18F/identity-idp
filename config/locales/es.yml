@@ -918,6 +918,8 @@ forms.backup_code.regenerate: Obtener nuevos códigos
 forms.backup_code.saved: Guardé mis códigos de recuperación en un lugar seguro.
 forms.backup_code.subinfo_html: '<strong>Si pierde su dispositivo, necesitará estos códigos para iniciar sesión en %{app_name}.</strong> Guárdelos o imprímalos, y consérvelos en un lugar seguro.'
 forms.backup_code.title: Guarde estos códigos de recuperación
+forms.backup_code.warning_html: '<strong>No comparta este código.</strong> %{app_name} nunca le llamará, enviará mensajes de texto o correos electrónicos pidiéndolo.'
+forms.backup_code.warning_link: Aprenda cómo identificar el fraude y reportarlo.
 forms.buttons.back: Atrás
 forms.buttons.cancel: Sí, cancelar
 forms.buttons.confirm: Confirmar
