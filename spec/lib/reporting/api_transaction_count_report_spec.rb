@@ -53,7 +53,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
           'LN Emailage',
-        ]
+        ],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
       expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 31, 40, 45, 50, 60])
@@ -71,8 +71,10 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       expect(csv).to match(
         /
           Week,True\ ID,True\ ID\ \(Selfie\),Instant\ verify,Phone\ Finder,
-          Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),Socure\ \(KYC\ -\ Non-Shadow\),Socure\ \(KYC\ -\ Shadow\),
-          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage
+          Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),
+          Socure\ \(KYC\ -\ Non-Shadow\),Socure\ \(KYC\ -\ Shadow\),
+          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
+          Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage
         /x,
       )
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")

@@ -156,7 +156,7 @@ module Reporting
       result = fetch_results(query: ln_emailage_query)
       ln_emailage_table_count = result.count
       [ln_emailage_table_count, result]
-    end 
+    end
 
     def instant_verify_table
       result = fetch_results(query: instant_verify_query)
@@ -181,7 +181,6 @@ module Reporting
       fraud_score_and_attribute_table_count = result.count
       [fraud_score_and_attribute_table_count, result]
     end
-
 
     def fetch_results(query:)
       Rails.logger.info("Executing query: #{query}")
@@ -285,9 +284,9 @@ module Reporting
 
     def socure_docv_selfie_query
       <<~QUERY
-      #socure (Selfie)
-      filter name = "idv_socure_verification_data_requested" | filter properties.event_properties.liveness_enabled=1
-      | limit 10000
+        #socure (Selfie)
+        filter name = "idv_socure_verification_data_requested" | filter properties.event_properties.liveness_enabled=1
+        | limit 10000
       QUERY
     end
 
@@ -380,12 +379,11 @@ module Reporting
 
     def ln_emailage_query
       <<~QUERY
-      filter name = "account_creation_tmx_result"
-      | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status='success'
-        | limit 10000
+        filter name = "account_creation_tmx_result"
+        | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status='success'
+          | limit 10000
       QUERY
     end
-
   end
 end
 
