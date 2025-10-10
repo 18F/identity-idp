@@ -269,12 +269,10 @@ else
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
-          report_date = Time.zone.yesterday.end_of_day
-          report_receiver = Reports::JobConfigurationHelper.report_receiver_based_on_cadence(
-            report_date,
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
             :monthly,
           )
-          [report_date, report_receiver]
         },
       },
 
@@ -309,12 +307,10 @@ else
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
-          report_date = Time.zone.yesterday.end_of_day
-          report_receiver = Reports::JobConfigurationHelper.report_receiver_based_on_cadence(
-            report_date,
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
             :quarterly,
           )
-          [report_date, report_receiver]
         },
       },
 
@@ -343,12 +339,10 @@ else
         class: 'Reports::IrsMonthlyCredMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
-          report_date = Time.zone.yesterday.end_of_day
-          report_receiver = Reports::JobConfigurationHelper.report_receiver_based_on_cadence(
-            report_date,
-            :monthly,
+          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :quarterly,
           )
-          [report_date, report_receiver]
         },
       },
       # Identity Verification Outcomes Rate Report
