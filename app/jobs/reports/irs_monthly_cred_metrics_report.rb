@@ -92,7 +92,8 @@ module Reports
         )
       end
 
-      if email_addresses.empty?
+      emails = email_addresses.select(&:present?)
+      if emails.empty?
         Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
