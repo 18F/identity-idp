@@ -7,11 +7,11 @@ module Reports
   class IrsVerificationDemographicsReport < BaseReport
     REPORT_NAME = 'irs-verification-demographics-report'
 
-    attr_reader :report_date, :receiver
+    attr_reader :report_date, :report_receiver
 
-    def initialize(report_date = nil, receiver = :internal, *args, **rest)
+    def initialize(report_date = nil, report_receiver = :internal, *args, **rest)
       @report_date = report_date
-      @receiver = receiver.to_sym
+      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -79,7 +79,7 @@ module Reports
       internal_emails = [*IdentityConfig.store.irs_verification_report_config]
       irs_emails = [] # Need to add IRS email config
 
-      case receiver
+      case report_receiver
       when :internal then internal_emails
       when :both then (internal_emails + irs_emails)
       end
