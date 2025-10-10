@@ -47,7 +47,6 @@ RSpec.describe Idv::Agent do
         agent.proof_resolution(
           document_capture_session,
           trace_id: trace_id,
-          user_id: user.id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
@@ -182,7 +181,6 @@ RSpec.describe Idv::Agent do
         agent.proof_address(
           document_capture_session,
           trace_id: trace_id,
-          user_id: user.id,
           issuer: issuer,
         )
       end
@@ -223,6 +221,10 @@ RSpec.describe Idv::Agent do
             .and_return(idv_address_vendor_socure_percent)
           allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
             .and_return(idv_address_vendor_switching_enabled)
+          reload_ab_tests
+        end
+
+        after do
           reload_ab_tests
         end
 
