@@ -37,7 +37,6 @@ module Idv
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
         trace_id: amzn_trace_id,
-        user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
