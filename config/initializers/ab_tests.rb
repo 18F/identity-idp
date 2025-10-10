@@ -38,20 +38,6 @@ module AbTests
     ).verify_info_step_document_capture_session_uuid
   end
 
-  def self.idv_phone_step_document_capture_session_uuid_discriminator(
-    service_provider:,
-    user:,
-    user_session:
-  )
-    return unless user_has_idv_session?(user:, user_session:)
-
-    Idv::Session.new(
-      current_user: user,
-      service_provider:,
-      user_session:,
-    ).idv_phone_step_document_capture_session_uuid
-  end
-
   def self.user_has_idv_session?(user:, user_session:)
     user && user_session&.key?(:idv)
   end
@@ -199,11 +185,7 @@ module AbTests
       lexis_nexis: IdentityConfig.store.idv_address_vendor_switching_enabled ?
           IdentityConfig.store.idv_address_vendor_lexis_nexis_percent : 0,
     },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    idv_phone_step_document_capture_session_uuid_discriminator(
-      service_provider:, user:, user_session:,
-    )
-  end.freeze
+  ).freeze
 
   # This "test" will permanently be in place to allow a multi-vendor configuration.
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(

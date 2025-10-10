@@ -563,28 +563,52 @@ RSpec.describe AbTests do
   end
 
   describe 'ADDRESS_PROOFING_VENDOR' do
-    let(:ab_test) { :ADDRESS_PROOFING_VENDOR }
+    let(:user) { create(:user) }
+    let(:idv_address_vendor_switching_enabled) { false }
+    let(:idv_address_vendor_lexis_nexis_percent) { 0 }
+    let(:idv_address_vendor_socure_percent) { 0 }
 
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:idv_address_default_vendor)
-          .and_return(:vendor_a)
-        allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
-          .and_return(50)
-        allow(IdentityConfig.store).to receive(:idv_address_vendor_lexis_nexis_percent)
-          .and_return(30)
-      }
+    subject(:bucket) do
+      AbTests::ADDRESS_PROOFING_VENDOR.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session: nil,
+      )
     end
 
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
-          .and_return(false)
-      }
+    before do
+      allow(IdentityConfig.store).to receive(:idv_address_vendor_lexis_nexis_percent)
+        .and_return(idv_address_vendor_lexis_nexis_percent)
+      allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
+        .and_return(idv_address_vendor_socure_percent)
+      allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
+        .and_return(idv_address_vendor_switching_enabled)
+      reload_ab_tests
     end
 
-    it_behaves_like 'A/B test using idv_phone_step_document_capture_session_uuid discriminator'
+    context 'when the A/B test is disabled' do
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when the A/B test is enabled' do
+      let(:idv_address_vendor_switching_enabled) { true }
+      context 'when socure is 100 percent' do
+        let(:idv_address_vendor_socure_percent) { 100 }
+        it 'returns a bucket' do
+          expect(bucket).to eq :socure
+        end
+      end
+
+      context 'when lexis nexis is 100 percent' do
+        let(:idv_address_vendor_lexis_nexis_percent) { 100 }
+        it 'returns a bucket' do
+          expect(bucket).to eq :lexis_nexis
+        end
+      end
+    end
   end
 end
