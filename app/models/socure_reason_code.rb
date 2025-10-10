@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SocureReasonCode < ApplicationRecord
+  UNKNOWN_REASON_CODE = '[unknown]'
   def self.active
     where(deactivated_at: nil)
   end

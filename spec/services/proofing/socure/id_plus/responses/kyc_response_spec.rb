@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Socure::IdPlus::Response do
+RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
   let(:response_body) do
     {
       'referenceId' => 'a1234b56-e789-0123-4fga-56b7c890d123',
@@ -41,9 +41,9 @@ RSpec.describe Proofing::Socure::IdPlus::Response do
     end
   end
 
-  describe '#kyc_reason_codes' do
+  describe '#reason_codes' do
     it 'returns the correct reason codes' do
-      expect(subject.kyc_reason_codes).to contain_exactly(
+      expect(subject.reason_codes).to contain_exactly(
         'I919',
         'I914',
         'I905',
@@ -57,15 +57,15 @@ RSpec.describe Proofing::Socure::IdPlus::Response do
 
       it 'raises an error' do
         expect do
-          subject.kyc_reason_codes
+          subject.reason_codes
         end.to raise_error(RuntimeError)
       end
     end
   end
 
-  describe '#kyc_field_validations' do
+  describe '#field_validations' do
     it 'returns an object with actual booleans' do
-      expect(subject.kyc_field_validations).to eql(
+      expect(subject.field_validations).to eql(
         {
           firstName: true,
           surName: true,
@@ -87,7 +87,7 @@ RSpec.describe Proofing::Socure::IdPlus::Response do
 
       it 'raises an error' do
         expect do
-          subject.kyc_field_validations
+          subject.field_validations
         end.to raise_error(RuntimeError)
       end
     end
