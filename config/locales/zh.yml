@@ -918,7 +918,7 @@ forms.backup_code.regenerate: 获得新代码
 forms.backup_code.saved: 我已把自己的备用代码放在一个安全的地方。
 forms.backup_code.subinfo_html: '<strong>如果你丢了设备，就会需要这些代码来登录 %{app_name}。</strong>保存或打印代码并将其放在安全的地方。'
 forms.backup_code.title: 保存这些备用代码
-forms.backup_code.warning_html: 请勿分享此代码。%{app_name} 绝不会通过电话、短信或电子邮件向您索要此代码。
+forms.backup_code.warning_html: '<strong>请勿分享此代码。</strong>%{app_name} 绝不会通过电话、短信或电子邮件向您索要此代码。'
 forms.backup_code.warning_link: 了解如何识别欺诈并举报。
 forms.buttons.back: 返回
 forms.buttons.cancel: 是的，取消
