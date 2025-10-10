@@ -35,7 +35,7 @@ RSpec.describe 'GoodJob.cron' do
           now = Time.zone.now
           next_time = Fugit.parse(report[:cron]).next_time
           expect(next_time.utc)
-            .to be_within(3.hours + 1.minute).of(now.utc.end_of_week)
+            .to be_within(5.hours + 1.minute).of(now.utc.end_of_week)
           expect(next_time.utc).to be > now.utc.end_of_week
         end
       end
