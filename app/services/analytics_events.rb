@@ -5597,9 +5597,9 @@ module AnalyticsEvents
     )
   end
 
-  # Logs a Socure Phone Risk result alongside a resolution result for later comparison.
-  # @param [Hash] socure_result Result from Socure KYC API call
-  # @param [Hash] phone_result Result from resolution proofing
+  # Logs a Socure Phone Risk result alongside a address proofing result for later comparison.
+  # @param [Hash] socure_result Result from Socure PhoneRisk API call
+  # @param [Hash] phone_result Result from address proofing
   # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
   def idv_socure_shadow_mode_phonerisk_result(
     socure_result:,
@@ -5614,6 +5614,12 @@ module AnalyticsEvents
       socure_result: socure_result.to_h,
       **extra,
     )
+  end
+
+  # Indicates that no result was found when SocureShadowModePhoneRiskJob
+  # attempted to look for one.
+  def idv_socure_shadow_mode_phonerisk_result_missing(**extra)
+    track_event(:idv_socure_shadow_mode_phonerisk_result_missing, **extra)
   end
 
   # Logs a Socure KYC result alongside a resolution result for later comparison.
@@ -5639,12 +5645,6 @@ module AnalyticsEvents
   # attempted to look for one.
   def idv_socure_shadow_mode_proofing_result_missing(**extra)
     track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
-  end
-
-  # Indicates that no proofing result was found when SocureShadowModeProofingJob
-  # attempted to look for one.
-  def idv_socure_shadow_mode_phonerisk_result_missing(**extra)
-    track_event(:idv_socure_shadow_mode_phonerisk_result_missing, **extra)
   end
 
   # @param [Boolean] success Whether form validation was successful
