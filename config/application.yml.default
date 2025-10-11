@@ -550,6 +550,7 @@ development:
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   idv_socure_phonerisk_score_threshold: 0.5
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
@@ -639,6 +640,7 @@ test:
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   idv_socure_phonerisk_score_threshold: 0.5
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
