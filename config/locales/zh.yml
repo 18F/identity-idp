@@ -997,6 +997,7 @@ forms.webauthn_setup.step_2_image_alt: 安全密钥被插入笔记本电脑的�
 forms.webauthn_setup.step_2_image_mobile_alt: 安全密钥被插入智能手机的底部
 forms.webauthn_setup.step_3: 设置您的安全密钥
 forms.webauthn_setup.step_3a: 点击下面的“设置安全密钥”并按照浏览器的说明进行操作。
+heading.edit_info.phishing_warning: 如果有人要求您重置密码，这可能是一个骗局。
 headings.account.activity: 活动
 headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
@@ -1014,6 +1015,7 @@ headings.cancellations.prompt: 你确定要取消吗？
 headings.create_account_new_users: 为新用户创建一个账户
 headings.create_account_with_sp.sp_text: 正在使用 %{app_name} 使你能够安全可靠地登入账户。
 headings.edit_info.password: 更改密码
+headings.edit_info.phishing_link: 了解如何识别欺诈并举报。
 headings.edit_info.phone: 管理你的电话设置
 headings.passwords.change: 更改密码
 headings.passwords.confirm: 确认你目前密码以继续
@@ -2084,8 +2086,6 @@ user_mailer.please_reset_password.step_2: 选择页面底部的“忘了你的�
 user_mailer.please_reset_password.step_3: 按照说明重设你的密码
 user_mailer.please_reset_password.subject: 异常活动 — 重设你的 %{app_name} 密码
 user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时后会作废。
-heading.edit_info.phishing_warning: 如果有人要求您重置密码，这可能是一个骗局。
-headings.edit_info.phishing_link: 了解如何识别欺诈并举报。
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
 user_mailer.reset_password_instructions.header_html: 如果您提出了此请求，请点击”重置您的密码”继续。 <br/> <br/> 如果您没有提出此请求，请勿更改您的密码。请向我们的帮助中心报告任何可疑活动。 <br/><br/> 我们绝不会通过电子邮件、电话或短信要求您分享您的密码、安全代码或其他敏感信息。

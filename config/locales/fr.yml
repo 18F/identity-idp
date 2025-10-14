@@ -984,6 +984,7 @@ forms.webauthn_setup.step_2_image_alt: Insertion d’une clé de sécurité dans
 forms.webauthn_setup.step_2_image_mobile_alt: Insertion d’une clé de sécurité dans le bas d’un téléphone intelligent
 forms.webauthn_setup.step_3: Configurer votre clé de sécurité
 forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
+heading.edit_info.phishing_warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
@@ -1001,6 +1002,7 @@ headings.cancellations.prompt: Es-tu sûre de vouloir annuler?
 headings.create_account_new_users: Créer un compte pour les nouveaux utilisateurs
 headings.create_account_with_sp.sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre compte de façon sûre et sécurisée.
 headings.edit_info.password: Changer votre mot de passe
+headings.edit_info.phishing_link: Apprenez à identifier la fraude et à la signaler.
 headings.edit_info.phone: Gérer les paramètres de votre téléphone
 headings.passwords.change: Changer votre mot de passe
 headings.passwords.confirm: Confirmer votre mot de passe actuel pour continuer
@@ -2075,8 +2077,6 @@ user_mailer.reset_password_instructions.gpo_letter_description: Si vous réiniti
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
 user_mailer.reset_password_instructions.header_html: Si vous avez fait cette demande, cliquez sur « Réinitialiser votre mot de passe » pour continuer. <br/><br/> Si vous n’avez pas fait cette demande, ne changez pas votre mot de passe. Signalez toute activité suspecte à notre centre d’aide. <br/><br/> Nous ne vous demanderons jamais de partager votre mot de passe, vos codes de sécurité ou d’autres informations sensibles par courriel, téléphone ou message texte.
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
-heading.edit_info.phishing_warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
-headings.edit_info.phishing_link: Apprenez à identifier la fraude et à la signaler.
 user_mailer.reset_password_instructions.subject: Réinitialisation du mot de passe demandée pour votre compte %{app_name}
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: Cette adresse courriel est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
