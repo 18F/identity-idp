@@ -13,9 +13,11 @@ module Idv
     include ActionView::Helpers::UrlHelper
 
     attr_accessor :url_options
+    attr_reader :show_sp_reproof_banner
 
-    def initialize(decorated_sp_session:)
+    def initialize(decorated_sp_session:, show_sp_reproof_banner: false)
       @decorated_sp_session = decorated_sp_session
+      @show_sp_reproof_banner = show_sp_reproof_banner
       @url_options = {}
     end
 
@@ -24,7 +26,11 @@ module Idv
     end
 
     def title
-      t('doc_auth.headings.welcome', sp_name: sp_name)
+      if show_sp_reproof_banner
+        t('doc_auth.headings.welcome_sp_reproof', sp_name: sp_name)
+      else
+        t('doc_auth.headings.welcome', sp_name: sp_name)
+      end
     end
 
     def explanation_text(help_link)

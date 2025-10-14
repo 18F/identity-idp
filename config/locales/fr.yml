@@ -622,6 +622,7 @@ doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d�
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
+doc_auth.headings.lets_go_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
@@ -642,6 +643,7 @@ doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste parti
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
+doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
@@ -668,6 +670,7 @@ doc_auth.info.interstitial_thanks: Merci de votre patience !
 doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
+doc_auth.info.lets_go_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement une fois que vous aurez confirmé votre identité sur votre téléphone.
@@ -707,6 +710,7 @@ doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passep
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
+doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale

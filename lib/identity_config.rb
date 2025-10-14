@@ -186,6 +186,7 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
+    config.add(:feature_show_sp_reproof_banner_enabled, type: :boolean)
     config.add(:fraud_ops_tracker_enabled, type: :boolean)
     config.add(:fraud_ops_public_key, type: :string)
     config.add(:fraud_ops_s3_bucket, type: :string)
