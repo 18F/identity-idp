@@ -185,38 +185,20 @@ RSpec.describe AccountReset::RequestController do
     end
 
     context 'when the max number of attempts today is exceeded' do
-      before do
-        allow(RateLimiter).to receive(:rate_limit_config).and_return(
-          account_reset_request: {
-            max_attempts: 3,
-            attempt_window: 2,
-          },
-          account_reset_max_attempts: {
-            max_attempts: 4,
-            attempt_window: 1_440,
-          },
-        )
-      end
+      let(:attempt_window_in_minutes) { 2 }
+      let(:max_attempt_window) { 1_440 } # 1 day
 
       it 'rate limits submission for the day and does not send sms or email' do
         user = create(:user, :fully_registered)
         stub_sign_in_before_2fa(user)
         stub_analytics
 
-        post :create
-        post :create
+        RateLimiter.new(
+          rate_limit_type: :account_reset_max_attempts,
+          user: user,
+        ).increment_to_limited!
 
-        travel_to (3.hours + 1.minute).ago do
-          post :create
-          post :create
-        end
-
-        travel_to (3.hours + 1.minute).ago do
-          post :create
-          post :create
-        end
-
-        expect(@analytics).to have_logged_event(
+        expect(@analytics).to_not have_logged_event(
           'Account Reset: request',
           success: true,
           sms_phone: true,
@@ -226,8 +208,6 @@ RSpec.describe AccountReset::RequestController do
           request_id: 'fake-message-request-id',
           message_id: 'fake-message-id',
         )
-          .exactly(3)
-          .times
       end
     end
 

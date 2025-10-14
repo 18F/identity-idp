@@ -15,7 +15,8 @@ module AccountReset
     def create
       rate_limiter = RateLimiter.new(user: current_user, rate_limit_type: :account_reset_request)
       rate_limiter.increment!
-      unless rate_limiter.limited? || account_reset_max_attempts_exceeded?
+
+      unless account_reset_max_attempts_exceeded? || rate_limiter.limited?
         create_account_reset_request
       end
       flash[:email] = current_user.email_addresses.take.email
