@@ -158,4 +158,16 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
       end
     end
   end
+
+  describe '.max_attempts_alert' do
+    let(:sign_in_new_device_at) { 3.minutes.ago }
+    let(:user) { create(:user, :fully_registered, sign_in_new_device_at:) }
+    let(:disavowal_event) do
+      create(:event, user:, event_type: :sign_in_before_2fa, created_at: 5.minutes.ago)
+    end
+
+    subject(:result) do
+      UserAlerts::AlertUserAboutNewDevice.max_attempts_alert(user:, disavowal_token:)
+    end
+  end
 end
