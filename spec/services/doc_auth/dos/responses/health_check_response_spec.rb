@@ -54,7 +54,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
 
     it 'has the body in the extra event parameters' do
       expect(health_check_response.extra[:body]).to eq(
-        successful_api_general_health_check_body.to_json,
+        successful_api_general_health_check_body,
       )
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
 
     it 'has the body in the extra event parameters' do
       expect(health_check_response.extra[:body]).to eq(
-        successful_api_composite_health_check_body.to_json,
+        successful_api_composite_health_check_body,
       )
     end
   end
@@ -85,12 +85,12 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
     end
 
     let(:health_check_down_body) do
-      { status: 'down' }.to_json
+      { status: 'down' }
     end
 
     before do
       stub_request(:get, general_health_check_endpoint).to_return(
-        body: health_check_down_body,
+        body: health_check_down_body.to_json,
       )
     end
 
@@ -136,7 +136,7 @@ RSpec.describe DocAuth::Dos::Responses::HealthCheckResponse do
               ],
             },
           ],
-        }.to_json
+        }
       end
 
       before do
