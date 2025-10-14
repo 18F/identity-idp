@@ -445,7 +445,8 @@ module EventSummarizer
         add_significant_event(
           timestamp:,
           type: :failed_document_capture,
-          description: "User failed to verify their #{doc_type.downcase} via TrueID (check logs for reason)", # rubocop:disable Layout/LineLength
+          description:
+            "User failed to verify their #{doc_type.downcase} via TrueID (check logs for reason)",
         )
       end
     end
