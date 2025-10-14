@@ -15,7 +15,7 @@ class DuplicateProfileChecker
     return unless should_check_for_duplicates?
 
     pii = get_pii
-    return unless pii.dig(:ssn)
+    return unless pii&.dig(:ssn)
     duplicate_ssn_finder = Idv::DuplicateSsnFinder.new(user:, ssn: pii[:ssn])
     associated_profiles = duplicate_ssn_finder.duplicate_facial_match_profiles(
       service_provider: sp.issuer,
@@ -51,7 +51,7 @@ class DuplicateProfileChecker
       # Merge profile_ids if we found an existing record
       merged_ids = (existing_duplicate.profile_ids + profile_ids).uniq.sort
       if existing_duplicate.profile_ids.sort != merged_ids
-        existing_duplicate.update!(profile_ids: merged_ids)
+        existing_duplicate.update!(profile_ids: profile_ids)
         analytics.one_account_duplicate_profile_updated
       end
       return existing_duplicate
