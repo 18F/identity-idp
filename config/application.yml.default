@@ -29,6 +29,8 @@ account_reset_request_attempt_window_in_minutes: 2
 account_reset_request_max_attempts: 2
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
+account_reset_max_attempts: 10
+account_reset_attempt_window_in_minutes: 1_440
 account_suspended_support_code: EFGHI
 # These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'a2V5bGVzc0dTQV9wcm9kQGxleGlzbmV4aXNyaXNrLmNvbTouPkQ3VTRgMj1ae2E='
