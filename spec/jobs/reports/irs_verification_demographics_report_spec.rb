@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Reports::IrsVerificationDemographicsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-  let(:report_receiver) {:internal}
+  let(:report_receiver) { :internal }
   let(:time_range) { report_date.all_quarter }
-  
-  subject(:report) { Reports::IrsVerificationDemographicsReport.new(report_date,report_receiver) }
+
+  subject(:report) { Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver) }
 
   let(:name) { 'irs-verification-demographics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
