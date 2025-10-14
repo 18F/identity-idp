@@ -44,7 +44,11 @@ RSpec.feature 'User profile' do
     it 'deletes the account and pushes notifications if push_notifications_enabled is true' do
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
 
-      service_provider = build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:test')
+      service_provider = create(
+        :service_provider,
+        active: true,
+        push_notification_url: push_notification_url,
+      )
       user = sign_in_and_2fa_user
       identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
@@ -54,7 +58,7 @@ RSpec.feature 'User profile' do
       find_sidenav_delete_account_link.click
 
       request = stub_push_notification_request(
-        sp_push_notification_endpoint: push_notification_url,
+        service_provider: service_provider,
         event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,
         payload: {
           'subject' => {

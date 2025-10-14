@@ -449,6 +449,7 @@ module IdentityConfig
     config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
     config.add(:risc_notifications_rate_limit_overrides, type: :json)
     config.add(:risc_notifications_request_timeout, type: :integer)
+    config.add(:risc_notifications_send_client_id_in_aud_enabled, type: :boolean)
     config.add(:ruby_workers_idv_enabled, type: :boolean)
     config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)
