@@ -77,7 +77,10 @@ module PushNotification
         jti: SecureRandom.hex,
         aud: service_provider.push_notification_url,
         events: {
-          event.event_type => event.payload(iss_sub: agency_uuid(service_provider)),
+          event.event_type => event.payload(
+            iss: service_provider.issuer,
+            iss_sub: agency_uuid(service_provider),
+          ),
         },
       }
     end

@@ -2,11 +2,11 @@
 
 module PushNotification
   module IssSubEvent
-    def payload(iss_sub:)
+    def payload(iss:, iss_sub:)
       {
         subject: {
           subject_type: 'iss-sub',
-          iss: Rails.application.routes.url_helpers.root_url,
+          iss: iss,
           sub: iss_sub,
         },
       }

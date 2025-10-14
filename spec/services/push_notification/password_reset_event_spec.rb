@@ -17,15 +17,16 @@ RSpec.describe PushNotification::PasswordResetEvent do
 
   describe '#payload' do
     let(:iss_sub) { SecureRandom.uuid }
+    let(:iss) { 'issuer' }
 
-    subject(:payload) { event.payload(iss_sub: iss_sub) }
+    subject(:payload) { event.payload(iss: iss, iss_sub: iss_sub) }
 
     it 'is a subject with the provided iss_sub ' do
       expect(payload).to eq(
         subject: {
           subject_type: 'iss-sub',
           sub: iss_sub,
-          iss: root_url,
+          iss: iss,
         },
       )
     end
