@@ -21,7 +21,10 @@ RSpec.feature 'Password Recovery' do
 
       expect(page).to have_current_path forgot_password_path
 
-      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject, app_name: "Login.gov"')
+      expect(last_email.subject).to eq t(
+        'user_mailer.reset_password_instructions.subject',
+        app_name: 'Login.gov',
+      )
       expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
         t(
