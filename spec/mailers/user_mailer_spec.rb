@@ -150,7 +150,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          t('user_mailer.reset_password_instructions.header_html'),
         )
       end
 
@@ -185,7 +185,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          t('user_mailer.reset_password_instructions.header_html'),
         )
       end
 
@@ -218,7 +218,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          t('user_mailer.reset_password_instructions.header_html'),
         )
       end
 
