@@ -44,7 +44,7 @@
     <ul class="add-list-reset border-bottom border-primary-light">
       <li>
         <% @dupe_profiles_detected_presenter.associated_profiles.each do |dupe_profile| %>
-            <%= render('duplicate_profiles_detected/account_information', dupe_profile: dupe_profile) %>
+            <%= render('duplicate_profiles_detected/account_information', dupe_profile: dupe_profile, sp_name: decorated_sp_session.sp_name) %>
         <% end %>
       </li>
     </ul>

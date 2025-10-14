@@ -533,6 +533,8 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
+  - local: .gitlab-ci-devenv.yml
+  - local: .gitlab-ci-rules.yml
 
 secret_detection:
   allow_failure: false

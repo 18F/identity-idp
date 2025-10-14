@@ -323,6 +323,12 @@ else
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
+      # Identity Verification Outcomes Rate Report
+      identity_verification_outcomes_report: {
+        class: 'Reports::IdentityVerificationOutcomesReport',
+        cron: cron_monthly,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
