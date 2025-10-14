@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JobHelpers::JobConfigurationHelper do
+RSpec.describe JobHelpers::ReportJobConfigurationHelper do
   describe '.report_receiver_based_on_cadence' do
     subject(:receiver) { described_class.report_receiver_based_on_cadence(report_date, cadence) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JobHelpers
-  module JobConfigurationHelper
+  module ReportJobConfigurationHelper
     module_function
 
     def report_receiver_based_on_cadence(report_date = Time.zone.yesterday.end_of_day,

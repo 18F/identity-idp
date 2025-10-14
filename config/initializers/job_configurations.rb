@@ -269,7 +269,7 @@ else
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
-          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
             :monthly,
           )
@@ -307,7 +307,7 @@ else
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
-          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
             :quarterly,
           )
@@ -339,7 +339,7 @@ else
         class: 'Reports::IrsMonthlyCredMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
-          JobHelpers::JobConfigurationHelper.build_irs_report_args(
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
             :monthly,
           )
