@@ -2087,7 +2087,7 @@ user_mailer.please_reset_password.subject: 'Actividad inusual: restablezca su co
 user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires} horas.
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
-user_mailer.reset_password_instructions.header: Si usted hizo esta solicitud, haga clic en “Restablecer su contraseña” para continuar. <br/> <br/> Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda. <br/> <br/> Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.
+user_mailer.reset_password_instructions.header: Si usted hizo esta solicitud, haga clic en “Restablecer su contraseña” para continuar.<br/><br/>Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda.<br/><br/>Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
 user_mailer.reset_password_instructions.subject: Se solicitó restablecer la contraseña de su cuenta de %{app_name}
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.
