@@ -1462,6 +1462,8 @@ instructions.forgot_password.close_window: 重设你的密码后，你就可以�
 instructions.go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}应用程序并登录。
 instructions.mfa.authenticator.confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
 instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
+instructions.mfa.do_not_share_code_link_html: 了解如何识别欺诈并举报。
+instructions.mfa.do_not_share_code_message_html: '<strong>请勿分享此代码。</strong> %{app_name} 绝不会通过电话、短信或电子邮件向您索要此代码。%{link_html}'
 instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
