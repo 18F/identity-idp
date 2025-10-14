@@ -1012,6 +1012,8 @@ headings.cancellations.prompt: '¿Estas seguro que quieres cancelar?'
 headings.create_account_new_users: Crear una cuenta para usuarios nuevos
 headings.create_account_with_sp.sp_text: está usando %{app_name} para permitirle iniciar sesión en su cuenta de forma segura.
 headings.edit_info.password: Cambie su contraseña
+heading.edit_info.phishing_warning: If someone asked you to reset your password, it may be a scam.
+headings.edit_info.phishing_link: Learn how to identify fraud and report it.
 headings.edit_info.phone: Administre la configuración de su teléfono
 headings.passwords.change: Cambie su contraseña
 headings.passwords.confirm: Confirme su contraseña actual para continuar
@@ -2085,9 +2087,9 @@ user_mailer.please_reset_password.subject: 'Actividad inusual: restablezca su co
 user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires} horas.
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
-user_mailer.reset_password_instructions.header: Para terminar de restablecer su contraseña, haga clic en el enlace de abajo o copie y pegue el enlace completo en su navegador.
+user_mailer.reset_password_instructions.header_html: Si usted hizo esta solicitud, haga clic en "Restablecer su contraseña" para continuar. <br/> <br/> Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda. <br/> <br/> Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
-user_mailer.reset_password_instructions.subject: Restablezca su contraseña
+user_mailer.reset_password_instructions.subject: Se solicitó restablecer la contraseña de su cuenta de Login.gov
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: Este email ya está asociado a una cuenta %{app_name_html}, por lo tanto no podemos usarlo para crear una cuenta nueva. Para iniciar una sesión con su cuenta existente, siga el siguiente enlace. Si no intenta iniciar una sesión con este email, puede ignorar este mensaje.
 user_mailer.signup_with_your_email.link_text: Ir a %{app_name}

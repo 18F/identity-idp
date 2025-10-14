@@ -2086,9 +2086,9 @@ user_mailer.please_reset_password.subject: 异常活动 — 重设你的 %{app_n
 user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时后会作废。
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
-user_mailer.reset_password_instructions.header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
+user_mailer.reset_password_instructions.header_html: 如果您提出了此请求，请点击"重置您的密码"继续。 <br/> <br/> 如果您没有提出此请求，请勿更改您的密码。请向我们的帮助中心报告任何可疑活动。 <br/><br/> 我们绝不会通过电子邮件、电话或短信要求您分享您的密码、安全代码或其他敏感信息。
 user_mailer.reset_password_instructions.link_text: 重设你的密码
-user_mailer.reset_password_instructions.subject: 重设你的密码
+user_mailer.reset_password_instructions.subject: 您的 Login.gov 账户已请求重置密码
 user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.signup_with_your_email.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能用它设立新账户。要使用你现有账户登录，请点击以下链接。 如果你未试图用此电邮地址登录，可以忽略这一信息。
 user_mailer.signup_with_your_email.link_text: 请到 %{app_name}
