@@ -74,7 +74,11 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
     end
 
     it 'sends push notifications if push_notifications_enabled is true' do
-      service_provider = build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:test')
+      service_provider = create(
+        :service_provider,
+        active: true,
+        push_notification_url: push_notification_url,
+      )
       identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 
@@ -106,7 +110,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
       travel_to(2.days.from_now + 1) do
         request = stub_push_notification_request(
-          sp_push_notification_endpoint: push_notification_url,
+          service_provider: service_provider,
           event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,
           payload: {
             'subject' => {
