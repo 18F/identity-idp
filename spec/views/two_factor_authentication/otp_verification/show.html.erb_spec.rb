@@ -66,6 +66,24 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       )
     end
 
+    it 'informs the user to not share their OTP code' do
+      render
+
+      expect(rendered).to include(
+        t(
+          'instructions.mfa.do_not_share_code_message_html',
+          app_name: APP_NAME,
+          link_html: link_to(
+            t('instructions.mfa.do_not_share_code_link_html'),
+            help_center_redirect_path(
+              category: 'fraud-concerns',
+              article: 'overview',
+            ),
+          ),
+        ),
+      )
+    end
+
     context 'user signed up' do
       before do
         user = create(:user, :fully_registered, personal_key: '1')
