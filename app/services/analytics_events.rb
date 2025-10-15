@@ -857,7 +857,7 @@ module AnalyticsEvents
   # User verified and
   # @param issuer [String] the ServiceProvider.issuer
   # @param idv_level [String,nil] idv_level ID verification level of verified profile.
-  def idv_account_activated(
+  def idv_profile_activated(
     idv_level:,
     verified_at:,
     activated_at:,
@@ -865,7 +865,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      :idv_account_activated,
+      :idv_profile_activated,
       issuer:,
       idv_level:,
       verified_at:,
