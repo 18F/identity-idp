@@ -29,6 +29,49 @@ RSpec.describe DuplicateProfileChecker do
       stub_analytics
     end
 
+    context 'when PII is not available in session' do
+      let(:session) { {} } # Empty session
+      before do
+        session[:encrypted_profiles] = {}
+      end
+
+      it 'does not create or update duplicate profile sets' do
+        dupe_profile_checker = DuplicateProfileChecker.new(
+          user: user,
+          user_session: session,
+          sp: sp,
+          analytics: @analytics,
+        )
+        dupe_profile_checker.dupe_profile_set_for_user
+
+        dupe_profile_set = DuplicateProfileSet.involving_profile(
+          profile_id: profile.id,
+          service_provider: sp.issuer,
+        )
+        expect(dupe_profile_set).to eq(nil)
+        expect(@analytics).to_not have_logged_event(:one_account_duplicate_profile_created)
+      end
+    end
+
+    context 'when user has no active profile' do
+      let(:user) { create(:user, :fully_registered) }
+
+      before do
+        allow(user).to receive(:active_profile).and_return(nil)
+      end
+
+      it 'does not check for duplicates' do
+        dupe_profile_checker = DuplicateProfileChecker.new(
+          user: user,
+          user_session: session,
+          sp: sp,
+          analytics: @analytics,
+        )
+
+        expect(dupe_profile_checker.dupe_profile_set_for_user).to be_nil
+      end
+    end
+
     context 'when user has active IAL2 profile' do
       context 'when there are no other matching profile' do
         let(:user2) { create(:user, :proofed_with_selfie) }
@@ -196,6 +239,51 @@ RSpec.describe DuplicateProfileChecker do
                   :one_account_duplicate_profile_updated,
                 )
               end
+            end
+          end
+
+          context 'when a duplicate profile is removed' do
+            let!(:profile3) do
+              create(
+                :profile,
+                :active,
+                :facial_match_proof,
+                user: create(:user, :fully_registered),
+              )
+            end
+
+            let!(:dupe_profile_set) do
+              create(
+                :duplicate_profile_set,
+                profile_ids: [profile.id, profile2.id, profile3.id],
+                service_provider: sp.issuer,
+              )
+            end
+            before do
+              allow_any_instance_of(Idv::DuplicateSsnFinder)
+                .to receive(:duplicate_facial_match_profiles)
+                .and_return([profile2])
+            end
+
+            it 'updates the existing duplicate profile object' do
+              dupe_profile_checker = DuplicateProfileChecker.new(
+                user: user,
+                user_session: session,
+                sp: sp,
+                analytics: @analytics,
+              )
+              dupe_profile_checker.dupe_profile_set_for_user
+
+              updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
+                profile_id: profile.id,
+                service_provider: sp.issuer,
+              )
+              expect(updated_dupe_profile_set.profile_ids).to match_array(
+                [profile2.id, profile.id],
+              )
+              expect(@analytics).to have_logged_event(
+                :one_account_duplicate_profile_updated,
+              )
             end
           end
 

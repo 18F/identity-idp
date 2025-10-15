@@ -56,7 +56,8 @@ class DuplicateProfileChecker
   def find_or_create_duplicate_profile(new_profile_ids)
     existing_set = find_existing_duplicate_profile_set(new_profile_ids)
 
-    if existing_set
+    if existing_set.present?
+      # Update existing record if profile_ids have changed
       update_existing_duplicate_set(existing_set, new_profile_ids)
     else
       # Create new record with proper conflict handling
