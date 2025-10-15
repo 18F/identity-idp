@@ -118,10 +118,10 @@ class Profile < ApplicationRecord
 
     transaction do
       Profile.where(user_id: user_id).where.not(id:).update_all(active: false)
-      reload
       update!(attrs)
     end
 
+    reload
     user.analytics.idv_profile_activated(
       idv_level:,
       issuer: initiating_service_provider&.issuer,
