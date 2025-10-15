@@ -23,7 +23,7 @@ class DuplicateProfileChecker
       handle_duplicate_profiles_found(associated_profiles)
     # If no associated profiles found, close out any existing duplicate profile record
     else
-      close_existing_duplicate_if_present
+      close_existing_duplicate_set_if_present
     end
   end
 
@@ -35,30 +35,29 @@ class DuplicateProfileChecker
       .duplicate_facial_match_profiles(service_provider: sp.issuer)
   end
 
-  def close_existing_duplicate_if_present
-    existing_profile = DuplicateProfileSet.involving_profile(
+  def close_existing_duplicate_set_if_present
+    existing_duplicate_profile_set = DuplicateProfileSet.involving_profile(
       profile_id: profile.id,
       service_provider: sp.issuer,
     )
 
-    return unless existing_profile.present?
-    # Close out existing duplicate profile if no more duplicates found
-    existing_profile.update!(closed_at: Time.zone.now, self_serviced: true)
+    return unless existing_duplicate_profile_set.present?
+    existing_duplicate_profile_set.update!(closed_at: Time.zone.now, self_serviced: true)
     analytics.one_account_duplicate_profile_closed
   end
 
   def handle_duplicate_profiles_found(associated_profiles)
     new_profiles_ids = (associated_profiles.map(&:id) + [profile.id]).uniq.sort
 
-    find_or_create_duplicate_profile(new_profiles_ids)
+    find_or_create_duplicate_profile_set(new_profiles_ids)
   end
 
-  def find_or_create_duplicate_profile(new_profile_ids)
-    existing_set = find_existing_duplicate_profile_set(new_profile_ids)
+  def find_or_create_duplicate_profile_set(new_profile_ids)
+    existing_duplicate_profile_set = find_existing_duplicate_profile_set(new_profile_ids)
 
-    if existing_set.present?
+    if existing_duplicate_profile_set.present?
       # Update existing record if profile_ids have changed
-      update_existing_duplicate_set(existing_set, new_profile_ids)
+      update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
     else
       # Create new record with proper conflict handling
       create_duplicate_profile_set(new_profile_ids)
@@ -72,12 +71,12 @@ class DuplicateProfileChecker
     )
   end
 
-  def update_existing_duplicate_set(existing, new_profile_ids)
-    return existing if existing.profile_ids.sort == new_profile_ids.sort
-
-    existing.update!(profile_ids: new_profile_ids)
-    analytics.one_account_duplicate_profile_updated
-    existing
+  def update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
+    if existing_duplicate_profile_set.profile_ids.sort != new_profile_ids.sort
+      existing_duplicate_profile_set.update!(profile_ids: new_profile_ids)
+      analytics.one_account_duplicate_profile_updated
+    end
+    existing_duplicate_profile_set
   end
 
   def create_duplicate_profile_set(profile_ids)
