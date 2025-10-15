@@ -42,12 +42,8 @@ RSpec.describe DuplicateProfileChecker do
           sp: sp,
           analytics: @analytics,
         )
-        dupe_profile_checker.dupe_profile_set_for_user
+        dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-        dupe_profile_set = DuplicateProfileSet.involving_profile(
-          profile_id: profile.id,
-          service_provider: sp.issuer,
-        )
         expect(dupe_profile_set).to eq(nil)
         expect(@analytics).to_not have_logged_event(:one_account_duplicate_profile_created)
       end
@@ -132,12 +128,8 @@ RSpec.describe DuplicateProfileChecker do
             sp: sp,
             analytics: @analytics,
           )
-          dupe_profile_checker.dupe_profile_set_for_user
+          dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-          dupe_profile_set = DuplicateProfileSet.involving_profile(
-            profile_id: profile.id,
-            service_provider: sp.issuer,
-          )
           expect(dupe_profile_set.profile_ids).to match_array([profile2.id, profile.id])
           expect(@analytics).to have_logged_event(
             :one_account_duplicate_profile_created,
@@ -193,12 +185,8 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.dupe_profile_set_for_user
+                updated_dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-                updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
-                  profile_id: profile.id,
-                  service_provider: sp.issuer,
-                )
                 expect(updated_dupe_profile_set.profile_ids).to match_array(
                   [profile2.id, profile.id,
                    profile3.id],
@@ -225,12 +213,8 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.dupe_profile_set_for_user
+                updated_dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-                updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
-                  profile_id: profile.id,
-                  service_provider: sp.issuer,
-                )
                 expect(updated_dupe_profile_set.profile_ids).to match_array(
                   [profile2.id, profile.id,
                    profile3.id],
@@ -272,12 +256,8 @@ RSpec.describe DuplicateProfileChecker do
                 sp: sp,
                 analytics: @analytics,
               )
-              dupe_profile_checker.dupe_profile_set_for_user
+              updated_dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-              updated_dupe_profile_set = DuplicateProfileSet.involving_profile(
-                profile_id: profile.id,
-                service_provider: sp.issuer,
-              )
               expect(updated_dupe_profile_set.profile_ids).to match_array(
                 [profile2.id, profile.id],
               )
@@ -302,10 +282,11 @@ RSpec.describe DuplicateProfileChecker do
                   sp: sp,
                   analytics: @analytics,
                 )
-                dupe_profile_checker.dupe_profile_set_for_user
+                empty_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+                expect(empty_profile_set).to eq(nil)
 
-                dupe_profile_set.reload
-                expect(dupe_profile_set.closed_at).to eq(Time.zone.now)
+                closed_profile_set = DuplicateProfileSet.find(dupe_profile_set.id)
+                expect(closed_profile_set.closed_at).to eq(Time.zone.now)
                 expect(@analytics).to have_logged_event(
                   :one_account_duplicate_profile_closed,
                 )
@@ -357,12 +338,8 @@ RSpec.describe DuplicateProfileChecker do
           sp: sp,
           analytics: @analytics,
         )
-        dupe_profile_checker.dupe_profile_set_for_user
+        dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
 
-        dupe_profile_set = DuplicateProfileSet.involving_profile(
-          profile_id: profile.id,
-          service_provider: sp.issuer,
-        )
         expect(dupe_profile_set).to eq(nil)
       end
     end
