@@ -18,7 +18,7 @@ zh:
         %{app_name}: 你在 %{proof_date}去了邮局。查查你的电邮看一下结果。不是你？马上报告此事：%{contact_number}。关于： %{reference_string}
     confirmation_otp:
       sms: |-
-        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+        %{app_name}: 绝不会联系您索要此代码。请勿与任何人分享。您的代码是 %{code}。该代码将在 %{expiration} 分钟后失效。
 
         @%{domain} #%{code}
       voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
