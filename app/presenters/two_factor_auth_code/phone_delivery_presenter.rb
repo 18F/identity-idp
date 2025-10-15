@@ -27,6 +27,20 @@ module TwoFactorAuthCode
       )
     end
 
+    def do_not_share_code_message
+      t(
+        'instructions.mfa.do_not_share_code_message_html',
+        app_name: APP_NAME,
+        link_html: link_to(
+          t('instructions.mfa.do_not_share_code_link_html'),
+          help_center_redirect_path(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
+      )
+    end
+
     def landline_warning
       t(
         'two_factor_authentication.otp_delivery_preference.landline_warning_html',
