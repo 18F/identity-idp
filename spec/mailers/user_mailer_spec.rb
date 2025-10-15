@@ -141,7 +141,7 @@ RSpec.describe UserMailer, type: :mailer do
       it 'renders the subject' do
         expect(mail.subject).to eq t(
           'user_mailer.reset_password_instructions.subject',
-          app_name: 'Login.gov',
+          app_name: APP_NAME,
         )
       end
 
@@ -153,7 +153,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header_html'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -179,7 +181,7 @@ RSpec.describe UserMailer, type: :mailer do
       it 'renders the subject' do
         expect(mail.subject).to eq t(
           'user_mailer.reset_password_instructions.subject',
-          app_name: 'Login.gov',
+          app_name: APP_NAME,
         )
       end
 
@@ -191,7 +193,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header_html'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -215,7 +219,7 @@ RSpec.describe UserMailer, type: :mailer do
       it 'renders the subject' do
         expect(mail.subject).to eq t(
           'user_mailer.reset_password_instructions.subject',
-          app_name: 'Login.gov',
+          app_name: APP_NAME,
         )
       end
 
@@ -227,7 +231,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header_html'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
