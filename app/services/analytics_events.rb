@@ -6580,7 +6580,6 @@ module AnalyticsEvents
         source:,
         service_provider:,
         associated_profiles_count:,
-        deleted_profile_id:,
         dupe_profile_set_id:,
         **extra
       )
@@ -6589,7 +6588,6 @@ module AnalyticsEvents
       source: source,
       service_provider: service_provider,
       associated_profiles_count: associated_profiles_count,
-      deleted_profile_id: deleted_profile_id,
       dupe_profile_set_id: dupe_profile_set_id,
       **extra,
     )
