@@ -69,11 +69,28 @@ RSpec.describe Reports::IrsVerificationReport do
   end
 
   describe '#previous_week_range' do
-    it 'returns a 7-day range starting from last Sunday' do
-      range = report.previous_week_range
-      expect(range).to be_a(Range)
-      expect(range.first).to be < range.last
-      expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
+    context 'report_date is sunday of new week' do
+      let(:report_date) { Date.new(2025, 10, 12).in_time_zone('UTC').end_of_day }
+      it 'returns a 7-day range starting from last Sunday' do
+        range = report.previous_week_range
+        expect(range).to be_a(Range)
+        expect(range.first).to be < range.last
+        expect(range.first.wday).to eq(0) # 0 =Sunday
+        expect(range.last.wday).to eq(6) # 6 Monday
+        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
+      end
+    end
+
+    context 'report_date is middle of week' do
+      let(:report_date) { Date.new(2025, 10, 9).in_time_zone('UTC').end_of_day }
+      it 'returns a 7-day range starting from last Sunday' do
+        range = report.previous_week_range
+        expect(range).to be_a(Range)
+        expect(range.first).to be < range.last
+        expect(range.first.wday).to eq(0) # 0 =Sunday
+        expect(range.last.wday).to eq(6) # 6 Monday
+        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
+      end
     end
   end
 end

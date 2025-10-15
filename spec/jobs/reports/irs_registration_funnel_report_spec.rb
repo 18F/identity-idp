@@ -117,31 +117,26 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
   describe '#previous_week_range' do
     context 'report_date is sunday of new week' do
-      include ActiveSupport::Testing::TimeHelpers
+      let(:report_date) { Date.new(2025, 10, 12).in_time_zone('UTC').end_of_day }
       it 'returns a 7-day range starting from last Sunday' do
-        travel_to Time.zone.parse('2025-10-12') do
-          range = report.previous_week_range
-          expect(range).to be_a(Range)
-          expect(range.first).to be < range.last
-          expect(range.first.wday).to eq(0) # 0 =Sunday
-          expect(range.last.wday).to eq(6) # 6 Monday
-          expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
-        end
+        range = report.previous_week_range
+        expect(range).to be_a(Range)
+        expect(range.first).to be < range.last
+        expect(range.first.wday).to eq(0) # 0 =Sunday
+        expect(range.last.wday).to eq(6) # 6 Monday
+        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
       end
     end
 
     context 'report_date is middle of week' do
-      include ActiveSupport::Testing::TimeHelpers
       let(:report_date) { Date.new(2025, 10, 9).in_time_zone('UTC').end_of_day }
       it 'returns a 7-day range starting from last Sunday' do
-        travel_to Time.zone.parse('2025-10-09') do
-          range = report.previous_week_range
-          expect(range).to be_a(Range)
-          expect(range.first).to be < range.last
-          expect(range.first.wday).to eq(0) # 0 =Sunday
-          expect(range.last.wday).to eq(6) # 6 Monday
-          expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
-        end
+        range = report.previous_week_range
+        expect(range).to be_a(Range)
+        expect(range.first).to be < range.last
+        expect(range.first.wday).to eq(0) # 0 =Sunday
+        expect(range.last.wday).to eq(6) # 6 Monday
+        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
       end
     end
   end

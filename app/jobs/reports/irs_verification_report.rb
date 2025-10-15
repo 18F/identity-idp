@@ -60,11 +60,7 @@ module Reports
     end
 
     def previous_week_range
-      today = Time.zone.today
-      last_sunday = today.beginning_of_week(:sunday) - 7.days
-      last_saturday = last_sunday + 6.days
-
-      last_sunday.beginning_of_day..last_saturday.end_of_day
+      @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
     end
 
     def irs_verification_report
