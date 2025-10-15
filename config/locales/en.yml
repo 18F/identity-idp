@@ -984,7 +984,6 @@ forms.webauthn_setup.step_2_image_alt: A security key being inserted into the ri
 forms.webauthn_setup.step_2_image_mobile_alt: A security key being inserted into the bottom of a smart phone
 forms.webauthn_setup.step_3: Set up your security key
 forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
-heading.edit_info.phishing_warning: If someone asked you to reset your password, it may be a scam.
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
 headings.account.connected_accounts: Your connected accounts
@@ -1002,7 +1001,6 @@ headings.cancellations.prompt: Are you sure you want to cancel?
 headings.create_account_new_users: Create an account for new users
 headings.create_account_with_sp.sp_text: is using %{app_name} to allow you to sign in to your account safely and securely.
 headings.edit_info.password: Change your password
-headings.edit_info.phishing_link: Learn how to identify fraud and report it.
 headings.edit_info.phone: Manage your phone settings
 headings.passwords.change: Change your password
 headings.passwords.confirm: Confirm your current password to continue
@@ -2075,7 +2073,7 @@ user_mailer.please_reset_password.subject: Unusual activity — reset your %{app
 user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
-user_mailer.reset_password_instructions.header: If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.
+user_mailer.reset_password_instructions.header_html: 'If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.'
 user_mailer.reset_password_instructions.link_text: Reset your password
 user_mailer.reset_password_instructions.subject: Password reset requested for your %{app_name} account
 user_mailer.signup_with_your_email.help_html: If you did not request a new account or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
@@ -2106,6 +2104,8 @@ users.delete.instructions: Enter your password to confirm that you want to delet
 users.delete.subheading: 'If you delete your account:'
 users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
 users.duplicate_profiles_please_call.heading: Please give us a call
+users.edit_info.phishing_link: Learn how to identify fraud and report it.
+users.edit_info.phishing_warning: If someone asked you to reset your password, it may be a scam.
 users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview

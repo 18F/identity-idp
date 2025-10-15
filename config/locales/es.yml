@@ -995,7 +995,6 @@ forms.webauthn_setup.step_2_image_alt: Una llave de seguridad insertada en el la
 forms.webauthn_setup.step_2_image_mobile_alt: Una llave de seguridad insertada en la parte inferior de un celular
 forms.webauthn_setup.step_3: Configure su clave de seguridad
 forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
-heading.edit_info.phishing_warning: If someone asked you to reset your password, it may be a scam.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
@@ -1013,7 +1012,6 @@ headings.cancellations.prompt: '¿Estas seguro que quieres cancelar?'
 headings.create_account_new_users: Crear una cuenta para usuarios nuevos
 headings.create_account_with_sp.sp_text: está usando %{app_name} para permitirle iniciar sesión en su cuenta de forma segura.
 headings.edit_info.password: Cambie su contraseña
-headings.edit_info.phishing_link: Learn how to identify fraud and report it.
 headings.edit_info.phone: Administre la configuración de su teléfono
 headings.passwords.change: Cambie su contraseña
 headings.passwords.confirm: Confirme su contraseña actual para continuar
@@ -2087,7 +2085,7 @@ user_mailer.please_reset_password.subject: 'Actividad inusual: restablezca su co
 user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires} horas.
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
-user_mailer.reset_password_instructions.header: Si usted hizo esta solicitud, haga clic en “Restablecer su contraseña” para continuar.<br/><br/>Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda.<br/><br/>Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.
+user_mailer.reset_password_instructions.header_html: 'Si usted hizo esta solicitud, haga clic en “Restablecer su contraseña” para continuar.<br/><br/>Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda.<br/><br/>Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.'
 user_mailer.reset_password_instructions.link_text: Restablezca su contraseña
 user_mailer.reset_password_instructions.subject: Se solicitó restablecer la contraseña de su cuenta de %{app_name}
 user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta nueva o sospecha que hubo un error, visite la %{help_link_html} de %{app_name_html} o %{contact_link_html}.
@@ -2118,6 +2116,8 @@ users.delete.instructions: Ingrese su contraseña para confirmar que desea elimi
 users.delete.subheading: 'Si elimina su cuenta:'
 users.duplicate_profiles_please_call.error_details_html: <p>Si no reconoce o no puede eliminar una de las cuentas duplicadas que vio en la página que muestra varias cuentas, llame a nuestro centro de contacto al <strong>%{contact_number}</strong> y mencione el código de error <strong>LG33</strong>.</p><p>¿Tiene preguntas acerca de las cuentas duplicadas o de lo que debe hacer? Obtenga más información acerca <a href="%{help_url}">de cómo resolver las cuentas duplicadas</a>.</p>
 users.duplicate_profiles_please_call.heading: Llámenos
+users.edit_info.phishing_link: Learn how to identify fraud and report it.
+users.edit_info.phishing_warning: If someone asked you to reset your password, it may be a scam.
 users.password_compromised.warning: Hemos encontrado su contraseña en una filtración de datos en otro sitio o aplicación. %{app_name} requiere que cambie su contraseña para proteger su cuenta.
 users.personal_key.accessible_labels.code_example: Un ejemplo de clave personal con 16 caracteres
 users.personal_key.accessible_labels.preview: Vista previa de la clave personal
