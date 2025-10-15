@@ -193,7 +193,7 @@ else
       irs_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday_3am,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day,:both] },
       },
 
       # Send Duplicate SSN report to S3
