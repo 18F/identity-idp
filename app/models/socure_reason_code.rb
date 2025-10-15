@@ -6,7 +6,7 @@ class SocureReasonCode < ApplicationRecord
     where(deactivated_at: nil)
   end
 
-  def self.with_defnitions(reason_codes)
+  def self.with_definitions(reason_codes)
     known_codes = SocureReasonCode.where(
       code: reason_codes,
     ).pluck(:code, :description).to_h
