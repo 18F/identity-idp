@@ -176,7 +176,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
       {
         num_threads: 5,
         ensure_complete_logs: true,
-        slice_interval: 6.hours,
+        slice_interval: 24.hours,
         progress: false,
         logger: nil,
       }
