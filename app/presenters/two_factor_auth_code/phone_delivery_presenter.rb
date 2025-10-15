@@ -33,7 +33,7 @@ module TwoFactorAuthCode
         app_name: APP_NAME,
         link_html: link_to(
           t('instructions.mfa.do_not_share_code_link_html'),
-          help_center_redirect_path(
+          MarketingSite.help_center_article_url(
             category: 'fraud-concerns',
             article: 'overview',
           ),

@@ -15,6 +15,10 @@
   <%= @presenter.phone_number_message %>
 </p>
 
+<p>
+  <%= @presenter.do_not_share_code_message %>
+</p>
+
 <%= simple_form_for('', method: :put) do |f| %>
   <%= render OneTimeCodeInputComponent.new(
         form: f,

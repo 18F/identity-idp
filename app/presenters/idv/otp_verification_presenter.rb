@@ -20,6 +20,20 @@ module Idv
       )
     end
 
+    def do_not_share_code_message
+      t(
+        'instructions.mfa.do_not_share_code_message_html',
+        app_name: APP_NAME,
+        link_html: link_to(
+          t('instructions.mfa.do_not_share_code_link_html'),
+          MarketingSite.help_center_article_url(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
+      )
+    end
+
     private
 
     def phone_number
