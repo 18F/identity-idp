@@ -121,6 +121,13 @@ class Profile < ApplicationRecord
       update!(attrs)
     end
 
+    user.analytics.idv_account_activated(
+      idv_level:,
+      issuer: initiating_service_provider&.issuer,
+      verified_at:,
+      activated_at:,
+    )
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end

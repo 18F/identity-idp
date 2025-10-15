@@ -854,6 +854,26 @@ module AnalyticsEvents
     )
   end
 
+  # User verified and
+  # @param issuer [String] the ServiceProvider.issuer
+  # @param idv_level [String,nil] idv_level ID verification level of verified profile.
+  def idv_account_activated(
+    idv_level:,
+    verified_at:,
+    activated_at:,
+    issuer: nil,
+    **extra
+  )
+    track_event(
+      :idv_account_activated,
+      issuer:,
+      idv_level:,
+      verified_at:,
+      activated_at:,
+      **extra,
+    )
+  end
+
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID
