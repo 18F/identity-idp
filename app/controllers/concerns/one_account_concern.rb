@@ -11,13 +11,11 @@ module OneAccountConcern
     return if sets.blank?
 
     sets.each do |set|
-      set.profile_ids.delete(user_profile_id)
-      set.save
       analytics.one_account_self_service(
         source: source,
         service_provider: set.service_provider,
         deleted_profile_id: user_profile_id,
-        associated_profiles_count: set.profile_ids.count,
+        associated_profiles_count: set.profile_ids.count - 1,
         dupe_profile_set_id: set.id,
       )
     end
