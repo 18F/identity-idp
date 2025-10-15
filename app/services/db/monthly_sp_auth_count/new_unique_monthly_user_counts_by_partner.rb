@@ -2,7 +2,7 @@
 
 module Db
   module MonthlySpAuthCount
-    module NewUniqueMonthlyUserCountsByPartner2
+    module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
       UserVerifiedKey = Data.define(
