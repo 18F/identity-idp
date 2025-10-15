@@ -3,17 +3,21 @@
 module OneAccountConcern
   extend ActiveSupport::Concern
 
-  def log_one_account_self_service_if_applicable(source:)
+  def process_one_account_self_service_if_applicable(source:)
     return unless current_user&.active_profile&.facial_match?
+    user_profile_id = current_user.active_profile.id
     sets = DuplicateProfileSet
-      .duplicate_profile_set_for_profile(profile_id: current_user.active_profile.id)
+      .duplicate_profile_sets_for_profile(profile_id: user_profile_id)
     return if sets.blank?
 
     sets.each do |set|
+      set.profile_ids.delete(user_profile_id)
+      set.save
       analytics.one_account_self_service(
-        source: source,
+        source: :account_reset_delete,
         service_provider: set.service_provider,
-        associated_profiles_count: set.profile_ids.count - 1,
+        deleted_profile_id: user_profile_id,
+        associated_profiles_count: set.profile_ids.count
         dupe_profile_set_id: set.id,
       )
     end
