@@ -54,26 +54,26 @@ class DuplicateProfileChecker
   end
 
   def find_or_create_duplicate_profile(new_profile_ids)
-    existing_set = find_existing_duplicate_profile(new_profile_ids)
+    existing_set = find_existing_duplicate_profile_set(new_profile_ids)
 
     if existing_set
-      update_existing_duplicate(existing_set, new_profile_ids)
+      update_existing_duplicate_set(existing_set, new_profile_ids)
     else 
       # Create new record with proper conflict handling
-      create_duplicate_profile(new_profile_ids)
+      create_duplicate_profile_set(new_profile_ids)
     end
 
     
   end
 
-  def find_existing_duplicate_profile(profile_ids)
+  def find_existing_duplicate_profile_set(profile_ids)
     DuplicateProfileSet.involving_profiles(
       profile_ids: profile_ids,
       service_provider: sp.issuer,
     )
   end
 
-  def update_existing_duplicate(existing, new_profile_ids)
+  def update_existing_duplicate_set(existing, new_profile_ids)
     return existing if existing.profile_ids.sort == new_profile_ids.sort
 
     existing.update!(profile_ids: new_profile_ids)
@@ -81,7 +81,7 @@ class DuplicateProfileChecker
     existing
   end
 
-  def create_duplicate_profile(profile_ids)
+  def create_duplicate_profile_set(profile_ids)
     set = DuplicateProfileSet.create(
       service_provider: sp&.issuer,
       profile_ids: profile_ids,
