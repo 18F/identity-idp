@@ -132,7 +132,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
     context 'report_date is middle of week' do
       include ActiveSupport::Testing::TimeHelpers
-      let(:report_date) { Date.new(2025, 10, 9).in_time_zone('UTC').end_of_day }  
+      let(:report_date) { Date.new(2025, 10, 9).in_time_zone('UTC').end_of_day }
       it 'returns a 7-day range starting from last Sunday' do
         travel_to Time.zone.parse('2025-10-09') do
           range = report.previous_week_range
