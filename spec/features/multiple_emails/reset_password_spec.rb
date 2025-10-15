@@ -13,7 +13,7 @@ RSpec.describe 'reset password with multiple emails' do
     expect_delivered_email_count(1)
     expect_delivered_email(
       to: [email1],
-      subject: t('user_mailer.reset_password_instructions.subject', app_name: 'Login.gov'),
+      subject: t('user_mailer.reset_password_instructions.subject', app_name: APP_NAME),
     )
 
     Capybara.reset_session!
@@ -26,7 +26,7 @@ RSpec.describe 'reset password with multiple emails' do
     expect_delivered_email_count(2)
     expect_delivered_email(
       to: [email2],
-      subject: t('user_mailer.reset_password_instructions.subject', app_name: 'Login.gov'),
+      subject: t('user_mailer.reset_password_instructions.subject', app_name: APP_NAME),
     )
   end
 

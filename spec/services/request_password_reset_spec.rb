@@ -53,7 +53,7 @@ RSpec.describe RequestPasswordReset do
         expect_delivered_email_count(1)
         expect_delivered_email(
           to: [email],
-          subject: t('user_mailer.reset_password_instructions.subject', app_name: 'Login.gov'),
+          subject: t('user_mailer.reset_password_instructions.subject', app_name: APP_NAME),
         )
       end
 

@@ -23,7 +23,7 @@ RSpec.feature 'Password Recovery' do
 
       expect(last_email.subject).to eq t(
         'user_mailer.reset_password_instructions.subject',
-        app_name: 'Login.gov',
+        app_name: APP_NAME,
       )
       expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
