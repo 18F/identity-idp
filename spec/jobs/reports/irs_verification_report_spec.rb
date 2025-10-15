@@ -5,8 +5,8 @@ RSpec.describe Reports::IrsVerificationReport do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:report_date) { Time.zone.today.end_of_day }
-  let(:receiver) {:internal}
-  let(:report) { described_class.new(report_date,receiver) }
+  let(:receiver) { :internal }
+  let(:report) { described_class.new(report_date, receiver) }
   let(:dummy_report_data) { [['Header1', 'Header2'], ['Value1', 'Value2']] }
 
   let(:mock_report_object) do

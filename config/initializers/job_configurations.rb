@@ -193,7 +193,7 @@ else
       irs_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday_3am,
-        args: -> { [Time.zone.yesterday.end_of_day,:both] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
 
       # Send Duplicate SSN report to S3
@@ -244,7 +244,7 @@ else
         cron: cron_every_monday_3am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send previous week's authentication reports to irs
+      # Send previous week's IrsRegistrationFunnelReport reports to irs
       irs_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
