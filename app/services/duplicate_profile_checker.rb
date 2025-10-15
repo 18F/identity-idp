@@ -21,7 +21,7 @@ class DuplicateProfileChecker
     # If we found associated profiles, create or update the DuplicateProfileSet record
     if associated_profiles.present?
       handle_duplicate_profiles_found(associated_profiles)
-    # If no associated profiles found, close out any existing duplicate profile record 
+    # If no associated profiles found, close out any existing duplicate profile record
     else
       close_existing_duplicate_if_present
     end
@@ -58,12 +58,10 @@ class DuplicateProfileChecker
 
     if existing_set
       update_existing_duplicate_set(existing_set, new_profile_ids)
-    else 
+    else
       # Create new record with proper conflict handling
       create_duplicate_profile_set(new_profile_ids)
     end
-
-    
   end
 
   def find_existing_duplicate_profile_set(profile_ids)
