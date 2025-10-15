@@ -5,6 +5,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
+    include LinkHelper
 
     attr_reader :otp_delivery_preference,
                 :otp_make_default_number,
@@ -31,7 +32,7 @@ module TwoFactorAuthCode
       t(
         'instructions.mfa.do_not_share_code_message_html',
         app_name: APP_NAME,
-        link_html: link_to(
+        link_html: new_tab_link_to(
           t('instructions.mfa.do_not_share_code_link_html'),
           MarketingSite.help_center_article_url(
             category: 'fraud-concerns',

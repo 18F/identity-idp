@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
+  include LinkHelper
 
   let(:view) { ActionController::Base.new.view_context }
   let(:unconfirmed_phone) { false }
@@ -62,7 +63,7 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       text = t(
         'instructions.mfa.do_not_share_code_message_html',
         app_name: APP_NAME,
-        link_html: link_to(
+        link_html: new_tab_link_to(
           t('instructions.mfa.do_not_share_code_link_html'),
           MarketingSite.help_center_article_url(
             category: 'fraud-concerns',
