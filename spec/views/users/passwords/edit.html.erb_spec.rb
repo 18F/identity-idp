@@ -40,8 +40,8 @@ RSpec.describe 'users/passwords/edit.html.erb' do
         min_length: Devise.password_length.min,
       ),
     )
-    expect(rendered).to have_content strip_tags(t('users.edit_info.phishing_link'))
-    expect(rendered).to have_content strip_tags(t('users.edit_info.phishing_warning'))
+    expect(rendered).to have_content strip_tags(t('users.edit_info.link'))
+    expect(rendered).to have_content strip_tags(t('users.edit_info.warning'))
   end
 
   it 'has aria described by' do

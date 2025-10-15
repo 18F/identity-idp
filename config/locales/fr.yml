@@ -2104,8 +2104,8 @@ users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous 
 users.delete.subheading: 'Si vous supprimez votre compte :'
 users.duplicate_profiles_please_call.error_details_html: <p>Si vous ne reconnaissez pas un compte ou ne pouvez pas accéder à l’un des comptes que vous avez identifiés sur la page détaillant vos différents comptes, veuillez appeler notre centre de contact au <strong>%{contact_number}</strong> en fournissant le code d’erreur <strong>LG33</strong>.</p><p>Vous avez des questions sur les comptes en double ou la marche à suivre ? En savoir plus sur <a href="%{help_url}">la manière de résoudre les problèmes de comptes en double</a>.</p>
 users.duplicate_profiles_please_call.heading: Nous appeler
-users.edit_info.phishing_link: Apprenez à identifier la fraude et à la signaler.
-users.edit_info.phishing_warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
+users.edit_info.link: Apprenez à identifier la fraude et à la signaler.
+users.edit_info.warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
 users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle
