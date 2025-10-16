@@ -854,9 +854,10 @@ module AnalyticsEvents
     )
   end
 
-  # User verified and
-  # @param issuer [String] the ServiceProvider.issuer
-  # @param idv_level [String,nil] idv_level ID verification level of verified profile.
+  # @param [String] issuer the ServiceProvider.issuer
+  # @param [String,nil] idv_level ID verification level of verified profile.
+  # @param [String] verified_at The timestamp whenthe profile was verified
+  # @param [String] activated_at The timestamp whenthe profile was activated
   def idv_profile_activated(
     idv_level:,
     verified_at:,
