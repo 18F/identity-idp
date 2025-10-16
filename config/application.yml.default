@@ -548,7 +548,6 @@ development:
   identity_pki_local_dev: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
-  idv_socure_phonerisk_score_threshold: 0.5
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
@@ -638,7 +637,6 @@ test:
   identity_pki_disabled: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
-  idv_socure_phonerisk_score_threshold: 0.5
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
