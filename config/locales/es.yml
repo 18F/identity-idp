@@ -633,7 +633,6 @@ doc_auth.headings.front: Frente de su licencia de conducir o identificación est
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
-doc_auth.headings.lets_go_sp_reproof: Verifique su identidad nuevamente para %{sp_name}
 doc_auth.headings.mailing_address: Ingrese su dirección postal
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
@@ -681,7 +680,6 @@ doc_auth.info.interstitial_thanks: Gracias por su paciencia
 doc_auth.info.keep_window_open: No cierre esta ventana.
 doc_auth.info.learn_more: Obtenga más información sobre cómo protegemos su información confidencial
 doc_auth.info.lets_go: 'La verificación de la identidad se efectúa en dos partes:'
-doc_auth.info.lets_go_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar una foto de su identificación.
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente después de que verifique su identidad en su teléfono.

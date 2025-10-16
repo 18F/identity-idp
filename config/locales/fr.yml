@@ -622,7 +622,6 @@ doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d�
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.interstitial: Nous traitons vos images
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
-doc_auth.headings.lets_go_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
@@ -670,7 +669,6 @@ doc_auth.info.interstitial_thanks: Merci de votre patience !
 doc_auth.info.keep_window_open: Ne fermez pas cette fenêtre.
 doc_auth.info.learn_more: En savoir plus sur la façon dont nous protégeons vos informations confidentielles
 doc_auth.info.lets_go: 'La vérification de l’identité se fait en deux temps :'
-doc_auth.info.lets_go_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les instructions pour prendre une photo de votre pièce d’identité.
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement une fois que vous aurez confirmé votre identité sur votre téléphone.

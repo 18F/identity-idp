@@ -622,7 +622,6 @@ doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
 doc_auth.headings.interstitial: We are processing your images
 doc_auth.headings.lets_go: How verifying your identity works
-doc_auth.headings.lets_go_sp_reproof: Verify your identity again for %{sp_name}
 doc_auth.headings.mailing_address: Enter your mailing address
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
@@ -670,7 +669,6 @@ doc_auth.info.interstitial_thanks: Thanks for your patience!
 doc_auth.info.keep_window_open: Do not close this window.
 doc_auth.info.learn_more: Learn more about how we protect your sensitive information
 doc_auth.info.lets_go: 'Identity verification happens in two parts:'
-doc_auth.info.lets_go_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.link_sent: Please check your phone and follow instructions to take a photo of your ID.
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically after you verify your ID on your phone.

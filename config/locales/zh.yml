@@ -633,7 +633,6 @@ doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
 doc_auth.headings.interstitial: 我们正在处理你的图像
 doc_auth.headings.lets_go: 你的身份是如何验证的
-doc_auth.headings.lets_go_sp_reproof: 为 %{sp_name} 再次验证您的身份
 doc_auth.headings.mailing_address: 输入你的邮寄地址
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
@@ -681,7 +680,6 @@ doc_auth.info.interstitial_thanks: 感谢你的耐心！
 doc_auth.info.keep_window_open: 请勿关闭此窗口。
 doc_auth.info.learn_more: 对于我们如何保护你的敏感信息获得更多了解
 doc_auth.info.lets_go: 身份验证包括两部分：
-doc_auth.info.lets_go_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.link_sent: 请查看你的手机并按照说明拍一张你身份证件的照片。
 doc_auth.info.link_sent_complete_no_polling: 照好以后，在这里点击“继续”，完成验证身份。
 doc_auth.info.link_sent_complete_polling: 你在手机上验证身份后，下一步将会自动加载。
