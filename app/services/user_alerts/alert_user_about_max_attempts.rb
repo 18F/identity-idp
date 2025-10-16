@@ -15,6 +15,8 @@ module UserAlerts
         UserMailer.with(user:, email_address:)
           .new_device_sign_in_before_2fa(events:, disavowal_token:).deliver_now_or_later
       end
+
+      user.update(sign_in_new_device_at: nil)
     end
   end
 end
