@@ -31,7 +31,7 @@ RSpec.describe 'users/passwords/edit.html.erb' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'contains minimum password length requirements' do
+  it 'contains minimum password length requirements and warnings' do
     render
 
     expect(rendered).to have_content strip_tags(
@@ -40,6 +40,8 @@ RSpec.describe 'users/passwords/edit.html.erb' do
         min_length: Devise.password_length.min,
       ),
     )
+    expect(rendered).to have_content strip_tags(t('users.edit_info.link'))
+    expect(rendered).to have_content strip_tags(t('users.edit_info.warning'))
   end
 
   it 'has aria described by' do

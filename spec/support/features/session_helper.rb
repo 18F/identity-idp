@@ -612,7 +612,10 @@ module Features
     end
 
     def click_reset_password_link_from_email
-      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      expect(last_email.subject).to eq t(
+        'user_mailer.reset_password_instructions.subject',
+        app_name: APP_NAME,
+      )
       expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
         t(
