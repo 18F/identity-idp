@@ -164,10 +164,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       # Test the processed data
       expect(data_column[0]).to eq('Value') # Values
       expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
-      expect(data_column[2]).to eq(95 + 53) # IAL2 Auths - partner_ial2_unique_user_events_year12345
-      expect(data_column[3]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
-      expect(data_column[4]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345
-      expect(data_column[5]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
+      expect(data_column[2]).to eq(95 + 53) # Credentials authorized for partner (upfront + existing + years 2-5)
+      expect(data_column[3]).to eq(95)      # New IAL Year 1 - partner_new_unique_year1_upfront
+      expect(data_column[4]).to eq(53)      # Existing credentials authorized - partner_new_unique_year1_existing + years 2-5
+      expect(data_column[5]).to eq(20769)
     end
   end
 
