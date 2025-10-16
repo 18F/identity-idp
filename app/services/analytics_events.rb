@@ -5121,6 +5121,27 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] issuer the ServiceProvider.issuer
+  # @param [String,nil] idv_level ID verification level of verified profile.
+  # @param [String] verified_at The timestamp whenthe profile was verified
+  # @param [String] activated_at The timestamp whenthe profile was activated
+  def idv_profile_activated(
+    idv_level:,
+    verified_at:,
+    activated_at:,
+    issuer: nil,
+    **extra
+  )
+    track_event(
+      :idv_profile_activated,
+      issuer:,
+      idv_level:,
+      verified_at:,
+      activated_at:,
+      **extra,
+    )
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
