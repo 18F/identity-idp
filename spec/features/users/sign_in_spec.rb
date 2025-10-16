@@ -1035,6 +1035,16 @@ RSpec.feature 'Sign in' do
     end
   end
 
+  context 'user is suspended' do 
+    it 'allows the user to sign in and shows the suspended page' do
+      user = create(:user, :suspended, :with_phone)
+      visit new_user_session_path
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(page).to have_current_path user_please_call_path
+    end
+  end
+
   context 'when piv/cac is required' do
     before do
       visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac

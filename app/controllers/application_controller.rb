@@ -565,7 +565,6 @@ class ApplicationController < ActionController::Base
     return unless current_user.suspended?
     return if request.path == user_please_call_path
 
-    sign_out
     redirect_to user_please_call_url
   end
 end
