@@ -271,8 +271,6 @@ RSpec.feature 'idv phone step', :js do
             'Content-Type': 'application/json',
           },
         )
-
-      # reload_ab_tests
     end
 
     context 'after submitting valid information' do

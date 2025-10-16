@@ -38,18 +38,18 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
   end
 
   describe '#successful?' do
-    it 'is successful' do
+    it 'returns true' do
       expect(subject.successful?).to eq(true)
     end
 
-    context 'phonerisk is high' do
+    context 'phonerisk is above threshold' do
       let(:phonerisk_low) { false }
-      it 'is not successful' do
+      it 'returns false' do
         expect(subject.successful?).to eq(false)
       end
     end
 
-    context 'name phone correlation is low' do
+    context 'name phone correlation is below threshold' do
       let(:name_phone_high) { false }
       it 'is not successful' do
         expect(subject.successful?).to eq(false)
@@ -95,7 +95,7 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
       end
     end
 
-    context 'no name_phone_correla section on response' do
+    context 'no name_phone_correlation section on response' do
       let(:response_body) do
         {
           customerProfile: {
