@@ -176,7 +176,7 @@ module Reports
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
                ial2_new_unique_all(invoice_report), # Credentials Authorized
-               invoice_report['partner_new_unique_year1_upfront'].to_i, # New identity verification credentials authorized
+               invoice_report['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
                ial2_new_unique_year_2_to_5(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
@@ -196,7 +196,7 @@ module Reports
 
     def ial2_new_unique_year_2_to_5(row)
       %w[
-        partner_new_unique_year_1_existing
+        partner_ial2_new_unique_user_events_year1_existing
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
