@@ -121,7 +121,6 @@ class Profile < ApplicationRecord
       update!(attrs)
     end
 
-    reload
     user.analytics.idv_profile_activated(
       idv_level:,
       issuer: initiating_service_provider&.issuer,
