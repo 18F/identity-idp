@@ -11,7 +11,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
 
   let(:user_uuid) { user.uuid }
 
-  let(:user_email) { user.email }
+  let(:user_email) { user.last_sign_in_email_address.email }
 
   let(:document_capture_session) do
     create(:document_capture_session, user:).tap do |dcs|
@@ -57,7 +57,6 @@ RSpec.describe SocureShadowModePhoneRiskJob do
         document_capture_session_result_id:,
         encrypted_arguments:,
         service_provider_issuer: nil,
-        user_email:,
         user_uuid:,
       )
     end
@@ -373,7 +372,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
 
       expect(job.proofer(user:).config.to_h).to eql(
         user_uuid: user.uuid,
-        user_email: user.last_sign_in_email_address.email,
+        user_email:,
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,

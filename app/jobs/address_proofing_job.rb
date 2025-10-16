@@ -47,7 +47,6 @@ class AddressProofingJob < ApplicationJob
         document_capture_session_result_id: result_id,
         encrypted_arguments:,
         service_provider_issuer: issuer,
-        user_email: user.last_sign_in_email_address.email,
         user_uuid: user.uuid,
       )
     end

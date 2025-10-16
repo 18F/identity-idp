@@ -16,7 +16,6 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
     document_capture_session_result_id:,
     encrypted_arguments:,
     service_provider_issuer:,
-    user_email:,
     user_uuid:
   )
     raise_stale_job! if stale_job?(enqueued_at)
@@ -35,6 +34,7 @@ class SocureShadowModePhoneRiskJob < ApplicationJob
       return
     end
 
+    user_email = user.last_sign_in_email_address.email
     applicant = build_applicant(encrypted_arguments:, user_email:)
 
     socure_result = proofer(user:).proof(applicant)
