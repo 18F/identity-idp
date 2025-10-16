@@ -212,6 +212,7 @@ module Reports
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year5] || 0,
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
                 issuer_profile_age_results[:partner_ial2_unique_user_events_unknown] || 0,
+                # New unique user events by profile age buckets
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1_upfront] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1_existing] || 0, # rubocop:disable Layout/LineLength
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1] || 0,
