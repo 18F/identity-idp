@@ -204,11 +204,11 @@ module Reports
 
     def ial2_new_unique_year_1_to_5(row)
       %w[
-      partner_new_unique_year_1_existing
-      partner_new_unique_year_2_existing      
-      partner_new_unique_year_3_existing
-      partner_new_unique_year_4_existing
-      partner_new_unique_year_5_existing
+        partner_new_unique_year_1_existing
+        partner_new_unique_year_2_existing
+        partner_new_unique_year_3_existing
+        partner_new_unique_year_4_existing
+        partner_new_unique_year_5_existing
       ].sum { |key| row[key].to_i }
     end
 
