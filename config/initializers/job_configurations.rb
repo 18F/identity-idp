@@ -11,7 +11,6 @@ cron_every_monday_4am = 'every Monday at 4:00 UTC' # equivalent to '0 4 * * 1'
 cron_every_monday_5am = 'every Monday at 5:00 UTC' # equivalent to '0 5 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
 cron_monthly_5am = '0 5 1 * *' # monthly, 5 AM UTC to not overlap with jobs running at 0000
-cron_quarterly = '0 2 1 1,4,7,10  *' # quarterly at 2am UTC on the first of Jan, Apr, Jul, Oct
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
 
 if defined?(Rails::Console)
@@ -194,7 +193,7 @@ else
       irs_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
 
       # Send Duplicate SSN report to S3
@@ -245,7 +244,7 @@ else
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send previous week's authentication reports to irs
+      # Send previous week's IrsRegistrationFunnelReport reports to irs
       irs_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
@@ -263,12 +262,20 @@ else
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Send irs fraud metrics to Team Data
+
+      # Send irs fraud metrics to Team Data - Daily (For internal review only)
+      # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
       },
+
       # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
@@ -291,14 +298,27 @@ else
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_monthly_5am,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
       },
-      # Send irs quarterly metrics to Team Data
+
+      # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
+      # And, quarterly on 1st date (For IRS and Internal)
       irs_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
-        cron: cron_quarterly,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        cron: cron_monthly,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :quarterly,
+          )
+        },
       },
+
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
@@ -317,9 +337,22 @@ else
         cron: cron_every_monday_4am,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
-      # Previous months's irs credentials report
-      monthly_irs_cred_metrics_report: {
+
+      # Previous months's irs credentials report to Team Data - Daily (For internal review only)
+      # And, monthly on 1st date (For IRS and Internal)
+      irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+      # Identity Verification Outcomes Rate Report
+      identity_verification_outcomes_report: {
+        class: 'Reports::IdentityVerificationOutcomesReport',
         cron: cron_monthly,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },

@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_fraud_metrics_lg99_report'
-
+require 'reporting/identity_verification_outcomes_report'
 module Reports
-  class IrsFraudMetricsReport < BaseReport
-    REPORT_NAME = 'irs-fraud-metrics-report'
+  class IdentityVerificationOutcomesReport < BaseReport
+    REPORT_NAME = 'identity-verification-outcomes-report'
 
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date
 
-    def initialize(report_date = nil, report_receiver = :internal, *args, **rest)
+    def initialize(report_date = nil, *args, **rest)
       @report_date = report_date
-      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -20,7 +18,7 @@ module Reports
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - Fraud Metrics Report NOT SENT'
+        Rails.logger.warn 'No email addresses received - Registration Funnel Report NOT SENT'
         return false
       end
 
@@ -30,7 +28,7 @@ module Reports
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Fraud Metrics Report - #{report_date.to_date}",
+        subject: "Identity Verification Outcomes Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
@@ -61,29 +59,25 @@ module Reports
     end
 
     def reports
-      @reports ||= irs_fraud_metrics_lg99_report.as_emailable_reports
+      @reports ||= identity_verification_outcomes_report.as_emailable_reports
     end
 
-    def irs_fraud_metrics_lg99_report
-      @irs_fraud_metrics_lg99_report ||= Reporting::IrsFraudMetricsLg99Report.new(
+    def identity_verification_outcomes_report
+      @identity_verification_outcomes_report ||= Reporting::IdentityVerificationOutcomesReport.new(
         issuers: issuers,
         time_range: report_date.all_month,
       )
     end
 
+    # these two need to be saved in the config file application.yml.default as empty '[]'
     def issuers
-      [*IdentityConfig.store.irs_fraud_metrics_issuers]
+      [*IdentityConfig.store.identity_verification_outcomes_report_issuers]
     end
 
     def emails
-      internal_emails = [*IdentityConfig.store.irs_fraud_metrics_emails]
-      irs_emails = [] # Need to add IRS email config
-
-      case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
-      end
+      [*IdentityConfig.store.identity_verification_outcomes_report_emails]
     end
+    # -------------------------------------------------------------------
 
     def upload_to_s3(report_body, report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)

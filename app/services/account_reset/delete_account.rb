@@ -41,7 +41,7 @@ module AccountReset
 
     def handle_successful_submission
       notify_user_via_email_of_deletion
-      measure_one_account_self_service_if_applicable
+      process_one_account_self_service_if_applicable
       send_push_notifications
       destroy_user
     end
@@ -80,10 +80,11 @@ module AccountReset
       }
     end
 
-    def measure_one_account_self_service_if_applicable
+    def process_one_account_self_service_if_applicable
       return unless user&.active_profile&.facial_match?
+      user_profile_id = user.active_profile.id
       sets = DuplicateProfileSet
-        .duplicate_profile_set_for_profile(profile_id: user.active_profile.id)
+        .duplicate_profile_sets_for_profile(profile_id: user_profile_id)
       return if sets.blank?
 
       sets.each do |set|
