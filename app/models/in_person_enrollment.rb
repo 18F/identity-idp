@@ -190,6 +190,14 @@ class InPersonEnrollment < ApplicationRecord
     end
   end
 
+  def legacy_enrollment_validity
+    if status != 'establishing'
+      IdentityConfig.store.in_person_enrollment_validity_in_days_legacy.days
+    else
+      IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    end
+  end
+
   def on_notification_sent_at_updated
     change_will_be_saved = notification_sent_at_change_to_be_saved&.last.present?
     if change_will_be_saved && notification_phone_configuration.present?
