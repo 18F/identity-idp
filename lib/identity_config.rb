@@ -216,6 +216,7 @@ module IdentityConfig
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:identity_verification_outcomes_report_emails, type: :json)
     config.add(:identity_verification_outcomes_report_issuers, type: :json)
+    config.add(:idv_aamva_at_doc_auth_enabled, type: :boolean)
     config.add(:idv_account_verified_email_campaign_id, type: :string)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_enabled, type: :boolean)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_percent, type: :integer)

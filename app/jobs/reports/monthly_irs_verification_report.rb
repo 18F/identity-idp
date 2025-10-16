@@ -7,10 +7,11 @@ module Reports
   class MonthlyIrsVerificationReport < BaseReport
     REPORT_NAME = 'monthly-irs-verification-report'
 
-    attr_reader :report_date
+    attr_reader :report_date, :report_receiver
 
-    def initialize(report_date = nil, *args, **rest)
+    def initialize(report_date = nil, report_receiver = :internal, *args, **rest)
       @report_date = report_date
+      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -67,7 +68,13 @@ module Reports
     end
 
     def emails
-      [*IdentityConfig.store.irs_verification_report_config]
+      internal_emails = [*IdentityConfig.store.irs_verification_report_config]
+      irs_emails = [] # Need to add IRS email config
+
+      case report_receiver
+      when :internal then internal_emails
+      when :both then (internal_emails + irs_emails)
+      end
     end
 
     def upload_to_s3(report_body, report_name: nil)
