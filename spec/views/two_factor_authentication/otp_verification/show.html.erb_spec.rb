@@ -76,7 +76,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
           'instructions.mfa.do_not_share_code_message_html',
           app_name: APP_NAME,
           link_html: new_tab_link_to(
-            t('instructions.mfa.do_not_share_code_link_html'),
+            t('instructions.mfa.do_not_share_code_link_text'),
             MarketingSite.help_center_article_url(
               category: 'fraud-concerns',
               article: 'overview',

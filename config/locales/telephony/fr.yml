@@ -17,6 +17,7 @@ fr:
       sms: "%{app_name} : Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce n'est pas vous ? Signalez-le immédiatement : %{contact_number}. Réf. : %{reference_string}"
     confirmation_otp:
       sms: |-
+        # 167 characters instead of 160
         %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le communiquez à personne. Votre code est le %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}

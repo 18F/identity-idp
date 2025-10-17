@@ -1449,7 +1449,7 @@ instructions.forgot_password.close_window: You can close this browser window onc
 instructions.go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
 instructions.mfa.authenticator.confirm_code_html: Enter the code from your authenticator app. If you have several accounts set up in your app, enter the code corresponding to %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: Or enter this code manually into your authentication app
-instructions.mfa.do_not_share_code_link_html: Learn how to identify fraud and report it.
+instructions.mfa.do_not_share_code_link_text: Learn how to identify fraud and report it.
 instructions.mfa.do_not_share_code_message_html: '<strong>Do not share this code.</strong> %{app_name} will never call, text, or email you asking for it. %{link_html}'
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
