@@ -6609,11 +6609,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a duplicate profile object is updated
-  def one_account_duplicate_profile_updated
-    track_event(:one_account_duplicate_profile_updated)
-  end
-
   # Tracks when a duplicate profile set is reopened for profiles
   # @param [Integer] duplicate_profile_set_id The ID of the duplicate profile set reopened
   def one_account_duplicate_profile_reopened(duplicate_profile_set_id:, **extra)
@@ -6622,6 +6617,11 @@ module AnalyticsEvents
       duplicate_profile_set_id: duplicate_profile_set_id,
       **extra,
     )
+  end
+
+  # Tracks when a duplicate profile object is updated
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
   end
 
   # Tracks when user with duplicate profiles lands on page asking them to call the contact center
