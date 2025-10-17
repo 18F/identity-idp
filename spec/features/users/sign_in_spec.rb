@@ -33,7 +33,7 @@ RSpec.feature 'Sign in' do
       .to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
-  scenario 'user is suspended, gets show please call page after 2fa' do
+  scenario 'user is suspended before 2fa' do
     user = create(:user, :fully_registered, :suspended)
     service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
     IdentityLinker.new(user, service_provider).link_identity(
@@ -42,8 +42,6 @@ RSpec.feature 'Sign in' do
 
     visit_idp_from_sp_with_ial1(:oidc)
     fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
 
     expect(page).to have_current_path(user_please_call_path)
   end
@@ -1032,16 +1030,6 @@ RSpec.feature 'Sign in' do
           expect(user.password_compromised_checked_at).to be_falsey
         end
       end
-    end
-  end
-
-  context 'user is suspended' do 
-    it 'allows the user to sign in and shows the suspended page' do
-      user = create(:user, :suspended, :with_phone)
-      visit new_user_session_path
-      fill_in_credentials_and_submit(user.email, user.password)
-
-      expect(page).to have_current_path user_please_call_path
     end
   end
 
