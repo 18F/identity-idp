@@ -71,12 +71,8 @@ class DuplicateProfileChecker
   end
 
   def update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
-    # Reopen the set if it was closed but neew duplicate profiles are found
     if existing_duplicate_profile_set.closed_at.present?
-      existing_duplicate_profile_set.update!(closed_at: nil, self_serviced: false)
-      analytics.one_account_duplicate_profile_reopened(
-        duplicate_profile_set_id: existing_duplicate_profile_set.id,
-      )
+      reopen_existing_duplicate_set(existing_duplicate_profile_set)
     end
 
     if existing_duplicate_profile_set.profile_ids.sort != new_profile_ids.sort
@@ -84,6 +80,14 @@ class DuplicateProfileChecker
       analytics.one_account_duplicate_profile_updated
     end
     existing_duplicate_profile_set if existing_duplicate_profile_set.open?
+  end
+
+
+  def reopen_existing_duplicate_set(existing_duplicate_profile_set)
+    existing_duplicate_profile_set.update!(closed_at: nil, self_serviced: false)
+    analytics.one_account_duplicate_profile_reopened(
+      duplicate_profile_set_id: existing_duplicate_profile_set.id,
+    )
   end
 
   def create_duplicate_profile_set(profile_ids)
