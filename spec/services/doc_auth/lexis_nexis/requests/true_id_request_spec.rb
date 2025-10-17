@@ -62,12 +62,14 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
         request_json = JSON.parse(request.body, symbolize_names: true)
         expect(request_json[:Document][:Back].present?).to eq(back_image_required)
         expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
         request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
       request_stub = stub_request(:post, full_url).with do |request|
         request_json = JSON.parse(request.body, symbolize_names: true)
         expect(request_json[:Document][:Back].present?).to eq(back_image_required)
         expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
         !request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
 
@@ -90,6 +92,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
           request_json = JSON.parse(request.body, symbolize_names: true)
           expect(request_json[:Document][:Back].present?).to eq(back_image_required)
           expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
           request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
@@ -99,6 +102,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
           request_json = JSON.parse(request.body, symbolize_names: true)
           expect(request_json[:Document][:Back].present?).to eq(back_image_required)
           expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
           !request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
@@ -193,6 +197,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
           request_json = JSON.parse(request.body, symbolize_names: true)
           expect(request_json[:Document][:Back].present?).to eq(back_image_required)
           expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
           !request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
@@ -222,6 +227,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
           request_json = JSON.parse(request.body, symbolize_names: true)
           expect(request_json[:Document][:Back].present?).to eq(back_image_required)
           expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(images_cropped ? 0 : 3)
           !request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
