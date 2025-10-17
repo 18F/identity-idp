@@ -97,17 +97,6 @@ class DuplicateProfileChecker
     )
     analytics.one_account_duplicate_profile_created
     set
-  rescue ActiveRecord::RecordNotUnique => e
-    Rails.logger.error do
-      "Duplicate Profile Set Duplicate found already, may be closed #{e.message}"
-    end
-
-    analytics.one_account_duplicate_profile_creation_failed(
-      service_provider: sp&.issuer,
-      profile_ids: profile_ids,
-      error_message: e.message,
-    )
-    nil
   end
 
   def user_has_ial2_profile?
