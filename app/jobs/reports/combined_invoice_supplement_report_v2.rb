@@ -123,6 +123,8 @@ module Reports
           'issuer_ial2_unique_user_events_year5',
           'issuer_ial2_unique_user_events_year_greater_than_5',
           'issuer_ial2_unique_user_events_unknown',
+          'issuer_ial2_new_unique_user_events_year1_upfront',
+          'issuer_ial2_new_unique_user_events_year1_existing',
           'issuer_ial2_new_unique_user_events_year1',
           'issuer_ial2_new_unique_user_events_year2',
           'issuer_ial2_new_unique_user_events_year3',
@@ -210,6 +212,8 @@ module Reports
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year5] || 0,
                 issuer_profile_age_results[:partner_ial2_unique_user_events_year_greater_than_5] || 0, # rubocop:disable Layout/LineLength
                 issuer_profile_age_results[:partner_ial2_unique_user_events_unknown] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1_upfront] || 0,
+                issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1_existing] || 0, # rubocop:disable Layout/LineLength
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year1] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year2] || 0,
                 issuer_profile_age_results[:partner_ial2_new_unique_user_events_year3] || 0,
