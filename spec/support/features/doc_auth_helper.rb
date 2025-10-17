@@ -102,10 +102,6 @@ module DocAuthHelper
     complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     unless page.mode == :headless_chrome_mobile
-      if IdentityConfig.store.in_person_proofing_opt_in_enabled
-        click_on t('forms.buttons.continue_online')
-      end
-
       expect_page_to_have_no_accessibility_violations(page) if expect_accessible
       complete_hybrid_handoff_step
     end

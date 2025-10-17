@@ -100,3 +100,13 @@ saml_*.key
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

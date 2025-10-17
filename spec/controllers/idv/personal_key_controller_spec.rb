@@ -570,9 +570,10 @@ RSpec.describe Idv::PersonalKeyController do
       end
 
       context 'profile is in fraud_review' do
+        let(:mint_profile_from_idv_session) { false }
+        let!(:profile) { create(:profile, :fraud_review_pending, user: user) }
         before do
-          idv_session.profile.fraud_pending_reason = 'threatmetrix_review'
-          idv_session.profile.deactivate_for_fraud_review
+          idv_session.profile_id = profile.id
         end
 
         it 'redirects to idv please call path' do

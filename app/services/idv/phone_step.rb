@@ -164,7 +164,6 @@ module Idv
         document_capture_session,
         trace_id: trace_id,
         issuer: idv_session.service_provider&.issuer,
-        user_id: idv_session.current_user.id,
       )
     end
 

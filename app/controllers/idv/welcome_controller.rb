@@ -19,6 +19,7 @@ module Idv
 
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
+        show_sp_reproof_banner: show_sp_reproof_banner?,
       )
     end
 
@@ -47,6 +48,12 @@ module Idv
     end
 
     private
+
+    def show_sp_reproof_banner?
+      IdentityConfig.store.feature_show_sp_reproof_banner_enabled &&
+        sp_session[:issuer].present? &&
+        current_user.has_proofed_before?
+    end
 
     def clear_idv_session
       mail_only_warning_shown = idv_session.mail_only_warning_shown

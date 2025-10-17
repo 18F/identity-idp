@@ -17,7 +17,7 @@ class DuplicateProfileSet < ApplicationRecord
       .first
   end
 
-  def self.duplicate_profile_set_for_profile(profile_id:)
+  def self.duplicate_profile_sets_for_profile(profile_id:)
     open
       .where('? = ANY(profile_ids)', profile_id)
   end
