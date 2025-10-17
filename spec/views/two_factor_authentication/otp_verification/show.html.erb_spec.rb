@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
+  include LinkHelper
+
   let(:presenter_data) do
     {
       otp_delivery_preference: 'sms',
@@ -62,6 +64,24 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
           'instructions.mfa.sms.number_message_html',
           number_html: content_tag(:strong, presenter_data[:phone_number]),
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        ),
+      )
+    end
+
+    it 'informs the user to not share their OTP code' do
+      render
+
+      expect(rendered).to include(
+        t(
+          'instructions.mfa.do_not_share_code_message_html',
+          app_name: APP_NAME,
+          link_html: new_tab_link_to(
+            t('instructions.mfa.do_not_share_code_link_text'),
+            MarketingSite.help_center_article_url(
+              category: 'fraud-concerns',
+              article: 'overview',
+            ),
+          ),
         ),
       )
     end
