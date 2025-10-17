@@ -4962,21 +4962,25 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] customer_user_id user uuid sent to socure
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
-    errors:,
     vendor:,
     area_code:,
     country_code:,
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    reason_codes: nil,
+    customer_user_id: nil,
     **extra
   )
     track_event(
@@ -4994,6 +4998,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      reason_codes:,
+      customer_user_id:,
       **extra,
     )
   end
@@ -5589,6 +5595,31 @@ module AnalyticsEvents
       deactivated_reason_codes:,
       **extra,
     )
+  end
+
+  # Logs a Socure Phone Risk result alongside a address proofing result for later comparison.
+  # @param [Hash] socure_result Result from Socure PhoneRisk API call
+  # @param [Hash] phone_result Result from address proofing
+  # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
+  def idv_socure_shadow_mode_phonerisk_result(
+    socure_result:,
+    phone_result:,
+    phone_source:,
+    **extra
+  )
+    track_event(
+      :idv_socure_shadow_mode_phonerisk_result,
+      phone_result: phone_result.to_h,
+      phone_source:,
+      socure_result: socure_result.to_h,
+      **extra,
+    )
+  end
+
+  # Indicates that no result was found when SocureShadowModePhoneRiskJob
+  # attempted to look for one.
+  def idv_socure_shadow_mode_phonerisk_result_missing(**extra)
+    track_event(:idv_socure_shadow_mode_phonerisk_result_missing, **extra)
   end
 
   # @param [Boolean] success Whether form validation was successful

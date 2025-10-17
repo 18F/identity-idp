@@ -198,6 +198,10 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_acuant_sdk_version_alternate: '11.9.3'
 idv_acuant_sdk_version_default: '11.9.3.508'
+idv_address_default_vendor: mock
+idv_address_vendor_lexis_nexis_percent: 0
+idv_address_vendor_socure_percent: 0
+idv_address_vendor_switching_enabled: false
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
@@ -211,6 +215,9 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_phonerisk_name_correlation_score_threshold: 1.0
+idv_socure_phonerisk_score_threshold: 0
+idv_socure_phonerisk_shadow_mode: false
 idv_socure_reason_code_download_enabled: false
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
@@ -541,6 +548,8 @@ development:
   identity_pki_local_dev: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
@@ -628,6 +637,8 @@ test:
   identity_pki_disabled: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
