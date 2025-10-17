@@ -46,31 +46,12 @@ module Idv
 
     def build_address_form
       Idv::AddressForm.new(
-        idv_session.updated_user_address || address_from_document || null_address,
+        idv_session.updated_user_address || address_from_document,
       )
     end
 
     def address_from_document
-      return if idv_session.pii_from_doc.document_type_received == 'passport'
-      return if idv_session.pii_from_doc.id_doc_type == 'passport'
-
-      Pii::Address.new(
-        address1: idv_session.pii_from_doc.address1,
-        address2: idv_session.pii_from_doc.address2,
-        city: idv_session.pii_from_doc.city,
-        state: idv_session.pii_from_doc.state,
-        zipcode: idv_session.pii_from_doc.zipcode,
-      )
-    end
-
-    def null_address
-      Pii::Address.new(
-        address1: nil,
-        address2: nil,
-        city: nil,
-        state: nil,
-        zipcode: nil,
-      )
+      idv_session.pii_from_doc.to_pii_address
     end
 
     def success
@@ -102,6 +83,16 @@ module Idv
         state: @address_form.state,
         zip: @address_form.zipcode,
         failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
+      fraud_ops_tracker.idv_address_submitted(
+        success: form_result.success?,
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        address_edited: address_edited?,
+        city: @address_form.city,
+        state: @address_form.state,
+        zip: @address_form.zipcode,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(form_result),
       )
     end
 

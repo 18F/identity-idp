@@ -82,12 +82,13 @@ class SocureDocvResultsJob < ApplicationJob
       )
       record_attempt(
         docv_result_response:,
+        passport_book: true,
         failure_reason: attempts_api_tracker.parse_failure_reason(mrz_response),
       )
       return
     end
 
-    record_attempt(docv_result_response:, success: true)
+    record_attempt(docv_result_response:, success: true, passport_book: mrz_response.present?)
     document_capture_session.store_result_from_response(
       docv_result_response, mrz_response:, attempt: submit_attempts
     )
@@ -98,6 +99,7 @@ class SocureDocvResultsJob < ApplicationJob
   def record_attempt(
     docv_result_response:,
     failure_reason: nil,
+    passport_book: false,
     success: false
   )
     image_data = {}
@@ -108,14 +110,17 @@ class SocureDocvResultsJob < ApplicationJob
       job_data = {
         document_capture_session_uuid:,
         reference_id: docv_result_response.to_h[:reference_id],
-        image_storage_data: image_storage_data(ial2: docv_result_response.liveness_enabled),
+        image_storage_data: image_storage_data(
+          ial2: docv_result_response.liveness_enabled,
+          passport_book:,
+        ),
       }
 
       image_data = job_data[:image_storage_data].values.reduce(:merge)
       if IdentityConfig.store.ruby_workers_idv_enabled
-        SocureImageRetrievalJob.perform_later(**job_data)
+        SocureImageRetrievalJob.perform_later(**job_data, passport_book:)
       else
-        SocureImageRetrievalJob.perform_now(**job_data)
+        SocureImageRetrievalJob.perform_now(**job_data, passport_book:)
       end
     end
 
@@ -138,10 +143,28 @@ class SocureDocvResultsJob < ApplicationJob
       zip: pii_from_doc[:zipcode],
       failure_reason:,
     )
+
+    fraud_ops_tracker.idv_document_upload_submitted(
+      **image_data,
+      success:,
+      document_state: pii_from_doc[:state],
+      document_number: pii_from_doc[:state_id_number] || pii_from_doc[:document_number],
+      document_issued: pii_from_doc[:state_id_issued] || pii_from_doc[:passport_issued],
+      document_expiration: pii_from_doc[:state_id_expiration] || pii_from_doc[:passport_expiration],
+      first_name: pii_from_doc[:first_name],
+      last_name: pii_from_doc[:last_name],
+      date_of_birth: pii_from_doc[:dob],
+      address1: pii_from_doc[:address1],
+      address2: pii_from_doc[:address2],
+      city: pii_from_doc[:city],
+      state: pii_from_doc[:state],
+      zip: pii_from_doc[:zipcode],
+      failure_reason:,
+    )
   end
 
-  def image_storage_data(ial2:)
-    keys = [:front, :back]
+  def image_storage_data(ial2:, passport_book:)
+    keys = passport_book ? [:passport] : [:front, :back]
     keys.push(:selfie) if ial2
 
     keys.index_with do |key|
@@ -170,6 +193,15 @@ class SocureDocvResultsJob < ApplicationJob
       cookie_device_uuid: nil,
       sp_redirect_uri: nil,
       enabled_for_session: sp&.attempts_api_enabled?,
+    )
+  end
+
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      request: nil,
+      user: document_capture_session.user,
+      sp:,
+      cookie_device_uuid: nil,
     )
   end
 

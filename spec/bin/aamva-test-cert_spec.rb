@@ -16,7 +16,7 @@ RSpec.describe AamvaTestCert do
 
   describe '#run' do
     subject(:run) { instance.run(out: out, argv: argv) }
-    let(:out) { StringIO.new('') }
+    let(:out) { StringIO.new(+'') }
     let(:argv) { [] }
 
     context 'missing arguments' do

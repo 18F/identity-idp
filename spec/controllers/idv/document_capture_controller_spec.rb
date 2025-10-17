@@ -24,6 +24,7 @@ RSpec.describe Idv::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
+      passport_status: 'not_requested',
     )
   end
 
@@ -77,16 +78,166 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
     end
 
+    context 'when user tries to skip ahead without completing choose_id_type' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          passport_status: nil,
+        )
+      end
+
+      it 'redirects to choose_id_type' do
+        get :show
+        expect(response).to redirect_to(idv_choose_id_type_path)
+      end
+
+      context 'when document_capture_session_uuid is missing' do
+        let(:document_capture_session_uuid) { nil }
+
+        it 'redirects to choose_id_type' do
+          get :show
+          expect(response).to redirect_to(idv_choose_id_type_path)
+        end
+      end
+
+      context 'when document_capture_session does not exist' do
+        let(:document_capture_session_uuid) { 'non-existent-uuid' }
+
+        it 'redirects to choose_id_type' do
+          get :show
+          expect(response).to redirect_to(idv_choose_id_type_path)
+        end
+      end
+    end
+
+    context 'when user has completed choose_id_type' do
+      context 'with passport requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: 'requested',
+          )
+        end
+
+        it 'allows access to document capture' do
+          subject.idv_session.skip_hybrid_handoff = true
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'with state ID requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: 'not_requested',
+          )
+        end
+
+        it 'allows access to document capture' do
+          subject.idv_session.skip_hybrid_handoff = true
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'when user bypasses choose_id_type via allowed flows' do
+      context 'with skip_doc_auth_from_handoff' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: nil,
+          )
+        end
+
+        before do
+          subject.idv_session.skip_doc_auth_from_handoff = true
+          subject.idv_session.skip_hybrid_handoff = true
+        end
+
+        it 'allows access without choose_id_type completion' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+
+      context 'with skip_hybrid_handoff' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            passport_status: nil,
+          )
+        end
+
+        before do
+          subject.idv_session.skip_hybrid_handoff = true
+          subject.idv_session.skip_doc_auth_from_handoff = true
+        end
+
+        it 'allows access without choose_id_type completion' do
+          get :show
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    context 'mobile flow scenario - user tries to skip choose_id_type' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          passport_status: nil, # This simulates not having completed choose_id_type
+        )
+      end
+
+      before do
+        # Simulate mobile flow - no special bypass flags set
+        subject.idv_session.skip_doc_auth_from_handoff = nil
+        subject.idv_session.skip_hybrid_handoff = nil
+        subject.idv_session.skip_doc_auth_from_how_to_verify = nil
+      end
+
+      it 'redirects to choose_id_type when user manually navigates to document_capture' do
+        get :show
+        expect(response).to redirect_to(idv_choose_id_type_path)
+      end
+
+      it 'prevents access when document_capture_session has no passport_status set' do
+        expect(
+          Idv::DocumentCaptureController.ensure_choose_id_type_completed(
+            idv_session: subject.idv_session,
+            user: user,
+          ),
+        ).to be_falsey
+      end
+    end
+
     context 'when selfie feature is enabled system wide' do
       describe 'with sp selfie disabled' do
         let(:facial_match_required) { false }
 
         it 'does not satisfy precondition' do
           expect(Idv::DocumentCaptureController.step_info.preconditions.is_a?(Proc))
-          expect(subject).to receive(:render)
-            .with(:show, locals: an_instance_of(Hash)).and_call_original
           get :show
-          expect(response).to render_template :show
+          expect(response).to redirect_to(idv_choose_id_type_path)
         end
       end
 
@@ -142,11 +293,13 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     it 'has non-nil presenter' do
+      subject.idv_session.skip_hybrid_handoff = true
       get :show
       expect(assigns(:presenter)).to be_kind_of(Idv::InPerson::UspsFormPresenter)
     end
 
     it 'renders the show template' do
+      subject.idv_session.skip_hybrid_handoff = true
       expect(subject).to receive(:render).with(
         :show,
         locals: hash_including(
@@ -162,12 +315,17 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     it 'sends analytics_visited event' do
+      subject.idv_session.skip_hybrid_handoff = true
       get :show
 
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(
+        analytics_name,
+        analytics_args.merge(skip_hybrid_handoff: true),
+      )
     end
 
     it 'updates DocAuthLog document_capture_view_count' do
+      subject.idv_session.skip_hybrid_handoff = true
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :show }.to(
@@ -179,6 +337,7 @@ RSpec.describe Idv::DocumentCaptureController do
       let(:idv_vendor) { Idp::Constants::Vendors::SOCURE }
 
       it 'redirects to the Socure controller' do
+        subject.idv_session.skip_hybrid_handoff = true
         get :show
 
         expect(response).to redirect_to idv_socure_document_capture_url
@@ -191,6 +350,7 @@ RSpec.describe Idv::DocumentCaptureController do
         end
 
         it 'redirects to the Socure controller' do
+          subject.idv_session.skip_hybrid_handoff = true
           get :show
 
           expect(response).to render_template :show
@@ -253,12 +413,16 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'redo_document_capture' do
       it 'adds redo_document_capture to analytics' do
+        subject.idv_session.skip_hybrid_handoff = true
         subject.idv_session.redo_document_capture = true
 
         get :show
 
         analytics_args[:redo_document_capture] = true
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        expect(@analytics).to have_logged_event(
+          analytics_name,
+          analytics_args.merge(skip_hybrid_handoff: true),
+        )
       end
     end
 
@@ -274,6 +438,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'verify info step is complete' do
       it 'renders show' do
+        subject.idv_session.skip_hybrid_handoff = true
         stub_up_to(:verify_info, idv_session: subject.idv_session)
 
         get :show
@@ -300,10 +465,10 @@ RSpec.describe Idv::DocumentCaptureController do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
       end
 
       it 'renders show when flow path is standard' do
+        subject.idv_session.skip_hybrid_handoff = true
         stub_up_to(:how_to_verify, idv_session: subject.idv_session)
 
         get :show
@@ -329,7 +494,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
       it 'renders show when accessed from handoff' do
         allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-        allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled).and_return(true)
         get :show, params: { step: 'hybrid_handoff' }
         expect(response).to render_template :show
         expect(subject.idv_session.skip_doc_auth_from_handoff).to eq(true)
@@ -370,6 +534,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'invalidates future steps' do
       it 'invalidates in person pii data' do
+        subject.idv_session.skip_hybrid_handoff = true
         stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
         expect(subject).to receive(:clear_future_steps!).and_call_original
         put :update
@@ -377,6 +542,7 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       it 'invalidates applicant' do
+        subject.idv_session.skip_hybrid_handoff = true
         subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
         expect(subject).to receive(:clear_future_steps!).and_call_original
 
@@ -387,9 +553,13 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     it 'sends analytics_submitted event' do
+      subject.idv_session.skip_hybrid_handoff = true
       put :update
 
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(
+        analytics_name,
+        analytics_args.merge(skip_hybrid_handoff: true),
+      )
     end
 
     it 'does not raise an exception when stored_result is nil' do
@@ -398,6 +568,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     it 'updates DocAuthLog document_capture_submit_count' do
+      subject.idv_session.skip_hybrid_handoff = true
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { put :update }.to(
@@ -415,6 +586,7 @@ RSpec.describe Idv::DocumentCaptureController do
         let(:performed_if_needed) { false }
 
         it 'stays on document capture' do
+          subject.idv_session.skip_hybrid_handoff = true
           put :update
           expect(subject.idv_session.doc_auth_vendor).to be_nil
           expect(response).to redirect_to idv_document_capture_url
@@ -425,6 +597,7 @@ RSpec.describe Idv::DocumentCaptureController do
         let(:performed_if_needed) { true }
 
         before do
+          subject.idv_session.skip_hybrid_handoff = true
           put :update
         end
 
@@ -441,6 +614,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'ocr confirmation pending' do
       before do
+        subject.idv_session.skip_hybrid_handoff = true
         subject.document_capture_session.ocr_confirmation_pending = true
       end
 
@@ -464,12 +638,14 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     it 'sends analytics event' do
+      subject.idv_session.skip_hybrid_handoff = true
       expect(@analytics).to receive(:track_event).with(analytics_name, analytics_args)
 
       get :direct_in_person
     end
 
     it 'redirects to document capture' do
+      subject.idv_session.skip_hybrid_handoff = true
       get :direct_in_person
 
       expect(response).to redirect_to(idv_document_capture_url(step: :idv_doc_auth))

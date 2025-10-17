@@ -174,4 +174,27 @@ describe('document-capture/components/documents-step', () => {
     expect(back).to.be.ok();
     expect(pageHeader).to.be.ok();
   });
+
+  it('renders passport heading when idType is passport', () => {
+    const { getByRole } = render(
+      <UploadContextProvider flowPath="standard" endpoint="unused" idType="passport">
+        <DocumentsStep
+          value={{}}
+          onChange={() => undefined}
+          errors={[]}
+          onError={() => undefined}
+          registerField={() => undefined}
+          unknownFieldErrors={[]}
+          toPreviousStep={() => undefined}
+        />
+      </UploadContextProvider>,
+    );
+
+    const pageHeader = getByRole('heading', {
+      name: 'doc_auth.headings.passport_capture',
+      level: 1,
+    });
+
+    expect(pageHeader).to.be.ok();
+  });
 });

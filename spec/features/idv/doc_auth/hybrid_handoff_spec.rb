@@ -213,11 +213,8 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         expect(page).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
       end
       context 'on a desktop choose ipp', js: true do
-        let(:in_person_doc_auth_button_enabled) { true }
         let(:sp_ipp_enabled) { true }
         before do
-          allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
-            .and_return(in_person_doc_auth_button_enabled)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
             .and_return(true)
           allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
@@ -239,7 +236,7 @@ RSpec.feature 'hybrid_handoff step send link and errors', :js do
         end
 
         context 'when ipp is disabled' do
-          let(:in_person_doc_auth_button_enabled) { false }
+          let(:in_person_proofing_opt_in_enabled) { false }
           let(:sp_ipp_enabled) { false }
           it 'has no ipp option can be selected' do
             expect(page).to_not have_content(

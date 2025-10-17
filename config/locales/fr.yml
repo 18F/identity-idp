@@ -587,6 +587,11 @@ doc_auth.errors.unaccepted_id_type: Nous n’acceptons pas de passeports, de car
 doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utiliser %{app_name}. Si vous avez 13 ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
 doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
+doc_auth.errors.verify_drivers_license_heading: Nous n’avons pas pu vérifier votre permis de conduire ou carte d’identité d’un État
+doc_auth.errors.verify_drivers_license_text: Assurez-vous que vous prenez des photos d’un permis de conduire ou d’une carte d’identité d’un État. Veuillez réessayer
+doc_auth.errors.verify_passport_heading: Nous n’avons pas pu vérifier votre passeport
+doc_auth.errors.verify_passport_text: Assurez-vous que vous prenez des photos d’un passeport. Veuillez réessayer
+doc_auth.errors.verify.use_another_type_of_id: ou utiliser un autre type de pièce d’identité
 doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
@@ -637,6 +642,7 @@ doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste parti
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
+doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
@@ -702,6 +708,7 @@ doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passep
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
+doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
@@ -735,8 +742,8 @@ doc_auth.tips.document_capture_selfie_text3: Gardez une expression neutre
 doc_auth.tips.document_capture_selfie_text4: Assurez-vous que l’ensemble de votre visage est visible dans le cercle vert
 duplicate_profiles_detected.accounts_list.heading: Comptes ayant les mêmes informations vérifiées
 duplicate_profiles_detected.cant_access: 'Je ne peux pas accéder à un compte'
-duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
-duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Agences connectées: </strong> %{count}'
+duplicate_profiles_detected.created_at_html: '<strong> Créé: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au compte puis supprimez-le depuis la page « Votre compte » . %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: 'Supprimer le(s) compte(s) en double'
 duplicate_profiles_detected.delete_duplicates.link: 'Comment supprimer votre compte :'
@@ -747,8 +754,8 @@ duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susce
 duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
 duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
-duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last Dernière connexion : </strong> %{timestamp_html}'
+duplicate_profiles_detected.never_logged_in: Jamais connecté à
 duplicate_profiles_detected.select_an_account.details: Conservez le compte que vous utilisez le plus. Par exemple, celui qui est connecté au plus grand nombre de services. Ainsi, vous n’aurez pas à recommencer les démarches pour vous reconnecter à des services.
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
@@ -786,6 +793,7 @@ errors.messages.already_confirmed: a déjà été confirmé, veuillez essayer de
 errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}.
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
+errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
 errors.messages.confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
 errors.messages.confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Renvoyer les instructions de confirmation » pour en obtenir un autre.
@@ -799,11 +807,15 @@ errors.messages.invalid_calling_area: Les appels vers ce numéro de téléphone 
 errors.messages.invalid_phone_number.international: Saisissez un numéro de téléphone avec le nombre correct de chiffres.
 errors.messages.invalid_phone_number.us: Saisissez un numéro de téléphone à 10 chiffres.
 errors.messages.invalid_recaptcha_token: Désolé, il est possible que votre ordinateur ou votre réseau envoie des requêtes automatiques. Pour protéger nos utilisateurs, nous ne pouvons pas traiter votre demande pour le moment.
+errors.messages.invalid_signature: SAML request contains an invalid signature
 errors.messages.invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les messages texte. Veuillez essayer l’option d’appel téléphonique.
 errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifiez que vous avez entré le bon indicatif international ou régional.
+errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
 errors.messages.missing_field: Veuillez remplir ce champ.
+errors.messages.no_auth_or_logout_request: SAML request is missing either an authnrequest or logout request. One of the two is required.
 errors.messages.no_cert_registered: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.no_pending_profile: Aucun profil en attente de vérification
+errors.messages.no_response_url: SAML request is missing Assertion Consumer Service URL or Assertion Consumer Logout Service URL
 errors.messages.not_a_number: n’est pas un chiffre
 errors.messages.otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni caractères spéciaux
 errors.messages.password_incorrect: Mot de passe incorrect
@@ -897,6 +909,8 @@ forms.backup_code.regenerate: Obtenir de nouveaux codes
 forms.backup_code.saved: J’ai placé mes codes de sauvegarde en lieu sûr.
 forms.backup_code.subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les et placez-les en lieu sûr.'
 forms.backup_code.title: Enregistrer ces codes de sauvegarde
+forms.backup_code.warning_html: '<strong>Ne partagez pas ce code.</strong> %{app_name} ne vous appellera, n’enverra de textos ou de courriels jamais pour vous le demander.'
+forms.backup_code.warning_link: Apprenez comment identifier la fraude et la signaler.
 forms.buttons.back: Retour
 forms.buttons.cancel: Oui, annuler
 forms.buttons.confirm: Confirmer
@@ -916,6 +930,7 @@ forms.buttons.upload_photos: Télécharger des photos
 forms.confirmation.show_hdr: Créer un mot de passe fort
 forms.email.buttons.delete: Supprimer l’adresse e-mail
 forms.example: 'Exemple :'
+forms.messages.public_shared_device_html: Sélectionnez cette option pour ignorer l’authentification sur les sites pris en charge. <strong>NE SÉLECTIONNEZ PAS</strong> l’option «&nbsp;Se souvenir de ce navigateur&nbsp;» si vous êtes sur un ordinateur public ou partagé.
 forms.messages.remember_device: Se souvenir de ce navigateur
 forms.password: Mot de passe
 forms.passwords.edit.buttons.submit: Modifier le mot de passe
@@ -1326,13 +1341,13 @@ in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>e
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
 in_person_proofing.form.passport.dob: Date of birth
-in_person_proofing.form.passport.dob_hint: 'Example: 4 28 1986'
+in_person_proofing.form.passport.dob_hint: 'Exemple : 4 28 1986'
 in_person_proofing.form.passport.errors.passport_number.pattern_mismatch: 'Enter a nine-character passport number'
-in_person_proofing.form.passport.expiration_date: Expiration date
-in_person_proofing.form.passport.expiration_date_hint: 'Example: 4 28 2028. Your passport book must not be expired.'
+in_person_proofing.form.passport.expiration_date: Date d’expiration
+in_person_proofing.form.passport.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.passport.first_name: First name
 in_person_proofing.form.passport.first_name_hint: Do not include your middle name if you have one listed under ‘Given names’
-in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: 'You cannot use an expired passport book'
+in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
 in_person_proofing.form.passport.passport_number: Passport number
 in_person_proofing.form.passport.passport_number_hint: 'Your passport number is 9 characters long. Refer to the top right corner of your passport book.'
 in_person_proofing.form.passport.surname: Surname
@@ -1347,6 +1362,8 @@ in_person_proofing.form.state_id.date_hint.year: 'Exemple : 1986'
 in_person_proofing.form.state_id.dob: Date de naissance
 in_person_proofing.form.state_id.dob_hint: 'Exemple : 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant les caractères de votre pièce d’identité.'
+in_person_proofing.form.state_id.expiration_date: Date d’expiration
+in_person_proofing.form.state_id.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.state_id.first_name: Prénom
 in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
@@ -1354,6 +1371,7 @@ in_person_proofing.form.state_id.last_name: Nom de famille
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Saisissez une date de naissance
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
 in_person_proofing.form.state_id.same_address_as_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
 in_person_proofing.form.state_id.same_address_as_id_no: Non, j’habite à une adresse différente
 in_person_proofing.form.state_id.same_address_as_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
@@ -1589,7 +1607,7 @@ openid_connect.user_info.errors.no_authorization: Aucune en-tête d’autorisati
 openid_connect.user_info.errors.not_found: L’autorisation pour le contenu du access_token fourni introuvable ou il peut être expiré
 pages.page_took_too_long.body: Nous vous recommandons de patienter quelques minutes, puis de réessayer. (503)
 pages.page_took_too_long.header: Le serveur a mis trop de temps à traiter votre demande.
-profiling_failed.details: Nous ne sommes pas en mesure de vous authentifier pour vous connecter. Veuillez contacter votre organisme pour accéder à ses services.
+profiling_failed.details_html: 'Appelez notre centre de contact au <strong>(844) 875-6446</strong> en fournissant le code d’erreur <strong>LG22</strong>.'
 profiling_failed.title: Nous n’avons pas pu vous connecter à votre compte
 report_mailer.deleted_accounts_report.issuers: Émetteurs
 report_mailer.deleted_accounts_report.name: Nom
@@ -2057,9 +2075,9 @@ user_mailer.please_reset_password.subject: Activité inhabituelle — réinitial
 user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} heures.
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
-user_mailer.reset_password_instructions.header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
+user_mailer.reset_password_instructions.header_html: 'Si vous avez fait cette demande, cliquez sur «&nbsp;Réinitialiser votre mot de passe&nbsp;» pour continuer.<br/><br/>Si vous n’avez pas fait cette demande, ne changez pas votre mot de passe. Signalez toute activité suspecte à notre centre d’aide.<br/><br/>Nous ne vous demanderons jamais de partager votre mot de passe, vos codes de sécurité ou d’autres informations sensibles par courriel, téléphone ou message texte.'
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
-user_mailer.reset_password_instructions.subject: Réinitialiser votre mot de passe
+user_mailer.reset_password_instructions.subject: Réinitialisation du mot de passe demandée pour votre compte %{app_name}
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: Cette adresse courriel est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
 user_mailer.signup_with_your_email.link_text: Aller sur %{app_name}
@@ -2088,6 +2106,8 @@ users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous 
 users.delete.subheading: 'Si vous supprimez votre compte :'
 users.duplicate_profiles_please_call.error_details_html: <p>Si vous ne reconnaissez pas un compte ou ne pouvez pas accéder à l’un des comptes que vous avez identifiés sur la page détaillant vos différents comptes, veuillez appeler notre centre de contact au <strong>%{contact_number}</strong> en fournissant le code d’erreur <strong>LG33</strong>.</p><p>Vous avez des questions sur les comptes en double ou la marche à suivre ? En savoir plus sur <a href="%{help_url}">la manière de résoudre les problèmes de comptes en double</a>.</p>
 users.duplicate_profiles_please_call.heading: Nous appeler
+users.edit_info.link: Apprenez à identifier la fraude et à la signaler.
+users.edit_info.warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
 users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle

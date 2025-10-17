@@ -37,11 +37,9 @@ module Idv
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
         trace_id: amzn_trace_id,
-        user_id: current_user.id,
         threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
-        proofing_components: ProofingComponents.new(idv_session:),
         proofing_vendor:,
       )
 
@@ -229,7 +227,14 @@ module Idv
         flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       end
-      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response)
+      exceptions = build_proofing_exception_list(
+        form_response.extra.dig(:proofing_results, :context, :stages),
+      )
+      analytics.idv_doc_auth_verify_proofing_results(
+        **analytics_arguments,
+        **form_response,
+        exceptions:,
+      )
       delete_async
     end
 
@@ -352,6 +357,12 @@ module Idv
         failure_reason: device_risk_failure_reason(success, threatmetrix_result),
       )
 
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+      )
+
       return if success
 
       FraudReviewRequest.create(
@@ -414,6 +425,34 @@ module Idv
         zip: pii_from_doc[:zip],
         failure_reason:,
       )
+
+      fraud_ops_tracker.idv_verification_submitted(
+        success: success,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address1: pii_from_doc[:address1],
+        address2: pii_from_doc[:address2],
+        ssn: idv_session.ssn,
+        city: pii_from_doc[:city],
+        state: pii_from_doc[:state],
+        zip: pii_from_doc[:zip],
+        failure_reason:,
+      )
+    end
+
+    def build_proofing_exception_list(stages)
+      return nil unless stages
+
+      stages.transform_values do |value|
+        if value.dig(:exception).present?
+          { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
+        end
+      end.compact.presence
     end
 
     VerificationFailures = Struct.new(

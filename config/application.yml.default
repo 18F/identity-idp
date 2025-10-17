@@ -24,7 +24,9 @@ aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_tmx_processed_percent: 0
+account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
+account_reset_max_attempts: 10
 account_reset_request_attempt_window_in_minutes: 2
 account_reset_request_max_attempts: 2
 account_reset_token_valid_for_days: 1
@@ -113,7 +115,7 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
 doc_auth_passport_selfie_vendor_default: 'mock'
-doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
 doc_auth_passport_selfie_vendor_socure_percent: 0
 doc_auth_passport_selfie_vendor_switching_enabled: false
 doc_auth_passport_vendor_default: 'mock'
@@ -168,6 +170,11 @@ event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
+feature_show_sp_reproof_banner_enabled: false
+fraud_ops_event_ttl_seconds: 604800
+fraud_ops_public_key: ''
+fraud_ops_s3_bucket: ''
+fraud_ops_tracker_enabled: false
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
@@ -184,12 +191,19 @@ hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 identity_pki_disabled: false
 identity_pki_local_dev: false
+identity_verification_outcomes_report_emails: '[]'
+identity_verification_outcomes_report_issuers: '[]'
+idv_aamva_at_doc_auth_enabled: false
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_acuant_sdk_version_alternate: '11.9.3'
 idv_acuant_sdk_version_default: '11.9.3.508'
+idv_address_default_vendor: mock
+idv_address_vendor_lexis_nexis_percent: 0
+idv_address_vendor_socure_percent: 0
+idv_address_vendor_switching_enabled: false
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
@@ -203,22 +217,21 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_phonerisk_name_correlation_score_threshold: 1.0
+idv_socure_phonerisk_score_threshold: 0
+idv_socure_phonerisk_shadow_mode: false
 idv_socure_reason_code_download_enabled: false
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
 idv_socure_reason_codes_docv_selfie_pass: '[]'
-idv_socure_shadow_mode_enabled: false
-idv_socure_shadow_mode_enabled_for_docv_users: true
 idv_sp_required: false
 in_person_completion_survey_delivery_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
-in_person_doc_auth_button_enabled: true
 in_person_eipp_enrollment_validity_in_days: 7
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_enrollment_validity_in_days: 30
-in_person_enrollments_immediate_approval_enabled: false
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_enabled: false
@@ -236,7 +249,7 @@ in_person_passports_enabled: false
 in_person_password_reset_expiration_days: 90
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
-in_person_proofing_opt_in_enabled: false
+in_person_proofing_opt_in_enabled: true
 in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
@@ -246,6 +259,8 @@ irs_credential_tenure_report_issuers: '[]'
 irs_credentials_emails: '[]'
 irs_fraud_metrics_emails: '[]'
 irs_fraud_metrics_issuers: '[]'
+irs_issuers: '[]'
+irs_partner_strings: '[]'
 irs_registration_funnel_emails: '[]'
 irs_registration_funnel_issuers: '[]'
 irs_verification_report_config: '[]'
@@ -378,6 +393,8 @@ recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1
 redis_attempts_api_url: redis://localhost:6379/2
+redis_fraud_ops_pool_size: 5
+redis_fraud_ops_url: redis://localhost:6379/3
 redis_pool_size: 10
 redis_throttle_pool_size: 5
 redis_throttle_url: redis://localhost:6379/1
@@ -450,7 +467,6 @@ socure_docv_webhook_secret_key: ''
 socure_docv_webhook_secret_key_queue: '[]'
 socure_idplus_api_key: ''
 socure_idplus_base_url: ''
-socure_idplus_shadow_mode_percent: 0
 socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
@@ -485,6 +501,7 @@ usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
+usps_opt_in_ipp_applicant_with_document_data: false
 usps_upload_enabled: false
 usps_upload_sftp_directory: ''
 usps_upload_sftp_host: ''
@@ -531,10 +548,13 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
+  identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
+  identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
-  in_person_proofing_opt_in_enabled: true
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -613,9 +633,14 @@ test:
   domain_name: www.example.com
   dos_passport_composite_healthcheck_endpoint: 'https://dos-passport-api.test/composite-healthcheck/'
   email_registrations_per_ip_limit: 3
+  fraud_ops_public_key: 123abc
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
+  identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_socure_phonerisk_name_correlation_score_threshold: 0.5
+  idv_socure_phonerisk_score_threshold: 0.5
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'

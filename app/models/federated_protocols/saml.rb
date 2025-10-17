@@ -9,7 +9,7 @@ module FederatedProtocols
     end
 
     def issuer
-      request.service_provider.identifier
+      request.service_provider&.identifier
     end
 
     def ial

@@ -22,12 +22,14 @@ RSpec.describe Idv::ApiImageUploadForm do
       service_provider:,
       analytics: fake_analytics,
       attempts_api_tracker:,
+      fraud_ops_tracker:,
       liveness_checking_required:,
       acuant_sdk_upgrade_ab_test_bucket:,
     )
   end
 
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:attempts_api_enabled_for_sp) { false }
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
@@ -1127,6 +1129,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           passport_image.read,
           image_config,
           passport_submittal: true,
+          passport_requested: passport_requested,
         )
       end
       let(:response) { form.submit }
@@ -1360,6 +1363,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           DocAuth::Mock::ResultResponse.new(
             passport_image.read,
             image_config,
+            passport_submittal: true,
+            passport_requested: true,
           )
         end
         let(:failed_pii_response) do
@@ -1437,7 +1442,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
         context 'when both images are captured via autocapture' do
-          let(:images_cropped) { true }
+          # let(:images_cropped) { true } # Autocapture does not crop images anymore
           before do
             front_image_metadata[:acuantCaptureMode] = 'AUTO'
             back_image_metadata[:acuantCaptureMode] = 'AUTO'

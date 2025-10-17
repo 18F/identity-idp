@@ -64,14 +64,12 @@ module Idv
         controller: self,
         next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
-          idv_session.flow_path == 'standard' && (
-            # mobile
-            idv_session.skip_doc_auth_from_handoff ||
-              idv_session.skip_hybrid_handoff ||
+          idv_session.standard_flow_document_capture_eligible? &&
+            (
+              idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required || # desktop but selfie not required
-              idv_session.desktop_selfie_test_mode_enabled?
-          )
+              ensure_choose_id_type_completed(idv_session: idv_session, user: user)
+            )
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -82,6 +80,17 @@ module Idv
           idv_session.doc_auth_vendor = nil
         end,
       )
+    end
+
+    def self.ensure_choose_id_type_completed(idv_session:, user:)
+      return true if user&.has_establishing_in_person_enrollment?
+
+      return true if idv_session.pii_from_doc.present?
+
+      document_capture_session = DocumentCaptureSession.find_by(
+        uuid: idv_session.document_capture_session_uuid,
+      )
+      !!document_capture_session&.passport_status&.present?
     end
 
     private
@@ -128,10 +137,9 @@ module Idv
       return false if params[:action].to_s != 'show' && params[:action] != 'direct_in_person'
       return false if idv_session.flow_path == 'hybrid'
       # Only allow direct access to document capture if IPP available
-      return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      return false unless IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
       @previous_step_url = step_is_handoff? ? idv_hybrid_handoff_path : nil
-      # allow
       idv_session.flow_path = 'standard'
       idv_session.skip_doc_auth_from_handoff = step_is_handoff?
       idv_session.skip_doc_auth_from_how_to_verify = params[:step] == 'how_to_verify'

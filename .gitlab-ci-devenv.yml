@@ -1,0 +1,74 @@
+devenv-test:
+  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.8.1
+  before_script:
+    # Set up a local cache directory for Nix
+    - export CACHEDIR="$(pwd)/.nix-cache"
+    # If the cache directory exists, add it as an extra substituter in the Nix configuration
+    - if [ -d "$CACHEDIR" ]; then echo "extra-substituters = file://$CACHEDIR?priority=10&trusted=true" >>/etc/nix/nix.conf ; fi
+    # Install findutils which is used for cache management.
+    - nix profile --extra-experimental-features nix-command --extra-experimental-features flakes install nixpkgs#findutils
+    # Remove orphaned narinfo files if they exist.
+    - |
+      if [ -d "$CACHEDIR" ]; then
+        find "$CACHEDIR" -type f -name '*.narinfo' | while read -r NARINFO; do
+          # Extract the URL value from the narinfo file
+          URL=$(grep -E '^URL: ' "$NARINFO" | cut -d' ' -f2)
+          # Check if the referenced file exists
+          if [ -n "$URL" ] && [ ! -f "$CACHEDIR/$URL" ]; then
+            rm -f "$NARINFO"
+          fi
+        done
+      fi
+    # Record the current state of the Nix store (which includes the local cache) before the script runs
+    - find /nix/store -mindepth 1 -maxdepth 1 ! -name \*.drv | sort >/nix/.before
+  script:
+    - devenv test
+  after_script:
+    - if [ "$CI_JOB_STATUS" == "canceled" ]; then exit 0; fi
+    # This section updates the local cache with new items.
+    ## Record the state of the Nix store after the script runs
+    - find /nix/store -mindepth 1 -maxdepth 1 ! -name \*.drv | sort >/nix/.after
+    ## Compare the before and after states to find new items added to the Nix store
+    - comm -13 /nix/.before /nix/.after >/nix/.new
+    ## Filter out specific items that should not be cached, these items change with every devenv generation.
+    - grep -v -e python3-3.12.10-env -e devenv-python-poetry -e devenv-profile -e devenv-shell-env -e source -e devenv-test /nix/.new >/nix/.filtered
+    - mv /nix/.filtered /nix/.new
+    ## Exit if there are no new items to cache
+    - '[ -s /nix/.new ] || exit 0'
+    ## Copy new nix store items to the local cache directory
+    - xargs -a /nix/.new nix copy --extra-experimental-features nix-command --to "file://$(pwd)/.nix-cache"
+    # The rest of scripts relates to removing stale items from the cache.
+    ## Generate a list of all items in the nix store that was used during devenv test.
+    - find /nix/store -mindepth 1 -maxdepth 1 ! -name \*.drv | sort >/nix/.store-list
+    ## Extract the relevant Store Path from the narinfo files.
+    - find "$(pwd)/.nix-cache" -type f -name '*.narinfo' -exec grep -h '^StorePath:' {} \; | cut -d' ' -f2 | sort >/nix/.narinfo-list
+    ## Identify items in the cache that are not in the Nix store
+    - comm -13 /nix/.store-list /nix/.narinfo-list >/nix/.extra-items-in-cache
+    ## Exit if there are no extra items in the cache
+    - '[ -s /nix/.extra-items-in-cache ] || exit 0'
+    ## Remove extra items from the cache by removing the narinfo file and compressed binary associated with each extra StorePath.
+    - |
+       while read -r ITEM; do 
+         NARINFO_FILE=$(grep -l "^StorePath: $ITEM" "$(pwd)/.nix-cache"/*.narinfo)
+         if [ -n "$NARINFO_FILE" ]; then
+           NAR_FILE_PATH=$(grep '^URL:' "$NARINFO_FILE" | cut -d' ' -f2)
+           if [ -n "$NAR_FILE_PATH" ]; then
+             rm -f "$(pwd)/.nix-cache/$NAR_FILE_PATH"
+           fi
+           rm -f "$NARINFO_FILE"
+         fi
+       done < /nix/.extra-items-in-cache
+  needs: []
+  # We are caching built binaries from devenv in s3 to reduce execution time per job.
+  cache:
+    key: devenv-cache
+    paths:
+      - .nix-cache
+  tags:
+    - build-pool
+  rules:
+    - !reference [.merge_request, rules]
+    - changes:
+      - .ruby-version
+      - .gitlab-ci-devenv.yml
+      - devenv.*

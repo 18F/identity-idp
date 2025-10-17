@@ -6,7 +6,7 @@ These configurations largely inherit from the [TTS JavaScript coding standards](
 
 ## Installation
 
-Install using [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [ESLint](https://eslint.org/) and `eslint-plugin-import` are required as peer dependencies and should be installed if it is not already.
+Install using [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [ESLint](https://eslint.org/) and `eslint-plugin-import` are required as peer dependencies and should be installed if it is not already.
 
 ```
 npm install --save-dev @18f/eslint-plugin-identity eslint eslint-plugin-import

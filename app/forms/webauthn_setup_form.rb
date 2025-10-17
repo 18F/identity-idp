@@ -130,7 +130,7 @@ class WebauthnSetupForm
     )
 
     begin
-      attestation_response.valid?(@challenge.pack('c*'), original_origin)
+      attestation_response.valid?(@challenge.pack('c*'), [original_origin])
     rescue StandardError
       false
     end

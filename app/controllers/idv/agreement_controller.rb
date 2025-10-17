@@ -37,6 +37,7 @@ module Idv
 
       if current_user.has_proofed_before?
         attempts_api_tracker.idv_reproof
+        fraud_ops_tracker.idv_reproof
       end
 
       if result.success?

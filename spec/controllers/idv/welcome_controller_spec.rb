@@ -150,6 +150,81 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
       end
     end
+
+    context 'SP reproofing banner' do
+      context 'when feature flag is enabled and user has proofed before with SP session' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as true to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(true)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(false)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when user has not proofed before' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when there is no service provider in session' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#update' do
@@ -172,6 +247,28 @@ RSpec.describe Idv::WelcomeController do
       expect(subject).to receive(:clear_future_steps!)
 
       put :update
+    end
+
+    it 'clears the previous idv session if applicable' do
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+
+      put :update
+
+      expect(subject.idv_session.applicant).to be_nil
+    end
+
+    it 'clears the idv/in_person session' do
+      subject.user_session['idv/in_person'] = { some: 'data' }
+
+      put :update
+
+      expect(subject.user_session['idv/in_person']).to be_blank
+    end
+
+    it 'sets mail_only_warning_shown to previous mail_only_warning_shown value' do
+      subject.idv_session.mail_only_warning_shown = true
+      put :update
+      expect(subject.idv_session.mail_only_warning_shown).to eq(true)
     end
 
     it 'creates a document capture session' do

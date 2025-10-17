@@ -7,13 +7,16 @@ module DocAuth
       include DocAuth::SelfieConcern
       include DocAuth::Mock::YmlLoaderConcern
 
-      attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal
+      attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal,
+                  :passport_requested
 
-      def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false)
+      def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false,
+                     passport_requested: false)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @selfie_required = selfie_required
         @passport_submittal = passport_submittal
+        @passport_requested = passport_requested
         super(
           success: success?,
           errors:,
@@ -62,6 +65,10 @@ module DocAuth
               classification_info,
               passport_check_result,
             ].any?(&:present?)
+
+            if id_type.present? && !expected_document_type_received?
+              return { unexpected_id_type: true, expected_id_type: expected_id_type }
+            end
 
             if has_fields
               # Error generator is not to be called when it's not failure
@@ -122,6 +129,7 @@ module DocAuth
 
       def doc_auth_success?
         return false unless id_type_supported?
+        return false unless expected_document_type_received?
         return false if transaction_status_from_uploaded_file ==
                         LexisNexis::TransactionCodes::FAILED.name
         return true if transaction_status_from_uploaded_file ==
@@ -231,6 +239,26 @@ module DocAuth
         transaction_status == LexisNexis::TransactionCodes::PASSED.name &&
           id_type_supported &&
           (selfie_check_performed? ? selfie_passed? : true)
+      end
+
+      def expected_document_type_received?
+        return true if id_type.blank?
+
+        expected_id_types = passport_requested ?
+          Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
+          Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+
+        expected_id_types.include?(id_type)
+      end
+
+      def id_type
+        parsed_data_from_uploaded_file&.dig('document', 'document_type_received')
+      end
+
+      def expected_id_type
+        passport_requested ?
+          Idp::Constants::DocumentTypes::PASSPORT :
+          Idp::Constants::DocumentTypes::DRIVERS_LICENSE
       end
 
       def selfie_passed?

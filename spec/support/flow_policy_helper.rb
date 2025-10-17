@@ -19,17 +19,43 @@ module FlowPolicyHelper
       idv_session.flow_path = 'standard'
     when :choose_id_type
       idv_session.flow_path = 'standard'
-      idv_session.passport_allowed == true
+      idv_session.document_capture_session_uuid = SecureRandom.uuid
+      DocumentCaptureSession.create!(
+        uuid: idv_session.document_capture_session_uuid,
+        user: idv_session.current_user,
+        requested_at: Time.zone.now,
+        passport_status: 'requested',
+      )
     when :link_sent
       idv_session.flow_path = 'hybrid'
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :document_capture
+      idv_session.flow_path = 'standard'
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
     when :ipp
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: {},
       }
     when :ipp_state_id
+      idv_session.flow_path = 'standard'
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.send(:user_session)['idv/in_person'] = {
         pii_from_user: Idp::Constants::MOCK_IPP_APPLICANT.dup,
       }
@@ -38,6 +64,15 @@ module FlowPolicyHelper
         pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
       }
     when :ssn
+      unless idv_session.document_capture_session_uuid
+        idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: idv_session.document_capture_session_uuid,
+          user: idv_session.current_user,
+          requested_at: Time.zone.now,
+          passport_status: 'not_requested',
+        )
+      end
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
       idv_session.threatmetrix_session_id = 'a-random-session-id'
     when :ipp_ssn
@@ -81,7 +116,7 @@ module FlowPolicyHelper
     when :link_sent
       %i[welcome agreement how_to_verify hybrid_handoff link_sent]
     when :document_capture
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture]
     when :ipp
       %i[welcome agreement how_to_verify hybrid_handoff ipp]
     when :ipp_state_id
@@ -89,26 +124,27 @@ module FlowPolicyHelper
     when :ipp_address
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address]
     when :ssn
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn]
     when :ipp_ssn
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn]
     when :verify_info
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info]
     when :ipp_verify_info
       %i[welcome agreement how_to_verify hybrid_handoff ipp_state_id ipp_address ipp_ssn
          ipp_verify_info]
     when :phone
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
          verify_info phone]
     when :otp_verification
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         phone otp_verification]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info phone otp_verification]
     when :request_letter
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         request_letter]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info request_letter]
     when :enter_password
-      %i[welcome agreement how_to_verify hybrid_handoff document_capture ssn verify_info
-         phone otp_verification enter_password]
+      %i[welcome agreement how_to_verify hybrid_handoff choose_id_type document_capture ssn
+         verify_info phone otp_verification enter_password]
     else
       []
     end

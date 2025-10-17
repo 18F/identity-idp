@@ -68,6 +68,11 @@ module I18n
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'errors.messages.both_auth_and_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.invalid_signature', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.issuer_missing_or_invalid', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_auth_or_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_response_url', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
         { key: 'date.formats.long', locales: %i[es zh] },
         { key: 'date.formats.short', locales: %i[es zh] },
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
@@ -75,13 +80,9 @@ module I18n
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
         { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.dob_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.expiration_date' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.expiration_date_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.first_name' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.first_name_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.passport_number' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.passport_number_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.surname' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972

@@ -6,7 +6,6 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
     @idv_how_to_verify_form = Idv::HowToVerifyForm.new
     @presenter = Idv::HowToVerifyPresenter.new(
-      mobile_required: true,
       selfie_check_required: true,
     )
   end

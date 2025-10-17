@@ -4,6 +4,11 @@
       intro: t('idv.welcome.no_js_intro', sp_name: @presenter.sp_name),
       location: :idv_welcome,
     ) do %>
+<% if @presenter.show_sp_reproof_banner %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('doc_auth.info.welcome_sp_reproof_alert', sp_name: @presenter.sp_name) %>
+  <% end %>
+<% end %>
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
     <%= @presenter.explanation_text(

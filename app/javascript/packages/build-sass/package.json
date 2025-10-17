@@ -5,7 +5,7 @@
   "description": "Stylesheet compilation utility with reasonable defaults and fast performance.",
   "type": "module",
   "engines": {
-    "node": ">= 18"
+    "node": ">=22"
   },
   "bin": {
     "build-sass": "cli.js"

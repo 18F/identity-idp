@@ -7,6 +7,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
   let(:in_person_results_delay_in_hours) { 2 }
   let(:analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:default_job_completion_analytics) do
     {
       enrollments_checked: 0,
@@ -32,6 +33,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
     allow(analytics).to receive(:idv_in_person_usps_proofing_results_job_completed)
     allow(Analytics).to receive(:new).and_return(analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
+    allow(FraudOps::Tracker).to receive(:new).and_return(fraud_ops_tracker)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(IdentityConfig.store).to receive(:in_person_results_delay_in_hours).and_return(
       in_person_results_delay_in_hours,

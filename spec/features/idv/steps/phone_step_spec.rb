@@ -185,6 +185,7 @@ RSpec.feature 'idv phone step', :js do
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
       click_idv_send_security_code
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
       click_on t('links.cancel')
 
       expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
@@ -231,5 +232,304 @@ RSpec.feature 'idv phone step', :js do
 
   context 'when the IdV background job fails' do
     it_behaves_like 'failed idv phone job'
+  end
+
+  context 'phonerisk' do
+    let(:phonerisk_pass) { true }
+    let(:name_phone_correlation_pass) { true }
+    let(:response_body) do
+      {
+        referenceId: 'some-reference-id',
+        namePhoneCorrelation: {
+          reasonCodes: [
+            'I123',
+            'R567',
+            'R890',
+          ],
+          score: phonerisk_pass ? 0.99 : 0.1,
+        },
+        phoneRisk: {
+          reasonCodes: [
+            'I123',
+            'R567',
+          ],
+          score: name_phone_correlation_pass ? 0.01 : 0.99,
+        },
+        customerProfile: {
+          customerUserId: user.uuid,
+        },
+      }
+    end
+    before do
+      allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
+
+      @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+        .to_return(
+          status: 200,
+          body: response_body.to_json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        )
+    end
+
+    context 'after submitting valid information' do
+      it 'is re-entrant before confirming OTP' do
+        first_phone_number = '7032231234'
+        second_phone_number = '7037897890'
+
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+
+        fill_out_phone_form_ok(first_phone_number)
+
+        click_idv_send_security_code
+
+        expect(page).to have_content('+1 703-223-1234')
+
+        click_link t('forms.two_factor.try_again')
+
+        expect(page).to have_content(t('titles.idv.phone'))
+        expect(page).to have_current_path(idv_phone_path(step: 'phone_otp_verification'))
+
+        fill_out_phone_form_ok('') # clear field
+        fill_out_phone_form_ok(second_phone_number)
+
+        click_idv_otp_delivery_method_sms
+        click_idv_send_security_code
+
+        expect(page).to have_current_path(idv_otp_verification_path)
+        expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+        expect(page).to have_content('+1 703-789-7890')
+      end
+    end
+
+    it 'allows resubmitting form' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+      allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_send_security_code
+
+      expect(page).to have_content(t('idv.failure.timeout'))
+
+      expect(page).to_not have_content(t('doc_auth.forms.doc_success'))
+      expect(page).to have_current_path(idv_phone_path)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+      click_idv_send_security_code
+      expect(page).to have_current_path(idv_otp_verification_path)
+    end
+
+    context "when the user's information cannot be verified" do
+      let(:phone_number) { '7035555555' }
+      before do
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+        # fill_out_phone_form_ok(phone_number)
+      end
+
+      context 'when Socure returns a low phone risk score' do
+        let(:phonerisk_pass) { false }
+        it 'reports the number the user entered' do
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).not_to be_empty
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 202-555-1212')
+
+          click_on t('idv.failure.phone.warning.try_again_button')
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
+        end
+      end
+
+      context 'when Socure returns a low name phone correlation score' do
+        let(:name_phone_correlation_pass) { false }
+        it 'reports the number the user entered' do
+          fill_out_phone_form_ok(phone_number)
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 703-555-5555')
+          click_on t('idv.failure.phone.warning.try_again_button')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
+        end
+      end
+
+      context 'resubmission after number failed verification' do
+        let(:name_phone_correlation_pass) { false }
+        it 'succeeds to otp verification with valid number resubmission' do
+          click_idv_send_security_code
+          click_on t('idv.failure.phone.warning.try_again_button')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          remove_request_stub(@phonerisk_stub)
+          response_body[:namePhoneCorrelation][:score] = 0.99
+          response_body[:phoneRisk][:score] = 0.01
+
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return(
+              status: 200,
+              body: response_body.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
+          fill_out_phone_form_ok
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_otp_verification_path)
+        end
+
+        context 'displays alert message if same nubmer is resubmitted' do
+          let(:phonerisk_pass) { false }
+          context 'gpo verification is enabled' do
+            it 'includes verify link' do
+              fill_out_phone_form_ok
+              click_idv_send_security_code
+              click_on t('idv.failure.phone.warning.try_again_button')
+
+              expect(page).to have_current_path(idv_phone_path)
+
+              fill_out_phone_form_ok
+
+              expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+              expect(page).to have_content(
+                strip_tags(
+                  t(
+                    'idv.messages.phone.failed_number.gpo_alert_html',
+                    link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                  ),
+                ),
+              )
+
+              click_idv_send_security_code
+              click_on t('idv.failure.phone.warning.try_again_button')
+
+              expect(page).to have_current_path(idv_phone_path)
+            end
+          end
+
+          context 'gpo verification is disabled' do
+            before do
+              allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(false)
+            end
+
+            it 'does not display verify link' do
+              fill_out_phone_form_ok
+              click_idv_send_security_code
+              click_on t('idv.failure.phone.warning.try_again_button')
+
+              expect(page).to have_current_path(idv_phone_path)
+
+              fill_out_phone_form_ok
+
+              expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+              expect(page).not_to have_content(
+                strip_tags(
+                  t(
+                    'idv.messages.phone.failed_number.gpo_alert_html',
+                    link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                  ),
+                ),
+              )
+              expect(page).to have_content(
+                strip_tags(
+                  t('idv.messages.phone.failed_number.try_again_html'),
+                ),
+              )
+
+              click_idv_send_security_code
+              click_on t('idv.failure.phone.warning.try_again_button')
+
+              expect(page).to have_current_path(idv_phone_path)
+            end
+          end
+        end
+      end
+
+      context 'phone number submission times out' do
+        before do
+          remove_request_stub(@phonerisk_stub)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_raise(Faraday::TimeoutError.new('Connection failed'))
+        end
+        it 'does not display failed alert message' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+
+          click_idv_send_security_code
+
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          expect(page).not_to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+          click_idv_send_security_code
+
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+      context 'paths after proofing failure' do
+        let(:phonerisk_pass) { false }
+        it 'goes to the cancel page when cancel link is clicked' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+          click_idv_send_security_code
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          click_on t('links.cancel')
+
+          expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
+        end
+
+        it 'links to verify by mail, from which user can return back to the warning screen' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+
+          click_on t('idv.failure.phone.warning.gpo.button')
+          expect(page).to have_content(t('idv.titles.mail.verify'))
+
+          click_doc_auth_back_link
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+        end
+
+        it 'does not render the link to proof by mail if proofing by mail is disabled' do
+          allow(FeatureManagement).to receive(:gpo_verification_enabled?).and_return(false)
+
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+
+          4.times do
+            fill_out_phone_form_fail
+            click_idv_send_security_code
+
+            expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+            expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+
+            click_on t('idv.failure.phone.warning.try_again_button')
+          end
+
+          fill_out_phone_form_fail
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
+          expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+        end
+      end
+    end
   end
 end

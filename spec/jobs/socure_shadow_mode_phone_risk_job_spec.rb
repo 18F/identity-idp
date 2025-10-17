@@ -2,13 +2,19 @@
 
 require 'rails_helper'
 
-RSpec.describe SocureShadowModeProofingJob do
+RSpec.describe SocureShadowModePhoneRiskJob do
   let(:job) do
     described_class.new
   end
 
+  let(:user) { create(:user) }
+
+  let(:user_uuid) { user.uuid }
+
+  let(:user_email) { user.last_sign_in_email_address.email }
+
   let(:document_capture_session) do
-    DocumentCaptureSession.create(user:).tap do |dcs|
+    create(:document_capture_session, user:).tap do |dcs|
       dcs.create_proofing_session
     end
   end
@@ -18,7 +24,7 @@ RSpec.describe SocureShadowModeProofingJob do
   end
 
   let(:applicant_pii) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
   end
 
   let(:encrypted_arguments) do
@@ -27,101 +33,17 @@ RSpec.describe SocureShadowModeProofingJob do
     )
   end
 
-  let(:user) { create(:user) }
-
-  let(:user_uuid) { user.uuid }
-
-  let(:user_email) { user.email }
-
   let(:proofing_result) do
-    FormResponse.new(
-      success: true,
-      errors: {},
-      extra: {
-        exception: nil,
-        timed_out: false,
-        threatmetrix_review_status: 'pass',
-        context: {
-          device_profiling_adjudication_reason: 'device_profiling_result_pass',
-          resolution_adjudication_reason: 'pass_resolution_and_state_id',
-          should_proof_state_id: true,
-          stages: {
-            resolution: {
-              success: true,
-              errors: {},
-              exception: nil,
-              timed_out: false,
-              transaction_id: 'resolution-mock-transaction-id-123',
-              reference: 'aaa-bbb-ccc',
-              can_pass_with_additional_verification: false,
-              attributes_requiring_additional_verification: [],
-              vendor_name: 'ResolutionMock',
-              vendor_workflow: nil,
-              verified_attributes: nil,
-            },
-            residential_address: {
-              success: true,
-              errors: {},
-              exception: nil,
-              timed_out: false,
-              transaction_id: '',
-              reference: '',
-              can_pass_with_additional_verification: false,
-              attributes_requiring_additional_verification: [],
-              vendor_name: 'ResidentialAddressNotRequired',
-              vendor_workflow: nil,
-              verified_attributes: nil,
-            },
-            state_id: {
-              success: true,
-              errors: {},
-              exception: nil,
-              mva_exception: nil,
-              requested_attributes: {},
-              timed_out: false,
-              transaction_id: 'state-id-mock-transaction-id-456',
-              vendor_name: 'StateIdMock',
-              verified_attributes: [],
-            },
-            threatmetrix: {
-              client: nil,
-              success: true,
-              errors: {},
-              exception: nil,
-              timed_out: false,
-              transaction_id: 'ddp-mock-transaction-id-123',
-              review_status: 'pass',
-              response_body: {
-                "fraudpoint.score": '500',
-                request_id: '1234',
-                request_result: 'success',
-                review_status: 'pass',
-                risk_rating: 'trusted',
-                summary_risk_score: '-6',
-                tmx_risk_rating: 'neutral',
-                tmx_summary_reason_code: ['Identity_Negative_History'],
-                first_name: '[redacted]',
-              },
-            },
-          },
-        },
-        biographical_info: {
-          birth_year: 1938,
-          identity_doc_address_state: nil,
-          same_address_as_id: nil,
-          state: 'MT',
-          state_id_jurisdiction: 'ND',
-          state_id_number: '#############',
-        },
-        ssn_is_unique: true,
-      },
-    )
+    Proofing::Mock::AddressMockClient.new.proof(phone: phone)
   end
+
+  let(:phone) { applicant_pii[:phone] }
 
   let(:socure_idplus_base_url) { 'https://example.org' }
 
   before do
-    document_capture_session.store_proofing_result(proofing_result.to_h)
+    proofing_result = Proofing::Mock::AddressMockClient.new.proof(phone:)
+    document_capture_session.store_proofing_result(proofing_result)
 
     allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
       .and_return(socure_idplus_base_url)
@@ -135,7 +57,6 @@ RSpec.describe SocureShadowModeProofingJob do
         document_capture_session_result_id:,
         encrypted_arguments:,
         service_provider_issuer: nil,
-        user_email:,
         user_uuid:,
       )
     end
@@ -144,29 +65,28 @@ RSpec.describe SocureShadowModeProofingJob do
       FakeAnalytics.new
     end
 
+    let(:reference) { 'a1234b56-e789-0123-4fga-56b7c890d123' }
+
     let(:socure_response_body) do
       {
-        referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
-        kyc: {
+        referenceId: reference,
+        namePhoneCorrelation: {
           reasonCodes: [
             'I123',
+            'R567',
             'R890',
           ],
-          fieldValidations: {
-            firstName: 0.99,
-            surName: 0.99,
-            streetAddress: 0.99,
-            city: 0.99,
-            state: 0.99,
-            zip: 0.99,
-            mobileNumber: 0.99,
-            dob: 0.99,
-            ssn: 0.99,
-          },
+          score: 0.99,
+        },
+        phoneRisk: {
+          reasonCodes: [
+            'I123',
+            'R567',
+          ],
+          score: 0.01,
         },
         customerProfile: {
           customerUserId: user.uuid,
-          userId: 'u8JpWn4QsF3R7tA2',
         },
       }
     end
@@ -197,92 +117,37 @@ RSpec.describe SocureShadowModeProofingJob do
       let(:expected_event_body) do
         {
           user_id: user.uuid,
-          resolution_result: {
-            success: true,
-            errors: nil,
-            context: {
-              device_profiling_adjudication_reason: 'device_profiling_result_pass',
-              resolution_adjudication_reason: 'pass_resolution_and_state_id',
-              should_proof_state_id: true,
-              stages: {
-                residential_address: {
-                  attributes_requiring_additional_verification: [],
-                  can_pass_with_additional_verification: false,
-                  errors: {},
-                  exception: nil,
-                  reference: '',
-                  success: true,
-                  timed_out: false,
-                  transaction_id: '',
-                  vendor_name: 'ResidentialAddressNotRequired',
-                  vendor_workflow: nil,
-                  verified_attributes: nil,
-                },
-                resolution: {
-                  attributes_requiring_additional_verification: [],
-                  can_pass_with_additional_verification: false,
-                  errors: {},
-                  exception: nil,
-                  reference: 'aaa-bbb-ccc',
-                  success: true,
-                  timed_out: false,
-                  transaction_id: 'resolution-mock-transaction-id-123',
-                  vendor_name: 'ResolutionMock',
-                  vendor_workflow: nil,
-                  verified_attributes: nil,
-                },
-                state_id: {
-                  errors: {},
-                  exception: nil,
-                  mva_exception: nil,
-                  requested_attributes: {},
-                  success: true,
-                  timed_out: false,
-                  transaction_id: 'state-id-mock-transaction-id-456',
-                  vendor_name: 'StateIdMock',
-                  verified_attributes: [],
-                },
-                threatmetrix: {
-                  client: nil,
-                  errors: {},
-                  exception: nil,
-                  review_status: 'pass',
-                  success: true,
-                  timed_out: false,
-                  transaction_id: 'ddp-mock-transaction-id-123',
-                },
-              },
-            },
-            exception: nil,
-            ssn_is_unique: true,
-            threatmetrix_review_status: 'pass',
-            timed_out: false,
-            biographical_info: {
-              birth_year: 1938,
-              identity_doc_address_state: nil,
-              same_address_as_id: nil,
-              state: 'MT',
-              state_id_jurisdiction: 'ND',
-              state_id_number: '#############',
-            },
-          },
+          phone_result: proofing_result.to_h.merge(vendor_workflow: nil),
           socure_result: {
-            attributes_requiring_additional_verification: [],
-            can_pass_with_additional_verification: false,
+            # attributes_requiring_additional_verification: [],
+            # can_pass_with_additional_verification: false,
             errors: {},
-            reason_codes: {
-              'I123' => 'Person is over seven feet tall.',
-              'R890' => 'Help! I am trapped in a reason code factory!',
+            result: {
+              name_phone_correlation: {
+                reason_codes: {
+                  'I123' => 'Person is over seven feet tall.',
+                  'R567' => 'Person may be an armadillo.',
+                  'R890' => 'Help! I am trapped in a reason code factory!',
+                },
+                score: 0.99,
+              },
+              phonerisk: {
+                reason_codes: {
+                  'I123' => 'Person is over seven feet tall.',
+                  'R567' => 'Person may be an armadillo.',
+                },
+                score: 0.01,
+              },
+              customer_user_id: user.uuid,
             },
             exception: nil,
-            reference: '',
+            reference:,
             success: true,
+            transaction_id: '',
+            vendor_name: 'socure_phonerisk',
             timed_out: false,
-            transaction_id: 'a1234b56-e789-0123-4fga-56b7c890d123',
-            customer_user_id: user.uuid,
-            vendor_name: 'socure_kyc',
-            vendor_workflow: nil,
-            verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
+            # vendor_workflow: nil,
+            # verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
         }
       end
@@ -300,19 +165,14 @@ RSpec.describe SocureShadowModeProofingJob do
       it 'logs an event' do
         perform
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+          :idv_socure_shadow_mode_phonerisk_result,
           expected_event_body,
         )
       end
 
       context 'when the user has an MFA phone number' do
         let(:applicant_pii) do
-          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-            best_effort_phone_number_for_socure: {
-              source: :mfa,
-              phone: '1 202-555-0000',
-            },
-          )
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
         end
 
         let(:encrypted_arguments) do
@@ -324,8 +184,8 @@ RSpec.describe SocureShadowModeProofingJob do
         it 'logs an event with the phone number' do
           perform
           expect(analytics).to have_logged_event(
-            :idv_socure_shadow_mode_proofing_result,
-            expected_event_body.merge(phone_source: 'mfa'),
+            :idv_socure_shadow_mode_phonerisk_result,
+            expected_event_body,
           )
         end
       end
@@ -351,7 +211,7 @@ RSpec.describe SocureShadowModeProofingJob do
         perform
 
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result_missing,
+          :idv_socure_shadow_mode_phonerisk_result_missing,
         )
       end
     end
@@ -394,17 +254,24 @@ RSpec.describe SocureShadowModeProofingJob do
 
     context 'when an unknown reason code is encountered' do
       let(:socure_response_body) do
-        super().tap do |body|
-          body[:kyc][:reasonCodes] << 'I000'
-        end
+        {
+          phoneRisk: {
+            reasonCodes: ['I000'],
+            score: 0.05,
+          },
+          namePhoneCorrelation: {
+            reasonCodes: [],
+            score: 0.95,
+          },
+        }
       end
 
       it 'still logs it' do
         perform
         expect(analytics).to have_logged_event(
-          :idv_socure_shadow_mode_proofing_result,
+          :idv_socure_shadow_mode_phonerisk_result,
           satisfy do |attributes|
-            reason_codes = attributes.dig(:socure_result, :reason_codes)
+            reason_codes = attributes.dig(:socure_result, :result, :phonerisk, :reason_codes)
             expect(reason_codes).to include(
               'I000' => '[unknown]',
             )
@@ -428,9 +295,8 @@ RSpec.describe SocureShadowModeProofingJob do
         city: 'GREAT FALLS',
         state: 'MT',
         zipcode: '59010-1234',
-        dob: '1938-10-06',
-        ssn: '900661234',
         email: user.email,
+        phone: '12025551212',
       }
     end
 
@@ -506,7 +372,7 @@ RSpec.describe SocureShadowModeProofingJob do
 
       expect(job.proofer(user:).config.to_h).to eql(
         user_uuid: user.uuid,
-        user_email: nil,
+        user_email:,
         api_key: 'an-api-key',
         base_url: 'https://example.org',
         timeout: 6,

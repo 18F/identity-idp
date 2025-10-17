@@ -64,6 +64,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       client.get_results(
         instance_id: instance_id,
         passport_submittal: true,
+        passport_requested: true,
       )
     end
 

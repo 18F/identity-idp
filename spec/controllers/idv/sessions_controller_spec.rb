@@ -26,7 +26,9 @@ RSpec.describe Idv::SessionsController do
 
     context 'when destroying the session' do
       before do
-        expect(idv_session).to receive(:clear)
+        expect(idv_session).to receive(:clear) do
+          controller.user_session['idv/in_person'] = {}
+        end
         delete :destroy
       end
 

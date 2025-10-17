@@ -2,11 +2,12 @@
 
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
+      @fraud_ops_tracker = fraud_ops_tracker
     end
 
     def submit(step_params)
@@ -126,6 +127,7 @@ module Idv
       @attempts_api_tracker.idv_rate_limited(
         limiter_type: :proof_address,
       )
+      @fraud_ops_tracker.idv_rate_limited(limiter_type: :proof_address)
       FormResponse.new(success: false)
     end
 
@@ -162,7 +164,6 @@ module Idv
         document_capture_session,
         trace_id: trace_id,
         issuer: idv_session.service_provider&.issuer,
-        user_id: idv_session.current_user.id,
       )
     end
 

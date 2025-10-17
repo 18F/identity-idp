@@ -5,6 +5,7 @@ module Idv
     class StateIdController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
+      include Idv::IdConcern
 
       before_action :set_usps_form_presenter
       before_action :confirm_step_allowed
@@ -32,6 +33,15 @@ module Idv
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
+
+          # Accept Expiration Date from both memorable date and input date components
+          formatted_exp = MemorableDateComponent.extract_date_param(
+            flow_params&.[](:id_expiration),
+          )
+          if formatted_exp
+            pii_from_user[:state_id_expiration] = formatted_exp
+            pii_from_user.delete(:id_expiration)
+          end
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
@@ -70,6 +80,7 @@ module Idv
           form:,
           pii:,
           parsed_dob:,
+          parsed_expiration:,
           updating_state_id: updating_state_id?,
         }
       end
@@ -121,15 +132,11 @@ module Idv
       end
 
       def parsed_dob
-        form_dob = pii[:dob]
-        if form_dob.instance_of?(String)
-          dob_str = form_dob
-        elsif form_dob.instance_of?(Hash)
-          dob_str = MemorableDateComponent.extract_date_param(form_dob)
-        end
-        Date.parse(dob_str) unless dob_str.nil?
-      rescue StandardError
-        # Catch date parsing errors
+        parse_date(pii[:dob])
+      end
+
+      def parsed_expiration
+        parse_date(pii[:id_expiration])
       end
 
       def pii
@@ -137,6 +144,7 @@ module Idv
         if params.has_key?(:identity_doc) || params.has_key?(:state_id)
           data = data.merge(flow_params)
         end
+        data[:id_expiration] = data.delete(:state_id_expiration) if data.key?(:state_id_expiration)
         data.deep_symbolize_keys
       end
 
@@ -154,11 +162,8 @@ module Idv
 
         params.require(:state_id).permit(
           *Idv::StateIdForm::ATTRIBUTES,
-          dob: [
-            :month,
-            :day,
-            :year,
-          ],
+          dob: [:month, :day, :year],
+          id_expiration: [:month, :day, :year],
         )
       end
 

@@ -65,7 +65,9 @@ module Idv
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
-          idv_session.service_provider&.in_person_proofing_enabled
+          Idv::InPersonConfig.enabled_for_issuer?(
+            idv_session.service_provider&.issuer,
+          )
         end,
         undo_step: ->(idv_session:, user:) {
           idv_session.skip_doc_auth_from_how_to_verify = nil
@@ -95,17 +97,10 @@ module Idv
     end
 
     def set_how_to_verify_presenter
-      @mobile_required = mobile_required?
       @selfie_required = idv_session.selfie_check_required
       @presenter = Idv::HowToVerifyPresenter.new(
-        mobile_required: @mobile_required,
         selfie_check_required: @selfie_required,
       )
-    end
-
-    def mobile_required?
-      idv_session.selfie_check_required ||
-        document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
 end

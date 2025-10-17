@@ -5,6 +5,10 @@
 <p>
   <%= t('forms.backup_code.subinfo_html', app_name: APP_NAME) %>
 </p>
+<p>
+  <%= t('forms.backup_code.warning_html', app_name: APP_NAME) %>
+  <%= new_tab_link_to t('forms.backup_code.warning_link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview', flow: :create_account) %>
+</p>
 
 <div class="margin-y-4">
   <div class="grid-row">

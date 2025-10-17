@@ -184,6 +184,33 @@ RSpec.describe AccountReset::RequestController do
       end
     end
 
+    context 'when the max number of attempts today is exceeded' do
+      let(:attempt_window_in_minutes) { 2 }
+      let(:max_attempt_window) { 1_440 } # 1 day
+
+      it 'rate limits submission for the day and does not send sms or email' do
+        user = create(:user, :fully_registered)
+        stub_sign_in_before_2fa(user)
+        stub_analytics
+
+        RateLimiter.new(
+          rate_limit_type: :account_reset_max_attempts,
+          user: user,
+        ).increment_to_limited!
+
+        expect(@analytics).to_not have_logged_event(
+          'Account Reset: request',
+          success: true,
+          sms_phone: true,
+          totp: false,
+          piv_cac: false,
+          email_addresses: 1,
+          request_id: 'fake-message-request-id',
+          message_id: 'fake-message-id',
+        )
+      end
+    end
+
     context 'when returning to deletion page after previous submission expired' do
       it 'allows the user to submit a deletion request' do
         user = create(:user, :fully_registered)

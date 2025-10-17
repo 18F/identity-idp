@@ -45,6 +45,7 @@ RSpec.describe GpoReminderSender do
     end
 
     let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
     let(:fake_analytics) { FakeAnalytics.new }
     let(:wait_for_reminder) { 14.days }
     let(:time_due_for_reminder) { Time.zone.now - wait_for_reminder }
@@ -175,6 +176,7 @@ RSpec.describe GpoReminderSender do
 
           GpoVerifyForm.new(
             attempts_api_tracker:,
+            fraud_ops_tracker:,
             user:,
             pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
             resolved_authn_context_result: Vot::Parser::Result.no_sp_result.with(

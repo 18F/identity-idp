@@ -151,7 +151,7 @@ module Proofing
       end
 
       def create_socure_proofer
-        Proofing::Socure::IdPlus::Proofer.new(
+        Proofing::Socure::IdPlus::Proofers::KycProofer.new(
           Proofing::Socure::IdPlus::Config.new(
             user_uuid:,
             user_email:,

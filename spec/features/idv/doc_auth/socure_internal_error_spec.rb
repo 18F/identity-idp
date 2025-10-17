@@ -12,13 +12,17 @@ RSpec.describe 'when Socure throws an internal error' do
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-    allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-      .and_return(Idp::Constants::Vendors::SOCURE)
+    allow(IdentityConfig.store).to receive_messages(
+      socure_docv_enabled: true,
+      doc_auth_vendor_lexis_nexis_percent: 0,
+      doc_auth_vendor_socure_percent: 100,
+      doc_auth_vendor_switching_enabled: true,
+    )
 
     stub_docv_document_request(
       body: { status: socure_status, referenceId: reference_id, msg: socure_msg },
     )
+    reload_ab_tests
   end
 
   context 'mobile flow', :js, driver: :headless_chrome_mobile do

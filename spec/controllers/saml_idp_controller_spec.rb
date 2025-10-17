@@ -104,7 +104,7 @@ RSpec.describe SamlIdpController do
       )
       expect(@analytics).to have_logged_event(
         :sp_integration_errors_present,
-        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_details: [:issuer_missing_or_invalid, :no_auth_or_logout_request],
         error_types: { saml_request_errors: true },
         event: :saml_logout_request,
         integration_exists: false,
@@ -342,7 +342,7 @@ RSpec.describe SamlIdpController do
       expect(@analytics).to have_logged_event('Remote Logout initiated', saml_request_valid: false)
       expect(@analytics).to have_logged_event(
         :sp_integration_errors_present,
-        error_details: [:issuer_missing_or_invald, :no_auth_or_logout_request, :invalid_signature],
+        error_details: [:issuer_missing_or_invalid, :no_auth_or_logout_request],
         error_types: { saml_request_errors: true },
         event: :saml_remote_logout_request,
         integration_exists: false,
@@ -2047,6 +2047,116 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'issuer in SAML request is blank' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+
+      before do
+        stub_analytics
+      end
+
+      # the RubySAML library won't let us pass an empty string in as the certificate
+      # element, so this test substitutes a SAMLRequest that has that element blank
+      let(:blank_issuer_req) do
+        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+          <?xml version="1.0"?>
+          <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2025" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
+            <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
+          </samlp:AuthnRequest>
+        XML
+      end
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_issuer_req, 9)[2..-5])
+      end
+
+      before do
+        allow_any_instance_of(Saml::XML::Document).to receive(:signed?).and_return true
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        expect(CGI).to receive(:unescape).and_return deflated_encoded_req
+      end
+
+      it 'notes it in the analytics event' do
+        generate_saml_response(user, saml_settings)
+
+        expect(@analytics).to have_logged_event(
+          'SAML Auth',
+          success: false,
+          error_details: { service_provider: { issuer_missing_or_invalid: true,
+                                               unauthorized_service_provider: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          requested_nameid_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+          authn_context: [],
+          authn_context_comparison: 'exact',
+          request_signed: true,
+          requested_ial: 'none',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+        )
+      end
+
+      it 'returns a 400' do
+        generate_saml_response(user, saml_settings)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.issuer_missing_or_invalid'))
+      end
+    end
+
+    context 'AuthnRequest in SAML request is blank' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:service_provider) { build(:service_provider, issuer: 'http://localhost:3000') }
+
+      before do
+        stub_analytics
+      end
+
+      # the RubySAML library won't let us pass an empty string in as the certificate
+      # element, so this test substitutes a SAMLRequest that has that element blank
+      let(:blank_authn_req) do
+        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+          <?xml version="1.0"?>
+        XML
+      end
+      let(:deflated_encoded_req) do
+        Base64.encode64(Zlib::Deflate.deflate(blank_authn_req, 9)[2..-5])
+      end
+
+      before do
+        IdentityLinker.new(user, service_provider).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        expect(CGI).to receive(:unescape).and_return deflated_encoded_req
+      end
+
+      it 'notes it in the analytics event' do
+        generate_saml_response(user, saml_settings)
+
+        expect(@analytics).to have_logged_event(
+          'SAML Auth',
+          success: false,
+          error_details: { service_provider: { issuer_missing_or_invalid: true,
+                                               unauthorized_service_provider: true,
+                                               no_auth_or_logout_request: true } },
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [],
+          authn_context_comparison: 'exact',
+          request_signed: false,
+          requested_ial: 'none',
+          endpoint: "/api/saml/auth#{path_year}",
+          idv: false,
+          finish_profile: false,
+        )
+      end
+
+      it 'returns a 400' do
+        generate_saml_response(user, saml_settings)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.no_auth_or_logout_request'))
+      end
+    end
+
     context 'no IAL explicitly requested' do
       let(:user) { create(:user, :fully_registered) }
 
@@ -2083,6 +2193,25 @@ RSpec.describe SamlIdpController do
             matching_cert_serial: saml_test_sp_cert_serial,
           ),
         )
+      end
+    end
+
+    context 'User is suspended' do
+      let(:user) { create(:user, :fully_registered, :suspended) }
+      let(:acr_values) do
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
+          ' ' +
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
+
+      before do
+        sign_in(user)
+        stub_analytics
+      end
+
+      it 'renders the please call for suspended user page' do
+        saml_get_auth(saml_settings)
+        expect(response).to redirect_to(user_please_call_url)
       end
     end
 
@@ -2267,10 +2396,10 @@ RSpec.describe SamlIdpController do
     end
 
     describe 'HEAD /api/saml/auth', type: :request do
-      it 'responds with "403 Forbidden"' do
+      it 'responds with "400 Bad Request"' do
         head '/api/saml/auth2025?SAMLRequest=bang!'
 
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(400)
       end
     end
 
@@ -2278,15 +2407,12 @@ RSpec.describe SamlIdpController do
       it 'responds with "403 Forbidden"' do
         get :auth, params: { path_year: path_year }
 
-        expect(response.status).to eq(403)
-      end
-    end
-
-    context 'with invalid SAMLRequest param' do
-      it 'responds with "403 Forbidden"' do
-        get :auth, params: { path_year: path_year }
-
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(400)
+        expect(response.body).to include('Service provider Issuer missing from SAML request')
+        error = 'Service provider SAML request is missing either an authnrequest or logout ' \
+                'request. One of the two is required.'
+        expect(response.body).to include(error)
+        expect(response.body).to include('Service provider Unauthorized Service Provider')
       end
     end
 

@@ -3,10 +3,11 @@
 module OneAccountConcern
   extend ActiveSupport::Concern
 
-  def log_one_account_self_service_if_applicable(source:)
+  def process_one_account_self_service_if_applicable(source:)
     return unless current_user&.active_profile&.facial_match?
+    user_profile_id = current_user.active_profile.id
     sets = DuplicateProfileSet
-      .duplicate_profile_set_for_profile(profile_id: current_user.active_profile.id)
+      .duplicate_profile_sets_for_profile(profile_id: user_profile_id)
     return if sets.blank?
 
     sets.each do |set|

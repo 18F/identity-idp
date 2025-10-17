@@ -5,7 +5,9 @@ module Db
     module NewUniqueMonthlyUserCountsByPartner
       extend Reports::QueryHelpers
 
-      UserVerifiedKey = Data.define(:user_id, :profile_verified_at, :profile_age).freeze
+      UserVerifiedKey = Data.define(
+        :user_id, :profile_verified_at, :profile_age
+      ).freeze
 
       module_function
 
@@ -23,10 +25,13 @@ module Db
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
 
+        @user_issuer_ids = Set.new
+
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
           ym_h[ym_k] = {}
         end
 
+        # rubocop:disable Metrics/BlockLength
         queries.each do |query|
           temp_copy = year_month_to_users_to_profile_age.deep_dup
 
@@ -49,14 +54,23 @@ module Db
                 profile_age = row['profile_age']
                 user_id = row['user_id']
                 profile_verified_at = row['profile_verified_at']
+                profile_requested_issuer = row['profile_requested_issuer']
+                issuer = row['issuer']
 
-                user_unique_id = UserVerifiedKey.new(user_id:, profile_verified_at:, profile_age:)
+                user_unique_id = UserVerifiedKey.new(
+                  user_id:, profile_verified_at:, profile_age:,
+                )
+
+                if profile_requested_issuer == issuer
+                  @user_issuer_ids << user_id
+                end
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
             end
           end
         end
+        # rubocop:enable Metrics/BlockLength
         rows = []
 
         prev_seen_user_proofed_events = Set.new
@@ -73,6 +87,7 @@ module Db
 
           unique_profiles_by_age = bucket_by_profile_age(this_month_user_proofed_events)
           new_unique_profiles_by_age = bucket_by_profile_age(new_unique_user_proofed_events)
+          new_unique_profiles_year1 = bucket_by_upfront_existing(new_unique_user_proofed_events)
 
           prev_seen_user_proofed_events |= this_month_user_proofed_events
 
@@ -91,6 +106,8 @@ module Db
             partner_ial2_unique_user_events_year_greater_than_5: unique_profiles_by_age[:older].count, # rubocop:disable Layout/LineLength
             partner_ial2_unique_user_events_unknown: unique_profiles_by_age[:unknown].count,
             new_unique_user_proofed_events: new_unique_user_proofed_events.count,
+            partner_ial2_new_unique_user_events_year1_upfront: new_unique_profiles_year1[:upfront].count, # rubocop:disable Layout/LineLength
+            partner_ial2_new_unique_user_events_year1_existing: new_unique_profiles_year1[:existing].count, # rubocop:disable Layout/LineLength
             partner_ial2_new_unique_user_events_year1: new_unique_profiles_by_age[0].count,
             partner_ial2_new_unique_user_events_year2: new_unique_profiles_by_age[1].count,
             partner_ial2_new_unique_user_events_year3: new_unique_profiles_by_age[2].count,
@@ -123,11 +140,15 @@ module Db
             , %{year_month} AS year_month
             , subq.profile_verified_at
             , subq.profile_age
+            , MAX(subq.profile_requested_issuer) AS profile_requested_issuer
+            , MAX(subq.issuer) AS issuer
             FROM (
               SELECT
                   sp_return_logs.user_id
                 , sp_return_logs.profile_verified_at
                 , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
+                , sp_return_logs.profile_requested_issuer
+                , sp_return_logs.issuer
               FROM sp_return_logs
               WHERE
                     sp_return_logs.ial > 1
@@ -152,6 +173,21 @@ module Db
             :older
           else
             age.to_i
+          end
+        end.tap { |counts| counts.default = [] }
+      end
+
+      def bucket_by_upfront_existing(unique_user_events)
+        unique_user_events.group_by do |user_unique_id|
+          age = user_unique_id.profile_age
+          if age.nil? || age.negative?
+            next
+          elsif age == 0
+            if @user_issuer_ids.include?(user_unique_id.user_id)
+              :upfront
+            else
+              :existing
+            end
           end
         end.tap { |counts| counts.default = [] }
       end

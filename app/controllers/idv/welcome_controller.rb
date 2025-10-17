@@ -19,11 +19,13 @@ module Idv
 
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
+        show_sp_reproof_banner: show_sp_reproof_banner?,
       )
     end
 
     def update
       clear_future_steps!
+      clear_idv_session
       idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
@@ -46,6 +48,18 @@ module Idv
     end
 
     private
+
+    def show_sp_reproof_banner?
+      IdentityConfig.store.feature_show_sp_reproof_banner_enabled &&
+        sp_session[:issuer].present? &&
+        current_user.has_proofed_before?
+    end
+
+    def clear_idv_session
+      mail_only_warning_shown = idv_session.mail_only_warning_shown
+      idv_session.clear
+      idv_session.mail_only_warning_shown = mail_only_warning_shown
+    end
 
     def analytics_arguments
       {

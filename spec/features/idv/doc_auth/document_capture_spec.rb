@@ -11,12 +11,16 @@ RSpec.feature 'document capture step', :js do
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:passports_enabled) { false }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
       attempts_api_tracker,
+    )
+    allow_any_instance_of(ApplicationController).to receive(:fraud_ops_tracker).and_return(
+      fraud_ops_tracker,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
@@ -964,12 +968,9 @@ RSpec.feature 'document capture step', :js do
           end
 
           context 'when ipp is enabled' do
-            let(:in_person_doc_auth_button_enabled) { true }
             let(:sp_ipp_enabled) { true }
 
             before do
-              allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
-                .and_return(in_person_doc_auth_button_enabled)
               allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
                 .and_return(true)
               allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)

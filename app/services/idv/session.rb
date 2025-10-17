@@ -118,7 +118,7 @@ module Idv
       if current_user.has_establishing_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
-          pii: Pii::Attributes.new_from_hash(applicant),
+          applicant_pii: Pii::UspsApplicant.from_idv_applicant(applicant),
           is_enhanced_ipp: is_enhanced_ipp,
           opt_in: opt_in_param,
         )
@@ -187,7 +187,8 @@ module Idv
     end
 
     def clear
-      user_session.delete(:idv)
+      user_session[:idv] = {}
+      user_session['idv/in_person'] = {}
       @profile = nil
       @gpo_otp = nil
     end
@@ -385,6 +386,11 @@ module Idv
     def in_person_passports_allowed?
       IdentityConfig.store.doc_auth_passports_enabled &&
         IdentityConfig.store.in_person_passports_enabled
+    end
+
+    def standard_flow_document_capture_eligible?
+      flow_path == 'standard' &&
+        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
     end
 
     private

@@ -16,6 +16,7 @@ module Idv
       params,
       acuant_sdk_upgrade_ab_test_bucket:,
       attempts_api_tracker:,
+      fraud_ops_tracker:,
       service_provider:,
       analytics: nil,
       liveness_checking_required: false,
@@ -25,6 +26,7 @@ module Idv
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
+      @fraud_ops_tracker = fraud_ops_tracker
       @readable = {}
       @service_provider = service_provider
       @uuid_prefix = uuid_prefix
@@ -89,6 +91,24 @@ module Idv
           zip: pii_from_doc[:zip],
           failure_reason: failure_reason(response),
         )
+
+        fraud_ops_tracker.idv_document_upload_submitted(
+          **doc_escrow_images,
+          success: response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address1: pii_from_doc[:address1],
+          address2: pii_from_doc[:address2],
+          city: pii_from_doc[:city],
+          state: pii_from_doc[:state],
+          zip: pii_from_doc[:zip],
+          failure_reason: failure_reason(response),
+        )
       end
 
       abandon_any_ipp_progress
@@ -100,6 +120,7 @@ module Idv
     attr_reader :acuant_sdk_upgrade_ab_test_bucket,
                 :analytics,
                 :attempts_api_tracker,
+                :fraud_ops_tracker,
                 :form_response,
                 :liveness_checking_required,
                 :params,
@@ -147,6 +168,11 @@ module Idv
         success: response.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(response),
       )
+      fraud_ops_tracker.idv_document_uploaded(
+        **doc_escrow_images,
+        success: response.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(response),
+      )
     end
 
     def doc_escrow_enabled?
@@ -160,7 +186,8 @@ module Idv
         doc_auth_client.post_images(
           **images_metadata.submittable_images,
           image_source: image_source,
-          images_cropped: acuant_sdk_autocaptured_id?,
+          # autocapture no longer crops the images
+          images_cropped: false, # acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
@@ -404,6 +431,7 @@ module Idv
         user_id: user_uuid,
       )
       attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
+      fraud_ops_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 
     def document_capture_session_uuid

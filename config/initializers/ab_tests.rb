@@ -159,14 +159,6 @@ module AbTests
     user&.uuid
   end.freeze
 
-  SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
-    experiment_name: 'Socure shadow mode',
-    should_log: ['IdV: doc auth verify proofing results'].to_set,
-    buckets: {
-      socure_shadow_mode_for_non_docv_users: IdentityConfig.store.socure_idplus_shadow_mode_percent,
-    },
-  ).freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
@@ -182,6 +174,18 @@ module AbTests
       service_provider:, user:, user_session:,
     )
   end.freeze
+
+  ADDRESS_PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Address Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_address_default_vendor,
+    buckets: {
+      socure: IdentityConfig.store.idv_address_vendor_switching_enabled ?
+          IdentityConfig.store.idv_address_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.idv_address_vendor_switching_enabled ?
+          IdentityConfig.store.idv_address_vendor_lexis_nexis_percent : 0,
+    },
+  ).freeze
 
   # This "test" will permanently be in place to allow a multi-vendor configuration.
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(

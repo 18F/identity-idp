@@ -8,6 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+  SECURE_ANALYZERS_PREFIX: "$ECR_REGISTRY/gitlab/security-products"
   IDP_CI_SHA: 'sha256:787f58c3d7e0899d7a622202aa21a9ead24a3fc160d1b158160429bdcc33e4fe'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
@@ -19,11 +20,11 @@ default:
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
-.yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_install: &npm_install
+  - npm ci --cache=.npm-cache
 
-.yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+.npm_production_install: &npm_production_install
+  - npm ci --omit=dev --cache=.npm-cache
 
 .build_cache:
   - &ruby_cache
@@ -34,20 +35,20 @@ default:
       - vendor/ruby
     policy: pull
 
-  - &yarn_cache
+  - &npm_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
-  - &yarn_production_cache
+  - &npm_production_cache
     key:
       files:
-        - yarn.lock
+        - package-lock.json
     paths:
-      - .yarn-cache/
+      - .npm-cache/
     policy: pull
 
   - &assets_cache
@@ -77,18 +78,17 @@ install:
   stage: build
   variables:
     RAILS_ENV: test
-    SKIP_YARN_INSTALL: 'true'
   cache:
     - <<: *ruby_cache
       policy: pull-push
-    - <<: *yarn_cache
+    - <<: *npm_cache
       policy: pull-push
     - <<: *assets_cache
       policy: push
 
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
@@ -247,7 +247,7 @@ specs:
   parallel: 22
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   variables:
     AWS_ACCESS_KEY_ID: test
@@ -255,6 +255,7 @@ specs:
     AWS_REGION: us-west-2
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
+    RUBYOPT: '--enable=frozen-string-literal'
     COVERAGE: 'true'
     DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity_idp_test
@@ -279,7 +280,7 @@ specs:
       junit: rspec.xml
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - cp config/application.yml.default config/application.yml
     - cp config/service_providers.localdev.yml config/service_providers.yml
     - cp config/agencies.localdev.yml config/agencies.yml
@@ -293,7 +294,7 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\n  redis_attempts_api_url: 'redis://db-redis:6379/2'\" > config/application.yml"
+    - "echo -e \"test:\n  redis_url: 'redis://db-redis:6379/0'\n  redis_throttle_url: 'redis://db-redis:6379/1'\n  redis_attempts_api_url: 'redis://db-redis:6379/2'\n  redis_fraud_ops_url: 'redis://db-redis:6379/3'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
@@ -304,11 +305,11 @@ lint:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
     - <<: *assets_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make lint
   artifacts:
     expire_in: 31d
@@ -324,13 +325,12 @@ js_build:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_production_cache
+    - <<: *npm_production_cache
   variables:
     NODE_ENV: 'production'
-    SKIP_YARN_INSTALL: 'true'
   script:
     - *bundle_install
-    - *yarn_production_install
+    - *npm_production_install
     - bundle exec rake assets:precompile
     - make lint_asset_bundle_size
 
@@ -339,10 +339,10 @@ js_tests:
   needs:
     - job: install
   cache:
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
-    - *yarn_install
-    - yarn test
+    - *npm_install
+    - npm run test
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing
@@ -384,6 +384,38 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
+  when: always
+
+# This job posts a message in Slack if the `spec` job fails for a commit on main.
+# We use artifacts from the merged rspec report to read the number of failed jobs to check
+# whether the tests all passed.
+# This must be a separate job because the tests run in parallel and there is no way to run
+# a single job based on the result of all of them.
+alert_main_test:
+  stage: after_test
+  needs:
+    - job: coverage
+  cache:
+    - <<: *ruby_cache
+  script:
+    - *bundle_install
+    - |-
+      cat rspec_json/rspec.json | ruby -rjson -e 'failure_count = JSON.parse(ARGF.read).fetch("summary").fetch("failure_count"); exit 1 if failure_count > 0'
+  after_script:
+    - |-
+      if [ "$CI_JOB_STATUS" != "success" ]; then
+        ./scripts/notify-slack \
+          --icon ":gitlab:"  \
+          --username "gitlab-notify" \
+          --channel "#login-appdev" \
+          --webhook "${SLACK_WEBHOOK}" \
+          --raise \
+          --text "$(printf "Pipeline failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
+      else
+        echo "Not notifying in slack"
+      fi
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 
 build-ci-image:
   stage: build
@@ -501,6 +533,8 @@ include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
+  - local: .gitlab-ci-devenv.yml
+  - local: .gitlab-ci-rules.yml
 
 secret_detection:
   allow_failure: false
@@ -692,10 +726,10 @@ pinpoint_check_scheduled:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make lint_country_dialing_codes
   after_script:
     - |-
@@ -716,10 +750,10 @@ audit_packages_scheduled:
     - job: install
   cache:
     - <<: *ruby_cache
-    - <<: *yarn_cache
+    - <<: *npm_cache
   script:
     - *bundle_install
-    - *yarn_install
+    - *npm_install
     - make audit
   after_script:
     - |-

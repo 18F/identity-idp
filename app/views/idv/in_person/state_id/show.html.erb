@@ -141,6 +141,26 @@
         ) %>
   </div>
 
+  <div class="margin-bottom-4">
+    <%= render MemorableDateComponent.new(
+          content_tag: 'memorable-date',
+          name: :id_expiration,
+          day: parsed_expiration&.day,
+          month: parsed_expiration&.month,
+          year: parsed_expiration&.year,
+          required: true,
+          min: Time.zone.today + 1.day,
+          hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
+          label: t('in_person_proofing.form.state_id.expiration_date'),
+          form: f,
+          error_messages: {
+            missing_month_day_year: t('simple_form.required.text'),
+            range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
+          },
+        )
+    %>
+  </div>
+
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
     <%= render ValidatedFieldComponent.new(
           name: :identity_doc_address_state,

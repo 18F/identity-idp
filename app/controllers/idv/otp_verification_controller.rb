@@ -30,6 +30,12 @@ module Idv
         failure_reason: result.success? ? nil : failure_reason(result.to_h),
       )
 
+      fraud_ops_tracker.idv_phone_otp_submitted(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        failure_reason: result.success? ? nil : failure_reason(result.to_h),
+      )
+
       if result.success?
         idv_session.mark_phone_step_complete!
         save_in_person_notification_phone

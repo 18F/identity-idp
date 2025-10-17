@@ -30,7 +30,7 @@ The general folder structure for front-end assets includes:
     - `stylesheets/`: Source Sass files
   - [`components/`][components-readme]: ViewComponent implementations
   - `javascript/`
-    - [`packages/`][packages-readme]: JavaScript workspace NPM packages
+    - [`packages/`][packages-readme]: JavaScript workspace npm packages
     - [`packs/`][packs-readme]: JavaScript entrypoints referenced by pages
 - `public/`
   - `assets/`: Compiled images, fonts, and stylesheets
@@ -64,10 +64,10 @@ margins or borders.
 
 ### CSS Build Tooling
 
-Stylesheets are compiled from Sass source files using our [`@18f/identity-build-sass` NPM package](../app/javascript/packages/build-sass/README.md)
+Stylesheets are compiled from Sass source files using our [`@18f/identity-build-sass` npm package](../app/javascript/packages/build-sass/README.md)
 `build-sass` command-line utility.
 
-`@18f/identity-build-sass` is a wrapper of the official Sass [`sass-embedded` NPM package](https://www.npmjs.com/package/sass-embedded),
+`@18f/identity-build-sass` is a wrapper of the official Sass [`sass-embedded` npm package](https://www.npmjs.com/package/sass-embedded),
 with a few additional features:
 
 - Minifies stylesheets in production environments.
@@ -88,7 +88,7 @@ In deployed environments, we rely on Propshaft to append a [fingerprint](https:/
 suffix to invalidate caches for previous versions of the stylesheet.
 
 The [`cssbundling-rails` gem](https://github.com/rails/cssbundling-rails) is a dependency of the
-project, which enhances `rake assets:precompile` to invoke `yarn build:css` as part of
+project, which enhances `rake assets:precompile` to invoke `npm run build:css` as part of
 [assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
 during application deployment.
 
@@ -98,9 +98,9 @@ during application deployment.
 
 - All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
-- The code follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- The code follows [TTS JavaScript standards](https://guides.18f.org/engineering/languages-runtimes/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
 - Code styling is formatted automatically using [Prettier](https://prettier.io/)
-- Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
+- Packages are managed with [npm](https://docs.npmjs.com/), organized using [npm workspaces](https://docs.npmjs.com/cli/using-npm/workspaces)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
 ### Naming Conventions
@@ -124,16 +124,16 @@ debates over code style, since there is a consistent style being enforced throug
 tooling.
 
 Prettier is integrated with [the project's linting setup](#eslint). Most issues can be resolved
-automatically by running `yarn run lint --fix`. You may also consider one of the
+automatically by running `npm run lint -- --fix`. You may also consider one of the
 [available editor integrations](https://prettier.io/docs/en/editors.html), which can simplify your
 workflow to apply formatting automatically on save.
 
-### Yarn Workspaces
+### npm Workspaces
 
-[Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and
-organize code which is used just like any other NPM package, but which doesn't require the overhead
+[Workspaces](https://docs.npmjs.com/cli/using-npm/workspaces) allow a developer to create and
+organize code which is used just like any other npm package, but which doesn't require the overhead
 involved in publishing those modules and keeping versions in sync across multiple repositories. We
-use Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
+use npm workspaces to keep JavaScript code organized, reusable, and to encourage good coding
 practices in abstractions.
 
 In practice:
@@ -142,19 +142,19 @@ In practice:
 - Each package should have its own `package.json` that includes...
   - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
   - ...a [`private`](https://docs.npmjs.com/files/package.json#private) value indicating whether the
-    package is intended to be published to NPM.
+    package is intended to be published to npm.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
   - ...a `sideEffects` value listing files containing any side effects, used for [Webpack's Tree Shaking optimization](https://webpack.js.org/guides/tree-shaking/).
 - The package should be importable by its bare name, either with an `index.ts` or equivalent
   [package entrypoints](https://nodejs.org/api/packages.html#package-entry-points)
 
-As with any public NPM package, a workspace package should ideally be reusable and avoid direct
+As with any public npm package, a workspace package should ideally be reusable and avoid direct
 references to page elements. In order to integrate a package within a particular page, you should
 either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md),
 or by creating a new `app/javascript/packs` file to be loaded on a page.
 
-Because Yarn will alias workspace packages using symlinks, you can reference a package using the
+Because npm will alias workspace packages using symlinks, you can reference a package using the
 name you assigned using the guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
 
@@ -162,7 +162,7 @@ name you assigned using the guidelines above for `package.json` `name` field (fo
 
 While the project is not a Node.js application or library, the distinction between `dependencies`
 and `devDependencies` is important due to how assets are precompiled in deployed environments.
-During a deployment, dependencies are installed using [the `--production` flag](https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false),
+During a deployment, dependencies are installed using [the `--omit=dev` flag](https://docs.npmjs.com/cli/commands/npm-install#omit),
 meaning that all dependencies which are required to build the project must be defined as
 `dependencies`, not as `devDependencies`.
 
@@ -172,30 +172,22 @@ TypeScript declaration packages. When possible, it is still useful to define `de
 improve the performance of application asset compilation.
 
 When installing new dependencies, consider whether the dependency is relevant for an individual
-workspace package, or for the entire project. By default, Yarn will warn when trying to install a
-dependency in the root package, since dependencies should typically be installed for a specific
-workspace.
+workspace package, or for the entire project. Dependencies should typically be installed for a specific
+workspace rather than the root unless absolutely necessary.
 
 To install a dependency to a workspace:
 
 ```bash
-yarn workspace @18f/identity-build-sass add sass-embedded
-```
-
-To install a dependency to the project:
-
-```bash
-# Note the `-W` flag
-yarn add -W webpack
+npm install sass-embedded -w @18f/identity-build-sass
 ```
 
 As much as possible, try to use the same version of a dependency when it is used across multiple
 workspace packages. Otherwise, it can inflate the size of the compiled bundles and have a negative
 performance impact on users.
 
-We use [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
-to deduplicate resolved package versions within the Yarn lockfile, and enforce it with
-the `make lint_yarn_lock` check.
+We use [`npm dedupe`](https://docs.npmjs.com/cli/commands/npm-dedupe)
+to deduplicate resolved package versions within the npm lockfile, and enforce it with
+the `make lint_package_lock` check.
 
 ### Localization
 
@@ -267,7 +259,7 @@ The JavaScript manifest is parsed by the [`AssetSources` class](../lib/asset_sou
 in the application's view layout.
 
 The [`jsbundling-rails` gem](https://github.com/rails/jsbundling-rails) is a dependency of the
-project, which enhances `rake assets:precompile` to invoke `yarn build` as part of [assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
+project, which enhances `rake assets:precompile` to invoke `npm run build` as part of [assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
 during application deployment.
 
 [rails-assets-webpack-plugin-readme]: ../app/javascript/packages/assets/README.md
@@ -385,14 +377,14 @@ For example, consider a **Password Input** component:
 
 Login.gov publishes and uses
 [our own custom Stylelint configuration](https://www.npmjs.com/package/@18f/identity-stylelint-config),
-which is based on [TTS engineering best-practices](https://engineering.18f.gov/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
+which is based on [TTS engineering best-practices](https://guides.18f.org/engineering/languages-runtimes/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
 enforces
 [BEM-style class naming conventions](https://en.bem.info/methodology/naming-convention/#two-dashes-style).
 
 It may be useful to consider installing a
 [Prettier editor integration](https://prettier.io/docs/en/editors.html) to automatically format
 files on save. Similarly, a
-[Stylelint editor integration](https://stylelint.io/user-guide/integrations/editor) can help
+[Stylelint editor integration](https://stylelint.io/user-guide/customize/#using-stylelint) can help
 identify issues in your code as you write.
 
 ### Mocha
@@ -412,13 +404,13 @@ and support [querying by accessible semantics](https://testing-library.com/docs/
 To run all test specs:
 
 ```
-yarn test
+npm test
 ```
 
 To run a single test file:
 
 ```
-yarn mocha app/javascript/packages/analytics/index.spec.ts
+npm exec mocha app/javascript/packages/analytics/index.spec.ts
 ```
 
 You can also pass any [Mocha command-line arguments](https://mochajs.org/#command-line-usage).
@@ -426,7 +418,7 @@ You can also pass any [Mocha command-line arguments](https://mochajs.org/#comman
 For example, to watch a file and rerun tests after any change:
 
 ```
-yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
+npm exec mocha app/javascript/packages/analytics/index.spec.ts -- --watch
 ```
 
 ### ESLint
@@ -436,13 +428,13 @@ yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
 To analyze all JavaScript files:
 
 ```
-yarn run lint
+npm run lint
 ```
 
 Many issues can be fixed automatically by appending a `--fix` flag to the command:
 
 ```
-yarn run lint --fix
+npm run lint -- --fix
 ```
 
 ## Forms
@@ -480,8 +472,8 @@ If there is no record available, you can initialize `simple_form_for` with an em
 
 ### Form Validation
 
-Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
-wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#using_built-in_form_validation)
+Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation)
+wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation#using_built-in_form_validation)
 to define validation constraints. For advanced validation, consider using the [`setCustomValidity`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setCustomValidity)
 function to assign or remove validation messages when an input's value changes.
 
