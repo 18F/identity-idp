@@ -108,6 +108,14 @@ class ServiceProvider < ApplicationRecord
     logo_url.end_with?('.png')
   end
 
+  def display_name
+    friendly_name || agency.name || issuer
+  end
+
+  def agency_name
+    agency.name
+  end
+
   private
 
   def s3_logo_url
