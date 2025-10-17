@@ -54,7 +54,6 @@ class DuplicateProfileChecker
 
   def find_or_create_duplicate_profile_set(new_profile_ids)
     existing_duplicate_profile_set = find_existing_duplicate_profile_set(new_profile_ids)
-
     if existing_duplicate_profile_set.present?
       # Update existing record if profile_ids have changed
       update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
@@ -65,18 +64,26 @@ class DuplicateProfileChecker
   end
 
   def find_existing_duplicate_profile_set(profile_ids)
-    DuplicateProfileSet.involving_profiles(
+    DuplicateProfileSet.set_for_profiles_and_service_provider(
       profile_ids: profile_ids,
       service_provider: sp.issuer,
     )
   end
 
   def update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
+    # Reopen the set if it was closed but neew duplicate profiles are found
+    if existing_duplicate_profile_set.closed_at.present?
+      existing_duplicate_profile_set.update!(closed_at: nil, self_serviced: false)
+      analytics.one_account_duplicate_profile_reopened(
+        duplicate_profile_set_id: existing_duplicate_profile_set.id,
+      )
+    end
+
     if existing_duplicate_profile_set.profile_ids.sort != new_profile_ids.sort
       existing_duplicate_profile_set.update!(profile_ids: new_profile_ids)
       analytics.one_account_duplicate_profile_updated
     end
-    existing_duplicate_profile_set
+    existing_duplicate_profile_set if existing_duplicate_profile_set.open?
   end
 
   def create_duplicate_profile_set(profile_ids)
