@@ -832,6 +832,26 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#handle_suspended_user' do
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    context 'when user is signed in and suspended' do
+      let(:user) { create(:user, :suspended) }
+      before do
+        sign_in user
+      end
+
+      it 'redirects to suspended path' do
+        get :index
+        expect(response).to redirect_to user_please_call_path
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)
