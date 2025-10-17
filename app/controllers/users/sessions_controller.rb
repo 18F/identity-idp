@@ -205,7 +205,7 @@ module Users
       cache_profiles(auth_params[:password])
       set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)
-      UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if send_new_device_notification
+      UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,
         email: auth_params[:email],
@@ -338,10 +338,6 @@ module Users
         DeviceProfilingResult::PROFILING_TYPES[:account_creation],
       )
       profiling_result&.rejected?
-    end
-
-    def send_new_device_notification
-      new_device? && !user_locked_out?(current_user)
     end
   end
 
