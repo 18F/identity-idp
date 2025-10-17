@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AddressProofingJob, type: :job do
-  let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+  let(:document_capture_session) { create(:document_capture_session, result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: applicant_pii }.to_json,
@@ -19,6 +19,7 @@ RSpec.describe AddressProofingJob, type: :job do
     }
   end
   let(:trace_id) { SecureRandom.hex }
+  let(:user_id) { document_capture_session.user_id }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -27,6 +28,8 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor: :mock,
+        user_id:,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -36,6 +39,7 @@ RSpec.describe AddressProofingJob, type: :job do
 
   describe '#perform' do
     let(:conversation_id) { SecureRandom.hex }
+    let(:address_vendor) { :lexis_nexis }
 
     let(:instance) { AddressProofingJob.new }
     subject(:perform) do
@@ -44,6 +48,8 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor:,
+        user_id:,
       )
     end
 
@@ -91,7 +97,78 @@ RSpec.describe AddressProofingJob, type: :job do
       end
     end
 
+    context 'webmock vendor socure' do
+      let(:address_vendor) { :socure }
+      let(:phonerisk_score) { 0.01 }
+      let(:namephone_correlation_score) { 0.99 }
+      before do
+        stub_request(
+          :post,
+          'https://sandbox.socure.test/api/3.0/EmailAuthScore',
+        ).to_return(
+          body: {
+            reference: '',
+            phoneRisk: {
+              score: phonerisk_score,
+              reasonCodes: [],
+            },
+            namePhoneCorrelation: {
+              score: namephone_correlation_score,
+              reasonCodes: [],
+            },
+          }.to_json,
+          headers: { 'Content-Type' => 'application/json' },
+        )
+      end
+
+      it 'passes proofing' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('socure_phonerisk')
+      end
+
+      it 'does not add cost data' do
+        expect { perform }.not_to(change { SpCost.count })
+      end
+
+      context 'high phonerisk score' do
+        let(:phonerisk_score) { 0.99 }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
+      end
+      context 'low name phone correlation score' do
+        let(:namephone_correlation_score) { 0.01 }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
+      end
+    end
+
     context 'mock proofer' do
+      let(:address_vendor) { :mock }
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(

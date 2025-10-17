@@ -75,6 +75,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'state_id',
+        opted_in_to_in_person_proofing: true,
       }
     end
 
@@ -200,6 +201,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           step: 'state_id',
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
+          opted_in_to_in_person_proofing: true,
         }
       end
 

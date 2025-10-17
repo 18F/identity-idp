@@ -642,6 +642,7 @@ doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
+doc_auth.headings.welcome_sp_reproof: Verify your identity again for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to access <strong>%{service_provider_name}</strong>. Only add your ID if you asked %{app_name} to verify your ID using your phone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
 doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.
@@ -707,6 +708,7 @@ doc_auth.info.verify_online_description_passport: You can use a U.S. passport bo
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
+doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet2: Enter your Social Security number
@@ -2073,9 +2075,9 @@ user_mailer.please_reset_password.subject: Unusual activity — reset your %{app
 user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
-user_mailer.reset_password_instructions.header: To finish resetting your password, please click the link below or copy and paste the entire link into your browser.
+user_mailer.reset_password_instructions.header_html: 'If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.'
 user_mailer.reset_password_instructions.link_text: Reset your password
-user_mailer.reset_password_instructions.subject: Reset your password
+user_mailer.reset_password_instructions.subject: Password reset requested for your %{app_name} account
 user_mailer.signup_with_your_email.help_html: If you did not request a new account or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t use it to create a new account. To sign in with your existing account, follow the link below. If you are not trying to sign in with this email address, you can ignore this message.
 user_mailer.signup_with_your_email.link_text: Go to %{app_name}
@@ -2104,6 +2106,8 @@ users.delete.instructions: Enter your password to confirm that you want to delet
 users.delete.subheading: 'If you delete your account:'
 users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
 users.duplicate_profiles_please_call.heading: Please give us a call
+users.edit_info.link: Learn how to identify fraud and report it.
+users.edit_info.warning: If someone asked you to reset your password, it may be a scam.
 users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview

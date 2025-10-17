@@ -57,6 +57,7 @@ RSpec.describe Idv::InPerson::SsnController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'ssn',
+        opted_in_to_in_person_proofing: true,
       }
     end
 
@@ -138,6 +139,7 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: true,
+          opted_in_to_in_person_proofing: true,
         }
       end
 
@@ -189,6 +191,7 @@ RSpec.describe Idv::InPerson::SsnController do
             step: 'ssn',
             success: true,
             previous_ssn_edit_distance: 6,
+            opted_in_to_in_person_proofing: true,
           }
         end
 
@@ -213,6 +216,7 @@ RSpec.describe Idv::InPerson::SsnController do
           step: 'ssn',
           success: false,
           error_details: { ssn: { invalid: true } },
+          opted_in_to_in_person_proofing: true,
         }
       end
 

@@ -28,6 +28,38 @@ RSpec.describe Idv::WelcomePresenter do
     expect(presenter.title).to eq(t('doc_auth.headings.welcome', sp_name: sp.friendly_name))
   end
 
+  describe '#title with reproof banner' do
+    context 'when show_sp_reproof_banner is true' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: true,
+        )
+      end
+
+      it 'returns the reproof title' do
+        expect(presenter.title).to eq(
+          t('doc_auth.headings.welcome_sp_reproof', sp_name: sp.friendly_name),
+        )
+      end
+    end
+
+    context 'when show_sp_reproof_banner is false' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: false,
+        )
+      end
+
+      it 'returns the standard title' do
+        expect(presenter.title).to eq(
+          t('doc_auth.headings.welcome', sp_name: sp.friendly_name),
+        )
+      end
+    end
+  end
+
   describe 'the explanation' do
     let(:help_link) { '<a href="https://www.example.com>Learn more about verifying your identity</a>' }
 

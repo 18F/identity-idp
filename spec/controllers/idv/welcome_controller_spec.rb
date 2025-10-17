@@ -150,6 +150,81 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
       end
     end
+
+    context 'SP reproofing banner' do
+      context 'when feature flag is enabled and user has proofed before with SP session' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as true to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(true)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(false)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when user has not proofed before' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when there is no service provider in session' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#update' do

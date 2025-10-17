@@ -175,6 +175,18 @@ module AbTests
     )
   end.freeze
 
+  ADDRESS_PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Address Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_address_default_vendor,
+    buckets: {
+      socure: IdentityConfig.store.idv_address_vendor_switching_enabled ?
+          IdentityConfig.store.idv_address_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.idv_address_vendor_switching_enabled ?
+          IdentityConfig.store.idv_address_vendor_lexis_nexis_percent : 0,
+    },
+  ).freeze
+
   # This "test" will permanently be in place to allow a multi-vendor configuration.
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Passport Vendor',

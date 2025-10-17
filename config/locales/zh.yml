@@ -653,6 +653,7 @@ doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
+doc_auth.headings.welcome_sp_reproof: 为 %{sp_name} 再次验证您的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用<strong>%{app_name}</strong>访问<strong>%{service_provider_name}</strong>。仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
 doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
@@ -718,6 +719,7 @@ doc_auth.info.verify_online_description_passport: 你可以使用美国护照本
 doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
 doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
+doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet2: 输入你的社会保障号码
@@ -2086,9 +2088,9 @@ user_mailer.please_reset_password.subject: 异常活动 — 重设你的 %{app_n
 user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时后会作废。
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
-user_mailer.reset_password_instructions.header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
+user_mailer.reset_password_instructions.header_html: '如果您提出了此请求，请点击重置您的密码继续。<br/><br/>如果您没有提出此请求，请勿更改您的密码。请向我们的帮助中心报告任何可疑活动。<br/><br/>我们绝不会通过电子邮件、电话或短信要求您分享您的密码、安全代码或其他敏感信息。'
 user_mailer.reset_password_instructions.link_text: 重设你的密码
-user_mailer.reset_password_instructions.subject: 重设你的密码
+user_mailer.reset_password_instructions.subject: 您的 %{app_name} 账户已请求重置密码
 user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.signup_with_your_email.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能用它设立新账户。要使用你现有账户登录，请点击以下链接。 如果你未试图用此电邮地址登录，可以忽略这一信息。
 user_mailer.signup_with_your_email.link_text: 请到 %{app_name}
@@ -2117,6 +2119,8 @@ users.delete.instructions: 输入密码来确认你要删除账户。
 users.delete.subheading: 如果你删除自己的账户：
 users.duplicate_profiles_please_call.error_details_html: <p>如果你不认识或无法删除在列出多个帐户的那一页面上看到的某个重复帐户，请拨打 <strong>%{contact_number}</strong> 致电我们的联系中心并提供出错代码 <strong>LG33</strong>。</p><p>对重复帐户或该怎么办有疑问？了解更多关于<a href="%{help_url}">如何解决重复帐户的信息。</a></p>
 users.duplicate_profiles_please_call.heading: 请给我们打个电话
+users.edit_info.link: 了解如何识别欺诈并举报。
+users.edit_info.warning: 如果有人要求您重置密码，这可能是一个骗局。
 users.password_compromised.warning: 另一个网站或应用程序的数据泄露中我们发现有你的密码。%{app_name} 要求你更改密码来保护你的账户。
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览

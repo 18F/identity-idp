@@ -139,7 +139,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        )
       end
 
       it 'renders the gpo warning alert' do
@@ -150,7 +153,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -174,7 +179,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        )
       end
 
       it 'does not render the gpo warning alert' do
@@ -185,7 +193,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -207,7 +217,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        )
       end
 
       it 'does not render the gpo warning alert' do
@@ -218,7 +231,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
