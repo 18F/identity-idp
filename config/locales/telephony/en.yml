@@ -21,7 +21,7 @@ en:
         %{app_name}: You visited the Post Office on %{proof_date}. Check email for your result. Not you? Report this right away: %{contact_number}. Ref: %{reference_string}
     confirmation_otp:
       sms: |-
-        %{app_name} will NEVER contact you for this code. Don’t share it with anyone. Your code is %{code}. It expires in %{expiration} minutes.
+        %{app_name} will NEVER contact you for this code. Don't share it with anyone. Your code is %{code}. It expires in %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Hello! Your %{format_length}-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
