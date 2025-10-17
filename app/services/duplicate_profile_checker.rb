@@ -82,7 +82,6 @@ class DuplicateProfileChecker
     existing_duplicate_profile_set if existing_duplicate_profile_set.open?
   end
 
-
   def reopen_existing_duplicate_set(existing_duplicate_profile_set)
     existing_duplicate_profile_set.update!(closed_at: nil, self_serviced: false)
     analytics.one_account_duplicate_profile_reopened(
