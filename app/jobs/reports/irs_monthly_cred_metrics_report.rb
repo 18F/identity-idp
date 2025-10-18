@@ -215,7 +215,7 @@ module Reports
     def ial2_new_unique_all(row)
       %w[
         partner_ial2_new_unique_user_events_year1_upfront
-        partner_ial2_new_unique_user_events_year1_existing       
+        partner_ial2_new_unique_user_events_year1_existing
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
