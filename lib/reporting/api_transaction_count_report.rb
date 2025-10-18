@@ -75,8 +75,7 @@ module Reporting
           'Phone Finder',
           'Socure (DocV)',
           'Socure (DocV - Selfie)',
-          'Socure (KYC - Non-Shadow)',
-          'Socure (KYC - Shadow)',
+          'Socure (KYC)',
           'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
@@ -90,8 +89,7 @@ module Reporting
           phone_finder_table.first,
           socure_table.first,
           socure_docv_selfie_table.first,
-          socure_kyc_non_shadow_table.first,
-          socure_kyc_shadow_table.first,
+          socure_kyc_table.first,
           fraud_score_and_attribute_table.first,
           threat_metrix_idv_table.first,
           threat_metrix_auth_only_table.first,
@@ -140,17 +138,13 @@ module Reporting
       [socure_table_count, result]
     end
 
-    def socure_kyc_non_shadow_table
-      result = fetch_results(query: socure_kyc_non_shadow_query)
+    def socure_kyc_table
+      result = fetch_results(query: socure_kyc)
       socure_table_count = result.count
       [socure_table_count, result]
     end
 
-    def socure_kyc_shadow_table
-      result = fetch_results(query: socure_kyc_shadow_query)
-      socure_table_count = result.count
-      [socure_table_count, result]
-    end
+
 
     def ln_emailage_table
       result = fetch_results(query: ln_emailage_query)
@@ -355,20 +349,12 @@ module Reporting
       QUERY
     end
 
-    def socure_kyc_non_shadow_query
+    def socure_kyc
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
         | filter name='IdV: doc auth verify proofing results' 
         and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
         | sort @timestamp desc
-        | limit 10000
-      QUERY
-    end
-
-    def socure_kyc_shadow_query
-      <<~QUERY
-        fields 
-        | filter name = "idv_socure_shadow_mode_proofing_result"
         | limit 10000
       QUERY
     end

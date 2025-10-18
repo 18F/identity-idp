@@ -20,8 +20,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:phone_finder_table).and_return([20, mock_results])
     allow(report).to receive(:socure_table).and_return([25, mock_results])
     allow(report).to receive(:socure_docv_selfie_table).and_return([26, mock_results])
-    allow(report).to receive(:socure_kyc_non_shadow_table).and_return([30, mock_results])
-    allow(report).to receive(:socure_kyc_shadow_table).and_return([31, mock_results])
+    allow(report).to receive(:socure_kyc).and_return([30, mock_results])
     allow(report).to receive(:fraud_score_and_attribute_table).and_return([40, mock_results])
     allow(report).to receive(:threat_metrix_idv_table).and_return([45, mock_results])
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
@@ -47,8 +46,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'Phone Finder',
           'Socure (DocV)',
           'Socure (DocV - Selfie)',
-          'Socure (KYC - Non-Shadow)',
-          'Socure (KYC - Shadow)',
+          'Socure (KYC)',
           'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
@@ -56,7 +54,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
         ],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 31, 40, 45, 50, 60])
+      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60])
     end
   end
 
@@ -72,7 +70,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
         /
           Week,True\ ID,True\ ID\ \(Selfie\),Instant\ verify,Phone\ Finder,
           Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),
-          Socure\ \(KYC\ -\ Non-Shadow\),Socure\ \(KYC\ -\ Shadow\),
+          Socure\ \(KYC\),
           Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
           Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage
         /x,
