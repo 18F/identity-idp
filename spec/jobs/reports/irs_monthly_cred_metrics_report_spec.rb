@@ -164,13 +164,35 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       # Test the processed data
       expect(data_column[0]).to eq('Value') # Values
       expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
-      expect(data_column[2]).to eq(95 + 53) # Credentials authorized for partner
-      # (upfront + existing + years 2-5)
-      expect(data_column[3]).to eq(95)
-      # New IAL Year 1 - partner_ial2_new_unique_user_events_year1_upfront
-      expect(data_column[4]).to eq(53) # Existing credentials authorized -
-      # partner_ial2_new_unique_user_events_year1_existing + years 2-5
-      expect(data_column[5]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
+
+      # Calculate expected values from fixture
+      parsed_invoice_data = CSV.parse(fixture_csv_data, headers: true)
+      report_year_month = report_date.strftime('%Y%m')
+      row = parsed_invoice_data.find { |r| r['year_month'] == report_year_month }
+
+      expected_credentials_authorized = %w[
+        partner_ial2_new_unique_user_events_year1_upfront
+        partner_ial2_new_unique_user_events_year1_existing
+        partner_ial2_new_unique_user_events_year2
+        partner_ial2_new_unique_user_events_year3
+        partner_ial2_new_unique_user_events_year4
+        partner_ial2_new_unique_user_events_year5
+      ].sum { |key| row[key].to_i }
+
+      expected_new_upfront = row['partner_ial2_new_unique_user_events_year1_upfront'].to_i
+
+      expected_existing = %w[
+        partner_ial2_new_unique_user_events_year1_existing
+        partner_ial2_new_unique_user_events_year2
+        partner_ial2_new_unique_user_events_year3
+        partner_ial2_new_unique_user_events_year4
+        partner_ial2_new_unique_user_events_year5
+      ].sum { |key| row[key].to_i }
+
+      expect(data_column[2]).to eq(expected_credentials_authorized) # Credentials authorized for partner
+      expect(data_column[3]).to eq(expected_new_upfront) # New IAL Year 1 - upfront
+      expect(data_column[4]).to eq(expected_existing) # Existing credentials authorized
+      expect(data_column[5]).to eq(row['issuer_ial1_plus_2_total_auth_count'].to_i) # Total Auths
     end
 
     it 'checks that upfront + existing equals year1 total' do
