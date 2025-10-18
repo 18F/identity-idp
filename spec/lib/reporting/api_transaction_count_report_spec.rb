@@ -20,7 +20,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:phone_finder_table).and_return([20, mock_results])
     allow(report).to receive(:socure_table).and_return([25, mock_results])
     allow(report).to receive(:socure_docv_selfie_table).and_return([26, mock_results])
-    allow(report).to receive(:socure_kyc).and_return([30, mock_results])
+    allow(report).to receive(:socure_kyc_table).and_return([30, mock_results])
     allow(report).to receive(:fraud_score_and_attribute_table).and_return([40, mock_results])
     allow(report).to receive(:threat_metrix_idv_table).and_return([45, mock_results])
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
