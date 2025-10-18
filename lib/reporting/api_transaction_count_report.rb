@@ -144,8 +144,6 @@ module Reporting
       [socure_table_count, result]
     end
 
-
-
     def ln_emailage_table
       result = fetch_results(query: ln_emailage_query)
       ln_emailage_table_count = result.count
