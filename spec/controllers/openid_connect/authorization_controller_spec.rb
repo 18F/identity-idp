@@ -313,7 +313,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests required facial match' do
-              let(:vtr) { ['Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -343,7 +343,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'selfie capture not enabled, facial match comparison not required' do
-                let(:vtr) { ['P1'].to_json }
+                let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
                 it 'redirects to the service provider' do
                   action
@@ -431,7 +431,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
-              let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
@@ -1106,7 +1106,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests required facial match' do
-              let(:vtr) { ['Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -1136,7 +1136,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'selfie capture not enabled, facial match comparison not required' do
-                let(:vtr) { ['P1'].to_json }
+                let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
                 it 'redirects to the service provider' do
                   action
@@ -1224,7 +1224,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
-              let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
