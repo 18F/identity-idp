@@ -759,7 +759,7 @@ duplicate_profiles_detected.delete_duplicates.details_html: Inicie sesión y, en
 duplicate_profiles_detected.delete_duplicates.heading: 'Elimine las cuentas duplicadas.'
 duplicate_profiles_detected.delete_duplicates.link: Cómo eliminar su cuenta.
 duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
-duplicate_profiles_detected.duplicate: Duplicate
+duplicate_profiles_detected.duplicate: Duplicada
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
 duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
@@ -772,7 +772,7 @@ duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
 duplicate_profiles_detected.sign_out: Cerrar sesión
-duplicate_profiles_detected.signed_in: Signed In
+duplicate_profiles_detected.signed_in: Iniciado sesión
 email_address.not_found: El correo electrónico no encontrado
 email_addresses.add.duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
 email_addresses.add.limit: Agregó el número máximo de direcciones de correo electrónico.
