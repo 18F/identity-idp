@@ -63,10 +63,14 @@ module Reports
       @reports ||= irs_registration_funnel_report.as_emailable_reports
     end
 
+    def previous_week_range
+      @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
+    end
+
     def irs_registration_funnel_report
       @irs_registration_funnel_report ||= Reporting::IrsRegistrationFunnelReport.new(
         issuers: issuers,
-        time_range: report_date.all_week,
+        time_range: previous_week_range,
       )
     end
 

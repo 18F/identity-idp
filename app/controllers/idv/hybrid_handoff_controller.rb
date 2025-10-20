@@ -14,9 +14,7 @@ module Idv
     def show
       abandon_any_ipp_progress
       @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
-      @post_office_enabled = IdentityConfig.store.in_person_proofing_enabled &&
-                             IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-                             IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      @post_office_enabled = IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                              Idv::InPersonConfig.enabled_for_issuer?(
                                decorated_sp_session.sp_issuer,
                              )
@@ -55,7 +53,9 @@ module Idv
     def self.selected_remote(idv_session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
-         idv_session.service_provider&.in_person_proofing_enabled
+         Idv::InPersonConfig.enabled_for_issuer?(
+           idv_session.service_provider&.issuer,
+         )
         idv_session.skip_doc_auth_from_how_to_verify == false
       else
         idv_session.skip_doc_auth_from_how_to_verify.nil? ||

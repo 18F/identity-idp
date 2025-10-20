@@ -200,6 +200,7 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Hybrid Handoff with opt in enabled midstream' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       it 'should go back to the Agreement step from Hybrid Handoff with opt in toggled midstream' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -242,6 +243,7 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Document Capture with opt in enabled midstream' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       before do
         complete_doc_auth_steps_before_document_capture_step
       end
@@ -269,6 +271,7 @@ RSpec.feature 'how to verify step', js: true do
     end
 
     context 'Going back from Document Capture with opt in disabled the whole time' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       before do
         complete_doc_auth_steps_before_document_capture_step
       end

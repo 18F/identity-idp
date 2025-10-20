@@ -16,10 +16,16 @@ RSpec.feature 'mobile hybrid flow entry', :js do
     complete_doc_auth_steps_before_hybrid_handoff_step
     click_send_link
 
+    expect(page).to have_content(t('doc_auth.headings.text_message'))
+
     link
   end
 
   let(:link_to_visit) { link_sent_via_sms }
+
+  before do
+    reload_ab_tests
+  end
 
   context 'valid link' do
     before do
@@ -43,9 +49,13 @@ RSpec.feature 'mobile hybrid flow entry', :js do
 
     context 'when socure is the doc auth vendor' do
       before do
-        allow(DocAuthRouter).to receive(:doc_auth_vendor_for_bucket)
-          .and_return(Idp::Constants::Vendors::SOCURE)
+        allow(IdentityConfig.store).to receive_messages(
+          doc_auth_vendor_lexis_nexis_percent: 0,
+          doc_auth_vendor_socure_percent: 100,
+          doc_auth_vendor_switching_enabled: true,
+        )
         stub_docv_document_request
+        reload_ab_tests
       end
 
       it 'puts the user on the socure document capture page' do

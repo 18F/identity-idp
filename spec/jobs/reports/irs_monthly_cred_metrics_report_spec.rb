@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date) }
+  let(:report_receiver) { :internal }
+  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver) }
 
   let(:name) { 'irs_monthly_cred_metrics' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -141,10 +142,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       # Test the processed data
       expect(data_column[0]).to eq('Value') # Values
       expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
-      expect(data_column[2]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
-      expect(data_column[3]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345+
-      expect(data_column[4]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
-      expect(data_column[5]).to eq(776) # IAL2 Auths - issuer_ial2_total_auth_count
+      expect(data_column[2]).to eq(95 + 53) # IAL2 Auths - partner_ial2_unique_user_events_year12345
+      expect(data_column[3]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
+      expect(data_column[4]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345
+      expect(data_column[5]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
     end
   end
 

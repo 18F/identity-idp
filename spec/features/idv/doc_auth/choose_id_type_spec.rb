@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'choose id type step error checking' do
+RSpec.feature 'choose id type step' do
   include DocAuthHelper
   include AbTestsHelper
   include IdvStepHelper
@@ -219,6 +219,24 @@ RSpec.feature 'choose id type step error checking' do
         click_on t('forms.buttons.continue')
         expect(page).to have_current_path(idv_document_capture_url)
       end
+    end
+  end
+
+  context 'flow policy' do
+    include DocAuthHelper
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+        .and_return(true)
+
+      sign_in_and_2fa_user
+    end
+
+    scenario 'User fails attempt to navigate to choose_id_type after starting IPP flow' do
+      complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: false)
+      visit idv_choose_id_type_url
+      expect(page).not_to have_current_path(idv_choose_id_type_url)
     end
   end
 end

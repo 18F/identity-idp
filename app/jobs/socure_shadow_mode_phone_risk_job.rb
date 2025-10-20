@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocureShadowModeProofingJob < ApplicationJob
+class SocureShadowModePhoneRiskJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
   queue_as :low
@@ -16,7 +16,6 @@ class SocureShadowModeProofingJob < ApplicationJob
     document_capture_session_result_id:,
     encrypted_arguments:,
     service_provider_issuer:,
-    user_email:,
     user_uuid:
   )
     raise_stale_job! if stale_job?(enqueued_at)
@@ -31,30 +30,22 @@ class SocureShadowModeProofingJob < ApplicationJob
 
     proofing_result = load_proofing_result(document_capture_session_result_id:)
     if !proofing_result
-      analytics.idv_socure_shadow_mode_proofing_result_missing
+      analytics.idv_socure_shadow_mode_phonerisk_result_missing
       return
     end
 
+    user_email = user.last_sign_in_email_address.email
     applicant = build_applicant(encrypted_arguments:, user_email:)
 
     socure_result = proofer(user:).proof(applicant)
 
-    analytics.idv_socure_shadow_mode_proofing_result(
-      resolution_result: format_proofing_result_for_logs(proofing_result),
-      socure_result: socure_result.to_h,
+    proofing_result[:timed_out] = proofing_result[:exception].is_a?(Proofing::TimeoutError)
+
+    analytics.idv_socure_shadow_mode_phonerisk_result(
+      phone_result: proofing_result,
+      socure_result: socure_result,
       phone_source: applicant[:phone_source],
       user_id: user.uuid,
-      pii_like_keypaths: [
-        [:errors, :ssn],
-        [:resolution_result, :context, :stages, :resolution, :errors, :ssn],
-        [:resolution_result, :context, :stages, :residential_address, :errors, :ssn],
-        [:resolution_result, :context, :stages, :threatmetrix, :response_body, :first_name],
-        [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
-        [:resolution_result, :context, :stages, :state_id, :state_id_jurisdiction],
-        [:resolution_result, :biographical_info, :identity_doc_address_state],
-        [:resolution_result, :biographical_info, :state_id_jurisdiction],
-        [:resolution_result, :biographical_info, :same_address_as_id],
-      ],
     )
   end
 
@@ -68,12 +59,6 @@ class SocureShadowModeProofingJob < ApplicationJob
       sp: service_provider_issuer,
       session: {},
     )
-  end
-
-  def format_proofing_result_for_logs(proofing_result)
-    proofing_result.to_h.tap do |hash|
-      hash.dig(:context, :stages, :threatmetrix)&.delete(:response_body)
-    end
   end
 
   def load_proofing_result(document_capture_session_result_id:)
@@ -108,18 +93,16 @@ class SocureShadowModeProofingJob < ApplicationJob
         :zipcode,
         :phone,
         :phone_source,
-        :dob,
-        :ssn,
-        :consent_given_at,
       ),
       email: user_email,
     }
   end
 
   def proofer(user:)
-    @proofer ||= Proofing::Socure::IdPlus::Proofer.new(
+    @proofer ||= Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
       Proofing::Socure::IdPlus::Config.new(
         user_uuid: user.uuid,
+        user_email: user.last_sign_in_email_address.email,
         api_key: IdentityConfig.store.socure_idplus_api_key,
         base_url: IdentityConfig.store.socure_idplus_base_url,
         timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,

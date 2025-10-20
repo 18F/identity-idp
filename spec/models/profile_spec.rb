@@ -337,6 +337,7 @@ RSpec.describe Profile do
     context 'when a user creates a facial match comparision profile' do
       context 'when the user has an active profile' do
         it 'creates a facial match upgrade record' do
+          expect(user.analytics).to receive(:idv_profile_activated).twice
           profile.activate
           facial_match_profile = create(
             :profile,
@@ -368,7 +369,7 @@ RSpec.describe Profile do
       context 'when the user does not have an active profile' do
         it 'does not create a facial match conversion record' do
           profile = create(:profile, :facial_match_proof, user: user)
-
+          expect(user.analytics).to receive(:idv_profile_activated)
           expect { profile.activate }.to_not(change { SpUpgradedFacialMatchProfile.count })
         end
       end
@@ -380,6 +381,7 @@ RSpec.describe Profile do
 
     it 'sends a reproof completed push event' do
       profile = create(:profile, :active, user: user)
+      expect(profile.user.analytics).to receive(:idv_profile_activated).once
       expect(PushNotification::HttpPush).to receive(:deliver)
         .with(PushNotification::ReproofCompletedEvent.new(user: user))
 
@@ -422,6 +424,7 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
+      expect(profile.user.analytics).to receive(:idv_profile_activated).once
       profile.activate
 
       expect(profile.activated_at).to be_present
@@ -477,6 +480,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: gpo_verification_pending',
@@ -506,6 +510,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: fraud_check_pending',
@@ -535,6 +540,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: fraud_check_pending',
@@ -557,6 +563,7 @@ RSpec.describe Profile do
       it 'does not update the timestamp when #activate is called' do
         profile = create(:profile, :verified, user: user, verified_at: 1.day.ago)
         original_timestamp = profile.verified_at
+        expect(profile.user.analytics).to receive(:idv_profile_activated).once
         expect(profile.reason_not_to_activate).to be_nil
         profile.activate
         expect(profile.verified_at).to be_within(1.second).of(original_timestamp)

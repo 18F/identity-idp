@@ -18,7 +18,7 @@ module Users
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
       analytics.account_delete_submitted(success: true)
-      log_one_account_self_service_if_applicable(source: :account_management_delete)
+      process_one_account_self_service_if_applicable(source: :account_management_delete)
       attempts_api_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out

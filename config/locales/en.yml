@@ -587,6 +587,11 @@ doc_auth.errors.unaccepted_id_type: We do not accept passports, military IDs, pa
 doc_auth.errors.underage: You must be at least 13 years old to use %{app_name}. If you are 13 or older, try again and make sure your date of birth is in focus.
 doc_auth.errors.unreadable_id: Take your photos in a well-lit area without shadows or glare. Make sure that everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
+doc_auth.errors.verify_drivers_license_heading: We couldn’t verify your driver’s license or state ID
+doc_auth.errors.verify_drivers_license_text: Make sure you are taking photos of a driver’s license or state ID. Try again,
+doc_auth.errors.verify_passport_heading: We couldn’t verify your passport
+doc_auth.errors.verify_passport_text: Make sure you are taking photos of a passport. Try again,
+doc_auth.errors.verify.use_another_type_of_id: or use another type of ID.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
@@ -637,6 +642,7 @@ doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
 doc_auth.headings.welcome: Let’s verify your identity for %{sp_name}
+doc_auth.headings.welcome_sp_reproof: Verify your identity again for %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: You’re using <strong>%{app_name}</strong> to access <strong>%{service_provider_name}</strong>. Only add your ID if you asked %{app_name} to verify your ID using your phone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
 doc_auth.info.address: If your residential address and mailing address are different, you can also try to verify your mailing address.
@@ -702,6 +708,7 @@ doc_auth.info.verify_online_description_passport: You can use a U.S. passport bo
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
+doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet2: Enter your Social Security number
@@ -748,7 +755,7 @@ duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only h
 duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
 duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.never_logged_in: Never logged in to
 duplicate_profiles_detected.select_an_account.details: Keep the account you use the most. For example, the one tied to the most services. That way, you won’t have to reconnect services.
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
@@ -902,6 +909,8 @@ forms.backup_code.regenerate: Get new codes
 forms.backup_code.saved: I’ve put my backup codes in a safe place.
 forms.backup_code.subinfo_html: '<strong>If you lose your device, you’ll need these codes to sign into %{app_name}.</strong> Save or print them and put them somewhere safe.'
 forms.backup_code.title: Save these backup codes
+forms.backup_code.warning_html: '<strong>Do not share these codes.</strong> %{app_name} will never call, text, or email you asking for them.'
+forms.backup_code.warning_link: Learn how to identify fraud and report it.
 forms.buttons.back: Back
 forms.buttons.cancel: Yes, cancel
 forms.buttons.confirm: Confirm
@@ -2066,9 +2075,9 @@ user_mailer.please_reset_password.subject: Unusual activity — reset your %{app
 user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
-user_mailer.reset_password_instructions.header: To finish resetting your password, please click the link below or copy and paste the entire link into your browser.
+user_mailer.reset_password_instructions.header_html: 'If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.'
 user_mailer.reset_password_instructions.link_text: Reset your password
-user_mailer.reset_password_instructions.subject: Reset your password
+user_mailer.reset_password_instructions.subject: Password reset requested for your %{app_name} account
 user_mailer.signup_with_your_email.help_html: If you did not request a new account or suspect an error, please visit the %{app_name_html} %{help_link_html} or %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t use it to create a new account. To sign in with your existing account, follow the link below. If you are not trying to sign in with this email address, you can ignore this message.
 user_mailer.signup_with_your_email.link_text: Go to %{app_name}
@@ -2097,6 +2106,8 @@ users.delete.instructions: Enter your password to confirm that you want to delet
 users.delete.subheading: 'If you delete your account:'
 users.duplicate_profiles_please_call.error_details_html: <p>If you don’t recognize or can’t delete one of the duplicate accounts you saw on the multiple accounts page, call our contact center at <strong>%{contact_number}</strong> and provide them with the error code <strong>LG33</strong>.</p><p>Having questions about duplicate accounts or how to move forward? Learn more about <a href="%{help_url}">how to resolve duplicate accounts</a>.</p>
 users.duplicate_profiles_please_call.heading: Please give us a call
+users.edit_info.link: Learn how to identify fraud and report it.
+users.edit_info.warning: If someone asked you to reset your password, it may be a scam.
 users.password_compromised.warning: We found your password in a data breach on another site or app. %{app_name} requires you to change your password to protect your account.
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview

@@ -65,6 +65,7 @@ module Idv
           remaining_attempts: remaining_submit_attempts,
           sp_name: decorated_sp_session&.sp_name || APP_NAME,
           issuer: decorated_sp_session&.sp_issuer,
+          passport_requested: document_capture_session&.passport_requested?,
           flow_path:,
         )
       end

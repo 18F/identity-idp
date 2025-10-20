@@ -26,6 +26,7 @@ module OpenidConnect
     before_action :confirm_two_factor_authenticated, only: :index
     before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
+    before_action :confirm_user_is_not_suspended, only: :index
 
     def index
       if resolved_authn_context_result.identity_proofing?
@@ -275,6 +276,10 @@ module OpenidConnect
 
       (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         .join(' ').presence
+    end
+
+    def confirm_user_is_not_suspended
+      redirect_to user_please_call_url if current_user.suspended?
     end
   end
 end

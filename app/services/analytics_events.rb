@@ -2277,6 +2277,7 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param exceptions [Hash, nil] The exceptions found in the proofing results.
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2294,6 +2295,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    exceptions: nil,
     **extra
   )
     track_event(
@@ -2314,6 +2316,7 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      exceptions:,
       **extra,
     )
   end
@@ -4959,21 +4962,25 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] customer_user_id user uuid sent to socure
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
-    errors:,
     vendor:,
     area_code:,
     country_code:,
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    reason_codes: nil,
+    customer_user_id: nil,
     **extra
   )
     track_event(
@@ -4991,6 +4998,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      reason_codes:,
+      customer_user_id:,
       **extra,
     )
   end
@@ -5117,6 +5126,27 @@ module AnalyticsEvents
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
       profile_history: profile_history,
+      **extra,
+    )
+  end
+
+  # @param [String] issuer the ServiceProvider.issuer
+  # @param [String,nil] idv_level ID verification level of verified profile.
+  # @param [String] verified_at The timestamp whenthe profile was verified
+  # @param [String] activated_at The timestamp whenthe profile was activated
+  def idv_profile_activated(
+    idv_level:,
+    verified_at:,
+    activated_at:,
+    issuer: nil,
+    **extra
+  )
+    track_event(
+      :idv_profile_activated,
+      issuer:,
+      idv_level:,
+      verified_at:,
+      activated_at:,
       **extra,
     )
   end
@@ -5567,29 +5597,29 @@ module AnalyticsEvents
     )
   end
 
-  # Logs a Socure KYC result alongside a resolution result for later comparison.
-  # @param [Hash] socure_result Result from Socure KYC API call
-  # @param [Hash] resolution_result Result from resolution proofing
+  # Logs a Socure Phone Risk result alongside a address proofing result for later comparison.
+  # @param [Hash] socure_result Result from Socure PhoneRisk API call
+  # @param [Hash] phone_result Result from address proofing
   # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
-  def idv_socure_shadow_mode_proofing_result(
+  def idv_socure_shadow_mode_phonerisk_result(
     socure_result:,
-    resolution_result:,
+    phone_result:,
     phone_source:,
     **extra
   )
     track_event(
-      :idv_socure_shadow_mode_proofing_result,
-      resolution_result: resolution_result.to_h,
+      :idv_socure_shadow_mode_phonerisk_result,
+      phone_result: phone_result.to_h,
       phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )
   end
 
-  # Indicates that no proofing result was found when SocureShadowModeProofingJob
+  # Indicates that no result was found when SocureShadowModePhoneRiskJob
   # attempted to look for one.
-  def idv_socure_shadow_mode_proofing_result_missing(**extra)
-    track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
+  def idv_socure_shadow_mode_phonerisk_result_missing(**extra)
+    track_event(:idv_socure_shadow_mode_phonerisk_result_missing, **extra)
   end
 
   # @param [Boolean] success Whether form validation was successful
@@ -6575,6 +6605,16 @@ module AnalyticsEvents
       service_provider: service_provider,
       profile_ids: profile_ids,
       error_message: error_message,
+      **extra,
+    )
+  end
+
+  # Tracks when a duplicate profile set is reopened for profiles
+  # @param [Integer] duplicate_profile_set_id The ID of the duplicate profile set reopened
+  def one_account_duplicate_profile_reopened(duplicate_profile_set_id:, **extra)
+    track_event(
+      :one_account_duplicate_profile_reopened,
+      duplicate_profile_set_id: duplicate_profile_set_id,
       **extra,
     )
   end

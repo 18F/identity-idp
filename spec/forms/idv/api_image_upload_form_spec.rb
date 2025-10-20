@@ -1129,6 +1129,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           passport_image.read,
           image_config,
           passport_submittal: true,
+          passport_requested: passport_requested,
         )
       end
       let(:response) { form.submit }
@@ -1362,6 +1363,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           DocAuth::Mock::ResultResponse.new(
             passport_image.read,
             image_config,
+            passport_submittal: true,
+            passport_requested: true,
           )
         end
         let(:failed_pii_response) do
@@ -1439,7 +1442,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
         context 'when both images are captured via autocapture' do
-          let(:images_cropped) { true }
+          # let(:images_cropped) { true } # Autocapture does not crop images anymore
           before do
             front_image_metadata[:acuantCaptureMode] = 'AUTO'
             back_image_metadata[:acuantCaptureMode] = 'AUTO'

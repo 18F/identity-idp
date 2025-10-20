@@ -598,6 +598,11 @@ doc_auth.errors.unaccepted_id_type: 我们不接受护照、军人身份证件�
 doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如果你年满 13 岁，请重试并确保你的出生日期对焦。
 doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。
 doc_auth.errors.upload_error: 抱歉，我们这边出错了。
+doc_auth.errors.verify_drivers_license_heading: 我们无法验证你的驾照或州 ID。
+doc_auth.errors.verify_drivers_license_text: 请确保你正在拍摄的是驾照或州 ID。再试一次，
+doc_auth.errors.verify_passport_heading: 我们无法验证你的护照
+doc_auth.errors.verify_passport_text: 请确保你正在拍摄的是护照。再试一次，
+doc_auth.errors.verify.use_another_type_of_id: 或使用另一种类型的 ID。
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
@@ -648,6 +653,7 @@ doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
 doc_auth.headings.welcome: 现在我们来为%{sp_name}验证你的身份
+doc_auth.headings.welcome_sp_reproof: 为 %{sp_name} 再次验证您的身份
 doc_auth.hybrid_flow_warning.explanation_html: 你在使用<strong>%{app_name}</strong>访问<strong>%{service_provider_name}</strong>。仅在你已请求%{app_name}使用你的电话来验证你的身份的情况下才添加你的身份证件。
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: 你在使用 <strong>%{app_name}</strong> 验证身份。
 doc_auth.info.address: 如果你的居住地址和邮寄地址不同，也可以尝试验证你的邮寄地址。
@@ -713,6 +719,7 @@ doc_auth.info.verify_online_description_passport: 你可以使用美国护照本
 doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
 doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
+doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet2: 输入你的社会保障号码
@@ -746,8 +753,8 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
 duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
-duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
-duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
+duplicate_profiles_detected.connected_acct_html: '<strong> 相关机构: </strong> %{count}'
+duplicate_profiles_detected.created_at_html: '<strong> 创建: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 登录后，从“你的帐户”页面删除该帐户。 %{link_html}
 duplicate_profiles_detected.delete_duplicates.heading: '删除重复帐户'
 duplicate_profiles_detected.delete_duplicates.link: 如何删除你的帐户。
@@ -758,8 +765,8 @@ duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐�
 duplicate_profiles_detected.intro_html: '%{sp_name} 规定你只能拥有一个身份经过验证的 %{app_name} 帐户。%{link_html}'
 duplicate_profiles_detected.intro.link: 了解更多关于重复帐户的信息。
 duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
-duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Never logged in
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
+duplicate_profiles_detected.never_logged_in: 从未登录过
 duplicate_profiles_detected.select_an_account.details: 保留你最常用的那个帐户。例如，与最多机构绑定的那个帐户。这样，你就无需再重新连接这些机构。
 duplicate_profiles_detected.select_an_account.heading: 选择要保留的帐户
 duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 %{app_name} 帐户登录。
@@ -913,6 +920,8 @@ forms.backup_code.regenerate: 获得新代码
 forms.backup_code.saved: 我已把自己的备用代码放在一个安全的地方。
 forms.backup_code.subinfo_html: '<strong>如果你丢了设备，就会需要这些代码来登录 %{app_name}。</strong>保存或打印代码并将其放在安全的地方。'
 forms.backup_code.title: 保存这些备用代码
+forms.backup_code.warning_html: '<strong>请勿分享此代码。</strong>%{app_name} 绝不会通过电话、短信或电子邮件向您索要此代码。'
+forms.backup_code.warning_link: 了解如何识别欺诈并举报。
 forms.buttons.back: 返回
 forms.buttons.cancel: 是的，取消
 forms.buttons.confirm: 确认
@@ -2079,9 +2088,9 @@ user_mailer.please_reset_password.subject: 异常活动 — 重设你的 %{app_n
 user_mailer.reset_password_instructions.footer: 这一链接 %{expires} 小时后会作废。
 user_mailer.reset_password_instructions.gpo_letter_description: 如果你重设密码，信件中的一次性代码就会失效，你需要再次验证身份。
 user_mailer.reset_password_instructions.gpo_letter_header: 你的信件已寄出。
-user_mailer.reset_password_instructions.header: 要完成重设密码，请点击下面的链接或把整个链接复制并黏贴进浏览器。
+user_mailer.reset_password_instructions.header_html: '如果您提出了此请求，请点击重置您的密码继续。<br/><br/>如果您没有提出此请求，请勿更改您的密码。请向我们的帮助中心报告任何可疑活动。<br/><br/>我们绝不会通过电子邮件、电话或短信要求您分享您的密码、安全代码或其他敏感信息。'
 user_mailer.reset_password_instructions.link_text: 重设你的密码
-user_mailer.reset_password_instructions.subject: 重设你的密码
+user_mailer.reset_password_instructions.subject: 您的 %{app_name} 账户已请求重置密码
 user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电邮或怀疑有错， 请访问 %{app_name_html}的 %{help_link_html} 或者 %{contact_link_html}。
 user_mailer.signup_with_your_email.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能用它设立新账户。要使用你现有账户登录，请点击以下链接。 如果你未试图用此电邮地址登录，可以忽略这一信息。
 user_mailer.signup_with_your_email.link_text: 请到 %{app_name}
@@ -2110,6 +2119,8 @@ users.delete.instructions: 输入密码来确认你要删除账户。
 users.delete.subheading: 如果你删除自己的账户：
 users.duplicate_profiles_please_call.error_details_html: <p>如果你不认识或无法删除在列出多个帐户的那一页面上看到的某个重复帐户，请拨打 <strong>%{contact_number}</strong> 致电我们的联系中心并提供出错代码 <strong>LG33</strong>。</p><p>对重复帐户或该怎么办有疑问？了解更多关于<a href="%{help_url}">如何解决重复帐户的信息。</a></p>
 users.duplicate_profiles_please_call.heading: 请给我们打个电话
+users.edit_info.link: 了解如何识别欺诈并举报。
+users.edit_info.warning: 如果有人要求您重置密码，这可能是一个骗局。
 users.password_compromised.warning: 另一个网站或应用程序的数据泄露中我们发现有你的密码。%{app_name} 要求你更改密码来保护你的账户。
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览

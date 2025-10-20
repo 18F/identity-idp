@@ -68,6 +68,7 @@ module Idv
             remaining_attempts: remaining_submit_attempts,
             sp_name: service_provider&.friendly_name || APP_NAME,
             issuer: service_provider&.issuer,
+            passport_requested: document_capture_session&.passport_requested?,
             flow_path: :hybrid,
           )
         end

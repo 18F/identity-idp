@@ -58,6 +58,7 @@ RSpec.describe Idv::PhoneStep do
         timed_out: false,
         transaction_id: 'address-mock-transaction-id-123',
         reference: '',
+        result: nil,
       }
     end
 

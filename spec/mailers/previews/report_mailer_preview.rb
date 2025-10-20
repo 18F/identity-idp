@@ -109,6 +109,24 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def identity_verification_outcomes_report
+    identity_verification_outcomes_report = Reports::IdentityVerificationOutcomesReport.new(
+      Time.zone.yesterday,
+    )
+
+    stub_cloudwatch_client(
+      identity_verification_outcomes_report.identity_verification_outcomes_report,
+    )
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "Example Identity Verification Outcomes Report - #{Time.zone.now.to_date}",
+      message: identity_verification_outcomes_report.preamble,
+      attachment_format: :csv,
+      reports: identity_verification_outcomes_report.reports,
+    )
+  end
+
   def irs_registration_funnel_report
     irs_registration_funnel_report = Reports::IrsRegistrationFunnelReport.new(Time.zone.yesterday)
 
@@ -216,7 +234,7 @@ class ReportMailerPreview < ActionMailer::Preview
     report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
 
     # Build emailable report
-    emailable_report = report.as_emailable_irs_report(date: report_date)
+    emailable_report = report.as_emailable_partner_report(date: report_date)
 
     ReportMailer.tables_report(
       email: 'test@example.com',

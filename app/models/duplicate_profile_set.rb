@@ -3,9 +3,8 @@
 class DuplicateProfileSet < ApplicationRecord
   scope :open, -> { where(closed_at: nil) }
 
-  def self.involving_profiles(profile_ids:, service_provider:)
-    open
-      .where(service_provider: service_provider)
+  def self.set_for_profiles_and_service_provider(profile_ids:, service_provider:)
+    where(service_provider: service_provider)
       .where('profile_ids && ?', "{#{profile_ids.join(',')}}")
       .first
   end
@@ -17,8 +16,12 @@ class DuplicateProfileSet < ApplicationRecord
       .first
   end
 
-  def self.duplicate_profile_set_for_profile(profile_id:)
+  def self.duplicate_profile_sets_for_profile(profile_id:)
     open
       .where('? = ANY(profile_ids)', profile_id)
+  end
+
+  def open?
+    closed_at.nil?
   end
 end

@@ -4,10 +4,12 @@ module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
-    attr_reader :report_date
+    attr_reader :report_date, :report_receiver
 
-    def initialize(report_date = Time.zone.yesterday.end_of_day, *args, **rest)
+    def initialize(report_date = Time.zone.yesterday.end_of_day, report_receiver = :internal, *args,
+                   **rest)
       @report_date = report_date
+      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -29,42 +31,39 @@ module Reports
     end
 
     def email_addresses
-      [*IdentityConfig.store.irs_credentials_emails].reject(&:blank?)
+      internal_emails = [*IdentityConfig.store.irs_credentials_emails]
+      irs_emails = [] # Need to add IRS email config
+
+      case report_receiver
+      when :internal then internal_emails
+      when :both then (internal_emails + irs_emails)
+      end
     end
 
+    # rubocop:disable Layout/LineLength
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
 
-        ['Monthly Active Users', 'Count',
+        ['Monthly active users', 'Count',
          'The total number of unique users across all IAL levels
-          that successfully signed into IRS applications'],
+          that successfully signed into the partner\'s applications'],
 
-        ['New Users - IAL2 Year 1', 'Count',
-         'The number of new unique IRS users who are in their first IdV proofing year
-           and authenticate with the IRS.
+        ['Credentials authorized for partner', 'Count',
+         'The total number of users (new and existing)
+         that successfully signed into the partner\'s applications'],
 
-           This count correlates with the billing report charges for Newly Billed
-           IdV users (Year 1), Agreement-Level Count.'],
+        ['New identity verification credentials authorized for partner', 'Count',
+         'The number of users who go through the proofing process through a partner\'s request.'],
 
-        ['New Users - IAL2 Year 2+', 'Count',
-         'The number of new unique IRS users who are in their IdV proofing years 2 - 5
-          and authenticate with the IRS.
+        ['Existing identity verification credentials authorized for partner', 'Count',
+         'The number of users who are in IdV proofing years 2 - 5 and authenticate with the partner.'],
 
-          This count correlates with the billing report charges for Newly Billed
-          IdV users (Years 2 - 5+), Agreement-Level Count.'],
-
-        ['Total Auths', 'Count',
-         'The total number of authentication events processed
-         (including multiple events per users) across all IRS
-         applications during the reporting period'],
-
-        ['IAL2 Auths', 'Count',
-         'The total number of **IAL2** authentication events processed
-         (including multiple events per users) across all IRS
-         applications during the reporting period'],
+        ['Total authentications', 'Count',
+         'Total number of billable sign-ins at any IAL level in the reporting period'],
       ]
     end
+    # rubocop:enable Layout/LineLength
 
     def overview_table
       [
@@ -75,7 +74,7 @@ module Reports
     end
 
     def perform(perform_date = Time.zone.yesterday.end_of_day)
-      reports = as_emailable_irs_report(
+      reports = as_emailable_partner_report(
         date: perform_date,
       )
 
@@ -93,7 +92,8 @@ module Reports
         )
       end
 
-      if email_addresses.empty?
+      emails = email_addresses.select(&:present?)
+      if emails.empty?
         Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
@@ -108,7 +108,7 @@ module Reports
       report_data
     end
 
-    def as_emailable_irs_report(date:)
+    def as_emailable_partner_report(date:)
       [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -174,6 +174,8 @@ module Reports
       end
 
       headers = definitions_table.transpose[0]
+
+      # rubocop:disable Layout/LineLength
       report_array =
         [
           # Headers row
@@ -182,12 +184,13 @@ module Reports
               # Data rows - extract values directly from CSV row
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
-               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New IAL Year 1
-               ial2_year_2_plus(invoice_report), # New IAL Year 2
-               invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i, # Total Auths
-               invoice_report['issuer_ial2_total_auth_count'].to_i] # IAL2 Auths
+               ial2_new_unique_all(invoice_report), # Credentials Authorized
+               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New identity verification credentials authorized
+               ial2_new_unique_year_2_to_5(invoice_report), # Existing identity verification credentials authorized
+               invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
       return report_array.transpose
+      # rubocop:enable Layout/LineLength
     end
 
     def invoice_report_data
@@ -200,8 +203,18 @@ module Reports
       end
     end
 
-    def ial2_year_2_plus(row)
+    def ial2_new_unique_year_2_to_5(row)
       %w[
+        partner_ial2_new_unique_user_events_year2
+        partner_ial2_new_unique_user_events_year3
+        partner_ial2_new_unique_user_events_year4
+        partner_ial2_new_unique_user_events_year5
+      ].sum { |key| row[key].to_i }
+    end
+
+    def ial2_new_unique_all(row)
+      %w[
+        partner_ial2_new_unique_user_events_year1
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
