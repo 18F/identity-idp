@@ -1044,7 +1044,6 @@ RSpec.describe 'OpenID Connect' do
             client_id: OidcAuthHelper::OIDC_IAL1_ISSUER,
             post_logout_redirect_uri: 'http://localhost:7654/auth/result',
           )
-          save_and_open_page
 
           expect(oidc_redirect_url).to eq('http://localhost:7654/auth/result')
 

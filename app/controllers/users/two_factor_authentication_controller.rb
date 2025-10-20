@@ -7,6 +7,7 @@ module Users
     include ActionView::Helpers::DateHelper
 
     before_action :check_remember_device_preference
+    before_action :handle_suspended_user
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
     before_action :redirect_if_blank_phone, only: [:send_code]
 
