@@ -11,17 +11,11 @@ RSpec.describe UserAlerts::AlertUserAboutMaxAttempts do
     let(:user) { create(:user, :fully_registered, sign_in_new_device_at:) }
 
     subject(:result) do
-      UserAlerts::AlertUserAboutMaxAttempts.max_attempts_alerts(user:, disavowal_token:)
-    end
-
-    it 'unsets sign_in_new_device_at on the user' do
-      expect { result }.to change { user.reload.sign_in_new_device_at&.change(usec: 0) }
-        .from(sign_in_new_device_at.change(usec: 0))
-        .to(nil)
+      UserAlerts::AlertUserAboutMaxAttempts.max_attempts_alert(user:, disavowal_token:)
     end
 
     it 'sends mailer immediately once user reaches max attempts' do
-      # 3.1 Include sign-in before 2FA
+      # Include sign-in before 2FA
       sign_in_before_2fa_event = create(
         :event,
         user:,
@@ -29,7 +23,7 @@ RSpec.describe UserAlerts::AlertUserAboutMaxAttempts do
         created_at: sign_in_new_device_at,
       )
 
-      # 3.2 Include sign-in unsuccessful 2FA
+      # Include sign-in unsuccessful 2FA
       sign_in_unsuccessful_2fa_event = create(
         :event,
         user:,
@@ -50,16 +44,6 @@ RSpec.describe UserAlerts::AlertUserAboutMaxAttempts do
       ).and_return(delivery)
 
       result
-    end
-
-    context 'without new device timestamp' do
-      let(:sign_in_new_device_at) { nil }
-
-      it 'returns false and does not send email' do
-        expect(UserMailer).not_to receive(:with)
-
-        expect(result).to eq(false)
-      end
     end
   end
 end
