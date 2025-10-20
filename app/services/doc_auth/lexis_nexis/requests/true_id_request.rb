@@ -114,11 +114,7 @@ module DocAuth
         end
 
         def image_cropping_mode
-          # ImageCroppingMode values:
-          # 0 = None (no cropping needed, images already cropped)
-          # 1 = Automatic
-          # 3 = Always (always crop, images are uncropped)
-          @images_cropped ? 0 : 3
+          @images_cropped ? ImageCroppingModes::NONE : ImageCroppingModes::ALWAYS
         end
 
         def encode(image)
