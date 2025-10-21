@@ -27,7 +27,7 @@ RSpec.feature 'choose id type step' do
       .and_return(ipp_service_provider)
     allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled).and_return(true)
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
-      .to_return({ status: 200, body: { status: passport_api_health_check_status }.to_json })
+      .to_return_json({ status: 200, body: { status: passport_api_health_check_status } })
     reload_ab_tests
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
