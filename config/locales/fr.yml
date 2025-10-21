@@ -748,20 +748,20 @@ duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au co
 duplicate_profiles_detected.delete_duplicates.heading: 'Supprimer le(s) compte(s) en double'
 duplicate_profiles_detected.delete_duplicates.link: 'Comment supprimer votre compte :'
 duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un des comptes ci-dessus
-duplicate_profiles_detected.duplicate: Duplicate
+duplicate_profiles_detected.duplicate: En double
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
 duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
 duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
-duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last Dernière connexion : </strong> %{timestamp_html}'
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Jamais connecté à
 duplicate_profiles_detected.select_an_account.details: Conservez le compte que vous utilisez le plus. Par exemple, celui qui est connecté au plus grand nombre de services. Ainsi, vous n’aurez pas à recommencer les démarches pour vous reconnecter à des services.
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
 duplicate_profiles_detected.sign_back_in.heading: Reconnectez-vous à %{app_name} avec un seul compte
 duplicate_profiles_detected.sign_out: Se déconnecter
-duplicate_profiles_detected.signed_in: Signed In
+duplicate_profiles_detected.signed_in: Connecté
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
