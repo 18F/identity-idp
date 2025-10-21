@@ -953,16 +953,6 @@
           "Values": [{ "Value": "15" }]
         },
         {
-          "Group": "IDAUTH_FIELD_DATA",
-          "Name": "Fields_LicenseClass",
-          "Values": [{ "Value": "C" }]
-        },
-        {
-          "Group": "IDAUTH_FIELD_DATA",
-          "Name": "Fields_LicenseRestrictions",
-          "Values": [{ "Value": "B" }]
-        },
-        {
           "Group": "DOCUMENT_REGION",
           "Name": "DocumentRegion_Id",
           "Values": [
