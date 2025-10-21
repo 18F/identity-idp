@@ -335,6 +335,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.success?).to eq(true)
         expect(response.to_h[:vendor]).to eq('TrueID')
       end
+
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('identification_card')
+      end
     end
   end
 
