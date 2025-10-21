@@ -35,7 +35,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
             success: true,
             errors: {},
             step: step,
-            body: success_body.to_json,
+            body: success_body,
           )
         end
 
@@ -84,7 +84,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
           let(:body) { nil }
 
           before do
-            stub_request(:get, endpoint).to_return(status:, body:)
+            stub_request(:get, endpoint).to_return(status:, body: body&.to_json)
           end
 
           it 'hits the endpoint' do
@@ -105,7 +105,7 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
           end
 
           context 'when there is a response body' do
-            let(:body) { '{"error_message" : "all confused"}' }
+            let(:body) { { error_message: 'all confused' } }
 
             it 'includes the body in the event' do
               result
