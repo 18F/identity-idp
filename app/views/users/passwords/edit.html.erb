@@ -15,6 +15,10 @@
 <p id="password-description">
   <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
+<p id="phishing-warning">
+  <%= t('users.edit_info.warning') %>
+  <%= new_tab_link_to t('users.edit_info.link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview') %>
+</p>
 
 <%= simple_form_for(@update_user_password_form, url: manage_password_path, method: :patch) do |f| %>
   <%= f.error_notification %>

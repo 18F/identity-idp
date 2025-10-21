@@ -313,7 +313,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests required facial match' do
-              let(:vtr) { ['Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -343,53 +343,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'selfie capture not enabled, facial match comparison not required' do
-                let(:vtr) { ['P1'].to_json }
+                let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
                 it 'redirects to the service provider' do
                   action
-                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
-                end
-              end
-            end
-
-            context 'SP has a vector of trust that includes a facial match comparison' do
-              let(:acr_values) { nil }
-              let(:vtr) { ['Pb'].to_json }
-
-              before do
-                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-                  .and_return('server_side')
-                allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
-                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
-                user.identities.last.update!(
-                  verified_attributes: %w[given_name family_name birthdate verified_at],
-                )
-                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
-              end
-
-              context 'selfie check was performed' do
-                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-                  user.active_profile.idv_level = :unsupervised_with_selfie
-
-                  action
-
-                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
-                end
-              end
-
-              context 'selfie check was not performed' do
-                it 'redirects to have the user verify their account' do
-                  action
-                  expect(controller).to redirect_to(idv_url)
-                end
-              end
-
-              context 'facial match comparison was performed in-person' do
-                it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-                  user.active_profile.idv_level = :in_person
-
-                  action
-
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
                 end
               end
@@ -431,7 +388,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
-              let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
@@ -1106,7 +1063,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'SP requests required facial match' do
-              let(:vtr) { ['Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -1136,7 +1093,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'selfie capture not enabled, facial match comparison not required' do
-                let(:vtr) { ['P1'].to_json }
+                let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
                 it 'redirects to the service provider' do
                   action
@@ -1224,7 +1181,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'sp requests facial match' do
               let(:user) { create(:profile, :active, :verified).user }
-              let(:vtr)  { ['C1.C2.P1.Pb'].to_json }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               it 'redirects to gpo enter code page' do
                 create(:profile, :verify_by_mail_pending, idv_level: :unsupervised_with_selfie, user: user)
