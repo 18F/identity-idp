@@ -140,6 +140,10 @@ interface AcuantCaptureProps {
    * Whether user is on the failed submission review step
    */
   isReviewStep?: boolean;
+  /**
+   * The target Acuant document type that photos should be taken of.
+   */
+  requestedAcuantDocumentType: AcuantDocumentType;
 }
 
 /**
@@ -318,6 +322,7 @@ function AcuantCapture(
     name,
     showSelfieHelp,
     isReviewStep,
+    requestedAcuantDocumentType,
   }: AcuantCaptureProps,
   ref: Ref<HTMLInputElement | null>,
 ) {
@@ -615,13 +620,21 @@ function AcuantCapture(
     });
   }
 
+  function isValidAcuantDocumentType(cardType: number) {
+    return cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT;
+  }
+
+  function isRequestedAcuantDocumentType(cardType: number) {
+    return cardType === requestedAcuantDocumentType;
+  }
+
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse, uncroppedData?: string) {
     const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
 
     const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
     const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
     const isAssessedAsUnsupported = !(
-      cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT
+      isValidAcuantDocumentType(cardType) && isRequestedAcuantDocumentType(cardType)
     );
     const { width, height, data } = image;
     const imageDataToSubmit = uncroppedData || data;
