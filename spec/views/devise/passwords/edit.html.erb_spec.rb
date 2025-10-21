@@ -18,6 +18,12 @@ RSpec.describe 'devise/passwords/edit.html.erb' do
     expect(rendered).to have_selector('h1', text: t('headings.passwords.change'))
   end
 
+  it 'has localized phishing warning' do
+    render
+
+    expect(rendered).to have_selector('p', text: t('users.edit_info.warning'))
+  end
+
   it 'sets form autocomplete to off' do
     render
 
