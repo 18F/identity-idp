@@ -18,6 +18,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:success_with_passport_card_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_card)
   end
+  let(:success_with_state_id_card_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_state_id_card)
+  end
   let(:doc_auth_success_with_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
@@ -312,6 +315,25 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
           expect(pii_from_doc.height).to eq(69)
         end
+      end
+    end
+
+    context 'when identification card' do
+      let(:response) do
+        described_class.new(
+          http_response: success_with_state_id_card_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'is a successful result' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.selfie_status).to eq(:not_processed)
+        expect(response.success?).to eq(true)
+        expect(response.to_h[:vendor]).to eq('TrueID')
       end
     end
   end
