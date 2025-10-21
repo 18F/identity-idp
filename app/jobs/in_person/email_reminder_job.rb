@@ -10,18 +10,11 @@ module InPerson
     def perform(_now)
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
-      # send late emails first in case of job failure
       late_enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
         final_benchmark,
       )
       send_emails_for_enrollments(enrollments: late_enrollments, email_type: EMAIL_TYPE_LATE)
-
-      early_enrollments = InPersonEnrollment.needs_early_email_reminder(
-        early_benchmark,
-        late_benchmark,
-      )
-      send_emails_for_enrollments(enrollments: early_enrollments, email_type: EMAIL_TYPE_EARLY)
     end
 
     private
