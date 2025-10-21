@@ -37,5 +37,13 @@ RSpec.describe CreateNewDeviceAlertJob do
 
       expect(analytics).to have_logged_event(:create_new_device_alert_job_emails_sent, count: 1)
     end
+
+    context 'max attempts reached' do
+      it 'does not send if locked out' do
+        user.update! second_factor_locked_at: 5.minutes.ago
+        emails_sent = CreateNewDeviceAlertJob.new.perform(now)
+        expect(emails_sent).to eq(0)
+      end
+    end
   end
 end
