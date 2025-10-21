@@ -148,23 +148,14 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'enrollments that need email reminders' do
-    let(:early_benchmark) { Time.zone.now - 19.days }
-    let(:late_benchmark) { Time.zone.now - 26.days }
-    let(:final_benchmark) { Time.zone.now - 29.days }
-
-    # early reminder is sent on days 11-5
-    let!(:enrollments_needing_early_reminder) do
-      [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
-      ]
-    end
+    let(:late_benchmark) { Time.zone.now - 3.days }
+    let(:final_benchmark) { Time.zone.now - 6.days }
 
     # late reminder is sent on days 4 - 2
     let!(:enrollments_needing_late_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 5.days),
       ]
     end
 
@@ -178,18 +169,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       ]
     end
 
-    it 'returns pending enrollments that need early reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
-      results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
-      expect(results.pluck(:id)).to match_array enrollments_needing_early_reminder.pluck(:id)
-      results.each do |result|
-        expect(result.pending?).to be_truthy
-        expect(result.early_reminder_sent?).to be_falsey
-      end
-    end
-
     it 'returns pending enrollments that need late reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
+      expect(InPersonEnrollment.count).to eq(7)
       results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
       expect(results.pluck(:id)).to match_array enrollments_needing_late_reminder.pluck(:id)
       results.each do |result|

@@ -2,7 +2,6 @@
 
 module InPerson
   class EmailReminderJob < ApplicationJob
-    EMAIL_TYPE_EARLY = 'early'
     EMAIL_TYPE_LATE = 'late'
 
     queue_as :low
@@ -10,11 +9,11 @@ module InPerson
     def perform(_now)
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
-      late_enrollments = InPersonEnrollment.needs_late_email_reminder(
+      enrollments = InPersonEnrollment.needs_late_email_reminder(
         late_benchmark,
         final_benchmark,
       )
-      send_emails_for_enrollments(enrollments: late_enrollments, email_type: EMAIL_TYPE_LATE)
+      send_emails_for_enrollments(enrollments: enrollments, email_type: EMAIL_TYPE_LATE)
     end
 
     private
@@ -38,21 +37,13 @@ module InPerson
           email_type: email_type,
           enrollment_id: enrollment.id,
         )
-        if email_type == EMAIL_TYPE_EARLY
-          enrollment.update!(early_reminder_sent: true)
-        elsif email_type == EMAIL_TYPE_LATE
-          enrollment.update!(late_reminder_sent: true)
-        end
+        enrollment.update!(late_reminder_sent: true)
       end
     end
 
     def calculate_interval(benchmark)
       days_until_expired = IdentityConfig.store.in_person_enrollment_validity_in_days.days
       (Time.zone.now - days_until_expired) + benchmark.days
-    end
-
-    def early_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_early_benchmark_in_days)
     end
 
     def late_benchmark
