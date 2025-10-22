@@ -21,8 +21,8 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 1.day,
-      threads: 5
+      slice: 6.hours,
+      threads: 1
     )
       @time_range = time_range
       @verbose = verbose
@@ -120,6 +120,13 @@ module Reporting
       [true_id_selfie_table_count, result]
     end
 
+    # def true_id_selfie_table
+    #   result = fetch_results(query: true_id_selfie_query)
+    #   # Sum all the individual counts
+    #   true_id_selfie_table_count = result.sum { |r| r['total_count'].to_i }
+    #   [true_id_selfie_table_count, result]
+    # end
+
     def phone_finder_table
       result = fetch_results(query: phone_finder_query)
       phone_finder_table_count = result.count
@@ -149,6 +156,12 @@ module Reporting
       ln_emailage_table_count = result.count
       [ln_emailage_table_count, result]
     end
+
+    # def ln_emailage_table
+    #   result = fetch_results(query: ln_emailage_count_query)
+    #   ln_emailage_table_count = result.sum { |r| r['total_count'].to_i }
+    #   [ln_emailage_table_count, result]
+    # end
 
     def instant_verify_table
       result = fetch_results(query: instant_verify_query)
@@ -230,9 +243,11 @@ module Reporting
 
     def true_id_selfie_query
       <<~QUERY
-        filter name = "IdV: doc auth image upload vendor submitted"
-        |filter properties.event_properties.liveness_enabled=1
+         fields @timestamp, @message, @logStream, @log, id
+        | filter name = "IdV: doc auth image upload vendor submitted"
+        | filter properties.event_properties.liveness_enabled=1
         | limit 10000
+
       QUERY
     end
 
@@ -277,7 +292,9 @@ module Reporting
     def socure_docv_selfie_query
       <<~QUERY
         #socure (Selfie)
-        filter name = "idv_socure_verification_data_requested" | filter properties.event_properties.liveness_enabled=1
+         fields @timestamp, @message, @logStream, @log
+        | filter name = "idv_socure_verification_data_requested" | filter properties.event_properties.liveness_enabled=1
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -320,8 +337,9 @@ module Reporting
 
     def threat_metrix_idv_query
       <<~QUERY
-        filter name = "IdV: doc auth verify proofing results"
-        | stats count(*) as ThreatMetrix_count
+        fields @timestamp, @message, @logStream, @log
+        | filter name = "IdV: doc auth verify proofing results"
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -359,9 +377,11 @@ module Reporting
 
     def ln_emailage_query
       <<~QUERY
-        filter name = "account_creation_tmx_result"
-        | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status='success'
-          | limit 10000
+         fields @timestamp, @message, @log, id
+        | filter name = "account_creation_tmx_result"
+        | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status = 'success'
+        | display timestamp, id
+        | limit 10000
       QUERY
     end
   end
