@@ -10,15 +10,6 @@ declare global {
   }
 }
 
-/**
- * Type definition for export only
- */
-type AcuantGlobals = {
-  AcuantCameraUI: AcuantCameraUIInterface;
-  AcuantCamera: AcuantCameraInterface;
-};
-export type AcuantGlobal = Window & AcuantGlobals;
-
 enum AcuantDocumentStateEnum {
   NO_DOCUMENT = 0,
   SMALL_DOCUMENT = 1,
@@ -164,11 +155,20 @@ type AcuantCameraCrop = (
 declare global {
   interface AcuantCameraInterface {
     start: AcuantCameraStart;
-    startManualCapture: (callback: AcuantCameraUICallbacks) => void;
+    startManualCapture: (callbacks: AcuantCameraUICallbacks) => void;
     triggerCapture: AcuantCameraTriggerCapture;
     crop: AcuantCameraCrop;
   }
 }
+
+/**
+ * Type definition for export only
+ */
+type AcuantGlobals = {
+  AcuantCameraUI: AcuantCameraUIInterface;
+  AcuantCamera: AcuantCameraInterface;
+};
+export type AcuantGlobal = Window & AcuantGlobals;
 
 interface AcuantCaptureImage {
   /**
@@ -257,6 +257,10 @@ interface AcuantCameraContextProps {
    * React children node
    */
   children: ReactNode;
+  /**
+   * Force manual capture mode (user taps to capture) instead of automatic capture
+   */
+  forceManualCapture?: boolean;
 }
 
 function AcuantCamera({
@@ -264,6 +268,7 @@ function AcuantCamera({
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
   children,
+  forceManualCapture = false,
 }: AcuantCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
@@ -322,21 +327,28 @@ function AcuantCamera({
       },
     };
     if (isReady) {
-      const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
-      Object.keys(textOptions).forEach((key) => {
-        onFailureCallbackWithOptions[key] = textOptions[key];
-      });
+      const callbacks = {
+        onCaptured,
+        onCropped,
+        onError: onImageCaptureFailure,
+      };
 
-      window.AcuantCameraUI.start(
-        {
-          onCaptured,
-          onCropped,
-          onError: onImageCaptureFailure,
-        },
-        onFailureCallbackWithOptions,
-        textOptions,
-      );
-      setIsActive(true);
+      try {
+        if (forceManualCapture) {
+          (window as unknown as AcuantGlobal).AcuantCamera.startManualCapture(callbacks);
+        } else {
+          const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
+            onImageCaptureFailure(...args);
+          Object.keys(textOptions).forEach((key) => {
+            onFailureCallbackWithOptions[key] = textOptions[key];
+          });
+
+          window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
+        }
+        setIsActive(true);
+      } catch (error) {
+        onImageCaptureFailure(error);
+      }
     }
 
     return () => {
@@ -345,7 +357,7 @@ function AcuantCamera({
         setIsActive(false);
       }
     };
-  }, [isReady]);
+  }, [isReady, forceManualCapture]);
 
   return <>{children}</>;
 }
