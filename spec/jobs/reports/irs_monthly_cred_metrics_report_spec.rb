@@ -189,7 +189,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         partner_ial2_new_unique_user_events_year5
       ].sum { |key| row[key].to_i }
 
-      expect(data_column[2]).to eq(expected_credentials_authorized) # Credentials authorized for partner
+      expect(data_column[2]).to eq(expected_credentials_authorized) # Partner Credentials authorized
       expect(data_column[3]).to eq(expected_new_upfront) # New IAL Year 1 - upfront
       expect(data_column[4]).to eq(expected_existing) # Existing credentials authorized
       expect(data_column[5]).to eq(row['issuer_ial1_plus_2_total_auth_count'].to_i) # Total Auths
