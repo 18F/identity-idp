@@ -466,7 +466,7 @@ RSpec.describe ApplicationController do
   describe '#resolved_authn_context_result' do
     let(:sp) { build(:service_provider, ial: 2) }
 
-    let(:sp_session) { { vtr: vtr, acr_values: acr_values } }
+    let(:sp_session) { { acr_values: acr_values } }
 
     let(:result) { subject.resolved_authn_context_result }
 
@@ -476,7 +476,6 @@ RSpec.describe ApplicationController do
     end
 
     context 'when using acr values' do
-      let(:vtr) { nil }
       let(:acr_values) do
         [
           Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
@@ -511,25 +510,6 @@ RSpec.describe ApplicationController do
             expect(result.identity_proofing?).to eq(true)
           end
         end
-      end
-
-      context 'without an SP' do
-        let(:sp) { nil }
-        let(:sp_session) { nil }
-
-        it 'returns a no-SP result' do
-          expect(result).to eq(Vot::Parser::Result.no_sp_result)
-        end
-      end
-    end
-
-    context 'when using vot values' do
-      let(:acr_values) { nil }
-      let(:vtr) { ['P1'] }
-
-      it 'returns a resolved authn context result' do
-        expect(result.aal2?).to eq(true)
-        expect(result.identity_proofing?).to eq(true)
       end
 
       context 'without an SP' do

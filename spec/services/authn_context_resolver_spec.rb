@@ -3,158 +3,12 @@ require 'rails_helper'
 RSpec.describe AuthnContextResolver do
   let(:user) { build(:user) }
 
-  context 'when the user uses a vtr param' do
-    it 'parses the vtr param into requirements' do
-      vtr = ['C2.Pb']
-
-      result = AuthnContextResolver.new(
-        user: user,
-        service_provider: nil,
-        vtr: vtr,
-        acr_values: nil,
-      ).result
-
-      expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
-      expect(result.aal2?).to eq(true)
-      expect(result.phishing_resistant?).to eq(false)
-      expect(result.hspd12?).to eq(false)
-      expect(result.identity_proofing?).to eq(true)
-      expect(result.facial_match?).to eq(true)
-      expect(result.ialmax?).to eq(false)
-      expect(result.enhanced_ipp?).to eq(false)
-    end
-
-    it 'parses the vtr param for enhanced ipp' do
-      vtr = ['Pe']
-
-      result = AuthnContextResolver.new(
-        user: user,
-        service_provider: nil,
-        vtr: vtr,
-        acr_values: nil,
-      ).result
-
-      expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pe')
-      expect(result.aal2?).to eq(true)
-      expect(result.phishing_resistant?).to eq(false)
-      expect(result.hspd12?).to eq(false)
-      expect(result.identity_proofing?).to eq(true)
-      expect(result.facial_match?).to eq(false)
-      expect(result.ialmax?).to eq(false)
-      expect(result.enhanced_ipp?).to eq(true)
-    end
-
-    it 'ignores any acr_values params that are passed' do
-      vtr = ['C2.Pb']
-
-      acr_values = [
-        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-        Saml::Idp::Constants::IAL_VERIFIED_ACR,
-      ].join(' ')
-
-      result = AuthnContextResolver.new(
-        user: user,
-        service_provider: nil,
-        vtr: vtr,
-        acr_values: acr_values,
-      ).result
-
-      expect(result.component_values.map(&:name).join('.')).to eq('C1.C2.P1.Pb')
-    end
-  end
-
-  context 'when the user uses a vtr param with multiple vectors' do
-    context 'a facial match proofing vector and non-facial match proofing vector is present' do
-      it 'returns a facial match requirement if the user can satisfy it' do
-        user = create(:user, :proofed)
-        user.active_profile.update!(idv_level: 'unsupervised_with_selfie')
-        vtr = ['C2.Pb', 'C2.P1']
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-
-        expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
-        expect(result.facial_match?).to eq(true)
-        expect(result.identity_proofing?).to eq(true)
-      end
-
-      it 'returns non-facial match vector if user has identity-proofed without facial match' do
-        user = create(:user, :proofed)
-        vtr = ['C2.Pb', 'C2.P1']
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-
-        expect(result.expanded_component_values).to eq('C1.C2.P1')
-        expect(result.facial_match?).to eq(false)
-        expect(result.identity_proofing?).to eq(true)
-      end
-
-      it 'returns the first vector if the user has not proofed' do
-        user = create(:user)
-        vtr = ['C2.Pb', 'C2.P1']
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-
-        expect(result.expanded_component_values).to eq('C1.C2.P1.Pb')
-        expect(result.facial_match?).to eq(true)
-        expect(result.identity_proofing?).to eq(true)
-      end
-    end
-
-    context 'a non-facial match identity proofing vector is present' do
-      it 'returns the identity-proofing requirement if the user can satisfy it' do
-        user = create(:user, :proofed)
-        vtr = ['C2.P1', 'C2']
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-
-        expect(result.expanded_component_values).to eq('C1.C2.P1')
-        expect(result.identity_proofing?).to eq(true)
-      end
-
-      it 'returns the no-proofing vector if the user cannot satisfy the ID-proofing requirement' do
-        user = create(:user)
-        vtr = ['C2.P1', 'C2']
-
-        result = AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-
-        expect(result.expanded_component_values).to eq('C1.C2')
-        expect(result.identity_proofing?).to eq(false)
-      end
-    end
-  end
-
-  context 'when resolving acr_values' do
+  context 'when resolving legacy acr_values' do
     let(:service_provider) { nil }
     subject do
       AuthnContextResolver.new(
         user: user,
         service_provider:,
-        vtr: nil,
         acr_values: acr_values,
       )
     end
@@ -501,7 +355,6 @@ RSpec.describe AuthnContextResolver do
         resolver = AuthnContextResolver.new(
           user: user,
           service_provider: nil,
-          vtr: nil,
           acr_values: acr_values.join(' '),
         )
         result = resolver.result
@@ -530,7 +383,6 @@ RSpec.describe AuthnContextResolver do
         resolver = AuthnContextResolver.new(
           user: user,
           service_provider: nil,
-          vtr: nil,
           acr_values: acr_values.join(' '),
         )
         result = resolver.result
@@ -553,7 +405,6 @@ RSpec.describe AuthnContextResolver do
         resolver = AuthnContextResolver.new(
           user: user,
           service_provider: nil,
-          vtr: nil,
           acr_values: acr_values.join(' '),
         )
         result = resolver.result
@@ -575,7 +426,6 @@ RSpec.describe AuthnContextResolver do
         resolver = AuthnContextResolver.new(
           user: user,
           service_provider: nil,
-          vtr: nil,
           acr_values: acr_values.join(' '),
         )
         result = resolver.result
@@ -596,7 +446,6 @@ RSpec.describe AuthnContextResolver do
         AuthnContextResolver.new(
           user: user,
           service_provider: service_provider,
-          vtr: nil,
           acr_values: acr_values&.join(' '),
         )
       end
