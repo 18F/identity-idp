@@ -10,7 +10,7 @@ module Api
       prepend_before_action :skip_session_expiration
 
       skip_before_action :verify_authenticity_token
-      before_action :authenticate_client, only: :poll
+      #before_action :authenticate_client, only: :poll
       before_action :validate_params, only: :poll
 
       def poll
