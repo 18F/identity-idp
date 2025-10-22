@@ -55,6 +55,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end
 
+  def self.state_id_card_success_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_state_id_card_success.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
   def self.portrait_match_success_yaml
     path = File.join(
       File.dirname(__FILE__),
