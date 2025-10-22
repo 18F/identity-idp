@@ -62,7 +62,6 @@ class ServiceProviderRequestHandler
     {
       issuer: protocol.issuer,
       acr_values: protocol.acr_values,
-      vtr: protocol.vtr,
       requested_attributes: protocol.requested_attributes,
       uuid: request_id,
       url: url,
