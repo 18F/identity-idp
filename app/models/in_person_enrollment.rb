@@ -49,10 +49,10 @@ class InPersonEnrollment < ApplicationRecord
   before_create(:set_unique_id, unless: :unique_id)
 
   class << self
-    def needs_late_email_reminder(early_benchmark, late_benchmark)
+    def needs_late_email_reminder(start_date, end_date)
       pending_and_established_between(
-        early_benchmark,
-        late_benchmark,
+        start_date,
+        end_date,
       ).where(late_reminder_sent: false)
     end
 
@@ -90,10 +90,10 @@ class InPersonEnrollment < ApplicationRecord
 
     private
 
-    def pending_and_established_between(early_benchmark, late_benchmark)
+    def pending_and_established_between(start_date, end_date)
       where(status: :pending)
         .and(
-          where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+          where(enrollment_established_at: end_date...(start_date.end_of_day)),
         )
         .order(enrollment_established_at: :asc)
     end

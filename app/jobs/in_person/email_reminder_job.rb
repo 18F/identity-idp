@@ -10,8 +10,8 @@ module InPerson
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
       enrollments = InPersonEnrollment.needs_late_email_reminder(
-        late_benchmark,
-        final_benchmark,
+        reminder_start_date,
+        reminder_end_date,
       )
       send_emails_for_enrollments(enrollments: enrollments, email_type: EMAIL_TYPE_LATE)
     end
@@ -41,17 +41,17 @@ module InPerson
       end
     end
 
-    def calculate_interval(benchmark)
-      days_until_expired = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      (Time.zone.now - days_until_expired) + benchmark.days
+    def calculate_reminder_date(offset)
+      validity_days = IdentityConfig.store.in_person_enrollment_validity_in_days.days
+      (Time.zone.now - validity_days) + offset.days
     end
 
-    def late_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
+    def reminder_start_date
+      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
     end
 
-    def final_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
+    def reminder_end_date
+      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
     end
 
     def send_reminder_email(user, enrollment)
