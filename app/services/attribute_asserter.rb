@@ -39,12 +39,8 @@ class AttributeAsserter
     add_locale(attrs) if bundle.include? :locale
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
-    if authn_request.requested_vtr_authn_contexts.present?
-      add_vot(attrs)
-    else
-      add_aal(attrs)
-      add_ial(attrs)
-    end
+    add_aal(attrs)
+    add_ial(attrs)
 
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
