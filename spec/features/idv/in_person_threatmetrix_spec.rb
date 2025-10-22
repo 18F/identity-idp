@@ -28,6 +28,8 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
     service_provider.update(in_person_proofing_enabled: true)
+    allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_cutoff_date)
+      .and_return('2025-01-01T00:00:00Z')
   end
 
   def deactivate_profile_update_enrollment(status:)
