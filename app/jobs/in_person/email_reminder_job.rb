@@ -13,7 +13,7 @@ module InPerson
         reminder_start_date,
         reminder_end_date,
       )
-      send_emails_for_enrollments(enrollments: enrollments, email_type: EMAIL_TYPE_LATE)
+      send_emails_for_enrollments(enrollments:, email_type: EMAIL_TYPE_LATE)
     end
 
     private
