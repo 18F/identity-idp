@@ -32,7 +32,7 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 6.hours,
+      slice: 24.hours,
       threads: 5
     )
       @issuers = issuers
