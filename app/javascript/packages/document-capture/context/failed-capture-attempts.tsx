@@ -18,6 +18,19 @@ interface UploadedImageFingerprints {
   passport: string[] | null;
 }
 
+/**
+ * Document sides that support manual capture.
+ * Note: Selfie is excluded because PassiveLiveness SDK does not support
+ * manual capture mode and we need to preserve liveness detection.
+ */
+type DocumentSide = 'front' | 'back' | 'passport';
+
+interface PerSideFailedAttempts {
+  front: number;
+  back: number;
+  passport: number;
+}
+
 interface FailedCaptureAttemptsContextInterface {
   /**
    * Current number of failed capture attempts
@@ -82,12 +95,49 @@ interface FailedCaptureAttemptsContextInterface {
   forceNativeCamera: boolean;
 
   failedSubmissionImageFingerprints: UploadedImageFingerprints;
+
+  /**
+   * Per-side failed quality check attempts for manual capture trigger
+   * (front, back, passport only - selfie excluded to preserve liveness)
+   */
+  failedQualityCheckAttempts: PerSideFailedAttempts;
+
+  /**
+   * Callback to increment failed quality check attempts for a specific side
+   */
+  onFailedQualityCheckAttempt: (side: DocumentSide, metadata: CaptureAttemptMetadata) => void;
+
+  /**
+   * Callback to reset failed quality check attempts for a specific side
+   */
+  onResetFailedQualityCheckAttempts: (side: DocumentSide) => void;
+
+  /**
+   * Check if manual capture should be triggered for a specific side
+   */
+  shouldTriggerManualCapture: (side: DocumentSide) => boolean;
+
+  /**
+   * Maximum number of failed quality check attempts before manual capture is triggered
+   */
+  maxAttemptsBeforeManualCapture: number;
+
+  /**
+   * Whether the manual capture after failures feature is enabled (A/B test)
+   */
+  manualCaptureAfterFailuresEnabled: boolean;
 }
 
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
   isAssessedAsGlare: false,
   isAssessedAsBlurry: false,
   isAssessedAsUnsupported: false,
+};
+
+const DEFAULT_PER_SIDE_FAILED_ATTEMPTS: PerSideFailedAttempts = {
+  front: 0,
+  back: 0,
+  passport: 0,
 };
 
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
@@ -103,6 +153,12 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
   failedSubmissionImageFingerprints: { front: [], back: [], passport: [] },
+  failedQualityCheckAttempts: DEFAULT_PER_SIDE_FAILED_ATTEMPTS,
+  onFailedQualityCheckAttempt: () => {},
+  onResetFailedQualityCheckAttempts: () => {},
+  shouldTriggerManualCapture: () => false,
+  maxAttemptsBeforeManualCapture: 3,
+  manualCaptureAfterFailuresEnabled: false,
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
@@ -112,6 +168,8 @@ interface FailedCaptureAttemptsContextProviderProps {
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
   failedFingerprints: { front: []; back: []; passport: [] };
+  maxAttemptsBeforeManualCapture?: number;
+  manualCaptureAfterFailuresEnabled?: boolean;
 }
 
 function FailedCaptureAttemptsContextProvider({
@@ -119,6 +177,8 @@ function FailedCaptureAttemptsContextProvider({
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
   failedFingerprints = { front: [], back: [], passport: [] },
+  maxAttemptsBeforeManualCapture = 3,
+  manualCaptureAfterFailuresEnabled = false,
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,
@@ -132,6 +192,9 @@ function FailedCaptureAttemptsContextProvider({
   const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
     useState<UploadedImageFingerprints>(failedFingerprints);
 
+  const [failedQualityCheckAttempts, setFailedQualityCheckAttempts] =
+    useState<PerSideFailedAttempts>(DEFAULT_PER_SIDE_FAILED_ATTEMPTS);
+
   function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
     incrementFailedCaptureAttempts();
     setLastAttemptMetadata(metadata);
@@ -144,6 +207,28 @@ function FailedCaptureAttemptsContextProvider({
 
   function onFailedCameraPermissionAttempt() {
     incrementFailedCameraPermissionAttempts();
+  }
+
+  function onFailedQualityCheckAttempt(side: DocumentSide, metadata: CaptureAttemptMetadata) {
+    setFailedQualityCheckAttempts((prev) => ({
+      ...prev,
+      [side]: prev[side] + 1,
+    }));
+    setLastAttemptMetadata(metadata);
+  }
+
+  function onResetFailedQualityCheckAttempts(side: DocumentSide) {
+    setFailedQualityCheckAttempts((prev) => ({
+      ...prev,
+      [side]: 0,
+    }));
+  }
+
+  function shouldTriggerManualCapture(side: DocumentSide): boolean {
+    if (!manualCaptureAfterFailuresEnabled) {
+      return false;
+    }
+    return failedQualityCheckAttempts[side] >= maxAttemptsBeforeManualCapture;
   }
 
   const hasExhaustedAttempts =
@@ -167,6 +252,12 @@ function FailedCaptureAttemptsContextProvider({
         lastAttemptMetadata,
         forceNativeCamera,
         failedSubmissionImageFingerprints,
+        failedQualityCheckAttempts,
+        onFailedQualityCheckAttempt,
+        onResetFailedQualityCheckAttempts,
+        shouldTriggerManualCapture,
+        maxAttemptsBeforeManualCapture,
+        manualCaptureAfterFailuresEnabled,
       }}
     >
       {children}
@@ -176,4 +267,4 @@ function FailedCaptureAttemptsContextProvider({
 
 export default FailedCaptureAttemptsContext;
 export { FailedCaptureAttemptsContextProvider as Provider };
-export { UploadedImageFingerprints };
+export type { UploadedImageFingerprints, DocumentSide };
