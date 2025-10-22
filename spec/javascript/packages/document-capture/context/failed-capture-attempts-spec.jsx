@@ -31,6 +31,12 @@ describe('document-capture/context/failed-capture-attempts', () => {
       'maxSubmissionAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
       'failedSubmissionImageFingerprints',
+      'failedQualityCheckAttempts',
+      'onFailedQualityCheckAttempt',
+      'onResetFailedQualityCheckAttempts',
+      'shouldTriggerManualCapture',
+      'maxAttemptsBeforeManualCapture',
+      'manualCaptureAfterFailuresEnabled',
     ]);
     expect(result.current.failedCaptureAttempts).to.equal(0);
     expect(result.current.failedSubmissionAttempts).to.equal(0);
@@ -40,6 +46,12 @@ describe('document-capture/context/failed-capture-attempts', () => {
     expect(result.current.maxCaptureAttemptsBeforeNativeCamera).to.be.a('number');
     expect(result.current.lastAttemptMetadata).to.be.an('object');
     expect(result.current.failedSubmissionImageFingerprints).to.be.an('object');
+    expect(result.current.failedQualityCheckAttempts).to.be.an('object');
+    expect(result.current.onFailedQualityCheckAttempt).to.be.a('function');
+    expect(result.current.onResetFailedQualityCheckAttempts).to.be.a('function');
+    expect(result.current.shouldTriggerManualCapture).to.be.a('function');
+    expect(result.current.maxAttemptsBeforeManualCapture).to.be.a('number');
+    expect(result.current.manualCaptureAfterFailuresEnabled).to.be.a('boolean');
   });
 
   describe('Provider', () => {
@@ -317,6 +329,263 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
       expect(trackEvent).to.not.have.been.calledWith(
         'IdV: Native camera forced after failed attempts',
       );
+    });
+  });
+
+  describe('Manual Capture After Failures', () => {
+    describe('Per-side failure tracking', () => {
+      it('tracks failed quality check attempts independently per document side', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front twice
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        // Increment back once
+        result.current.onFailedQualityCheckAttempt('back', metadata);
+
+        expect(result.current.failedQualityCheckAttempts.front).to.equal(2);
+        expect(result.current.failedQualityCheckAttempts.back).to.equal(1);
+        expect(result.current.failedQualityCheckAttempts.passport).to.equal(0);
+      });
+
+      it('resets counter for specific side without affecting other sides', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment all sides
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('back', metadata);
+        result.current.onFailedQualityCheckAttempt('passport', metadata);
+
+        // Reset only front
+        result.current.onResetFailedQualityCheckAttempts('front');
+
+        expect(result.current.failedQualityCheckAttempts.front).to.equal(0);
+        expect(result.current.failedQualityCheckAttempts.back).to.equal(1);
+        expect(result.current.failedQualityCheckAttempts.passport).to.equal(1);
+      });
+    });
+
+    describe('shouldTriggerManualCapture', () => {
+      it('returns false when feature is disabled', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled={false}
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front 3 times
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(false);
+      });
+
+      it('returns false when failures are below threshold', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front only twice (below threshold of 3)
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(false);
+      });
+
+      it('returns true when failures reach threshold and feature is enabled', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front 3 times (at threshold)
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(true);
+      });
+
+      it('returns true when failures exceed threshold', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front 5 times (exceeds threshold)
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(true);
+      });
+
+      it('only triggers for the side that reached threshold', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment front 3 times, back only 2 times
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('back', metadata);
+        result.current.onFailedQualityCheckAttempt('back', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(true);
+        expect(result.current.shouldTriggerManualCapture('back')).to.equal(false);
+        expect(result.current.shouldTriggerManualCapture('passport')).to.equal(false);
+      });
+    });
+
+    describe('Configuration', () => {
+      it('uses custom threshold when provided', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxAttemptsBeforeManualCapture={5}
+              manualCaptureAfterFailuresEnabled
+            >
+              {children}
+            </Provider>
+          ),
+        });
+
+        const metadata = {
+          isAssessedAsGlare: true,
+          isAssessedAsBlurry: false,
+          isAssessedAsUnsupported: false,
+        };
+
+        // Increment 4 times (below custom threshold of 5)
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(false);
+
+        // Increment one more time to reach threshold
+        result.current.onFailedQualityCheckAttempt('front', metadata);
+
+        expect(result.current.shouldTriggerManualCapture('front')).to.equal(true);
+      });
+
+      it('uses default threshold of 3 when not provided', () => {
+        const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+          wrapper: ({ children }) => (
+            <Provider maxCaptureAttemptsBeforeNativeCamera={10} manualCaptureAfterFailuresEnabled>
+              {children}
+            </Provider>
+          ),
+        });
+
+        expect(result.current.maxAttemptsBeforeManualCapture).to.equal(3);
+      });
     });
   });
 });

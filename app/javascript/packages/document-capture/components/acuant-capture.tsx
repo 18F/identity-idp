@@ -24,6 +24,7 @@ import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import SelfieCaptureContext from '../context/selfie-capture';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import type { DocumentSide } from '../context/failed-capture-attempts';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
@@ -70,7 +71,7 @@ interface ImageAnalyticsPayload {
   fingerprint?: string | null;
 
   /**
-   *
+   * Whether this image has been submitted and failed before
    */
   failedImageResubmission: boolean;
 
@@ -369,7 +370,20 @@ function AcuantCapture(
     failedSubmissionAttempts,
     forceNativeCamera,
     failedSubmissionImageFingerprints,
+    onFailedQualityCheckAttempt,
+    onResetFailedQualityCheckAttempts,
+    shouldTriggerManualCapture,
+    manualCaptureAfterFailuresEnabled,
+    failedQualityCheckAttempts,
   } = useContext(FailedCaptureAttemptsContext);
+
+  // Determine the document side for this capture component (exclude selfie)
+  // Only front, back, and passport support manual capture
+  const documentSide: DocumentSide | null =
+    name === 'front' || name === 'back' || name === 'passport' ? name : null;
+
+  // Check if manual capture should be triggered for this side (never for selfie)
+  const useManualCapture = documentSide !== null && shouldTriggerManualCapture(documentSide);
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -532,6 +546,14 @@ function AcuantCapture(
       }
 
       if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
+        // Track when manual capture is triggered (documents only, never selfie)
+        if (useManualCapture && manualCaptureAfterFailuresEnabled && documentSide !== null) {
+          trackEvent('IdV: Manual capture triggered after failed attempts', {
+            field: name,
+            failed_quality_check_attempts: failedQualityCheckAttempts[documentSide],
+            document_side: documentSide,
+          });
+        }
         setIsCapturingEnvironment(true);
       }
 
@@ -671,12 +693,24 @@ function AcuantCapture(
     if (assessment === 'success') {
       onChangeAndResetError(imageDataToSubmit, analyticsPayload);
       onResetFailedCaptureAttempts();
+      // Reset the manual capture counter for this side on success
+      if (documentSide !== null) {
+        onResetFailedQualityCheckAttempts(documentSide);
+      }
     } else {
       onFailedCaptureAttempt({
         isAssessedAsGlare,
         isAssessedAsBlurry,
         isAssessedAsUnsupported,
       });
+      // Track failed quality check attempt for manual capture trigger (documents only, not selfie)
+      if (documentSide !== null) {
+        onFailedQualityCheckAttempt(documentSide, {
+          isAssessedAsGlare,
+          isAssessedAsBlurry,
+          isAssessedAsUnsupported,
+        });
+      }
     }
 
     setIsCapturingEnvironment(false);
@@ -755,6 +789,7 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={onAcuantImageCaptureFailure}
+          forceManualCapture={useManualCapture}
         >
           {!hasStartedCropping && (
             <FullScreen
