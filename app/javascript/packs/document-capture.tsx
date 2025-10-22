@@ -47,6 +47,8 @@ interface AppRootData {
   accountUrl: string;
   locationsUrl: string;
   sessionsUrl: string;
+  maxAttemptsBeforeManualCapture?: string;
+  manualCaptureAfterFailuresEnabled?: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -106,6 +108,8 @@ const {
   helpCenterRedirectUrl: helpCenterRedirectURL,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
+  maxAttemptsBeforeManualCapture,
+  manualCaptureAfterFailuresEnabled,
   acuantVersion,
   flowPath,
   idType,
@@ -205,6 +209,14 @@ render(
                         maxSubmissionAttemptsBeforeNativeCamera={Number(
                           maxSubmissionAttemptsBeforeNativeCamera,
                         )}
+                        maxAttemptsBeforeManualCapture={
+                          maxAttemptsBeforeManualCapture
+                            ? Number(maxAttemptsBeforeManualCapture)
+                            : 3
+                        }
+                        manualCaptureAfterFailuresEnabled={
+                          manualCaptureAfterFailuresEnabled === 'true'
+                        }
                         failedFingerprints={{ front: [], back: [], passport: [] }}
                       >
                         <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
