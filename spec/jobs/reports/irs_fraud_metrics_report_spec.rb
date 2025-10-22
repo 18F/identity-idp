@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe Reports::IrsFraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date) }
+  let(:report_receiver) { :internal }
+  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
 
   let(:name) { 'irs-fraud-metrics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -39,7 +40,8 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     ]
   end
 
-  let(:mock_test_fraud_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:mock_test_irs_fraud_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:mock_test_internal_emails) { ['mock_internal@example.com'] }
   let(:mock_test_fraud_issuers) { ['issuer1'] }
 
   before do
@@ -56,22 +58,46 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     }
 
     allow(IdentityConfig.store).to receive(:irs_fraud_metrics_emails)
-      .and_return(mock_test_fraud_emails)
+      .and_return(mock_test_irs_fraud_emails)
+
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+      .and_return(mock_test_internal_emails)
 
     allow(report.irs_fraud_metrics_lg99_report).to receive(:lg99_metrics_table)
       .and_return(mock_identity_verification_lg99_data)
   end
 
-  it 'sends out a report to just to team data' do
-    expect(ReportMailer).to receive(:tables_report).once.with(
-      email: anything,
-      subject: 'IRS Fraud Metrics Report - 2021-03-02',
-      reports: anything,
-      message: report.preamble,
-      attachment_format: :csv,
-    ).and_call_original
+  context 'for begining of the month sends out the report to the internal and partner' do
+    let(:report_date) { Date.new(2025, 10, 1).prev_day }
+    subject(:report) { described_class.new(report_date, :both) }
+    it 'sends out a report to just to team data and partner' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com', 'mock_feds@example.com',
+                'mock_contractors@example.com'],
+        subject: 'IRS Fraud Metrics Report - 2025-09-30',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
 
-    report.perform(report_date)
+      report.perform(report_date)
+    end
+  end
+
+  context 'for any day of the month sends out the report to the internal' do
+    let(:report_date) { Date.new(2025, 9, 27).prev_day }
+    subject(:report) { described_class.new(report_date, :internal) }
+    it 'sends out a report to just to team data' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        subject: 'IRS Fraud Metrics Report - 2025-09-26',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date)
+    end
   end
 
   context 'when queued from the first of the month' do
@@ -92,6 +118,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:irs_fraud_metrics_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
