@@ -22,68 +22,72 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
   before do
     stub_sign_in(user)
     allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:ab_test_bucket)
-      .with(:DOC_AUTH_VENDOR, user:)
-      .and_return(bucket)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     allow(controller).to receive(:document_capture_session)
       .and_return(document_capture_session)
   end
 
   describe '#udpate_doc_auth_vendor' do
-    context 'bucket is LexisNexis' do
-      let(:bucket) { :lexis_nexis }
-
-      it 'returns lexis nexis as the vendor' do
-        controller.update_doc_auth_vendor
-
-        expect(document_capture_session.doc_auth_vendor)
-          .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-      end
-    end
-
-    context 'bucket is Mock' do
-      let(:bucket) { :mock }
-
-      it 'returns mock as the vendor' do
-        controller.update_doc_auth_vendor
-
-        expect(document_capture_session.doc_auth_vendor)
-          .to eq(Idp::Constants::Vendors::MOCK)
-      end
-    end
-
-    context 'bucket is Socure' do
-      let(:bucket) { :socure }
-
-      context 'current user is undefined so use document_capture_session user' do
-        it 'returns socure as the vendor' do
-          controller.update_doc_auth_vendor
-
-          expect(document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::SOCURE)
-        end
-      end
-
-      context 'current user is defined' do
-        it 'returns socure as the vendor' do
-          controller.update_doc_auth_vendor
-
-          expect(document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::SOCURE)
-        end
-      end
-    end
-
     context 'facial match not required' do
-      let(:bucket) { :socure }
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_switching_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_socure_percent).and_return(100)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
+      context 'passport has not been requested' do
+        before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:DOC_AUTH_VENDOR, user:)
+            .and_return(bucket)
+        end
+
+        context 'bucket is LexisNexis' do
+          let(:bucket) { :lexis_nexis }
+
+          it 'returns lexis nexis as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+          end
+        end
+
+        context 'bucket is Mock' do
+          let(:bucket) { :mock }
+
+          it 'returns mock as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
+
+        context 'bucket is Socure' do
+          let(:bucket) { :socure }
+
+          it 'returns socure as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+          end
+        end
+      end
+
+      context 'passport requested' do
+        before do
+          document_capture_session.update!(passport_status: 'requested')
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:DOC_AUTH_PASSPORT_VENDOR, user:)
+            .and_return(bucket)
+        end
+
+        context 'bucket is Socure' do
+          let(:bucket) { :socure }
+
+          it 'returns socure as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+          end
+        end
       end
     end
 
