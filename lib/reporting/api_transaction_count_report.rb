@@ -21,8 +21,8 @@ module Reporting
       time_range:,
       verbose: false,
       progress: false,
-      slice: 1.day,
-      threads: 5
+      slice: 6.hours,
+      threads: 1
     )
       @time_range = time_range
       @verbose = verbose
@@ -70,24 +70,30 @@ module Reporting
         [
           'Week',
           'True ID',
+          'True ID (Selfie)',
           'Instant verify',
           'Phone Finder',
           'Socure (DocV)',
+          'Socure (DocV - Selfie)',
           'Socure (KYC)',
           'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
+          'LN Emailage',
         ],
         [
           "#{ time_range.begin.to_date} - #{time_range.end.to_date}",
           true_id_table.first,
+          true_id_selfie_table.first,
           instant_verify_table.first,
           phone_finder_table.first,
           socure_table.first,
-          socure_kyc_non_shadow_table.first,
+          socure_docv_selfie_table.first,
+          socure_kyc_table.first,
           fraud_score_and_attribute_table.first,
           threat_metrix_idv_table.first,
           threat_metrix_auth_only_table.first,
+          ln_emailage_table.first,
         ],
       ]
     end
@@ -108,6 +114,19 @@ module Reporting
       [true_id_table_count, result]
     end
 
+    def true_id_selfie_table
+      result = fetch_results(query: true_id_selfie_query)
+      true_id_selfie_table_count = result.count
+      [true_id_selfie_table_count, result]
+    end
+
+    # def true_id_selfie_table
+    #   result = fetch_results(query: true_id_selfie_query)
+    #   # Sum all the individual counts
+    #   true_id_selfie_table_count = result.sum { |r| r['total_count'].to_i }
+    #   [true_id_selfie_table_count, result]
+    # end
+
     def phone_finder_table
       result = fetch_results(query: phone_finder_query)
       phone_finder_table_count = result.count
@@ -120,11 +139,29 @@ module Reporting
       [socure_table_count, result]
     end
 
-    def socure_kyc_non_shadow_table
-      result = fetch_results(query: socure_kyc_non_shadow_query)
+    def socure_docv_selfie_table
+      result = fetch_results(query: socure_docv_selfie_query)
       socure_table_count = result.count
       [socure_table_count, result]
     end
+
+    def socure_kyc_table
+      result = fetch_results(query: socure_kyc)
+      socure_table_count = result.count
+      [socure_table_count, result]
+    end
+
+    def ln_emailage_table
+      result = fetch_results(query: ln_emailage_query)
+      ln_emailage_table_count = result.count
+      [ln_emailage_table_count, result]
+    end
+
+    # def ln_emailage_table
+    #   result = fetch_results(query: ln_emailage_count_query)
+    #   ln_emailage_table_count = result.sum { |r| r['total_count'].to_i }
+    #   [ln_emailage_table_count, result]
+    # end
 
     def instant_verify_table
       result = fetch_results(query: instant_verify_query)
@@ -204,6 +241,16 @@ module Reporting
       QUERY
     end
 
+    def true_id_selfie_query
+      <<~QUERY
+         fields @timestamp, @message, @logStream, @log, id
+        | filter name = "IdV: doc auth image upload vendor submitted"
+        | filter properties.event_properties.liveness_enabled=1
+        | limit 10000
+
+      QUERY
+    end
+
     def phone_finder_query
       <<~QUERY
         #PhoneFinder
@@ -238,6 +285,16 @@ module Reporting
         properties.event_properties.reference_id as reference_id, properties.event_properties.submit_attempts as submit_attempts,
         replace(replace(strcontains(name, "front"),"1","front"),"0","back") as side
         | display uuid, id, timestamp, sp, dol_state, success, decision_result, side, docv_transaction_token, reference_id, submit_attempts
+        | limit 10000
+      QUERY
+    end
+
+    def socure_docv_selfie_query
+      <<~QUERY
+        #socure (Selfie)
+         fields @timestamp, @message, @logStream, @log
+        | filter name = "idv_socure_verification_data_requested" | filter properties.event_properties.liveness_enabled=1
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -280,12 +337,9 @@ module Reporting
 
     def threat_metrix_idv_query
       <<~QUERY
-        filter name = "IdV: doc auth verify proofing results"
-        | fields
-            properties.user_id as uuid,
-            @timestamp as timestamp,
-            properties.event_properties.proofing_results.context.stages.threatmetrix.success as tmx_success
-        | stats max(tmx_success) as max_tmx_success by uuid
+        fields @timestamp, @message, @logStream, @log
+        | filter name = "IdV: doc auth verify proofing results"
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -311,12 +365,22 @@ module Reporting
       QUERY
     end
 
-    def socure_kyc_non_shadow_query
+    def socure_kyc
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
         | filter name='IdV: doc auth verify proofing results' 
         and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
         | sort @timestamp desc
+        | limit 10000
+      QUERY
+    end
+
+    def ln_emailage_query
+      <<~QUERY
+         fields @timestamp, @message, @log, id
+        | filter name = "account_creation_tmx_result"
+        | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status = 'success'
+        | display timestamp, id
         | limit 10000
       QUERY
     end
