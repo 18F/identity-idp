@@ -116,10 +116,17 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_max_attempts(type)
+    disavowal_token = create_user_event_with_disavowal(:sign_in_before_2fa)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
       current_user,
     )
+
+    UserAlerts::AlertUserAboutMaxAttempts.max_attempts_alert(
+      user: current_user,
+      disavowal_token:,
+    )
+
     sign_out
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
   end
