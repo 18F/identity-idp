@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import useCounter from '../hooks/use-counter';
 import SelfieCaptureContext from './selfie-capture';
@@ -167,41 +167,53 @@ function FailedCaptureAttemptsContextProvider({
   const [failedQualityCheckAttempts, setFailedQualityCheckAttempts] =
     useState<PerSideFailedAttempts>(DEFAULT_PER_SIDE_FAILED_ATTEMPTS);
 
-  function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
-    incrementFailedCaptureAttempts();
-    setLastAttemptMetadata(metadata);
-  }
+  const onFailedCaptureAttempt = useCallback(
+    (metadata: CaptureAttemptMetadata) => {
+      incrementFailedCaptureAttempts();
+      setLastAttemptMetadata(metadata);
+    },
+    [incrementFailedCaptureAttempts],
+  );
 
-  function onFailedSubmissionAttempt(failedOnes: UploadedImageFingerprints) {
-    incrementFailedSubmissionAttempts();
-    setFailedSubmissionImageFingerprints(failedOnes);
-  }
+  const onFailedSubmissionAttempt = useCallback(
+    (failedOnes: UploadedImageFingerprints) => {
+      incrementFailedSubmissionAttempts();
+      setFailedSubmissionImageFingerprints(failedOnes);
+    },
+    [incrementFailedSubmissionAttempts],
+  );
 
-  function onFailedCameraPermissionAttempt() {
+  const onFailedCameraPermissionAttempt = useCallback(() => {
     incrementFailedCameraPermissionAttempts();
-  }
+  }, [incrementFailedCameraPermissionAttempts]);
 
-  function onFailedQualityCheckAttempt(side: DocumentSide, metadata: CaptureAttemptMetadata) {
-    setFailedQualityCheckAttempts((prev) => ({
-      ...prev,
-      [side]: prev[side] + 1,
-    }));
-    setLastAttemptMetadata(metadata);
-  }
+  const onFailedQualityCheckAttempt = useCallback(
+    (side: DocumentSide, metadata: CaptureAttemptMetadata) => {
+      setFailedQualityCheckAttempts((prev) => ({
+        ...prev,
+        [side]: prev[side] + 1,
+      }));
+      setLastAttemptMetadata(metadata);
+    },
+    [],
+  );
 
-  function onResetFailedQualityCheckAttempts(side: DocumentSide) {
+  const onResetFailedQualityCheckAttempts = useCallback((side: DocumentSide) => {
     setFailedQualityCheckAttempts((prev) => ({
       ...prev,
       [side]: 0,
     }));
-  }
+  }, []);
 
-  function shouldTriggerManualCapture(side: DocumentSide): boolean {
-    if (!manualCaptureAfterFailuresEnabled) {
-      return false;
-    }
-    return failedQualityCheckAttempts[side] >= maxAttemptsBeforeManualCapture;
-  }
+  const shouldTriggerManualCapture = useCallback(
+    (side: DocumentSide): boolean => {
+      if (!manualCaptureAfterFailuresEnabled) {
+        return false;
+      }
+      return failedQualityCheckAttempts[side] >= maxAttemptsBeforeManualCapture;
+    },
+    [manualCaptureAfterFailuresEnabled, failedQualityCheckAttempts, maxAttemptsBeforeManualCapture],
+  );
 
   const hasExhaustedAttempts =
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
@@ -211,29 +223,51 @@ function FailedCaptureAttemptsContextProvider({
   // Quality check failures are handled per-side via shouldTriggerManualCapture()
   const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
+  const contextValue = useMemo(
+    () => ({
+      failedCaptureAttempts,
+      onFailedCaptureAttempt,
+      onResetFailedCaptureAttempts,
+      failedSubmissionAttempts,
+      onFailedSubmissionAttempt,
+      failedCameraPermissionAttempts,
+      onFailedCameraPermissionAttempt,
+      maxCaptureAttemptsBeforeNativeCamera,
+      maxSubmissionAttemptsBeforeNativeCamera,
+      lastAttemptMetadata,
+      forceNativeCamera,
+      failedSubmissionImageFingerprints,
+      failedQualityCheckAttempts,
+      onFailedQualityCheckAttempt,
+      onResetFailedQualityCheckAttempts,
+      shouldTriggerManualCapture,
+      maxAttemptsBeforeManualCapture,
+      manualCaptureAfterFailuresEnabled,
+    }),
+    [
+      failedCaptureAttempts,
+      onFailedCaptureAttempt,
+      onResetFailedCaptureAttempts,
+      failedSubmissionAttempts,
+      onFailedSubmissionAttempt,
+      failedCameraPermissionAttempts,
+      onFailedCameraPermissionAttempt,
+      maxCaptureAttemptsBeforeNativeCamera,
+      maxSubmissionAttemptsBeforeNativeCamera,
+      lastAttemptMetadata,
+      forceNativeCamera,
+      failedSubmissionImageFingerprints,
+      failedQualityCheckAttempts,
+      onFailedQualityCheckAttempt,
+      onResetFailedQualityCheckAttempts,
+      shouldTriggerManualCapture,
+      maxAttemptsBeforeManualCapture,
+      manualCaptureAfterFailuresEnabled,
+    ],
+  );
+
   return (
-    <FailedCaptureAttemptsContext.Provider
-      value={{
-        failedCaptureAttempts,
-        onFailedCaptureAttempt,
-        onResetFailedCaptureAttempts,
-        failedSubmissionAttempts,
-        onFailedSubmissionAttempt,
-        failedCameraPermissionAttempts,
-        onFailedCameraPermissionAttempt,
-        maxCaptureAttemptsBeforeNativeCamera,
-        maxSubmissionAttemptsBeforeNativeCamera,
-        lastAttemptMetadata,
-        forceNativeCamera,
-        failedSubmissionImageFingerprints,
-        failedQualityCheckAttempts,
-        onFailedQualityCheckAttempt,
-        onResetFailedQualityCheckAttempts,
-        shouldTriggerManualCapture,
-        maxAttemptsBeforeManualCapture,
-        manualCaptureAfterFailuresEnabled,
-      }}
-    >
+    <FailedCaptureAttemptsContext.Provider value={contextValue}>
       {children}
     </FailedCaptureAttemptsContext.Provider>
   );

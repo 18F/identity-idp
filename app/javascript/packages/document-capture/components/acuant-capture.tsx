@@ -93,6 +93,8 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
   isAssessedAsUnsupported: boolean;
+  failed_quality_check_attempts_for_side?: number | null;
+  will_trigger_manual_capture?: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -343,6 +345,7 @@ function AcuantCapture(
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
+  const isMountedRef = useRef(true);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
   useMemo(() => setOwnErrorMessage(null), [value]);
@@ -368,7 +371,6 @@ function AcuantCapture(
 
   const {
     failedCaptureAttempts,
-    onFailedCaptureAttempt,
     failedCameraPermissionAttempts,
     onFailedCameraPermissionAttempt,
     onResetFailedCaptureAttempts,
@@ -383,13 +385,21 @@ function AcuantCapture(
     maxAttemptsBeforeManualCapture,
   } = useContext(FailedCaptureAttemptsContext);
 
-  const documentSide: DocumentSide | null =
-    name === 'front' || name === 'back' || name === 'passport' ? name : null;
+  const documentSide: DocumentSide | null = useMemo(
+    () => (name === 'front' || name === 'back' || name === 'passport' ? name : null),
+    [name],
+  );
 
-  const forceManualCaptureForThisSide = documentSide && shouldTriggerManualCapture(documentSide);
-  const shouldUseNativeCamera = forceManualCaptureForThisSide || forceNativeCamera;
+  const shouldUseNativeCamera = useMemo(() => {
+    const forceManualCaptureForThisSide =
+      documentSide !== null && shouldTriggerManualCapture(documentSide);
+    return forceManualCaptureForThisSide || forceNativeCamera;
+  }, [documentSide, shouldTriggerManualCapture, forceNativeCamera]);
 
-  const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
+  const hasCapture = useMemo(
+    () => !isError && (isReady ? isCameraSupported : isMobile),
+    [isError, isReady, isCameraSupported, isMobile],
+  );
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
     // capture is supported. This takes advantage of the fact that state setter is noop if value of
@@ -400,6 +410,13 @@ function AcuantCapture(
   }, [hasCapture]);
   useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
   useImperativeHandle(ref, () => inputRef.current);
+
+  useEffect(
+    () => () => {
+      isMountedRef.current = false;
+    },
+    [],
+  );
 
   /**
    * Calls onChange with next value and resets any errors which may be present.
@@ -520,7 +537,7 @@ function AcuantCapture(
    * Responds to a drag and drop file upload by either preventing the default action
    * or allowing the file to be uploaded
    */
-  function startDragDropUpload(event) {
+  function startDragDropUpload(event: React.DragEvent) {
     if (!allowUpload) {
       event.preventDefault();
     }
@@ -597,7 +614,7 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
-  function onSelfieCaptureFailure(error) {
+  function onSelfieCaptureFailure(error: { code: number; message: string }) {
     trackEvent('idv_sdk_selfie_image_capture_failed', {
       sdk_error_code: error.code,
       sdk_error_message: error.message,
@@ -668,25 +685,26 @@ function AcuantCapture(
       assessment = 'success';
     }
 
-    // +1 because we're checking if THIS failure will hit the threshold
+    const PENDING_FAILURE_OFFSET = 1;
     const willTriggerManualCapture =
-      documentSide &&
+      documentSide !== null &&
       manualCaptureAfterFailuresEnabled &&
-      failedQualityCheckAttempts[documentSide] + 1 >= maxAttemptsBeforeManualCapture;
+      failedQualityCheckAttempts[documentSide] + PENDING_FAILURE_OFFSET >=
+        maxAttemptsBeforeManualCapture;
 
     const finalErrorMessage =
       willTriggerManualCapture && baseErrorMessage
         ? `${baseErrorMessage} ${t('doc_auth.info.manual_capture_mode')}`
         : baseErrorMessage;
 
-    if (finalErrorMessage) {
+    if (finalErrorMessage && isMountedRef.current) {
       setOwnErrorMessage(finalErrorMessage);
     }
 
-    if (willTriggerManualCapture) {
+    if (willTriggerManualCapture && documentSide !== null) {
       trackEvent('IdV: Native camera forced after failed quality checks', {
         document_side: documentSide,
-        failure_count: failedQualityCheckAttempts[documentSide!] + 1,
+        failure_count: failedQualityCheckAttempts[documentSide] + PENDING_FAILURE_OFFSET,
         failure_type: assessment,
       });
     }
@@ -712,6 +730,10 @@ function AcuantCapture(
       failedImageResubmission: false,
       liveness_checking_required: false,
       selfie_attempts: selfieAttempts.current,
+      failed_quality_check_attempts_for_side: documentSide
+        ? failedQualityCheckAttempts[documentSide]
+        : null,
+      will_trigger_manual_capture: willTriggerManualCapture,
     });
 
     trackEvent(
@@ -725,22 +747,17 @@ function AcuantCapture(
       if (documentSide !== null) {
         onResetFailedQualityCheckAttempts(documentSide);
       }
-    } else {
-      onFailedCaptureAttempt({
+    } else if (documentSide !== null) {
+      onFailedQualityCheckAttempt(documentSide, {
         isAssessedAsGlare,
         isAssessedAsBlurry,
         isAssessedAsUnsupported,
       });
-      if (documentSide !== null) {
-        onFailedQualityCheckAttempt(documentSide, {
-          isAssessedAsGlare,
-          isAssessedAsBlurry,
-          isAssessedAsUnsupported,
-        });
-      }
     }
 
-    setIsCapturingEnvironment(false);
+    if (isMountedRef.current) {
+      setIsCapturingEnvironment(false);
+    }
   }
 
   function onAcuantImageCaptureFailure(error: AcuantCaptureFailureError, code: string | undefined) {
