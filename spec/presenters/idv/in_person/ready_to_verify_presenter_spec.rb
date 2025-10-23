@@ -49,7 +49,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(presenter.formatted_due_date).to eq 'July 13, 2023'
+        expect(presenter.formatted_due_date).to eq 'June 20, 2023'
       end
     end
   end
@@ -172,6 +172,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   describe '#days_remaining' do
     subject(:days_remaining) { presenter.days_remaining }
     let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_cutoff_date)
+        .and_return('2023-07-04T00:00:00Z')
+    end
 
     context '4 days until due date' do
       it 'returns 3 days' do
