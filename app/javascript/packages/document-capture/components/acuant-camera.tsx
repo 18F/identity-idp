@@ -155,9 +155,9 @@ type AcuantCameraCrop = (
 declare global {
   interface AcuantCameraInterface {
     start: AcuantCameraStart;
-    startManualCapture: (callbacks: AcuantCameraUICallbacks) => void;
     triggerCapture: AcuantCameraTriggerCapture;
     crop: AcuantCameraCrop;
+    end: () => void;
   }
 }
 
@@ -257,10 +257,6 @@ interface AcuantCameraContextProps {
    * React children node
    */
   children: ReactNode;
-  /**
-   * Force manual capture mode (user taps to capture) instead of automatic capture
-   */
-  forceManualCapture?: boolean;
 }
 
 function AcuantCamera({
@@ -268,7 +264,6 @@ function AcuantCamera({
   onImageCaptureFailure = () => {},
   onCropStart = () => {},
   children,
-  forceManualCapture = false,
 }: AcuantCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
@@ -321,7 +316,7 @@ function AcuantCamera({
         NONE: t('doc_auth.info.capture_status_none'),
         SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
         BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-        GOOD_DOCUMENT: null,
+        GOOD_DOCUMENT: null, // auto-capture only - SDK doesn't support switching modes mid-session
         CAPTURING: t('doc_auth.info.capture_status_capturing'),
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
@@ -333,18 +328,14 @@ function AcuantCamera({
         onError: onImageCaptureFailure,
       };
 
-      try {
-        if (forceManualCapture) {
-          (window as unknown as AcuantGlobal).AcuantCamera.startManualCapture(callbacks);
-        } else {
-          const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
-            onImageCaptureFailure(...args);
-          Object.keys(textOptions).forEach((key) => {
-            onFailureCallbackWithOptions[key] = textOptions[key];
-          });
+      const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
+        onImageCaptureFailure(...args);
+      Object.keys(textOptions).forEach((key) => {
+        onFailureCallbackWithOptions[key] = textOptions[key];
+      });
 
-          window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
-        }
+      try {
+        window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
         setIsActive(true);
       } catch (error) {
         onImageCaptureFailure(error);
@@ -357,7 +348,7 @@ function AcuantCamera({
         setIsActive(false);
       }
     };
-  }, [isReady, forceManualCapture]);
+  }, [isReady]);
 
   return <>{children}</>;
 }
