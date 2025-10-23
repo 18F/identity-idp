@@ -92,6 +92,26 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             expect { call }.to_not change { sp_cost_count_for_issuer }
           end
         end
+
+        context 'applicant submitted a passport' do
+          let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+
+          it 'returns a skipped result' do
+            call.tap do |result|
+              expect(result.success?).to eql(true)
+              expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+            end
+          end
+
+          it 'does not make an AAMVA call' do
+            expect(plugin.proofer).not_to receive(:proof)
+            call
+          end
+
+          it 'does not track an SP cost for AAMVA' do
+            expect { call }.not_to change { sp_cost_count_for_issuer }
+          end
+        end
       end
 
       context 'InstantVerify failed' do
