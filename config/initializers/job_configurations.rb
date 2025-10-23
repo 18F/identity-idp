@@ -248,7 +248,7 @@ else
       irs_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday.end_of_day] },
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       # Send A/B test reports
       ab_tests_report: {
