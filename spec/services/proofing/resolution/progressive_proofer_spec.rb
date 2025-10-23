@@ -406,8 +406,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof
       end
 
-      it 'skips calling AamvaPlugin' do
-        expect(progressive_proofer.aamva_plugin).not_to receive(:call).and_call_original
+      it 'calls AamvaPlugin' do
+        expect(progressive_proofer.aamva_plugin).to receive(:call).and_call_original
         proof
       end
 
