@@ -18,11 +18,7 @@ interface UploadedImageFingerprints {
   passport: string[] | null;
 }
 
-/**
- * Document sides that support manual capture.
- * Note: Selfie is excluded because PassiveLiveness SDK does not support
- * manual capture mode and we need to preserve liveness detection.
- */
+// Selfie excluded - PassiveLiveness SDK doesn't support manual capture
 type DocumentSide = 'front' | 'back' | 'passport';
 
 interface PerSideFailedAttempts {
@@ -96,35 +92,11 @@ interface FailedCaptureAttemptsContextInterface {
 
   failedSubmissionImageFingerprints: UploadedImageFingerprints;
 
-  /**
-   * Per-side failed quality check attempts for manual capture trigger
-   * (front, back, passport only - selfie excluded to preserve liveness)
-   */
   failedQualityCheckAttempts: PerSideFailedAttempts;
-
-  /**
-   * Callback to increment failed quality check attempts for a specific side
-   */
   onFailedQualityCheckAttempt: (side: DocumentSide, metadata: CaptureAttemptMetadata) => void;
-
-  /**
-   * Callback to reset failed quality check attempts for a specific side
-   */
   onResetFailedQualityCheckAttempts: (side: DocumentSide) => void;
-
-  /**
-   * Check if manual capture should be triggered for a specific side
-   */
   shouldTriggerManualCapture: (side: DocumentSide) => boolean;
-
-  /**
-   * Maximum number of failed quality check attempts before manual capture is triggered
-   */
   maxAttemptsBeforeManualCapture: number;
-
-  /**
-   * Whether the manual capture after failures feature is enabled (A/B test)
-   */
   manualCaptureAfterFailuresEnabled: boolean;
 }
 
@@ -235,6 +207,8 @@ function FailedCaptureAttemptsContextProvider({
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
 
+  // Native camera fallback for SDK failures and submission failures only
+  // Quality check failures are handled per-side via shouldTriggerManualCapture()
   const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
   return (

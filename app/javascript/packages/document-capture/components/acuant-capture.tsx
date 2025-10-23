@@ -380,12 +380,14 @@ function AcuantCapture(
     shouldTriggerManualCapture,
     manualCaptureAfterFailuresEnabled,
     failedQualityCheckAttempts,
+    maxAttemptsBeforeManualCapture,
   } = useContext(FailedCaptureAttemptsContext);
 
   const documentSide: DocumentSide | null =
     name === 'front' || name === 'back' || name === 'passport' ? name : null;
 
-  const useManualCapture = documentSide !== null && shouldTriggerManualCapture(documentSide);
+  const forceManualCaptureForThisSide = documentSide && shouldTriggerManualCapture(documentSide);
+  const shouldUseNativeCamera = forceManualCaptureForThisSide || forceNativeCamera;
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -533,9 +535,9 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
+        isAcuantCaptureCapable && !isForceUploading.current && !shouldUseNativeCamera;
 
-      if (isAcuantCaptureCapable && forceNativeCamera) {
+      if (isAcuantCaptureCapable && shouldUseNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
@@ -548,13 +550,6 @@ function AcuantCapture(
       }
 
       if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
-        if (useManualCapture && manualCaptureAfterFailuresEnabled && documentSide !== null) {
-          trackEvent('IdV: Manual capture triggered after failed attempts', {
-            field: name,
-            failed_quality_check_attempts: failedQualityCheckAttempts[documentSide],
-            document_side: documentSide,
-          });
-        }
         setIsCapturingEnvironment(true);
       }
 
@@ -658,17 +653,42 @@ function AcuantCapture(
     const imageDataToSubmit = uncroppedData || data;
 
     let assessment: AcuantImageAssessment;
+    let baseErrorMessage: string;
     if (isAssessedAsBlurry) {
-      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
+      baseErrorMessage = t('doc_auth.errors.sharpness.failed_short');
       assessment = 'blurry';
     } else if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
+      baseErrorMessage = t('doc_auth.errors.glare.failed_short');
       assessment = 'glare';
     } else if (isAssessedAsUnsupported) {
-      setOwnErrorMessage(t('doc_auth.errors.general.fallback_field_level'));
+      baseErrorMessage = t('doc_auth.errors.general.fallback_field_level');
       assessment = 'unsupported';
     } else {
+      baseErrorMessage = '';
       assessment = 'success';
+    }
+
+    // +1 because we're checking if THIS failure will hit the threshold
+    const willTriggerManualCapture =
+      documentSide &&
+      manualCaptureAfterFailuresEnabled &&
+      failedQualityCheckAttempts[documentSide] + 1 >= maxAttemptsBeforeManualCapture;
+
+    const finalErrorMessage =
+      willTriggerManualCapture && baseErrorMessage
+        ? `${baseErrorMessage} ${t('doc_auth.info.manual_capture_mode')}`
+        : baseErrorMessage;
+
+    if (finalErrorMessage) {
+      setOwnErrorMessage(finalErrorMessage);
+    }
+
+    if (willTriggerManualCapture) {
+      trackEvent('IdV: Native camera forced after failed quality checks', {
+        document_side: documentSide,
+        failure_count: failedQualityCheckAttempts[documentSide!] + 1,
+        failure_type: assessment,
+      });
     }
 
     const analyticsPayload: AcuantImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
@@ -796,7 +816,6 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={onAcuantImageCaptureFailure}
-          forceManualCapture={useManualCapture}
         >
           {!hasStartedCropping && (
             <FullScreen
@@ -849,6 +868,7 @@ function AcuantCapture(
         onDrop={withLoggedClick('placeholder', { isDrop: true })(startDragDropUpload)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
+        capture={shouldUseNativeCamera ? 'environment' : undefined}
       />
       <div className="margin-top-2">
         {isMobile && (
