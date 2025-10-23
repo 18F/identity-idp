@@ -774,6 +774,88 @@ RSpec.describe Idv::ImageUploadsController do
         expect_funnel_update_counts(user, 1)
       end
 
+      context 'when an identification card is submitted' do
+        let(:back_image) { DocAuthImageFixtures.state_id_card_success_yaml }
+
+        it 'tracks events' do
+          stub_analytics
+
+          action
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload form submitted',
+            success: true,
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
+            document_type_requested: an_instance_of(String),
+          )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor submitted',
+            success: true,
+            errors: {},
+            attention_with_barcode: false,
+            async: false,
+            billed: true,
+            doc_auth_result: 'Passed',
+            state: 'MT',
+            country: 'US',
+            document_type_received: 'identification_card',
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            client_image_metrics: {
+              front: { glare: 99.99 },
+              back: { glare: 99.99 },
+            },
+            flow_path: 'standard',
+            vendor_request_time_in_ms: a_kind_of(Float),
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            passport_check_result: {},
+            doc_type_supported: boolean,
+            doc_auth_success: boolean,
+            selfie_status: :not_processed,
+            liveness_checking_required: boolean,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+            transaction_status: 'passed',
+            workflow: an_instance_of(String),
+            birth_year: 1938,
+            zip_code: '59010',
+            issue_year: 2019,
+            document_type_requested: an_instance_of(String),
+          )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+            success: true,
+            attention_with_barcode: false,
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
+            classification_info: a_kind_of(Hash),
+            document_type_received: 'identification_card',
+            document_type_requested: an_instance_of(String),
+            id_issued_status: 'present',
+            id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
+          )
+
+          expect_funnel_update_counts(user, 1)
+        end
+      end
+
       context 'but doc_pii validation fails' do
         let(:first_name) { 'FAKEY' }
         let(:last_name) { 'MCFAKERSON' }

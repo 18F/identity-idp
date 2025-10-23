@@ -37,6 +37,7 @@ module PassportApiHelpers
             'general_health_success.json'
           ),
         ),
+        symbolize_names: true,
       )
     end
 
@@ -48,6 +49,7 @@ module PassportApiHelpers
             'composite_health_success.json'
           ),
         ),
+        symbolize_names: true,
       )
     end
 

@@ -5,6 +5,10 @@
 <p id="password-description">
   <%= t('instructions.password.password_key') %>
 </p>
+<p id="phishing-warning">
+  <%= t('users.edit_info.warning') %>
+  <%= new_tab_link_to t('users.edit_info.link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview') %>
+</p>
 
 <%= simple_form_for(@reset_password_form, url: user_password_path, method: :put) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
