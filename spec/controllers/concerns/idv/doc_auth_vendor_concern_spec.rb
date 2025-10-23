@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
   let(:document_capture_session) { create(:document_capture_session) }
   let(:user) { document_capture_session.user }
-  let(:socure_user_set) { Idv::SocureUserSet.new }
   let(:bucket) { :mock }
   let(:user_session) do
     {}
@@ -18,12 +17,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
   controller ApplicationController do
     include Idv::DocAuthVendorConcern
-  end
-
-  around do |ex|
-    REDIS_POOL.with { |client| client.flushdb }
-    ex.run
-    REDIS_POOL.with { |client| client.flushdb }
   end
 
   before do
@@ -70,11 +63,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           expect(document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
         end
-
-        it 'adds a user to the socure redis set' do
-          expect { controller.update_doc_auth_vendor }
-            .to change { socure_user_set.count }.by(1)
-        end
       end
 
       context 'current user is defined' do
@@ -83,11 +71,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
           expect(document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
-        end
-
-        it 'adds a user to the socure redis set' do
-          expect { controller.update_doc_auth_vendor }
-            .to change { socure_user_set.count }.by(1)
         end
       end
     end
@@ -101,47 +84,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           .to receive(:doc_auth_vendor_socure_percent).and_return(100)
         allow(IdentityConfig.store)
           .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-      end
-
-      context 'socure user limit reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(0)
-        end
-
-        it 'returns mock as the vendor' do
-          controller.update_doc_auth_vendor
-
-          expect(document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::MOCK)
-        end
-      end
-
-      context 'socure user limit not reached' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_socure_max_allowed_users).and_return(1)
-          allow(controller).to receive(:user_session).and_return(user_session)
-        end
-
-        it 'returns socure as the vendor' do
-          controller.update_doc_auth_vendor
-
-          expect(document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::SOCURE)
-        end
-
-        context 'socure user set is maxed before user added' do
-          before do
-            allow(controller).to receive(:socure_user_set).and_return(socure_user_set)
-            allow(socure_user_set).to receive(:add_user!).and_return(false)
-          end
-
-          it 'returns mock as the vendor' do
-            controller.update_doc_auth_vendor
-
-            expect(document_capture_session.doc_auth_vendor)
-              .to eq(Idp::Constants::Vendors::MOCK)
-          end
-        end
       end
     end
 
@@ -179,35 +121,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           expect(document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
         end
-
-        context 'Lexis Nexis is disabled' do
-          context 'Socure user set is full after user bucketed' do
-            before do
-              allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
-              expect(controller).to receive(:ab_test_bucket).and_call_original
-            end
-
-            it 'returns enabled non socure bucket mock as the vendor' do
-              controller.update_doc_auth_vendor
-
-              expect(document_capture_session.doc_auth_vendor)
-                .to eq(Idp::Constants::Vendors::MOCK)
-            end
-          end
-
-          context 'limit reached on allowed Socure users' do
-            before do
-              allow_any_instance_of(Idv::SocureUserSet).to receive(:maxed_users?).and_return(true)
-            end
-            it 'returns enabled non socure bucket mock as the vendor' do
-              controller.update_doc_auth_vendor
-
-              expect(controller).not_to receive(:ab_test_bucket)
-              expect(document_capture_session.doc_auth_vendor)
-                .to eq(Idp::Constants::Vendors::MOCK)
-            end
-          end
-        end
       end
 
       context 'passport requested' do
@@ -223,35 +136,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
           expect(document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
-        end
-
-        context 'Lexis Nexis is disabled' do
-          context 'Socure user set is full after user bucketed' do
-            before do
-              allow_any_instance_of(Idv::SocureUserSet).to receive(:add_user!).and_return(false)
-              expect(controller).to receive(:ab_test_bucket).and_call_original
-            end
-
-            it 'returns enabled non socure bucket mock as the vendor' do
-              controller.update_doc_auth_vendor
-
-              expect(document_capture_session.doc_auth_vendor)
-                .to eq(Idp::Constants::Vendors::MOCK)
-            end
-          end
-
-          context 'limit reached on allowed Socure users' do
-            before do
-              allow_any_instance_of(Idv::SocureUserSet).to receive(:maxed_users?).and_return(true)
-            end
-            it 'returns enabled non socure bucket mock as the vendor' do
-              controller.update_doc_auth_vendor
-
-              expect(controller).not_to receive(:ab_test_bucket)
-              expect(document_capture_session.doc_auth_vendor)
-                .to eq(Idp::Constants::Vendors::MOCK)
-            end
-          end
         end
       end
     end
