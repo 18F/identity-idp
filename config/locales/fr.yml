@@ -642,6 +642,7 @@ doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste parti
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
 doc_auth.headings.welcome: Vérifions votre identité auprès de %{sp_name}
+doc_auth.headings.welcome_sp_reproof: Vérifiez à nouveau votre identité pour %{sp_name}
 doc_auth.hybrid_flow_warning.explanation_html: Vous utilisez <strong>%{app_name}</strong> pour accéder à <strong>%{service_provider_name}</strong>. Ajoutez uniquement votre pièce d’identité si vous avez demandé à %{app_name} de vérifier votre identité à l’aide de votre téléphone.
 doc_auth.hybrid_flow_warning.explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour confirmer votre identité.
 doc_auth.info.address: Si votre adresse personnelle et votre adresse postale de contact sont différentes, vous pouvez également essayer de confirmer votre adresse postale.
@@ -707,6 +708,7 @@ doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passep
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
+doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
@@ -746,20 +748,20 @@ duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au co
 duplicate_profiles_detected.delete_duplicates.heading: 'Supprimer le(s) compte(s) en double'
 duplicate_profiles_detected.delete_duplicates.link: 'Comment supprimer votre compte :'
 duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un des comptes ci-dessus
-duplicate_profiles_detected.duplicate: Duplicate
+duplicate_profiles_detected.duplicate: En double
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
 duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
 duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
-duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last Dernière connexion : </strong> %{timestamp_html}'
+duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Jamais connecté à
 duplicate_profiles_detected.select_an_account.details: Conservez le compte que vous utilisez le plus. Par exemple, celui qui est connecté au plus grand nombre de services. Ainsi, vous n’aurez pas à recommencer les démarches pour vous reconnecter à des services.
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
 duplicate_profiles_detected.sign_back_in.heading: Reconnectez-vous à %{app_name} avec un seul compte
 duplicate_profiles_detected.sign_out: Se déconnecter
-duplicate_profiles_detected.signed_in: Signed In
+duplicate_profiles_detected.signed_in: Connecté
 email_address.not_found: Email non trouvé
 email_addresses.add.duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
 email_addresses.add.limit: Vous avez ajouté le nombre maximum d’adresses e-mail.
@@ -2073,9 +2075,9 @@ user_mailer.please_reset_password.subject: Activité inhabituelle — réinitial
 user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} heures.
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
-user_mailer.reset_password_instructions.header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
+user_mailer.reset_password_instructions.header_html: 'Si vous avez fait cette demande, cliquez sur «&nbsp;Réinitialiser votre mot de passe&nbsp;» pour continuer.<br/><br/>Si vous n’avez pas fait cette demande, ne changez pas votre mot de passe. Signalez toute activité suspecte à notre centre d’aide.<br/><br/>Nous ne vous demanderons jamais de partager votre mot de passe, vos codes de sécurité ou d’autres informations sensibles par courriel, téléphone ou message texte.'
 user_mailer.reset_password_instructions.link_text: Réinitialiser votre mot de passe
-user_mailer.reset_password_instructions.subject: Réinitialiser votre mot de passe
+user_mailer.reset_password_instructions.subject: Réinitialisation du mot de passe demandée pour votre compte %{app_name}
 user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un nouveau compte ou soupçonnez qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de %{app_name_html} ou %{contact_link_html}.
 user_mailer.signup_with_your_email.intro_html: Cette adresse courriel est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
 user_mailer.signup_with_your_email.link_text: Aller sur %{app_name}
@@ -2104,6 +2106,8 @@ users.delete.instructions: Saisissez votre mot de passe pour confirmer que vous 
 users.delete.subheading: 'Si vous supprimez votre compte :'
 users.duplicate_profiles_please_call.error_details_html: <p>Si vous ne reconnaissez pas un compte ou ne pouvez pas accéder à l’un des comptes que vous avez identifiés sur la page détaillant vos différents comptes, veuillez appeler notre centre de contact au <strong>%{contact_number}</strong> en fournissant le code d’erreur <strong>LG33</strong>.</p><p>Vous avez des questions sur les comptes en double ou la marche à suivre ? En savoir plus sur <a href="%{help_url}">la manière de résoudre les problèmes de comptes en double</a>.</p>
 users.duplicate_profiles_please_call.heading: Nous appeler
+users.edit_info.link: Apprenez à identifier la fraude et à la signaler.
+users.edit_info.warning: Si quelqu’un vous a demandé de réinitialiser votre mot de passe, il s’agit peut-être d’une arnaque.
 users.password_compromised.warning: Nous avons trouvé votre mot de passe dans le cadre d’une fuite de données sur un autre site Web ou une application. %{app_name} vous demande de modifier votre mot de passe pour protéger votre compte.
 users.personal_key.accessible_labels.code_example: Un exemple de clé personnelle à 16 caractères
 users.personal_key.accessible_labels.preview: Aperçu de clé personnelle

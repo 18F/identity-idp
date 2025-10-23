@@ -436,6 +436,9 @@ RSpec.describe Idv::VerifyInfoController do
                   ),
                 ),
               ),
+              exceptions: {
+                threatmetrix: hash_including(:exception),
+              },
             ),
           )
 
@@ -795,6 +798,29 @@ RSpec.describe Idv::VerifyInfoController do
           get :show
         end
 
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    state_id: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                state_id: {
+                  vendor_name:,
+                  exception: exception.message,
+                  jurisdiction_in_maintenance_window: false,
+                },
+              },
+            ),
+          )
+        end
+
         it 'redirects user to warning' do
           put :show
           expect(response).to redirect_to idv_session_errors_state_id_warning_url
@@ -808,6 +834,48 @@ RSpec.describe Idv::VerifyInfoController do
             step_name: 'verify_info',
             remaining_submit_attempts: kind_of(Numeric),
           )
+        end
+      end
+
+      context 'when proofing results is missing values' do
+        let(:results) do
+          {
+            context:,
+            errors: {},
+            exception: nil,
+            success: true,
+            threatmetrix_review_status: :passed,
+          }
+        end
+
+        let(:async_state) do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(results)
+          document_capture_session.load_proofing_result
+        end
+
+        context 'when context is missing' do
+          let(:context) { nil }
+
+          it 'logs the doc auth verify proofing results event' do
+            put :show
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(proofing_results: hash_including(context: nil)),
+            )
+          end
+        end
+
+        context 'when context stages are missing' do
+          let(:context) { { stages: nil } }
+
+          it 'logs the doc auth verify proofing results event' do
+            put :show
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(proofing_results: hash_including(context: { stages: nil })),
+            )
+          end
         end
       end
     end
@@ -891,6 +959,28 @@ RSpec.describe Idv::VerifyInfoController do
           get :show
         end
 
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    resolution: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                resolution: {
+                  vendor_name:,
+                  exception: 'fake exception',
+                },
+              },
+            ),
+          )
+        end
+
         it 'logs an event' do
           get :show
 
@@ -929,6 +1019,28 @@ RSpec.describe Idv::VerifyInfoController do
             },
           )
           get :show
+        end
+
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    resolution: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                resolution: {
+                  vendor_name:,
+                  exception: 'fake exception',
+                },
+              },
+            ),
+          )
         end
 
         it 'redirects user to address warning' do
@@ -1029,6 +1141,9 @@ RSpec.describe Idv::VerifyInfoController do
           remaining_submit_attempts: kind_of(Numeric),
         )
       end
+    end
+
+    context 'when the resolution proofing results is missing values' do
     end
 
     context 'when the resolution proofing job has not completed' do

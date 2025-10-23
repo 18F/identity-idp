@@ -49,17 +49,10 @@ class InPersonEnrollment < ApplicationRecord
   before_create(:set_unique_id, unless: :unique_id)
 
   class << self
-    def needs_early_email_reminder(early_benchmark, late_benchmark)
+    def needs_late_email_reminder(start_date, end_date)
       pending_and_established_between(
-        early_benchmark,
-        late_benchmark,
-      ).where(early_reminder_sent: false)
-    end
-
-    def needs_late_email_reminder(early_benchmark, late_benchmark)
-      pending_and_established_between(
-        early_benchmark,
-        late_benchmark,
+        start_date,
+        end_date,
       ).where(late_reminder_sent: false)
     end
 
@@ -97,10 +90,10 @@ class InPersonEnrollment < ApplicationRecord
 
     private
 
-    def pending_and_established_between(early_benchmark, late_benchmark)
+    def pending_and_established_between(start_date, end_date)
       where(status: :pending)
         .and(
-          where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+          where(enrollment_established_at: end_date...(start_date.end_of_day)),
         )
         .order(enrollment_established_at: :asc)
     end
@@ -185,9 +178,16 @@ class InPersonEnrollment < ApplicationRecord
   def days_to_expire
     if enhanced_ipp?
       IdentityConfig.store.in_person_eipp_enrollment_validity_in_days.days
+    elsif use_legacy_validity?
+      IdentityConfig.store.in_person_enrollment_validity_in_days_legacy.days
     else
       IdentityConfig.store.in_person_enrollment_validity_in_days.days
     end
+  end
+
+  def use_legacy_validity?
+    enrollment_established_at.present? &&
+      enrollment_established_at < IdentityConfig.store.in_person_enrollment_validity_cutoff_date
   end
 
   def on_notification_sent_at_updated

@@ -50,6 +50,7 @@ module DocAuth
               Back: (encode(back_image) if back_image_required?),
               Selfie: (encode(selfie_image) if liveness_checking_required),
               DocumentType: document_type_requested,
+              ImageCroppingMode: image_cropping_mode,
             }.compact,
           }
 
@@ -110,6 +111,10 @@ module DocAuth
 
         def back_image_required?
           document_type_requested == DocumentTypes::DRIVERS_LICENSE
+        end
+
+        def image_cropping_mode
+          @images_cropped ? ImageCroppingModes::NONE : ImageCroppingModes::ALWAYS
         end
 
         def encode(image)

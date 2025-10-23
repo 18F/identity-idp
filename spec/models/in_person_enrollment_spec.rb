@@ -148,23 +148,14 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'enrollments that need email reminders' do
-    let(:early_benchmark) { Time.zone.now - 19.days }
-    let(:late_benchmark) { Time.zone.now - 26.days }
-    let(:final_benchmark) { Time.zone.now - 29.days }
-
-    # early reminder is sent on days 11-5
-    let!(:enrollments_needing_early_reminder) do
-      [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
-      ]
-    end
+    let(:late_benchmark) { Time.zone.now - 3.days }
+    let(:final_benchmark) { Time.zone.now - 6.days }
 
     # late reminder is sent on days 4 - 2
     let!(:enrollments_needing_late_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 5.days),
       ]
     end
 
@@ -178,18 +169,8 @@ RSpec.describe InPersonEnrollment, type: :model do
       ]
     end
 
-    it 'returns pending enrollments that need early reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
-      results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
-      expect(results.pluck(:id)).to match_array enrollments_needing_early_reminder.pluck(:id)
-      results.each do |result|
-        expect(result.pending?).to be_truthy
-        expect(result.early_reminder_sent?).to be_falsey
-      end
-    end
-
     it 'returns pending enrollments that need late reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
+      expect(InPersonEnrollment.count).to eq(7)
       results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
       expect(results.pluck(:id)).to match_array enrollments_needing_late_reminder.pluck(:id)
       results.each do |result|
@@ -391,7 +372,8 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'due_date and days_to_due_date' do
-    let(:validity_in_days) { 10 }
+    let(:validity_in_days) { 7 }
+    let(:validity_cutoff_date) { Time.zone.now - 1.day }
 
     before do
       allow(IdentityConfig.store)
@@ -399,10 +381,12 @@ RSpec.describe InPersonEnrollment, type: :model do
           receive(:in_person_enrollment_validity_in_days)
           .and_return(validity_in_days),
         )
+      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_cutoff_date)
+        .and_return(validity_cutoff_date)
     end
 
     it 'due_date returns the enrollment expiration date based on when it was established' do
-      freeze_time do
+      travel_to(validity_cutoff_date + 15.days) do
         enrollment = create(
           :in_person_enrollment,
           enrollment_established_at: (validity_in_days - 3).days.ago,
@@ -416,7 +400,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'days_to_due_date returns the number of days left until the due date' do
       # This test can be flaky when the enrollment due date range runs across a DST time change.
       # Because of that, a specific time that's less likely to have time changes is used.
-      travel_to(Time.zone.local(2025, 1, 1, 10, 0, 0)) do
+      travel_to(Time.zone.local(2025, 11, 1, 10, 0, 0)) do
         enrollment = create(
           :in_person_enrollment,
           enrollment_established_at: (validity_in_days - 3).days.ago,
@@ -427,7 +411,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     context 'check edges to confirm date calculation is correct' do
       it 'returns the correct due date and days to due date with 1 day left' do
-        freeze_time do
+        travel_to(validity_cutoff_date + 15.days) do
           enrollment = create(
             :in_person_enrollment,
             enrollment_established_at: (validity_in_days - 1).days.ago,
@@ -440,7 +424,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
 
       it 'returns the correct due date and days to due date with 0.5 days left' do
-        freeze_time do
+        travel_to(validity_cutoff_date + 15.days) do
           enrollment = create(
             :in_person_enrollment,
             enrollment_established_at: (validity_in_days - 0.5).days.ago,
@@ -453,7 +437,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
 
       it 'returns the correct due date and days to due date with 0 days left' do
-        freeze_time do
+        travel_to(validity_cutoff_date + 15.days) do
           enrollment = create(
             :in_person_enrollment,
             enrollment_established_at: validity_in_days.days.ago,
@@ -482,6 +466,57 @@ RSpec.describe InPersonEnrollment, type: :model do
             enrollment_established_at: (eipp_validity_in_days - 2).days.ago
           )
           expect(enrollment.days_to_due_date).to eq(2)
+        end
+      end
+    end
+
+    context 'legacy validity for enrollments established before cutoff date' do
+      let(:legacy_validity_in_days) { 30 }
+      let(:new_validity_in_days) { 7 }
+      let(:validity_cutoff_date) { Time.zone.now - 1.day }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:in_person_enrollment_validity_in_days_legacy)
+          .and_return(legacy_validity_in_days)
+        allow(IdentityConfig.store)
+          .to receive(:in_person_enrollment_validity_in_days)
+          .and_return(new_validity_in_days)
+        allow(IdentityConfig.store)
+          .to receive(:in_person_enrollment_validity_cutoff_date)
+          .and_return(validity_cutoff_date)
+      end
+
+      it 'uses legacy validity for enrollments established before cutoff date' do
+        travel_to(validity_cutoff_date - 1.day) do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: Time.zone.now,
+          )
+          expect(enrollment.due_date).to eq(Time.zone.now + legacy_validity_in_days.days)
+          expect(enrollment.days_to_due_date).to eq(legacy_validity_in_days)
+        end
+      end
+
+      it 'uses new validity for enrollments established after cutoff date' do
+        travel_to(validity_cutoff_date + 1.day) do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: Time.zone.now,
+          )
+          expect(enrollment.due_date).to eq(Time.zone.now + new_validity_in_days.days)
+          expect(enrollment.days_to_due_date).to eq(new_validity_in_days)
+        end
+      end
+
+      it 'uses new validity for enrollments without enrollment_established_at' do
+        freeze_time do
+          enrollment = create(
+            :in_person_enrollment,
+            enrollment_established_at: nil,
+          )
+          expect(enrollment.due_date).to eq(Time.zone.now + new_validity_in_days.days)
+          expect(enrollment.days_to_due_date).to eq(new_validity_in_days)
         end
       end
     end

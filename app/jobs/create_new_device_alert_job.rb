@@ -34,6 +34,8 @@ class CreateNewDeviceAlertJob < ApplicationJob
     disavowal_event, disavowal_token = UserEventCreator.new(current_user: user)
       .create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
 
-    UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
+    if !user.second_factor_locked_at.present?
+      UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
+    end
   end
 end

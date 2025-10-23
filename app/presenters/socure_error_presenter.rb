@@ -189,7 +189,7 @@ class SocureErrorPresenter
   end
 
   def in_person_enabled?
-    IdentityConfig.store.in_person_doc_auth_button_enabled &&
+    IdentityConfig.store.in_person_proofing_opt_in_enabled &&
       Idv::InPersonConfig.enabled_for_issuer?(issuer)
   end
 

@@ -2,7 +2,6 @@
 
 module InPerson
   class EmailReminderJob < ApplicationJob
-    EMAIL_TYPE_EARLY = 'early'
     EMAIL_TYPE_LATE = 'late'
 
     queue_as :low
@@ -10,18 +9,11 @@ module InPerson
     def perform(_now)
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
-      # send late emails first in case of job failure
-      late_enrollments = InPersonEnrollment.needs_late_email_reminder(
-        late_benchmark,
-        final_benchmark,
+      enrollments = InPersonEnrollment.needs_late_email_reminder(
+        reminder_start_date,
+        reminder_end_date,
       )
-      send_emails_for_enrollments(enrollments: late_enrollments, email_type: EMAIL_TYPE_LATE)
-
-      early_enrollments = InPersonEnrollment.needs_early_email_reminder(
-        early_benchmark,
-        late_benchmark,
-      )
-      send_emails_for_enrollments(enrollments: early_enrollments, email_type: EMAIL_TYPE_EARLY)
+      send_emails_for_enrollments(enrollments)
     end
 
     private
@@ -30,7 +22,7 @@ module InPerson
       Analytics.new(user: user, request: nil, session: {}, sp: nil)
     end
 
-    def send_emails_for_enrollments(enrollments:, email_type:)
+    def send_emails_for_enrollments(enrollments)
       enrollments.each do |enrollment|
         send_reminder_email(enrollment.user, enrollment)
       rescue StandardError => err
@@ -42,32 +34,24 @@ module InPerson
         )
       else
         analytics(user: enrollment.user).idv_in_person_email_reminder_job_email_initiated(
-          email_type: email_type,
+          email_type: EMAIL_TYPE_LATE,
           enrollment_id: enrollment.id,
         )
-        if email_type == EMAIL_TYPE_EARLY
-          enrollment.update!(early_reminder_sent: true)
-        elsif email_type == EMAIL_TYPE_LATE
-          enrollment.update!(late_reminder_sent: true)
-        end
+        enrollment.update!(late_reminder_sent: true)
       end
     end
 
-    def calculate_interval(benchmark)
-      days_until_expired = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      (Time.zone.now - days_until_expired) + benchmark.days
+    def calculate_reminder_date(offset)
+      validity_days = IdentityConfig.store.in_person_enrollment_validity_in_days.days
+      (Time.zone.now - validity_days) + offset.days
     end
 
-    def early_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_early_benchmark_in_days)
+    def reminder_start_date
+      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
     end
 
-    def late_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
-    end
-
-    def final_benchmark
-      calculate_interval(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
+    def reminder_end_date
+      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
     end
 
     def send_reminder_email(user, enrollment)

@@ -6,8 +6,7 @@ module Db
       extend Reports::QueryHelpers
 
       UserVerifiedKey = Data.define(
-        :user_id, :profile_verified_at, :profile_age,
-        :profile_requested_issuer, :issuer
+        :user_id, :profile_verified_at, :profile_age
       ).freeze
 
       module_function
@@ -25,6 +24,8 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
+
+        @user_issuer_ids = Set.new
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
           ym_h[ym_k] = {}
@@ -58,8 +59,11 @@ module Db
 
                 user_unique_id = UserVerifiedKey.new(
                   user_id:, profile_verified_at:, profile_age:,
-                  profile_requested_issuer:, issuer:
                 )
+
+                if profile_requested_issuer == issuer
+                  @user_issuer_ids << user_id
+                end
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
@@ -136,8 +140,8 @@ module Db
             , %{year_month} AS year_month
             , subq.profile_verified_at
             , subq.profile_age
-            , subq.profile_requested_issuer
-            , MIN(subq.issuer) AS issuer
+            , MAX(subq.profile_requested_issuer) AS profile_requested_issuer
+            , MAX(subq.issuer) AS issuer
             FROM (
               SELECT
                   sp_return_logs.user_id
@@ -156,7 +160,6 @@ module Db
               subq.user_id
               , subq.profile_verified_at
               , subq.profile_age
-              , subq.profile_requested_issuer
           SQL
         end
       end
@@ -180,7 +183,7 @@ module Db
           if age.nil? || age.negative?
             next
           elsif age == 0
-            if user_unique_id&.profile_requested_issuer == user_unique_id.issuer
+            if @user_issuer_ids.include?(user_unique_id.user_id)
               :upfront
             else
               :existing
