@@ -29,7 +29,6 @@ class StoreSpMetadataInSession
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
       acr_values: sp_request.acr_values,
-      vtr: sp_request.vtr,
     }
   end
 
