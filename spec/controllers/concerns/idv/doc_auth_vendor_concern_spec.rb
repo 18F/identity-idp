@@ -256,48 +256,4 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       end
     end
   end
-
-  describe '#doc_auth_vendor_enabled?' do
-    let(:vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
-
-    context 'doc_auth_vendor_switching is false' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_switching_enabled).and_return(false)
-      end
-
-      it 'returns false' do
-        expect(controller.doc_auth_vendor_enabled?(vendor)).to eq false
-      end
-    end
-
-    context 'Lexis Nexis is disabled' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_switching_enabled).and_return(true)
-        allow(IdentityConfig.store)
-          .to receive(:doc_auth_vendor_lexis_nexis_percent).and_return(0)
-      end
-
-      it 'returns false' do
-        expect(controller.doc_auth_vendor_enabled?(vendor)).to eq false
-      end
-
-      context 'session already assigned LexisNexis doc auth vendor' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default)
-            .and_return(Idp::Constants::Vendors::MOCK)
-          document_capture_session.update!(doc_auth_vendor: vendor)
-        end
-
-        it 'lexis_nexis is still docauth vendor' do
-          controller.update_doc_auth_vendor
-
-          expect(DocAuthRouter).not_to receive(:doc_auth_vendor_for_bucket)
-          expect(document_capture_session.doc_auth_vendor)
-            .to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-        end
-      end
-    end
-  end
 end
