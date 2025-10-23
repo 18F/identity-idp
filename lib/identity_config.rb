@@ -147,7 +147,6 @@ module IdentityConfig
     config.add(:doc_auth_selfie_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_switching_enabled, type: :boolean)
-    config.add(:doc_auth_socure_max_allowed_users, type: :integer)
     config.add(:doc_auth_socure_wait_polling_refresh_max_seconds, type: :integer)
     config.add(:doc_auth_socure_wait_polling_timeout_minutes, type: :integer)
     config.add(:doc_auth_supported_country_codes, type: :json)
