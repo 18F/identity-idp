@@ -53,6 +53,8 @@ test:
     <<: *test
     database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
+  data_warehouse:
+    <<: *test
 
 <%
   worker_pool = if Identity::Hostdata.instance_role == 'worker'
@@ -112,3 +114,16 @@ production:
     sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
+<% if IdentityConfig.store.data_warehouse_enabled && IdentityConfig.store.data_warehouse_v3_enabled %>
+  data_warehouse:
+    adapter: redshift
+    host: <%= IdentityConfig.store.redshift_endpoint_host %>
+    port: 5439
+    database: "<%= IdentityConfig.store.redshift_database_name %>"
+    username: "<%= IdentityConfig.store.redshift_credentials.fetch('username', '') %>"
+    password: "<%= IdentityConfig.store.redshift_credentials.fetch('password', '') %>"
+    encoding: utf8
+    database_tasks: false
+    replica: true
+    schema_search_path: idp,logs
+<% end %>
