@@ -71,6 +71,7 @@ module Idv
       phone_for_mobile_flow
       phone_precheck_successful
       phone_precheck_vendor
+      precheck_phone
       previous_phone_step_params
       previous_ssn
       profile_id
