@@ -33,6 +33,7 @@ module Idv
 
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
+      idv_session.precheck_phone = user_pii[:best_effort_phone_number_for_socure]
 
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
@@ -397,8 +398,7 @@ module Idv
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
       if idv_session.phone_precheck_successful
-        # should be more exact - add/take to/from result
-        idv_session.applicant[:phone] = normalized_phone(best_effort_phone[:phone])
+        idv_session.applicant[:phone] = idv_session.precheck_phone&.dig(:phone)
       end
     end
 
