@@ -8,7 +8,7 @@ import type {
   OnErrorCallback,
   RegisterFieldCallback,
 } from '@18f/identity-form-steps';
-import AcuantCapture from './acuant-capture';
+import AcuantCapture, { AcuantDocumentType } from './acuant-capture';
 import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentSideAcuantCaptureProps {
@@ -107,6 +107,7 @@ function DocumentSideAcuantCapture({
       allowUpload={isUploadAllowed}
       showSelfieHelp={showSelfieHelp}
       isReviewStep={isReviewStep}
+      requestedAcuantDocumentType={isPassport ? AcuantDocumentType.PASSPORT : AcuantDocumentType.ID}
     />
   );
 }
