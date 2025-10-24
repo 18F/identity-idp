@@ -33,6 +33,7 @@ module Idv
 
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
+      idv_session.precheck_phone = user_pii[:best_effort_phone_number_for_socure]
 
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
@@ -44,6 +45,8 @@ module Idv
       )
 
       return true
+    rescue => e
+      byebug
     end
 
     def log_event_for_missing_threatmetrix_session_id
@@ -221,6 +224,7 @@ module Idv
         save_threatmetrix_status(form_response)
         save_source_check_vendor(form_response)
         save_resolution_vendors(form_response)
+        save_phone_precheck_vendor(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
 
@@ -241,6 +245,9 @@ module Idv
     def next_step_url
       return idv_request_letter_url if FeatureManagement.idv_by_mail_only? ||
                                        idv_session.gpo_request_letter_visited
+
+      return idv_enter_password_url if idv_session.phone_confirmed?
+
       idv_phone_url
     end
 
@@ -260,6 +267,21 @@ module Idv
         :residential_address,
         :vendor_name,
       )
+    end
+
+    def save_phone_precheck_vendor(form_response)
+      phone_precheck = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :phone_precheck,
+      )
+      idv_session.phone_precheck_vendor = phone_precheck&.dig(:vendor_name)
+      if (idv_session.phone_precheck_successful = phone_precheck&.dig(:success))
+        idv_session.mark_phone_step_started!
+        idv_session.mark_phone_step_complete!
+        # todo: save_in_person_notification_phone - see otp_verificaiton_controller
+      end
     end
 
     def save_threatmetrix_status(form_response)
@@ -375,6 +397,9 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+      if idv_session.phone_precheck_successful
+        idv_session.applicant[:phone] = idv_session.precheck_phone&.dig(:phone)
+      end
     end
 
     def delete_threatmetrix_response_body(form_response)
@@ -453,6 +478,13 @@ module Idv
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
       end.compact.presence
+    end
+
+    def normalized_phone(phone) # rename normalize_phone ... copied from phone_step
+      return if phone.blank?
+
+      formatted_phone = PhoneFormatter.format(phone)
+      formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
     end
 
     VerificationFailures = Struct.new(

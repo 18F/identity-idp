@@ -11,7 +11,8 @@ module Proofing
           residential_address_resolution_result:,
           state_id_result:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          best_effort_phone: nil
         )
           if ipp_enrollment_in_progress
             return ignore_phone_for_in_person_result
@@ -21,6 +22,10 @@ module Proofing
              !residential_address_resolution_result.success? ||
              !state_id_result.success?
             return resolution_cannot_pass_result
+          end
+
+          if IdentityConfig.store.idv_phone_precheck_enabled
+            applicant_pii[:phone] ||= best_effort_phone&.dig(:phone)
           end
 
           if applicant_pii[:phone].blank?
@@ -42,6 +47,8 @@ module Proofing
               )
             end
           end
+        rescue => e
+          byebug
         end
 
         def proofer
