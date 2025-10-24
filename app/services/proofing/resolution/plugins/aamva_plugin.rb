@@ -19,6 +19,8 @@ module Proofing
           ipp_enrollment_in_progress:,
           timer:
         )
+          return skipped_result if passport_applicant?(applicant_pii)
+
           should_proof = should_proof_state_id?(
             applicant_pii:,
             state_id_address_resolution_result:,
@@ -137,6 +139,12 @@ module Proofing
         def with_state_id_address(pii)
           pii.except(*SECONDARY_ID_ADDRESS_MAP.values)
             .transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        end
+
+        def passport_applicant?(applicant_pii)
+          # Check both new field name and old field name for backwards compatibility during deploy
+          (applicant_pii[:document_type_received] || applicant_pii[:id_doc_type]) ==
+            Idp::Constants::DocumentTypes::PASSPORT
         end
       end
     end
