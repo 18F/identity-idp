@@ -148,7 +148,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
     });
   });
 
-  describe('shouldTriggerManualCapture', () => {
+  describe('triggerManualCapture', () => {
     it('returns false when manual capture feature is disabled', () => {
       const disabledWrapper: ComponentType = ({ children }) => (
         <SelfieCaptureContext.Provider
@@ -193,7 +193,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         });
       });
 
-      expect(result.current.shouldTriggerManualCapture('front')).to.be.false();
+      expect(result.current.triggerManualCapture('front')).to.be.false();
     });
 
     it('returns false when attempts are below threshold', () => {
@@ -212,7 +212,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         });
       });
 
-      expect(result.current.shouldTriggerManualCapture('front')).to.be.false();
+      expect(result.current.triggerManualCapture('front')).to.be.false();
     });
 
     it('returns true when attempts reach threshold', () => {
@@ -236,7 +236,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         });
       });
 
-      expect(result.current.shouldTriggerManualCapture('front')).to.be.true();
+      expect(result.current.triggerManualCapture('front')).to.be.true();
     });
 
     it('returns true when attempts exceed threshold', () => {
@@ -265,7 +265,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         });
       });
 
-      expect(result.current.shouldTriggerManualCapture('front')).to.be.true();
+      expect(result.current.triggerManualCapture('front')).to.be.true();
     });
 
     it('checks each side independently', () => {
@@ -294,9 +294,9 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         });
       });
 
-      expect(result.current.shouldTriggerManualCapture('front')).to.be.true();
-      expect(result.current.shouldTriggerManualCapture('back')).to.be.false();
-      expect(result.current.shouldTriggerManualCapture('passport')).to.be.false();
+      expect(result.current.triggerManualCapture('front')).to.be.true();
+      expect(result.current.triggerManualCapture('back')).to.be.false();
+      expect(result.current.triggerManualCapture('passport')).to.be.false();
     });
   });
 

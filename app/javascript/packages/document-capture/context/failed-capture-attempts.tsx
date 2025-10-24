@@ -95,7 +95,7 @@ interface FailedCaptureAttemptsContextInterface {
   failedQualityCheckAttempts: PerSideFailedAttempts;
   onFailedQualityCheckAttempt: (side: DocumentSide, metadata: CaptureAttemptMetadata) => void;
   onResetFailedQualityCheckAttempts: (side: DocumentSide) => void;
-  shouldTriggerManualCapture: (side: DocumentSide) => boolean;
+  triggerManualCapture: (side: DocumentSide) => boolean;
   maxAttemptsBeforeManualCapture: number;
   manualCaptureAfterFailuresEnabled: boolean;
 }
@@ -128,7 +128,7 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   failedQualityCheckAttempts: DEFAULT_PER_SIDE_FAILED_ATTEMPTS,
   onFailedQualityCheckAttempt: () => {},
   onResetFailedQualityCheckAttempts: () => {},
-  shouldTriggerManualCapture: () => false,
+  triggerManualCapture: () => false,
   maxAttemptsBeforeManualCapture: 3,
   manualCaptureAfterFailuresEnabled: false,
 });
@@ -205,7 +205,7 @@ function FailedCaptureAttemptsContextProvider({
     }));
   }, []);
 
-  const shouldTriggerManualCapture = useCallback(
+  const triggerManualCapture = useCallback(
     (side: DocumentSide): boolean => {
       if (!manualCaptureAfterFailuresEnabled) {
         return false;
@@ -220,7 +220,7 @@ function FailedCaptureAttemptsContextProvider({
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
 
   // Native camera fallback for SDK failures and submission failures only
-  // Quality check failures are handled per-side via shouldTriggerManualCapture()
+  // Quality check failures are handled per-side via triggerManualCapture()
   const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
   const contextValue = useMemo(
@@ -240,7 +240,7 @@ function FailedCaptureAttemptsContextProvider({
       failedQualityCheckAttempts,
       onFailedQualityCheckAttempt,
       onResetFailedQualityCheckAttempts,
-      shouldTriggerManualCapture,
+      triggerManualCapture,
       maxAttemptsBeforeManualCapture,
       manualCaptureAfterFailuresEnabled,
     }),
@@ -260,7 +260,7 @@ function FailedCaptureAttemptsContextProvider({
       failedQualityCheckAttempts,
       onFailedQualityCheckAttempt,
       onResetFailedQualityCheckAttempts,
-      shouldTriggerManualCapture,
+      triggerManualCapture,
       maxAttemptsBeforeManualCapture,
       manualCaptureAfterFailuresEnabled,
     ],
