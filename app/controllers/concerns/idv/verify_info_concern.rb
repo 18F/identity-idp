@@ -244,6 +244,9 @@ module Idv
     def next_step_url
       return idv_request_letter_url if FeatureManagement.idv_by_mail_only? ||
                                        idv_session.gpo_request_letter_visited
+
+      return idv_enter_password_url if idv_session.phone_confirmed?
+
       idv_phone_url
     end
 
