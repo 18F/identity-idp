@@ -408,6 +408,7 @@ reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
+reproof_forcing_provider: ''
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
 requests_per_ip_path_prefixes_allowlist: ''
