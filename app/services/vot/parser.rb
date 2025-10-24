@@ -46,24 +46,21 @@ module Vot
       end
     end.freeze
 
-    attr_reader :vector_of_trust, :acr_values
+    attr_reader :acr_values
 
-    def initialize(vector_of_trust: nil, acr_values: nil)
-      @vector_of_trust = vector_of_trust
+    def initialize(acr_values: nil)
       @acr_values = acr_values
     end
 
     def parse
-      if initial_components.blank?
-        raise ParseException.new('VoT parser called without VoT or ACR values')
+      if components.blank?
+        raise ParseException.new('Component parser called without ACR values')
       end
-      validate_component_uniqueness!(initial_components)
+      validate_component_uniqueness!(components)
 
-      expanded_components = Vot::ComponentExpander.new(initial_components:, component_map:).expand
-
-      requirement_list = expanded_components.flat_map(&:requirements)
+      requirement_list = components.flat_map(&:requirements)
       Result.new(
-        component_values: expanded_components,
+        component_values: components,
         component_separator:,
         aal2?: requirement_list.include?(:aal2),
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
@@ -78,30 +75,22 @@ module Vot
 
     private
 
-    def initial_components
-      return @initial_components if defined?(@initial_components)
+    def components
+      return @components if defined?(@components)
 
-      component_string = vector_of_trust.presence || acr_values || ''
-      @initial_components ||= component_string.split(component_separator).map do |component_name|
+      component_string = acr_values || ''
+      @components ||= component_string.split(component_separator).map do |component_name|
         component_map.fetch(component_name)
       rescue KeyError
       end.compact
     end
 
     def component_separator
-      if vector_of_trust.present?
-        '.'
-      else
-        ' '
-      end
+      ' '
     end
 
     def component_map
-      if vector_of_trust.present?
-        SupportedComponentValues.by_name
-      else
-        AcrComponentValues.by_name
-      end
+      AcrComponentValues.by_name
     end
 
     def validate_component_uniqueness!(component_values)
@@ -111,11 +100,7 @@ module Vot
     end
 
     def raise_duplicate_component_exception
-      if vector_of_trust.present?
-        raise DuplicateComponentsException, "'#{vector_of_trust}' contains duplicate components"
-      else
-        raise DuplicateComponentsException, "'#{acr_values}' contains duplicate acr values"
-      end
+      raise DuplicateComponentsException, "'#{acr_values}' contains duplicate acr values"
     end
   end
 end

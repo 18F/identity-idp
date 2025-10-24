@@ -39,7 +39,6 @@ class ServiceProviderRequestProxy
       url: nil,
       requested_attributes: nil,
       acr_values: nil,
-      vtr: nil,
     )
 
     yield(spr)
