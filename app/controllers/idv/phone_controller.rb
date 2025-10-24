@@ -13,6 +13,7 @@ module Idv
 
     before_action :confirm_not_rate_limited_for_phone_address_verification, except: [:new]
     before_action :confirm_step_allowed
+    before_action :confirm_phone_step_required, only: [:new]
     before_action :set_idv_form
 
     def new
@@ -274,6 +275,10 @@ module Idv
         delivery_method: original_session.delivery_method,
         user: current_user,
       )
+    end
+
+    def confirm_phone_step_required
+      redirect_to idv_enter_password_url if idv_session.phone_confirmed?
     end
   end
 end

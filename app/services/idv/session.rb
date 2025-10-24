@@ -67,6 +67,8 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
+      phone_precheck_successful
+      phone_precheck_vendor
       previous_phone_step_params
       previous_ssn
       profile_id
