@@ -54,7 +54,6 @@ const LEGACY_FILE_EXCEPTIONS = [
   'spec/javascript/packages/document-capture/components/warning-spec.jsx',
   'spec/javascript/packages/document-capture/context/acuant-spec.jsx',
   'spec/javascript/packages/document-capture/context/device-spec.jsx',
-  'spec/javascript/packages/document-capture/context/failed-capture-attempts-spec.jsx',
   'spec/javascript/packages/document-capture/context/file-base64-cache-spec.js',
   'spec/javascript/packages/document-capture/context/index-spec.js',
   'spec/javascript/packages/document-capture/context/selfie-capture-spec.jsx',
