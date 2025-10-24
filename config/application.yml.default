@@ -421,6 +421,7 @@ risc_notifications_rate_limit_interval: 60
 risc_notifications_rate_limit_max_requests: 1_000
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
 risc_notifications_request_timeout: 3
+risc_notifications_send_client_id_in_aud_enabled: true
 ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
@@ -612,6 +613,7 @@ production:
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
+  risc_notifications_send_client_id_in_aud_enabled: false
   ruby_workers_idv_enabled: false
   s3_reports_enabled: true
   seed_agreements_data: false
