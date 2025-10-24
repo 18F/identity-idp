@@ -80,8 +80,8 @@ module Reports
     end
 
     def emails
-      internal_emails = [*IdentityConfig.store.irs_registration_funnel_emails]
-      irs_emails = []
+      internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
+      irs_emails = [*IdentityConfig.store.irs_registration_funnel_emails]
 
       case report_receiver
       when :internal then internal_emails

@@ -38,8 +38,8 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     ]
   end
 
-  let(:mock_test_auth_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
-  let(:mock_test_auth_issuers) { ['issuer1'] }
+  let(:mock_reports_irs_emails) { ['mock_partner@example.com'] }
+  let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -55,7 +55,10 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     }
 
     allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
-      .and_return(mock_test_auth_emails)
+      .and_return(mock_reports_irs_emails)
+
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+      .and_return(mock_reports_internal_emails)
 
     allow(report.irs_registration_funnel_report).to receive(:funnel_metrics_table)
       .and_return(mock_funnel_metrics_data)
@@ -75,6 +78,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
@@ -92,6 +96,22 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     end
 
     report.perform(report_date)
+  end
+
+  context 'begining of the week, it sends out the report to the internal and partner' do
+    let(:report_date) { Date.new(2025, 10, 20).prev_day }
+    subject(:report) { described_class.new(report_date, :both) }
+    it 'sends out a report to just to team data and partner' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com', 'mock_partner@example.com'],
+        subject: 'IRS Registration Funnel Report - 2025-10-19',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date)
+    end
   end
 
   describe '#preamble' do
