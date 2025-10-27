@@ -197,6 +197,7 @@ module Idv
           pii_like_keypaths: [
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
+            [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
@@ -281,6 +282,8 @@ module Idv
         idv_session.mark_phone_step_started!
         idv_session.mark_phone_step_complete!
         # todo: save_in_person_notification_phone - see otp_verificaiton_controller
+      elsif idv_session.precheck_phone&.dig(:phone) && phone_precheck&.dig(:exception).blank?
+        idv_session.add_failed_phone_step_number(idv_session.precheck_phone[:phone])
       end
     end
 
