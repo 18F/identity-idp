@@ -53,7 +53,7 @@ module Reports
          that successfully signed into the partner\'s applications'],
 
         ['New identity verification credentials authorized for partner', 'Count',
-         'The number of unique users who go through the proofing process through a partner\'s request.'],
+         'The number of new unique users who go through the proofing process through a partner\'s request.'],
 
         ['Existing identity verification credentials authorized for partner', 'Count',
          'The number of new unique users who authenticated with existing credentials to the partner.'],
