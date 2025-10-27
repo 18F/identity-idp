@@ -60,9 +60,30 @@ RSpec.describe PushNotification::HttpPush do
         expect(jwt_payload['iss']).to eq(root_url)
         expect(jwt_payload['iat']).to eq(now.to_i)
         expect(jwt_payload['exp']).to eq((now + 12.hours).to_i)
-        expect(jwt_payload['aud']).to eq(sp_with_push_url.issuer)
+        expect(jwt_payload['aud']).to eq(sp_with_push_url.push_notification_url)
         expect(jwt_payload['events']).to eq(event.event_type => event.payload.as_json)
       }
+    end
+
+    context 'when the service provider is allowed to receive client_id as the aud' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+          .and_return([sp_with_push_url.issuer])
+      end
+
+      it 'enqeues a background job with the aud set as the client id' do
+        expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
+          jwt_payload, _headers = JWT.decode(
+            args[:jwt],
+            Rails.application.config.oidc_public_key,
+            true,
+            algorithm: 'RS256',
+            kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+          )
+
+          expect(jwt_payload['aud']).to eq(sp_with_push_url.issuer)
+        }
+      end
     end
 
     context 'when risc_notifications_send_client_id_in_aud_enabled is false' do

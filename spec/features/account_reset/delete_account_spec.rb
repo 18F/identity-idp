@@ -108,6 +108,8 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+        .and_return([service_provider.issuer])
       travel_to(2.days.from_now + 1) do
         request = stub_push_notification_request(
           service_provider: service_provider,
