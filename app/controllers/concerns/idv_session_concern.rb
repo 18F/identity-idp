@@ -20,7 +20,7 @@ module IdvSessionConcern
     user_needs_facial_match? ||
       idv_session_user.active_profile.blank? ||
       decorated_sp_session.requested_more_recent_verification? ||
-      current_sp&.needs_to_reproof?(idv_session_user.active_profile&.initiating_service_provider)
+      current_sp&.needs_to_reproof?(idv_session_user.active_profile.initiating_service_provider)
   end
 
   def idv_session

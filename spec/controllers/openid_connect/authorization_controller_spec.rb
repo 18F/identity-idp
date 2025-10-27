@@ -218,7 +218,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         context 'with ial2 requested using acr values' do
           let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-          let(:initiating_service_provider_issuer) { '' }
+          let(:initiating_service_provider_issuer) { nil }
           let(:idv_level) { :legacy_unsupervised }
 
           context 'account is already verified' do
@@ -339,7 +339,16 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
+              context 'when the existing profile has no initiating service provider' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
               context 'when the existing profile was initiated by a different service provider' do
+                let(:initiating_service_provider_issuer) { 'saml_sp_ial2' }
+
                 it 'redirects to have the user verify their account' do
                   action
                   expect(controller).to redirect_to(idv_url)
