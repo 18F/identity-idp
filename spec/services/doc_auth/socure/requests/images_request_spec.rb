@@ -82,7 +82,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
     context 'we get a 403 back' do
       let(:status) { 403 }
-      let(:body) { {} }
+      let(:body) { {}.to_json }
 
       it 'does not raise an exception' do
         expect { subject.fetch }.not_to raise_error
@@ -91,7 +91,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
 
     context 'we get a 500 back' do
       let(:status) { {} }
-      let(:body) { '' }
+      let(:body) { {}.to_json }
 
       it 'does not raise an exception' do
         expect { subject.fetch }.not_to raise_error
@@ -107,7 +107,7 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
             'status' => 400,
             'msg' => 'Images not available: Document type is not supported for verification.',
           },
-        }
+        }.to_json
       end
 
       it 'does not raise an exception' do
