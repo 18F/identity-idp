@@ -27,6 +27,7 @@ RSpec.describe DocumentCaptureSessionResult do
         selfie_status: :success,
         doc_auth_success: true,
         attempt: 3,
+        aamva_status: :not_processed,
       )
     end
 
@@ -94,6 +95,27 @@ RSpec.describe DocumentCaptureSessionResult do
           attention_with_barcode: false,
         )
         expect(result.mrz_status).to be_nil
+      end
+    end
+
+    describe '#aamva_status' do
+      let(:documentCaptureResult) { DocumentCaptureSessionResult.new(aamva_status: status) }
+      subject { documentCaptureResult.aamva_status }
+
+      context 'when aamva status is present' do
+        let(:status) { :passed }
+
+        it 'returns a symbol' do
+          is_expected.to be(status)
+        end
+      end
+
+      context 'when aamva status is nil' do
+        let(:status) { nil }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
       end
     end
 
