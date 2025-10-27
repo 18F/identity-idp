@@ -81,8 +81,8 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
     end
 
     context 'we get a 403 back' do
-      let(:fake_socure_response) { {} }
-      let(:fake_socure_status) { 403 }
+      let(:status) { 403 }
+      let(:body) { {} }
 
       it 'does not raise an exception' do
         expect { subject.fetch }.not_to raise_error
@@ -90,8 +90,25 @@ RSpec.describe DocAuth::Socure::Requests::ImagesRequest do
     end
 
     context 'we get a 500 back' do
-      let(:fake_socure_response) { {} }
-      let(:fake_socure_status) { 500 }
+      let(:status) { {} }
+      let(:body) { '' }
+
+      it 'does not raise an exception' do
+        expect { subject.fetch }.not_to raise_error
+      end
+    end
+
+    context 'we get a 400 back' do
+      let(:status) { 400 }
+      let(:body) do
+        {
+          'referenceId' => 'socure-reference-id',
+          'msg' => {
+            'status' => 400,
+            'msg' => 'Images not available: Document type is not supported for verification.',
+          },
+        }
+      end
 
       it 'does not raise an exception' do
         expect { subject.fetch }.not_to raise_error

@@ -138,13 +138,15 @@ module AttemptsApi
     # @param [String] document_passport_image_file_id Filename in S3 w/encry data for passport image
     # @param [String] document_front_image_file_id Filename in S3 w/encrypted data for front image
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # We were unable to retrieve the images from the identity verification vendor.
     # This is usually due to a timeout or network error.
     def idv_image_retrieval_failed(
       document_back_image_file_id: nil,
       document_front_image_file_id: nil,
       document_passport_image_file_id: nil,
-      document_selfie_image_file_id: nil
+      document_selfie_image_file_id: nil,
+      failure_reason: nil
     )
       track_event(
         :idv_image_retrieval_failed,
@@ -152,6 +154,7 @@ module AttemptsApi
         document_front_image_file_id:,
         document_passport_image_file_id:,
         document_selfie_image_file_id:,
+        failure_reason:,
       )
     end
 
