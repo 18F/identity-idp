@@ -32,9 +32,9 @@ module OpenidConnect
       if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
-        return redirect_to idv_url if identity_needs_verification?
-        return redirect_to idv_url if facial_match_needed?
-        return redirect_to idv_url if needs_to_reproof?
+        if identity_needs_verification? || facial_match_needed? || needs_to_reproof?
+          return redirect_to idv_url
+        end
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
