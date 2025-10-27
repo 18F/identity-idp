@@ -6581,8 +6581,9 @@ module AnalyticsEvents
   end
 
   # Tracks when a user that had duplicate profiles is closed
-  def one_account_duplicate_profile_closed
-    track_event(:one_account_duplicate_profile_closed)
+  # @param [Integer] time_taken_in_minutes The time taken to resolve the duplicate profiles in minutes
+  def one_account_duplicate_profile_closed(time_taken_in_minutes:, **extra)
+    track_event(:one_account_duplicate_profile_closed, time_taken_in_minutes: time_taken_in_minutes, **extra)
   end
 
   # Tracks when a duplicate profile is created for a user
