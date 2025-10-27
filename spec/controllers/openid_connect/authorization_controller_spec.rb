@@ -319,7 +319,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:idv_level) { :unsupervised_with_selfie }
 
               before do
-                allow(IdentityConfig.store).to receive(:reproof_forcing_provider)
+                allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
                   .and_return(service_provider.issuer)
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
                   .and_return('server_side')

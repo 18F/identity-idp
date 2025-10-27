@@ -99,7 +99,7 @@ RSpec.describe IdvController do
 
       context 'when the service provider forces reproofing' do
         before do
-          allow(IdentityConfig.store).to receive(:reproof_forcing_provider)
+          allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
             .and_return(service_provider.issuer)
         end
 

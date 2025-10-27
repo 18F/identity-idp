@@ -110,8 +110,8 @@ class ServiceProvider < ApplicationRecord
 
   def needs_to_reproof?(initiating_service_provider)
     # TODO Check verification date against blackout period end
-    issuer == IdentityConfig.store.reproof_forcing_provider &&
-      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_provider
+    issuer == IdentityConfig.store.reproof_forcing_service_provider &&
+      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_service_provider
   end
 
   private
