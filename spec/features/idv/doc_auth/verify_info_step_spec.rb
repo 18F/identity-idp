@@ -365,6 +365,144 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     end
   end
 
+  context 'hybrid mobile flow' do
+    before do
+      allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        @sms_link = config[:link]
+        impl.call(**config)
+      end.at_least(1).times
+    end
+
+    context 'when precheck fail' do
+      context 'with hybrid handoff number' do
+        it 'it redirects to phone page' do
+          perform_in_browser(:desktop) do
+            sign_in_and_2fa_user(user)
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            clear_and_fill_in(:doc_auth_phone, '703-555-5555') # '+1 415-555-0199')
+            click_send_link
+            expect(page).to have_current_path(idv_link_sent_path)
+          end
+
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            complete_choose_id_type_step
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+            attach_and_submit_images
+            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          end
+
+          perform_in_browser(:desktop) do
+            click_idv_continue
+            expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+            expect(page).to have_current_path(idv_ssn_path)
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+
+            expect(page).to have_content(t('headings.verify'))
+            complete_verify_step
+
+            expect(page).to have_current_path(idv_phone_path)
+            prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+            expect(
+              PhoneFormatter.format(prefilled_phone),
+            ).to eq(
+              PhoneFormatter.format(user.default_phone_configuration.phone),
+            )
+          end
+        end
+      end
+
+      context 'with mfa number' do
+        let(:user) do
+          create(:user, :fully_registered, with: { phone: '703-555-5555' })
+        end
+        it 'it redirects to phone page' do
+          perform_in_browser(:desktop) do
+            sign_in_and_2fa_user(user)
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            # clear_and_fill_in(:doc_auth_phone, '+1 415-555-0199')
+            click_send_link
+            expect(page).to have_current_path(idv_link_sent_path)
+          end
+
+          expect(@sms_link).to be_present
+
+          perform_in_browser(:mobile) do
+            visit @sms_link
+            expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+            complete_choose_id_type_step
+            expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+            attach_and_submit_images
+            expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          end
+
+          perform_in_browser(:desktop) do
+            click_idv_continue
+            expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+            expect(page).to have_current_path(idv_ssn_path)
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+
+            expect(page).to have_content(t('headings.verify'))
+            complete_verify_step
+
+            expect(page).to have_current_path(idv_phone_path)
+            prefilled_phone = page.find(id: 'idv_phone_form_phone').value
+
+            expect(prefilled_phone).to eq('')
+          end
+        end
+      end
+    end
+
+    context 'when precheck is successful' do
+      it 'it redirects to enter password page' do
+        perform_in_browser(:desktop) do
+          sign_in_and_2fa_user(user)
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, '+1 415-555-0199')
+          click_send_link
+          expect(page).to have_current_path(idv_link_sent_path)
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+          expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+          complete_choose_id_type_step
+          expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        end
+
+        perform_in_browser(:desktop) do
+          click_idv_continue
+          expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+          expect(page).to have_current_path(idv_ssn_path)
+
+          fill_out_ssn_form_ok
+          click_idv_continue
+
+          expect(page).to have_content(t('headings.verify'))
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+    end
+  end
+
   context 'phone vendor outage' do
     before do
       allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
