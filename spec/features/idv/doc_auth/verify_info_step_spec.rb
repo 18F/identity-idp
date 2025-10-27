@@ -293,6 +293,44 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       end
     end
 
+    context 'when phone pre-check is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled).and_return(true)
+      end
+
+      context 'when user does not have a phone number for pre-check' do
+        let(:user) do
+          create(:user, :with_backup_code)
+        end
+
+        it 'redirects user to the phone step' do
+          complete_ssn_step
+          complete_verify_step
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+
+      context 'when user fails phone pre-check' do
+        let(:user) do
+          create(:user, :fully_registered, with: { phone: '703-555-5555' })
+        end
+
+        it 'redirects user to the phone step' do
+          complete_ssn_step
+          complete_verify_step
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+
+      context 'when phone pre-check is successful' do
+        it 'redirects the user to enter password page' do
+          complete_ssn_step
+          complete_verify_step
+          expect(page).to have_current_path(idv_enter_password_path)
+        end
+      end
+    end
+
     context 'async missing' do
       it 'allows resubmitting form' do
         complete_ssn_step
