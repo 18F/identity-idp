@@ -558,4 +558,12 @@ class ApplicationController < ActionController::Base
     sign_out
     redirect_to banned_user_url
   end
+
+  def handle_suspended_user
+    return unless user_signed_in?
+    return unless current_user&.suspended?
+    return if request.path == user_please_call_path
+
+    redirect_to user_please_call_url
+  end
 end

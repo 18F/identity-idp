@@ -25,7 +25,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  let(:mock_daily_reports_emails) { ['mock_partner@example.com'] }
+  let(:mock_reports_irs_emails) { ['mock_partner@example.com'] }
+  let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
   let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:partner_app_name'] }
   let(:irs_partners) { ['PARTNER_NAME'] }
   let(:fixture_csv_data) do
@@ -39,7 +40,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
     allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-      .and_return(mock_daily_reports_emails)
+      .and_return(mock_reports_irs_emails)
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+      .and_return(mock_reports_internal_emails)
     allow(IdentityConfig.store).to receive(:irs_partner_strings)
       .and_return(irs_partners)
     allow(IdentityConfig.store).to receive(:irs_issuers)
@@ -55,13 +58,31 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  context 'for a report_date is the beginning of the month, it sends records for previous month' do
+  context 'for begining of the month sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2021, 3, 1).prev_day }
+    subject(:report) { described_class.new(report_date, :both) }
 
-    it 'sends out a report to PARTNER' do
+    it 'sends out a report to team_data and PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_partner@example.com'],
+        email: ['mock_internal@example.com', 'mock_partner@example.com'],
         subject: 'IRS Monthly Credential Metrics - 2021-02-28',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date)
+    end
+  end
+
+  context 'for any day of the month sends out the report to the internal' do
+    let(:report_date) { Date.new(2021, 3, 15).prev_day }
+    subject(:report) { described_class.new(report_date, :internal) }
+
+    it 'sends out a report to team data' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        subject: 'IRS Monthly Credential Metrics - 2021-03-14',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -73,6 +94,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   it 'does not send the report if no emails are configured' do
     allow(IdentityConfig.store).to receive(:irs_credentials_emails).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
     expect(ReportMailer).not_to receive(:tables_report)
     expect(report).not_to receive(:reports)
     report.perform(report_date)

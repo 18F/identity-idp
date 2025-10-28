@@ -76,8 +76,8 @@ module Reports
     end
 
     def emails
-      internal_emails = [*IdentityConfig.store.irs_verification_report_config]
-      irs_emails = [] # Need to add IRS email config
+      internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
+      irs_emails = [*IdentityConfig.store.irs_verification_report_config]
 
       case report_receiver
       when :internal then internal_emails

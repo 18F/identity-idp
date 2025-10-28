@@ -15,13 +15,16 @@ RSpec.describe Reporting::ApiTransactionCountReport do
 
   before do
     allow(report).to receive(:true_id_table).and_return([10, mock_results])
+    allow(report).to receive(:true_id_selfie_table).and_return([11, mock_results])
     allow(report).to receive(:instant_verify_table).and_return([15, mock_results])
     allow(report).to receive(:phone_finder_table).and_return([20, mock_results])
     allow(report).to receive(:socure_table).and_return([25, mock_results])
-    allow(report).to receive(:socure_kyc_non_shadow_table).and_return([30, mock_results])
+    allow(report).to receive(:socure_docv_selfie_table).and_return([26, mock_results])
+    allow(report).to receive(:socure_kyc_table).and_return([30, mock_results])
     allow(report).to receive(:fraud_score_and_attribute_table).and_return([40, mock_results])
     allow(report).to receive(:threat_metrix_idv_table).and_return([45, mock_results])
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
+    allow(report).to receive(:ln_emailage_table).and_return([60, mock_results])
   end
 
   describe '#api_transaction_count' do
@@ -35,12 +38,23 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       data_row = table.last
 
       expect(header_row).to eq(
-        ['Week', 'True ID', 'Instant verify', 'Phone Finder', 'Socure (DocV)',
-         'Socure (KYC)',
-         'Fraud Score and Attribute', 'Threat Metrix (IDV)', 'Threat Metrix (Auth Only)'],
+        [
+          'Week',
+          'True ID',
+          'True ID (Selfie)',
+          'Instant verify',
+          'Phone Finder',
+          'Socure (DocV)',
+          'Socure (DocV - Selfie)',
+          'Socure (KYC)',
+          'Fraud Score and Attribute',
+          'Threat Metrix (IDV)',
+          'Threat Metrix (Auth Only)',
+          'LN Emailage',
+        ],
       )
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 15, 20, 25, 30, 40, 45, 50])
+      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60])
     end
   end
 
@@ -54,9 +68,11 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       csv = csvs.first
       expect(csv).to match(
         /
-          Week,True\ ID,Instant\ verify,Phone\ Finder,
-          Socure\ \(DocV\),Socure\ \(KYC\),
-          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),Threat\ Metrix\s\(Auth\ Only\)
+          Week,True\ ID,True\ ID\ \(Selfie\),Instant\ verify,Phone\ Finder,
+          Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),
+          Socure\ \(KYC\),
+          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
+          Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage
         /x,
       )
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")

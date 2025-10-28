@@ -48,7 +48,10 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     ]
   end
 
-  let(:mock_test_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:mock_test_irs_demographic_emails) do
+    ['mock_feds@example.com', 'mock_contractors@example.com']
+  end
+  let(:mock_test_internal_emails) { ['mock_internal@example.com'] }
   let(:mock_test_issuers) { ['issuer1'] }
 
   before do
@@ -65,7 +68,9 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     }
 
     allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-      .and_return(mock_test_emails)
+      .and_return(mock_test_irs_demographic_emails)
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+      .and_return(mock_test_internal_emails)
 
     allow(report.irs_verification_demographics_report).to receive(:age_metrics_table)
       .and_return(mock_identity_verification_age_data)
@@ -74,16 +79,37 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
       .and_return(mock_identity_verification_state_data)
   end
 
-  it 'sends out a report to just to team data' do
-    expect(ReportMailer).to receive(:tables_report).once.with(
-      email: anything,
-      subject: 'IRS Verification Demographics Metrics Report - 2021-03-02',
-      reports: anything,
-      message: report.preamble,
-      attachment_format: :csv,
-    ).and_call_original
+  context 'for begining of the quarter sends out the report to the internal and partner' do
+    let(:report_date) { Date.new(2025, 7, 1).prev_day }
+    subject(:report) { described_class.new(report_date, :both) }
+    it 'sends out a report to just to team data and partner' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com', 'mock_feds@example.com',
+                'mock_contractors@example.com'],
+        subject: 'IRS Verification Demographics Metrics Report - 2025-06-30',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
 
-    report.perform(report_date)
+      report.perform(report_date)
+    end
+  end
+
+  context 'for any other day sends out the report to the internal' do
+    let(:report_date) { Date.new(2025, 9, 27).prev_day }
+    subject(:report) { described_class.new(report_date, :internal) }
+    it 'sends out a report to just to team data' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        subject: 'IRS Verification Demographics Metrics Report - 2025-09-26',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date)
+    end
   end
 
   context 'when queued from the first of the month' do
@@ -104,6 +130,7 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
 
   it 'does not send out a report with no emails' do
     allow(IdentityConfig.store).to receive(:irs_verification_report_config).and_return('')
+    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
 
     expect(report).to_not receive(:reports)
 
