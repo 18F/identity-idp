@@ -56,7 +56,7 @@ Dir.chdir APP_ROOT do
     puts '= Using Homebrew system ='
     brew_installed = system "brew -v 2>&1"
     run "brew bundle" if brew_installed
-    system! 'gem install bundler --conservative'
+    run 'gem install bundler --conservative'
   end
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
