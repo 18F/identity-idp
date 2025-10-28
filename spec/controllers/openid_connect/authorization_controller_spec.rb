@@ -218,11 +218,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         context 'with ial2 requested using acr values' do
           let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+          let(:initiating_service_provider_issuer) { nil }
+          let(:idv_level) { :legacy_unsupervised }
 
           context 'account is already verified' do
             let(:user) do
               create(
-                :profile, :active, :verified, proofing_components: { liveness_check: true }
+                :profile, :active, :verified, proofing_components: { liveness_check: true }, initiating_service_provider_issuer:, idv_level:
               ).user
             end
 
@@ -312,6 +314,48 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
             end
 
+            context 'when the service provider forces reproofing' do
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
+              let(:idv_level) { :unsupervised_with_selfie }
+
+              before do
+                allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
+                  .and_return(service_provider.issuer)
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'when the existing profile was initiated by the requesting service provider' do
+                let(:initiating_service_provider_issuer) { service_provider.issuer }
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'when the existing profile has no initiating service provider' do
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'when the existing profile was initiated by a different service provider' do
+                let(:initiating_service_provider_issuer) { 'saml_sp_ial2' }
+
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+            end
+
             context 'SP requests required facial match' do
               let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
@@ -326,9 +370,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'selfie check was performed' do
+                let(:idv_level) { :unsupervised_with_selfie }
                 it 'redirects to the redirect_uri immediately when pii is unlocked if client-side redirect is disabled' do
-                  user.active_profile.idv_level = :unsupervised_with_selfie
-
                   action
 
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)

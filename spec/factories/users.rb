@@ -214,7 +214,7 @@ FactoryBot.define do
           :active,
           :verified,
           :with_pii,
-          idv_level: :unsupervised_with_selfie,
+          :facial_match_proof,
           user: user,
         )
       end
