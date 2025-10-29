@@ -20,7 +20,7 @@ module UserAlerts
     # Makes it so that we only list events from 5 minutes ago
     def self.sign_in_events_window(user:)
       [
-        user.created_at,
+        user.sign_in_new_device_at,
         IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.ago,
       ].max
     end

@@ -78,6 +78,38 @@ RSpec.describe UserAlerts::AlertUserAboutMaxAttempts do
 
         result
       end
+
+      it 'does not show events that happened more than 5 minutes ago' do
+        create(:event, user:, event_type: :sign_in_before_2fa, created_at: 10.minutes.ago)
+
+        sign_in_before_2fa_event = create(
+          :event,
+          user:,
+          event_type: :sign_in_before_2fa,
+          created_at: sign_in_new_device_at,
+        )
+
+        sign_in_unsuccessful_2fa_event = create(
+          :event,
+          user:,
+          event_type: :sign_in_unsuccessful_2fa,
+          created_at: 2.minutes.ago,
+        )
+
+        delivery = instance_double(ActionMailer::MessageDelivery)
+        expect(delivery).to receive(:deliver_now_or_later)
+        mailer = instance_double(UserMailer)
+        expect(UserMailer).to receive(:with).and_return(mailer)
+        expect(mailer).to receive(:new_device_sign_in_before_2fa).with(
+          events: [
+            sign_in_before_2fa_event,
+            sign_in_unsuccessful_2fa_event,
+          ],
+          disavowal_token:,
+        ).and_return(delivery)
+
+        result
+      end
     end
   end
 end
