@@ -70,7 +70,7 @@ module PushNotification
     end
 
     def jwt_payload(service_provider)
-      aud = send_aud_client_id(service_provider) ?
+      aud = send_aud_client_id?(service_provider) ?
         service_provider.issuer : service_provider.push_notification_url
       {
         iss: root_url,
@@ -84,7 +84,7 @@ module PushNotification
       }
     end
 
-    def send_aud_client_id(service_provider)
+    def send_aud_client_id?(service_provider)
       IdentityConfig.store.risc_notifications_send_client_id_in_aud_enabled &&
         service_provider.receives_client_id_in_risc?
     end
