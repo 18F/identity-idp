@@ -175,6 +175,10 @@ class SocureDocvResultsJob < ApplicationJob
     end
   end
 
+  def aamva_enabled?
+    IdentityConfig.store.aamva_at_doc_auth_enabled
+  end
+
   def analytics
     @analytics ||= Analytics.new(
       user: document_capture_session.user,
@@ -270,6 +274,16 @@ class SocureDocvResultsJob < ApplicationJob
 
   def doc_escrow_key
     Base64.strict_encode64(SecureRandom.bytes(32))
+  end
+
+  def validate_aamva
+    aamva_plugin.call(
+      applicant_pii: doc_pii_response.pii_from_doc.to_h,
+      current_sp: sp,
+      ipp_enrollment_in_progress: false,
+      timer:,
+      doc_auth_flow: true,
+    )
   end
 
   def validate_mrz(doc_pii_response)
