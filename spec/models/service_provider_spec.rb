@@ -312,7 +312,7 @@ RSpec.describe ServiceProvider do
     end
   end
 
-  describe '#eceives_client_id_in_risc?' do
+  describe '#receives_client_id_in_risc?' do
     context 'when client is included in allowlist' do
       before do
         expect(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
