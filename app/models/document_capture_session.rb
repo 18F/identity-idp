@@ -21,11 +21,14 @@ class DocumentCaptureSession < ApplicationRecord
 
   # @param doc_auth_response [DocAuth::Response]
   # @param attempt [Integer] The current doc auth attempt number.
-  # @param mrz_status [Symbol, nil] MRZ validation status for passport documents
-  def store_result_from_response(doc_auth_response, attempt:, mrz_response: nil)
+  # @param mrz_response [DocAuth::Response, nil] The doc auth MRZ validation response.
+  # @param aamva_response [DocAuth::Response, nil] The doc auth aamva state ID response.
+  def store_result_from_response(doc_auth_response, attempt:, mrz_response: nil,
+                                 aamva_response: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
+
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc.to_h
     session_result.captured_at = Time.zone.now
@@ -34,6 +37,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
     session_result.mrz_status = determine_mrz_status(mrz_response)
+    session_result.aamva_status = determine_aamva_status(aamva_response)
     session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
@@ -47,7 +51,7 @@ class DocumentCaptureSession < ApplicationRecord
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
                              passport_image_fingerprint:, selfie_image_fingerprint:,
                              doc_auth_success:, selfie_status:, attempt:, errors: nil,
-                             mrz_status: :not_processed)
+                             mrz_status: :not_processed, aamva_status: :not_processed)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -63,6 +67,7 @@ class DocumentCaptureSession < ApplicationRecord
 
     session_result.errors = errors
     session_result.mrz_status = mrz_status
+    session_result.aamva_status = aamva_status
     session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
@@ -141,6 +146,12 @@ class DocumentCaptureSession < ApplicationRecord
     return :not_processed unless mrz_response
 
     mrz_response.success? ? :pass : :failed
+  end
+
+  def determine_aamva_status(aamva_response)
+    return :not_processed unless aamva_response
+
+    aamva_response.success? ? :passed : :failed
   end
 
   def passport_not_requested_attributes

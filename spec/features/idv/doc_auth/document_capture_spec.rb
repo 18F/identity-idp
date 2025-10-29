@@ -1005,6 +1005,57 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
+  describe 'Standard flow with aamva check enabled', :allow_browser_log do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+      stub_health_check_settings
+      stub_health_check_endpoints_success
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      click_on t('forms.buttons.upload_photos')
+    end
+
+    context 'when capturing for state ID flow' do
+      before do
+        visit idv_choose_id_type_url
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+      end
+
+      context 'when aamva check is successful' do
+        let(:aamva_response) { AamvaFixtures.verification_response }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'navigates the user to the SSN page' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_ssn_url)
+        end
+      end
+
+      context 'when aamva check is unsuccessful' do
+        let(:aamva_response) { AamvaFixtures.verification_response_namespaced_failure }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'displays try again errors' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect_review_issues_body_message('doc_auth.errors.general.multiple_back_id_failures')
+          expect_review_issues_body_message('doc_auth.errors.general.multiple_front_id_failures')
+        end
+      end
+    end
+  end
+
   def expect_rate_limited_header(expected_to_be_present)
     review_issues_h1_heading = strip_tags(t('doc_auth.errors.rate_limited_heading'))
     if expected_to_be_present
@@ -1075,6 +1126,20 @@ RSpec.feature 'document capture step', :js do
 
   def costing_for(cost_type)
     SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+  end
+
+  def stub_aamva_request(aamva_response)
+    allow(IdentityConfig.store).to receive(:aamva_private_key)
+      .and_return(AamvaFixtures.example_config.private_key)
+    allow(IdentityConfig.store).to receive(:aamva_public_key)
+      .and_return(AamvaFixtures.example_config.public_key)
+    stub_request(:post, IdentityConfig.store.aamva_auth_url)
+      .to_return(
+        { body: AamvaFixtures.security_token_response },
+        { body: AamvaFixtures.authentication_token_response },
+      )
+    stub_request(:post, IdentityConfig.store.aamva_verification_url)
+      .to_return(body: aamva_response)
   end
 end
 

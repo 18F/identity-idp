@@ -18,6 +18,7 @@ module Proofing
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
+          doc_auth_flow: false,
           already_proofed: false
         )
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
@@ -26,6 +27,7 @@ module Proofing
             applicant_pii:,
             state_id_address_resolution_result:,
             ipp_enrollment_in_progress:,
+            doc_auth_flow:,
           )
 
           if !should_proof
@@ -101,9 +103,13 @@ module Proofing
         def should_proof_state_id?(
           applicant_pii:,
           state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:
+          ipp_enrollment_in_progress:,
+          doc_auth_flow:
         )
           return false unless aamva_supports_state_id_jurisdiction?(applicant_pii)
+          # Skip remaining checks if doc auth flow is true
+          return true if doc_auth_flow
+
           # If the user is in in-person-proofing and they have changed their address then
           # they are not eligible for get-to-yes
           if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
