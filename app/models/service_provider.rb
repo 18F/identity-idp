@@ -114,6 +114,12 @@ class ServiceProvider < ApplicationRecord
       initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_service_provider
   end
 
+  def receives_client_id_in_risc?
+    IdentityConfig
+      .store
+      .allowed_client_id_in_risc_service_providers.include?(issuer)
+  end
+
   private
 
   def s3_logo_url
