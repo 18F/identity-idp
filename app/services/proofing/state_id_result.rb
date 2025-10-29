@@ -75,5 +75,21 @@ module Proofing
         jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?,
       }
     end
+
+    def to_doc_auth_response
+      DocAuth::Response.new(
+        success: success?,
+        errors: doc_auth_errors,
+        exception:,
+      )
+    end
+
+    private
+
+    def doc_auth_errors
+      return {} if errors.empty?
+
+      { verification: 'Document could not be verified.' }
+    end
   end
 end
