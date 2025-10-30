@@ -5,6 +5,7 @@ module Idv
     include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
+    include LinkHelper
 
     attr_reader :idv_session
 
@@ -17,6 +18,20 @@ module Idv
         "instructions.mfa.#{otp_delivery_preference}.number_message_html",
         number_html: content_tag(:strong, phone_number),
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+      )
+    end
+
+    def do_not_share_code_message
+      t(
+        'instructions.mfa.do_not_share_code_message_html',
+        app_name: APP_NAME,
+        link_html: new_tab_link_to(
+          t('instructions.mfa.do_not_share_code_link_text'),
+          MarketingSite.help_center_article_url(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
       )
     end
 

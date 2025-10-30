@@ -13,7 +13,9 @@ class IdvController < ApplicationController
   before_action :confirm_not_rate_limited
 
   def index
-    if already_verified?
+    if current_sp&.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
+      verify_identity
+    elsif already_verified?
       redirect_to idv_activated_url
     else
       verify_identity
