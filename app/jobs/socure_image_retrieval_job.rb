@@ -17,6 +17,7 @@ class SocureImageRetrievalJob < ApplicationJob
     if result.is_a?(Idv::IdvImages)
       result.write_with_data(image_storage_data:)
     else
+      failure_msg = result.dig(:extra, :vendor_status_message, 'msg') || 'Unknown network error'
       attempts_api_tracker.idv_image_retrieval_failed(
         document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
         document_front_image_file_id: image_storage_data.dig(:front, :document_front_image_file_id),
@@ -28,6 +29,7 @@ class SocureImageRetrievalJob < ApplicationJob
           :selfie,
           :document_selfie_image_file_id,
         ),
+        failure_reason: [{ api_failure: failure_msg }],
       )
       fraud_ops_tracker.idv_image_retrieval_failed(
         document_back_image_file_id: image_storage_data.dig(:back, :document_back_image_file_id),
