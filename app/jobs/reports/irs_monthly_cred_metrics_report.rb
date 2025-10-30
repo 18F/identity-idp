@@ -56,7 +56,7 @@ module Reports
          'The number of new unique users who go through the proofing process through a partner\'s request.'],
 
         ['Existing identity verification credentials authorized for partner', 'Count',
-         'The number of new unique users who authenticated with existing credentials to the partner.'],
+         'The number of new unique users who authenticated with existing identity verification credentials to the partner.'],
 
         ['Total authentications', 'Count',
          'Total number of billable sign-ins at any IAL level in the reporting period'],
