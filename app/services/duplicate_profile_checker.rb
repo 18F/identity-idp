@@ -43,9 +43,9 @@ class DuplicateProfileChecker
 
     return unless existing_duplicate_profile_set.present?
     closed_at = Time.zone.now
-    time_taken = (Time.zone.now - existing_duplicate_profile_set.created_at).in_minutes.to_i
+    time_taken = ((Time.zone.now - existing_duplicate_profile_set.created_at) / 1.minute).to_i
     existing_duplicate_profile_set.update!(
-      closed_at: closed_at, 
+      closed_at: closed_at,
       self_serviced: true,
     )
     analytics.one_account_duplicate_profile_closed(time_taken_in_minutes: time_taken)
