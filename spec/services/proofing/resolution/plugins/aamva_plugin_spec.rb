@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+  let(:already_proofed) { false }
   let(:current_sp) { build(:service_provider) }
   let(:state_id_address_resolution_result) { nil }
   let(:ipp_enrollment_in_progress) { false }
@@ -43,6 +44,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         state_id_address_resolution_result:,
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
+        already_proofed:,
       )
     end
 
@@ -467,6 +469,26 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
       it 'returns false when document type is not specified' do
         expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be false
+      end
+    end
+  end
+
+  describe 'already_proofed parameter' do
+    context 'when already_proofed is true' do
+      let(:already_proofed) { true }
+      it 'returns a skipped result without calling the proofer' do
+        expect(plugin.proofer).not_to receive(:proof)
+        plugin.call(
+          applicant_pii:,
+          current_sp:,
+          state_id_address_resolution_result:,
+          ipp_enrollment_in_progress:,
+          timer: JobHelpers::Timer.new,
+          already_proofed:,
+        ).tap do |result|
+          expect(result.success?).to eql(true)
+          expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+        end
       end
     end
   end

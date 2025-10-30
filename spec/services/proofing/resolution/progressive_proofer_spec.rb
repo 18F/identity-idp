@@ -133,6 +133,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress: false,
           timer: an_instance_of(JobHelpers::Timer),
+          already_proofed: false,
         ).and_call_original
         proof
       end
@@ -210,6 +211,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             state_id_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            already_proofed: false,
           )
 
           proof
@@ -328,6 +330,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             state_id_address_resolution_result:,
             ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
+            already_proofed: false,
           ).and_call_original
           proof
         end
@@ -450,6 +453,30 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.ipp_enrollment_in_progress).to eql(false)
           expect(result.same_address_as_id).to eql(nil)
         end
+      end
+    end
+
+    context 'when idv_aamva_at_doc_auth_enabled is true' do
+      let(:state_id_address_resolution_result) do
+        residential_address_resolution_result
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_aamva_at_doc_auth_enabled,
+        ).and_return(true)
+      end
+
+      it 'passes already_proofed: true to AamvaPlugin' do
+        expect(progressive_proofer.aamva_plugin).to receive(:call).with(
+          applicant_pii:,
+          current_sp:,
+          state_id_address_resolution_result:,
+          ipp_enrollment_in_progress:,
+          timer: an_instance_of(JobHelpers::Timer),
+          already_proofed: true,
+        ).and_call_original
+        proof
       end
     end
 
