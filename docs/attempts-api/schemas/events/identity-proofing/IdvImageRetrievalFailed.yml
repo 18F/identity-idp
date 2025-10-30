@@ -24,3 +24,17 @@ allOf:
       document_selfie_image_encryption_key:
         type: string
         description: Randomly generated Base64-encoded key generated to encrypt the selfie image file if it exists.
+      failure_reason:
+        type: object
+        description: |
+          An associative array of attributes and errors to explain the failure 
+        properties:
+          api_failure:
+            type: array
+            description: Errors that describe the failure
+            items:
+              type: string
+              enum:
+                - 'Images not available: Document type is not supported for verification.'
+                - No Documents found
+                - Unknown network error

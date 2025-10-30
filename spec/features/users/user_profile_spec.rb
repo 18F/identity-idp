@@ -49,6 +49,9 @@ RSpec.feature 'User profile' do
         active: true,
         push_notification_url: push_notification_url,
       )
+      allow(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+        .and_return([service_provider.issuer])
+
       user = sign_in_and_2fa_user
       identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
