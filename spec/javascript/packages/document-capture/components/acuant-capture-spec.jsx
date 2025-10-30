@@ -793,7 +793,7 @@ describe('document-capture/components/acuant-capture', () => {
         failedImageResubmission: false,
         liveness_checking_required: false,
         failed_quality_check_attempts_for_side: null,
-        will_trigger_manual_capture: false,
+        manual_capture_triggered: false,
       });
 
       expect(error).to.be.ok();
@@ -860,7 +860,7 @@ describe('document-capture/components/acuant-capture', () => {
         failedImageResubmission: false,
         liveness_checking_required: false,
         failed_quality_check_attempts_for_side: null,
-        will_trigger_manual_capture: false,
+        manual_capture_triggered: false,
       });
 
       expect(error).to.be.ok();
@@ -1027,7 +1027,7 @@ describe('document-capture/components/acuant-capture', () => {
         failedImageResubmission: false,
         liveness_checking_required: false,
         failed_quality_check_attempts_for_side: null,
-        will_trigger_manual_capture: false,
+        manual_capture_triggered: false,
       });
     });
 
