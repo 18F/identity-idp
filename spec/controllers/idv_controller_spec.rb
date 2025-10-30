@@ -85,6 +85,44 @@ RSpec.describe IdvController do
       end
     end
 
+    context 'user has active facial match profile' do
+      let(:user) { create(:user, :proofed_with_selfie) }
+
+      before do
+        stub_sign_in(user)
+        session[:sp] =
+          {
+            issuer: service_provider.issuer,
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          }
+      end
+
+      context 'when the service provider forces reproofing' do
+        before do
+          allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
+            .and_return(service_provider.issuer)
+        end
+
+        context 'when the existing profile was initiated by the requesting service provider' do
+          let(:service_provider) { user.active_profile.initiating_service_provider }
+
+          it 'redirects to activated' do
+            get :index
+            expect(response).to redirect_to idv_activated_url
+          end
+        end
+
+        context 'when the existing profile was initiated by a different service provider' do
+          let(:service_provider) { create(:service_provider) }
+
+          it 'redirects to welcome' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+      end
+    end
+
     context 'if number of verify_info attempts has been exceeded' do
       before do
         user = create(:user)

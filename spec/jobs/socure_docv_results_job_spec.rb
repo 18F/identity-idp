@@ -242,7 +242,7 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
-      context 'document escrow is enabled' do
+      context 'when document escrow is enabled' do
         let(:socure_doc_escrow_enabled) { true }
 
         context 'we get a 200-http response from the image endpoint' do
@@ -282,9 +282,15 @@ RSpec.describe SocureDocvResultsJob do
 
           %w[400 403 404 500].each do |http_status|
             context "Socure returns HTTP #{http_status} with an error body" do
-              let(:status) { 'Error' }
+              let(:status) { http_status }
+              let(:failure_reason) { 'Explicit failure reason' }
               let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
-              let(:msg) { 'InternalServerException' }
+              let(:msg) do
+                {
+                  status: http_status,
+                  msg: failure_reason,
+                }
+              end
               let(:socure_image_response_body) { { status:, referenceId:, msg: } }
               let(:doc_escrow_name) { 'doc_escrow_name' }
               let(:doc_escrow_key) { 'doc_escrow_key' }
@@ -332,6 +338,7 @@ RSpec.describe SocureDocvResultsJob do
                   document_front_image_file_id: doc_escrow_name,
                   document_passport_image_file_id: nil,
                   document_selfie_image_file_id: nil,
+                  failure_reason: [{ api_failure: failure_reason }],
                 )
 
                 perform

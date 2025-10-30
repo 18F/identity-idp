@@ -311,4 +311,28 @@ RSpec.describe ServiceProvider do
       end
     end
   end
+
+  describe '#receives_client_id_in_risc?' do
+    context 'when client is included in allowlist' do
+      before do
+        expect(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+          .and_return([subject.issuer])
+      end
+
+      it 'returns true' do
+        expect(subject.receives_client_id_in_risc?).to be true
+      end
+    end
+
+    context 'when client is not included in allowlist' do
+      before do
+        expect(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+          .and_return(['another-issuer'])
+      end
+
+      it 'returns true' do
+        expect(subject.receives_client_id_in_risc?).to be false
+      end
+    end
+  end
 end

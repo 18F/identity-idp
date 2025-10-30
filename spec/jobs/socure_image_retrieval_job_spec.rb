@@ -89,13 +89,53 @@ RSpec.describe SocureImageRetrievalJob do
     end
 
     context 'when we get a non-200 HTTP response back from the image endpoint' do
-      %w[400 403 404 500].each do |http_status|
-        context "Socure returns HTTP #{http_status} with an error body" do
-          let(:status) { 'Error' }
-          let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
-          let(:msg) { 'InternalServerException' }
-          let(:socure_image_response_body) { { status:, referenceId:, msg: } }
+      let(:referenceId) { '360ae43f-123f-47ab-8e05-6af79752e76c' }
 
+      before do
+        expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+        expect(writer).not_to receive(:write_with_data)
+      end
+
+      context 'when we get an error without a socure response body' do
+        let(:status) { 500 }
+        let(:reason) { 'Unknown network error' }
+
+        before do
+          stub_request(:get, socure_image_endpoint)
+            .to_return(
+              status: status,
+              headers: {
+                'Content-Type' => 'application/json',
+              },
+              body: {}.to_json,
+            )
+        end
+
+        it 'tracks the attempt with a fallback error' do
+          expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
+            document_front_image_file_id: 'name',
+            document_back_image_file_id: 'name',
+            document_passport_image_file_id: nil,
+            document_selfie_image_file_id: nil,
+            failure_reason: [
+              api_failure: reason,
+            ],
+          )
+
+          perform
+        end
+      end
+
+      %w[400 403 404 500].each do |http_status|
+        let(:failure_reason) { 'Explicit failure reason' }
+        let(:socure_image_response_body) { { http_status:, referenceId:, msg: } }
+        let(:msg) do
+          {
+            status: http_status,
+            msg: failure_reason,
+          }
+        end
+        context "Socure returns HTTP #{http_status} with an error body" do
           before do
             stub_request(:get, socure_image_endpoint)
               .to_return(
@@ -107,17 +147,13 @@ RSpec.describe SocureImageRetrievalJob do
               )
           end
 
-          before do
-            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
-            expect(writer).not_to receive(:write_with_data)
-          end
-
-          it 'tracks the attempt with an image-specific network error' do
+          it 'tracks the attempt with an image-specific error' do
             expect(attempts_api_tracker).to receive(:idv_image_retrieval_failed).with(
               document_front_image_file_id: 'name',
               document_back_image_file_id: 'name',
               document_passport_image_file_id: nil,
               document_selfie_image_file_id: nil,
+              failure_reason: [{ api_failure: failure_reason }],
             )
 
             perform
@@ -145,6 +181,7 @@ RSpec.describe SocureImageRetrievalJob do
                 document_back_image_file_id: nil,
                 document_passport_image_file_id: 'name',
                 document_selfie_image_file_id: 'name',
+                failure_reason: [{ api_failure: failure_reason }],
               )
 
               perform

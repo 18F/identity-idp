@@ -373,7 +373,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
   describe 'due_date and days_to_due_date' do
     let(:validity_in_days) { 7 }
-    let(:validity_cutoff_date) { Time.zone.now - 1.day }
+    let(:validity_cutoff_date) { Time.zone.local(2025, 12, 1, 10, 0, 0) - 1.day }
 
     before do
       allow(IdentityConfig.store)
@@ -400,7 +400,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'days_to_due_date returns the number of days left until the due date' do
       # This test can be flaky when the enrollment due date range runs across a DST time change.
       # Because of that, a specific time that's less likely to have time changes is used.
-      travel_to(Time.zone.local(2025, 11, 1, 10, 0, 0)) do
+      travel_to(Time.zone.local(2025, 12, 5, 10, 0, 0)) do
         enrollment = create(
           :in_person_enrollment,
           enrollment_established_at: (validity_in_days - 3).days.ago,

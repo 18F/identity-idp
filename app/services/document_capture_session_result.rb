@@ -16,13 +16,18 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :errors,
   :mrz_status,
   :attempt,
+  :aamva_status,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
                     :failed_back_image_fingerprints, :failed_passport_image_fingerprints,
                     :failed_selfie_image_fingerprints, :captured_at, :doc_auth_success,
-                    :selfie_status, :errors, :mrz_status, :attempt],
+                    :selfie_status, :errors, :mrz_status, :attempt, :aamva_status],
 ) do
   include DocAuth::SelfieConcern
+
+  def initialize(aamva_status: :not_processed, **args)
+    super(aamva_status:, **args)
+  end
 
   def self.redis_key_prefix
     'dcs:result'
@@ -34,6 +39,10 @@ DocumentCaptureSessionResult = RedactedStruct.new(
 
   def mrz_status
     self[:mrz_status]&.to_sym
+  end
+
+  def aamva_status
+    self[:aamva_status]&.to_sym
   end
 
   alias_method :success?, :success
