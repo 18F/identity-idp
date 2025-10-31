@@ -261,7 +261,7 @@ RSpec.feature 'idv phone step', :js do
       }
     end
     before do
-      allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
+      allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
 
       @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
         .to_return(
