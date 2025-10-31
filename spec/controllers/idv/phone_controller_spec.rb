@@ -511,7 +511,7 @@ RSpec.describe Idv::PhoneController do
 
       context 'when phonerisk is the phone prooving vendor' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
+          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
           stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
             .to_return(
               status: 200,
