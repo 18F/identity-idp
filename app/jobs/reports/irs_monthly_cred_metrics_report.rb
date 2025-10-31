@@ -53,10 +53,10 @@ module Reports
          that successfully signed into the partner\'s applications'],
 
         ['New identity verification credentials authorized for partner', 'Count',
-         'The number of users who go through the proofing process through a partner\'s request.'],
+         'The number of new unique users who go through the proofing process through a partner\'s request.'],
 
         ['Existing identity verification credentials authorized for partner', 'Count',
-         'The number of users who are in IdV proofing years 2 - 5 and authenticate with the partner.'],
+         'The number of new unique users who authenticated with existing identity verification credentials to the partner.'],
 
         ['Total authentications', 'Count',
          'Total number of billable sign-ins at any IAL level in the reporting period'],
@@ -184,8 +184,8 @@ module Reports
               ['Value',
                invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
                ial2_new_unique_all(invoice_report), # Credentials Authorized
-               invoice_report['partner_ial2_new_unique_user_events_year1'].to_i, # New identity verification credentials authorized
-               ial2_new_unique_year_2_to_5(invoice_report), # Existing identity verification credentials authorized
+               invoice_report['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
+               ial2_existing_credentials(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
       return report_array.transpose
@@ -202,8 +202,9 @@ module Reports
       end
     end
 
-    def ial2_new_unique_year_2_to_5(row)
+    def ial2_existing_credentials(row)
       %w[
+        partner_ial2_new_unique_user_events_year1_existing
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
@@ -213,7 +214,8 @@ module Reports
 
     def ial2_new_unique_all(row)
       %w[
-        partner_ial2_new_unique_user_events_year1
+        partner_ial2_new_unique_user_events_year1_upfront
+        partner_ial2_new_unique_user_events_year1_existing
         partner_ial2_new_unique_user_events_year2
         partner_ial2_new_unique_user_events_year3
         partner_ial2_new_unique_user_events_year4
