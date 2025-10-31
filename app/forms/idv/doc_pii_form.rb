@@ -64,7 +64,7 @@ module Idv
     # errors: The DocPiiForm errors object
     def self.present_error(existing_errors)
       return if existing_errors.blank?
-      if existing_errors.any? { |k, _v| PII_ERROR_KEYS.include?(k) }
+      if existing_errors.any? { |k, _v| PII_ERROR_KEYS.include?(k) || ERROR_KEYS.include?(k) }
         existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
         existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
       end
@@ -78,6 +78,8 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
+
+    ERROR_KEYS = %i[verification].freeze
 
     attr_reader :pii_from_doc
 

@@ -229,6 +229,191 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
+    context 'when aamva at doc auth is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+      end
+
+      context 'when state_id is submitted' do
+        subject(:form) do
+          Idv::ApiImageUploadForm.new(
+            ActionController::Parameters.new(
+              {
+                front: front_image,
+                front_image_metadata: front_image_metadata.to_json,
+                back: back_image,
+                back_image_metadata: back_image_metadata.to_json,
+                document_capture_session_uuid: document_capture_session_uuid,
+              }.compact,
+            ),
+            service_provider:,
+            analytics: fake_analytics,
+            attempts_api_tracker:,
+            fraud_ops_tracker:,
+            liveness_checking_required:,
+            acuant_sdk_upgrade_ab_test_bucket:,
+          )
+        end
+
+        context 'when all checks are successful' do
+          let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+          let(:document_capture_session_result) { document_capture_session.reload.load_result }
+          let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+          let(:aamva_result) do
+            Proofing::StateIdResult.new(
+              success: true,
+              vendor_name: 'state_id:aamva',
+            )
+          end
+
+          before do
+            allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+              .and_return(aamva_proofer)
+            allow(aamva_proofer).to receive(:call).with(
+              applicant_pii: pii,
+              current_sp: service_provider,
+              state_id_address_resolution_result: nil,
+              ipp_enrollment_in_progress: false,
+              timer: instance_of(JobHelpers::Timer),
+              doc_auth_flow: true,
+            ).and_return(aamva_result)
+            form.submit
+          end
+
+          it 'stores a successful response in the document_capture_session' do
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              doc_auth_success: true,
+              pii:,
+              selfie_status: :not_processed,
+              attempt: 1,
+              mrz_status: :not_processed,
+              aamva_status: :passed,
+            )
+          end
+        end
+
+        context 'when the aamva check is unsuccessful' do
+          let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+          let(:document_capture_session_result) { document_capture_session.reload.load_result }
+          let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+          let(:aamva_result) do
+            Proofing::StateIdResult.new(
+              success: false,
+              vendor_name: 'state_id:aamva',
+              errors: { state_id_number: ['does not exist'] },
+            )
+          end
+
+          before do
+            allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+              .and_return(aamva_proofer)
+            allow(aamva_proofer).to receive(:call).with(
+              applicant_pii: pii,
+              current_sp: service_provider,
+              state_id_address_resolution_result: nil,
+              ipp_enrollment_in_progress: false,
+              timer: instance_of(JobHelpers::Timer),
+              doc_auth_flow: true,
+            ).and_return(aamva_result)
+            form.submit
+          end
+
+          it 'stores a failure response in the document_capture_session' do
+            expect(document_capture_session_result).to have_attributes(
+              success: false,
+              failed_front_image_fingerprints: [an_instance_of(String)],
+              failed_back_image_fingerprints: [an_instance_of(String)],
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              attempt: 1,
+              mrz_status: :not_processed,
+              aamva_status: :failed,
+              errors: aamva_result.errors,
+            )
+          end
+        end
+      end
+
+      context 'when a passport is submitted' do
+        let(:passport_requested) { true }
+        let(:passport_image) { DocAuthImageFixtures.document_passport_image_multipart }
+
+        subject(:form) do
+          Idv::ApiImageUploadForm.new(
+            ActionController::Parameters.new(
+              {
+                passport: passport_image,
+                passport_image_metadata: passport_image_metadata.to_json,
+                selfie: selfie_image,
+                selfie_image_metadata: selfie_image_metadata.to_json,
+                document_capture_session_uuid: document_capture_session_uuid,
+              }.compact,
+            ),
+            service_provider:,
+            analytics: fake_analytics,
+            attempts_api_tracker:,
+            fraud_ops_tracker:,
+            liveness_checking_required:,
+            acuant_sdk_upgrade_ab_test_bucket:,
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+        end
+
+        context 'when all checks are successful' do
+          let(:pii) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT
+          end
+          let(:document_capture_session_result) { document_capture_session.reload.load_result }
+          let(:mrz_request) { instance_double(DocAuth::Dos::Requests::MrzRequest) }
+          let(:mrz_response) do
+            DocAuth::Response.new(
+              success: true,
+              errors: {},
+              extra: {
+                vendor: 'DoS',
+                correlation_id_sent: 'something',
+                correlation_id_received: 'something else',
+                response: 'YES',
+              },
+            )
+          end
+          let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
+          let(:aamva_result) do
+            Proofing::StateIdResult.new(
+              success: true,
+              vendor_name: 'state_id:aamva',
+            )
+          end
+
+          before do
+            allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+              .and_return(aamva_proofer)
+            allow(DocAuth::Dos::Requests::MrzRequest).to receive(:new)
+              .with(mrz: pii[:mrz])
+              .and_return(mrz_request)
+            allow(mrz_request).to receive(:fetch).and_return(mrz_response)
+            form.submit
+          end
+
+          it 'stores a successful response in the document_capture_session' do
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              doc_auth_success: true,
+              pii:,
+              selfie_status: :not_processed,
+              attempt: 1,
+              mrz_status: :pass,
+              aamva_status: :not_processed,
+            )
+          end
+        end
+      end
+    end
+
     context 'with a valid form' do
       it 'logs analytics' do
         form.submit
@@ -1519,7 +1704,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+          capture_result = form.send(
+            :store_failed_images,
+            client_response:,
+            doc_pii_response:,
+            mrz_response: nil,
+            aamva_response: nil,
+          )
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
           expect(capture_result[:passport]).to be_empty
@@ -1535,7 +1726,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+          capture_result = form.send(
+            :store_failed_images,
+            client_response:,
+            doc_pii_response:,
+            mrz_response: nil,
+            aamva_response: nil,
+          )
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
           expect(capture_result[:passport]).to be_empty
@@ -1551,7 +1748,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'stores only the error side as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+          capture_result = form.send(
+            :store_failed_images,
+            client_response:,
+            doc_pii_response:,
+            mrz_response: nil,
+            aamva_response: nil,
+          )
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).to be_empty
           expect(capture_result[:passport]).to be_empty
@@ -1572,7 +1775,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'does not store failed images' do
         form.send(:validate_form)
-        capture_result = form.send(:store_failed_images, client_response, nil, nil)
+        capture_result = form.send(
+          :store_failed_images,
+          client_response:,
+          doc_pii_response: nil,
+          mrz_response: nil,
+          aamva_response: nil,
+        )
         expect(capture_result[:front]).to be_empty
         expect(capture_result[:back]).to be_empty
         expect(capture_result[:passport]).to be_empty
@@ -1596,7 +1805,13 @@ RSpec.describe Idv::ApiImageUploadForm do
         context 'when mrz_response is nil' do
           it 'stores neither of the side as failed' do
             form.send(:validate_form)
-            capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+            capture_result = form.send(
+              :store_failed_images,
+              client_response:,
+              doc_pii_response:,
+              mrz_response: nil,
+              aamva_response: nil,
+            )
             expect(capture_result[:front]).to be_empty
             expect(capture_result[:back]).to be_empty
             expect(capture_result[:passport]).to be_empty
@@ -1624,9 +1839,10 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:validate_form)
             capture_result = form.send(
               :store_failed_images,
-              client_response,
-              doc_pii_response,
-              mrz_response,
+              client_response:,
+              doc_pii_response:,
+              mrz_response:,
+              aamva_response: nil,
             )
             expect(capture_result[:front]).to be_empty
             expect(capture_result[:back]).to be_empty
@@ -1653,9 +1869,10 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:validate_form)
             capture_result = form.send(
               :store_failed_images,
-              client_response,
-              doc_pii_response,
-              mrz_response,
+              client_response:,
+              doc_pii_response:,
+              mrz_response:,
+              aamva_response: nil,
             )
             expect(capture_result[:front]).to be_empty
             expect(capture_result[:back]).to be_empty
@@ -1673,7 +1890,13 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'stores both sides as failed' do
           form.send(:validate_form)
-          capture_result = form.send(:store_failed_images, client_response, doc_pii_response, nil)
+          capture_result = form.send(
+            :store_failed_images,
+            client_response:,
+            doc_pii_response:,
+            mrz_response: nil,
+            aamva_response: nil,
+          )
           expect(capture_result[:front]).not_to be_empty
           expect(capture_result[:back]).not_to be_empty
           expect(capture_result[:passport]).to be_empty

@@ -32,17 +32,9 @@ RSpec.describe DocumentCaptureSession do
     )
   end
 
-  let(:failed_doc_auth_response) do
-    DocAuth::Response.new(
-      success: false,
-    )
-  end
-
-  let(:mrz_response) do
-    DocAuth::Response.new(
-      success: true,
-    )
-  end
+  let(:failed_doc_auth_response) { DocAuth::Response.new(success: false) }
+  let(:mrz_response) { DocAuth::Response.new(success: true) }
+  let(:aamva_response) { DocAuth::Response.new(success: true) }
 
   before do
     allow(doc_auth_response).to receive(:doc_auth_success?).and_return(true)
@@ -107,7 +99,7 @@ RSpec.describe DocumentCaptureSession do
         freeze_time
         travel_to(current_time) do
           document_capture_session.store_result_from_response(
-            doc_auth_response, mrz_response:, attempt: 3
+            doc_auth_response, mrz_response:, aamva_response:, attempt: 3
           )
         end
       end
@@ -122,8 +114,47 @@ RSpec.describe DocumentCaptureSession do
           selfie_status: :success,
           errors: {},
           mrz_status: :pass,
+          aamva_status: :passed,
           attempt: 3,
         )
+      end
+    end
+
+    context 'when aamva response is passed in' do
+      let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.uuid) }
+
+      before do
+        document_capture_session.store_result_from_response(
+          doc_auth_response,
+          attempt: 1,
+          aamva_response:,
+        )
+      end
+
+      context 'when the aamva response is successful' do
+        let(:aamva_response) { DocAuth::Response.new(success: true) }
+
+        it 'stores aamva_status as :passed' do
+          expect(document_capture_session.load_result).to have_attributes(aamva_status: :passed)
+        end
+      end
+
+      context 'when the aamva response is unsuccessful' do
+        let(:aamva_response) { DocAuth::Response.new(success: false) }
+
+        it 'stores aamva_status as :failed' do
+          expect(document_capture_session.load_result).to have_attributes(aamva_status: :failed)
+        end
+      end
+
+      context 'when the aamva response is nil' do
+        let(:aamva_response) { nil }
+
+        it 'stores aamva_status as :not_processed' do
+          expect(document_capture_session.load_result).to have_attributes(
+            aamva_status: :not_processed,
+          )
+        end
       end
     end
   end
@@ -224,6 +255,7 @@ RSpec.describe DocumentCaptureSession do
             selfie_status: :fail,
             errors: [error: 'I am error'],
             mrz_status: :not_processed,
+            aamva_status: :failed,
             attempt: 3,
           )
         end
@@ -241,6 +273,7 @@ RSpec.describe DocumentCaptureSession do
           failed_selfie_image_fingerprints: ['fingerprint-selfie1'],
           errors: [error: 'I am error'],
           mrz_status: :not_processed,
+          aamva_status: :failed,
           attempt: 3,
         )
       end
