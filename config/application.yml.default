@@ -111,6 +111,9 @@ doc_auth_client_sharpness_threshold: 50
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+# Switch to manual camera after repeated quality failures (tracks per-side: front, back, passport)
+doc_auth_manual_capture_after_failures_enabled: false
+doc_auth_manual_capture_failure_threshold: 3
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3

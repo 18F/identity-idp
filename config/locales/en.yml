@@ -673,6 +673,7 @@ doc_auth.info.link_sent: Please check your phone and follow instructions to take
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically after you verify your ID on your phone.
 doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
+doc_auth.info.manual_capture_mode: Take the photo yourself.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.

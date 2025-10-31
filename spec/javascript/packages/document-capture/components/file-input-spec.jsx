@@ -557,4 +557,16 @@ describe('document-capture/components/file-input', () => {
     );
     expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
   });
+
+  it('sets capture attribute to environment when capture prop is environment', () => {
+    const { container } = render(<FileInput label="File" capture="environment" />);
+    const input = container.querySelector('input[type="file"]');
+    expect(input.getAttribute('capture')).to.equal('environment');
+  });
+
+  it('does not set capture attribute when capture prop is not provided', () => {
+    const { container } = render(<FileInput label="File" />);
+    const input = container.querySelector('input[type="file"]');
+    expect(input.hasAttribute('capture')).to.be.false();
+  });
 });

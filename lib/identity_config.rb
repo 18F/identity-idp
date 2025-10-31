@@ -132,6 +132,8 @@ module IdentityConfig
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
+    config.add(:doc_auth_manual_capture_after_failures_enabled, type: :boolean)
+    config.add(:doc_auth_manual_capture_failure_threshold, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_mock_dos_api, type: :boolean)
     config.add(:doc_auth_passports_enabled, type: :boolean)
