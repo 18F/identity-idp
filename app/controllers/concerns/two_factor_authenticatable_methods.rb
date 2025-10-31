@@ -116,7 +116,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_max_attempts(type)
-    disavowal_token = create_user_event_with_disavowal(:sign_in_before_2fa)
+    disavowal_token = create_user_event_with_disavowal(:max_attempts_reached)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
       current_user,
