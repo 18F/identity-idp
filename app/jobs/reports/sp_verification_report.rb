@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_report'
+require 'reporting/sp_verification_report'
 
 module Reports
-  class IrsVerificationReport < BaseReport
-    REPORT_NAME = 'irs-verification-report'
+  class SPVerificationReport < BaseReport
+    # REPORT_NAME = 'irs-verification-report'
 
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(report_date = nil, report_receiver = :internal, *args, **rest)
       @report_date = report_date
@@ -19,25 +19,42 @@ module Reports
       @report_date = date
       @report_receiver = receiver.to_sym
 
-      email_addresses = emails.select(&:present?)
+      IdentityConfig.store.sp_verification_report_configs.each do |report_config|
+        send_report(report_config)
+      end
+    end
+
+    def send_report(report_config)
+
+      issuers = report_config['issuers']
+      agency_abbreviation = report_config['agency_abbreviation']
+      irs_emails = report_config['irs_emails']
+      internal_emails = report_config['internal_emails']
+
+      @report_name = "#{agency_abbreviation.downcase}_verification_report"
+      @report_title = "#{agency_abbreviation} Verification Report"
+
+      email_addresses = emails(internal_emails,irs_emails).select(&:present?)
       if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
+        Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
 
-      reports.each do |report|
+      emailable_reports = reports(issuers, agency_abbreviation)
+      
+      emailable_reports.each do |report|
         upload_to_s3(report.table, report_name: report.filename)
       end
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Verification Report - #{report_date.to_date}",
-        reports: reports,
+        subject: "#{@report_title} - #{report_date.to_date}",
+        reports: emailable_reports,
         message: preamble,
         attachment_format: :csv,
       ).deliver_now
     end
-
+     
     # Explanatory text to go before the report in the email
     # @return [String]
     def preamble(env: Identity::Hostdata.env || 'local')
@@ -57,24 +74,25 @@ module Reports
       ERB
     end
 
-    def reports
-      @reports ||= irs_verification_report.as_emailable_reports
+    def reports(issuers, agency_abbreviation)
+      @reports ||= sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
     def previous_week_range
       @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
     end
 
-    def irs_verification_report
-      @irs_verification_report ||= Reporting::IrsVerificationReport.new(
+    def sp_verification_report(issuers, agency_abbreviation)
+      @irs_verification_report ||= Reporting::SPVerificationReport.new(
         time_range: previous_week_range,
-        issuers: IdentityConfig.store.irs_verification_report_issuers || [],
+        issuers: issuers || [],
+        agency_abbreviation: agency_abbreviation,
       )
     end
 
-    def emails
-      internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
-      irs_emails = [*IdentityConfig.store.irs_verification_report_config]
+    def emails(internal_emails,irs_emails)
+      # internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
+      # irs_emails = [*IdentityConfig.store.irs_verification_report_config]
 
       case report_receiver
       when :internal then internal_emails
@@ -83,7 +101,7 @@ module Reports
     end
 
     def upload_to_s3(report_body, report_name: nil)
-      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
+      _latest, path = generate_s3_paths(@report_name, 'csv', subname: report_name, now: report_date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
