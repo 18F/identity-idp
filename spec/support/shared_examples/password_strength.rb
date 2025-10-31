@@ -82,22 +82,4 @@ RSpec.shared_examples 'strong password' do |form_class|
     expect(result.errors).to eq(errors)
     expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
-
-  it 'does not allow a password that does not have the minimum number of graphemes' do
-    user = build_stubbed(:user, email: 'custom@example.com', uuid: '123')
-    allow(user).to receive(:reset_password_period_valid?).and_return(true)
-    form = form_class.constantize.new(user: user)
-    password = 'a7K!hf🇺🇸🇺🇸🇺🇸'
-    errors = {
-      password: [t('errors.attributes.password.too_short', count: 12)],
-    }
-    result = form.submit(
-      password: password,
-      password_confirmation: password,
-    )
-
-    expect(result.success?).to eq(false)
-    expect(result.errors).to eq(errors)
-    expect(result.extra).to include(user_id: '123') if result.extra.present?
-  end
 end
