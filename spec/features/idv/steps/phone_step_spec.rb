@@ -325,7 +325,6 @@ RSpec.feature 'idv phone step', :js do
       before do
         start_idv_from_sp
         complete_idv_steps_before_phone_step
-        # fill_out_phone_form_ok(phone_number)
       end
 
       context 'when Socure returns a low phone risk score' do
