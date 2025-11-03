@@ -18,7 +18,7 @@ module Proofing
               exception: err,
               vendor_name: VENDOR_NAME,
               reference:,
-              transaction_id:,
+              transaction_id: reference,
             )
           end
 
