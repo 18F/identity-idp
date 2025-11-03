@@ -566,7 +566,7 @@ RSpec.describe Idv::PhoneController do
                 phonerisk: { reason_codes: {}, score: 0.01 },
               },
               timed_out: false,
-              transaction_id: '',
+              transaction_id: 'some-reference-id',
               vendor_name: 'socure_phonerisk',
             },
           )
