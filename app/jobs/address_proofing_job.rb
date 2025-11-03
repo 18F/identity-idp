@@ -25,8 +25,6 @@ class AddressProofingJob < ApplicationJob
         user_email: user.last_sign_in_email_address.email,
       ).proof(
         applicant_pii:,
-        request_ip: decrypted_args[:request_ip],
-        timer:,
         current_sp: ServiceProvider.find_by(issuer: issuer),
       )
     end

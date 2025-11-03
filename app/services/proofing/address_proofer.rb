@@ -19,22 +19,16 @@ module Proofing
 
     def proof(
       applicant_pii:,
-      request_ip:,
-      timer:,
       current_sp:
     )
       result = nil
       address_vendors.each do |address_vendor|
-        result = proofer(address_vendor).proof(
-          applicant_pii:,
-          request_ip:,
-          timer:,
-          current_sp:,
-        ).tap do |res|
-          Db::SpCost::AddSpCost.call(
-            current_sp, sp_cost_token(address_vendor), transaction_id: res.transaction_id
-          )
-        end
+        result = proofer(address_vendor).proof(applicant_pii)
+          .tap do |res|
+            Db::SpCost::AddSpCost.call(
+              current_sp, sp_cost_token(address_vendor), transaction_id: res.transaction_id
+            )
+          end
         break if result.success?
       end
       result
