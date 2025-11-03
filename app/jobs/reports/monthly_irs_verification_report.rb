@@ -15,8 +15,9 @@ module Reports
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day)
+    def perform(date = Time.zone.yesterday.end_of_day, receiver = :internal)
       @report_date = date
+      @report_receiver = receiver.to_sym
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
