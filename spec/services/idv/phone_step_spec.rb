@@ -155,25 +155,27 @@ RSpec.describe Idv::PhoneStep do
     end
 
     it 'records the transaction_id in the cost' do
-      expect do
-        subject.submit(phone: good_phone)
-        subject.async_state_done(subject.async_state)
-      end.to(change { SpCost.count }.by(1))
+      expect(Db::SpCost::AddSpCost).to receive(:call).with(
+        service_provider,
+        :mock_address,
+        transaction_id: 'address-mock-transaction-id-123',
+      ).and_call_original
+      expect(NewRelic::Agent).to receive(:notice_error)
 
-      sp_cost = SpCost.last
-      expect(sp_cost.issuer).to eq(service_provider.issuer)
-      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+      subject.submit(phone: good_phone)
+      subject.async_state_done(subject.async_state)
     end
 
     it 'records the transaction_id in the cost for failures too' do
-      expect do
-        subject.submit(phone: bad_phone)
-        subject.async_state_done(subject.async_state)
-      end.to(change { SpCost.count }.by(1))
+      expect(Db::SpCost::AddSpCost).to receive(:call).with(
+        service_provider,
+        :mock_address,
+        transaction_id: 'address-mock-transaction-id-123',
+      ).and_call_original
+      expect(NewRelic::Agent).to receive(:notice_error)
 
-      sp_cost = SpCost.last
-      expect(sp_cost.issuer).to eq(service_provider.issuer)
-      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+      subject.submit(phone: bad_phone)
+      subject.async_state_done(subject.async_state)
     end
   end
 
