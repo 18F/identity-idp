@@ -95,6 +95,7 @@ RSpec.describe AddressProofingJob, type: :job do
         sp_cost = SpCost.last
         expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
+        expect(sp_cost.cost_type).to eq('lexis_nexis_address')
       end
     end
 
@@ -108,7 +109,7 @@ RSpec.describe AddressProofingJob, type: :job do
           'https://sandbox.socure.test/api/3.0/EmailAuthScore',
         ).to_return(
           body: {
-            reference: '',
+            referenceId: conversation_id,
             phoneRisk: {
               score: phonerisk_score,
               reasonCodes: [],
@@ -134,8 +135,13 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result[:vendor_name]).to eq('socure_phonerisk')
       end
 
-      it 'does not add cost data' do
-        expect { perform }.not_to(change { SpCost.count })
+      it 'adds cost data' do
+        expect { perform }.to(change { SpCost.count }.by(1))
+
+        sp_cost = SpCost.last
+        expect(sp_cost.issuer).to eq(service_provider.issuer)
+        expect(sp_cost.transaction_id).to eq(conversation_id)
+        expect(sp_cost.cost_type).to eq('socure_address')
       end
 
       context 'high phonerisk score' do
@@ -183,6 +189,10 @@ RSpec.describe AddressProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result[:success]).to eq(false)
+        end
+
+        it 'does not add cost data' do
+          expect { perform }.not_to(change { SpCost.count })
         end
       end
     end
