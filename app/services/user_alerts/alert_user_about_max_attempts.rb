@@ -23,7 +23,7 @@ module UserAlerts
       [
         user.sign_in_new_device_at,
         IdentityConfig.store.new_device_alert_delay_in_minutes.minutes.ago,
-      ].max
+      ].compact.max
     end
   end
 end
