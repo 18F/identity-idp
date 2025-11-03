@@ -35,7 +35,8 @@ class CreateNewDeviceAlertJob < ApplicationJob
       .create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
 
     if !user.second_factor_locked_at.present? &&
-        user.second_factor_attempts_count < !IdentityConfig.store.login_otp_confirmation_max_attempts
+       user.second_factor_attempts_count <
+       !IdentityConfig.store.login_otp_confirmation_max_attempts
       UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
     end
   end
