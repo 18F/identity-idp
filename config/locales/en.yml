@@ -876,7 +876,7 @@ event_types.eastern_timestamp: '%{timestamp} (Eastern)'
 event_types.email_changed: Email address changed
 event_types.email_deleted: Email address deleted
 event_types.gpo_mail_sent: Letter sent
-event_types.max_attempts_reached: Account locked out
+event_types.max_attempts_reached: Account locked
 event_types.new_personal_key: Personal key changed
 event_types.password_changed: Password changed
 event_types.password_invalidated: Password reset by %{app_name}

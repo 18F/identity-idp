@@ -887,7 +887,7 @@ event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除
 event_types.gpo_mail_sent: 信已发送
-event_types.max_attempts_reached: Account locked out
+event_types.max_attempts_reached: 帳戶已被鎖定
 event_types.new_personal_key: 个人密钥已更改
 event_types.password_changed: 密码已更改
 event_types.password_invalidated: 密码由 %{app_name}重设
@@ -2056,7 +2056,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: 如果不是你，%{reset_password_link_html} 并立即改变你的验%{authentication_methods_link_html}。
 user_mailer.new_device_sign_in_after_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
-user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Account locked
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: 帳戶已被鎖定
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: 使用密码登录
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: 身份证实失败
