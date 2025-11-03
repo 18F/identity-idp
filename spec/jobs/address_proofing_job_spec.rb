@@ -20,7 +20,11 @@ RSpec.describe AddressProofingJob, type: :job do
   end
   let(:trace_id) { SecureRandom.hex }
   let(:user_id) { document_capture_session.user_id }
+  let(:address_vendor) { :mock }
 
+  before do
+    allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(address_vendor)
+  end
   describe '.perform_later' do
     it 'stores results' do
       AddressProofingJob.perform_later(
@@ -28,7 +32,6 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
-        address_vendor: :mock,
         user_id:,
       )
 
@@ -39,8 +42,6 @@ RSpec.describe AddressProofingJob, type: :job do
 
   describe '#perform' do
     let(:conversation_id) { SecureRandom.hex }
-    let(:address_vendor) { :lexis_nexis }
-
     let(:instance) { AddressProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -48,12 +49,12 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
-        address_vendor:,
         user_id:,
       )
     end
 
-    context 'webmock vendor' do
+    context 'webmock lexisnexis vendor' do
+      let(:address_vendor) { :lexis_nexis }
       before do
         stub_request(
           :post,
