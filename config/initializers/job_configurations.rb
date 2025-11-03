@@ -297,7 +297,7 @@ else
       # Previous months's irs verification report
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
-        cron: cron_monthly_5am,
+        cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,

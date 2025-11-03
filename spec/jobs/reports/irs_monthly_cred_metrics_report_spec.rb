@@ -157,17 +157,64 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       allow(report).to receive(:invoice_report_data).and_return(fixture_csv_data)
 
       result = report.perform(report_date)
-      data_column = result.map { |row| row[1] }
-      expect(result.transpose.length).to eq(2) # Two Columns: "Metrics" and "Values"
-      expect(result.length).to eq(6) # One Header Row + 6 Data Rows"
+      data_column =
+        result.map do |row|
+          row[1]
+        end
+
+      # Check Report Table Shape
+      # Two Columns: "Metrics" and "Values"
+      # One Header Row + 5 Data Rows"
+      expect(result.transpose.length).to eq(2)
+      expect(result.length).to eq(6)
+
+      # Check that report values match expectations from csv fixture
+      # Report should only return values for January 2021 (second row in csv)
+      parsed_invoice_data = CSV.parse(fixture_csv_data, headers: true)
+      report_year_month = report_date.strftime('%Y%m')
+      row = (parsed_invoice_data.find do |r|
+        r['year_month'] == report_year_month
+      end).to_h.transform_values(&:to_i)
+
+      # Expected values
+      expected_monthly_active_users = row['issuer_unique_users'].to_i
+
+      expected_new_ial_year1 = row['partner_ial2_new_unique_user_events_year1_upfront'].to_i
+
+      expected_existing_credentials_authorized =
+        row['partner_ial2_new_unique_user_events_year1_existing'].to_i +
+        row['partner_ial2_new_unique_user_events_year2'].to_i +
+        row['partner_ial2_new_unique_user_events_year3'].to_i +
+        row['partner_ial2_new_unique_user_events_year4'].to_i +
+        row['partner_ial2_new_unique_user_events_year5'].to_i
+
+      # Partner Credentials authorized
+      expected_credentials_authorized = expected_new_ial_year1 +
+                                        expected_existing_credentials_authorized
+
+      # Total Auths
+      expected_total_auths = row['issuer_ial1_plus_2_total_auth_count'].to_i
 
       # Test the processed data
-      expect(data_column[0]).to eq('Value') # Values
-      expect(data_column[1]).to eq(9817) # Monthly Active Users - iaa_unique_users
-      expect(data_column[2]).to eq(95 + 53) # IAL2 Auths - partner_ial2_unique_user_events_year12345
-      expect(data_column[3]).to eq(95) # New IAL Year 1 - partner_ial2_unique_user_events_year1
-      expect(data_column[4]).to eq(53) # New IAL Year 2 - partner_ial2_unique_user_events_year2345
-      expect(data_column[5]).to eq(20769) # Total Auths - issuer_ial1_plus_2_total_auth_count
+      expect(data_column[0]).to eq('Value') # Column label
+      expect(data_column[1]).to eq(expected_monthly_active_users)
+      expect(data_column[2]).to eq(expected_credentials_authorized)
+      expect(data_column[3]).to eq(expected_new_ial_year1)
+      expect(data_column[4]).to eq(expected_existing_credentials_authorized)
+      expect(data_column[5]).to eq(expected_total_auths)
+    end
+
+    it 'checks that upfront + existing equals year1 total' do
+      allow(report).to receive(:invoice_report_data).and_return(fixture_csv_data)
+      parsed_invoice_data = CSV.parse(fixture_csv_data, headers: true)
+      report_year_month = report_date.strftime('%Y%m')
+      row = parsed_invoice_data.find { |r| r['year_month'] == report_year_month }
+
+      upfront = row['partner_ial2_new_unique_user_events_year1_upfront'].to_i
+      existing = row['partner_ial2_new_unique_user_events_year1_existing'].to_i
+      year1 = row['partner_ial2_new_unique_user_events_year1'].to_i
+
+      expect(upfront + existing).to eq(year1)
     end
   end
 
