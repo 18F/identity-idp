@@ -97,6 +97,8 @@ interface FileInputProps {
    * Callback to trigger if upload error occurs
    */
   onError?: (message: ReactNode) => void;
+
+  capture?: 'user' | 'environment';
 }
 
 /**
@@ -210,6 +212,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     onDrop,
     onChange = () => {},
     onError = () => {},
+    capture,
   } = props;
   const inputRef = useRef<HTMLInputElement>(null);
   const { t, formatHTML } = useI18n();
@@ -398,6 +401,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
+            capture={capture}
             aria-describedby={ariaDescribedby}
           />
         </div>

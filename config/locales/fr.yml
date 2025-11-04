@@ -673,6 +673,7 @@ doc_auth.info.link_sent: Veuillez consulter votre téléphone et suivre les inst
 doc_auth.info.link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Suite » ici pour terminer la vérification de votre identité.
 doc_auth.info.link_sent_complete_polling: L’étape suivante se chargera automatiquement une fois que vous aurez confirmé votre identité sur votre téléphone.
 doc_auth.info.mailing_address: Nous vous enverrons le courrier contenant un code de vérification à cette adresse.
+doc_auth.info.manual_capture_mode: Prenez la photo vous-même.
 doc_auth.info.no_ssn: Vous devez avoir un numéro de sécurité sociale pour terminer la vérification de votre identité.
 doc_auth.info.passport_capture: Prenez une photo de la page d’informations de votre passeport. Cette page comporte votre photo d’identité et vos informations personnelles.
 doc_auth.info.passport_capture_help_1: Placez la page d’informations du passeport à l’intérieur des lignes définissant le cadre.
