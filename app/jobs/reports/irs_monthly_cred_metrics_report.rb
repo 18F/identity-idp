@@ -208,7 +208,7 @@ module Reports
         # Delegate only the CSV building to the existing class
         invoice_reporter = CombinedInvoiceSupplementReportV2.new
         data = invoice_reporter.build_csv(iaas, partner_accounts)
-        save_report(REPORT_NAME, data, extension: 'csv')
+        save_report(REPORT_NAME + '_raw', data, extension: 'csv')
         data
       end
     end
