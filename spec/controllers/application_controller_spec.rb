@@ -493,7 +493,7 @@ RSpec.describe ApplicationController do
         it 'raises an exception' do
           expect { result }.to raise_exception(
             Vot::Parser::ParseException,
-            'VoT parser called without VoT or ACR values',
+            'Component parser called without ACR values',
           )
         end
 

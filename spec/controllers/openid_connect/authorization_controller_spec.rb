@@ -1147,7 +1147,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             request_id: sp_request_id,
             request_url: request.original_url,
             requested_attributes: %w[],
-            vtr: nil,
           )
         end
       end
