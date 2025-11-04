@@ -234,7 +234,7 @@ module Idv
     end
 
     def new_phone_added?
-      mfa_configured_phone?(phone_step_params_phone)
+      !mfa_configured_phone?(phone_step_params_phone)
     end
 
     def hybrid_handoff_phone_used?
