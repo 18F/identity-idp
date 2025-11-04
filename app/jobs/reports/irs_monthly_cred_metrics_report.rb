@@ -193,9 +193,9 @@ module Reports
         ] + data_row.map do |invoice_report|
               # Data rows - extract values directly from CSV row
               ['Value',
-               invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
+               invoice_report['issuer_unique_users'].to_i, # Monthly Active Users
                ial2_new_unique_all(invoice_report), # Credentials Authorized
-               invoice_report['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
+               invoice_report['issuer_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
                ial2_existing_credentials(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
@@ -215,22 +215,22 @@ module Reports
 
     def ial2_existing_credentials(row)
       %w[
-        partner_ial2_new_unique_user_events_year1_existing
-        partner_ial2_new_unique_user_events_year2
-        partner_ial2_new_unique_user_events_year3
-        partner_ial2_new_unique_user_events_year4
-        partner_ial2_new_unique_user_events_year5
+        issuer_ial2_new_unique_user_events_year1_existing
+        issuer_ial2_new_unique_user_events_year2
+        issuer_ial2_new_unique_user_events_year3
+        issuer_ial2_new_unique_user_events_year4
+        issuer_ial2_new_unique_user_events_year5
       ].sum { |key| row[key].to_i }
     end
 
     def ial2_new_unique_all(row)
       %w[
-        partner_ial2_new_unique_user_events_year1_upfront
-        partner_ial2_new_unique_user_events_year1_existing
-        partner_ial2_new_unique_user_events_year2
-        partner_ial2_new_unique_user_events_year3
-        partner_ial2_new_unique_user_events_year4
-        partner_ial2_new_unique_user_events_year5
+        issuer_ial2_new_unique_user_events_year1_upfront
+        issuer_ial2_new_unique_user_events_year1_existing
+        issuer_ial2_new_unique_user_events_year2
+        issuer_ial2_new_unique_user_events_year3
+        issuer_ial2_new_unique_user_events_year4
+        issuer_ial2_new_unique_user_events_year5
       ].sum { |key| row[key].to_i }
     end
   end
