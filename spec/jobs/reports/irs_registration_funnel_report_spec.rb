@@ -110,7 +110,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date)
+      report.perform(report_date, :both)
     end
   end
 

@@ -72,10 +72,11 @@ module Reports
       ]
     end
 
-    def perform(perform_date = Time.zone.yesterday.end_of_day)
+    def perform(perform_date = Time.zone.yesterday.end_of_day, receiver = :internal)
       reports = as_emailable_partner_report(
         date: perform_date,
       )
+      @report_receiver = receiver.to_sym
 
       reports.each do |report|
         _latest_path, path = generate_s3_paths(
