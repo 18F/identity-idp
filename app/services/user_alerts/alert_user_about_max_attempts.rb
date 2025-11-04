@@ -8,7 +8,6 @@ module UserAlerts
         event_type: [
           'sign_in_before_2fa',
           'sign_in_unsuccessful_2fa',
-          'max_attempts_reached',
         ],
       ).order(:created_at).includes(:device).to_a
 
