@@ -63,11 +63,11 @@ RSpec.feature 'welcome step' do
         )
 
         expect(page).to have_content(
-          "#{sp_name} needs to make sure you are you — not someone pretending to be you",
+          t('doc_auth.info.getting_started_html', sp_name: sp_name, link_html: ''),
         )
 
         expect(page).not_to have_content(
-          'Verify your identity again to access this service',
+          t('doc_auth.info.stepping_up_html', link_html: ''),
         )
       end
     end
