@@ -5782,6 +5782,65 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success Whether the state ID validation was successful.
+  # @param [String] vendor_name The name of the vendor doing the validation. If the ID was not from
+  #   a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be
+  #   "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls
+  #   did not succeed.
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request.
+  # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
+  #   "1" represents that the value was sent.
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
+  #   maintenance.
+  # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
+  # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Integer, nil] birth_year The birth year listed on the ID.
+  # @param [String, nil] state The state on the ID.
+  # @param [String, nil] state_id_jurisdiction The state that issued the ID.
+  # @param [String, nil] state_id_number A string describing the format of the ID number.
+  # @param [Hash, nil] errors The errors encountered during proofing.
+  # @param [String, nil] exception The exception message.
+  # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  def idv_state_id_validation(
+    success:,
+    vendor_name:,
+    transaction_id:,
+    requested_attributes:,
+    verified_attributes:,
+    jurisdiction_in_maintenance_window:,
+    supported_jurisdiction:,
+    timed_out:,
+    birth_year: nil,
+    state: nil,
+    state_id_jurisdiction: nil,
+    state_id_number: nil,
+    errors: nil,
+    exception: nil,
+    mva_exception: nil,
+    **extra
+  )
+    track_event(
+      :idv_state_id_validation,
+      success:,
+      vendor_name:,
+      transaction_id:,
+      requested_attributes:,
+      verified_attributes:,
+      jurisdiction_in_maintenance_window:,
+      supported_jurisdiction:,
+      timed_out:,
+      birth_year:,
+      state:,
+      state_id_jurisdiction:,
+      state_id_number:,
+      errors:,
+      exception:,
+      mva_exception:,
+      **extra,
+    )
+  end
+
   # The JSON body of the response returned from Threatmetrix. PII has been removed.
   # @param [Hash] response_body The response body returned by ThreatMetrix
   def idv_threatmetrix_response_body(
