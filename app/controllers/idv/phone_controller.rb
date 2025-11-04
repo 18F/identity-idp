@@ -234,19 +234,14 @@ module Idv
     end
 
     def new_phone_added?
-      context = MfaContext.new(current_user)
-      configured_phones = context.phone_configurations.map(&:phone).map do |number|
-        PhoneFormatter.format(number)
-      end
-      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+      mfa_configured_phone?(phone_step_params_phone)
     end
 
     def hybrid_handoff_phone_used?
-      formatted_previous_phone_step_params_phone ==
-        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+      hybrid_handoff_phone?(phone_step_params_phone)
     end
 
-    def formatted_previous_phone_step_params_phone
+    def phone_step_params_phone
       PhoneFormatter.format(
         idv_session.previous_phone_step_params&.fetch('phone'),
       )
