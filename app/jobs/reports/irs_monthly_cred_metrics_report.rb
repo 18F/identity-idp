@@ -167,7 +167,16 @@ module Reports
     private
 
     def build_report_data
-      parsed_invoice_data = CSV.parse(invoice_report_data, headers: true)
+      invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
+
+      issuer_invoice_data = invoice_data_csv.select do |r|
+        issuers.include?(r['issuer'])
+      end
+
+      parsed_invoice_data = CSV::Table.new(
+        issuer_invoice_data,
+        headers: invoice_data_csv.headers,
+      )
 
       report_year_month = report_date.strftime('%Y%m')
       data_row = parsed_invoice_data.filter do |row|
