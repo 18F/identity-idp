@@ -10,15 +10,6 @@ declare global {
   }
 }
 
-/**
- * Type definition for export only
- */
-type AcuantGlobals = {
-  AcuantCameraUI: AcuantCameraUIInterface;
-  AcuantCamera: AcuantCameraInterface;
-};
-export type AcuantGlobal = Window & AcuantGlobals;
-
 enum AcuantDocumentStateEnum {
   NO_DOCUMENT = 0,
   SMALL_DOCUMENT = 1,
@@ -164,11 +155,20 @@ type AcuantCameraCrop = (
 declare global {
   interface AcuantCameraInterface {
     start: AcuantCameraStart;
-    startManualCapture: (callback: AcuantCameraUICallbacks) => void;
     triggerCapture: AcuantCameraTriggerCapture;
     crop: AcuantCameraCrop;
+    end: () => void;
   }
 }
+
+/**
+ * Type definition for export only
+ */
+type AcuantGlobals = {
+  AcuantCameraUI: AcuantCameraUIInterface;
+  AcuantCamera: AcuantCameraInterface;
+};
+export type AcuantGlobal = Window & AcuantGlobals;
 
 interface AcuantCaptureImage {
   /**
@@ -316,27 +316,30 @@ function AcuantCamera({
         NONE: t('doc_auth.info.capture_status_none'),
         SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
         BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-        GOOD_DOCUMENT: null,
+        GOOD_DOCUMENT: null, // auto-capture only - SDK doesn't support switching modes mid-session
         CAPTURING: t('doc_auth.info.capture_status_capturing'),
         TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
     if (isReady) {
-      const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
+      const callbacks = {
+        onCaptured,
+        onCropped,
+        onError: onImageCaptureFailure,
+      };
+
+      const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
+        onImageCaptureFailure(...args);
       Object.keys(textOptions).forEach((key) => {
         onFailureCallbackWithOptions[key] = textOptions[key];
       });
 
-      window.AcuantCameraUI.start(
-        {
-          onCaptured,
-          onCropped,
-          onError: onImageCaptureFailure,
-        },
-        onFailureCallbackWithOptions,
-        textOptions,
-      );
-      setIsActive(true);
+      try {
+        window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
+        setIsActive(true);
+      } catch (error) {
+        onImageCaptureFailure(error);
+      }
     }
 
     return () => {

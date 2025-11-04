@@ -21,6 +21,8 @@
       status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
       max_capture_attempts_before_native_camera: doc_auth_selfie_capture ? ActiveSupport::Duration::SECONDS_PER_HOUR : IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera,
       max_submission_attempts_before_native_camera: doc_auth_selfie_capture ? ActiveSupport::Duration::SECONDS_PER_HOUR : IdentityConfig.store.doc_auth_max_submission_attempts_before_native_camera,
+      max_attempts_before_manual_capture: IdentityConfig.store.doc_auth_manual_capture_failure_threshold,
+      manual_capture_after_failures_enabled: IdentityConfig.store.doc_auth_manual_capture_after_failures_enabled,
       acuant_sdk_upgrade_a_b_testing_enabled:,
       use_alternate_sdk:,
       acuant_version:,
