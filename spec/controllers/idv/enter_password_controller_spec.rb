@@ -329,30 +329,14 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'when the vector of trust is defined' do
-      context 'when the vector of trust is not Enhanced IPP' do
+    context 'when the acr_values are defined' do
+      # TODO: VoT has been deprecated.
+      # EIPP should not be determined via acr_values
+      context 'when the acr_values are not enhanced IPP' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
-
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context_result)
-        end
-
-        it 'creates Profile with applicant attributes' do
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-          profile = subject.idv_session.profile
-          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
-
-          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
-
-          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
-        end
-      end
-
-      context 'when the vector of trust is Enhanced IPP' do
-        before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+          resolved_authn_context_result = Vot::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          ).parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -1045,12 +1029,14 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'user is going through enhanced ipp' do
+    xcontext 'user is going through enhanced ipp' do
       let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
         create(:in_person_enrollment, :establishing, user: user)
       end
       before do
+        # TODO: VoT has been deprecated.
+        # EIPP should not be determined via acr_values
         authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),

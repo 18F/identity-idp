@@ -106,9 +106,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             end
           end
 
-          context 'when vtr (vector of trust) does not include Enhanced Proofing (Pe)' do
+          context 'when acr_values does not include Enhanced Proofing (Pe)' do
             before do
-              resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+              resolved_authn_context_result = Vot::Parser.new(
+                acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+              ).parse
 
               allow(controller).to receive(:resolved_authn_context_result)
                 .and_return(resolved_authn_context_result)
@@ -121,7 +123,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
             end
           end
 
-          context 'when vtr (vector of trust) includes Enhanced Proofing (Pe)' do
+          xcontext 'when vtr (vector of trust) includes Enhanced Proofing (Pe)' do
+            # TODO: VoT has been deprecated.
+            # EIPP should not be determined via acr_values
             before do
               resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
 

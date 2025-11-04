@@ -80,15 +80,6 @@ RSpec.describe SamlRequestedAttributesPresenter do
       it 'combines address fields into single friendly name' do
         expect(subject.requested_attributes).to eq(%i[address])
       end
-
-      context 'with vtr values' do
-        let(:acr_values) { nil }
-        let(:vtr) { ['C1.C2.P1'] }
-
-        it 'combines address fields into single friendly name' do
-          expect(subject.requested_attributes).to eq(%i[address])
-        end
-      end
     end
 
     context 'no identity proofing requested' do

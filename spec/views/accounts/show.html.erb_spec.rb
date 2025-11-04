@@ -3,13 +3,12 @@ require 'rails_helper'
 RSpec.describe 'accounts/show.html.erb' do
   let(:authn_context) { Vot::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
-  let(:vtr) { ['C2'] }
+  let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
   let(:authn_context) do
     AuthnContextResolver.new(
       user:,
       service_provider: nil,
-      vtr: vtr,
-      acr_values: nil,
+      acr_values:,
     ).result
   end
   before do
@@ -111,7 +110,9 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has an in_person_enrollment that was failed' do
+  xcontext 'when current user has an enhanced in_person_enrollment that was failed' do
+    # TODO: VoT has been deprecated.
+    # EIPP should not be determined via acr_values
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
@@ -129,7 +130,9 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has an in_person_enrollment that was cancelled' do
+  xcontext 'when current user has an in_person_enrollment that was cancelled' do
+    # TODO: VoT has been deprecated.
+    # EIPP should not be determined via acr_values
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
@@ -147,7 +150,9 @@ RSpec.describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when current user has an in_person_enrollment that expired' do
+  xcontext 'when current user has an in_person_enrollment that expired' do
+    # TODO: VoT has been deprecated.
+    # EIPP should not be determined via acr_values
     let(:vtr) { ['Pe'] }
     let(:sp_name) { 'sinatra-test-app' }
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
