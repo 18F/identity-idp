@@ -278,6 +278,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,
               timer: instance_of(JobHelpers::Timer),
+              analytics: fake_analytics,
               doc_auth_flow: true,
             ).and_return(aamva_result)
             form.submit
@@ -314,6 +315,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,
               timer: instance_of(JobHelpers::Timer),
+              analytics: fake_analytics,
               doc_auth_flow: true,
             ).and_return(aamva_state_id_result)
             allow(aamva_state_id_result).to receive(:to_doc_auth_response).and_return(
