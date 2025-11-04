@@ -473,22 +473,20 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
   end
 
-  describe 'already_proofed parameter' do
-    context 'when already_proofed is true' do
-      let(:already_proofed) { true }
-      it 'returns a skipped result without calling the proofer' do
-        expect(plugin.proofer).not_to receive(:proof)
-        plugin.call(
-          applicant_pii:,
-          current_sp:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:,
-          timer: JobHelpers::Timer.new,
-          already_proofed:,
-        ).tap do |result|
-          expect(result.success?).to eql(true)
-          expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
-        end
+  context 'when already_proofed is true' do
+    let(:already_proofed) { true }
+    it 'returns a skipped result without calling the proofer' do
+      expect(plugin.proofer).not_to receive(:proof)
+      plugin.call(
+        applicant_pii:,
+        current_sp:,
+        state_id_address_resolution_result:,
+        ipp_enrollment_in_progress:,
+        timer: JobHelpers::Timer.new,
+        already_proofed:,
+      ).tap do |result|
+        expect(result.success?).to eql(true)
+        expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
       end
     end
   end
