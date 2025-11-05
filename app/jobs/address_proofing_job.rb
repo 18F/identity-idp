@@ -8,7 +8,8 @@ class AddressProofingJob < ApplicationJob
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
   def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id:,
-              hybrid_handoff_phone_used:, new_phone_added:, opted_in_to_in_person_proofing:)
+              hybrid_handoff_phone_used: nil, new_phone_added: nil, # args optional for 50/50
+              opted_in_to_in_person_proofing: nil) # args optional for 50/50
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)

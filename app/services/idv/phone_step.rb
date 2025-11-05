@@ -12,11 +12,10 @@ module Idv
       @fraud_ops_tracker = fraud_ops_tracker
     end
 
-    def submit(step_params, new_phone_added:, hybrid_handoff_phone_used:)
+    def submit(new_phone_added:, hybrid_handoff_phone_used:)
       return rate_limited_result if rate_limiter.limited?
       rate_limiter.increment!
 
-      self.step_params = step_params
       self.new_phone_added = new_phone_added
       self.hybrid_handoff_phone_used = hybrid_handoff_phone_used
       proof_address
@@ -61,7 +60,7 @@ module Idv
 
     private
 
-    attr_accessor :idv_session, :step_params, :idv_result, :new_phone_added, :hybrid_handoff_phone_used
+    attr_accessor :idv_session, :idv_result, :new_phone_added, :hybrid_handoff_phone_used
     attr_reader :trace_id
 
     def proof_address
@@ -100,7 +99,7 @@ module Idv
     end
 
     def phone_param
-      params = step_params || idv_session.previous_phone_step_params
+      params = idv_session.previous_phone_step_params
       step_phone = params[:phone]
       if step_phone == 'other'
         params[:other_phone]

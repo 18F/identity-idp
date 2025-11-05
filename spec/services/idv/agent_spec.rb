@@ -187,6 +187,9 @@ RSpec.describe Idv::Agent do
           document_capture_session,
           trace_id: trace_id,
           issuer: issuer,
+          new_phone_added: false,
+          hybrid_handoff_phone_used: false,
+          opted_in_to_in_person_proofing: false,
         )
       end
 

@@ -38,6 +38,9 @@ RSpec.describe Idv::PhoneStep do
   let(:analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:new_phone_added) { false }
+  let(:hybrid_handoff_phone_used) { false }
+  let(:opted_in_to_in_person_proofing) { false }
 
   subject do
     described_class.new(
@@ -72,8 +75,11 @@ RSpec.describe Idv::PhoneStep do
       }
 
       original_applicant = idv_session.applicant.dup
-
-      subject.submit(phone: good_phone)
+      idv_session.previous_phone_step_params = { phone: good_phone }
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
 
       expect(subject.async_state).to be_done
       result = subject.async_state_done(subject.async_state)
@@ -100,8 +106,11 @@ RSpec.describe Idv::PhoneStep do
       }
 
       original_applicant = idv_session.applicant.dup
-
-      subject.submit(phone: bad_phone)
+      idv_session.previous_phone_step_params = { phone: bad_phone }
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
@@ -115,27 +124,43 @@ RSpec.describe Idv::PhoneStep do
     end
 
     it 'increments step attempts' do
+      idv_session.previous_phone_step_params = { phone: bad_phone }
       expect do
-        subject.submit(phone: bad_phone)
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
       end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
     it 'increments step attempts when the vendor request times out' do
+      idv_session.previous_phone_step_params = { phone: timeout_phone }
       expect do
-        subject.submit(phone: timeout_phone)
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
       end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
+      idv_session.previous_phone_step_params = { phone: fail_phone }
       expect do
-        subject.submit(phone: fail_phone)
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
       end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
+      idv_session.previous_phone_step_params = { phone: good_phone }
 
-      subject.submit(phone: good_phone)
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
@@ -145,7 +170,11 @@ RSpec.describe Idv::PhoneStep do
     end
 
     it 'does not mark the phone as confirmed if it does not match 2FA phone' do
-      subject.submit(phone: good_phone)
+      idv_session.previous_phone_step_params = { phone: good_phone }
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
@@ -155,6 +184,7 @@ RSpec.describe Idv::PhoneStep do
     end
 
     it 'records the transaction_id in the cost' do
+      idv_session.previous_phone_step_params = { phone: good_phone }
       expect(Db::SpCost::AddSpCost).to receive(:call).with(
         service_provider,
         :mock_address,
@@ -162,11 +192,16 @@ RSpec.describe Idv::PhoneStep do
       ).and_call_original
       expect(NewRelic::Agent).to receive(:notice_error)
 
-      subject.submit(phone: good_phone)
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
       subject.async_state_done(subject.async_state)
     end
 
     it 'records the transaction_id in the cost for failures too' do
+      idv_session.previous_phone_step_params = { phone: bad_phone }
+
       expect(Db::SpCost::AddSpCost).to receive(:call).with(
         service_provider,
         :mock_address,
@@ -174,7 +209,10 @@ RSpec.describe Idv::PhoneStep do
       ).and_call_original
       expect(NewRelic::Agent).to receive(:notice_error)
 
-      subject.submit(phone: bad_phone)
+      subject.submit(
+        new_phone_added:,
+        hybrid_handoff_phone_used:,
+      )
       subject.async_state_done(subject.async_state)
     end
   end
@@ -182,8 +220,12 @@ RSpec.describe Idv::PhoneStep do
   describe '#failure_reason' do
     context 'when there are idv attempts remaining' do
       it 'returns :warning' do
+        idv_session.previous_phone_step_params = { phone: bad_phone }
         expect(attempts_api_tracker).not_to receive(:idv_rate_limited)
-        subject.submit(phone: bad_phone)
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
         expect(subject.async_state.done?).to eq true
         subject.async_state_done(subject.async_state)
 
@@ -193,19 +235,27 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
+        idv_session.previous_phone_step_params = { phone: bad_phone }
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
         expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
           limiter_type: :proof_address,
         )
-        subject.submit(phone: bad_phone)
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
         expect(subject.failure_reason).to eq(:fail)
       end
     end
 
     context 'when the vendor raises a timeout exception' do
       it 'returns :timeout' do
-        subject.submit(phone: timeout_phone)
+        idv_session.previous_phone_step_params = { phone: timeout_phone }
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
         expect(subject.async_state.done?).to eq true
         subject.async_state_done(subject.async_state)
 
@@ -215,7 +265,11 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when the vendor raises an exception' do
       it 'returns :jobfail' do
-        subject.submit(phone: fail_phone)
+        idv_session.previous_phone_step_params = { phone: fail_phone }
+        subject.submit(
+          new_phone_added:,
+          hybrid_handoff_phone_used:,
+        )
         expect(subject.async_state.done?).to eq true
         subject.async_state_done(subject.async_state)
 
