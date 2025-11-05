@@ -84,6 +84,7 @@ module Proofing
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
+          already_proofed: IdentityConfig.store.idv_aamva_at_doc_auth_enabled,
         )
 
         phone_finder_result = phone_finder_plugin.call(

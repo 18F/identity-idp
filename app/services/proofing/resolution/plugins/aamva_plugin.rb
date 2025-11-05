@@ -17,9 +17,10 @@ module Proofing
           current_sp:,
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          already_proofed: false
         )
-          return skipped_result if passport_applicant?(applicant_pii)
+          return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
           should_proof = should_proof_state_id?(
             applicant_pii:,
