@@ -17,7 +17,6 @@ module Proofing
           NewRelic::Agent.notice_error(exception)
           AddressResult.new(
             success: false,
-            errors: {},
             exception: exception,
             vendor_name: 'lexisnexis:phone_finder',
           )

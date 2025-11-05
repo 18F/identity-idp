@@ -15,7 +15,7 @@ module Proofing
       success:,
       exception:,
       vendor_name:,
-      errors: {}, # change to nil?
+      errors: {},
       transaction_id: '',
       reference: '',
       vendor_workflow: nil,

@@ -508,7 +508,7 @@ RSpec.describe Idv::PhoneController do
             reference: '',
             result: nil,
           },
-          errors: {}, # remove this
+          errors: {},
         )
       end
 
@@ -572,7 +572,7 @@ RSpec.describe Idv::PhoneController do
               transaction_id: 'some-reference-id',
               vendor_name: 'socure_phonerisk',
             },
-            errors: {}, # remove this
+            errors: {},
           )
         end
       end
