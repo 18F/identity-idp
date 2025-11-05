@@ -878,6 +878,7 @@ RSpec.feature 'Analytics Regression', :js do
       fake_analytics.session = controller.session
       fake_analytics
     end
+    allow_any_instance_of(Proofing::AddressProofer).to receive(:analytics).and_return(fake_analytics)
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled)
       .and_return(false)
   end
