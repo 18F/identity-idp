@@ -123,7 +123,6 @@ module Idv
         :otp_delivery_preference
       )
       step.submit(
-        step_params.to_h,
         new_phone_added: new_phone_added?,
         hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
       )
