@@ -39,7 +39,14 @@ module Idv
       end
     end
 
-    def proof_address(document_capture_session, issuer:, trace_id:)
+    def proof_address(
+      document_capture_session,
+      issuer:,
+      trace_id:,
+      opted_in_to_in_person_proofing:,
+      hybrid_handoff_phone_used:,
+      new_phone_added:
+    )
       document_capture_session.create_proofing_session
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
@@ -51,6 +58,9 @@ module Idv
         encrypted_arguments: encrypted_arguments,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
+        opted_in_to_in_person_proofing:,
+        hybrid_handoff_phone_used:,
+        new_phone_added:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

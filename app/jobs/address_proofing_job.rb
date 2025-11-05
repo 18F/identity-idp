@@ -7,7 +7,8 @@ class AddressProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id:)
+  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id:,
+              hybrid_handoff_phone_used:, new_phone_added:, opted_in_to_in_person_proofing:)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -19,13 +20,18 @@ class AddressProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
     user = User.find(user_id)
+    current_sp = ServiceProvider.find_by(issuer:)
+    user_email = user.last_sign_in_email_address.email
     proofer_result = timer.time('address') do
       Proofing::AddressProofer.new(
         user_uuid: user.uuid,
-        user_email: user.last_sign_in_email_address.email,
+        user_email:,
       ).proof(
         applicant_pii:,
-        current_sp: ServiceProvider.find_by(issuer: issuer),
+        current_sp:,
+        opted_in_to_in_person_proofing:,
+        hybrid_handoff_phone_used:,
+        new_phone_added:,
       )
     end
 

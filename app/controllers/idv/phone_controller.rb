@@ -168,6 +168,8 @@ module Idv
         analytics:,
         attempts_api_tracker:,
         fraud_ops_tracker:,
+        new_phone_added: new_phone_added?,
+        hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
       )
     end
 
@@ -202,18 +204,6 @@ module Idv
     def async_state_done(async_state)
       form_result = step.async_state_done(async_state)
 
-      analytics.idv_phone_confirmation_vendor_submitted(
-        **form_result.to_h.merge(
-          pii_like_keypaths: [
-            [:errors, :phone],
-            [:context, :stages, :address],
-          ],
-          new_phone_added: new_phone_added?,
-          hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
-        ),
-        **opt_in_analytics_properties,
-      )
-
       if form_result.success?
         redirect_to_next_step
       else
@@ -242,9 +232,7 @@ module Idv
     end
 
     def phone_step_params_phone
-      PhoneFormatter.format(
-        idv_session.previous_phone_step_params&.fetch('phone'),
-      )
+      idv_session.previous_phone_step_params&.fetch('phone')
     end
 
     # Migrated from otp_delivery_method_controller

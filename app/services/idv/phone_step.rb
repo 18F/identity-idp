@@ -2,12 +2,17 @@
 
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:)
+    include OptInHelper
+
+    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:,
+                   new_phone_added:, hybrid_handoff_phone_used:)
       self.idv_session = idv_session
       @trace_id = trace_id
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
       @fraud_ops_tracker = fraud_ops_tracker
+      @new_phone_added = new_phone_added
+      @hybrid_handoff_phone_used = hybrid_handoff_phone_used
     end
 
     def submit(step_params)
@@ -62,7 +67,7 @@ module Idv
     private
 
     attr_accessor :idv_session, :step_params, :idv_result
-    attr_reader :trace_id
+    attr_reader :trace_id, :new_phone_added, :hybrid_handoff_phone_used
 
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
@@ -164,6 +169,9 @@ module Idv
         document_capture_session,
         trace_id: trace_id,
         issuer: idv_session.service_provider&.issuer,
+        hybrid_handoff_phone_used:,
+        new_phone_added:,
+        **opt_in_analytics_properties,
       )
     end
 

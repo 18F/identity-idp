@@ -19,12 +19,24 @@ module Proofing
 
     def proof(
       applicant_pii:,
-      current_sp:
+      current_sp:,
+      hybrid_handoff_phone_used:,
+      opted_in_to_in_person_proofing:,
+      new_phone_added: false
     )
       result = nil
       address_vendors.each do |address_vendor|
         result = proofer(address_vendor).proof(applicant_pii)
           .tap do |res|
+            analytics(current_sp).idv_phone_confirmation_vendor_submitted(
+              **analytics_arguments(applicant_pii[:phone], res)
+                .merge(
+                  new_phone_added:,
+                  hybrid_handoff_phone_used:,
+                  opted_in_to_in_person_proofing:,
+                ),
+            )
+
             Db::SpCost::AddSpCost.call(
               current_sp, sp_cost_token(address_vendor), transaction_id: res.transaction_id
             )
@@ -85,6 +97,28 @@ module Proofing
 
     def address_vendors
       [primary_vendor, secondary_vendor].compact
+    end
+
+    def analytics(sp)
+      user = User.find_by(uuid: user_uuid) || AnonymousUser.new
+      Analytics.new(user:, request: nil, session: {}, sp:)
+    end
+
+    def analytics_arguments(applicant_phone, result)
+      parsed_phone = Phonelib.parse(applicant_phone)
+
+      {
+        success: result.success?,
+        errors: result.errors,
+        vendor: result.to_h.except(:success, :errors),
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        pii_like_keypaths: [
+          [:errors, :phone],
+          [:context, :stages, :address],
+        ],
+      }
     end
   end
 end
