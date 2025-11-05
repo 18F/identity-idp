@@ -51,6 +51,8 @@ RSpec.describe Idv::PhoneController do
     stub_up_to(:verify_info, idv_session: subject.idv_session)
     stub_analytics
     stub_attempts_tracker
+    allow_any_instance_of(Proofing::AddressProofer).to receive(:analytics)
+      .and_return(@analytics)
   end
 
   describe '#new' do
@@ -506,6 +508,7 @@ RSpec.describe Idv::PhoneController do
             reference: '',
             result: nil,
           },
+          errors: {}, # remove this
         )
       end
 
@@ -569,6 +572,7 @@ RSpec.describe Idv::PhoneController do
               transaction_id: 'some-reference-id',
               vendor_name: 'socure_phonerisk',
             },
+            errors: {}, # remove this
           )
         end
       end

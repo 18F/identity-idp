@@ -118,7 +118,15 @@ module Idv
     end
 
     def submit_proofing_attempt
-      step.submit(step_params.to_h)
+      idv_session.previous_phone_step_params = step_params.to_h.slice(
+        :phone, :international_code,
+        :otp_delivery_preference
+      )
+      step.submit(
+        step_params.to_h,
+        new_phone_added: new_phone_added?,
+        hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
+      )
     end
 
     def send_phone_confirmation_otp_and_handle_result
@@ -168,8 +176,6 @@ module Idv
         analytics:,
         attempts_api_tracker:,
         fraud_ops_tracker:,
-        new_phone_added: new_phone_added?,
-        hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
       )
     end
 

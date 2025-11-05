@@ -4,26 +4,21 @@ module Idv
   class PhoneStep
     include OptInHelper
 
-    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:,
-                   new_phone_added:, hybrid_handoff_phone_used:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_api_tracker:, fraud_ops_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
       @analytics = analytics
       @attempts_api_tracker = attempts_api_tracker
       @fraud_ops_tracker = fraud_ops_tracker
-      @new_phone_added = new_phone_added
-      @hybrid_handoff_phone_used = hybrid_handoff_phone_used
     end
 
-    def submit(step_params)
+    def submit(step_params, new_phone_added:, hybrid_handoff_phone_used:)
       return rate_limited_result if rate_limiter.limited?
       rate_limiter.increment!
 
       self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(
-        :phone, :international_code,
-        :otp_delivery_preference
-      )
+      self.new_phone_added = new_phone_added
+      self.hybrid_handoff_phone_used = hybrid_handoff_phone_used
       proof_address
     end
 
@@ -66,8 +61,8 @@ module Idv
 
     private
 
-    attr_accessor :idv_session, :step_params, :idv_result
-    attr_reader :trace_id, :new_phone_added, :hybrid_handoff_phone_used
+    attr_accessor :idv_session, :step_params, :idv_result, :new_phone_added, :hybrid_handoff_phone_used
+    attr_reader :trace_id
 
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
