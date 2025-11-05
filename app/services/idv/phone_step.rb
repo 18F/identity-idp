@@ -136,7 +136,7 @@ module Idv
 
     def update_idv_session
       idv_session.applicant = applicant
-      idv_session.mark_phone_step_started!
+      idv_session.mark_phone_step_started!(vendor_name: idv_result[:vendor_name])
     end
 
     def start_phone_confirmation_session

@@ -39,6 +39,7 @@ module Idv
   # @attr threatmetrix_review_status [String, nil]
   # @attr threatmetrix_session_id [String, nil]
   # @attr user_phone_confirmation [Boolean, nil]
+  # @attr user_phone_confirmation_vendor_name [String, nil]
   # @attr vendor_phone_confirmation [Boolean, nil]
   # @attr verify_info_step_document_capture_session_uuid [String, nil]
   # @attr welcome_visited [Boolean, nil]
@@ -87,6 +88,7 @@ module Idv
       threatmetrix_review_status
       threatmetrix_session_id
       user_phone_confirmation
+      user_phone_confirmation_vendor_name
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid
       welcome_visited
@@ -355,10 +357,11 @@ module Idv
       session[:resolution_successful] = nil
     end
 
-    def mark_phone_step_started!
+    def mark_phone_step_started!(vendor_name:)
       session[:address_verification_mechanism] = 'phone'
       session[:vendor_phone_confirmation] = true
       session[:user_phone_confirmation] = false
+      session[:user_phone_confirmation_vendor_name] = vendor_name
     end
 
     def mark_phone_step_complete!

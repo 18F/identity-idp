@@ -28,11 +28,14 @@ module Idv
     end
 
     def address_check
-      if idv_session.verify_by_mail?
-        'gpo_letter'
-      elsif idv_session.address_verification_mechanism == 'phone'
-        'lexis_nexis_address'
+      return 'gpo_letter' if idv_session.verify_by_mail?
+      return unless idv_session.address_verification_mechanism == 'phone'
+
+      if idv_session.user_phone_confirmation_vendor_name == 'lexisnexis:phone_finder'
+        return 'lexis_nexis_address'
       end
+
+      idv_session.user_phone_confirmation_vendor_name
     end
 
     def threatmetrix

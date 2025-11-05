@@ -52,7 +52,7 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:lexis_nexis_address_proofing_components) do
-    base_proofing_components.merge(address_check: 'lexis_nexis_address')
+    base_proofing_components.merge(address_check: 'AddressMock')
   end
 
   let(:gpo_letter_proofing_components) do
@@ -675,52 +675,52 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: phone confirmation vendor' => {
         success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
-        proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
+        proofing_components: { address_check: 'AddressMock', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
         opted_in_to_in_person_proofing: boolean
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
-        proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
+        proofing_components: { address_check: 'AddressMock', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' }
       },
       'IdV: phone confirmation otp visited' => {
-        proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
+        proofing_components: { address_check: 'AddressMock', document_check: 'usps', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', source_check: 'StateIdMock' },
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, opted_in_to_in_person_proofing: boolean
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }, opted_in_to_in_person_proofing: boolean
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone',
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, opted_in_to_in_person_proofing: boolean
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }, opted_in_to_in_person_proofing: boolean
       },
       :idv_enter_password_submitted => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, proofing_workflow_time_in_seconds: 0.0,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, opted_in_to_in_person_proofing: boolean
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }, opted_in_to_in_person_proofing: boolean
       },
       'IdV: final resolution' => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: true, proofing_workflow_time_in_seconds: 0.0,
         # NOTE: pending_profile_idv_level should be set here, a nil value is cached for current_user.pending_profile.
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, opted_in_to_in_person_proofing: boolean
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }, opted_in_to_in_person_proofing: boolean
       },
       'IdV: personal key visited' => {
         in_person_verification_pending: true,
         address_verification_method: 'phone',
         encrypted_profiles_missing: false, pending_profile_idv_level: idv_level,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' },
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' },
         opted_in_to_in_person_proofing: boolean
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true, pending_profile_idv_level: idv_level,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: true, pending_profile_idv_level: idv_level,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }
       },
       'IdV: in person ready to verify visited' => {
         pending_profile_idv_level: idv_level,
-        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, opted_in_to_in_person_proofing: boolean
+        proofing_components: { document_check: 'usps', source_check: 'StateIdMock', resolution_check: 'ResolutionMock', residential_resolution_check: 'ResolutionMock', threatmetrix: threatmetrix, threatmetrix_review_status: 'pass', address_check: 'AddressMock' }, opted_in_to_in_person_proofing: boolean
       },
       'IdV: user clicked what to bring link on ready to verify page' => {},
       'IdV: user clicked sp link on ready to verify page' => {},
